@@ -1,0 +1,115 @@
+/*******************************************************************************
+ * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ *
+ *******************************************************************************/
+grammar org.eclipse.vorto.editor.datatype.Datatype with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/vorto/metamodel/Datatype"
+import "http://www.eclipse.org/vorto/metamodel/Model"
+
+Model:
+	Type
+;
+
+ModelReference:
+	'using' importedNamespace = QualifiedName';'version = VERSION
+;
+
+QualifiedName:
+	ID ('.' ID)*
+;
+
+Type:
+	Entity | Enum
+;
+
+Entity:	
+   'namespace' namespace = QualifiedName
+   'version' version = VERSION
+   (references += ModelReference)*	
+  'entity' name = ID ('extends' superType = [Entity|QualifiedName])? '{'
+  	 (properties += Property)*
+   '}'
+;
+
+Enum:
+   'namespace' namespace = QualifiedName
+   'version' version = VERSION
+   (references += ModelReference)*	
+	'enum' name = ID '{'
+		( enums += EnumLiteral (',' enums += EnumLiteral)* )?
+	'}'
+;
+
+EnumLiteral:
+	name = ID
+;
+
+Property:
+	presence = Presence (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
+	('<' Constraints += Constraint ("," Constraints += Constraint)*  '>')?
+	(description=STRING)?
+;
+
+PropertyType:
+	ObjectPropertyType | PrimitivePropertyType
+;
+
+PrimitivePropertyType:
+	type = PrimitiveType
+;
+
+ObjectPropertyType:
+	type = [Type|QualifiedName]
+;
+
+enum PrimitiveType: string = 'string' | int = 'int' | float =  'float' | boolean =  'boolean' | datetime = 'dateTime' | double = 'double' | long = 'long' | short = 'short' | base64Binary ='base64Binary' | byte = 'byte';
+
+Presence:
+	 {Presence} (mandatory ?= 'mandatory' | 'optional')
+;
+
+Constraint:
+	type = ConstraintIntervalType constraintValues = IntervalType
+;
+
+enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = "MIMETYPE";
+
+IntervalType:
+	INT | SIGNEDINT | FLOAT | DATETIME | STRING
+;
+
+terminal SIGNEDINT :
+	'-'INT
+;
+
+terminal FLOAT: ('-')?INT'.'INT;
+
+terminal DATE: 
+	('0'..'9')('0'..'9')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')('-')('0'..'9')('0'..'9')
+;
+
+terminal TIME: 
+	('0'..'9')('0'..'9')(':')('0'..'9')('0'..'9')(':')('0'..'9')('0'..'9')(TIMEZONE)?
+;
+
+terminal fragment TIMEZONE: 
+	'Z'|(('+'|'-')('0'..'9')('0'..'9')(':')('0'..'9')('0'..'9'))
+;
+
+terminal DATETIME: 
+	DATE('T')TIME
+;
+
+terminal VERSION : ('0'..'9')* '.' ('0'..'9')* '.' ('0'..'9')*('-'ID)?;

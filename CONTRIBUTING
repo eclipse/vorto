@@ -1,0 +1,39 @@
+Contributing to Eclipse Vorto
+=================================
+
+Thanks for your interest in this project.
+
+Project description:
+--------------------
+
+The Eclipse Vorto project is a toolset which allows you to define the structure and semantics of IoT devices using a simple DSL for which you can plug in custom code generators to generate executable device specific code. 
+
+- http://www.eclipse.org/vorto/
+
+Developer resources:
+--------------------
+
+Information regarding source code management, builds, coding standards, and more.
+
+- http://www.eclipse.org/vorto/community.html#HowToContribute
+
+Contributor License Agreement:
+------------------------------
+
+Before your contribution can be accepted by the project, you need to create and electronically sign the Eclipse Foundation Contributor License Agreement (CLA).
+
+- http://www.eclipse.org/legal/CLA.php
+
+Search for bugs:
+----------------
+
+This project uses Bugzilla to track ongoing development and issues.
+
+- https://bugs.eclipse.org/bugs/buglist.cgi?product=Vorto
+
+Create a new bug:
+-----------------
+
+Be sure to search for existing bugs before you create another one. Remember that contributions are always welcome!
+
+- https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Vorto

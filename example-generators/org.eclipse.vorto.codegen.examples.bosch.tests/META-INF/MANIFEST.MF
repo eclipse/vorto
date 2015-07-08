@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bosch Generator Tests
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.bosch.tests;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-Vendor: Eclipse.org/Vorto
+Require-Bundle: org.eclipse.vorto.codegen.examples.bosch,
+ org.eclipse.vorto.codegen,
+ org.eclipse.xtext,
+ org.eclipse.xtext.junit4,
+ org.eclipse.xtend.lib,
+ org.junit,
+ org.eclipse.vorto.editor.functionblock.tests,
+ org.eclipse.vorto.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+

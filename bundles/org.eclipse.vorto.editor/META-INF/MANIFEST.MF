@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto DSL Editor
+Bundle-SymbolicName: org.eclipse.vorto.editor;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.vorto.core,
+ org.eclipse.vorto.codegen,
+ org.eclipse.xtext.builder,
+ org.apache.commons.lang3,
+ org.eclipse.xtext,
+ org.eclipse.core.runtime
+Export-Package: org.eclipse.vorto.editor,org.eclipse.vorto.editor.scope
