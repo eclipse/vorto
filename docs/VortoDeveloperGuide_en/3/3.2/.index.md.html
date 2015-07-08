@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C:\Users\gui1be\Documents\Vorto\docs\VortoDeveloperGuide_en\3\3.4\.index.md.html</title>
+
+<link href="http://documentation.bosch-si.com/tools/css/vorto.css" media="all" rel="stylesheet" type="text/css"/> 
+
+
+
+<script type="text/javascript">
+
+function getDocumentScrollTop() 
+{
+   var res = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0;
+   // alert(res);
+   return res;
+}
+
+function setDocumentScrollTop(ypos) 
+{
+	window.scrollTo(0, ypos);
+}
+
+</script>
+
+
+</head>
+<body class="markdown-body">
+<h2> <a id="user-content-implementing-the-code" class="anchor" href="#implementing-the-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Implementing the Code</h2> 
+<p><strong>Prerequisites</strong></p> 
+<ul> 
+ <li><p>You have created a plug-in project. (refer to <a href="..\3.1\.index.md.html">Create a New Plug-in Project</a>).</p></li> 
+ <li><p>You have specified the dependencies of the plug-in project (refer to <a href="..\3.2\.index.md.html">Specifying the Dependencies</a>).</p></li> 
+ <li><p>You have specified the extensions of the plug-in project (refer to <a href="..\3.3\.index.md.html">Adding a Generator Extension</a>).</p></li> 
+</ul> 
+<p>Implement the actual code under <code>generate()</code> method for the code to be generated - for example:</p> 
+<pre><code>package demo    
+import org.eclipse.core.runtime.IProgressMonitor       
+import org.eclipse.emf.common.util.EList   
+import org.eclipse.vorto.codegen.api.ICodeGenerator       
+import org.eclipse.vorto.codegen.api.tasks.Generated
+import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask   
+import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.functionblock.Entity
+import org.eclipse.vorto.functionblock.Enum   
+import org.eclipse.vorto.functionblock.EnumLiteral
+import org.eclipse.vorto.functionblock.Event
+import org.eclipse.vorto.functionblock.FunctionblockModel
+import org.eclipse.vorto.functionblock.ObjectParam
+import org.eclipse.vorto.functionblock.ObjectProperty
+import org.eclipse.vorto.functionblock.Operation
+import org.eclipse.vorto.functionblock.Parameter
+import org.eclipse.vorto.functionblock.Presence
+import org.eclipse.vorto.functionblock.PrimitiveParam
+import org.eclipse.vorto.functionblock.PrimitiveProperty
+import org.eclipse.vorto.functionblock.Property
+import org.eclipse.vorto.functionblock.ReturnObjectType
+import org.eclipse.vorto.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.functionblock.ReturnType
+import static org.eclipse.vorto.codegen.api.tasks.GeneratorConfiguration.configuration
+import static org.eclipse.vorto.codegen.api.tasks.GeneratorConfiguration.eclipseProject
+import static org.eclipse.vorto.codegen.api.tasks.GeneratorConfiguration.mavenNature
+class JsonCodeGenerator implements ICodeGenerator {
+&nbsp;&nbsp;private static final ITemplate MYPOM = new SimplePom();
+&nbsp;&nbsp;override generate(FunctionblockModel model, IProgressMonitor monitor) {
+&nbsp;&nbsp;&nbsp;&nbsp;eclipseProject(model.getName() + &quot;Device&quot;, configuration(mavenNature(MYPOM)), new CreatesJsonRepresentation()).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;generate(model, monitor);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;static class SimplePom implements ITemplate {
+&nbsp;&nbsp;&nbsp;&nbsp;override getContent(FunctionblockModel model) {
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;project&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;groupId&gt;company.example.jsongeneerator&lt;/groupId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;artifactId&gt;&laquo;model.name&raquo;Device&lt;/artifactId&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;version&gt;&laquo;model.functionblock.version&raquo;&lt;/version&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;name&gt;Sample project generated from &laquo;model.name&raquo; that simply creates a JSON representation of the functionblock&lt;/name&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;packaging&gt;jar&lt;/packaging&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/project&gt;'''
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+&nbsp;&nbsp;static class CreatesJsonRepresentation implements ICodeGeneratorTask {
+&nbsp;&nbsp;&nbsp;&nbsp;override generate(FunctionblockModel model, IOutputter outputter) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;outputter.output(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Generated(model.name + &quot;.json&quot;, &quot;src/main/java/company/example/jsongenerator&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;getJsonRepresentation(model)))
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def String getJsonRepresentation(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;functionblock model&quot;: {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;: &quot;&laquo;model.name&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;functionblock&quot;: {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;displayname&quot;: &quot;&laquo;model.functionblock.displayname&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;vendor&quot;: &quot;&laquo;model.functionblock.vendor&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;category&quot;: &quot;&laquo;model.functionblock.category&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;version&quot;: &quot;&laquo;model.functionblock.version&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;configuration&quot;: [&laquo;printConfigurationBlock(model)&raquo;],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;fault&quot;: [&laquo;printFaultBlock(model)&raquo;],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;status&quot;: [&laquo;printStatusBlock(model)&raquo;],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;events&quot;: [&laquo;printEvents(model)&raquo;],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;operations&quot;: [&laquo;printOperations(model)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;printEntityBlockIfNecessary(model)&raquo;&laquo;printEnumBlockIfNecessary(model)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printConfigurationBlock(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(model.functionblock.configuration != null) printProperties(model.functionblock.configuration.properties)
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printFaultBlock(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(model.functionblock.fault != null) printProperties(model.functionblock.fault.properties)
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printStatusBlock(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(model.functionblock.status != null) printProperties(model.functionblock.status.properties)
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printEnumBlockIfNecessary(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (model.enums.nullOrEmpty == false) '''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;enums&quot;: [&laquo;printEnums(model)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printEntityBlockIfNecessary(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (model.elements.nullOrEmpty == false) '''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;entities&quot;: [&laquo;printEntities(model)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printEntities(FunctionblockModel model) 
+    '''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Entity entity : model.elements&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;: &quot;&laquo;entity.name&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;superType&quot;: &quot;&laquo;getSuperType(entity)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;properties&quot;: [&laquo;printProperties(entity.properties.properties)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(model.elements, entity)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;def printEnums(FunctionblockModel model) '''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Enum enumVar : model.enums&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;: &quot;&laquo;enumVar.name&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;literals &quot;: [&laquo;getLiterals(enumVar.enums)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(model.enums, enumVar)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;def getSuperType(Entity entity) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (entity.superType == null) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''not existing'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} else {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''&laquo;entity.superType.name&raquo;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printEvents(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (model.functionblock.events.nullOrEmpty == false) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Event event : model.functionblock.events&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;: &quot;&laquo;event.name&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;properties &quot;: [&laquo;printProperties(model.functionblock.status.properties)&raquo;]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(model.functionblock.events, event)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printOperations(FunctionblockModel model) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (model.functionblock.features.nullOrEmpty == false) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Operation operation : model.functionblock.features&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;method name&quot;: &quot;&laquo;operation.methodName&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;parameter&quot;: [&laquo;printParameter(operation.params)&raquo;],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;return type&quot;: &quot;&laquo;getReturnType(operation.returnType)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;description&quot;: &quot;&laquo;getOperationDescription(operation)&raquo;&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(model.functionblock.features, operation)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getLiterals(EList&lt;EnumLiteral&gt; enumList) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR EnumLiteral literal : enumList&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;&laquo;literal.literal&raquo;&quot;&laquo;getComma(enumList, literal)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printParameter(EList&lt;Parameter&gt; params) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (params.nullOrEmpty == false) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Parameter param : params&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;multiple&quot;: &quot;&laquo;getMultipleAsBoolean(param)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;name&quot;: &quot;&laquo;param.paramName&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;parameter type&quot;: &quot;&laquo;getParamType(param)&raquo;&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(params, param)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def printProperties(EList&lt;Property&gt; properties) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (properties.isEmpty == false) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;FOR Property property : properties&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;presence&quot;: &quot;&laquo;getPresence(property)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;multiple&quot;: &quot;&laquo;getMultipleAsBoolean(property)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;property name&quot;: &quot;&laquo;property.propName&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;type&quot;: &quot;&laquo;getPropertyType(property)&raquo;&quot;,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;description&quot;: &quot;&laquo;getPropertyDescription(property)&raquo;&quot;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&laquo;getComma(properties, property)&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&laquo;ENDFOR&raquo;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'''
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getPresence(Property property) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;val Presence presence = property.presence;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (presence.mandatory.nullOrEmpty == true &amp;&amp; presence.optional.nullOrEmpty == false)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;presence.optional
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (presence.mandatory.nullOrEmpty == false &amp;&amp; presence.optional.nullOrEmpty == true)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;presence.mandatory
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def &lt;T extends Object&gt; getComma(EList&lt;T&gt; list, T actualObject) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(list.indexOf(actualObject) == (list.size - 1)) '' else ','
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getOperationDescription(Operation operation) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(operation.description.nullOrEmpty == false) operation.description
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getPropertyDescription(Property property) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(property.description.nullOrEmpty == false) property.description
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getPropertyType(Property property) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (property instanceof PrimitiveProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property.type.toString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (property instanceof ObjectProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property.type.name
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getReturnType(ReturnType returnType) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (returnType instanceof ReturnPrimitiveType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returnType.returnType.toString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (returnType instanceof ReturnObjectType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returnType.returnType.name
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getParamType(Parameter parameter) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (parameter instanceof PrimitiveParam)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parameter.paramType.toString
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (parameter instanceof ObjectParam)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parameter.paramType.name
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getMultipleAsBoolean(Parameter param) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(param.multiplicity.nullOrEmpty) 'false' else 'true'
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;def getMultipleAsBoolean(Property property) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(property.multiplicity.nullOrEmpty) 'false' else 'true'    
+&nbsp;&nbsp;&nbsp;&nbsp;}    
+&nbsp;&nbsp;}    
+}
+</code></pre> 
+<table> 
+ <tbody>
+  <tr> 
+   <td><a href="../../images/Note_32.png" target="_blank"><img src="../../images/Note_32.png" alt="Note" style="max-width:100%;" /></a></td> 
+   <td>In this example the code generator is implemented using the Xtend template language. This however requires additional plug-in dependencies to be defined, namely: 
+    <ul> 
+     <li>org.eclipse.emf.common</li> 
+     <li>org.eclipse.xtext.xbase.lib</li> 
+     <li>org.eclipse.xtend.lib</li> 
+     <li>org.eclipse.xtend.lib.macro</li> 
+     <li>com.google.guava</li> 
+    </ul> Please add these dependencies to your project.</td> 
+  </tr> 
+ </tbody>
+</table>
+</body>
+</html>

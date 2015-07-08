@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="com.bosch.m2m.tool.m2mnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.vorto.codegen.examples.bosch.common.BoschM2MNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="com.bosch.m2m.tool.m2mmodelnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.vorto.codegen.examples.bosch.common.BoschM2MModelNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         id="BoschM2MGenerator"
+         name="Bosch M2M Code Generator"
+         point="org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators">
+      <client
+            class="org.eclipse.vorto.codegen.examples.bosch.fbservice.FbServiceGenerator"
+            menuLabel="Bosch M2M Code Generator">
+      </client>
+   </extension>
+</plugin>

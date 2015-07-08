@@ -1,0 +1,10 @@
+/target
+/bin
+/src-gen
+/xtend-gen
+.DS_Store
+/model/generated
+plugin.xml_gen
+/model
+/.settings
+/bin

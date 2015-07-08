@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Wizard
+Bundle-SymbolicName: org.eclipse.vorto.wizard;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-ClassPath: .
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.vorto.core,
+ org.eclipse.vorto.codegen,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.xtend.lib,
+ org.apache.commons.lang3,
+ org.eclipse.ui.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+
