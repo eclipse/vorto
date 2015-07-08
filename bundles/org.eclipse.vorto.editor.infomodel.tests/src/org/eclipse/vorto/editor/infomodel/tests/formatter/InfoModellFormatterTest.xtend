@@ -46,12 +46,15 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		val expectedText = '''
 		namespace www.bosch.com
 		version 1.2.3
+
 		infomodel Computer {
 			displayname "Computer"
 			description "A Super gadget"
 			category home
+
 			functionblocks {
-				Hardisk , Memory
+				Hardisk ,
+				Memory
 			}
 		}'''
 		val rawText = '''namespace www.bosch.com version 1.2.3 infomodel Computer {	displayname "Computer" 	description "A Super gadget" 	category home
@@ -65,12 +68,15 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		val expectedText = '''
 		namespace mynamespace.com.sg
 		version 1.1.1
+
 		infomodel someIM {
 			displayname "someIM"
 			description "IoT Bulb"
 			category light
+
 			functionblocks {
-				Lamp , Remote
+				Lamp ,
+				Remote
 			}
 		}'''
 		
