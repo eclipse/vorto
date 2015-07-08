@@ -1,0 +1,28 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>example-generators</artifactId>
+		<version>0.3.0</version>
+	</parent>
+
+	<artifactId>org.eclipse.vorto.codegen.examples.bosch.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<name>Bosch M2M - Generator Tests</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

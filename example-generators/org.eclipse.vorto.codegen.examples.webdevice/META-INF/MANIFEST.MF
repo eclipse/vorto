@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Example Web UI Generator
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.webdevice;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-Activator: org.eclipse.vorto.codegen.examples.webdevicegenerator.Activator
+Require-Bundle: org.eclipse.vorto.core,
+ org.eclipse.vorto.codegen,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.apache.commons.lang3,
+ org.eclipse.xtend.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Eclipse.org/Vorto
+Export-Package: org.eclipse.vorto.codegen.examples.webdevicegenerator;
+  uses:="org.eclipse.vorto.functionblock,  org.eclipse.core.runtime,  
+ org.eclipse.ui.plugin,  org.eclipse.vorto.codegen,  org.osgi.framewor
+ k",org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks,org.ec
+ lipse.vorto.codegen.examples.webdevicegenerator.tasks.templates;uses:
+ ="org.eclipse.vorto.functionblock"
+Bundle-ActivationPolicy: lazy
+

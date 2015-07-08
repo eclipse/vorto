@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="MACROMAN"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.eclipse.vorto</groupId>
+    <artifactId>org.eclipse.vorto.parent</artifactId>
+    <version>0.3.0</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.eclipse.vorto</groupId>
+  <artifactId>bundles</artifactId>
+
+  <name>Eclipse Vorto Bundles</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+		<module>org.eclipse.vorto.core</module>
+		<module>org.eclipse.vorto.editor</module>
+		
+		<module>org.eclipse.vorto.codegen</module>
+		<module>org.eclipse.vorto.codegen.tests</module>	
+	
+		<module>org.eclipse.vorto.editor.datatype</module>
+		<module>org.eclipse.vorto.editor.datatype.ui</module>	
+		
+		<module>org.eclipse.vorto.editor.functionblock</module>
+		<module>org.eclipse.vorto.editor.functionblock.ui</module>	
+		<module>org.eclipse.vorto.editor.functionblock.tests</module>
+
+		<module>org.eclipse.vorto.editor.infomodel</module>
+		<module>org.eclipse.vorto.editor.infomodel.ui</module>	
+		<module>org.eclipse.vorto.editor.infomodel.tests</module>
+
+		<module>org.eclipse.vorto.editor.mapping</module>
+		<module>org.eclipse.vorto.editor.mapping.ui</module>	
+		<module>org.eclipse.vorto.editor.mapping.tests</module>	
+		
+		<module>org.eclipse.vorto.wizard</module>
+		<module>org.eclipse.vorto.perspective</module>	
+		
+
+
+  </modules>
+  
+</project>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C:\Users\gui1be\Documents\Vorto\docs\VortoDeveloperGuide_en\4\4.3\.index.md.html</title>
+
+<link href="http://documentation.bosch-si.com/tools/css/vorto.css" media="all" rel="stylesheet" type="text/css"/> 
+
+
+
+<script type="text/javascript">
+
+function getDocumentScrollTop() 
+{
+   var res = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0;
+   // alert(res);
+   return res;
+}
+
+function setDocumentScrollTop(ypos) 
+{
+	window.scrollTo(0, ypos);
+}
+
+</script>
+
+
+</head>
+<body class="markdown-body">
+<h2> <a id="user-content-running-the-generated-web-device-application" class="anchor" href="#running-the-generated-web-device-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running the Generated Web Device Application</h2> 
+<p><strong>Prerequisites</strong></p> 
+<ul> 
+ <li>You have created a plug-in project (refer to <a href="..\4.1\.index.md.html">Creating and Editing a Function Block Definition</a>).</li> 
+ <li>You have generated a Web device application (refer to <a href="..\4.2\.index.md.html">Generating a Web Device Application Using Sample Code Generator</a>).</li> 
+</ul> 
+<p><strong>Proceed as follows</strong></p> 
+<ol> 
+ <li> Select the project <code>LampWebapp</code>. From the context menu, choose <strong>Run As &gt; Run configurations</strong>.<br /> <a href="../../images/m2m_tc_run_as_run_configuration.png" target="_blank"><img src="../../images/m2m_tc_run_as_run_configuration.png" alt="run configuration" style="max-width:100%;" /></a><br /> The dialog <strong>Run Configurations</strong> opens.<br /> </li> 
+ <li>In the configuration list on the left side, expand <strong>Maven Build</strong> and click the sub item <strong>New_configuration</strong>.<br /> A configuration form opens.</li> 
+ <li>Change the entry in the <strong>Name</strong> field to <code>Lamp_configuration</code>.<br /> </li> 
+ <li> In the <strong>Base directory</strong> field, enter <code>${workspace_loc:/LampWebapp}</code>.</li> 
+ <li>In the <strong>Goals</strong> field, enter <code>jetty:run</code>.</li> 
+ <li>Click the <strong>Run</strong> button.<br /> <a href="../../images/m2m_tc_run_as_run_configuration_run.png" target="_blank"><img src="../../images/m2m_tc_run_as_run_configuration_run.png" alt="run as configuration run" style="max-width:100%;" /></a><br /> Wait a few seconds for jetty server to start. Upon successfully start, the message <code>[INFO] Started Jetty Server</code> should be displayed in the Eclipse console.</li> 
+ <li>Open the URL <code>http://localhost:8080/Lamp/index.html</code> in your browser to see the HTML representation of your device over Web.<br /> <a href="../../images/m2m_tc_running_web_app.png" target="_blank"><img src="../../images/m2m_tc_running_web_app.png" alt="running web app" style="max-width:100%;" /></a><br /> </li> 
+</ol>
+</body>
+</html>

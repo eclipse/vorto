@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Core
+Bundle-SymbolicName: org.eclipse.vorto.core;singleton:=true
+Bundle-Version: 0.3.0
+Bundle-ClassPath: .
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.core.resources,
+ org.apache.commons.collections,
+ org.eclipse.core.expressions
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.core.api.model.datatype,org.eclipse.
+ vorto.core.api.model.datatype.impl,org.eclipse.vorto.core.api.model.d
+ atatype.util,org.eclipse.vorto.core.api.model.functionblock,org.eclip
+ se.vorto.core.api.model.functionblock.impl,org.eclipse.vorto.core.api
+ .model.functionblock.util,org.eclipse.vorto.core.api.model.informatio
+ nmodel,org.eclipse.vorto.core.api.model.informationmodel.impl,org.ecl
+ ipse.vorto.core.api.model.informationmodel.util,org.eclipse.vorto.cor
+ e.api.model.mapping,org.eclipse.vorto.core.api.model.mapping.impl,org
+ .eclipse.vorto.core.api.model.mapping.util,org.eclipse.vorto.core.api
+ .model.model,org.eclipse.vorto.core.api.model.model.impl,org.eclipse.
+ vorto.core.api.model.model.util,org.eclipse.vorto.core.model,org.ecli
+ pse.vorto.core.model.nature,org.eclipse.vorto.core.parser;uses:="org.
+ eclipse.core.resources",org.eclipse.vorto.core.service,org.eclipse.vo
+ rto.core.ui.changeevent;uses:="org.eclipse.vorto.api.project",org.ecl
+ ipse.vorto.core.ui.handler,org.eclipse.vorto.core.ui.handler.datatype
+ ,org.eclipse.vorto.core.ui.handler.functionblock,org.eclipse.vorto.co
+ re.ui.handler.infomodel
+
