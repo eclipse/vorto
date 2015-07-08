@@ -58,5 +58,3 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(2).before(dsl.findKeywords("infomodel").get(0))
 	}
 }
-
-//Test
