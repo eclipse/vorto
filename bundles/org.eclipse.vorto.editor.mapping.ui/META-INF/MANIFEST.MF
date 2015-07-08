@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Mapping Editor UI
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Version: 0.3.0
+Bundle-SymbolicName: org.eclipse.vorto.editor.mapping.ui; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.vorto.editor.mapping;visibility:=reexport,
+ org.eclipse.xtext.ui,
+ org.eclipse.ui.editors,
+ org.eclipse.ui.ide,
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.ui,
+ org.eclipse.xtext.builder,
+ org.eclipse.xtext.xbase.lib,
+ org.antlr.runtime,
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.compare
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.eclipse.vorto.editor.mapping.ui.quickfix,org.eclip
+ se.vorto.editor.mapping.ui.contentassist,org.eclipse.vorto.editor.map
+ ping.ui.contentassist.antlr,org.eclipse.vorto.editor.mapping.ui.inter
+ nal
+Bundle-Activator: org.eclipse.vorto.editor.mapping.ui.internal.MappingActivator

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Code Generator Examples Tests
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Version: 0.3.0
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.webdevice.tests;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.vorto.codegen.examples.webdevice,
+ org.eclipse.xtext,
+ org.junit,
+ org.eclipse.vorto.core,
+ org.eclipse.xtend.lib,
+ org.eclipse.vorto.codegen
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+

@@ -1,0 +1,8 @@
+mapping {
+    model SomeIM
+    target smarthome
+
+ 	from Lamp.operation.setR, Lamp.operation.setG, Lamp.operation.setB to channelType with {name:"color"} 
+ 	from Lamp.configuration.brightnessLevel to channelType with {name: "brightness"}, configDescription with {name: "brightness", type: "Number"}
+ 	 	
+}

@@ -1,0 +1,182 @@
+
+body {
+	font-family: Arial;
+	background-color: #dfebfa !important;
+	background-image: -webkit-linear-gradient(top, #f2f7fe 0%, #b7c9d9 50%, #dfebfa 100%) !important;
+	background: -moz-linear-gradient(top, #f2f7fe 0%, #b7c9d9 50%, #dfebfa 100%) !important;
+}
+	
+button {
+	border-radius: 2px;
+	border: 0px none;
+	padding: 6px 12px;
+	color: #FFF;
+	background: linear-gradient(to bottom, #0081C7 0%, #004986 100%) repeat scroll 0% 0% transparent;
+	font-size:12px;
+}
+	
+th {
+	color: #0D3155;
+	}
+	
+label {
+	display: block;
+	margin: 5px;
+	color: #333;
+}
+	
+fieldset {
+	border: 1px solid #0066AD;
+	margin-bottom: 8px;
+	border-radius: 2px;
+	background: rgba(255,255,255,0.35);
+}
+	
+legend {
+	color: #0066AD;
+}
+	
+.column{
+	float:left;
+}
+	
+input[type=text]{
+	margin: 3px;
+}
+
+label.display{
+	font-weight: bold;
+}
+
+/*tabpanel*/
+.ui-widget {
+	font-family: Arial;
+	font-size: 1em; 
+}
+
+.ui-widget-content {
+	border: 0px solid #0066AD;
+	background: rgba(255,255,255,0);
+	color: #222222;
+}			
+
+.ui-widget-header {
+	border: 1px solid rgba(255,255,255,0);
+	background: rgba(255,255,255,0);
+	color: #222222;
+	font-weight: bold;
+}
+
+.ui-tabs .ui-tabs-nav {
+	margin: 0px 0px 0px -1px;
+	padding: 0;
+	position: absolute;
+	z-index: 2;
+}
+
+.ui-tabs .ui-tabs-nav li {
+	list-style: none;
+	float: left;
+	position: relative;
+	top: 0;
+	margin: 1px .2em -1px 0;
+	border-bottom: 0px solid red;
+	padding: 0;
+	white-space: nowrap;
+	height: 36px;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+	border: 1px solid #217CB5;
+	background: #e6e6e6;
+	font-weight: normal;
+	color: #555555;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+	border: 1px solid #0066AD;
+	background: #D1DFE9; 
+}
+
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited{
+	color: #0066AD;
+	text-decoration: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+	display: block;
+	padding: 1em 1.4em;
+	border: 1px solid #0066AD;
+	background: #D1DFE9;
+	border-radius: 2px;
+	position: relative;
+	z-index: 1;
+	top:39px;
+}
+
+.ui-tabs .ui-tabs-panel fieldset {
+	border: 1px solid #fff;
+	margin-bottom: 8px;
+	border-radius: 2px;
+	background: rgba(255,255,255,0.35);
+}
+
+/*table*/
+.event { 
+	width:99%; 
+	border-collapse:collapse;  
+	margin: 10px 8px 15px 5px;
+}
+.event th{ 
+	padding:8px; 
+	border:#fff 1px solid; 
+	color: #0066AD;
+	font-weight: normal;
+} 
+.event td { 
+	padding:8px; 
+	border:#fff 1px solid; 
+	color: #333;
+} 
+.event  tr:nth-child(even) { 
+	background: #A4D1FF;
+}
+.event  tr:nth-child(odd) { 
+	background: #EAF4FF;
+}
+
+.ui-widget button {
+	font-family: Arial;
+	font-size: 14px;
+}
+
+textarea, input[type=text],  input[type="password"], input[type="search"] {
+    box-shadow: inset 0px 1px 1px 0px rgba(0,0,0,0.75);
+    color: #12263A;
+    background-color: rgba(255,255,255,0.15);
+    border: none;
+    border-bottom: 1px solid rgba(45,160,255,.08);
+    border-radius: 2px;
+    height:28px;
+    border-width: 1px; 
+}
+
+input[type=text]:focus,  input[type="password"]:focus, input[type="search"]:focus {
+    border: 1px solid #0076B6;
+    color: #12263A;
+}
+
+input[readonly="readonly"]:focus,textarea[readonly="readonly"]:focus {
+    border: 1px solid #0076B6;
+    color: #12263A;
+    background-color: rgba(255,255,255,0.15);
+}
+
+input:focus, textarea:focus, keygen:focus, select:focus {
+    outline-offset: -2px;
+}
+
+input[type=text]:hover,  input[type="password"]:hover, input[type="search"]:hover {
+    border: 1px solid #0076B6;
+    color: #12263A;
+}

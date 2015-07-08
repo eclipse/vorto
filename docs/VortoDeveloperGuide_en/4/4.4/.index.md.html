@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>C:\Users\gui1be\Documents\Vorto\docs\VortoDeveloperGuide_en\4\4.4\.index.md.html</title>
+
+<link href="http://documentation.bosch-si.com/tools/css/vorto.css" media="all" rel="stylesheet" type="text/css"/> 
+
+
+
+<script type="text/javascript">
+
+function getDocumentScrollTop() 
+{
+   var res = document.body.scrollTop || document.documentElement.scrollTop || window.pageYOffset || 0;
+   // alert(res);
+   return res;
+}
+
+function setDocumentScrollTop(ypos) 
+{
+	window.scrollTo(0, ypos);
+}
+
+</script>
+
+
+</head>
+<body class="markdown-body">
+<h2> <a id="user-content-modifying-the-behavior-of-the-generated-web-device-application" class="anchor" href="#modifying-the-behavior-of-the-generated-web-device-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modifying the Behavior of the Generated Web Device Application</h2> 
+<p>The default REST service class <code>LampService</code> generated provides a service to return default properties of the lamp instance. It also provides a service to handle an operation request. However it only contains dummy log statements. If you click the <strong>On</strong> button the status of <strong>Lamp</strong> is still shown as <strong>false</strong>. The service does not update the status of the lamp instance.</p> 
+<p><strong>Prerequisites</strong></p> 
+<ul> 
+ <li>You have created a plug-in project (refer to <a href="..\4\4.1\.index.md.html">Creating and Editing a Function Block Definition</a>).</li> 
+ <li>You have generated a Web device application (refer to <a href="..\4\4.2\.index.md.html">Generating a Web Device Application Using Sample Code Generator</a>).</li> 
+</ul> 
+<p><strong>Proceed as follows</strong></p> 
+<ol> 
+ <li> <p>Update the service method <code>on()</code> of class <code>LampService</code> to update the lamp instance status. </p> <pre><code>@PUT
+@Path(&quot;/on&quot;)
+public void on() {
+  lampinstance.getStatus().setOn(true);
+}
+</code></pre> </li> 
+ <li><p>Stop the application by clicking the red square beside the <strong>Console</strong> tab in your IDE.<br /> <a href="../../images/m2m_tc_running_web_app_stop.png" target="_blank"><img src="../../images/m2m_tc_running_web_app_stop.png" alt="stop running web app" style="max-width:100%;" /></a></p></li> 
+ <li>Start the application again by selecting the project <code>LampWebapp</code> and choosing <strong>Run As &gt; Run configurations</strong> from the context menu.</li> 
+ <li>In your browser, open the URL <code>http://localhost:8080/Lamp/index.html</code> again.</li> 
+ <li>Click the <strong>On</strong> button.<br /> The <strong>On</strong> status is changed to <strong>true</strong>.<br /> <a href="../../images/m2m_tc_running_web_app_b.png" target="_blank"><img src="../../images/m2m_tc_running_web_app_b.png" alt="stop running web app" style="max-width:100%;" /></a> </li> 
+</ol>
+</body>
+</html>

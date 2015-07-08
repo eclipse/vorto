@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src" editDirectory="/org.eclipse.vorto.editor.datatype.edit/src"
+    editorDirectory="/org.eclipse.vorto.editor.datatype.editor/src" modelPluginID="org.eclipse.vorto.metamodel.datatype"
+    forceOverwrite="true" modelName="Datatype" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.vorto.editor.datatype.edit"
+    editorPluginID="org.eclipse.vorto.editor.datatype.editor" runtimeVersion="2.10">
+  <genPackages prefix="Datatype" basePackage="org.eclipse.vorto.core.api.model" disposableProviderFactory="true"
+      fileExtensions="type" ecorePackage="Datatype.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Datatype.ecore#//PrimitiveType">
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/string"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/int"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/float"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/boolean"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/datetime"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/double"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/long"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/short"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/base64Binary"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//PrimitiveType/byte"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Datatype.ecore#//ConstraintIntervalType">
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/min"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/max"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/strlen"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/regex"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/mimetype"/>
+    </genEnums>
+    <genClasses ecoreClass="Datatype.ecore#//Entity">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Datatype.ecore#//Entity/superType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Entity/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//Property">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/presence"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Property/multiplicity"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Property/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Property/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/Constraints"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//PrimitivePropertyType">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//PrimitivePropertyType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//ObjectPropertyType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Datatype.ecore#//ObjectPropertyType/type"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//Presence">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Presence/mandatory"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//Constraint">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Constraint/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Constraint/constraintValues"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//Enum">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Enum/enums"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//EnumLiteral">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//EnumLiteral/name"/>
+    </genClasses>
+    <genClasses ecoreClass="Datatype.ecore#//Type"/>
+    <genClasses ecoreClass="Datatype.ecore#//PropertyType"/>
+  </genPackages>
+  <genPackages prefix="Model" basePackage="org.eclipse.vorto.core.api.model" ecorePackage="Model.ecore#/">
+    <genClasses image="false" ecoreClass="Model.ecore#//Model">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/version"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//Model/references"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//ModelReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/importedNamespace"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

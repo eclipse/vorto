@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src" editDirectory="/org.eclipse.vorto.informationmodeleditor.edit/src"
+    editorDirectory="/org.eclipse.vorto.informationmodeleditor.editor/src" modelPluginID="org.eclipse.vorto.informationmodeleditor"
+    forceOverwrite="true" modelName="InformationModel" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.vorto.informationmodeleditor.edit"
+    editorPluginID="org.eclipse.vorto.informationmodeleditor.editor" runtimeVersion="2.10"
+    usedGenPackages="Functionblock.genmodel#//functionblock Datatype.genmodel#//datatype">
+  <genPackages prefix="InformationModel" basePackage="org.eclipse.vorto.core.api.model"
+      disposableProviderFactory="true" fileExtensions="infomodel" ecorePackage="InformationModel.ecore#/">
+    <genClasses ecoreClass="InformationModel.ecore#//InformationModel">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InformationModel.ecore#//InformationModel/displayname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InformationModel.ecore#//InformationModel/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InformationModel.ecore#//InformationModel/category"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference InformationModel.ecore#//InformationModel/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="InformationModel.ecore#//FunctionblockProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InformationModel.ecore#//FunctionblockProperty/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute InformationModel.ecore#//FunctionblockProperty/description"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference InformationModel.ecore#//FunctionblockProperty/type"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="Model" basePackage="org.eclipse.vorto.core.api.model" ecorePackage="Model.ecore#/">
+    <genClasses image="false" ecoreClass="Model.ecore#//Model">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/version"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//Model/references"/>
+    </genClasses>
+    <genClasses ecoreClass="Model.ecore#//ModelReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/version"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/importedNamespace"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

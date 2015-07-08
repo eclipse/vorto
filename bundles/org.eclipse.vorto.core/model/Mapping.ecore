@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mapping" nsURI="http://www.eclipse.org/vorto/metamodel/Mapping"
+    nsPrefix="mapping">
+  <eClassifiers xsi:type="ecore:EClass" name="MappingModel">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="infomodel" eType="ecore:EClass InformationModel.ecore#//InformationModel"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="target" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
+        eType="#//Rule" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Rule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="informationModelElements"
+        upperBound="-1" eType="#//InformationModelElement" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="targetElement" eType="#//TargetElement"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InformationModelElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="functionblockModel" eType="ecore:EClass Functionblock.ecore#//FunctionblockModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="#//FunctionBlockElement"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationElement" eSuperTypes="#//FunctionBlockElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass Functionblock.ecore#//Operation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConfigurationElement" eSuperTypes="#//FunctionBlockElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass Datatype.ecore#//Property"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StatusElement" eSuperTypes="#//FunctionBlockElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass Datatype.ecore#//Property"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FaultElement" eSuperTypes="#//FunctionBlockElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass Datatype.ecore#//Property"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EventElement" eSuperTypes="#//FunctionBlockElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="ecore:EClass Functionblock.ecore#//Event"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TargetElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="stereoTypes" upperBound="-1"
+        eType="#//StereoType" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StereoType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="attributes" upperBound="-1"
+        eType="#//Attribute" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+</ecore:EPackage>

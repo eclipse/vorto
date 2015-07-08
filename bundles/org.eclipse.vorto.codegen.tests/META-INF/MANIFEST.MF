@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Code Generator Tests
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Version: 0.3.0
+Bundle-SymbolicName: org.eclipse.vorto.codegen.tests;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.vorto.codegen,
+ org.eclipse.xtext.xbase,
+ org.eclipse.xtext,
+ org.junit,
+ org.eclipse.core.runtime,
+ org.easymock,
+ org.eclipse.vorto.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.eclipse.core.resources
