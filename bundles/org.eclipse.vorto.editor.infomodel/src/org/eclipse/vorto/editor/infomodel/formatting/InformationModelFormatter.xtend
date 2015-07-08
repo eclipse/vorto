@@ -54,3 +54,5 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 	
 	}
 }
+
+//Test
