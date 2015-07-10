@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.eclipse.vorto</groupId>
     <artifactId>org.eclipse.vorto.parent</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -24,6 +24,7 @@
 	
 		<module>org.eclipse.vorto.editor.datatype</module>
 		<module>org.eclipse.vorto.editor.datatype.ui</module>	
+		<module>org.eclipse.vorto.editor.datatype.tests</module>
 		
 		<module>org.eclipse.vorto.editor.functionblock</module>
 		<module>org.eclipse.vorto.editor.functionblock.ui</module>	

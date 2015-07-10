@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>bundles</artifactId>
-		<version>0.3.0</version>
+		<version>0.4.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.editor.infomodel.tests</artifactId>
@@ -18,85 +18,6 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho-version}</version>
-				<configuration>
-					<useUIHarness>false</useUIHarness>
-					<useUIThread>false</useUIThread>
-				</configuration>
-				<executions>
-					<execution>
-						<id>test</id>
-						<phase>test</phase>
-						<configuration>
-							<includes>
-								<include>**/*Test.java</include>
-							</includes>
-							<excludes>
-								<exclude>**/All*Tests.java</exclude>
-							</excludes>
-						</configuration>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
 		</plugins>
 	</build>
-	
-	<!-- Temporarily commented for code coverage analysis -->
-	<!-- <profiles>
-		<profile>
-			<id>analysis</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.6.3.201306030806</version>
-						<executions>
-							<execution>
-								<id>default-prepare-agent</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-report</id>
-								<phase>prepare-package</phase>
-								<goals>
-									<goal>report</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>default-check</id>
-								<goals>
-									<goal>check</goal>
-								</goals>
-								<configuration>
-									<rules>
-										implmentation is needed only for Maven 2
-										<rule implementation="org.jacoco.maven.RuleConfiguration">
-											<element>BUNDLE</element>
-											<limits>
-												implmentation is needed only for Maven 2
-												<limit implementation="org.jacoco.report.check.Limit">
-													<counter>COMPLEXITY</counter>
-													<value>COVEREDRATIO</value>
-													<minimum>0.60</minimum>
-												</limit>
-											</limits>
-										</rule>
-									</rules>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles> -->
 </project>

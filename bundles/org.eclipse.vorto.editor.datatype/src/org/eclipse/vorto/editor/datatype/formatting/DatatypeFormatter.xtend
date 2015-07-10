@@ -33,22 +33,26 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 	@Inject extension DatatypeGrammarAccess f
 	
 	override protected void configureFormatting(FormattingConfig c) {
-		// formatting for Comments
+		
+		//Basic information
+		c.setLinewrap(1).after(f.modelReferenceAccess.group)
+		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_1)
+		c.setLinewrap(1).after(f.entityAccess.versionAssignment_3)
+		c.setLinewrap(1).after(f.enumAccess.namespaceAssignment_1)
+		c.setLinewrap(1).after(f.enumAccess.versionAssignment_3)
+		
+		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
 		c.setLinewrap(1, 1, 2).before(ML_COMMENTRule)
 		c.setLinewrap(1, 1, 1).after(ML_COMMENTRule)
 		c.setAutoLinewrap(120)
 
-		c.setLinewrap(1).after(f.modelReferenceAccess.group)
-
-		c.setLinewrap(1).after(f.entityAccess.nameAssignment_6)
-		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_1)
-		c.setLinewrap(1).after(f.entityAccess.versionAssignment_3)
-		
+		//Properties
 		c.setLinewrap(1).before(f.findKeywords("mandatory").get(0))
 		c.setLinewrap(1).before(f.findKeywords("optional").get(0))
+		c.setLinewrap(1).before(f.enumLiteralAccess.nameAssignment)
 		
-		// Line wrap and indentation between function block sub elements.
+		//Block Elements
 		findKeywordPairs("{","}").forEach[
 			c.setLinewrap(1).after(first)
 			c.setLinewrap(1).before(second)
@@ -56,16 +60,20 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 			c.setIndentationIncrement().after(first)
 			c.setIndentationDecrement().before(second)
 		]
-
-		//Formatting for constraint block
+		c.setLinewrap(2).before(f.findKeywords("entity").get(0))
+		c.setLinewrap(2).before(f.findKeywords("enum").get(0))
+		
+		//Constraints
 		findKeywordPairs("<",">").forEach[
 			c.setSpace(" ").before(first)
 			c.setNoSpace().after(first)
 			c.setNoSpace().before(second)
 		]
 				
-		//Remove extra spaces between constraint parameters.
+		//Constraint Parameters
 		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_2_0)
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_2_0)	
+		
+		c.setNoSpace().before(f.enumAccess.commaKeyword_8_1_0)
 	}
 }
