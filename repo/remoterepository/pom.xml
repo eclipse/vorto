@@ -4,7 +4,7 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>infomodelrepository</artifactId>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<properties>

@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.vorto.feature.editor.perspective"
       label="Vorto Perspective"
-      version="0.3.0"
+      version="0.4.0.qualifier"
       provider-name="Eclipse.org/Vorto">
 
    <description>
