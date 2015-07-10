@@ -36,10 +36,8 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		
 		//Basic information
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)
-		c.setLinewrap(1).after(f.entityAccess.nameAssignment_6)
 		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_1)
 		c.setLinewrap(1).after(f.entityAccess.versionAssignment_3)
-		c.setLinewrap(1).after(f.enumAccess.nameAssignment_6)
 		c.setLinewrap(1).after(f.enumAccess.namespaceAssignment_1)
 		c.setLinewrap(1).after(f.enumAccess.versionAssignment_3)
 		
