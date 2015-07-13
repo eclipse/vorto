@@ -1,0 +1,21 @@
+namespace org.eclipse.vorto.example
+version 1.0.0
+using eclipse.vorto.type.OnOff ; 1.0.0
+using eclipse.vorto.type.OnOffUnit ; 1.0.0
+
+functionblock BinarySwitch {
+	displayname "BinarySwitch"
+	description "Function block model for BinarySwitch"
+	category example
+	status {
+		mandatory currentStatus as OnOff
+	}
+
+	operations {
+		on()
+		off()
+		toggle()
+		setStatus(targetStatus as OnOffUnit) returns OnOff
+	}
+
+}

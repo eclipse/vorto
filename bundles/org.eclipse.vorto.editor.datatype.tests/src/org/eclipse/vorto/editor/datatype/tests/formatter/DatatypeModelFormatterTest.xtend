@@ -42,31 +42,15 @@ class DatatypeModelFormatterTest extends AbstractXtextTests {
 	
 	@Test
 	def void testFormattingEntity() {
-		val expectedText = '''
-		namespace org.eclipse.vorto.example
-		version 1.0.0
-
-		entity Color {
-			mandatory r as int
-			mandatory g as int
-			mandatory b as int
-		}'''
-		val rawText = '''namespace org.eclipse.vorto.example version 1.0.0 entity Color {mandatory r as int mandatory g as int mandatory b as int }'''
+		val expectedText = this.readFileIntoString("resources/EntityColorFormatted.type")
+		val rawText = this.readFileIntoString("resources/EntityColorUnformatted.type")
 		rawText.assertFormattedAs(expectedText)
 	}
 	
 	@Test
 	def void testFormattingEnum() {
-		val expectedText = '''
-		namespace org.eclipse.vorto.example
-		version 1.0.0
-
-		enum Color {
-			RED,
-			GREEN,
-			BLUE
-		}'''
-		val rawText = '''namespace org.eclipse.vorto.example version 1.0.0 enum Color {RED, GREEN, BLUE}'''
+		val expectedText = this.readFileIntoString("resources/EnumColorFormatted.type")
+		val rawText = this.readFileIntoString("resources/EnumColorUnformatted.type")
 		rawText.assertFormattedAs(expectedText)
 	}
 	

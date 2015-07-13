@@ -20,7 +20,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl
 import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 import org.eclipse.xtext.formatting.INodeModelFormatter
-import org.eclipse.xtext.junit.util.ParseHelper
+import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
@@ -43,97 +43,14 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		
 	@Test
 	def void testFormattingForBasicBlock() {
-		val expectedText = '''
-		namespace www.bosch.com
-		version 1.2.3
-
-		infomodel Computer {
-			displayname "Computer"
-			description "A Super gadget"
-			category home
-
-			functionblocks {
-				Hardisk ,
-				Memory
-			}
-		}'''
-		val rawText = '''namespace www.bosch.com version 1.2.3 infomodel Computer {	displayname "Computer" 	description "A Super gadget" 	category home
-			functionblocks { Hardisk , Memory } }'''
+		val expectedText = this.readFileIntoString("resources/ColorLampFormatted.infomodel")
+		val rawText = this.readFileIntoString("resources/ColorLampUnformatted.infomodel")
 		rawText.assertFormattedAs(expectedText)
 	}
-	
-	
-	@Test
-	def void testSingleTabIndendation() {
-		val expectedText = '''
-		namespace mynamespace.com.sg
-		version 1.1.1
-
-		infomodel someIM {
-			displayname "someIM"
-			description "IoT Bulb"
-			category light
-
-			functionblocks {
-				Lamp ,
-				Remote
-			}
-		}'''
-		
-		val rawText = '''
-		namespace mynamespace.com.sg
-		version 1.1.1
-		infomodel someIM
-		{
-		displayname "someIM"
-		description "IoT Bulb"
-		category light
-		functionblocks
-		{
-		Lamp,Remote
-		}
-		}'''
-		rawText.assertFormattedAs(expectedText)
-	}
-	
-	@Test
-	def void testNoDoubleIndendation() {
-		val expectedText = '''
-		namespace mynamespace.com.sg
-		version 1.1.1
-		infomodel someIM {
-			displayname "someIM"
-			description "IoT Bulb"
-			category light
-			functionblocks {
-				Lamp , Remote
-			}
-		}'''
-		
-			val rawText = '''
-			namespace mynamespace.com.sg
-			version 1.1.1
-			infomodel someIM {
-			displayname "someIM"
-			description "IoT Bulb"
-			category light
-			functionblocks {
-				Lamp , Remote
-			}
-	}'''
-		expectedText.assertNotFormattedAs(rawText)
-	}
-
 
 	def void assertFormattedAs(CharSequence input, CharSequence expected) {
 		val expectedText = expected.toString
 		val formattedText = (input.parse.eResource as XtextResource).parseResult.rootNode.format(0, input.length).formattedText
 		assertEquals(expectedText, formattedText)
-	}
-
-	def void assertNotFormattedAs(CharSequence input, CharSequence unexpected) {
-		val unExpectedText = unexpected.toString
-		val formattedText = (input.parse.eResource as XtextResource).parseResult.rootNode.format(0, input.length).formattedText
-		assertNotEquals(unExpectedText, formattedText)
 	}
 }
