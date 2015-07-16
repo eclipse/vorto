@@ -35,20 +35,16 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 	
 	override protected void configureFormatting(FormattingConfig c) {
 		
+		//Basic information
+		c.setLinewrap(1).before(f.mappingModelAccess.modelKeyword_2)
+		c.setLinewrap(1).before(f.mappingModelAccess.targetKeyword_4)
+		
 		//Comments		
 		c.setLinewrap(0, 1, 2).before(SL_COMMENTRule)
 		c.setLinewrap(0, 1, 2).before(ML_COMMENTRule)
 		c.setLinewrap(0, 1, 1).after(ML_COMMENTRule)
 		
-		//Block Elements
-		stereoTypeAccess.findKeywordPairs("{","}").forEach[
-			c.setNoLinewrap.after(first)
-			c.setNoLinewrap.before(second)
-		]
-		
-		c.setLinewrap(1).before(f.mappingModelAccess.modelKeyword_2)
-		c.setLinewrap(1).before(f.mappingModelAccess.targetKeyword_4)
-		
+		//Mapping related key words
 		for (Keyword k : findKeywords(",")) {
 			c.setNoSpace.before(k)
 			c.setNoLinewrap.after(k)
@@ -79,7 +75,13 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setNoLinewrap.after(k)
 		}
 		
-		//Block Elements
+		//Block elements in stereo types environment
+		stereoTypeAccess.findKeywordPairs("{","}").forEach[
+			c.setNoLinewrap.after(first)
+			c.setNoLinewrap.before(second)
+		]
+		
+		//Remaining block elements
 		findKeywordPairs("{","}").forEach[
 			c.setLinewrap(1).after(first)
 			c.setLinewrap(1).before(second)
