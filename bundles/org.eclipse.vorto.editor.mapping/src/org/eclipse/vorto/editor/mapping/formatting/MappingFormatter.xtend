@@ -19,6 +19,7 @@ import com.google.inject.Inject
 import org.eclipse.xtext.formatting.impl.AbstractDeclarativeFormatter
 import org.eclipse.xtext.formatting.impl.FormattingConfig
 import org.eclipse.vorto.editor.mapping.services.MappingGrammarAccess
+import org.eclipse.xtext.Keyword
 
 /**
  * This class contains custom formatting description.
@@ -30,22 +31,63 @@ import org.eclipse.vorto.editor.mapping.services.MappingGrammarAccess
  */
 public class MappingFormatter extends AbstractDeclarativeFormatter {
 	
-	@Inject extension MappingGrammarAccess
+	@Inject extension MappingGrammarAccess f
 	
-	override protected configureFormatting(FormattingConfig c) {
-		for(pair: findKeywordPairs('{', '}')) {
-			c.setIndentation(pair.first, pair.second)
-			c.setLinewrap(1).after(pair.first)
-			c.setLinewrap(1).before(pair.second)
-			c.setLinewrap(1).after(pair.second)
-		}
-		for(comma: findKeywords(',')) {
-			c.setNoLinewrap().before(comma)
-			c.setNoSpace().before(comma)
-			c.setLinewrap().after(comma)
-		}
+	override protected void configureFormatting(FormattingConfig c) {
+		
+		//Basic information
+		c.setLinewrap(1).before(f.mappingModelAccess.modelKeyword_2)
+		c.setLinewrap(1).before(f.mappingModelAccess.targetKeyword_4)
+		
+		//Comments		
 		c.setLinewrap(0, 1, 2).before(SL_COMMENTRule)
 		c.setLinewrap(0, 1, 2).before(ML_COMMENTRule)
 		c.setLinewrap(0, 1, 1).after(ML_COMMENTRule)
+		
+		//Mapping related key words
+		for (Keyword k : findKeywords(",")) {
+			c.setNoSpace.before(k)
+			c.setNoLinewrap.after(k)
+		}
+				
+		for (Keyword k : findKeywords(".")) {
+			c.setNoSpace.before(k)
+			c.setNoSpace.after(k)
+		}
+		
+		for (Keyword k : findKeywords(":")) {
+			c.setNoLinewrap.after(k)
+			c.setNoLinewrap.before(k)
+		}
+
+		for (Keyword k : findKeywords("from")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}
+		
+		for (Keyword k : findKeywords("to")) {
+			c.setLinewrap(1).before(k)
+			c.setNoLinewrap.after(k)
+		}
+		
+		for (Keyword k : f.stereoTypeAccess.findKeywords("with")) {
+			c.setNoLinewrap.before(k)
+			c.setNoLinewrap.after(k)
+		}
+		
+		//Block elements in stereo types environment
+		stereoTypeAccess.findKeywordPairs("{","}").forEach[
+			c.setNoLinewrap.after(first)
+			c.setNoLinewrap.before(second)
+		]
+		
+		//Remaining block elements
+		findKeywordPairs("{","}").forEach[
+			c.setLinewrap(1).after(first)
+			c.setLinewrap(1).before(second)
+			c.setLinewrap(1).after(second)
+			c.setIndentationIncrement().after(first)
+			c.setIndentationDecrement().before(second)
+		]
 	}
 }
