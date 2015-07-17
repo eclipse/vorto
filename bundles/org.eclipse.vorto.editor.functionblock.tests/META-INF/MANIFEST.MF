@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.vorto.editor.functionblock.ui,
  org.eclipse.ui,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.core.runtime,
- org.eclipse.ui.workbench;resolution:=optional
+ org.eclipse.ui.workbench;resolution:=optional,
+ org.eclipse.xtext.xbase.lib
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.vorto.editor.functionblock
 Import-Package: org.junit.runner;version="4.5.0",
