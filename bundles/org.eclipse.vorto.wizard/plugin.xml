@@ -7,7 +7,7 @@
 				locationURI="popup:org.eclipse.vorto.project.menu">	
 				<command
 			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-			  		icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Entity">
        <parameter
              name="org.eclipse.vorto.editor.datatype.newdatatype.project"
@@ -16,7 +16,7 @@
 			  	</command>
     <command
           commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-          icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+          icon="icons/add_exc.gif"
           label="Create new Enum">
        <parameter
              name="org.eclipse.vorto.editor.datatype.newdatatype.project"
@@ -77,7 +77,7 @@
 				locationURI="popup:org.eclipse.vorto.project.menu">	
 				<command
 			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
-			  		icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Function Block Model">           	            
 			  	</command>	   
 			  	<separator name="additions1" visible="true"/>
@@ -127,7 +127,7 @@
 				locationURI="popup:org.eclipse.vorto.project.menu">	
 				<command
 			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
-			  		icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Information Model">           	            
 			  	</command>	   
 			  	<separator name="additions1" visible="true"/>
