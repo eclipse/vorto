@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective;
 
-import java.net.URL;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -26,7 +25,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -48,7 +46,7 @@ import org.eclipse.vorto.perspective.util.TreeViewerCallback;
 import org.eclipse.vorto.perspective.util.TreeViewerTemplate;
 
 public abstract class AbstractTreeViewPart extends ViewPart implements
-		IModelContentProvider {
+		IModelContentProvider, IResourceChangeListener {
 
 	protected TreeViewer treeViewer;
 
@@ -85,6 +83,13 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 		this.labelProvider = new DefaultTreeModelLabelProvider();
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		workspace.removeResourceChangeListener(this);
+	}
+	
 	private void initContextMenu() {
 		// initalize the context menu
 		MenuManager menuMgr = new MenuManager("#PopupMenu"); //$NON-NLS-1$
@@ -97,85 +102,67 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 		addSelectionChangedEventListener(treeViewer);
 		addWorkspaceChangeEventListenr();
 	}
+	
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (isResourceRemoved(event)) {
+			IModelProject project = getModelProjectOrNull(event.getResource());
+			final Set<IModelElement> input = getContent();
+			input.remove(project);
+			treeViewerUpdateTemplate.update(new TreeViewerCallback() {
+				
+				@Override
+				public void doUpdate(TreeViewer treeViewer) {
+					treeViewer.setInput(input);
+				}
+			});		
+		} else if (isAddedOrChanged(event)) {
+			final Set<IModelElement> input = getContent();
+			final IModelProject project = getModelProjectOrNull(event.getDelta().getAffectedChildren()[0].getResource());
 
-	public ImageDescriptor getImage(String imageFileName) {
-
-		URL url;
-		try {
-			url = new URL(
-					"platform:/plugin/org.eclipse.vorto.fbeditor.ui/icons/"
-							+ imageFileName);
-			return ImageDescriptor.createFromURL(url);
-
-		} catch (Exception e) {
-			e.printStackTrace();
+			treeViewerUpdateTemplate.update(new TreeViewerCallback() {
+				
+				@Override
+				public void doUpdate(TreeViewer treeViewer) {
+					treeViewer.setInput(input);
+					expandProject(project);
+				}
+			});	
 		}
 
-		return null;
+	}
+	
+	private IModelProject getModelProjectOrNull(IResource resource) {
+		if (resource instanceof IProject) {
+			try {
+				return ModelProjectServiceFactory.getDefault().getProjectFromEclipseProject((IProject)resource);
+			} catch(IllegalArgumentException ex) {
+				return null;
+			}
+			} else {
+			return null;
+		}
+	}
+	
+	private boolean isResourceRemoved(IResourceChangeEvent event) {
+		return event.getType() == IResourceChangeEvent.PRE_DELETE;
+	}
+
+	private boolean isAddedOrChanged(IResourceChangeEvent event) {
+		return event.getDelta() != null
+				&& event.getDelta().getAffectedChildren() != null && isModelProject(event.getDelta().getAffectedChildren()[0]);
+	}
+	
+	private boolean isModelProject(IResourceDelta delta) {
+		try {
+			return getModelProjectOrNull(delta.getResource()) != null;
+		} catch(IllegalArgumentException ex) {
+			return false;
+		}
 	}
 
 	protected void addWorkspaceChangeEventListenr() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-
-		IResourceChangeListener rcl = new IResourceChangeListener() {
-			public void resourceChanged(IResourceChangeEvent event) {
-				if (isRemoveChange(event)) {
-					IModelProject project = getModelProjectOrNull(event.getResource());
-					final Set<IModelElement> input = getContent();
-					input.remove(project);
-					treeViewerUpdateTemplate.update(new TreeViewerCallback() {
-						
-						@Override
-						public void doUpdate(TreeViewer treeViewer) {
-							treeViewer.setInput(input);
-						}
-					});		
-				} else if (isAddedOrChanged(event)) {
-					final Set<IModelElement> input = getContent();
-					final IModelProject project = getModelProjectOrNull(event.getDelta().getAffectedChildren()[0].getResource());
-
-					treeViewerUpdateTemplate.update(new TreeViewerCallback() {
-						
-						@Override
-						public void doUpdate(TreeViewer treeViewer) {
-							treeViewer.setInput(input);
-							expandProject(project);
-						}
-					});	
-				}
-
-			}
-			
-			private IModelProject getModelProjectOrNull(IResource resource) {
-				if (resource instanceof IProject) {
-					try {
-						return ModelProjectServiceFactory.getDefault().getProjectFromEclipseProject((IProject)resource);
-					} catch(IllegalArgumentException ex) {
-						return null;
-					}
-					} else {
-					return null;
-				}
-			}
-			
-			private boolean isRemoveChange(IResourceChangeEvent event) {
-				return event.getType() == IResourceChangeEvent.PRE_DELETE;
-			}
-
-			private boolean isAddedOrChanged(IResourceChangeEvent event) {
-				return event.getDelta() != null
-						&& event.getDelta().getAffectedChildren() != null && isModelProject(event.getDelta().getAffectedChildren()[0]);
-			}
-			
-			private boolean isModelProject(IResourceDelta delta) {
-				try {
-					return getModelProjectOrNull(delta.getResource()) != null;
-				} catch(IllegalArgumentException ex) {
-					return false;
-				}
-			}
-		};
-		workspace.addResourceChangeListener(rcl);
+		workspace.addResourceChangeListener(this);
 	}
 	
 	@Override
