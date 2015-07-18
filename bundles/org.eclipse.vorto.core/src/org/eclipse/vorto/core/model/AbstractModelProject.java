@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -38,6 +39,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.internal.model.ModelFileLookupHelper;
 import org.eclipse.vorto.core.parser.IModelParser;
+import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 public abstract class AbstractModelProject extends AbstractModelElement
 		implements IModelProject {
@@ -156,5 +158,28 @@ public abstract class AbstractModelProject extends AbstractModelElement
 				+ ".mapping");
 		return modelParser.parseModel(mappingFile, MappingModel.class);
 	}
+	
+	@Override
+	public Set<IModelElement> getReferences() {
+		Set<IModelElement> references = new TreeSet<>();
+
+		for (ModelReference modelReference : getModel().getReferences()) {
+			try {
+				IModelElement reference = ModelProjectServiceFactory.getDefault()
+				.getProjectByModelId(
+						ModelIdFactory.newInstance(getPossibleReferenceType(),
+								modelReference));
+				if (reference != null) {
+					references.add(reference);
+				}
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return references;
+	}
+	
+	protected abstract ModelType getPossibleReferenceType();
 
 }

@@ -118,22 +118,8 @@ public class InformationModelProject extends AbstractModelProject {
 	}
 
 	@Override
-	public Set<IModelElement> getReferences() {
-		Set<IModelElement> references = new TreeSet<>();
-
-		for (ModelReference modelReference : getModel().getReferences()) {
-			try {
-				references.add(ModelProjectServiceFactory.getDefault()
-						.getProjectByModelId(
-								ModelIdFactory
-										.newInstance(ModelType.FUNCTIONBLOCK,
-												modelReference)));
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return references;
+	protected ModelType getPossibleReferenceType() {
+		return ModelType.FUNCTIONBLOCK;
 	}
 
 }

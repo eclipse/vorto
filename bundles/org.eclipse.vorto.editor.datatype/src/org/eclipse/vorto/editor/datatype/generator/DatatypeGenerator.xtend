@@ -16,9 +16,6 @@
 package org.eclipse.vorto.editor.datatype.generator
 
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.vorto.core.model.DatatypeModelProject
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory
-import org.eclipse.vorto.editor.EclipseFileSystemAccessOutputter
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
 
@@ -29,14 +26,7 @@ import org.eclipse.xtext.generator.IGenerator
  */
 class DatatypeGenerator implements IGenerator {
 	
-	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-		var vfs = fsa as EclipseFileSystemAccessOutputter
-
-		if (DatatypeModelProject.isDatatypeModelProject(vfs.getIProject())) {
-			var iotProject = ModelProjectServiceFactory.getDefault.getProjectFromEclipseProject(vfs.getIProject)
-			ModelProjectServiceFactory.getDefault.save(iotProject)
-		}
+	override void doGenerate(Resource resource, IFileSystemAccess fsa) {	
+		
 	}
-	
-	
 }
