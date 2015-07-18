@@ -14,15 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.core.model.FunctionblockModelProject;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.model.InformationModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelIdFactory;
-import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 public class FunctionBlockDropListener extends ViewerDropAdapter {
@@ -36,28 +34,19 @@ public class FunctionBlockDropListener extends ViewerDropAdapter {
 
 		IModelProject targetProject = (IModelProject) this.getCurrentTarget();
 
-		ModelId modelId = ModelIdFactory.newInstance((String) data);
-		if (!validateModel(modelId)) {
-			return false;
+		IModelProject functionblockModelProject = (IModelProject) ((IStructuredSelection) data).getFirstElement();
+
+		if (functionblockModelProject instanceof FunctionblockModelProject) {
+			targetProject.addReference(functionblockModelProject);
+			ModelProjectServiceFactory.getDefault().save(targetProject);
+			return true;
 		}
 
-		IModelElement reference = ModelProjectServiceFactory.getDefault()
-				.getProjectByName(modelId.getName());
-
-		targetProject.addReference(reference);
-
-		ModelProjectServiceFactory.getDefault().save(targetProject);
-
-		return true;
+		return false;
 	}
 
 	@Override
-	public boolean validateDrop(Object target, int operation,
-			TransferData transferType) {
+	public boolean validateDrop(Object target, int operation, TransferData transferType) {
 		return target instanceof InformationModelProject;
-	}
-
-	protected boolean validateModel(ModelId modelId) {
-		return (modelId.getModelType() == ModelType.FUNCTIONBLOCK);
 	}
 }

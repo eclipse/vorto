@@ -14,16 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.vorto.core.model.DatatypeModelProject;
 import org.eclipse.vorto.core.model.FunctionblockModelProject;
-import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelIdFactory;
-import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 public class DatatypeProjectDropListener extends ViewerDropAdapter {
@@ -37,19 +34,15 @@ public class DatatypeProjectDropListener extends ViewerDropAdapter {
 
 		IModelProject targetProject = (IModelProject) this.getCurrentTarget();
 
-		ModelId modelId = ModelIdFactory.newInstance((String) data);
-		if (!validateModel(modelId)) {
-			return false;
+		IModelProject dataTypeModelProject = (IModelProject) ((IStructuredSelection)data).getFirstElement();
+		
+		if (dataTypeModelProject instanceof DatatypeModelProject && !targetProject.equals(dataTypeModelProject) ) {
+			targetProject.addReference(dataTypeModelProject);
+			ModelProjectServiceFactory.getDefault().save(targetProject);
+			return true;
 		}
-
-		IModelElement reference = ModelProjectServiceFactory.getDefault()
-				.getProjectByName(modelId.getName());
-
-		targetProject.addReference(reference);
-
-		ModelProjectServiceFactory.getDefault().save(targetProject);
-
-		return true;
+		
+		return false;
 	}
 
 	@Override
@@ -57,11 +50,5 @@ public class DatatypeProjectDropListener extends ViewerDropAdapter {
 			TransferData transferType) {
 		return target instanceof FunctionblockModelProject
 				|| target instanceof DatatypeModelProject;
-	}
-
-	protected boolean validateModel(ModelId modelId) {
-		return (modelId.getModelType() == ModelType.DATATYPE)
-				&& !((IModelProject) getCurrentTarget()).getId()
-						.equals(modelId);
 	}
 }

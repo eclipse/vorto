@@ -14,39 +14,30 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.vorto.core.model.DatatypeModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelIdFactory;
-import org.eclipse.vorto.core.model.ModelType;
 
-public class DatatypeProjectDragListener implements DragSourceListener {
+public class ModelProjectSelectionDragListener implements DragSourceListener {
 
 	private final TreeViewer viewer;
 
-	public DatatypeProjectDragListener(TreeViewer viewer) {
+	public ModelProjectSelectionDragListener(TreeViewer viewer) {
 		this.viewer = viewer;
 	}
 
 	@Override
 	public void dragStart(DragSourceEvent event) {
+		 ISelection selection=viewer.getSelection();
+	     LocalSelectionTransfer.getTransfer().setSelection(selection);
+	     event.doit=!selection.isEmpty();
 	}
 
 	@Override
 	public void dragSetData(DragSourceEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) viewer
-				.getSelection();
-		DatatypeModelProject dtModelProject = (DatatypeModelProject) selection
-				.getFirstElement();
-		
-		if (dtModelProject != null) {
-			ModelId modelId = ModelIdFactory.newInstance(ModelType.DATATYPE, dtModelProject.getModel());
-			event.data = modelId.serialize();
-		}
-
+		event.data=LocalSelectionTransfer.getTransfer().getSelection();
 	}
 
 	@Override
