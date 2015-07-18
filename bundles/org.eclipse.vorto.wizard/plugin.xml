@@ -16,7 +16,7 @@
 			  	</command>
     <command
           commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-          icon="icons/add_exc.gif"
+          icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
           label="Create new Enum">
        <parameter
              name="org.eclipse.vorto.editor.datatype.newdatatype.project"

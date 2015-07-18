@@ -15,9 +15,11 @@
 package org.eclipse.vorto.perspective;
 
 import java.net.URL;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -40,11 +42,10 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectChangeEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectDeleteEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListenerRegistry;
-import org.eclipse.vorto.core.ui.changeevent.NewModelProjectEvent;
+import org.eclipse.vorto.perspective.util.TreeViewerCallback;
+import org.eclipse.vorto.perspective.util.TreeViewerTemplate;
 
 public abstract class AbstractTreeViewPart extends ViewPart implements
 		IModelContentProvider {
@@ -53,6 +54,8 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 
 	protected IContentProvider contentProvider;
 	protected ILabelProvider labelProvider;
+	
+	protected TreeViewerTemplate treeViewerUpdateTemplate;
 
 	public void createPartControl(Composite parent) {
 		init();
@@ -68,6 +71,8 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 		hookListeners();
 
 		treeViewer.setInput(getContent());
+		treeViewerUpdateTemplate = new TreeViewerTemplate(treeViewer);
+		
 		ColumnViewerToolTipSupport.enableFor(treeViewer);
 
 		getSite().setSelectionProvider(treeViewer);
@@ -75,9 +80,7 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 	}
 
 	protected void init() {
-		DefaultTreeModelContentProvider contentProvider = new DefaultTreeModelContentProvider(
-				this);
-		ModelProjectEventListenerRegistry.getInstance().add(contentProvider);
+		DefaultTreeModelContentProvider contentProvider = new DefaultTreeModelContentProvider();
 		this.contentProvider = contentProvider;
 		this.labelProvider = new DefaultTreeModelLabelProvider();
 	}
@@ -116,133 +119,89 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 
 		IResourceChangeListener rcl = new IResourceChangeListener() {
 			public void resourceChanged(IResourceChangeEvent event) {
-				if (hasChanges(event)) {
-					processChanges(event.getDelta());
+				if (isRemoveChange(event)) {
+					IModelProject project = getModelProjectOrNull(event.getResource());
+					final Set<IModelElement> input = getContent();
+					input.remove(project);
+					treeViewerUpdateTemplate.update(new TreeViewerCallback() {
+						
+						@Override
+						public void doUpdate(TreeViewer treeViewer) {
+							treeViewer.setInput(input);
+						}
+					});		
+				} else if (isAddedOrChanged(event)) {
+					final Set<IModelElement> input = getContent();
+					final IModelProject project = getModelProjectOrNull(event.getDelta().getAffectedChildren()[0].getResource());
+
+					treeViewerUpdateTemplate.update(new TreeViewerCallback() {
+						
+						@Override
+						public void doUpdate(TreeViewer treeViewer) {
+							treeViewer.setInput(input);
+							expandProject(project);
+						}
+					});	
 				}
 
 			}
+			
+			private IModelProject getModelProjectOrNull(IResource resource) {
+				if (resource instanceof IProject) {
+					try {
+						return ModelProjectServiceFactory.getDefault().getProjectFromEclipseProject((IProject)resource);
+					} catch(IllegalArgumentException ex) {
+						return null;
+					}
+					} else {
+					return null;
+				}
+			}
+			
+			private boolean isRemoveChange(IResourceChangeEvent event) {
+				return event.getType() == IResourceChangeEvent.PRE_DELETE;
+			}
 
-			private boolean hasChanges(IResourceChangeEvent event) {
+			private boolean isAddedOrChanged(IResourceChangeEvent event) {
 				return event.getDelta() != null
-						&& event.getDelta().getAffectedChildren() != null;
+						&& event.getDelta().getAffectedChildren() != null && isModelProject(event.getDelta().getAffectedChildren()[0]);
+			}
+			
+			private boolean isModelProject(IResourceDelta delta) {
+				try {
+					return getModelProjectOrNull(delta.getResource()) != null;
+				} catch(IllegalArgumentException ex) {
+					return false;
+				}
 			}
 		};
 		workspace.addResourceChangeListener(rcl);
 	}
-
-	private void processChanges(IResourceDelta changes) {
-		for (IResourceDelta change : changes.getAffectedChildren()) {
-			IProject project = change.getResource().getProject();
-			IModelChangeProcessor processor = ModelChangeProcessorFactory
-					.getModelChangeProcessor(change.getKind());
-			processor.processChange(project);
-
-		}
-	}
-
-	private static class ModelChangeProcessorFactory {
-		private static final IModelChangeProcessor MODEL_DELETE_PROCESSOR = new ModelDeleteProcessor();
-		private static final IModelChangeProcessor NEW_MODEL_PROCESSOR = new NewModelProcessor();
-		private static final IModelChangeProcessor MODEL_CHANGE_PROCESSOR = new ModelChangeProcessor();
-
-		public static IModelChangeProcessor getModelChangeProcessor(
-				int changeKind) {
-			if (changeKind == IResourceDelta.REMOVED
-					|| changeKind == IResourceDelta.REMOVED_PHANTOM) {
-				return MODEL_DELETE_PROCESSOR;
-			} else if (changeKind == IResourceDelta.ADDED
-					|| changeKind == IResourceDelta.ADDED_PHANTOM) {
-				return NEW_MODEL_PROCESSOR;
-			} else {
-				return MODEL_CHANGE_PROCESSOR;
-			}
-		}
-	}
-
-	/**
-	 * Provide operation to handle model project change
-	 */
-	private static interface IModelChangeProcessor {
-		/**
-		 * Process model change based give project
-		 * 
-		 * @param project
-		 *            : Project that has been changed
-		 */
-		void processChange(IProject project);
-	}
-
-	private final static class ModelDeleteProcessor implements
-			IModelChangeProcessor {
-
-		public ModelDeleteProcessor() {
-
-		}
-
-		@Override
-		public void processChange(IProject project) {
-			ModelProjectEventListenerRegistry.getInstance().sendDeleteEvent(
-					new ModelProjectDeleteEvent(project.getName()));
-		}
-
-	}
-
-	private final static class NewModelProcessor implements
-			IModelChangeProcessor {
-
-		public NewModelProcessor() {
-
-		}
-
-		@Override
-		public void processChange(IProject project) {
-			if (isModelProject(project)) {
-				IModelProject modelProject = getModelProject(project);
-				ModelProjectEventListenerRegistry.getInstance().sendAddedEvent(
-						new NewModelProjectEvent(modelProject));
-			}
-		}
-
-	}
-
-	private final static class ModelChangeProcessor implements
-			IModelChangeProcessor {
-
-		public ModelChangeProcessor() {
-
-		}
-
-		@Override
-		public void processChange(IProject project) {
-			if (isModelProject(project)) {
-				IModelProject modelProject = getModelProject(project);
-				ModelProjectEventListenerRegistry.getInstance()
-						.sendChangeEvent(
-								new ModelProjectChangeEvent(modelProject));
-			}
-		}
-
-	}
-
-	private static boolean isModelProject(IProject project) {
-		IModelProject modelProject = getModelProject(project);
-		return modelProject != null;
-	}
-
-	private static IModelProject getModelProject(IProject project) {
-
-		try {
-			return ModelProjectServiceFactory.getDefault()
-					.getProjectFromEclipseProject(project);
-		} catch (IllegalArgumentException e) {
-			// ingore model parsing exception due to model not found
-
-		}
-		return null;
-	}
-
+	
 	@Override
 	public void setFocus() {
+	}
+	
+	protected void expandProject(IModelProject modelProject) {
+		IModelProject inputModelProject = this
+				.getProjectFromTreeViewer(modelProject.getId());
+		if (inputModelProject != null) {
+			treeViewer.expandToLevel(inputModelProject, 2);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private IModelProject getProjectFromTreeViewer(ModelId modelId) {
+		Set inputs = (Set) treeViewer.getInput();
+		for (Object input : inputs) {
+			if (input instanceof IModelProject) {
+				if (((IModelProject) input).getId().getName()
+						.equals(modelId.getName())) {
+					return ((IModelProject) input);
+				}
+			}
+		}
+		return null;
 	}
 
 	protected void addSelectionChangedEventListener(TreeViewer treeviewer) {
