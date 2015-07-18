@@ -24,8 +24,6 @@ import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator;
 import org.eclipse.vorto.codegen.api.tasks.eclipse.LocationWrapper;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListenerRegistry;
-import org.eclipse.vorto.core.ui.changeevent.NewModelProjectEvent;
 
 public abstract class ProjectCreationTask implements IProgressTask {
 
@@ -74,8 +72,7 @@ public abstract class ProjectCreationTask implements IProgressTask {
 	}
 
 	private void fireRefreshEvent(IModelProject modelProject) {
-		ModelProjectEventListenerRegistry.getInstance().sendAddedEvent(
-				new NewModelProjectEvent(modelProject));
+		
 	}
 
 	@Override
