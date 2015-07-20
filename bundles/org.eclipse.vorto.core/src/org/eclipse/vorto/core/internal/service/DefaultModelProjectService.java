@@ -27,8 +27,6 @@ import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.IModelProjectService;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectChangeEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListenerRegistry;
 
 public class DefaultModelProjectService implements IModelProjectService {
 
@@ -47,9 +45,6 @@ public class DefaultModelProjectService implements IModelProjectService {
 	public void save(IModelProject modelProject) {
 		modelProject.save();
 		modelProject.refresh(new NullProgressMonitor());
-		ModelProjectEventListenerRegistry.getInstance().sendChangeEvent(
-				new ModelProjectChangeEvent(modelProject));
-
 	}
 
 	@Override
