@@ -12,28 +12,31 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.ui.changeevent;
+package org.eclipse.vorto.perspective.util;
 
-public interface ModelProjectEventListener {
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Display;
 
-	/**
-	 * Invoked when a model project was changed.
-	 * 
-	 * @param changedEvent
-	 */
-	void onProjectChanged(ModelProjectChangeEvent changedEvent);
+public class TreeViewerTemplate {
 
-	/**
-	 * Invoked when a model project was deleted.
-	 * 
-	 * @param deletedEvent
-	 */
-	void onProjectDeleted(ModelProjectDeleteEvent deletedEvent);
+	private final TreeViewer treeViewer;
+	
+	public TreeViewerTemplate(TreeViewer treeViewer) {
+		this.treeViewer = treeViewer;
+	}
+	
+	public void update(final TreeViewerCallback callback) {
+		if (!Display.getDefault().isDisposed()) { 
+			Display.getDefault().syncExec(new Runnable() {
 
-	/**
-	 * Invoked when a model project was added
-	 * 
-	 * @param addedEvent
-	 */
-	void onProjectAdded(NewModelProjectEvent addedEvent);
+				public void run() {
+					try {
+						callback.doUpdate(treeViewer);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+			});
+		}
+	}
 }

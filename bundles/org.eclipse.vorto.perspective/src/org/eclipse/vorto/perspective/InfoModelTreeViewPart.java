@@ -18,8 +18,8 @@ package org.eclipse.vorto.perspective;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.ModelType;
@@ -34,7 +34,7 @@ public class InfoModelTreeViewPart extends AbstractTreeViewPart {
 	protected void hookListeners() {
 		super.hookListeners();
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance() };
+		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 
 		treeViewer.addDropSupport(operations, transferTypes,
 				new FunctionBlockDropListener(treeViewer));

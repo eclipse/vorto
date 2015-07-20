@@ -17,13 +17,13 @@ package org.eclipse.vorto.perspective;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.perspective.dnd.DatatypeProjectDragListener;
+import org.eclipse.vorto.perspective.dnd.ModelProjectSelectionDragListener;
 import org.eclipse.vorto.perspective.dnd.DatatypeProjectDropListener;
 
 public class DTTreeViewPart extends AbstractTreeViewPart {
@@ -35,9 +35,9 @@ public class DTTreeViewPart extends AbstractTreeViewPart {
 		super.hookListeners();
 
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[] { TextTransfer.getInstance() };
+		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 		treeViewer.addDragSupport(operations, transferTypes,
-				new DatatypeProjectDragListener(treeViewer));
+				new ModelProjectSelectionDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
 				new DatatypeProjectDropListener(treeViewer));
 	}
