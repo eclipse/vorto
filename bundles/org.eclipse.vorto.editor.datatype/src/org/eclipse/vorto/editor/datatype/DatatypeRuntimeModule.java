@@ -17,13 +17,9 @@
  */
 package org.eclipse.vorto.editor.datatype;
 
-import org.eclipse.vorto.editor.EclipseFileSystemAccessOutputter;
 import org.eclipse.vorto.editor.datatype.scoping.DatatypeScopeProvider;
-import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
-
-import com.google.inject.Provides;
 
 /**
  * Use this class to register components to be used at runtime / without the
@@ -40,10 +36,5 @@ public class DatatypeRuntimeModule extends
 	@Override
 	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
 		return QualifiedNameWithVersionProvider.class;
-	}
-
-	@Provides
-	public EclipseResourceFileSystemAccess2 getFileSystemAccess() {
-		return new EclipseFileSystemAccessOutputter();
 	}
 }

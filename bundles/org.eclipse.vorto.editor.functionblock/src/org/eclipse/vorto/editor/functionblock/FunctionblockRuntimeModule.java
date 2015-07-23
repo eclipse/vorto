@@ -17,13 +17,11 @@
  */
 package org.eclipse.vorto.editor.functionblock;
 
-import org.eclipse.vorto.editor.EclipseFileSystemAccessOutputter;
 import org.eclipse.vorto.editor.datatype.QualifiedNameWithVersionProvider;
 import org.eclipse.vorto.editor.functionblock.generator.FbOutputConfigurationProvider;
 import org.eclipse.vorto.editor.functionblock.scoping.FunctionblockScopeProvider;
 import org.eclipse.vorto.editor.functionblock.validation.TypeFileAccessingHelper;
 import org.eclipse.vorto.editor.functionblock.validation.TypeHelper;
-import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.generator.IOutputConfigurationProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
@@ -50,11 +48,6 @@ public class FunctionblockRuntimeModule
 	@Override
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return FunctionblockScopeProvider.class;
-	}
-
-	@Provides
-	public EclipseResourceFileSystemAccess2 getFileSystemAccess() {
-		return new EclipseFileSystemAccessOutputter();
 	}
 
 	@Provides
