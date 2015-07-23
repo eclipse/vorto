@@ -12,17 +12,14 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.ui.changeevent;
+package org.eclipse.vorto.perspective.util;
 
-public class ModelProjectDeleteEvent {
+import org.eclipse.jface.viewers.TreeViewer;
 
-	private String projectName;
-
-	public ModelProjectDeleteEvent(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public String getProjectName() {
-		return projectName;
-	}
+public interface TreeViewerCallback {
+	/**
+	 * updates the tree viewer in a thread safe way
+	 * @param treeViewer
+	 */
+	void doUpdate(TreeViewer treeViewer);
 }
