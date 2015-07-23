@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.remoterepository.rest;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.vorto.remoterepository.model.ModelContent;
@@ -44,9 +46,13 @@ import org.eclipse.vorto.remoterepository.rest.model.SearchResult;
 import org.eclipse.vorto.remoterepository.rest.utils.RestCallback;
 import org.eclipse.vorto.remoterepository.rest.utils.RestTemplate;
 import org.eclipse.vorto.remoterepository.service.IModelRepoService;
+import org.eclipse.vorto.remoterepository.service.converter.IModelConverterService;
 import org.eclipse.vorto.remoterepository.service.search.IModelQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 /**
  * Main REST controller for uploading/downloading/searching models
@@ -65,6 +71,9 @@ public class ModelResource {
 
 	@Autowired
 	private IModelRepoService modelRepoService;
+	
+	@Autowired
+	private IModelConverterService modelConverterService;
 
 	private static final RestTemplate restTemplate = new RestTemplate();
 
@@ -207,6 +216,27 @@ public class ModelResource {
 				}
 			}
 		});
+	}
+	
+	@POST
+	@Path("/upload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadModel(
+			@FormDataParam("file") InputStream fileInputStream,
+            @FormDataParam("file") FormDataContentDisposition contentDispositionHeader) {
+		if (fileInputStream != null) {
+			try {
+				ModelContent modelContent = modelConverterService.convertToModelContent(IOUtils.toByteArray(fileInputStream));
+				System.out.println("-erle- : " + modelContent.getModelId().toString());
+				modelRepoService.saveModel(modelContent);
+				return Response.ok().build();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return Response.serverError().build();
+			}
+		}
+		
+		return Response.noContent().build();
 	}
 
 	private byte[] extractFileFromUploadContent(HttpServletRequest request)
