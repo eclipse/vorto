@@ -218,20 +218,25 @@ public class ModelResource {
 		});
 	}
 	
+	/**
+	 * Saves the uploaded model to repository
+	 * 
+	 * @param fileInputStream
+	 * @return
+	 */
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadModel(
-			@FormDataParam("file") InputStream fileInputStream,
-            @FormDataParam("file") FormDataContentDisposition contentDispositionHeader) {
+			@FormDataParam("file") InputStream fileInputStream) {
 		if (fileInputStream != null) {
 			try {
 				ModelContent modelContent = modelConverterService.convertToModelContent(IOUtils.toByteArray(fileInputStream));
-				System.out.println("-erle- : " + modelContent.getModelId().toString());
+				log.info("Uploading model [" + modelContent.getModelId().toString() + "]");
 				modelRepoService.saveModel(modelContent);
 				return Response.ok().build();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Exception while uploading model", e);
 				return Response.serverError().build();
 			}
 		}
