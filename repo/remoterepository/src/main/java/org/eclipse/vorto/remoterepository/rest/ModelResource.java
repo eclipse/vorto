@@ -71,7 +71,7 @@ public class ModelResource {
 
 	@Autowired
 	private IModelRepoService modelRepoService;
-	
+
 	@Autowired
 	private IModelConverterService modelConverterService;
 
@@ -217,7 +217,7 @@ public class ModelResource {
 			}
 		});
 	}
-	
+
 	/**
 	 * Saves the uploaded model to repository
 	 * 
@@ -228,20 +228,24 @@ public class ModelResource {
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadModel(
-			@FormDataParam("file") InputStream fileInputStream) {
-		if (fileInputStream != null) {
-			try {
-				ModelContent modelContent = modelConverterService.convertToModelContent(IOUtils.toByteArray(fileInputStream));
-				log.info("Uploading model [" + modelContent.getModelId().toString() + "]");
-				modelRepoService.saveModel(modelContent);
-				return Response.ok().build();
-			} catch (Exception e) {
-				log.error("Exception while uploading model", e);
-				return Response.serverError().build();
+			final @FormDataParam("file") InputStream fileInputStream) {
+
+		return restTemplate.execute(new RestCallback() {
+			@Override
+			public Response execute() throws Exception {
+				if (fileInputStream != null) {
+					ModelContent modelContent = modelConverterService
+							.convertToModelContent(IOUtils
+									.toByteArray(fileInputStream));
+					log.info("Uploading model ["
+							+ modelContent.getModelId().toString() + "]");
+					modelRepoService.saveModel(modelContent);
+					return Response.ok().build();
+				} else {
+					return Response.noContent().build();
+				}
 			}
-		}
-		
-		return Response.noContent().build();
+		});
 	}
 
 	private byte[] extractFileFromUploadContent(HttpServletRequest request)
