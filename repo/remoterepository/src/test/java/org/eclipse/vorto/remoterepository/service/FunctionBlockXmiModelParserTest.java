@@ -17,22 +17,24 @@
 
 package org.eclipse.vorto.remoterepository.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.vorto.remoterepository.internal.converter.parser.xml.FunctionBlockXmiModelParser;
+import org.eclipse.vorto.remoterepository.internal.converter.XpathConverterService;
 import org.eclipse.vorto.remoterepository.model.ModelContent;
 import org.eclipse.vorto.remoterepository.model.ModelType;
 import org.eclipse.vorto.remoterepository.model.ModelView;
+import org.eclipse.vorto.remoterepository.service.converter.IModelConverterService;
 import org.junit.Test;
 
 public class FunctionBlockXmiModelParserTest {
 
-	FunctionBlockXmiModelParser service = new FunctionBlockXmiModelParser();
+	IModelConverterService service = new XpathConverterService();
 	
 	@Test
 	public void getFbModelFromXmi() throws IOException{
@@ -41,7 +43,7 @@ public class FunctionBlockXmiModelParserTest {
 		byte[] modelArray = Files.readAllBytes(modelPath);
 		
 		ModelContent modelContent = new ModelContent(ModelType.FUNCTIONBLOCK, modelArray);
-		ModelView modelView = service.parse(modelContent);
+		ModelView modelView = service.convert(modelContent);
 		assertEquals("org.eclipse.vorto", modelView.getModelId().getNamespace());
 		assertEquals("ColorLight", modelView.getModelId().getName());
 		assertEquals("1.0.0", modelView.getModelId().getVersion());
