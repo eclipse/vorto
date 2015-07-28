@@ -1,0 +1,45 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ *******************************************************************************/
+package org.eclipse.vorto.core.api.repository;
+
+import java.util.Collection;
+
+import org.eclipse.vorto.core.model.ModelType;
+
+public interface IModelQuery {
+
+	IModelQuery modelType(ModelType modelType);
+
+	IModelQuery name(String name);
+
+	IModelQuery nameLike(String name);
+
+	IModelQuery namespace(String namespace);
+
+	IModelQuery namespaceLike(String namespace);
+
+	IModelQuery version(String version);
+
+	IModelQuery versionLike(String version);
+	
+	IModelQuery and(IModelQuery ... queries);
+	
+	IModelQuery or(IModelQuery ... queries);
+	
+	IModelQuery not(IModelQuery query);
+
+	Collection<IModelResource> list();
+
+}
