@@ -34,4 +34,18 @@ public interface IModelConverterService {
 	 * @return
 	 */
 	ModelView convert(ModelContent modelContent);
+	
+	/**
+	 * Returns the ModelView given the byte array of the model file
+	 * @param modelContent
+	 * @return
+	 */
+	ModelView convertToModelView(byte[] modelFile);
+	
+	/**
+	 * Returns the ModelContent given the byte array of the model file
+	 * @param modelContent
+	 * @return
+	 */
+	ModelContent convertToModelContent(byte[] modelFile);
 }
