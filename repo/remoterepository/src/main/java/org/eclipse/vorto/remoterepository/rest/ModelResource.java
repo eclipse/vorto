@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.remoterepository.rest;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.vorto.remoterepository.model.ModelContent;
@@ -44,9 +46,13 @@ import org.eclipse.vorto.remoterepository.rest.model.SearchResult;
 import org.eclipse.vorto.remoterepository.rest.utils.RestCallback;
 import org.eclipse.vorto.remoterepository.rest.utils.RestTemplate;
 import org.eclipse.vorto.remoterepository.service.IModelRepoService;
+import org.eclipse.vorto.remoterepository.service.converter.IModelConverterService;
 import org.eclipse.vorto.remoterepository.service.search.IModelQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataParam;
 
 /**
  * Main REST controller for uploading/downloading/searching models
@@ -65,6 +71,9 @@ public class ModelResource {
 
 	@Autowired
 	private IModelRepoService modelRepoService;
+
+	@Autowired
+	private IModelConverterService modelConverterService;
 
 	private static final RestTemplate restTemplate = new RestTemplate();
 
@@ -202,6 +211,36 @@ public class ModelResource {
 					modelRepoService.saveModel(modelCtn);
 					return Response.ok().build();
 
+				} else {
+					return Response.noContent().build();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Saves the uploaded model to repository
+	 * 
+	 * @param fileInputStream
+	 * @return
+	 */
+	@POST
+	@Path("/upload")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public Response uploadModel(
+			final @FormDataParam("file") InputStream fileInputStream) {
+
+		return restTemplate.execute(new RestCallback() {
+			@Override
+			public Response execute() throws Exception {
+				if (fileInputStream != null) {
+					ModelContent modelContent = modelConverterService
+							.convertToModelContent(IOUtils
+									.toByteArray(fileInputStream));
+					log.info("Uploading model ["
+							+ modelContent.getModelId().toString() + "]");
+					modelRepoService.saveModel(modelContent);
+					return Response.ok().build();
 				} else {
 					return Response.noContent().build();
 				}
