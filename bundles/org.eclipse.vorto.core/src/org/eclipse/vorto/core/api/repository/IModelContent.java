@@ -19,13 +19,34 @@ import java.util.List;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.ModelType;
 
+/**
+ *	This class represents a resource that we can get from
+ *  the repository. 
+ */
 public interface IModelContent {
+	/**
+	 * The actual content in byte array of this resource
+	 * @return
+	 */
 	byte[] getModelContent();
 
+	/**
+	 * Returns the EMF metamodel of this resource
+	 * 
+	 * @return
+	 */
 	Model getModel();
 	
+	/**
+	 * Returns the type of this resource
+	 * @return
+	 */
 	ModelType getType();
 
+	/**
+	 * Returns the dependencies of this resource
+	 * @return
+	 */
 	List<IModelContent> getReferences();
 }
 

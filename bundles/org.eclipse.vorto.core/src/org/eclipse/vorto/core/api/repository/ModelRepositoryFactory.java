@@ -18,6 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
+/**
+ * A factory method that returns the implementing services of the Repository
+ */
 public class ModelRepositoryFactory {
 	private static final String CLASS = "class";
 	private static final String MODEL_REPO_EXT_PT_ID = "org.eclipse.vorto.core.api.repository.IModelRepository";

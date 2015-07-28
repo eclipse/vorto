@@ -18,7 +18,10 @@ import java.io.InputStream;
 
 import org.eclipse.vorto.core.model.ModelId;
 
-
+/**
+ * The Repository object that is used for querying, uploading and downloading resources.
+ *
+ */
 public interface IModelRepository {
 	
 	/**
