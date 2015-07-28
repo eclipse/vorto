@@ -18,28 +18,86 @@ import java.util.Collection;
 
 import org.eclipse.vorto.core.model.ModelType;
 
+/**
+ * This class is used for querying the contents of the repository.
+ * 
+ * Note: This API is chainable.
+ */
 public interface IModelQuery {
 
+	/**
+	 * Returns a query object that filters based on the given modelType
+	 * @param modelType
+	 * @return
+	 */
 	IModelQuery modelType(ModelType modelType);
 
+	/**
+	 * Returns a query object that filters based on the given name
+	 * @param name
+	 * @return
+	 */
 	IModelQuery name(String name);
 
+	/**
+	 * Returns a query object that filters based on the given name
+	 * @param name
+	 * @return
+	 */
 	IModelQuery nameLike(String name);
 
+	/**
+	 * Returns a query object that filters based on the given namespace
+	 * @param namespace
+	 * @return
+	 */
 	IModelQuery namespace(String namespace);
 
+	/**
+	 * Returns a query object that filters based on the given namespace
+	 * @param namespace
+	 * @return
+	 */
 	IModelQuery namespaceLike(String namespace);
 
+	/**
+	 * Returns a query object that filters based on the given version
+	 * @param version
+	 * @return
+	 */
 	IModelQuery version(String version);
 
+	/**
+	 * Returns a query object that filters based on the given version
+	 * @param version
+	 * @return
+	 */
 	IModelQuery versionLike(String version);
 	
+	/**
+	 * Returns a query object that's a conjunction of the given queries
+	 * @param version
+	 * @return
+	 */
 	IModelQuery and(IModelQuery ... queries);
 	
+	/**
+	 * Returns a query object that's a disjunction of the given queries
+	 * @param version
+	 * @return
+	 */
 	IModelQuery or(IModelQuery ... queries);
 	
+	/**
+	 * Returns a query object that's a negation of the given query
+	 * @param version
+	 * @return
+	 */
 	IModelQuery not(IModelQuery query);
 
+	/**
+	 * Returns the resources that satisfies the query
+	 * @return
+	 */
 	Collection<IModelResource> list();
-
 }

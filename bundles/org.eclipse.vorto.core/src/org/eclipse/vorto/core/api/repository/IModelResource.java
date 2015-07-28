@@ -18,11 +18,26 @@ import java.util.List;
 
 import org.eclipse.vorto.core.model.ModelId;
 
+/**
+ * A lightweight view of the resources in the Repository
+ */
 public interface IModelResource {
+	/**
+	 * Returns the ID of the resource
+	 * @return
+	 */
 	ModelId getId();
 
+	/**
+	 * Returns the description of the resource
+	 * @return
+	 */
 	String getDescription();
 
+	/**
+	 * Returns the displayName of the resource
+	 * @return
+	 */
 	String getDisplayName();
 	
 	/**
@@ -31,4 +46,3 @@ public interface IModelResource {
 	 */
 	List<IModelResource> getReferences();
 }
-
