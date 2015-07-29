@@ -13,6 +13,7 @@ public class RestModelRepositoryExtensionFactory implements
 	public Object create() throws CoreException {
 		RestModelRepository modelRepository = new RestModelRepository(new ConnectionInfoSupplier() {
 			public String connectionUrl() {
+				// TODO : Get this value from preferences
 				return "http://localhost:8080/infomodelrepository";
 			}
 		});
