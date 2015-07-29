@@ -99,5 +99,5 @@ public interface IModelQuery {
 	 * Returns the resources that satisfies the query
 	 * @return
 	 */
-	Collection<IModelResource> list();
+	Collection<ModelResource> list();
 }
