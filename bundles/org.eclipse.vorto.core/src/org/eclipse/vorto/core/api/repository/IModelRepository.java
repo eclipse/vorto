@@ -37,7 +37,7 @@ public interface IModelRepository {
 	 * @param resource
 	 * @return
 	 */
-	IModelContent getModelContentForResource(ModelId modelId);
+	ModelContent getModelContentForResource(ModelId modelId);
 	
 	/**
 	 * Saves a model to the repository
