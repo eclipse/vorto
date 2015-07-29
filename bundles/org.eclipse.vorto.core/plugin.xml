@@ -3,6 +3,7 @@
 <plugin>
    <extension-point id="org_eclipse_vorto_modelchange_Observers" name="Model Change Observer" schema="schema/org_eclipse_vorto_modelchange_Observers.exsd"/>
    <extension-point id="org_eclipse_vorto_core_ModelParser" name="Model Parser" schema="schema/org_eclipse_vorto_core_ModelParser.exsd"/>
+   <extension-point id="org.eclipse.vorto.core.IModelRepository" name="Extension point for the model repository" schema="schema/org.eclipse.vorto.core.IModelRepository.exsd"/>
    <extension
          id="org.eclipse.vorto.iotnature"
          point="org.eclipse.core.resources.natures">
