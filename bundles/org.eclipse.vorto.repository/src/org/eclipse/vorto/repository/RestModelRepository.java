@@ -35,8 +35,6 @@ import org.eclipse.vorto.core.api.repository.ModelAlreadyExistException;
 import org.eclipse.vorto.core.api.repository.ModelContent;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
-import org.eclipse.vorto.core.service.IModelTransformerService;
-import org.eclipse.vorto.core.service.ModelTransformerServiceFactory;
 import org.eclipse.vorto.repository.function.ContentToModelContent;
 
 import com.google.common.base.Function;
@@ -47,34 +45,32 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	private static final String FILE_PARAMETER_NAME = "file";
 
 	private static final String MODEL_ID_SERVICE_FORMAT = "%s/rest/model/%s/%s/%s/%s";
-	
+
 	private static final String UPLOAD_FILE_URL_FORMAT = "%s/rest/model/upload";
-	
+
 	private static final String UPLOAD_MSG = "Uploaded model with id: %s";
-	
+
 	private static final String RESPONSE_MSG = "Response Status Code : %s %s";
 
 	private ConnectionInfoSupplier connectionUrlSupplier;
 	private Map<ModelType, Function<Content, ModelContent>> contentConverters = initializeContentConverters();
 
 	public RestModelRepository(ConnectionInfoSupplier connectionUrlSupplier) {
-		this.connectionUrlSupplier = Objects.requireNonNull(connectionUrlSupplier);
+		this.connectionUrlSupplier = Objects
+				.requireNonNull(connectionUrlSupplier);
 	}
 
 	private Map<ModelType, Function<Content, ModelContent>> initializeContentConverters() {
 		Map<ModelType, Function<Content, ModelContent>> converters = new HashMap<ModelType, Function<Content, ModelContent>>();
 
-		IModelTransformerService modelTransformer = ModelTransformerServiceFactory.getDefault();
 		converters.put(ModelType.INFORMATIONMODEL,
 				new ContentToModelContent<InformationModel>(
-						InformationModel.class, ModelType.INFORMATIONMODEL,
-						modelTransformer));
+						InformationModel.class, ModelType.INFORMATIONMODEL));
 		converters.put(ModelType.FUNCTIONBLOCK,
 				new ContentToModelContent<FunctionblockModel>(
-						FunctionblockModel.class, ModelType.FUNCTIONBLOCK,
-						modelTransformer));
+						FunctionblockModel.class, ModelType.FUNCTIONBLOCK));
 		converters.put(ModelType.DATATYPE, new ContentToModelContent<Type>(
-				Type.class, ModelType.DATATYPE, modelTransformer));
+				Type.class, ModelType.DATATYPE));
 
 		return converters;
 	}
@@ -86,7 +82,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	@Override
 	public ModelContent getModelContentForResource(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
-		
+
 		String url = getUrlForModelId(modelId);
 
 		try {
@@ -107,15 +103,16 @@ public class RestModelRepository extends Observable implements IModelRepository 
 				"namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(),
 				"version should not be null");
-		
+
 		return String.format(MODEL_ID_SERVICE_FORMAT,
 				connectionUrlSupplier.connectionUrl(), modelId.getModelType()
 						.name().toLowerCase(), modelId.getNamespace(),
 				modelId.getName(), modelId.getVersion());
 	}
-	
+
 	private String getUrlForUpload() {
-		return String.format(UPLOAD_FILE_URL_FORMAT, connectionUrlSupplier.connectionUrl());
+		return String.format(UPLOAD_FILE_URL_FORMAT,
+				connectionUrlSupplier.connectionUrl());
 	}
 
 	@Override
@@ -123,18 +120,24 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			throws ModelAlreadyExistException {
 		Objects.requireNonNull(modelId);
 		Objects.requireNonNull(file);
-		
+
 		try {
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody(FILE_PARAMETER_NAME, ByteStreams.toByteArray(file), ContentType.APPLICATION_OCTET_STREAM, "");
+			builder.addBinaryBody(FILE_PARAMETER_NAME,
+					ByteStreams.toByteArray(file),
+					ContentType.APPLICATION_OCTET_STREAM, "");
 			HttpEntity fileToUpload = builder.build();
-			
-			HttpResponse response = Request.Post(getUrlForUpload()).body(fileToUpload).execute().returnResponse();
-			
+
+			HttpResponse response = Request.Post(getUrlForUpload())
+					.body(fileToUpload).execute().returnResponse();
+
 			notifyObservers(String.format(UPLOAD_MSG, modelId));
-			notifyObservers(String.format(RESPONSE_MSG, response.getStatusLine().getStatusCode(), response.getEntity().getContentLength()));
+			notifyObservers(String.format(RESPONSE_MSG, response
+					.getStatusLine().getStatusCode(), response.getEntity()
+					.getContentLength()));
 		} catch (Exception e) {
-			throw new RuntimeException("Error in uploading file to remote repository", e);
+			throw new RuntimeException(
+					"Error in uploading file to remote repository", e);
 		}
 	}
 }
