@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.ui.ide,
  org.eclipse.jface,
  org.eclipse.core.resources,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.vorto.perspective
 
