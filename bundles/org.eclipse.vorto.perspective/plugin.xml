@@ -12,13 +12,41 @@
      
        <extension
            point="org.eclipse.ui.views">
+          <category
+                id="org.eclipse.vorto.perspective"
+                name="Vorto">
+          </category>
+          <view
+                category="org.eclipse.vorto.perspective"
+                class="org.eclipse.vorto.perspective.DTTreeViewPart"
+                icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
+                id="org.eclipse.vorto.ui.perspective.dttreeview"
+                name="Datatype Models"
+                restorable="true">
+          </view>
         <view
+              category="org.eclipse.vorto.perspective"
               class="org.eclipse.vorto.perspective.FBTreeViewPart"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/fb_large.png"
               id="org.eclipse.vorto.ui.perspective.fbtreeview"
               name="Function Block Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/fb_large.png"
               restorable="true">
-        </view> 
+        </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.InfoModelTreeViewPart"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
+              id="org.eclipse.vorto.ui.perspective.imtreeview"
+              name="Information Models"
+              restorable="true">
+        </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+              icon="icons/sample.gif"
+              id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+              name="Model Repository">
+        </view>
    </extension> 
      
    <extension point="org.eclipse.ui.perspectiveExtensions">
@@ -32,16 +60,6 @@
    </extension>
           
      <!-- datatype wizard and perspective -->
-   <extension
-           point="org.eclipse.ui.views">
-        <view
-              class="org.eclipse.vorto.perspective.DTTreeViewPart"
-              id="org.eclipse.vorto.ui.perspective.dttreeview"
-              name="Datatype Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
-              restorable="true">
-        </view> 
-     </extension>          
      
    
    <extension
@@ -137,16 +155,6 @@
 	 
 	 <!-- Infomodel -->
 	 
-	 <extension
-           point="org.eclipse.ui.views">
-        <view
-              class="org.eclipse.vorto.perspective.InfoModelTreeViewPart"
-              id="org.eclipse.vorto.ui.perspective.imtreeview"
-              name="Information Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
-              restorable="true">
-        </view> 
-     </extension>   
      
      	<extension
 	       point="org.eclipse.ui.menus">

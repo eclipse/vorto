@@ -89,7 +89,6 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			return contentConverters.get(modelId.getModelType()).apply(
 					Request.Get(url).execute().returnContent());
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(
 					"Error getting modelContent for resource", e);
 		}
