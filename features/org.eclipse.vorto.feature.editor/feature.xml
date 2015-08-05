@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.vorto.feature.editor"
-      label="Vorto DSL Editors"
+      label="Vorto DSL Editors (Incubation)"
       version="0.3.0"
       provider-name="Eclipse.org/Vorto">
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Example Web UI Generator
+Bundle-Name: Vorto Example Web UI Generator (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.webdevice;singleton:=true
 Bundle-Version: 0.3.0
 Bundle-Activator: org.eclipse.vorto.codegen.examples.webdevicegenerator.Activator

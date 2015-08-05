@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.vorto.feature.dependencies"
-      label="Vorto Dependencies"
+      label="Vorto Dependencies (Incubation)"
       version="0.3.0"
       provider-name="Eclipse.org/Vorto">
 
