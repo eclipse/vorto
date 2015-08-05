@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Datatype Editor (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.3.0
+Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.datatype;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.emf.mwe2.launch;resolution:=optional,
@@ -24,15 +24,13 @@ Import-Package: org.apache.log4j,
  org.eclipse.xtext.builder,
  org.eclipse.xtext.generator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.vorto.editor.datatype,
- org.eclipse.vorto.editor.datatype.formatting,
- org.eclipse.vorto.editor.datatype.generator,
- org.eclipse.vorto.editor.datatype.internal,
- org.eclipse.vorto.editor.datatype.internal.validation;x-friends:="org.eclipse.vorto.editor.functionblock.tests",
- org.eclipse.vorto.editor.datatype.parser.antlr,
- org.eclipse.vorto.editor.datatype.parser.antlr.internal,
- org.eclipse.vorto.editor.datatype.scoping,
- org.eclipse.vorto.editor.datatype.serializer,
- org.eclipse.vorto.editor.datatype.services,
- org.eclipse.vorto.editor.datatype.validation
+Export-Package: org.eclipse.vorto.editor.datatype,org.eclipse.vorto.ed
+ itor.datatype.formatting,org.eclipse.vorto.editor.datatype.generator,
+ org.eclipse.vorto.editor.datatype.internal,org.eclipse.vorto.editor.d
+ atatype.internal.validation;x-friends:="org.eclipse.vorto.editor.func
+ tionblock.tests",org.eclipse.vorto.editor.datatype.parser.antlr,org.e
+ clipse.vorto.editor.datatype.parser.antlr.internal,org.eclipse.vorto.
+ editor.datatype.scoping,org.eclipse.vorto.editor.datatype.serializer,
+ org.eclipse.vorto.editor.datatype.services,org.eclipse.vorto.editor.d
+ atatype.validation
 

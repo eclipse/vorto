@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bosch Generator Tests (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.bosch.tests;singleton:=true
-Bundle-Version: 0.3.0
+Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Eclipse.org/Vorto
 Require-Bundle: org.eclipse.vorto.codegen.examples.bosch,
  org.eclipse.vorto.codegen,
