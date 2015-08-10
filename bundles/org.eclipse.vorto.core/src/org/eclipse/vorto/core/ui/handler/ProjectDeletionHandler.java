@@ -18,8 +18,6 @@ package org.eclipse.vorto.core.ui.handler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.vorto.core.internal.model.ModelProjectFactory;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectDeleteEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListenerRegistry;
 
 public class ProjectDeletionHandler extends AbstractResourceDeletionHandler {
 
@@ -45,8 +43,7 @@ public class ProjectDeletionHandler extends AbstractResourceDeletionHandler {
 
 	@Override
 	protected void handlePostDelete(IResource resource) {
-		ModelProjectEventListenerRegistry.getInstance().sendDeleteEvent(
-				new ModelProjectDeleteEvent(resource.getName()));
+		
 	}
 
 }

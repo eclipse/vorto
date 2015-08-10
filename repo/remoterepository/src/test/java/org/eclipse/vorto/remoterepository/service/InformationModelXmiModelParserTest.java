@@ -24,14 +24,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.vorto.remoterepository.internal.converter.parser.xml.InformationModelXmiModelParser;
+import org.eclipse.vorto.remoterepository.internal.converter.XpathConverterService;
 import org.eclipse.vorto.remoterepository.model.ModelContent;
 import org.eclipse.vorto.remoterepository.model.ModelType;
 import org.eclipse.vorto.remoterepository.model.ModelView;
+import org.eclipse.vorto.remoterepository.service.converter.IModelConverterService;
 import org.junit.Test;
 
 public class InformationModelXmiModelParserTest {
-	InformationModelXmiModelParser service = new InformationModelXmiModelParser();
+	IModelConverterService service = new XpathConverterService();
 
 	@Test
 	public void getInfoModelFromXmi() throws IOException {
@@ -41,7 +42,7 @@ public class InformationModelXmiModelParserTest {
 
 		ModelContent modelContent = new ModelContent(
 				ModelType.INFORMATIONMODEL, modelArray);
-		ModelView modelView = service.parse(modelContent);
+		ModelView modelView = service.convert(modelContent);
 		assertEquals("org.eclipse.vorto", modelView.getModelId().getNamespace());
 		assertEquals("SomeInfoModel", modelView.getModelId().getName());
 		assertEquals("1.0.0", modelView.getModelId().getVersion());

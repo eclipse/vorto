@@ -24,10 +24,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.vorto.remoterepository.internal.converter.parser.xml.DataTypeXmiModelParser;
+import org.eclipse.vorto.remoterepository.internal.converter.XpathConverterService;
 import org.eclipse.vorto.remoterepository.model.ModelContent;
 import org.eclipse.vorto.remoterepository.model.ModelType;
 import org.eclipse.vorto.remoterepository.model.ModelView;
+import org.eclipse.vorto.remoterepository.service.converter.IModelConverterService;
 import org.junit.Test;
 
 /**
@@ -38,7 +39,7 @@ import org.junit.Test;
  */
 public class DataTypeXmiModelParserTest {
 
-	DataTypeXmiModelParser service = new DataTypeXmiModelParser();
+	IModelConverterService service = new XpathConverterService();
 
 	@Test
 	public void getTypeModelFromXmi() throws IOException {
@@ -49,7 +50,7 @@ public class DataTypeXmiModelParserTest {
 
 		ModelContent modelContent = new ModelContent(ModelType.DATATYPE,
 				modelArray);
-		ModelView modelView = service.parse(modelContent);
+		ModelView modelView = service.convert(modelContent);
 		assertEquals("org.eclipse.vorto", modelView.getModelId().getNamespace());
 		assertEquals("Color", modelView.getModelId().getName());
 		assertEquals("1.0.0", modelView.getModelId().getVersion());

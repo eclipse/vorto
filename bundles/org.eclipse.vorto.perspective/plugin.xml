@@ -51,7 +51,7 @@
            locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
         <command
               commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-              icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
               id="id.package.menu.newentity"
               label="Create new Entity">
            <parameter
@@ -65,7 +65,7 @@
            locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
         <command
               commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-              icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
               id="id.package.menu.newenum"
               label="Create new Enum">
            <parameter
@@ -84,7 +84,7 @@
 				<command
 			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.deletedatatypeproject"
 			  		id="id.package.menu.deletedatatype"
-			  		icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/delete.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
 			        label="Delete Data Type">   
 			      	<visibleWhen>
 		                  <with  variable="selection">
@@ -109,7 +109,7 @@
 				<command
 			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
 			  		id="id.package.menu.newfb"
-			  		icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Function Block">           	            
 			  	</command>
 				<separator name="additions1" visible="true"/>
@@ -120,7 +120,7 @@
 				<command
 			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command.deletefbproject"
 			  		id="id.package.menu.deletefb"
-			  		icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/delete.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
 			        label="Delete Function Block">   
 			      	<visibleWhen>
 		                  <with  variable="selection">
@@ -156,7 +156,7 @@
 				<command
 			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
 			  		id="id.package.menu.newim"
-			  		icon="platform:/plugin/org.eclipse.jdt.ui/icons/full/dlcl16/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Information Model">           	            
 			  	</command>
 				<separator name="additions1" visible="true"/>
@@ -184,7 +184,7 @@
 				<command
 			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.deleteinfomodelproject"
 			  		id="id.package.menu.deleteinfomodel"
-			  		icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/delete.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
 			        label="Delete Information Model">   
 			      	<visibleWhen>
 		                  <with  variable="selection">

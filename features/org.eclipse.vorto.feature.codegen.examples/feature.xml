@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.vorto.feature.codegen.examples"
-      label="Vorto Code Generator Examples (Incubation)"
+      label="Vorto Code Generator Examples"
       version="0.4.0.qualifier"
       provider-name="Eclipse.org/Vorto">
 

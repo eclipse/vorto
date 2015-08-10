@@ -16,7 +16,6 @@ package org.eclipse.vorto.core.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -30,7 +29,6 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.model.nature.InformationModelProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 public class InformationModelProject extends AbstractModelProject {
 
@@ -118,22 +116,8 @@ public class InformationModelProject extends AbstractModelProject {
 	}
 
 	@Override
-	public Set<IModelElement> getReferences() {
-		Set<IModelElement> references = new TreeSet<>();
-
-		for (ModelReference modelReference : getModel().getReferences()) {
-			try {
-				references.add(ModelProjectServiceFactory.getDefault()
-						.getProjectByModelId(
-								ModelIdFactory
-										.newInstance(ModelType.FUNCTIONBLOCK,
-												modelReference)));
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return references;
+	protected ModelType getPossibleReferenceType() {
+		return ModelType.FUNCTIONBLOCK;
 	}
 
 }

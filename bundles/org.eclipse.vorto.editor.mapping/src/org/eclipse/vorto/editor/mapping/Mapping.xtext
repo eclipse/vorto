@@ -38,25 +38,25 @@ FunctionBlockElement:
 	(OperationElement | ConfigurationElement | StatusElement | FaultElement | EventElement);
 
 OperationElement:
-	'operation.' value=[functionblock::Operation];
+	'operation''.' value=[functionblock::Operation];
 
 ConfigurationElement:
-	'configuration.' value=[datatype::Property];
+	'configuration''.' value=[datatype::Property];
 
 StatusElement:
-	'status.' value=[datatype::Property];
+	'status''.' value=[datatype::Property];
 
 FaultElement:
-	'fault.' value=[datatype::Property];
+	'fault''.' value=[datatype::Property];
 
 EventElement:
-	'event.' value=[functionblock::Event];
+	'event''.' value=[functionblock::Event];
 
 TargetElement:
 	stereoTypes+=StereoType (',' stereoTypes+=StereoType)*;
 
 StereoType:
-	name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
+	name=ID ('with' '{' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
 
 Attribute:
 	name=ID ':' value=STRING;
