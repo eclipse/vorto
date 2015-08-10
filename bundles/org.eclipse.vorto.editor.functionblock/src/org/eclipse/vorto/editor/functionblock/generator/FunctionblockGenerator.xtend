@@ -16,9 +16,6 @@
 package org.eclipse.vorto.editor.functionblock.generator
 
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.vorto.core.model.FunctionblockModelProject
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory
-import org.eclipse.vorto.editor.EclipseFileSystemAccessOutputter
 import org.eclipse.xtext.generator.IFileSystemAccess
 import org.eclipse.xtext.generator.IGenerator
 
@@ -30,11 +27,5 @@ import org.eclipse.xtext.generator.IGenerator
 class FunctionblockGenerator implements IGenerator {
 
 	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
-		var vfs = fsa as EclipseFileSystemAccessOutputter
-
-		if (FunctionblockModelProject.isFunctionBlockModelProject(vfs.getIProject)) {
-			var iotProject = ModelProjectServiceFactory.getDefault.getProjectFromEclipseProject(vfs.getIProject);
-			ModelProjectServiceFactory.getDefault.save(iotProject)
-		}
 	}
 }

@@ -6,25 +6,23 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ui;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.ui,
- org.eclipse.ui.editors,
- org.eclipse.ui.ide,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
- org.eclipse.xtext.xbase.lib,
  org.antlr.runtime,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare,
  org.eclipse.vorto.core,
- org.eclipse.vorto.codegen,
- org.eclipse.jface,
- org.apache.commons.lang3,
- org.eclipse.vorto.editor.infomodel;bundle-version="0.3.0"
+ org.eclipse.vorto.editor,
+ org.eclipse.vorto.editor.infomodel,
+ org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,or
- g.eclipse.vorto.editor.infomodel.ui.internal,org.eclipse.vorto.editor
- .infomodel.ui.quickfix,org.eclipse.vorto.editor.infomodel.ui.contenta
- ssist.antlr
+Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,
+ org.eclipse.vorto.editor.infomodel.ui.internal,
+ org.eclipse.vorto.editor.infomodel.ui.quickfix,
+ org.eclipse.vorto.editor.infomodel.ui.contentassist.antlr
 Bundle-Activator: org.eclipse.vorto.editor.infomodel.ui.internal.InformationModelActivator

@@ -15,35 +15,18 @@
 package org.eclipse.vorto.perspective;
 
 import java.util.Collection;
-import java.util.Set;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.vorto.core.model.IModelElement;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectChangeEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectDeleteEvent;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListener;
-import org.eclipse.vorto.core.ui.changeevent.ModelProjectEventListenerRegistry;
-import org.eclipse.vorto.core.ui.changeevent.NewModelProjectEvent;
 
-public class DefaultTreeModelContentProvider implements ITreeContentProvider,
-		ModelProjectEventListener {
+public class DefaultTreeModelContentProvider implements ITreeContentProvider{
 
 	private TreeViewer treeViewer = null;
-
-	private IModelContentProvider modelContentProvider;
-
-	public DefaultTreeModelContentProvider(
-			IModelContentProvider modelContentProvider) {
-		this.modelContentProvider = modelContentProvider;
-	}
+	
 
 	public void dispose() {
-		ModelProjectEventListenerRegistry.getInstance().remove(this);
 	}
 
 	@Override
@@ -86,69 +69,5 @@ public class DefaultTreeModelContentProvider implements ITreeContentProvider,
 			return !modelProject.getReferences().isEmpty();
 		}
 		return false;
-	}
-
-	@Override
-	public void onProjectChanged(final ModelProjectChangeEvent event) {
-		loadCompleteInputAndExpandProject(event.getModelProject());
-	}
-
-	@Override
-	public void onProjectDeleted(ModelProjectDeleteEvent deletedEvent) {
-		loadCompleteInput();
-	}
-
-	@Override
-	public void onProjectAdded(NewModelProjectEvent addedEvent) {
-		loadCompleteInputAndExpandProject(addedEvent.getModelProject());
-	}
-
-	public void refresh() {
-		loadCompleteInput();
-	}
-
-	protected void loadCompleteInput() {
-		loadCompleteInputAndExpandProject(null);
-	}
-
-	protected void loadCompleteInputAndExpandProject(final IModelProject modelProject) {
-		if (!Display.getDefault().isDisposed()) { 
-			Display.getDefault().syncExec(new Runnable() {
-
-				public void run() {
-					try {
-						treeViewer.setInput(modelContentProvider.getContent());
-						if (modelProject != null) {
-							//Expand has to be invoked in syncExec block, otherwise invalid thread access exception will be thrown
-							expandProject(modelProject);
-						}
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
-		}
-	}
-
-	protected void expandProject(IModelProject modelProject) {
-		IModelProject inputModelProject = this
-				.getProjectFromTreeViewer(modelProject.getId());
-		if (inputModelProject != null) {
-			treeViewer.expandToLevel(inputModelProject, 2);
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private IModelProject getProjectFromTreeViewer(ModelId modelId) {
-		Set inputs = (Set) treeViewer.getInput();
-		for (Object input : inputs) {
-			if (input instanceof IModelProject) {
-				if (((IModelProject) input).getId().getName()
-						.equals(modelId.getName())) {
-					return ((IModelProject) input);
-				}
-			}
-		}
-		return null;
 	}
 }

@@ -14,18 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.model;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.model.nature.IoTProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 public class FunctionblockModelProject extends AbstractModelProject {
 
@@ -57,21 +52,8 @@ public class FunctionblockModelProject extends AbstractModelProject {
 	}
 
 	@Override
-	public Set<IModelElement> getReferences() {
-		Set<IModelElement> references = new TreeSet<>();
-
-		for (ModelReference modelReference : getModel().getReferences()) {
-			try {
-				references.add(ModelProjectServiceFactory.getDefault()
-						.getProjectByModelId(
-								ModelIdFactory.newInstance(ModelType.DATATYPE,
-										modelReference)));
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		return references;
+	protected ModelType getPossibleReferenceType() {
+		return ModelType.DATATYPE;
 	}
 
 }

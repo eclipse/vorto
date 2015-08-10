@@ -1,0 +1,5 @@
+namespace org.eclipse.vorto.example version 1.0.0 using eclipse.vorto.basic.BinarySwitch ; 1.0.0 using com.mycompany.fb.RGBColorPicker ; 1.0.0 using com.mycompany.fb.Dimmer ; 1.0.0
+infomodel ColorLamp {displayname "ColorLamp" description "Information model for a standard color lamp." category example functionblocks {binaryswitch as BinarySwitch rgbcolorpicker as RGBColorPicker 
+		dimmer as Dimmer
+	}
+}

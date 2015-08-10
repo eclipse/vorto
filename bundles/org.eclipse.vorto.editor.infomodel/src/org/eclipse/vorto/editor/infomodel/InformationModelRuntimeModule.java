@@ -17,16 +17,13 @@
  */
 package org.eclipse.vorto.editor.infomodel;
 
-import org.eclipse.vorto.editor.EclipseFileSystemAccessOutputter;
 import org.eclipse.vorto.editor.infomodel.generator.InformationModelOutputConfigurationProvider;
 import org.eclipse.vorto.editor.infomodel.scoping.InformationModelScopeProvider;
-import org.eclipse.xtext.builder.EclipseResourceFileSystemAccess2;
 import org.eclipse.xtext.generator.IOutputConfigurationProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
 
 import com.google.inject.Binder;
-import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 /**
@@ -48,11 +45,6 @@ public class InformationModelRuntimeModule
 	@Override
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return InformationModelScopeProvider.class;
-	}
-
-	@Provides
-	public EclipseResourceFileSystemAccess2 getFileSystemAccess() {
-		return new EclipseFileSystemAccessOutputter();
 	}
 
 	@Override
