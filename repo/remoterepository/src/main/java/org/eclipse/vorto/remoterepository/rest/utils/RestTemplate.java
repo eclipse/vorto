@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.vorto.remoterepository.rest.ModelResource;
 import org.eclipse.vorto.remoterepository.rest.exceptions.ModelNotFoundException;
 import org.eclipse.vorto.remoterepository.rest.exceptions.ModelTypeNotFound;
 import org.eclipse.vorto.remoterepository.rest.exceptions.ResourceNotFoundException;

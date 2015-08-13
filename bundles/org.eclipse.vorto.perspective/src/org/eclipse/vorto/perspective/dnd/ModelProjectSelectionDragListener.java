@@ -30,14 +30,14 @@ public class ModelProjectSelectionDragListener implements DragSourceListener {
 
 	@Override
 	public void dragStart(DragSourceEvent event) {
-		 ISelection selection=viewer.getSelection();
-	     LocalSelectionTransfer.getTransfer().setSelection(selection);
-	     event.doit=!selection.isEmpty();
+		ISelection selection = viewer.getSelection();
+		LocalSelectionTransfer.getTransfer().setSelection(selection);
+		event.doit = !selection.isEmpty();
 	}
 
 	@Override
 	public void dragSetData(DragSourceEvent event) {
-		event.data=LocalSelectionTransfer.getTransfer().getSelection();
+		event.data = LocalSelectionTransfer.getTransfer().getSelection();
 	}
 
 	@Override

@@ -12,37 +12,44 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.api.repository;
+package org.eclipse.vorto.repository.model;
 
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.model.ModelId;
+public class UploadResult {
+	String status;
+	String message;
+	String exception;
 
-/**
- * The Repository object that is used for querying, uploading and downloading resources.
- *
- */
-public interface IModelRepository {
-	
-	/**
-	 * creates a new model query builder
-	 * 
-	 * @return
-	 */
-	IModelQuery newQuery();
-	
-	/**
-	 * Gets the actual model for the given model resource
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	Model getModel(ModelId modelId);
-	
-	/**
-	 * Saves a model to the repository
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	void saveModel(Model model) throws ModelAlreadyExistException;
+	public UploadResult() {
+
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public void setException(String exception) {
+		this.exception = exception;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getException() {
+		return exception;
+	}
+
+	@Override
+	public String toString() {
+		return "UploadResult [status=" + status + ", message=" + message
+				+ ", exception=" + exception + "]";
+	}
 }

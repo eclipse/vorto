@@ -12,7 +12,7 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.perspective;
+package org.eclipse.vorto.perspective.view;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,12 +23,12 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.perspective.dnd.ModelProjectSelectionDragListener;
 import org.eclipse.vorto.perspective.dnd.DatatypeProjectDropListener;
+import org.eclipse.vorto.perspective.dnd.ModelProjectSelectionDragListener;
 
-public class DTTreeViewPart extends AbstractTreeViewPart {
+public class FBTreeViewPart extends AbstractTreeViewPart {
 
-	public static final String DT_TREE_VIEW_ID = "org.eclipse.vorto.ui.perspective.dttreeview";
+	public static final String FB_TREE_VIEW_ID = "org.eclipse.vorto.ui.perspective.fbtreeview";
 
 	@Override
 	protected void hookListeners() {
@@ -40,11 +40,12 @@ public class DTTreeViewPart extends AbstractTreeViewPart {
 				new ModelProjectSelectionDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
 				new DatatypeProjectDropListener(treeViewer));
+
 	}
 
 	@Override
 	public Set<IModelElement> getContent() {
 		return new TreeSet<IModelElement>(ModelProjectServiceFactory
-				.getDefault().getProjectsInWorkspace(ModelType.DATATYPE));
+				.getDefault().getProjectsInWorkspace(ModelType.FUNCTIONBLOCK));
 	}
 }

@@ -14,34 +14,57 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.DatatypeModelProject;
 import org.eclipse.vorto.core.model.FunctionblockModelProject;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.core.model.InformationModelProject;
+import org.eclipse.vorto.perspective.dnd.dropaction.ModelProjectDropAction;
+import org.eclipse.vorto.perspective.dnd.dropaction.RepositoryResourceDropAction;
 
 public class DatatypeProjectDropListener extends ViewerDropAdapter {
+
+	private Map<String, IDropAction> dropActions = initializeDropActions();
 
 	public DatatypeProjectDropListener(Viewer viewer) {
 		super(viewer);
 	}
 
+	private Map<String, IDropAction> initializeDropActions() {
+		Map<String, IDropAction> dropActions = new HashMap<String, IDropAction>();
+		IDropAction modelProjectDropAction = new ModelProjectDropAction();
+		dropActions.put(DatatypeModelProject.class.getName(),
+				modelProjectDropAction);
+		dropActions.put(FunctionblockModelProject.class.getName(),
+				modelProjectDropAction);
+		dropActions.put(InformationModelProject.class.getName(),
+				modelProjectDropAction);
+		dropActions.put(ModelResource.class.getName(),
+				new RepositoryResourceDropAction());
+		return dropActions;
+	}
+
 	@Override
 	public boolean performDrop(Object data) {
-
 		IModelProject targetProject = (IModelProject) this.getCurrentTarget();
 
-		IModelProject dataTypeModelProject = (IModelProject) ((IStructuredSelection)data).getFirstElement();
-		
-		if (dataTypeModelProject instanceof DatatypeModelProject && !targetProject.equals(dataTypeModelProject) ) {
-			targetProject.addReference(dataTypeModelProject);
-			ModelProjectServiceFactory.getDefault().save(targetProject);
-			return true;
+		if (data instanceof IStructuredSelection) {
+			Object droppedResource = ((IStructuredSelection) data)
+					.getFirstElement();
+			IDropAction dropAction = dropActions.get(droppedResource.getClass()
+					.getName());
+			if (dropAction != null) {
+				return dropAction.performDrop(targetProject, droppedResource);
+			}
 		}
-		
+
 		return false;
 	}
 

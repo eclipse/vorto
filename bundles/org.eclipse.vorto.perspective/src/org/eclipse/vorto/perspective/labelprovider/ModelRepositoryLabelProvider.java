@@ -29,13 +29,13 @@ public class ModelRepositoryLabelProvider extends LabelProvider implements
 		case 0:
 			return "";
 		case 1:
-			return resource.getId().getModelType().name();
-		case 2:
 			return resource.getId().getNamespace();
-		case 3:
+		case 2:
 			return resource.getId().getName();
-		case 4:
+		case 3:
 			return resource.getId().getVersion();
+		case 4:
+			return resource.getDescription();
 		default:
 			return "";
 		}
