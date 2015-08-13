@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.function;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,36 +30,28 @@ import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.api.repository.ModelContent;
-import org.eclipse.vorto.core.model.ModelType;
 
 import com.google.common.base.Function;
 
-public class ContentToModelContent<M extends Model> implements
-		Function<Content, ModelContent> {
+public class XmiToModel<M extends Model> implements
+		Function<byte[], Model> {
 
 	private Class<M> modelClass;
-	private ModelType modelType;
 
-	public ContentToModelContent(Class<M> modelClass, ModelType type) {
+	public XmiToModel(Class<M> modelClass) {
 		this.modelClass = modelClass;
-		this.modelType = type;
 		init();
 	}
 
-	public ModelContent apply(Content input) {
-		return new ModelContent(input.asBytes(), modelType, xmiToModel(
-				input.asStream(), modelClass), null);
+	@Override
+	public Model apply(byte[] input) {
+		return parseXmi(new ByteArrayInputStream(input), new ArrayList<InputStream>(),
+				modelClass);
 	}
-
-	private <M extends Model> M xmiToModel(InputStream xmiStream,
-			Class<M> modelClass) {
-		return parseXmi(xmiStream, new ArrayList<InputStream>(), modelClass);
-	}
-
+	
 	@SuppressWarnings("unchecked")
-	private <M extends Model> M parseXmi(InputStream xmiStream,
-			List<InputStream> references, Class<M> modelClass) {
+	private M parseXmi(InputStream xmiStream, List<InputStream> references,
+			Class<M> modelClass) {
 
 		String myType = modelClass.getSimpleName();
 		Resource.Factory.Registry.INSTANCE.getExtensionToFactoryMap().put(

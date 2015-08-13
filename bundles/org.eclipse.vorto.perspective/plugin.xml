@@ -18,7 +18,7 @@
           </category>
           <view
                 category="org.eclipse.vorto.perspective"
-                class="org.eclipse.vorto.perspective.DTTreeViewPart"
+                class="org.eclipse.vorto.perspective.view.DTTreeViewPart"
                 icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
                 id="org.eclipse.vorto.ui.perspective.dttreeview"
                 name="Datatype Models"
@@ -26,7 +26,7 @@
           </view>
         <view
               category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.FBTreeViewPart"
+              class="org.eclipse.vorto.perspective.view.FBTreeViewPart"
               icon="platform:/plugin/org.eclipse.vorto.core/icons/fb_large.png"
               id="org.eclipse.vorto.ui.perspective.fbtreeview"
               name="Function Block Models"
@@ -34,7 +34,7 @@
         </view>
         <view
               category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.InfoModelTreeViewPart"
+              class="org.eclipse.vorto.perspective.view.InfoModelTreeViewPart"
               icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
               id="org.eclipse.vorto.ui.perspective.imtreeview"
               name="Information Models"
@@ -42,7 +42,7 @@
         </view>
         <view
               category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+              class="org.eclipse.vorto.perspective.view.ModelRepositoryViewPart"
               icon="icons/sample.gif"
               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
               name="Model Repository">
@@ -96,6 +96,32 @@
               visible="true">
         </separator>
      </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
+        <command
+              commandId="org.eclipse.vorto.perspective.checkin"
+              icon="icons/sample.gif"
+              label="Check-in to repository">
+           <visibleWhen
+                 checkEnabled="true">
+              <with
+                    variable="selection">
+                 <iterate
+                       ifEmpty="false"
+                       operator="and">
+                    <instanceof
+                          value="org.eclipse.vorto.core.model.IModelProject">
+                    </instanceof>
+                 </iterate>
+              </with>
+           </visibleWhen>
+        </command>
+        <separator
+              name="additions1"
+              visible="true">
+        </separator>
+     </menuContribution>
 	    <menuContribution
 	          allPopups="false"
 	          locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
@@ -132,6 +158,32 @@
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
+        <command
+              commandId="org.eclipse.vorto.perspective.checkin"
+              icon="icons/sample.gif"
+              label="Check-in to repository">
+           <visibleWhen
+                 checkEnabled="true">
+              <with
+                    variable="selection">
+                 <iterate
+                       ifEmpty="false"
+                       operator="and">
+                    <instanceof
+                          value="org.eclipse.vorto.core.model.IModelProject">
+                    </instanceof>
+                 </iterate>
+              </with>
+           </visibleWhen>
+        </command>
+        <separator
+              name="additions1"
+              visible="true">
+        </separator>
+     </menuContribution>
 	    <menuContribution
 	          allPopups="false"
 	          locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
@@ -186,6 +238,32 @@
 		             </visibleWhen>
 	        </menu>
 	     </menuContribution>
+         <menuContribution
+               allPopups="false"
+               locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
+            <command
+                  commandId="org.eclipse.vorto.perspective.checkin"
+                  icon="icons/sample.gif"
+                  label="Check-in to repository">
+               <visibleWhen
+                     checkEnabled="true">
+                  <with
+                        variable="selection">
+                     <iterate
+                           ifEmpty="false"
+                           operator="and">
+                        <instanceof
+                              value="org.eclipse.vorto.core.model.IModelProject">
+                        </instanceof>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="additions1"
+                  visible="true">
+            </separator>
+         </menuContribution>
 	    <menuContribution
 	          allPopups="false"
 	          locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
@@ -205,6 +283,14 @@
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>		 	     	     
-	 </extension>  
+	 </extension>
+      <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="org.eclipse.vorto.perspective.command.CheckinModelHandler"
+               id="org.eclipse.vorto.perspective.checkin"
+               name="CheckIn">
+         </command>
+      </extension>  
      
 </plugin>

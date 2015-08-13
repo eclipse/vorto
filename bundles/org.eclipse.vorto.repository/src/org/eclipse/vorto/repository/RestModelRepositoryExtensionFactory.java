@@ -21,8 +21,7 @@ public class RestModelRepositoryExtensionFactory implements
 		modelRepository.addObserver(new Observer() {
 			public void update(Observable o, Object arg) {
 				//MessageDisplayFactory.getMessageDisplay().display((String) arg);
-				// TODO : find a way to display messages on Console here
-				System.out.println((String) arg);
+				System.out.println(arg.toString());
 			}			
 		});
 		
