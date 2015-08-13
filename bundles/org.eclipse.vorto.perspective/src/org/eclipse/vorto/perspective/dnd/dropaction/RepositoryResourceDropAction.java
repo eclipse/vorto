@@ -30,6 +30,14 @@ import com.google.common.base.Function;
 
 public class RepositoryResourceDropAction implements IDropAction {
 
+	private static final String INFOMODEL_EXT = ".infomodel";
+
+	private static final String FBMODEL_EXT = ".fbmodel";
+
+	private static final String TYPE_EXT = ".type";
+
+	private static final String SHARED_MODELS_DIR = "src/shared_models/";
+
 	private IModelRepository modelRepo = ModelRepositoryFactory
 			.getModelRepository();
 
@@ -101,7 +109,7 @@ public class RepositoryResourceDropAction implements IDropAction {
 		assert (fileAsString != null);
 		assert (fileName != null);
 		try {
-			IFolder folder = project.getFolder("src/shared_models/");
+			IFolder folder = project.getFolder(SHARED_MODELS_DIR);
 			if (!folder.exists()) {
 				folder.create(IResource.NONE, true, null);
 			}
@@ -114,8 +122,7 @@ public class RepositoryResourceDropAction implements IDropAction {
 			file.create(new ByteArrayInputStream(fileAsString.getBytes()),
 					true, new NullProgressMonitor());
 		} catch (CoreException e) {
-			// TODO : make some noise
-			e.printStackTrace();
+			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
 	}
 
@@ -146,9 +153,9 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 	private Map<ModelType, String> initializeExtensionMap() {
 		Map<ModelType, String> extensionMap = new HashMap<ModelType, String>();
-		extensionMap.put(ModelType.DATATYPE, ".type");
-		extensionMap.put(ModelType.FUNCTIONBLOCK, ".fbmodel");
-		extensionMap.put(ModelType.INFORMATIONMODEL, ".infomodel");
+		extensionMap.put(ModelType.DATATYPE, TYPE_EXT);
+		extensionMap.put(ModelType.FUNCTIONBLOCK, FBMODEL_EXT);
+		extensionMap.put(ModelType.INFORMATIONMODEL, INFOMODEL_EXT);
 		return extensionMap;
 	}
 }
