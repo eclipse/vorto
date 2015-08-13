@@ -12,7 +12,7 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.perspective;
+package org.eclipse.vorto.perspective.view;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -34,11 +34,15 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.perspective.IModelContentProvider;
+import org.eclipse.vorto.perspective.contentprovider.DefaultTreeModelContentProvider;
+import org.eclipse.vorto.perspective.labelprovider.DefaultTreeModelLabelProvider;
 import org.eclipse.vorto.perspective.listener.ChangeModelProjectListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelProjectListener;
 import org.eclipse.vorto.perspective.util.TreeViewerTemplate;
 
-public abstract class AbstractTreeViewPart extends ViewPart implements IModelContentProvider {
+public abstract class AbstractTreeViewPart extends ViewPart implements
+		IModelContentProvider {
 
 	protected TreeViewer treeViewer;
 
@@ -46,14 +50,15 @@ public abstract class AbstractTreeViewPart extends ViewPart implements IModelCon
 	protected ILabelProvider labelProvider;
 
 	protected TreeViewerTemplate treeViewerUpdateTemplate;
-	
+
 	private IResourceChangeListener removeChangeListener = null;
 	private IResourceChangeListener refreshAndExpandListener = null;
 
 	public void createPartControl(Composite parent) {
 		init();
 		// Create the tree viewer as a child of the composite parent
-		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL);
+		treeViewer = new TreeViewer(parent, SWT.SINGLE | SWT.H_SCROLL
+				| SWT.V_SCROLL);
 
 		treeViewer.setContentProvider(contentProvider);
 		treeViewer.setLabelProvider(labelProvider);
@@ -61,7 +66,7 @@ public abstract class AbstractTreeViewPart extends ViewPart implements IModelCon
 		treeViewer.setUseHashlookup(true);
 
 		treeViewerUpdateTemplate = new TreeViewerTemplate(treeViewer);
-		
+
 		hookListeners();
 
 		treeViewer.setInput(getContent());
@@ -98,17 +103,19 @@ public abstract class AbstractTreeViewPart extends ViewPart implements IModelCon
 		addSelectionChangedEventListener(treeViewer);
 		addWorkspaceChangeEventListenr();
 	}
-	
-
 
 	protected void addWorkspaceChangeEventListenr() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		
-		this.removeChangeListener = new RemoveModelProjectListener(this, treeViewerUpdateTemplate);
-		this.refreshAndExpandListener = new ChangeModelProjectListener(this, treeViewerUpdateTemplate, treeViewer);
-		
-		workspace.addResourceChangeListener(removeChangeListener,IResourceChangeEvent.PRE_DELETE);
-		workspace.addResourceChangeListener(refreshAndExpandListener, IResourceChangeEvent.POST_CHANGE);
+
+		this.removeChangeListener = new RemoveModelProjectListener(this,
+				treeViewerUpdateTemplate);
+		this.refreshAndExpandListener = new ChangeModelProjectListener(this,
+				treeViewerUpdateTemplate, treeViewer);
+
+		workspace.addResourceChangeListener(removeChangeListener,
+				IResourceChangeEvent.PRE_DELETE);
+		workspace.addResourceChangeListener(refreshAndExpandListener,
+				IResourceChangeEvent.POST_CHANGE);
 	}
 
 	@Override
@@ -122,10 +129,12 @@ public abstract class AbstractTreeViewPart extends ViewPart implements IModelCon
 					return;
 				}
 				if (event.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+					IStructuredSelection selection = (IStructuredSelection) event
+							.getSelection();
 					if (selection.size() > 0) {
 						if (selection.getFirstElement() instanceof IModelElement) {
-							IModelElement modelElement = (IModelElement) selection.getFirstElement();
+							IModelElement modelElement = (IModelElement) selection
+									.getFirstElement();
 							if (modelElement.getModelFile() != null) {
 								openFileInEditor(modelElement.getModelFile());
 							}
@@ -138,7 +147,8 @@ public abstract class AbstractTreeViewPart extends ViewPart implements IModelCon
 
 	protected void openFileInEditor(IFile fileToOpen) {
 		if (fileToOpen.exists()) {
-			org.eclipse.ui.IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			org.eclipse.ui.IWorkbenchPage page = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
 			try {
 				IDE.openEditor(page, fileToOpen);
 			} catch (org.eclipse.ui.PartInitException e) {

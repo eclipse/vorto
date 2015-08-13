@@ -1,9 +1,13 @@
-package org.eclipse.vorto.perspective.views;
+package org.eclipse.vorto.perspective.view;
 
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
@@ -18,6 +22,7 @@ import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
+import org.eclipse.vorto.perspective.dnd.ModelRepositoryDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
 
 public class ModelRepositoryViewPart extends ViewPart {
@@ -28,7 +33,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 
 	private static final String NAMESPACE = "Namespace";
 
-	private static final String MODEL_TYPE = "Model Type";
+	private static final String DESCRIPTION = "Description";
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -86,9 +91,8 @@ public class ModelRepositoryViewPart extends ViewPart {
 		viewer.getTable().setHeaderVisible(true);
 		viewer.getTable().setLinesVisible(true);
 
-		String[] columnLabels = { "", MODEL_TYPE, NAMESPACE, NAME,
-				VERSION };
-		int[] columnBounds = { 50, 150, 300, 200, 100 };
+		String[] columnLabels = { "", NAMESPACE, NAME, VERSION, DESCRIPTION };
+		int[] columnBounds = { 50, 300, 200, 100, 400 };
 		for (int i = 0; i < columnLabels.length; i++) {
 			createTableViewerColumn(viewer, columnLabels[i], columnBounds[i]);
 		}
@@ -97,6 +101,10 @@ public class ModelRepositoryViewPart extends ViewPart {
 		viewer.setLabelProvider(new ModelRepositoryLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
+		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
+				new Transfer[] { LocalSelectionTransfer.getTransfer() },
+				new ModelRepositoryDragListener(viewer));
+
 		hookContextMenu();
 		hookDoubleClickAction();
 

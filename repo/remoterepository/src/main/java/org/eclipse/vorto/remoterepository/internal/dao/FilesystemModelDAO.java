@@ -100,7 +100,7 @@ public class FilesystemModelDAO implements IModelDAO {
 
 		Path pathToModel = resolvePathToModel(id);
 
-		log.info("pathToModel: " + pathToModel.toAbsolutePath().toString());
+		log.debug("pathToModel: " + pathToModel.toAbsolutePath().toString());
 		if (pathToModel.toFile().exists()) {
 			mc = this.getModelContent(pathToModel);
 		}
