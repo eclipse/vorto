@@ -1,3 +1,17 @@
+/*******************************************************************************
+ *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ *  The Eclipse Public License is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ *  The Eclipse Distribution License is available at
+ *  http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ *  Contributors:
+ *  Bosch Software Innovations GmbH - Please refer to git log
+ *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd.dropaction;
 
 import java.io.ByteArrayInputStream;
@@ -28,6 +42,11 @@ import org.eclipse.vorto.perspective.function.ModelToDslFunction;
 
 import com.google.common.base.Function;
 
+/**
+ * A drop action for dropping a Model Resource from Repository view to an
+ * IModelProject
+ *
+ */
 public class RepositoryResourceDropAction implements IDropAction {
 
 	private static final String INFOMODEL_EXT = ".infomodel";
@@ -94,7 +113,8 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 	private Model saveModelResourceToProject(IModelProject project,
 			ModelId modelId) {
-		MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+		MessageDisplayFactory.getMessageDisplay().display(
+				"Downloading " + modelId.toString());
 		Model model = modelRepo.getModel(modelId);
 
 		saveToProject(project.getProject(), modelToDsl.apply(model),

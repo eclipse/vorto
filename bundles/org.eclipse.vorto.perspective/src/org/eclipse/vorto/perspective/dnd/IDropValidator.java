@@ -17,16 +17,16 @@ package org.eclipse.vorto.perspective.dnd;
 import org.eclipse.vorto.core.model.IModelProject;
 
 /**
- * Action to be done when a resource is dropped on a target
+ * The validator that determines whether a particular drop is allowed or not
  *
  */
-public interface IDropAction {
-	
+public interface IDropValidator {
 	/**
-	 * Actual action to be executed upon drop
-	 * @param receivingProject The project receiving the dropped resource
-	 * @param droppedObject The dropped resource
+	 * Return true if drop is allowed given the parameters or false if not.
+	 * 
+	 * @param receivingProject
+	 * @param droppedObject
 	 * @return
 	 */
-	boolean performDrop(IModelProject receivingProject, Object droppedObject);
+	boolean allow(IModelProject receivingProject, Object droppedObject);
 }

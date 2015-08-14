@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -22,7 +21,7 @@ import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
-import org.eclipse.vorto.perspective.dnd.ModelRepositoryDragListener;
+import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
 
 public class ModelRepositoryViewPart extends ViewPart {
@@ -103,7 +102,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 		viewer.setInput(getViewSite());
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
-				new ModelRepositoryDragListener(viewer));
+				new ModelDragListener(viewer));
 
 		hookContextMenu();
 		hookDoubleClickAction();
