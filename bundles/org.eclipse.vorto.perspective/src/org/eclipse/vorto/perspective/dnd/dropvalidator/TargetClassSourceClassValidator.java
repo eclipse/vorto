@@ -12,21 +12,31 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.perspective.dnd;
+package org.eclipse.vorto.perspective.dnd.dropvalidator;
+
+import java.util.Objects;
 
 import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.perspective.dnd.IDropValidator;
 
 /**
- * Action to be done when a resource is dropped on a target
+ * Drop validator that uses the class of Target and Source to determine if drop
+ * is valid
  *
  */
-public interface IDropAction {
+public class TargetClassSourceClassValidator implements IDropValidator {
+
+	private Class<?> targetClass;
+	private Class<?> sourceClass;
 	
-	/**
-	 * Actual action to be executed upon drop
-	 * @param receivingProject The project receiving the dropped resource
-	 * @param droppedObject The dropped resource
-	 * @return
-	 */
-	boolean performDrop(IModelProject receivingProject, Object droppedObject);
+	public TargetClassSourceClassValidator(Class<?> targetClass,
+			Class<?> sourceClass) {
+		this.targetClass = Objects.requireNonNull(targetClass);
+		this.sourceClass = Objects.requireNonNull(sourceClass);
+	}
+
+	public boolean allow(IModelProject receivingProject, Object droppedObject) {
+		return targetClass.isInstance(receivingProject) && sourceClass.isInstance(droppedObject);
+	}
+
 }

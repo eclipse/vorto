@@ -24,7 +24,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.perspective.dnd.FunctionBlockDropListener;
+import org.eclipse.vorto.perspective.dnd.ModelDropListenerFactory;
 
 public class InfoModelTreeViewPart extends AbstractTreeViewPart {
 
@@ -34,10 +34,12 @@ public class InfoModelTreeViewPart extends AbstractTreeViewPart {
 	protected void hookListeners() {
 		super.hookListeners();
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
+		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer
+				.getTransfer() };
 
 		treeViewer.addDropSupport(operations, transferTypes,
-				new FunctionBlockDropListener(treeViewer));
+				ModelDropListenerFactory
+						.infomodelViewPartDropListener(treeViewer));
 	}
 
 	@Override

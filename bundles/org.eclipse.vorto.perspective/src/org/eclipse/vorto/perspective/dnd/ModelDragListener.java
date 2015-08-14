@@ -16,15 +16,15 @@ package org.eclipse.vorto.perspective.dnd;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
 
-public class ModelProjectSelectionDragListener implements DragSourceListener {
+public class ModelDragListener implements DragSourceListener {
 
-	private final TreeViewer viewer;
+	private final StructuredViewer viewer;
 
-	public ModelProjectSelectionDragListener(TreeViewer viewer) {
+	public ModelDragListener(StructuredViewer viewer) {
 		this.viewer = viewer;
 	}
 
