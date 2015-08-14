@@ -23,8 +23,8 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.perspective.dnd.DatatypeProjectDropListener;
-import org.eclipse.vorto.perspective.dnd.ModelProjectSelectionDragListener;
+import org.eclipse.vorto.perspective.dnd.ModelDragListener;
+import org.eclipse.vorto.perspective.dnd.ModelDropListenerFactory;
 
 public class FBTreeViewPart extends AbstractTreeViewPart {
 
@@ -35,11 +35,13 @@ public class FBTreeViewPart extends AbstractTreeViewPart {
 		super.hookListeners();
 
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
+		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer
+				.getTransfer() };
 		treeViewer.addDragSupport(operations, transferTypes,
-				new ModelProjectSelectionDragListener(treeViewer));
+				new ModelDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
-				new DatatypeProjectDropListener(treeViewer));
+				ModelDropListenerFactory
+						.functionblockViewPartDropListener(treeViewer));
 
 	}
 
