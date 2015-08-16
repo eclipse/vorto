@@ -12,38 +12,8 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.api.repository;
+package org.eclipse.vorto.repository;
 
-import java.io.InputStream;
-
-import org.eclipse.vorto.core.model.ModelId;
-
-/**
- * The Repository object that is used for querying, uploading and downloading resources.
- *
- */
-public interface IModelRepository {
-	
-	/**
-	 * creates a new model query builder
-	 * 
-	 * @return
-	 */
-	IModelQuery newQuery();
-	
-	/**
-	 * Gets the actual model for the given model resource
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	ModelContent getModelContentForResource(ModelId modelId);
-	
-	/**
-	 * Saves a model to the repository
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	void checkIn(ModelId modelId, InputStream file) throws ModelAlreadyExistException;
+public enum Operator {
+	EQUALS, LIKE, AND, OR, NOT
 }
