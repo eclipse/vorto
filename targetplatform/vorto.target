@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="target-definitions" sequenceNumber="29">
+<?pde version="3.8"?><target name="target-definitions" sequenceNumber="30">
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
@@ -7,6 +7,13 @@
 <unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
 <unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
 <unit id="org.easymock" version="2.4.0.v20090202-0900"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="com.google.guava" version="15.0.0.v201403281430"/>
+<unit id="org.apache.httpcomponents.httpcore" version="4.3.3.v201411290715"/>
+<unit id="com.google.gson" version="2.2.4.v201311231704"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.3.6.v201411290715"/>
 <repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20150124073747/repository/"/>
 </location>
 </locations>

@@ -12,38 +12,31 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.api.repository;
+package org.eclipse.vorto.repository.model;
 
-import java.io.InputStream;
+import java.util.Collection;
 
-import org.eclipse.vorto.core.model.ModelId;
+public class SearchResult {
+	private Collection<ModelView> searchResult;
 
-/**
- * The Repository object that is used for querying, uploading and downloading resources.
- *
- */
-public interface IModelRepository {
-	
-	/**
-	 * creates a new model query builder
-	 * 
-	 * @return
-	 */
-	IModelQuery newQuery();
-	
-	/**
-	 * Gets the actual model for the given model resource
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	ModelContent getModelContentForResource(ModelId modelId);
-	
-	/**
-	 * Saves a model to the repository
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	void checkIn(ModelId modelId, InputStream file) throws ModelAlreadyExistException;
+	public Collection<ModelView> getSearchResult() {
+		return searchResult;
+	}
+
+	public void setSearchResult(Collection<ModelView> searchResult) {
+		this.searchResult = searchResult;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("SearchResult [searchResult=");
+		for (ModelView modelView : searchResult) {
+			buffer.append(modelView.toString());
+			buffer.append(",");
+		}
+		buffer.deleteCharAt(buffer.length() - 1);
+		buffer.append("]");
+		return buffer.toString();
+	}
 }

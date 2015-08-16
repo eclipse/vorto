@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Remote Repository Implementation
+Bundle-SymbolicName: org.eclipse.vorto.repository;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.vorto.repository.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.vorto.core,
+ com.google.guava,
+ org.apache.httpcomponents.httpclient,
+ org.apache.httpcomponents.httpcore,
+ com.google.gson,
+ org.apache.commons.logging,
+ org.eclipse.emf.ecore.xmi
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse.org/Vorto
+Export-Package: org.eclipse.vorto.repository
