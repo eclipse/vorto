@@ -28,10 +28,12 @@ import org.eclipse.vorto.core.api.model.mapping.ConfigurationElement;
 import org.eclipse.vorto.core.api.model.mapping.EventElement;
 import org.eclipse.vorto.core.api.model.mapping.FaultElement;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
-import org.eclipse.vorto.core.api.model.mapping.InformationModelElement;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelChild;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.OperationElement;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
 import org.eclipse.vorto.core.api.model.mapping.StatusElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 
@@ -46,7 +48,7 @@ public class DefaultMappingRules implements IMappingRules {
 	@Override
 	public List<IMappingRule> getRules(EObject currentModelElement) {
 		List<IMappingRule> mappingRules = new ArrayList<IMappingRule>();
-		for (Rule rule : mappingModel.getRules()) {
+		for (InfoModelMappingRule rule : mappingModel.getInfoModelMappingRules()) {
 			if (currentModelElement instanceof Event) {
 				eventCompare(currentModelElement, mappingRules, rule);
 			}
@@ -61,28 +63,31 @@ public class DefaultMappingRules implements IMappingRules {
 	}
 
 	private void propertyCompare(EObject currentModelElement,
-			List<IMappingRule> mappingRules, Rule rule) {
-		for (InformationModelElement element : rule
-				.getInformationModelElements()) {
-			FunctionBlockElement fbElement = element.getTail();
+			List<IMappingRule> mappingRules, InfoModelMappingRule rule) {
+		for (InfoModelSourceElement element : rule
+				.getInfoModelSourceElements()) {
+
+			FunctionBlockElement fbElement = getFunctionBlockElement(element);
+			if (fbElement == null) {
+				continue;
+			}
 			String eObjectName = ((Property) currentModelElement).getName();
 			if (fbElement instanceof ConfigurationElement) {
 				String nameInRule = ((ConfigurationElement) fbElement)
-						.getValue().getName();
+						.getTypeRef().getProperty().getName();
 				addRuleIfSenseful(mappingRules, rule, eObjectName, nameInRule);
 			} else if (fbElement instanceof FaultElement) {
-				String nameInRule = ((FaultElement) fbElement).getValue()
-						.getName();
+				String nameInRule = ((FaultElement) fbElement).getTypeRef().getProperty().getName();
 				addRuleIfSenseful(mappingRules, rule, eObjectName, nameInRule);
 			} else if (fbElement instanceof StatusElement) {
-				String nameInRule = ((StatusElement) fbElement).getValue()
-						.getName();
+				String nameInRule = ((StatusElement) fbElement).getTypeRef()
+						.getProperty().getName();
 				addRuleIfSenseful(mappingRules, rule, eObjectName, nameInRule);
 			}
 		}
 	}
 
-	private void addRuleIfSenseful(List<IMappingRule> mappingRules, Rule rule,
+	private void addRuleIfSenseful(List<IMappingRule> mappingRules, InfoModelMappingRule rule,
 			String eObjectName, String nameInRule) {
 		boolean elementsHaveSameName = nameInRule.equals(eObjectName);
 		if (elementsHaveSameName) {
@@ -91,13 +96,17 @@ public class DefaultMappingRules implements IMappingRules {
 	}
 
 	private void operationCompare(EObject currentModelElement,
-			List<IMappingRule> mappingRules, Rule rule) {
-		for (InformationModelElement element : rule
-				.getInformationModelElements()) {
-			FunctionBlockElement fbElement = element.getTail();
+			List<IMappingRule> mappingRules, InfoModelMappingRule rule) {
+		for (InfoModelSourceElement element : rule
+				.getInfoModelSourceElements()) {
+			FunctionBlockElement fbElement = getFunctionBlockElement(element);
+			if (fbElement == null) {
+				continue;
+			}
+
 			if (fbElement instanceof OperationElement) {
-				String nameInRule = ((OperationElement) fbElement).getValue()
-						.getName();
+				String nameInRule = ((OperationElement) fbElement)
+						.getOperation().getName();
 				String eObjectName = ((Operation) currentModelElement)
 						.getName();
 				addRuleIfSenseful(mappingRules, rule, eObjectName, nameInRule);
@@ -105,13 +114,27 @@ public class DefaultMappingRules implements IMappingRules {
 		}
 	}
 
+	private FunctionBlockElement getFunctionBlockElement(
+			InfoModelSourceElement element) {
+		InfoModelChild informationModelChild = element
+				.getInfoModelChild();
+		if (!(informationModelChild instanceof InfoModelFbElement)) {
+			return null;
+		}
+		InfoModelFbElement functionBlockModelElement = (InfoModelFbElement) informationModelChild;
+		return functionBlockModelElement.getFunctionBlockElement();
+	}
+
 	private void eventCompare(EObject currentModelElement,
-			List<IMappingRule> mappingRules, Rule rule) {
-		for (InformationModelElement element : rule
-				.getInformationModelElements()) {
-			FunctionBlockElement fbElement = element.getTail();
+			List<IMappingRule> mappingRules, InfoModelMappingRule rule) {
+		for (InfoModelSourceElement element : rule
+				.getInfoModelSourceElements()) {
+			FunctionBlockElement fbElement = getFunctionBlockElement(element);
+			if (fbElement == null) {
+				continue;
+			}
 			if (fbElement instanceof EventElement) {
-				String nameInRule = ((EventElement) fbElement).getValue()
+				String nameInRule = ((EventElement) fbElement).getEvent()
 						.getName();
 				String eObjectName = ((Event) currentModelElement).getName();
 				addRuleIfSenseful(mappingRules, rule, eObjectName, nameInRule);
@@ -122,7 +145,7 @@ public class DefaultMappingRules implements IMappingRules {
 	@Override
 	public List<IMappingRule> getRulesContainStereoType(String stereoTypeName) {
 		List<IMappingRule> mappingRules = new ArrayList<>();
-		for (Rule rule : this.mappingModel.getRules()) {
+		for (InfoModelMappingRule rule : this.mappingModel.getInfoModelMappingRules()) {
 			for (StereoType stereoType : rule.getTargetElement()
 					.getStereoTypes()) {
 				if (stereoType.getName().equals(stereoTypeName)) {

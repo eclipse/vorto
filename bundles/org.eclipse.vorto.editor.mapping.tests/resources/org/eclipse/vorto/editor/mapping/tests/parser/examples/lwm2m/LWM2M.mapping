@@ -1,0 +1,26 @@
+namespace org.openmobilealliance
+version 1.0.0
+using com.mycompany.DjiPhantomVision ; 3.0.0-Plus
+using com.mycompany.fb.Drone ; 1.0.0
+using com.mycompany.fb.Switcher ; 1.0.0
+mapping LWM2M {
+
+	from DjiPhantomVision
+	to ObjectType with {
+	Type : "MODefinition", Name : "Location", ObjectID : "6", ObjectURN : "TBD", MultipleInstances : "Single", Mandatory : "Optional"
+	}
+
+	functionblock {
+
+		from Drone.status.location.latitude
+		to Resource with { ItemID : "0", Units : "deg" }
+
+		from Drone.status.location.longitude
+		to Resource with { ItemID : "1", Units : "deg" }
+
+		from Drone.status.location.altitude
+		to Resource with { ItemID : "2", Units : "m" }
+		
+		from Drone.operation.ascend,Switcher.operation.on to Resource with {ItemID : "0", Operations : "R"}
+	}
+}

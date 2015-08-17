@@ -11,6 +11,8 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.vorto.core.api.model.mapping.*;
 
+import org.eclipse.vorto.core.api.model.model.Model;
+
 /**
  * <!-- begin-user-doc -->
  * The <b>Adapter Factory</b> for the model.
@@ -72,16 +74,44 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createMappingModelAdapter();
 			}
 			@Override
-			public Adapter caseRule(Rule object) {
-				return createRuleAdapter();
+			public Adapter caseInfoModelMappingRule(InfoModelMappingRule object) {
+				return createInfoModelMappingRuleAdapter();
 			}
 			@Override
-			public Adapter caseInformationModelElement(InformationModelElement object) {
-				return createInformationModelElementAdapter();
+			public Adapter caseInfoModelSourceElement(InfoModelSourceElement object) {
+				return createInfoModelSourceElementAdapter();
+			}
+			@Override
+			public Adapter caseInfoModelChild(InfoModelChild object) {
+				return createInfoModelChildAdapter();
+			}
+			@Override
+			public Adapter caseInfoModelFbElement(InfoModelFbElement object) {
+				return createInfoModelFbElementAdapter();
+			}
+			@Override
+			public Adapter caseInformationModelProperty(InformationModelProperty object) {
+				return createInformationModelPropertyAdapter();
+			}
+			@Override
+			public Adapter caseFunctionBlockMappingRule(FunctionBlockMappingRule object) {
+				return createFunctionBlockMappingRuleAdapter();
+			}
+			@Override
+			public Adapter caseFunctionBlockSourceElement(FunctionBlockSourceElement object) {
+				return createFunctionBlockSourceElementAdapter();
 			}
 			@Override
 			public Adapter caseFunctionBlockElement(FunctionBlockElement object) {
 				return createFunctionBlockElementAdapter();
+			}
+			@Override
+			public Adapter caseFunctionBlockElementAttribute(FunctionBlockElementAttribute object) {
+				return createFunctionBlockElementAttributeAdapter();
+			}
+			@Override
+			public Adapter caseFunctionBlockChildElement(FunctionBlockChildElement object) {
+				return createFunctionBlockChildElementAdapter();
 			}
 			@Override
 			public Adapter caseOperationElement(OperationElement object) {
@@ -104,6 +134,38 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEventElementAdapter();
 			}
 			@Override
+			public Adapter caseFBTypeElement(FBTypeElement object) {
+				return createFBTypeElementAdapter();
+			}
+			@Override
+			public Adapter caseFBTypeElementChild(FBTypeElementChild object) {
+				return createFBTypeElementChildAdapter();
+			}
+			@Override
+			public Adapter caseFBTypeProperty(FBTypeProperty object) {
+				return createFBTypePropertyAdapter();
+			}
+			@Override
+			public Adapter caseDataTypeMappingRule(DataTypeMappingRule object) {
+				return createDataTypeMappingRuleAdapter();
+			}
+			@Override
+			public Adapter caseDataTypeSourceElement(DataTypeSourceElement object) {
+				return createDataTypeSourceElementAdapter();
+			}
+			@Override
+			public Adapter caseDataTypePropertyElement(DataTypePropertyElement object) {
+				return createDataTypePropertyElementAdapter();
+			}
+			@Override
+			public Adapter caseEntityExpressionRef(EntityExpressionRef object) {
+				return createEntityExpressionRefAdapter();
+			}
+			@Override
+			public Adapter caseDataTypeAttribute(DataTypeAttribute object) {
+				return createDataTypeAttributeAdapter();
+			}
+			@Override
 			public Adapter caseTargetElement(TargetElement object) {
 				return createTargetElementAdapter();
 			}
@@ -114,6 +176,18 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseAttribute(Attribute object) {
 				return createAttributeAdapter();
+			}
+			@Override
+			public Adapter caseNestedEntityExpression(NestedEntityExpression object) {
+				return createNestedEntityExpressionAdapter();
+			}
+			@Override
+			public Adapter caseEntityExpression(EntityExpression object) {
+				return createEntityExpressionAdapter();
+			}
+			@Override
+			public Adapter caseModel(Model object) {
+				return createModelAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -150,30 +224,100 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.Rule <em>Rule</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule <em>Info Model Mapping Rule</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.Rule
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule
 	 * @generated
 	 */
-	public Adapter createRuleAdapter() {
+	public Adapter createInfoModelMappingRuleAdapter() {
 		return null;
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelElement <em>Information Model Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement <em>Info Model Source Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.InformationModelElement
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement
 	 * @generated
 	 */
-	public Adapter createInformationModelElementAdapter() {
+	public Adapter createInfoModelSourceElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelChild <em>Info Model Child</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelChild
+	 * @generated
+	 */
+	public Adapter createInfoModelChildAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement <em>Info Model Fb Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement
+	 * @generated
+	 */
+	public Adapter createInfoModelFbElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelProperty <em>Information Model Property</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.InformationModelProperty
+	 * @generated
+	 */
+	public Adapter createInformationModelPropertyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule <em>Function Block Mapping Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule
+	 * @generated
+	 */
+	public Adapter createFunctionBlockMappingRuleAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement <em>Function Block Source Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement
+	 * @generated
+	 */
+	public Adapter createFunctionBlockSourceElementAdapter() {
 		return null;
 	}
 
@@ -188,6 +332,34 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createFunctionBlockElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockElementAttribute <em>Function Block Element Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockElementAttribute
+	 * @generated
+	 */
+	public Adapter createFunctionBlockElementAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement <em>Function Block Child Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement
+	 * @generated
+	 */
+	public Adapter createFunctionBlockChildElementAdapter() {
 		return null;
 	}
 
@@ -262,6 +434,118 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElement <em>FB Type Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FBTypeElement
+	 * @generated
+	 */
+	public Adapter createFBTypeElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElementChild <em>FB Type Element Child</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FBTypeElementChild
+	 * @generated
+	 */
+	public Adapter createFBTypeElementChildAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FBTypeProperty <em>FB Type Property</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FBTypeProperty
+	 * @generated
+	 */
+	public Adapter createFBTypePropertyAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule <em>Data Type Mapping Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule
+	 * @generated
+	 */
+	public Adapter createDataTypeMappingRuleAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeSourceElement <em>Data Type Source Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypeSourceElement
+	 * @generated
+	 */
+	public Adapter createDataTypeSourceElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypePropertyElement <em>Data Type Property Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypePropertyElement
+	 * @generated
+	 */
+	public Adapter createDataTypePropertyElementAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityExpressionRef <em>Entity Expression Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.EntityExpressionRef
+	 * @generated
+	 */
+	public Adapter createEntityExpressionRefAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeAttribute <em>Data Type Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypeAttribute
+	 * @generated
+	 */
+	public Adapter createDataTypeAttributeAdapter() {
+		return null;
+	}
+
+	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.TargetElement <em>Target Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -300,6 +584,48 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression <em>Nested Entity Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression
+	 * @generated
+	 */
+	public Adapter createNestedEntityExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityExpression <em>Entity Expression</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.EntityExpression
+	 * @generated
+	 */
+	public Adapter createEntityExpressionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.model.Model <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.model.Model
+	 * @generated
+	 */
+	public Adapter createModelAdapter() {
 		return null;
 	}
 

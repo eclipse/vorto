@@ -1,0 +1,28 @@
+namespace com.mycompany
+version 1.0.0
+using com.mycompany.type.EntityA ; 1.0.0
+using com.mycompany.type.EnumA ; 1.0.0
+mapping DummyDataTypeMapping {
+	
+	datatype {
+		
+		from EntityA
+		to DummyTarget with { Attribute1 : "d1", Attribute2 : "d2" }
+
+		from EntityA.name
+		to aDummyTarget
+
+		from EntityA.version
+		to DummyTarget
+
+		from EntityA.paramRefEntityB.paramRefEntityC.paramRefEntityD
+		to DummyTarget
+
+		from EnumA
+		to DummyTarget with { Value1 : "dummy value 1", Value2 : "dummy value 2" }
+
+		from EnumA.name
+		to Dummy
+	}
+	
+}

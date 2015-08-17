@@ -1,0 +1,22 @@
+namespace com.mycompany.fb
+version 1.0.0
+
+functionblock ColorLight {
+	displayname "ColorLight"
+	description "A light makes the environment bright and colorful"
+	category hue
+	configuration {
+		optional brightnessLevel as int
+	}
+
+	fault {
+		mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
+	}
+
+	operations {
+		setR(r as int)
+		setG(g as int)
+		setB(b as int)
+	}
+
+}

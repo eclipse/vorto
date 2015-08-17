@@ -17,19 +17,19 @@ package org.eclipse.vorto.codegen.internal.mapping;
 
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 
 public class DefaultMappingRule implements IMappingRule {
 
-	private Rule rule;
+	private InfoModelMappingRule rule;
 
-	public DefaultMappingRule(Rule rule) {
+	public DefaultMappingRule(InfoModelMappingRule rule) {
 		this.rule = rule;
 	}
 
 	@Override
-	public Rule getRule() {
+	public InfoModelMappingRule getRule() {
 		return this.rule;
 	}
 

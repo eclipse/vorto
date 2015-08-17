@@ -21,22 +21,22 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventElementImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventElementImpl#getEvent <em>Event</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class EventElementImpl extends FunctionBlockElementImpl implements EventElement {
+public class EventElementImpl extends FunctionBlockChildElementImpl implements EventElement {
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
+	 * The cached value of the '{@link #getEvent() <em>Event</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getValue()
+	 * @see #getEvent()
 	 * @generated
 	 * @ordered
 	 */
-	protected Event value;
+	protected Event event;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -62,16 +62,16 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Event getValue() {
-		if (value != null && value.eIsProxy()) {
-			InternalEObject oldValue = (InternalEObject)value;
-			value = (Event)eResolveProxy(oldValue);
-			if (value != oldValue) {
+	public Event getEvent() {
+		if (event != null && event.eIsProxy()) {
+			InternalEObject oldEvent = (InternalEObject)event;
+			event = (Event)eResolveProxy(oldEvent);
+			if (event != oldEvent) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_ELEMENT__VALUE, oldValue, value));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_ELEMENT__EVENT, oldEvent, event));
 			}
 		}
-		return value;
+		return event;
 	}
 
 	/**
@@ -79,8 +79,8 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Event basicGetValue() {
-		return value;
+	public Event basicGetEvent() {
+		return event;
 	}
 
 	/**
@@ -88,11 +88,11 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(Event newValue) {
-		Event oldValue = value;
-		value = newValue;
+	public void setEvent(Event newEvent) {
+		Event oldEvent = event;
+		event = newEvent;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_ELEMENT__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_ELEMENT__EVENT, oldEvent, event));
 	}
 
 	/**
@@ -103,9 +103,9 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.EVENT_ELEMENT__VALUE:
-				if (resolve) return getValue();
-				return basicGetValue();
+			case MappingPackage.EVENT_ELEMENT__EVENT:
+				if (resolve) return getEvent();
+				return basicGetEvent();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -118,8 +118,8 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.EVENT_ELEMENT__VALUE:
-				setValue((Event)newValue);
+			case MappingPackage.EVENT_ELEMENT__EVENT:
+				setEvent((Event)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -133,8 +133,8 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.EVENT_ELEMENT__VALUE:
-				setValue((Event)null);
+			case MappingPackage.EVENT_ELEMENT__EVENT:
+				setEvent((Event)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -148,8 +148,8 @@ public class EventElementImpl extends FunctionBlockElementImpl implements EventE
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.EVENT_ELEMENT__VALUE:
-				return value != null;
+			case MappingPackage.EVENT_ELEMENT__EVENT:
+				return event != null;
 		}
 		return super.eIsSet(featureID);
 	}
