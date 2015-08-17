@@ -37,9 +37,9 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 import org.junit.Test;
@@ -151,13 +151,13 @@ public class CodeGeneratorWithMappingsTest {
 	private MappingModel createRuleModel(InformationModel infoModel) {
 		MappingModel mappingModel = MappingFactory.eINSTANCE
 				.createMappingModel();
-		mappingModel.setInfomodel(infoModel);
-		mappingModel.getRules().add(createeRule());
+		mappingModel.setName("MyMapping");
+		mappingModel.getInfoModelMappingRules().add(createeRule());
 		return mappingModel;
 	}
 
-	private static Rule createeRule() {
-		Rule rule = MappingFactory.eINSTANCE.createRule();
+	private static InfoModelMappingRule createeRule() {
+		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
 		TargetElement targetElement = MappingFactory.eINSTANCE
 				.createTargetElement();
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();

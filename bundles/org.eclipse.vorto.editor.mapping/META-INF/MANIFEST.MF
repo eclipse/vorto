@@ -15,12 +15,12 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.util,
  org.eclipse.emf.ecore,
  org.eclipse.emf.common,
+ org.eclipse.xtext.xbase.lib,
  org.antlr.runtime,
  org.eclipse.xtext.common.types,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
- org.eclipse.vorto.core,
- org.eclipse.vorto.editor,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.vorto.core
+Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.services,
@@ -31,4 +31,4 @@ Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.scoping,
  org.eclipse.vorto.editor.mapping.generator,
  org.eclipse.vorto.editor.mapping.formatting
-Import-Package: org.apache.log4j
+

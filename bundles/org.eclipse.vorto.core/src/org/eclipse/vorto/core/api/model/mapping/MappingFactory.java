@@ -31,22 +31,67 @@ public interface MappingFactory extends EFactory {
 	MappingModel createMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Rule</em>'.
+	 * Returns a new object of class '<em>Info Model Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Rule</em>'.
+	 * @return a new object of class '<em>Info Model Mapping Rule</em>'.
 	 * @generated
 	 */
-	Rule createRule();
+	InfoModelMappingRule createInfoModelMappingRule();
 
 	/**
-	 * Returns a new object of class '<em>Information Model Element</em>'.
+	 * Returns a new object of class '<em>Info Model Source Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Information Model Element</em>'.
+	 * @return a new object of class '<em>Info Model Source Element</em>'.
 	 * @generated
 	 */
-	InformationModelElement createInformationModelElement();
+	InfoModelSourceElement createInfoModelSourceElement();
+
+	/**
+	 * Returns a new object of class '<em>Info Model Child</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Info Model Child</em>'.
+	 * @generated
+	 */
+	InfoModelChild createInfoModelChild();
+
+	/**
+	 * Returns a new object of class '<em>Info Model Fb Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Info Model Fb Element</em>'.
+	 * @generated
+	 */
+	InfoModelFbElement createInfoModelFbElement();
+
+	/**
+	 * Returns a new object of class '<em>Information Model Property</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Information Model Property</em>'.
+	 * @generated
+	 */
+	InformationModelProperty createInformationModelProperty();
+
+	/**
+	 * Returns a new object of class '<em>Function Block Mapping Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Mapping Rule</em>'.
+	 * @generated
+	 */
+	FunctionBlockMappingRule createFunctionBlockMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Function Block Source Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Source Element</em>'.
+	 * @generated
+	 */
+	FunctionBlockSourceElement createFunctionBlockSourceElement();
 
 	/**
 	 * Returns a new object of class '<em>Function Block Element</em>'.
@@ -56,6 +101,24 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	FunctionBlockElement createFunctionBlockElement();
+
+	/**
+	 * Returns a new object of class '<em>Function Block Element Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Element Attribute</em>'.
+	 * @generated
+	 */
+	FunctionBlockElementAttribute createFunctionBlockElementAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Function Block Child Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Child Element</em>'.
+	 * @generated
+	 */
+	FunctionBlockChildElement createFunctionBlockChildElement();
 
 	/**
 	 * Returns a new object of class '<em>Operation Element</em>'.
@@ -103,6 +166,78 @@ public interface MappingFactory extends EFactory {
 	EventElement createEventElement();
 
 	/**
+	 * Returns a new object of class '<em>FB Type Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>FB Type Element</em>'.
+	 * @generated
+	 */
+	FBTypeElement createFBTypeElement();
+
+	/**
+	 * Returns a new object of class '<em>FB Type Element Child</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>FB Type Element Child</em>'.
+	 * @generated
+	 */
+	FBTypeElementChild createFBTypeElementChild();
+
+	/**
+	 * Returns a new object of class '<em>FB Type Property</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>FB Type Property</em>'.
+	 * @generated
+	 */
+	FBTypeProperty createFBTypeProperty();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Mapping Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Mapping Rule</em>'.
+	 * @generated
+	 */
+	DataTypeMappingRule createDataTypeMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Source Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Source Element</em>'.
+	 * @generated
+	 */
+	DataTypeSourceElement createDataTypeSourceElement();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Property Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Property Element</em>'.
+	 * @generated
+	 */
+	DataTypePropertyElement createDataTypePropertyElement();
+
+	/**
+	 * Returns a new object of class '<em>Entity Expression Ref</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Expression Ref</em>'.
+	 * @generated
+	 */
+	EntityExpressionRef createEntityExpressionRef();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Attribute</em>'.
+	 * @generated
+	 */
+	DataTypeAttribute createDataTypeAttribute();
+
+	/**
 	 * Returns a new object of class '<em>Target Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -128,6 +263,24 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	Attribute createAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Nested Entity Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Nested Entity Expression</em>'.
+	 * @generated
+	 */
+	NestedEntityExpression createNestedEntityExpression();
+
+	/**
+	 * Returns a new object of class '<em>Entity Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Expression</em>'.
+	 * @generated
+	 */
+	EntityExpression createEntityExpression();
 
 	/**
 	 * Returns the package supported by this factory.

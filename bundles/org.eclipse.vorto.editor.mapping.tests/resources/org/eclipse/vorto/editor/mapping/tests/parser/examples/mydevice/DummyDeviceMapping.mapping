@@ -1,0 +1,38 @@
+namespace com.mycompany
+version 1.0.0
+using com.mycompany.MyDevice ; 1.0.0
+mapping DummyDeviceMapping {
+
+	from MyDevice
+	to targetdevice with { Attribute1 : "i1", Attribute2 : "i2" }
+
+	from MyDevice.name
+	to DummyTarget
+
+	from MyDevice.namespace
+	to DummyTarget
+
+	from MyDevice.version
+	to DummyTarget
+
+	from MyDevice.description
+	to DummyTarget
+
+	from MyDevice.category
+	to DummyTarget
+
+	from MyDevice.displayname
+	to DummyTarget
+
+	from MyDevice.myfunctionblock
+	to targetFunctionBlock
+
+	from MyDevice.myfunctionblock.name
+	to DummyTarget
+
+	from MyDevice.myfunctionblock.configuration.entityAParam.name
+	to param
+
+	from MyDevice.myfunctionblock.configuration.entityAParam.paramRefEntityB
+	to param
+}

@@ -15,25 +15,25 @@
 package org.eclipse.vorto.codegen.tests;
 
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.TargetElement;
+import org.junit.Rule;
 
 public class TestMappingModelFactory {
 	public static MappingModel createRuleModel() {
 		MappingModel mappingModel = MappingFactory.eINSTANCE
 				.createMappingModel();
-		mappingModel.setInfomodel(TestInforModelFactory
-				.createInformationModel());
-		mappingModel.getRules().add(createChannelTypeRule());
-		mappingModel.getRules().add(createConfigurationRule());
+		mappingModel.setName("MyMapping");
+		mappingModel.getInfoModelMappingRules().add(createChannelTypeRule());
+		mappingModel.getInfoModelMappingRules().add(createConfigurationRule());
 		return mappingModel;
 	}
 
-	private static Rule createChannelTypeRule() {
-		Rule rule = MappingFactory.eINSTANCE.createRule();
+	private static InfoModelMappingRule createChannelTypeRule() {
+		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
 		TargetElement targetElement = MappingFactory.eINSTANCE
 				.createTargetElement();
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
@@ -55,10 +55,8 @@ public class TestMappingModelFactory {
 		return rule;
 	}
 
-	private static Rule createConfigurationRule() {
-		// rule.setTargetElement("config-description:brightness @type:Number");
-
-		Rule rule = MappingFactory.eINSTANCE.createRule();
+	private static InfoModelMappingRule createConfigurationRule() {
+		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
 		TargetElement targetElement = MappingFactory.eINSTANCE
 				.createTargetElement();
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();

@@ -1,0 +1,32 @@
+namespace com.mycompany
+version 1.0.0
+using com.mycompany.MyFunctionBlock ; 1.0.0
+mapping DummyFunctionBlockMapping {
+
+	functionblock {
+
+		from MyFunctionBlock
+		to DummyTarget with { Attribute1 : "f1", Attribute2 : "f2" }
+
+		from MyFunctionBlock.category
+		to DummyTarget
+
+		from MyFunctionBlock.operation.off
+		to TargetOperation
+
+		from MyFunctionBlock.configuration.entityAParam
+		to DummyTarget
+
+		from MyFunctionBlock.status.entityAParam
+		to DummyTarget
+
+		from MyFunctionBlock.status.entityAParam.paramRefEntityB
+		to DummyTarget
+
+		from MyFunctionBlock.status.enumAParam
+		to TargetEnum
+
+		from MyFunctionBlock.status.enumAParam.name
+		to TargetEnumName
+	}
+}

@@ -2,6 +2,8 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
+import org.eclipse.emf.ecore.EObject;
+
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
 /**
@@ -12,7 +14,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.OperationElement#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.OperationElement#getOperation <em>Operation</em>}</li>
  * </ul>
  * </p>
  *
@@ -20,31 +22,31 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
  * @model
  * @generated
  */
-public interface OperationElement extends FunctionBlockElement {
+public interface OperationElement extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Value</b></em>' reference.
+	 * Returns the value of the '<em><b>Operation</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Value</em>' reference isn't clear,
+	 * If the meaning of the '<em>Operation</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Value</em>' reference.
-	 * @see #setValue(Operation)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getOperationElement_Value()
+	 * @return the value of the '<em>Operation</em>' reference.
+	 * @see #setOperation(Operation)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getOperationElement_Operation()
 	 * @model
 	 * @generated
 	 */
-	Operation getValue();
+	Operation getOperation();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.OperationElement#getValue <em>Value</em>}' reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.OperationElement#getOperation <em>Operation</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Value</em>' reference.
-	 * @see #getValue()
+	 * @param value the new value of the '<em>Operation</em>' reference.
+	 * @see #getOperation()
 	 * @generated
 	 */
-	void setValue(Operation value);
+	void setOperation(Operation value);
 
 } // OperationElement

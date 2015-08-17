@@ -18,11 +18,13 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-
+import org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
+
+import org.eclipse.vorto.core.api.model.model.ModelReference;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,9 +33,13 @@ import org.eclipse.vorto.core.api.model.mapping.Rule;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getInfomodel <em>Infomodel</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getTarget <em>Target</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getRules <em>Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getInfoModelMappingRules <em>Info Model Mapping Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getFunctionBlockMappingRules <em>Function Block Mapping Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getDataTypeMappingRules <em>Data Type Mapping Rules</em>}</li>
  * </ul>
  * </p>
  *
@@ -41,44 +47,104 @@ import org.eclipse.vorto.core.api.model.mapping.Rule;
  */
 public class MappingModelImpl extends MinimalEObjectImpl.Container implements MappingModel {
 	/**
-	 * The cached value of the '{@link #getInfomodel() <em>Infomodel</em>}' reference.
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInfomodel()
+	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected InformationModel infomodel;
+	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The default value of the '{@link #getTarget() <em>Target</em>}' attribute.
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTarget()
+	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String TARGET_EDEFAULT = null;
+	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getTarget() <em>Target</em>}' attribute.
+	 * The default value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTarget()
+	 * @see #getNamespace()
 	 * @generated
 	 * @ordered
 	 */
-	protected String target = TARGET_EDEFAULT;
+	protected static final String NAMESPACE_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getRules() <em>Rules</em>}' containment reference list.
+	 * The cached value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getRules()
+	 * @see #getNamespace()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Rule> rules;
+	protected String namespace = NAMESPACE_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getVersion() <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String VERSION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getVersion() <em>Version</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVersion()
+	 * @generated
+	 * @ordered
+	 */
+	protected String version = VERSION_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getReferences() <em>References</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getReferences()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<ModelReference> references;
+
+	/**
+	 * The cached value of the '{@link #getInfoModelMappingRules() <em>Info Model Mapping Rules</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getInfoModelMappingRules()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<InfoModelMappingRule> infoModelMappingRules;
+
+	/**
+	 * The cached value of the '{@link #getFunctionBlockMappingRules() <em>Function Block Mapping Rules</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFunctionBlockMappingRules()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<FunctionBlockMappingRule> functionBlockMappingRules;
+
+	/**
+	 * The cached value of the '{@link #getDataTypeMappingRules() <em>Data Type Mapping Rules</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDataTypeMappingRules()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<DataTypeMappingRule> dataTypeMappingRules;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -104,16 +170,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InformationModel getInfomodel() {
-		if (infomodel != null && infomodel.eIsProxy()) {
-			InternalEObject oldInfomodel = (InternalEObject)infomodel;
-			infomodel = (InformationModel)eResolveProxy(oldInfomodel);
-			if (infomodel != oldInfomodel) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.MAPPING_MODEL__INFOMODEL, oldInfomodel, infomodel));
-			}
-		}
-		return infomodel;
+	public String getName() {
+		return name;
 	}
 
 	/**
@@ -121,20 +179,11 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InformationModel basicGetInfomodel() {
-		return infomodel;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setInfomodel(InformationModel newInfomodel) {
-		InformationModel oldInfomodel = infomodel;
-		infomodel = newInfomodel;
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__INFOMODEL, oldInfomodel, infomodel));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__NAME, oldName, name));
 	}
 
 	/**
@@ -142,8 +191,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getTarget() {
-		return target;
+	public String getNamespace() {
+		return namespace;
 	}
 
 	/**
@@ -151,11 +200,11 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTarget(String newTarget) {
-		String oldTarget = target;
-		target = newTarget;
+	public void setNamespace(String newNamespace) {
+		String oldNamespace = namespace;
+		namespace = newNamespace;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__TARGET, oldTarget, target));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__NAMESPACE, oldNamespace, namespace));
 	}
 
 	/**
@@ -163,11 +212,68 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Rule> getRules() {
-		if (rules == null) {
-			rules = new EObjectContainmentEList<Rule>(Rule.class, this, MappingPackage.MAPPING_MODEL__RULES);
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setVersion(String newVersion) {
+		String oldVersion = version;
+		version = newVersion;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__VERSION, oldVersion, version));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<ModelReference> getReferences() {
+		if (references == null) {
+			references = new EObjectContainmentEList<ModelReference>(ModelReference.class, this, MappingPackage.MAPPING_MODEL__REFERENCES);
 		}
-		return rules;
+		return references;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<InfoModelMappingRule> getInfoModelMappingRules() {
+		if (infoModelMappingRules == null) {
+			infoModelMappingRules = new EObjectContainmentEList<InfoModelMappingRule>(InfoModelMappingRule.class, this, MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES);
+		}
+		return infoModelMappingRules;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<FunctionBlockMappingRule> getFunctionBlockMappingRules() {
+		if (functionBlockMappingRules == null) {
+			functionBlockMappingRules = new EObjectContainmentEList<FunctionBlockMappingRule>(FunctionBlockMappingRule.class, this, MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES);
+		}
+		return functionBlockMappingRules;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<DataTypeMappingRule> getDataTypeMappingRules() {
+		if (dataTypeMappingRules == null) {
+			dataTypeMappingRules = new EObjectContainmentEList<DataTypeMappingRule>(DataTypeMappingRule.class, this, MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES);
+		}
+		return dataTypeMappingRules;
 	}
 
 	/**
@@ -178,8 +284,14 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case MappingPackage.MAPPING_MODEL__RULES:
-				return ((InternalEList<?>)getRules()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__REFERENCES:
+				return ((InternalEList<?>)getReferences()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
+				return ((InternalEList<?>)getInfoModelMappingRules()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES:
+				return ((InternalEList<?>)getFunctionBlockMappingRules()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES:
+				return ((InternalEList<?>)getDataTypeMappingRules()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -192,13 +304,20 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.MAPPING_MODEL__INFOMODEL:
-				if (resolve) return getInfomodel();
-				return basicGetInfomodel();
-			case MappingPackage.MAPPING_MODEL__TARGET:
-				return getTarget();
-			case MappingPackage.MAPPING_MODEL__RULES:
-				return getRules();
+			case MappingPackage.MAPPING_MODEL__NAME:
+				return getName();
+			case MappingPackage.MAPPING_MODEL__NAMESPACE:
+				return getNamespace();
+			case MappingPackage.MAPPING_MODEL__VERSION:
+				return getVersion();
+			case MappingPackage.MAPPING_MODEL__REFERENCES:
+				return getReferences();
+			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
+				return getInfoModelMappingRules();
+			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES:
+				return getFunctionBlockMappingRules();
+			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES:
+				return getDataTypeMappingRules();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -212,15 +331,30 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.MAPPING_MODEL__INFOMODEL:
-				setInfomodel((InformationModel)newValue);
+			case MappingPackage.MAPPING_MODEL__NAME:
+				setName((String)newValue);
 				return;
-			case MappingPackage.MAPPING_MODEL__TARGET:
-				setTarget((String)newValue);
+			case MappingPackage.MAPPING_MODEL__NAMESPACE:
+				setNamespace((String)newValue);
 				return;
-			case MappingPackage.MAPPING_MODEL__RULES:
-				getRules().clear();
-				getRules().addAll((Collection<? extends Rule>)newValue);
+			case MappingPackage.MAPPING_MODEL__VERSION:
+				setVersion((String)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__REFERENCES:
+				getReferences().clear();
+				getReferences().addAll((Collection<? extends ModelReference>)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
+				getInfoModelMappingRules().clear();
+				getInfoModelMappingRules().addAll((Collection<? extends InfoModelMappingRule>)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES:
+				getFunctionBlockMappingRules().clear();
+				getFunctionBlockMappingRules().addAll((Collection<? extends FunctionBlockMappingRule>)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES:
+				getDataTypeMappingRules().clear();
+				getDataTypeMappingRules().addAll((Collection<? extends DataTypeMappingRule>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -234,14 +368,26 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.MAPPING_MODEL__INFOMODEL:
-				setInfomodel((InformationModel)null);
+			case MappingPackage.MAPPING_MODEL__NAME:
+				setName(NAME_EDEFAULT);
 				return;
-			case MappingPackage.MAPPING_MODEL__TARGET:
-				setTarget(TARGET_EDEFAULT);
+			case MappingPackage.MAPPING_MODEL__NAMESPACE:
+				setNamespace(NAMESPACE_EDEFAULT);
 				return;
-			case MappingPackage.MAPPING_MODEL__RULES:
-				getRules().clear();
+			case MappingPackage.MAPPING_MODEL__VERSION:
+				setVersion(VERSION_EDEFAULT);
+				return;
+			case MappingPackage.MAPPING_MODEL__REFERENCES:
+				getReferences().clear();
+				return;
+			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
+				getInfoModelMappingRules().clear();
+				return;
+			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES:
+				getFunctionBlockMappingRules().clear();
+				return;
+			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES:
+				getDataTypeMappingRules().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -255,12 +401,20 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.MAPPING_MODEL__INFOMODEL:
-				return infomodel != null;
-			case MappingPackage.MAPPING_MODEL__TARGET:
-				return TARGET_EDEFAULT == null ? target != null : !TARGET_EDEFAULT.equals(target);
-			case MappingPackage.MAPPING_MODEL__RULES:
-				return rules != null && !rules.isEmpty();
+			case MappingPackage.MAPPING_MODEL__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case MappingPackage.MAPPING_MODEL__NAMESPACE:
+				return NAMESPACE_EDEFAULT == null ? namespace != null : !NAMESPACE_EDEFAULT.equals(namespace);
+			case MappingPackage.MAPPING_MODEL__VERSION:
+				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
+			case MappingPackage.MAPPING_MODEL__REFERENCES:
+				return references != null && !references.isEmpty();
+			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
+				return infoModelMappingRules != null && !infoModelMappingRules.isEmpty();
+			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPING_RULES:
+				return functionBlockMappingRules != null && !functionBlockMappingRules.isEmpty();
+			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPING_RULES:
+				return dataTypeMappingRules != null && !dataTypeMappingRules.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
@@ -275,8 +429,12 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (target: ");
-		result.append(target);
+		result.append(" (name: ");
+		result.append(name);
+		result.append(", namespace: ");
+		result.append(namespace);
+		result.append(", version: ");
+		result.append(version);
 		result.append(')');
 		return result.toString();
 	}

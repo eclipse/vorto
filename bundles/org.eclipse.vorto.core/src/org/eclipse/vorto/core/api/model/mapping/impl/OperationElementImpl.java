@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
@@ -21,22 +22,22 @@ import org.eclipse.vorto.core.api.model.mapping.OperationElement;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.OperationElementImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.OperationElementImpl#getOperation <em>Operation</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OperationElementImpl extends FunctionBlockElementImpl implements OperationElement {
+public class OperationElementImpl extends MinimalEObjectImpl.Container implements OperationElement {
 	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
+	 * The cached value of the '{@link #getOperation() <em>Operation</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getValue()
+	 * @see #getOperation()
 	 * @generated
 	 * @ordered
 	 */
-	protected Operation value;
+	protected Operation operation;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -62,16 +63,16 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Operation getValue() {
-		if (value != null && value.eIsProxy()) {
-			InternalEObject oldValue = (InternalEObject)value;
-			value = (Operation)eResolveProxy(oldValue);
-			if (value != oldValue) {
+	public Operation getOperation() {
+		if (operation != null && operation.eIsProxy()) {
+			InternalEObject oldOperation = (InternalEObject)operation;
+			operation = (Operation)eResolveProxy(oldOperation);
+			if (operation != oldOperation) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.OPERATION_ELEMENT__VALUE, oldValue, value));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.OPERATION_ELEMENT__OPERATION, oldOperation, operation));
 			}
 		}
-		return value;
+		return operation;
 	}
 
 	/**
@@ -79,8 +80,8 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Operation basicGetValue() {
-		return value;
+	public Operation basicGetOperation() {
+		return operation;
 	}
 
 	/**
@@ -88,11 +89,11 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(Operation newValue) {
-		Operation oldValue = value;
-		value = newValue;
+	public void setOperation(Operation newOperation) {
+		Operation oldOperation = operation;
+		operation = newOperation;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.OPERATION_ELEMENT__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.OPERATION_ELEMENT__OPERATION, oldOperation, operation));
 	}
 
 	/**
@@ -103,9 +104,9 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.OPERATION_ELEMENT__VALUE:
-				if (resolve) return getValue();
-				return basicGetValue();
+			case MappingPackage.OPERATION_ELEMENT__OPERATION:
+				if (resolve) return getOperation();
+				return basicGetOperation();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -118,8 +119,8 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.OPERATION_ELEMENT__VALUE:
-				setValue((Operation)newValue);
+			case MappingPackage.OPERATION_ELEMENT__OPERATION:
+				setOperation((Operation)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -133,8 +134,8 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.OPERATION_ELEMENT__VALUE:
-				setValue((Operation)null);
+			case MappingPackage.OPERATION_ELEMENT__OPERATION:
+				setOperation((Operation)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -148,8 +149,8 @@ public class OperationElementImpl extends FunctionBlockElementImpl implements Op
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.OPERATION_ELEMENT__VALUE:
-				return value != null;
+			case MappingPackage.OPERATION_ELEMENT__OPERATION:
+				return operation != null;
 		}
 		return super.eIsSet(featureID);
 	}
