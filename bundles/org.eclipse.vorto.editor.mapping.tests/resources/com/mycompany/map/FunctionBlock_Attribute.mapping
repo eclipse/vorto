@@ -1,0 +1,16 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.fb.NewFunctionBlock;1.0.0
+
+mapping Mapping_FunctionBlock_Attribute {
+	
+	 functionblock MyFunctionBlockMapping {
+		 from NewFunctionBlock.category to TargetCategory
+		 from NewFunctionBlock.description to TargetDesc
+		 from NewFunctionBlock.displayname to TargetDisplay
+		 from NewFunctionBlock.name to TargetName
+		 from NewFunctionBlock.namespace to TargetNameSpace
+		 from NewFunctionBlock.version to TargetVersion	 	
+	 }
+
+}

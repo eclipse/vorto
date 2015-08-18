@@ -1,0 +1,27 @@
+namespace com.mycompany.fb
+version 1.0.0
+using com.mycompany.type.EntityA;1.0.0
+functionblock NewFunctionBlock {
+	displayname "NewFunctionBlock"
+	description "Function block model for NewFunctionBlock"
+	category demo
+	configuration {
+		optional configEntityA as EntityA
+	}
+
+	status {
+	//Please enter functionblock status details.
+	
+	}
+
+	fault {
+	//Please enter functionblock fault configuration.
+
+	}
+
+	operations {
+		on()
+		off()
+	}
+
+}

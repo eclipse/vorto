@@ -1,0 +1,12 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.type.EntityA;1.0.0
+mapping Mapping_DataType_Attribute {
+	
+	 datatype EntityAMapping {
+		 from EntityA.name to TargetName
+		 from EntityA.namespace to TargetNameSpace
+		 from EntityA.version to TargetVersion	 
+	 }
+	 
+}
