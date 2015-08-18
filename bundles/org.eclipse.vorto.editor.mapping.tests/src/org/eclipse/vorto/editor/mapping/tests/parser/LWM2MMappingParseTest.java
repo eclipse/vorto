@@ -2,6 +2,7 @@ package org.eclipse.vorto.editor.mapping.tests.parser;
 
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.junit.Before;
+import org.junit.Test;
 
 public class LWM2MMappingParseTest {
 	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/lwm2m/";
@@ -13,6 +14,10 @@ public class LWM2MMappingParseTest {
 		MappingStandaloneSetup.doSetup();
 	}
 
+	@Test
+	public void parseLWM2MMapping()  {
+		
+	}
 /*	@Test
 	public void parseLWM2MMapping() throws IOException {
 		MappingModel lwMapping = this.loadMappingModel();
