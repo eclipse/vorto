@@ -1,28 +1,7 @@
 package org.eclipse.vorto.editor.mapping.tests.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.StatusElement;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.junit.Before;
-import org.junit.Test;
 
 public class LWM2MMappingParseTest {
 	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/lwm2m/";

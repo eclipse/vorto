@@ -3,14 +3,14 @@ version 1.0.0
 using com.mycompany.fb.NewFunctionBlock;1.0.0
 using com.mycompany.type.EntityA;1.0.0
 
-mapping Mapping_FunctionBlock_Ref {
+mapping FunctionBlock_Ref {
 	
-	 functionblock MyFunctionBlockMapping {
-	 	from NewFunctionBlock.configuration.configEntityA ref EntityAMapping
-	 }
-	 
 	 datatype EntityAMapping {
 	 	from EntityA.entityB to TargetElementB
 	 }
 	 
+	 functionblock MyFunctionBlockMapping {
+	 	from NewFunctionBlock.configuration.configEntityA ref EntityAMapping
+	 }
+	
 }

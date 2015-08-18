@@ -58,6 +58,7 @@ import org.eclipse.vorto.core.api.model.mapping.StatusElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
+
 import org.eclipse.vorto.core.api.model.model.ModelPackage;
 
 /**
