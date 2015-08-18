@@ -10,15 +10,23 @@ functionblock NewFunctionBlock {
 	}
 
 	status {
-	//Please enter functionblock status details.
-	
+		optional isOn as boolean
 	}
 
 	fault {
-	//Please enter functionblock fault configuration.
-
+		optional hasFault as boolean
+		optional faultCode as string
 	}
 
+	events {
+		Ready {
+			optional entityA as EntityA
+		}
+		
+		Complete {
+			optional entityA as EntityA
+		}
+	}
 	operations {
 		on()
 		off()

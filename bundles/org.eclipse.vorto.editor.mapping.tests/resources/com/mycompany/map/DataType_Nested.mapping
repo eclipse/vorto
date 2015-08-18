@@ -1,7 +1,7 @@
 namespace com.mycompany.map
 version 1.0.0
 using com.mycompany.type.EntityA;1.0.0
-mapping Mapping_DataType_Nested {
+mapping DataType_Nested {
 	
 	 datatype EntityAMapping {
 	 	from EntityA.entityB.entityC.intParam  to MyIntParam with {DefaultValue: "0"}

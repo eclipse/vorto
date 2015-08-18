@@ -2,7 +2,7 @@ namespace com.mycompany.map
 version 1.0.0
 using com.mycompany.NewInfomodel;1.0.0
 
-mapping Mapping_Infomodel_FBRef {
+mapping Infomodel_FBRef {
 	 from NewInfomodel.category to TargetCategory
 	 from NewInfomodel.description to TargetDesc
 	 from NewInfomodel.displayname to TargetDisplay

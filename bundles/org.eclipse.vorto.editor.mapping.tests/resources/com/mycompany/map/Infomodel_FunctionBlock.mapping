@@ -1,12 +1,14 @@
 namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.NewInfomodel;1.0.0
-using com.mycompany.fb.NewFunctionBlock;1.0.0
-mapping Mapping_Infomodel_FunctionBlock {
+using com.mycompany.NewInfomodel ; 1.0.0
+using com.mycompany.fb.NewFunctionBlock ; 1.0.0
+mapping Infomodel_FunctionBlock {
+
+	functionblock MyFunctionBlockMapping {
+		from NewFunctionBlock.configuration.configEntityA
+		to TargetFunctionBlockDef
+	}
 	
-	 from NewInfomodel.myfunctionBlock ref MyFunctionBlockMapping
-	 
-	 functionblock MyFunctionBlockMapping {
-	 	from NewFunctionBlock.configuration.configEntityA to TargetFunctionBlockDef
-	 }	 
+	from NewInfomodel.myfunctionBlock ref MyFunctionBlockMapping
+
 }

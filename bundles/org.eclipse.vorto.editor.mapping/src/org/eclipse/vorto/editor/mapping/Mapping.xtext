@@ -27,11 +27,12 @@ MappingModel:
      (references += ModelReference)*	
 	'mapping' name=ID  '{'
 		
-		(infoModelMappingRules+=InfoModelMappingRule)*
-		
-		(functionBlockMappings+=FunctionBlockMapping)*
-		
 		(dataTypeMappings+=DataTypeMapping)*
+
+		(functionBlockMappings+=FunctionBlockMapping)*
+				
+		(infoModelMappingRules+=InfoModelMappingRule)*		
+
 	'}';
 
 
@@ -54,7 +55,7 @@ InfoModelChild:
 ;
 
 InfoModelFbElement:
-	'.' functionblock =[infomodel::FunctionblockProperty]   (functionBlockElement = 	FunctionBlockElement)?
+	'.' functionblock =[infomodel::FunctionblockProperty]  
 ;
 
 
@@ -121,15 +122,7 @@ EventElement:
 
 		 	
 FBTypeElement:
-	 '.'  property =[datatype::Property] (child=FBTypeElementChild)? 
-;
-
-FBTypeElementChild:
-	DataTypeAttribute | FBTypeProperty
-;
-
-FBTypeProperty:
-	'.'  property=[datatype::Property]
+	 '.'  property =[datatype::Property] 
 ;
 
 enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';

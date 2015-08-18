@@ -41,7 +41,6 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 import org.junit.Test;
 
 public class CodeGeneratorWithMappingsTest {
@@ -158,7 +157,7 @@ public class CodeGeneratorWithMappingsTest {
 
 	private static InfoModelMappingRule createeRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
-		TargetElement targetElement = null;
+		//TargetElement targetElement = null;
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("type");
@@ -172,7 +171,7 @@ public class CodeGeneratorWithMappingsTest {
 		stereoType.getAttributes().add(nameAttribute);
 		stereoType.getAttributes().add(typeAttribute);
 
-		targetElement.getStereoTypes().add(stereoType);
+		//targetElement.getStereoTypes().add(stereoType);
 
 		//rule.setTargetElement(targetElement);
 		return rule;
