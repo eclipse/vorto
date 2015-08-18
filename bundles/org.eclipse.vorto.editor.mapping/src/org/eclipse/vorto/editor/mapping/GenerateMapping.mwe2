@@ -30,8 +30,8 @@ Workflow {
 		scanClassPath  = true
 		platformUri = "${runtimeProject}/.."
 
-		//registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.mapping.MappingPackage"
-		//registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
+		registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.mapping.MappingPackage"
+		registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
 				
 		registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage"
 		registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Functionblock.genmodel"
@@ -70,7 +70,7 @@ Workflow {
     		fragment = grammarAccess.GrammarAccessFragment auto-inject {}
     
     		// generates Java API for the generated EPackages
-    		fragment = ecore.EMFGeneratorFragment auto-inject {}
+    		//fragment = ecore.EMFGeneratorFragment auto-inject {}
     
     		// the old serialization component
     		// fragment = parseTreeConstructor.ParseTreeConstructorFragment auto-inject {}    

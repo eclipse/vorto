@@ -14,7 +14,7 @@
 *******************************************************************************/
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
-generate Mapping "http://www.eclipse.org/vorto/metamodel/Mapping"
+import "http://www.eclipse.org/vorto/metamodel/Mapping"
 import "http://www.eclipse.org/vorto/metamodel/InformationModel" as infomodel
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
