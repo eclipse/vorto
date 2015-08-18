@@ -75,6 +75,12 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setLinewrap(1).before(k)
 			c.setNoLinewrap.after(k)
 		}
+		
+		for (Keyword k : findKeywords("ref")) {
+			c.setLinewrap(1).before(k)
+			c.setNoLinewrap.after(k)
+		}
+				
 		for (Keyword k : f.stereoTypeAccess.findKeywords("with")) {
 			c.setNoLinewrap.before(k)
 			c.setNoLinewrap.after(k)
