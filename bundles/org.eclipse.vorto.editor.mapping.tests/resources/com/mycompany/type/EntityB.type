@@ -1,0 +1,7 @@
+namespace com.mycompany.type
+version 1.0.0
+using com.mycompany.type.EntityC ; 1.0.0
+entity EntityB
+{
+	optional entityC as EntityC
+}
