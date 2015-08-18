@@ -14,7 +14,7 @@
 *******************************************************************************/
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
-import "http://www.eclipse.org/vorto/metamodel/Mapping"
+generate Mapping "http://www.eclipse.org/vorto/metamodel/Mapping"
 import "http://www.eclipse.org/vorto/metamodel/InformationModel" as infomodel
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
@@ -29,25 +29,22 @@ MappingModel:
 		
 		(infoModelMappingRules+=InfoModelMappingRule)*
 		
-		(
-		'functionblock' '{'
-			(functionBlockMappingRules +=FunctionBlockMappingRule)*
-		'}'
-		)?
+		(functionBlockMappings+=FunctionBlockMapping)*
 		
-		(
-		'datatype' '{'
-			(dataTypeMappingRules +=DataTypeMappingRule)*
-		'}'
-		)?		
+		(dataTypeMappings+=DataTypeMapping)*
 	'}';
 
 
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 InfoModelMappingRule:
 	'from' infoModelSourceElements+=InfoModelSourceElement (',' infoModelSourceElements+=InfoModelSourceElement)*
-	'to' targetElement=TargetElement;
- 	
+	target = InfoModelTargetElement
+;
+
+InfoModelTargetElement:
+	StereoTypeReference | FunctionBlockReference
+;
+	
 InfoModelSourceElement:
 	infoModel=[infomodel::InformationModel]  (infoModelChild = InfoModelChild)?
 ;
@@ -71,9 +68,20 @@ enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 
 
 
 /*----------------------Start Function Block Mapping Definition---------------------------*/
+FunctionBlockMapping:
+{FunctionBlockMapping}
+	'functionblock' name=ID  '{'
+			(functionBlockMappingRules +=FunctionBlockMappingRule)*
+	'}'	
+;
+
 FunctionBlockMappingRule:
 	'from' functionBlockSourceElements+=FunctionBlockSourceElement (',' functionBlockSourceElements+=FunctionBlockSourceElement)*
-	'to' targetElement=TargetElement;
+	target = FunctionBlockTargetElement;
+
+FunctionBlockTargetElement:
+	StereoTypeReference | DataTypeReference
+;
 		
 FunctionBlockSourceElement:
 	functionblock = [functionblock::FunctionblockModel]  (functionBlockElement = FunctionBlockElement)?
@@ -129,9 +137,19 @@ enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  v
 /*----------------------End Function Block Mapping Definition---------------------------*/
 
 /*----------------------Start Entity Mapping Definition---------------------------*/
+DataTypeMapping:
+	'datatype' name=ID  '{'
+		(datatypeMappingRules +=DataTypeMappingRule)*
+	'}'	
+;
+
 DataTypeMappingRule:
 	'from' dataTypeMappingElements+=DataTypeSourceElement (',' DataTypeSourceElement+=DataTypeSourceElement)*
-	'to' targetElement=TargetElement;	
+	targetElement=DataTypeTargetElement;	
+
+DataTypeTargetElement:
+	StereoTypeReference | DataTypeReference
+;
 
 DataTypeSourceElement:
 	DataTypePropertyElement | NestedEntityExpression
@@ -155,8 +173,26 @@ DataTypeAttribute:
 
 /*----------------------End Entity Mapping Definition---------------------------*/
 
+/*----------------------Start Reference Element Definition---------------------------*/
+FunctionBlockReference:
+	{FunctionBlockReference}
+	'ref' reference=  [FunctionBlockMapping]
+;
+
+DataTypeReference:
+	{DataTypeReference}
+	'ref' reference=  [DataTypeMapping]	
+;
+
+/*----------------------End Reference Element Definition---------------------------*/	
+	
+	
 /*----------------------Start Target Element Definition---------------------------*/
-TargetElement:
+StereoTypeReference:
+	'to' targetElement=StereoTypeElement
+;
+
+StereoTypeElement:
 	stereoTypes+=StereoType (',' stereoTypes+=StereoType)*;
 
 StereoType:

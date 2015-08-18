@@ -11,11 +11,11 @@ import org.eclipse.vorto.core.api.model.datatype.Property;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression#getRef <em>Ref</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression#getTail <em>Tail</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getNestedEntityExpression()
  * @model

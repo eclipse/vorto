@@ -13,12 +13,12 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule#getDataTypeMappingElements <em>Data Type Mapping Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule#getDataTypeSourceElement <em>Data Type Source Element</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule#getTargetElement <em>Target Element</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getDataTypeMappingRule()
  * @model
@@ -66,12 +66,12 @@ public interface DataTypeMappingRule extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Target Element</em>' containment reference.
-	 * @see #setTargetElement(TargetElement)
+	 * @see #setTargetElement(DataTypeTargetElement)
 	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getDataTypeMappingRule_TargetElement()
 	 * @model containment="true"
 	 * @generated
 	 */
-	TargetElement getTargetElement();
+	DataTypeTargetElement getTargetElement();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule#getTargetElement <em>Target Element</em>}' containment reference.
@@ -81,6 +81,6 @@ public interface DataTypeMappingRule extends EObject {
 	 * @see #getTargetElement()
 	 * @generated
 	 */
-	void setTargetElement(TargetElement value);
+	void setTargetElement(DataTypeTargetElement value);
 
 } // DataTypeMappingRule

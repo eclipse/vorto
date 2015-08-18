@@ -10,11 +10,11 @@ package org.eclipse.vorto.core.api.model.mapping;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getTypeRef <em>Type Ref</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockChildElement()
  * @model

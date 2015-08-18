@@ -13,10 +13,10 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.OperationElement#getOperation <em>Operation</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getOperationElement()
  * @model

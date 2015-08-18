@@ -40,6 +40,15 @@ public interface MappingFactory extends EFactory {
 	InfoModelMappingRule createInfoModelMappingRule();
 
 	/**
+	 * Returns a new object of class '<em>Info Model Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Info Model Target Element</em>'.
+	 * @generated
+	 */
+	InfoModelTargetElement createInfoModelTargetElement();
+
+	/**
 	 * Returns a new object of class '<em>Info Model Source Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -76,6 +85,15 @@ public interface MappingFactory extends EFactory {
 	InformationModelProperty createInformationModelProperty();
 
 	/**
+	 * Returns a new object of class '<em>Function Block Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Mapping</em>'.
+	 * @generated
+	 */
+	FunctionBlockMapping createFunctionBlockMapping();
+
+	/**
 	 * Returns a new object of class '<em>Function Block Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -83,6 +101,15 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	FunctionBlockMappingRule createFunctionBlockMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Function Block Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Function Block Target Element</em>'.
+	 * @generated
+	 */
+	FunctionBlockTargetElement createFunctionBlockTargetElement();
 
 	/**
 	 * Returns a new object of class '<em>Function Block Source Element</em>'.
@@ -193,6 +220,15 @@ public interface MappingFactory extends EFactory {
 	FBTypeProperty createFBTypeProperty();
 
 	/**
+	 * Returns a new object of class '<em>Data Type Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Mapping</em>'.
+	 * @generated
+	 */
+	DataTypeMapping createDataTypeMapping();
+
+	/**
 	 * Returns a new object of class '<em>Data Type Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -200,6 +236,15 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	DataTypeMappingRule createDataTypeMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Target Element</em>'.
+	 * @generated
+	 */
+	DataTypeTargetElement createDataTypeTargetElement();
 
 	/**
 	 * Returns a new object of class '<em>Data Type Source Element</em>'.
@@ -238,13 +283,40 @@ public interface MappingFactory extends EFactory {
 	DataTypeAttribute createDataTypeAttribute();
 
 	/**
-	 * Returns a new object of class '<em>Target Element</em>'.
+	 * Returns a new object of class '<em>Function Block Reference</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Target Element</em>'.
+	 * @return a new object of class '<em>Function Block Reference</em>'.
 	 * @generated
 	 */
-	TargetElement createTargetElement();
+	FunctionBlockReference createFunctionBlockReference();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Reference</em>'.
+	 * @generated
+	 */
+	DataTypeReference createDataTypeReference();
+
+	/**
+	 * Returns a new object of class '<em>Stereo Type Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Stereo Type Reference</em>'.
+	 * @generated
+	 */
+	StereoTypeReference createStereoTypeReference();
+
+	/**
+	 * Returns a new object of class '<em>Stereo Type Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Stereo Type Element</em>'.
+	 * @generated
+	 */
+	StereoTypeElement createStereoTypeElement();
 
 	/**
 	 * Returns a new object of class '<em>Stereo Type</em>'.

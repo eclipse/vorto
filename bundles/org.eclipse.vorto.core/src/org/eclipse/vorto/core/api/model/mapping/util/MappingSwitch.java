@@ -49,7 +49,7 @@ public class MappingSwitch<T> extends Switch<T> {
 	 * Checks whether this is a switch for the given package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @parameter ePackage the package in question.
+	 * @param ePackage the package in question.
 	 * @return whether this is a switch for the given package.
 	 * @generated
 	 */
@@ -81,6 +81,12 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case MappingPackage.INFO_MODEL_TARGET_ELEMENT: {
+				InfoModelTargetElement infoModelTargetElement = (InfoModelTargetElement)theEObject;
+				T result = caseInfoModelTargetElement(infoModelTargetElement);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case MappingPackage.INFO_MODEL_SOURCE_ELEMENT: {
 				InfoModelSourceElement infoModelSourceElement = (InfoModelSourceElement)theEObject;
 				T result = caseInfoModelSourceElement(infoModelSourceElement);
@@ -107,9 +113,21 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case MappingPackage.FUNCTION_BLOCK_MAPPING: {
+				FunctionBlockMapping functionBlockMapping = (FunctionBlockMapping)theEObject;
+				T result = caseFunctionBlockMapping(functionBlockMapping);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE: {
 				FunctionBlockMappingRule functionBlockMappingRule = (FunctionBlockMappingRule)theEObject;
 				T result = caseFunctionBlockMappingRule(functionBlockMappingRule);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.FUNCTION_BLOCK_TARGET_ELEMENT: {
+				FunctionBlockTargetElement functionBlockTargetElement = (FunctionBlockTargetElement)theEObject;
+				T result = caseFunctionBlockTargetElement(functionBlockTargetElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -196,9 +214,21 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case MappingPackage.DATA_TYPE_MAPPING: {
+				DataTypeMapping dataTypeMapping = (DataTypeMapping)theEObject;
+				T result = caseDataTypeMapping(dataTypeMapping);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case MappingPackage.DATA_TYPE_MAPPING_RULE: {
 				DataTypeMappingRule dataTypeMappingRule = (DataTypeMappingRule)theEObject;
 				T result = caseDataTypeMappingRule(dataTypeMappingRule);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.DATA_TYPE_TARGET_ELEMENT: {
+				DataTypeTargetElement dataTypeTargetElement = (DataTypeTargetElement)theEObject;
+				T result = caseDataTypeTargetElement(dataTypeTargetElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -229,9 +259,33 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.TARGET_ELEMENT: {
-				TargetElement targetElement = (TargetElement)theEObject;
-				T result = caseTargetElement(targetElement);
+			case MappingPackage.FUNCTION_BLOCK_REFERENCE: {
+				FunctionBlockReference functionBlockReference = (FunctionBlockReference)theEObject;
+				T result = caseFunctionBlockReference(functionBlockReference);
+				if (result == null) result = caseInfoModelTargetElement(functionBlockReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.DATA_TYPE_REFERENCE: {
+				DataTypeReference dataTypeReference = (DataTypeReference)theEObject;
+				T result = caseDataTypeReference(dataTypeReference);
+				if (result == null) result = caseFunctionBlockTargetElement(dataTypeReference);
+				if (result == null) result = caseDataTypeTargetElement(dataTypeReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.STEREO_TYPE_REFERENCE: {
+				StereoTypeReference stereoTypeReference = (StereoTypeReference)theEObject;
+				T result = caseStereoTypeReference(stereoTypeReference);
+				if (result == null) result = caseInfoModelTargetElement(stereoTypeReference);
+				if (result == null) result = caseFunctionBlockTargetElement(stereoTypeReference);
+				if (result == null) result = caseDataTypeTargetElement(stereoTypeReference);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.STEREO_TYPE_ELEMENT: {
+				StereoTypeElement stereoTypeElement = (StereoTypeElement)theEObject;
+				T result = caseStereoTypeElement(stereoTypeElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -298,6 +352,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Info Model Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Info Model Target Element</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseInfoModelTargetElement(InfoModelTargetElement object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Info Model Source Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -358,6 +427,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Mapping</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFunctionBlockMapping(FunctionBlockMapping object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Function Block Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -369,6 +453,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseFunctionBlockMappingRule(FunctionBlockMappingRule object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Target Element</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseFunctionBlockTargetElement(FunctionBlockTargetElement object) {
 		return null;
 	}
 
@@ -553,6 +652,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Data Type Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Data Type Mapping</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDataTypeMapping(DataTypeMapping object) {
+		return null;
+	}
+
+	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Data Type Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -564,6 +678,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseDataTypeMappingRule(DataTypeMappingRule object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Data Type Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Data Type Target Element</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDataTypeTargetElement(DataTypeTargetElement object) {
 		return null;
 	}
 
@@ -628,17 +757,62 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Target Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Reference</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Target Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Reference</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseTargetElement(TargetElement object) {
+	public T caseFunctionBlockReference(FunctionBlockReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Data Type Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Data Type Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDataTypeReference(DataTypeReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Stereo Type Reference</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStereoTypeReference(StereoTypeReference object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Stereo Type Element</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStereoTypeElement(StereoTypeElement object) {
 		return null;
 	}
 

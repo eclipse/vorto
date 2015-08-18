@@ -158,8 +158,7 @@ public class CodeGeneratorWithMappingsTest {
 
 	private static InfoModelMappingRule createeRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
-		TargetElement targetElement = MappingFactory.eINSTANCE
-				.createTargetElement();
+		TargetElement targetElement = null;
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("type");
@@ -175,7 +174,7 @@ public class CodeGeneratorWithMappingsTest {
 
 		targetElement.getStereoTypes().add(stereoType);
 
-		rule.setTargetElement(targetElement);
+		//rule.setTargetElement(targetElement);
 		return rule;
 	}
 

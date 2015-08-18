@@ -23,11 +23,11 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FBTypeElementImpl#getProperty <em>Property</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FBTypeElementImpl#getChild <em>Child</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

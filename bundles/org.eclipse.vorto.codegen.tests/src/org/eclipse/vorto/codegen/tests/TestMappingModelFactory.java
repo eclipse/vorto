@@ -20,7 +20,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.TargetElement;
-import org.junit.Rule;
 
 public class TestMappingModelFactory {
 	public static MappingModel createRuleModel() {
@@ -34,8 +33,7 @@ public class TestMappingModelFactory {
 
 	private static InfoModelMappingRule createChannelTypeRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
-		TargetElement targetElement = MappingFactory.eINSTANCE
-				.createTargetElement();
+		TargetElement targetElement = null;
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("itemType");
@@ -51,14 +49,13 @@ public class TestMappingModelFactory {
 
 		targetElement.getStereoTypes().add(stereoType);
 
-		rule.setTargetElement(targetElement);
+		//rule.setTargetElement(targetElement);
 		return rule;
 	}
 
 	private static InfoModelMappingRule createConfigurationRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
-		TargetElement targetElement = MappingFactory.eINSTANCE
-				.createTargetElement();
+		TargetElement targetElement = null;
 		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
 
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
@@ -75,7 +72,7 @@ public class TestMappingModelFactory {
 
 		targetElement.getStereoTypes().add(stereoType);
 
-		rule.setTargetElement(targetElement);
+		//rule.setTargetElement(targetElement);
 
 		return rule;
 	}

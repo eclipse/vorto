@@ -11,8 +11,6 @@ import org.eclipse.vorto.core.api.model.mapping.StatusElement;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Status Element</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

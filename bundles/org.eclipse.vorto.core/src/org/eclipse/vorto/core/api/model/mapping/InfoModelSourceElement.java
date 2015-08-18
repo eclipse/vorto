@@ -13,11 +13,11 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement#getInfoModel <em>Info Model</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement#getInfoModelChild <em>Info Model Child</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelSourceElement()
  * @model

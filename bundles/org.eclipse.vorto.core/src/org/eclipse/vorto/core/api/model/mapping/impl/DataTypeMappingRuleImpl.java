@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.DataTypeSourceElement;
+import org.eclipse.vorto.core.api.model.mapping.DataTypeTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,12 +29,12 @@ import org.eclipse.vorto.core.api.model.mapping.TargetElement;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.DataTypeMappingRuleImpl#getDataTypeMappingElements <em>Data Type Mapping Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.DataTypeMappingRuleImpl#getDataTypeSourceElement <em>Data Type Source Element</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.DataTypeMappingRuleImpl#getTargetElement <em>Target Element</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -67,7 +67,7 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 	 * @generated
 	 * @ordered
 	 */
-	protected TargetElement targetElement;
+	protected DataTypeTargetElement targetElement;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -117,7 +117,7 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TargetElement getTargetElement() {
+	public DataTypeTargetElement getTargetElement() {
 		return targetElement;
 	}
 
@@ -126,8 +126,8 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTargetElement(TargetElement newTargetElement, NotificationChain msgs) {
-		TargetElement oldTargetElement = targetElement;
+	public NotificationChain basicSetTargetElement(DataTypeTargetElement newTargetElement, NotificationChain msgs) {
+		DataTypeTargetElement oldTargetElement = targetElement;
 		targetElement = newTargetElement;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.DATA_TYPE_MAPPING_RULE__TARGET_ELEMENT, oldTargetElement, newTargetElement);
@@ -141,7 +141,7 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTargetElement(TargetElement newTargetElement) {
+	public void setTargetElement(DataTypeTargetElement newTargetElement) {
 		if (newTargetElement != targetElement) {
 			NotificationChain msgs = null;
 			if (targetElement != null)
@@ -209,7 +209,7 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 				getDataTypeSourceElement().addAll((Collection<? extends DataTypeSourceElement>)newValue);
 				return;
 			case MappingPackage.DATA_TYPE_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)newValue);
+				setTargetElement((DataTypeTargetElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -230,7 +230,7 @@ public class DataTypeMappingRuleImpl extends MinimalEObjectImpl.Container implem
 				getDataTypeSourceElement().clear();
 				return;
 			case MappingPackage.DATA_TYPE_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)null);
+				setTargetElement((DataTypeTargetElement)null);
 				return;
 		}
 		super.eUnset(featureID);

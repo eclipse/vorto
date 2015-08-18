@@ -35,12 +35,12 @@ public class DefaultMappingRule implements IMappingRule {
 
 	@Override
 	public StereoType getStereoType(String stereoTypeName) {
-		for (StereoType stereoType : this.rule.getTargetElement()
+		/*for (StereoType stereoType : this.rule.getTargetElement()
 				.getStereoTypes()) {
 			if (stereoType.getName().equals(stereoTypeName)) {
 				return stereoType;
 			}
-		}
+		}*/
 		return null;
 	}
 

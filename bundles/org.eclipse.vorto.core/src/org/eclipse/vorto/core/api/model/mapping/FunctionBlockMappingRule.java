@@ -13,11 +13,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule#getFunctionBlockSourceElements <em>Function Block Source Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockMappingRule()
  * @model
@@ -41,29 +41,29 @@ public interface FunctionBlockMappingRule extends EObject {
 	EList<FunctionBlockSourceElement> getFunctionBlockSourceElements();
 
 	/**
-	 * Returns the value of the '<em><b>Target Element</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Target</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Target Element</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Target</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Target Element</em>' containment reference.
-	 * @see #setTargetElement(TargetElement)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockMappingRule_TargetElement()
+	 * @return the value of the '<em>Target</em>' containment reference.
+	 * @see #setTarget(FunctionBlockTargetElement)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockMappingRule_Target()
 	 * @model containment="true"
 	 * @generated
 	 */
-	TargetElement getTargetElement();
+	FunctionBlockTargetElement getTarget();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule#getTargetElement <em>Target Element</em>}' containment reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule#getTarget <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Target Element</em>' containment reference.
-	 * @see #getTargetElement()
+	 * @param value the new value of the '<em>Target</em>' containment reference.
+	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTargetElement(TargetElement value);
+	void setTarget(FunctionBlockTargetElement value);
 
 } // FunctionBlockMappingRule

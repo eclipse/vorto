@@ -11,11 +11,11 @@ import org.eclipse.vorto.core.api.model.datatype.Type;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.DataTypePropertyElement#getTypeRef <em>Type Ref</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.DataTypePropertyElement#getAttribute <em>Attribute</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getDataTypePropertyElement()
  * @model
