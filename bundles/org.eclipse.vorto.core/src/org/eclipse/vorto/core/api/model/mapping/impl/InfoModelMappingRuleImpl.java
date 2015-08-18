@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,11 +29,11 @@ import org.eclipse.vorto.core.api.model.mapping.TargetElement;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getInfoModelSourceElements <em>Info Model Source Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -49,14 +49,14 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	protected EList<InfoModelSourceElement> infoModelSourceElements;
 
 	/**
-	 * The cached value of the '{@link #getTargetElement() <em>Target Element</em>}' containment reference.
+	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTargetElement()
+	 * @see #getTarget()
 	 * @generated
 	 * @ordered
 	 */
-	protected TargetElement targetElement;
+	protected InfoModelTargetElement target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -94,8 +94,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TargetElement getTargetElement() {
-		return targetElement;
+	public InfoModelTargetElement getTarget() {
+		return target;
 	}
 
 	/**
@@ -103,11 +103,11 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTargetElement(TargetElement newTargetElement, NotificationChain msgs) {
-		TargetElement oldTargetElement = targetElement;
-		targetElement = newTargetElement;
+	public NotificationChain basicSetTarget(InfoModelTargetElement newTarget, NotificationChain msgs) {
+		InfoModelTargetElement oldTarget = target;
+		target = newTarget;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT, oldTargetElement, newTargetElement);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET, oldTarget, newTarget);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -118,18 +118,18 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTargetElement(TargetElement newTargetElement) {
-		if (newTargetElement != targetElement) {
+	public void setTarget(InfoModelTargetElement newTarget) {
+		if (newTarget != target) {
 			NotificationChain msgs = null;
-			if (targetElement != null)
-				msgs = ((InternalEObject)targetElement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			if (newTargetElement != null)
-				msgs = ((InternalEObject)newTargetElement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			msgs = basicSetTargetElement(newTargetElement, msgs);
+			if (target != null)
+				msgs = ((InternalEObject)target).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET, null, msgs);
+			if (newTarget != null)
+				msgs = ((InternalEObject)newTarget).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET, null, msgs);
+			msgs = basicSetTarget(newTarget, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT, newTargetElement, newTargetElement));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET, newTarget, newTarget));
 	}
 
 	/**
@@ -142,8 +142,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
 				return ((InternalEList<?>)getInfoModelSourceElements()).basicRemove(otherEnd, msgs);
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT:
-				return basicSetTargetElement(null, msgs);
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
+				return basicSetTarget(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -158,8 +158,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
 				return getInfoModelSourceElements();
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT:
-				return getTargetElement();
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
+				return getTarget();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -177,8 +177,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 				getInfoModelSourceElements().clear();
 				getInfoModelSourceElements().addAll((Collection<? extends InfoModelSourceElement>)newValue);
 				return;
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)newValue);
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
+				setTarget((InfoModelTargetElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -195,8 +195,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
 				getInfoModelSourceElements().clear();
 				return;
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)null);
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
+				setTarget((InfoModelTargetElement)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -212,8 +212,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
 				return infoModelSourceElements != null && !infoModelSourceElements.isEmpty();
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET_ELEMENT:
-				return targetElement != null;
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
+				return target != null;
 		}
 		return super.eIsSet(featureID);
 	}

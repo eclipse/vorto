@@ -13,8 +13,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>FB Type Element Child</b></em>'.
  * <!-- end-user-doc -->
- * <p>
- * </p>
  *
  * @generated
  */

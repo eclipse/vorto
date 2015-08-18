@@ -13,11 +13,11 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement#getFunctionblock <em>Functionblock</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement#getFunctionBlockElement <em>Function Block Element</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockSourceElement()
  * @model

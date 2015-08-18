@@ -18,22 +18,22 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Target Element</b></em>'.
+ * An implementation of the model object '<em><b>Stereo Type Element</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.TargetElementImpl#getStereoTypes <em>Stereo Types</em>}</li>
- * </ul>
  * </p>
+ * <ul>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.StereoTypeElementImpl#getStereoTypes <em>Stereo Types</em>}</li>
+ * </ul>
  *
  * @generated
  */
-public class TargetElementImpl extends MinimalEObjectImpl.Container implements TargetElement {
+public class StereoTypeElementImpl extends MinimalEObjectImpl.Container implements StereoTypeElement {
 	/**
 	 * The cached value of the '{@link #getStereoTypes() <em>Stereo Types</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
@@ -49,7 +49,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected TargetElementImpl() {
+	protected StereoTypeElementImpl() {
 		super();
 	}
 
@@ -60,7 +60,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return MappingPackage.Literals.TARGET_ELEMENT;
+		return MappingPackage.Literals.STEREO_TYPE_ELEMENT;
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	 */
 	public EList<StereoType> getStereoTypes() {
 		if (stereoTypes == null) {
-			stereoTypes = new EObjectContainmentEList<StereoType>(StereoType.class, this, MappingPackage.TARGET_ELEMENT__STEREO_TYPES);
+			stereoTypes = new EObjectContainmentEList<StereoType>(StereoType.class, this, MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES);
 		}
 		return stereoTypes;
 	}
@@ -83,7 +83,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case MappingPackage.TARGET_ELEMENT__STEREO_TYPES:
+			case MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES:
 				return ((InternalEList<?>)getStereoTypes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -97,7 +97,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.TARGET_ELEMENT__STEREO_TYPES:
+			case MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES:
 				return getStereoTypes();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -112,7 +112,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.TARGET_ELEMENT__STEREO_TYPES:
+			case MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES:
 				getStereoTypes().clear();
 				getStereoTypes().addAll((Collection<? extends StereoType>)newValue);
 				return;
@@ -128,7 +128,7 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.TARGET_ELEMENT__STEREO_TYPES:
+			case MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES:
 				getStereoTypes().clear();
 				return;
 		}
@@ -143,10 +143,10 @@ public class TargetElementImpl extends MinimalEObjectImpl.Container implements T
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.TARGET_ELEMENT__STEREO_TYPES:
+			case MappingPackage.STEREO_TYPE_ELEMENT__STEREO_TYPES:
 				return stereoTypes != null && !stereoTypes.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //TargetElementImpl
+} //StereoTypeElementImpl

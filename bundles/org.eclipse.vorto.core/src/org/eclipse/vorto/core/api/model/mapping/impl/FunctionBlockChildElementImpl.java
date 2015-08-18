@@ -21,11 +21,11 @@ import org.eclipse.vorto.core.api.model.mapping.OperationElement;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockChildElementImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockChildElementImpl#getTypeRef <em>Type Ref</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -145,7 +145,7 @@ public class DefaultMappingRules implements IMappingRules {
 	@Override
 	public List<IMappingRule> getRulesContainStereoType(String stereoTypeName) {
 		List<IMappingRule> mappingRules = new ArrayList<>();
-		for (InfoModelMappingRule rule : this.mappingModel.getInfoModelMappingRules()) {
+		/*for (InfoModelMappingRule rule : this.mappingModel.getInfoModelMappingRules()) {
 			for (StereoType stereoType : rule.getTargetElement()
 					.getStereoTypes()) {
 				if (stereoType.getName().equals(stereoTypeName)) {
@@ -153,7 +153,7 @@ public class DefaultMappingRules implements IMappingRules {
 					break;
 				}
 			}
-		}
+		}*/
 		return mappingRules;
 	}
 }

@@ -28,11 +28,11 @@ import org.eclipse.vorto.core.api.model.mapping.StereoType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.StereoTypeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.StereoTypeImpl#getAttributes <em>Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

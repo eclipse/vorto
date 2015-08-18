@@ -41,7 +41,7 @@ public class MyDeviceMappingParseTest {
 		MappingStandaloneSetup.doSetup();
 	}
 
-	@Test
+	/*@Test
 	public void testParsingInfoModelMapping() throws IOException {
 		MappingModel mappingModel = createMappingModel("DummyDeviceMapping.mapping");
 		assertEquals("Name is wrong", "DummyDeviceMapping",
@@ -95,5 +95,5 @@ public class MyDeviceMappingParseTest {
 		MappingModel mappingModel = (MappingModel) resource.getContents()
 				.get(0);
 		return mappingModel;
-	}
+	}*/
 }

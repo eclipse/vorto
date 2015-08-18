@@ -13,11 +13,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getInfoModelSourceElements <em>Info Model Source Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelMappingRule()
  * @model
@@ -41,29 +41,29 @@ public interface InfoModelMappingRule extends EObject {
 	EList<InfoModelSourceElement> getInfoModelSourceElements();
 
 	/**
-	 * Returns the value of the '<em><b>Target Element</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Target</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Target Element</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Target</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Target Element</em>' containment reference.
-	 * @see #setTargetElement(TargetElement)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelMappingRule_TargetElement()
+	 * @return the value of the '<em>Target</em>' containment reference.
+	 * @see #setTarget(InfoModelTargetElement)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelMappingRule_Target()
 	 * @model containment="true"
 	 * @generated
 	 */
-	TargetElement getTargetElement();
+	InfoModelTargetElement getTarget();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getTargetElement <em>Target Element</em>}' containment reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getTarget <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Target Element</em>' containment reference.
-	 * @see #getTargetElement()
+	 * @param value the new value of the '<em>Target</em>' containment reference.
+	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTargetElement(TargetElement value);
+	void setTarget(InfoModelTargetElement value);
 
 } // InfoModelMappingRule

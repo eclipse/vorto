@@ -11,11 +11,11 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement#getFunctionblock <em>Functionblock</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement#getFunctionBlockElement <em>Function Block Element</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelFbElement()
  * @model

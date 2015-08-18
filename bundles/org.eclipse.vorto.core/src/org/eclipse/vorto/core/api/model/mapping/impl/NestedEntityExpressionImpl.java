@@ -22,11 +22,11 @@ import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.NestedEntityExpressionImpl#getRef <em>Ref</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.NestedEntityExpressionImpl#getTail <em>Tail</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

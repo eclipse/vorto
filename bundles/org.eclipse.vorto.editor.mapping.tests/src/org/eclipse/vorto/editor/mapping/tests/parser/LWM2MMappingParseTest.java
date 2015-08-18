@@ -34,7 +34,7 @@ public class LWM2MMappingParseTest {
 		MappingStandaloneSetup.doSetup();
 	}
 
-	@Test
+/*	@Test
 	public void parseLWM2MMapping() throws IOException {
 		MappingModel lwMapping = this.loadMappingModel();
 
@@ -113,5 +113,5 @@ public class LWM2MMappingParseTest {
 		MappingModel mappingModel = (MappingModel) resource.getContents()
 				.get(0);
 		return mappingModel;
-	}
+	}*/
 }

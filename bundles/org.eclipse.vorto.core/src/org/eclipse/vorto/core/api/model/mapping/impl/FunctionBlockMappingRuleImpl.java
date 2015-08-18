@@ -20,8 +20,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
 
 /**
  * <!-- begin-user-doc -->
@@ -29,11 +29,11 @@ import org.eclipse.vorto.core.api.model.mapping.TargetElement;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getFunctionBlockSourceElements <em>Function Block Source Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -49,14 +49,14 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	protected EList<FunctionBlockSourceElement> functionBlockSourceElements;
 
 	/**
-	 * The cached value of the '{@link #getTargetElement() <em>Target Element</em>}' containment reference.
+	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTargetElement()
+	 * @see #getTarget()
 	 * @generated
 	 * @ordered
 	 */
-	protected TargetElement targetElement;
+	protected FunctionBlockTargetElement target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -94,8 +94,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public TargetElement getTargetElement() {
-		return targetElement;
+	public FunctionBlockTargetElement getTarget() {
+		return target;
 	}
 
 	/**
@@ -103,11 +103,11 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTargetElement(TargetElement newTargetElement, NotificationChain msgs) {
-		TargetElement oldTargetElement = targetElement;
-		targetElement = newTargetElement;
+	public NotificationChain basicSetTarget(FunctionBlockTargetElement newTarget, NotificationChain msgs) {
+		FunctionBlockTargetElement oldTarget = target;
+		target = newTarget;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT, oldTargetElement, newTargetElement);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET, oldTarget, newTarget);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -118,18 +118,18 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTargetElement(TargetElement newTargetElement) {
-		if (newTargetElement != targetElement) {
+	public void setTarget(FunctionBlockTargetElement newTarget) {
+		if (newTarget != target) {
 			NotificationChain msgs = null;
-			if (targetElement != null)
-				msgs = ((InternalEObject)targetElement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			if (newTargetElement != null)
-				msgs = ((InternalEObject)newTargetElement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			msgs = basicSetTargetElement(newTargetElement, msgs);
+			if (target != null)
+				msgs = ((InternalEObject)target).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET, null, msgs);
+			if (newTarget != null)
+				msgs = ((InternalEObject)newTarget).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET, null, msgs);
+			msgs = basicSetTarget(newTarget, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT, newTargetElement, newTargetElement));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET, newTarget, newTarget));
 	}
 
 	/**
@@ -142,8 +142,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 		switch (featureID) {
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
 				return ((InternalEList<?>)getFunctionBlockSourceElements()).basicRemove(otherEnd, msgs);
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT:
-				return basicSetTargetElement(null, msgs);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
+				return basicSetTarget(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -158,8 +158,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 		switch (featureID) {
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
 				return getFunctionBlockSourceElements();
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT:
-				return getTargetElement();
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
+				return getTarget();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -177,8 +177,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 				getFunctionBlockSourceElements().clear();
 				getFunctionBlockSourceElements().addAll((Collection<? extends FunctionBlockSourceElement>)newValue);
 				return;
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)newValue);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
+				setTarget((FunctionBlockTargetElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -195,8 +195,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
 				getFunctionBlockSourceElements().clear();
 				return;
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((TargetElement)null);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
+				setTarget((FunctionBlockTargetElement)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -212,8 +212,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 		switch (featureID) {
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
 				return functionBlockSourceElements != null && !functionBlockSourceElements.isEmpty();
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET_ELEMENT:
-				return targetElement != null;
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
+				return target != null;
 		}
 		return super.eIsSet(featureID);
 	}

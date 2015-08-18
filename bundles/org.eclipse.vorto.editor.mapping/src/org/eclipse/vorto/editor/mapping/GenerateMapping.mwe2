@@ -30,8 +30,8 @@ Workflow {
 		scanClassPath  = true
 		platformUri = "${runtimeProject}/.."
 
-		registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.mapping.MappingPackage"
-		registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
+		//registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.mapping.MappingPackage"
+		//registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
 				
 		registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage"
 		registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Functionblock.genmodel"
