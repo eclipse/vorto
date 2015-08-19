@@ -36,6 +36,7 @@ import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
+import org.eclipse.vorto.core.service.IModelProjectService;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 import org.eclipse.vorto.perspective.dnd.IDropAction;
 import org.eclipse.vorto.perspective.function.ModelToDslFunction;
@@ -57,39 +58,73 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 	private static final String SHARED_MODELS_DIR = "src/shared_models/";
 
-	private IModelRepository modelRepo = ModelRepositoryFactory
-			.getModelRepository();
+	private static final String SHARED_MODEL_IS_PROJ_ERROR = "Cannot copy shared model %s to %s, a local project already exist for shared model.";
+
+	private static final String SAVING = "Saving model to %s";
+
+	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
+
+	private IModelProjectService projectService = ModelProjectServiceFactory.getDefault();
 
 	private Function<Model, String> modelToDsl = new ModelToDslFunction();
 
 	private Map<ModelType, String> modelFileExtensionMap = initializeExtensionMap();
 
 	@Override
-	public boolean performDrop(IModelProject receivingProject,
-			Object droppedObject) {
-		Objects.requireNonNull(receivingProject,
-				"receivingProject shouldn't be null.");
-		Objects.requireNonNull(droppedObject,
-				"droppedObject shouldn't be null.");
+	public boolean performDrop(IModelProject receivingProject, Object droppedObject) {
+		Objects.requireNonNull(receivingProject, "receivingProject shouldn't be null.");
+		Objects.requireNonNull(droppedObject, "droppedObject shouldn't be null.");
 
 		ModelResource modelResource = (ModelResource) droppedObject;
 
-		// Download and save model from repository to local project
-		Model droppedObjectModel = saveModelResourceToProject(receivingProject,
-				modelResource.getId());
+		Model droppedObjectModel = downloadAndSaveModel(receivingProject.getProject(), modelResource.getId());
 
-		// Download references also
-		for (ModelReference reference : droppedObjectModel.getReferences()) {
-			saveModelResourceToProject(receivingProject,
-					toModelId(reference, modelResource.getId().getModelType()));
+		if (droppedObjectModel != null) {
+			// Add the dropped model to the receiving project's model
+			addReferenceToModel(receivingProject.getModel(), droppedObjectModel);
+			ModelProjectServiceFactory.getDefault().save(receivingProject);
 		}
 
-		// Add the dropped model to the receiving project's model
-		addReferenceToModel(receivingProject.getModel(), droppedObjectModel);
-
-		ModelProjectServiceFactory.getDefault().save(receivingProject);
-
 		return true;
+	}
+
+	private void addReferenceToModel(Model targetModel, Model modelToBeAdded) {
+		ModelReference referenceToAdd = toModelReference(modelToBeAdded);
+		for (ModelReference modelReference : targetModel.getReferences()) {
+			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
+				return; // model reference already exists
+			}
+		}
+		targetModel.getReferences().add(referenceToAdd);
+		targetModel.eResource().getContents().add(modelToBeAdded);
+	}
+
+	// Download and save model from repository to local project.
+	// It also recursively do the same for the model references.
+	private Model downloadAndSaveModel(IProject project, ModelId modelId) {
+		// Check if we have a local project with that same modelId
+		if (projectService.getProjectByModelId(modelId) == null) {
+			MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+
+			Model model = modelRepo.getModel(modelId);
+			if (model != null) {
+				// Download references also
+				for (ModelReference reference : model.getReferences()) {
+					downloadAndSaveModel(project, toModelId(reference, modelId.getModelType()));
+				}
+
+				saveToProject(project, modelToDsl.apply(model), getFileName(model, modelId.getModelType()));
+			} else {
+				MessageDisplayFactory.getMessageDisplay().displayError(
+						"Model " + modelId.toString() + " not found in repository.");
+			}
+
+			return model;
+		} else {
+			MessageDisplayFactory.getMessageDisplay().displayError(
+					String.format(SHARED_MODEL_IS_PROJ_ERROR, modelId.toString(), project.getName()));
+			return null;
+		}
 	}
 
 	private ModelId toModelId(ModelReference reference, ModelType parentType) {
@@ -97,34 +132,18 @@ public class RepositoryResourceDropAction implements IDropAction {
 		int lastIndex = importedNamespace.lastIndexOf('.');
 		if (lastIndex > 0) {
 			String namespace = importedNamespace.substring(0, lastIndex);
-			String name = importedNamespace.substring(lastIndex + 1,
-					importedNamespace.length());
+			String name = importedNamespace.substring(lastIndex + 1, importedNamespace.length());
 			ModelType modelType = ModelType.DATATYPE;
 			if (parentType == ModelType.INFORMATIONMODEL) {
 				modelType = ModelType.FUNCTIONBLOCK;
 			}
-			return new ModelId(modelType, name, namespace,
-					reference.getVersion());
+			return new ModelId(modelType, name, namespace, reference.getVersion());
 		}
 
-		throw new RuntimeException("Malformed imported namespace = "
-				+ importedNamespace);
+		throw new RuntimeException("Malformed imported namespace = " + importedNamespace);
 	}
 
-	private Model saveModelResourceToProject(IModelProject project,
-			ModelId modelId) {
-		MessageDisplayFactory.getMessageDisplay().display(
-				"Downloading " + modelId.toString());
-		Model model = modelRepo.getModel(modelId);
-
-		saveToProject(project.getProject(), modelToDsl.apply(model),
-				getFileName(model, modelId.getModelType()));
-
-		return model;
-	}
-
-	private void saveToProject(IProject project, String fileAsString,
-			String fileName) {
+	private void saveToProject(IProject project, String fileAsString, String fileName) {
 		assert (project != null);
 		assert (fileAsString != null);
 		assert (fileName != null);
@@ -139,30 +158,17 @@ public class RepositoryResourceDropAction implements IDropAction {
 				file.delete(true, new NullProgressMonitor());
 			}
 
-			file.create(new ByteArrayInputStream(fileAsString.getBytes()),
-					true, new NullProgressMonitor());
+			MessageDisplayFactory.getMessageDisplay().display(String.format(SAVING, file.getFullPath().toString()));
+			file.create(new ByteArrayInputStream(fileAsString.getBytes()), true, new NullProgressMonitor());
 		} catch (CoreException e) {
 			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
 	}
 
-	private void addReferenceToModel(Model targetModel, Model modelToBeAdded) {
-		ModelReference referenceToAdd = toModelReference(modelToBeAdded);
-		for (ModelReference modelReference : targetModel.getReferences()) {
-			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
-				return; // model reference already exists
-			}
-		}
-		targetModel.getReferences().add(referenceToAdd);
-		targetModel.eResource().getContents().add(modelToBeAdded);
-	}
-
 	private ModelReference toModelReference(Model model) {
-		ModelReference reference = ModelFactory.eINSTANCE
-				.createModelReference();
+		ModelReference reference = ModelFactory.eINSTANCE.createModelReference();
 		reference.setVersion(model.getVersion());
-		reference.setImportedNamespace(model.getNamespace() + "."
-				+ model.getName());
+		reference.setImportedNamespace(model.getNamespace() + "." + model.getName());
 
 		return reference;
 	}
