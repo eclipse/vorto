@@ -291,6 +291,14 @@
                id="org.eclipse.vorto.perspective.checkin"
                name="CheckIn">
          </command>
+      </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               class="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
+               id="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
+               name="Vorto">
+         </page>
       </extension>  
      
 </plugin>

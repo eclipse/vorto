@@ -79,7 +79,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 
 	private TableViewer createTableViewer(Composite parent, Button btnSearch) {
 		TableViewer viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL);
+				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		FormData fd_table = new FormData();
 		fd_table.top = new FormAttachment(btnSearch, 2);
@@ -104,8 +104,8 @@ public class ModelRepositoryViewPart extends ViewPart {
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new ModelDragListener(viewer));
 
-		hookContextMenu();
-		hookDoubleClickAction();
+		//hookContextMenu();
+		//hookDoubleClickAction();
 
 		return viewer;
 	}

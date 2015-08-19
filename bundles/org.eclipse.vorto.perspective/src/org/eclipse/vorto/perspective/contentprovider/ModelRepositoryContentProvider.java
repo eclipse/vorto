@@ -1,4 +1,4 @@
-package org.eclipse.vorto.perspective.contentprovider;
+ package org.eclipse.vorto.perspective.contentprovider;
 
 import java.util.Collection;
 
