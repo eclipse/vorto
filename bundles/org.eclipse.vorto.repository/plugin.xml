@@ -6,5 +6,20 @@
       <implementor
             class="org.eclipse.vorto.repository.RestModelRepositoryExtensionFactory"></implementor>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
+            class="org.eclipse.vorto.repository.preferences.RemoteRepositoryPreferencePage"
+            id="org.eclipse.vorto.repository.preferences.RemoteRepositoryPreferencePage"
+            name="Remote Repository">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.vorto.repository.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>
