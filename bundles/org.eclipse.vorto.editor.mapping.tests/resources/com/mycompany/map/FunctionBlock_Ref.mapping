@@ -1,16 +1,14 @@
 namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.fb.NewFunctionBlock;1.0.0
-using com.mycompany.type.EntityA;1.0.0
+using com.mycompany.fb.NewFunctionBlock ; 1.0.0
+using com.mycompany.map.Entity_Attribute ; 1.0.0
+using com.mycompany.map.Enum_Property ; 1.0.0
 
-mapping FunctionBlock_Ref {
-	
-	 datatype EntityAMapping {
-	 	from EntityA.entityB to TargetElementB
-	 }
-	 
-	 functionblock MyFunctionBlockMapping {
-	 	from NewFunctionBlock.configuration.configEntityA ref EntityAMapping
-	 }
-	
+fbmapping FunctionBlock_Ref {
+
+	from NewFunctionBlock.configuration.configEntityA
+	to reference Entity_Attribute
+
+	from NewFunctionBlock.configuration.enumAParam
+	to reference Enum_Property
 }

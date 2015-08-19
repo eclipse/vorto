@@ -57,12 +57,17 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setNoLinewrap.before(k)
 		}
 		
-		for (Keyword k : findKeywords("functionblock")) {
+		for (Keyword k : findKeywords("datamapping")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}
+				
+		for (Keyword k : findKeywords("fbmapping")) {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}
 		
-		for (Keyword k : findKeywords("datatype")) {
+		for (Keyword k : findKeywords("immapping")) {
 			c.setLinewrap(2).before(k)
 			c.setNoLinewrap.after(k)
 		}		
@@ -75,12 +80,7 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 			c.setLinewrap(1).before(k)
 			c.setNoLinewrap.after(k)
 		}
-		
-		for (Keyword k : findKeywords("ref")) {
-			c.setLinewrap(1).before(k)
-			c.setNoLinewrap.after(k)
-		}
-				
+						
 		for (Keyword k : f.stereoTypeAccess.findKeywords("with")) {
 			c.setNoLinewrap.before(k)
 			c.setNoLinewrap.after(k)

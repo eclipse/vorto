@@ -4,8 +4,6 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 import org.eclipse.emf.common.util.EList;
 
-import org.eclipse.emf.ecore.EObject;
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Function Block Mapping</b></em>'.
@@ -15,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping#getFunctionBlockMappingRules <em>Function Block Mapping Rules</em>}</li>
  * </ul>
  *
@@ -23,33 +20,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface FunctionBlockMapping extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockMapping_Name()
-	 * @model
-	 * @generated
-	 */
-	String getName();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping#getName <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
-	 * @generated
-	 */
-	void setName(String value);
-
+public interface FunctionBlockMapping extends MappingType {
 	/**
 	 * Returns the value of the '<em><b>Function Block Mapping Rules</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule}.

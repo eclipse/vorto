@@ -16,7 +16,6 @@
 package org.eclipse.vorto.editor.mapping;
 
 import org.eclipse.vorto.editor.mapping.scoping.MappingScopeProvider;
-import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
 
 /**
@@ -26,10 +25,5 @@ public class MappingRuntimeModule extends org.eclipse.vorto.editor.mapping.Abstr
 	@Override
 	public Class<? extends IScopeProvider> bindIScopeProvider() {
 		return MappingScopeProvider.class;
-	}
-
-	@Override
-	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
-		return QualifiedNameWithVersionProvider.class;
 	}
 }

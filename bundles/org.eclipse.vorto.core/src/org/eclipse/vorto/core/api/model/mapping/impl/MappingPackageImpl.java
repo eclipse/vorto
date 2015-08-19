@@ -18,19 +18,24 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
 
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationElement;
-import org.eclipse.vorto.core.api.model.mapping.DataTypeAttribute;
 import org.eclipse.vorto.core.api.model.mapping.DataTypeMapping;
-import org.eclipse.vorto.core.api.model.mapping.DataTypeMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.DataTypePropertyElement;
 import org.eclipse.vorto.core.api.model.mapping.DataTypeReference;
-import org.eclipse.vorto.core.api.model.mapping.DataTypeSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.DataTypeTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.EntityExpression;
 import org.eclipse.vorto.core.api.model.mapping.EntityExpressionRef;
+import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
+import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement;
+import org.eclipse.vorto.core.api.model.mapping.EntitySourceElement;
+import org.eclipse.vorto.core.api.model.mapping.EntityTargetElement;
+import org.eclipse.vorto.core.api.model.mapping.EnumExpression;
+import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
+import org.eclipse.vorto.core.api.model.mapping.EnumMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement;
+import org.eclipse.vorto.core.api.model.mapping.EnumReference;
+import org.eclipse.vorto.core.api.model.mapping.EnumSourceElement;
+import org.eclipse.vorto.core.api.model.mapping.EnumTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.EventElement;
 import org.eclipse.vorto.core.api.model.mapping.FBTypeElement;
-import org.eclipse.vorto.core.api.model.mapping.FBTypeElementChild;
-import org.eclipse.vorto.core.api.model.mapping.FBTypeProperty;
 import org.eclipse.vorto.core.api.model.mapping.FaultElement;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
@@ -44,6 +49,7 @@ import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelChild;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
@@ -51,6 +57,7 @@ import org.eclipse.vorto.core.api.model.mapping.InformationModelProperty;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingType;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression;
 import org.eclipse.vorto.core.api.model.mapping.OperationElement;
@@ -74,6 +81,20 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * @generated
 	 */
 	private EClass mappingModelEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass mappingTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass infoModelMappingEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -213,49 +234,35 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass fbTypeElementChildEClass = null;
+	private EClass entityMappingEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass fbTypePropertyEClass = null;
+	private EClass entityMappingRuleEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataTypeMappingEClass = null;
+	private EClass entityTargetElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataTypeMappingRuleEClass = null;
+	private EClass entitySourceElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataTypeTargetElementEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass dataTypeSourceElementEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EClass dataTypePropertyElementEClass = null;
+	private EClass entityPropertyElementEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -269,7 +276,49 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass dataTypeAttributeEClass = null;
+	private EClass enumMappingEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumMappingRuleEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumTargetElementEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumSourceElementEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumPropertyElementEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumExpressionEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumReferenceEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -284,6 +333,13 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * @generated
 	 */
 	private EClass dataTypeReferenceEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dataTypeMappingEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -427,7 +483,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMappingModel_InfoModelMappingRules() {
+	public EReference getMappingModel_MappingType() {
 		return (EReference)mappingModelEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -436,8 +492,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMappingModel_FunctionBlockMappings() {
-		return (EReference)mappingModelEClass.getEStructuralFeatures().get(1);
+	public EClass getMappingType() {
+		return mappingTypeEClass;
 	}
 
 	/**
@@ -445,8 +501,26 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMappingModel_DataTypeMappings() {
-		return (EReference)mappingModelEClass.getEStructuralFeatures().get(2);
+	public EAttribute getMappingType_Name() {
+		return (EAttribute)mappingTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getInfoModelMapping() {
+		return infoModelMappingEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getInfoModelMapping_InfoModelMappingRules() {
+		return (EReference)infoModelMappingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -544,15 +618,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getInfoModelFbElement_FunctionBlockElement() {
-		return (EReference)infoModelFbElementEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getInformationModelProperty() {
 		return informationModelPropertyEClass;
 	}
@@ -580,17 +645,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFunctionBlockMapping_Name() {
-		return (EAttribute)functionBlockMappingEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getFunctionBlockMapping_FunctionBlockMappingRules() {
-		return (EReference)functionBlockMappingEClass.getEStructuralFeatures().get(1);
+		return (EReference)functionBlockMappingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -796,8 +852,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFBTypeElement_Child() {
-		return (EReference)fbTypeElementEClass.getEStructuralFeatures().get(1);
+	public EClass getEntityMapping() {
+		return entityMappingEClass;
 	}
 
 	/**
@@ -805,8 +861,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getFBTypeElementChild() {
-		return fbTypeElementChildEClass;
+	public EReference getEntityMapping_EntityMappingRules() {
+		return (EReference)entityMappingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -814,8 +870,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getFBTypeProperty() {
-		return fbTypePropertyEClass;
+	public EClass getEntityMappingRule() {
+		return entityMappingRuleEClass;
 	}
 
 	/**
@@ -823,8 +879,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFBTypeProperty_Property() {
-		return (EReference)fbTypePropertyEClass.getEStructuralFeatures().get(0);
+	public EReference getEntityMappingRule_EntityMappingElements() {
+		return (EReference)entityMappingRuleEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -832,8 +888,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDataTypeMapping() {
-		return dataTypeMappingEClass;
+	public EReference getEntityMappingRule_EntitySourceElement() {
+		return (EReference)entityMappingRuleEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -841,8 +897,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDataTypeMapping_Name() {
-		return (EAttribute)dataTypeMappingEClass.getEStructuralFeatures().get(0);
+	public EReference getEntityMappingRule_TargetElement() {
+		return (EReference)entityMappingRuleEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -850,8 +906,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDataTypeMapping_DatatypeMappingRules() {
-		return (EReference)dataTypeMappingEClass.getEStructuralFeatures().get(1);
+	public EClass getEntityTargetElement() {
+		return entityTargetElementEClass;
 	}
 
 	/**
@@ -859,8 +915,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDataTypeMappingRule() {
-		return dataTypeMappingRuleEClass;
+	public EClass getEntitySourceElement() {
+		return entitySourceElementEClass;
 	}
 
 	/**
@@ -868,8 +924,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDataTypeMappingRule_DataTypeMappingElements() {
-		return (EReference)dataTypeMappingRuleEClass.getEStructuralFeatures().get(0);
+	public EClass getEntityPropertyElement() {
+		return entityPropertyElementEClass;
 	}
 
 	/**
@@ -877,8 +933,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDataTypeMappingRule_DataTypeSourceElement() {
-		return (EReference)dataTypeMappingRuleEClass.getEStructuralFeatures().get(1);
+	public EReference getEntityPropertyElement_TypeRef() {
+		return (EReference)entityPropertyElementEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -886,53 +942,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getDataTypeMappingRule_TargetElement() {
-		return (EReference)dataTypeMappingRuleEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDataTypeTargetElement() {
-		return dataTypeTargetElementEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDataTypeSourceElement() {
-		return dataTypeSourceElementEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EClass getDataTypePropertyElement() {
-		return dataTypePropertyElementEClass;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDataTypePropertyElement_TypeRef() {
-		return (EReference)dataTypePropertyElementEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getDataTypePropertyElement_Attribute() {
-		return (EReference)dataTypePropertyElementEClass.getEStructuralFeatures().get(1);
+	public EAttribute getEntityPropertyElement_Attribute() {
+		return (EAttribute)entityPropertyElementEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -949,8 +960,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getDataTypeAttribute() {
-		return dataTypeAttributeEClass;
+	public EClass getEnumMapping() {
+		return enumMappingEClass;
 	}
 
 	/**
@@ -958,8 +969,125 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDataTypeAttribute_Attribute() {
-		return (EAttribute)dataTypeAttributeEClass.getEStructuralFeatures().get(0);
+	public EReference getEnumMapping_EnumMappingRules() {
+		return (EReference)enumMappingEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumMappingRule() {
+		return enumMappingRuleEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumMappingRule_EnumElements() {
+		return (EReference)enumMappingRuleEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumMappingRule_EnumSourceElement() {
+		return (EReference)enumMappingRuleEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumMappingRule_TargetElement() {
+		return (EReference)enumMappingRuleEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumTargetElement() {
+		return enumTargetElementEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumSourceElement() {
+		return enumSourceElementEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumSourceElement_TypeRef() {
+		return (EReference)enumSourceElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumPropertyElement() {
+		return enumPropertyElementEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEnumPropertyElement_Attribute() {
+		return (EAttribute)enumPropertyElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumExpression() {
+		return enumExpressionEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumExpression_Literal() {
+		return (EReference)enumExpressionEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumReference() {
+		return enumReferenceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumReference_Reference() {
+		return (EReference)enumReferenceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -996,6 +1124,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 */
 	public EReference getDataTypeReference_Reference() {
 		return (EReference)dataTypeReferenceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDataTypeMapping() {
+		return dataTypeMappingEClass;
 	}
 
 	/**
@@ -1189,9 +1326,13 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		// Create classes and their features
 		mappingModelEClass = createEClass(MAPPING_MODEL);
-		createEReference(mappingModelEClass, MAPPING_MODEL__INFO_MODEL_MAPPING_RULES);
-		createEReference(mappingModelEClass, MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS);
-		createEReference(mappingModelEClass, MAPPING_MODEL__DATA_TYPE_MAPPINGS);
+		createEReference(mappingModelEClass, MAPPING_MODEL__MAPPING_TYPE);
+
+		mappingTypeEClass = createEClass(MAPPING_TYPE);
+		createEAttribute(mappingTypeEClass, MAPPING_TYPE__NAME);
+
+		infoModelMappingEClass = createEClass(INFO_MODEL_MAPPING);
+		createEReference(infoModelMappingEClass, INFO_MODEL_MAPPING__INFO_MODEL_MAPPING_RULES);
 
 		infoModelMappingRuleEClass = createEClass(INFO_MODEL_MAPPING_RULE);
 		createEReference(infoModelMappingRuleEClass, INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS);
@@ -1207,13 +1348,11 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		infoModelFbElementEClass = createEClass(INFO_MODEL_FB_ELEMENT);
 		createEReference(infoModelFbElementEClass, INFO_MODEL_FB_ELEMENT__FUNCTIONBLOCK);
-		createEReference(infoModelFbElementEClass, INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT);
 
 		informationModelPropertyEClass = createEClass(INFORMATION_MODEL_PROPERTY);
 		createEAttribute(informationModelPropertyEClass, INFORMATION_MODEL_PROPERTY__ATTRIBUTE);
 
 		functionBlockMappingEClass = createEClass(FUNCTION_BLOCK_MAPPING);
-		createEAttribute(functionBlockMappingEClass, FUNCTION_BLOCK_MAPPING__NAME);
 		createEReference(functionBlockMappingEClass, FUNCTION_BLOCK_MAPPING__FUNCTION_BLOCK_MAPPING_RULES);
 
 		functionBlockMappingRuleEClass = createEClass(FUNCTION_BLOCK_MAPPING_RULE);
@@ -1249,40 +1388,54 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		fbTypeElementEClass = createEClass(FB_TYPE_ELEMENT);
 		createEReference(fbTypeElementEClass, FB_TYPE_ELEMENT__PROPERTY);
-		createEReference(fbTypeElementEClass, FB_TYPE_ELEMENT__CHILD);
 
-		fbTypeElementChildEClass = createEClass(FB_TYPE_ELEMENT_CHILD);
+		entityMappingEClass = createEClass(ENTITY_MAPPING);
+		createEReference(entityMappingEClass, ENTITY_MAPPING__ENTITY_MAPPING_RULES);
 
-		fbTypePropertyEClass = createEClass(FB_TYPE_PROPERTY);
-		createEReference(fbTypePropertyEClass, FB_TYPE_PROPERTY__PROPERTY);
+		entityMappingRuleEClass = createEClass(ENTITY_MAPPING_RULE);
+		createEReference(entityMappingRuleEClass, ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS);
+		createEReference(entityMappingRuleEClass, ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT);
+		createEReference(entityMappingRuleEClass, ENTITY_MAPPING_RULE__TARGET_ELEMENT);
 
-		dataTypeMappingEClass = createEClass(DATA_TYPE_MAPPING);
-		createEAttribute(dataTypeMappingEClass, DATA_TYPE_MAPPING__NAME);
-		createEReference(dataTypeMappingEClass, DATA_TYPE_MAPPING__DATATYPE_MAPPING_RULES);
+		entityTargetElementEClass = createEClass(ENTITY_TARGET_ELEMENT);
 
-		dataTypeMappingRuleEClass = createEClass(DATA_TYPE_MAPPING_RULE);
-		createEReference(dataTypeMappingRuleEClass, DATA_TYPE_MAPPING_RULE__DATA_TYPE_MAPPING_ELEMENTS);
-		createEReference(dataTypeMappingRuleEClass, DATA_TYPE_MAPPING_RULE__DATA_TYPE_SOURCE_ELEMENT);
-		createEReference(dataTypeMappingRuleEClass, DATA_TYPE_MAPPING_RULE__TARGET_ELEMENT);
+		entitySourceElementEClass = createEClass(ENTITY_SOURCE_ELEMENT);
 
-		dataTypeTargetElementEClass = createEClass(DATA_TYPE_TARGET_ELEMENT);
-
-		dataTypeSourceElementEClass = createEClass(DATA_TYPE_SOURCE_ELEMENT);
-
-		dataTypePropertyElementEClass = createEClass(DATA_TYPE_PROPERTY_ELEMENT);
-		createEReference(dataTypePropertyElementEClass, DATA_TYPE_PROPERTY_ELEMENT__TYPE_REF);
-		createEReference(dataTypePropertyElementEClass, DATA_TYPE_PROPERTY_ELEMENT__ATTRIBUTE);
+		entityPropertyElementEClass = createEClass(ENTITY_PROPERTY_ELEMENT);
+		createEReference(entityPropertyElementEClass, ENTITY_PROPERTY_ELEMENT__TYPE_REF);
+		createEAttribute(entityPropertyElementEClass, ENTITY_PROPERTY_ELEMENT__ATTRIBUTE);
 
 		entityExpressionRefEClass = createEClass(ENTITY_EXPRESSION_REF);
 
-		dataTypeAttributeEClass = createEClass(DATA_TYPE_ATTRIBUTE);
-		createEAttribute(dataTypeAttributeEClass, DATA_TYPE_ATTRIBUTE__ATTRIBUTE);
+		enumMappingEClass = createEClass(ENUM_MAPPING);
+		createEReference(enumMappingEClass, ENUM_MAPPING__ENUM_MAPPING_RULES);
+
+		enumMappingRuleEClass = createEClass(ENUM_MAPPING_RULE);
+		createEReference(enumMappingRuleEClass, ENUM_MAPPING_RULE__ENUM_ELEMENTS);
+		createEReference(enumMappingRuleEClass, ENUM_MAPPING_RULE__ENUM_SOURCE_ELEMENT);
+		createEReference(enumMappingRuleEClass, ENUM_MAPPING_RULE__TARGET_ELEMENT);
+
+		enumTargetElementEClass = createEClass(ENUM_TARGET_ELEMENT);
+
+		enumSourceElementEClass = createEClass(ENUM_SOURCE_ELEMENT);
+		createEReference(enumSourceElementEClass, ENUM_SOURCE_ELEMENT__TYPE_REF);
+
+		enumPropertyElementEClass = createEClass(ENUM_PROPERTY_ELEMENT);
+		createEAttribute(enumPropertyElementEClass, ENUM_PROPERTY_ELEMENT__ATTRIBUTE);
+
+		enumExpressionEClass = createEClass(ENUM_EXPRESSION);
+		createEReference(enumExpressionEClass, ENUM_EXPRESSION__LITERAL);
+
+		enumReferenceEClass = createEClass(ENUM_REFERENCE);
+		createEReference(enumReferenceEClass, ENUM_REFERENCE__REFERENCE);
 
 		functionBlockReferenceEClass = createEClass(FUNCTION_BLOCK_REFERENCE);
 		createEReference(functionBlockReferenceEClass, FUNCTION_BLOCK_REFERENCE__REFERENCE);
 
 		dataTypeReferenceEClass = createEClass(DATA_TYPE_REFERENCE);
 		createEReference(dataTypeReferenceEClass, DATA_TYPE_REFERENCE__REFERENCE);
+
+		dataTypeMappingEClass = createEClass(DATA_TYPE_MAPPING);
 
 		stereoTypeReferenceEClass = createEClass(STEREO_TYPE_REFERENCE);
 		createEReference(stereoTypeReferenceEClass, STEREO_TYPE_REFERENCE__TARGET_ELEMENT);
@@ -1346,32 +1499,43 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		// Add supertypes to classes
 		mappingModelEClass.getESuperTypes().add(theModelPackage.getModel());
+		infoModelMappingEClass.getESuperTypes().add(this.getMappingType());
 		infoModelFbElementEClass.getESuperTypes().add(this.getInfoModelChild());
 		informationModelPropertyEClass.getESuperTypes().add(this.getInfoModelChild());
+		functionBlockMappingEClass.getESuperTypes().add(this.getMappingType());
 		functionBlockElementAttributeEClass.getESuperTypes().add(this.getFunctionBlockElement());
 		functionBlockChildElementEClass.getESuperTypes().add(this.getFunctionBlockElement());
 		configurationElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		statusElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		faultElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		eventElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
-		fbTypePropertyEClass.getESuperTypes().add(this.getFBTypeElementChild());
-		dataTypePropertyElementEClass.getESuperTypes().add(this.getDataTypeSourceElement());
-		entityExpressionRefEClass.getESuperTypes().add(this.getDataTypeSourceElement());
-		dataTypeAttributeEClass.getESuperTypes().add(this.getFBTypeElementChild());
+		entityMappingEClass.getESuperTypes().add(this.getDataTypeMapping());
+		entityPropertyElementEClass.getESuperTypes().add(this.getEntitySourceElement());
+		entityExpressionRefEClass.getESuperTypes().add(this.getEntitySourceElement());
+		enumMappingEClass.getESuperTypes().add(this.getDataTypeMapping());
+		enumPropertyElementEClass.getESuperTypes().add(this.getEnumSourceElement());
+		enumExpressionEClass.getESuperTypes().add(this.getEnumSourceElement());
+		enumReferenceEClass.getESuperTypes().add(this.getEnumTargetElement());
 		functionBlockReferenceEClass.getESuperTypes().add(this.getInfoModelTargetElement());
 		dataTypeReferenceEClass.getESuperTypes().add(this.getFunctionBlockTargetElement());
-		dataTypeReferenceEClass.getESuperTypes().add(this.getDataTypeTargetElement());
+		dataTypeReferenceEClass.getESuperTypes().add(this.getEntityTargetElement());
+		dataTypeMappingEClass.getESuperTypes().add(this.getMappingType());
 		stereoTypeReferenceEClass.getESuperTypes().add(this.getInfoModelTargetElement());
 		stereoTypeReferenceEClass.getESuperTypes().add(this.getFunctionBlockTargetElement());
-		stereoTypeReferenceEClass.getESuperTypes().add(this.getDataTypeTargetElement());
+		stereoTypeReferenceEClass.getESuperTypes().add(this.getEntityTargetElement());
+		stereoTypeReferenceEClass.getESuperTypes().add(this.getEnumTargetElement());
 		nestedEntityExpressionEClass.getESuperTypes().add(this.getEntityExpressionRef());
 		entityExpressionEClass.getESuperTypes().add(this.getEntityExpressionRef());
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(mappingModelEClass, MappingModel.class, "MappingModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMappingModel_InfoModelMappingRules(), this.getInfoModelMappingRule(), null, "infoModelMappingRules", null, 0, -1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMappingModel_FunctionBlockMappings(), this.getFunctionBlockMapping(), null, "functionBlockMappings", null, 0, -1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getMappingModel_DataTypeMappings(), this.getDataTypeMapping(), null, "dataTypeMappings", null, 0, -1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMappingModel_MappingType(), this.getMappingType(), null, "mappingType", null, 0, 1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(mappingTypeEClass, MappingType.class, "MappingType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getMappingType_Name(), ecorePackage.getEString(), "name", null, 0, 1, MappingType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(infoModelMappingEClass, InfoModelMapping.class, "InfoModelMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInfoModelMapping_InfoModelMappingRules(), this.getInfoModelMappingRule(), null, "infoModelMappingRules", null, 0, -1, InfoModelMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(infoModelMappingRuleEClass, InfoModelMappingRule.class, "InfoModelMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInfoModelMappingRule_InfoModelSourceElements(), this.getInfoModelSourceElement(), null, "infoModelSourceElements", null, 0, -1, InfoModelMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1387,13 +1551,11 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		initEClass(infoModelFbElementEClass, InfoModelFbElement.class, "InfoModelFbElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInfoModelFbElement_Functionblock(), theInformationModelPackage.getFunctionblockProperty(), null, "functionblock", null, 0, 1, InfoModelFbElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getInfoModelFbElement_FunctionBlockElement(), this.getFunctionBlockElement(), null, "functionBlockElement", null, 0, 1, InfoModelFbElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(informationModelPropertyEClass, InformationModelProperty.class, "InformationModelProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getInformationModelProperty_Attribute(), this.getInfoModelAttribute(), "attribute", null, 0, 1, InformationModelProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockMappingEClass, FunctionBlockMapping.class, "FunctionBlockMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFunctionBlockMapping_Name(), ecorePackage.getEString(), "name", null, 0, 1, FunctionBlockMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunctionBlockMapping_FunctionBlockMappingRules(), this.getFunctionBlockMappingRule(), null, "functionBlockMappingRules", null, 0, -1, FunctionBlockMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockMappingRuleEClass, FunctionBlockMappingRule.class, "FunctionBlockMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1429,40 +1591,54 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		initEClass(fbTypeElementEClass, FBTypeElement.class, "FBTypeElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFBTypeElement_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, FBTypeElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFBTypeElement_Child(), this.getFBTypeElementChild(), null, "child", null, 0, 1, FBTypeElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(fbTypeElementChildEClass, FBTypeElementChild.class, "FBTypeElementChild", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEClass(entityMappingEClass, EntityMapping.class, "EntityMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEntityMapping_EntityMappingRules(), this.getEntityMappingRule(), null, "entityMappingRules", null, 0, -1, EntityMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(fbTypePropertyEClass, FBTypeProperty.class, "FBTypeProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getFBTypeProperty_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, FBTypeProperty.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(entityMappingRuleEClass, EntityMappingRule.class, "EntityMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEntityMappingRule_EntityMappingElements(), this.getEntitySourceElement(), null, "entityMappingElements", null, 0, -1, EntityMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEntityMappingRule_EntitySourceElement(), this.getEntitySourceElement(), null, "EntitySourceElement", null, 0, -1, EntityMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEntityMappingRule_TargetElement(), this.getEntityTargetElement(), null, "targetElement", null, 0, 1, EntityMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(dataTypeMappingEClass, DataTypeMapping.class, "DataTypeMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataTypeMapping_Name(), ecorePackage.getEString(), "name", null, 0, 1, DataTypeMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTypeMapping_DatatypeMappingRules(), this.getDataTypeMappingRule(), null, "datatypeMappingRules", null, 0, -1, DataTypeMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(entityTargetElementEClass, EntityTargetElement.class, "EntityTargetElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(dataTypeMappingRuleEClass, DataTypeMappingRule.class, "DataTypeMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDataTypeMappingRule_DataTypeMappingElements(), this.getDataTypeSourceElement(), null, "dataTypeMappingElements", null, 0, -1, DataTypeMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTypeMappingRule_DataTypeSourceElement(), this.getDataTypeSourceElement(), null, "DataTypeSourceElement", null, 0, -1, DataTypeMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTypeMappingRule_TargetElement(), this.getDataTypeTargetElement(), null, "targetElement", null, 0, 1, DataTypeMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(entitySourceElementEClass, EntitySourceElement.class, "EntitySourceElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(dataTypeTargetElementEClass, DataTypeTargetElement.class, "DataTypeTargetElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(dataTypeSourceElementEClass, DataTypeSourceElement.class, "DataTypeSourceElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-
-		initEClass(dataTypePropertyElementEClass, DataTypePropertyElement.class, "DataTypePropertyElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getDataTypePropertyElement_TypeRef(), theDatatypePackage.getType(), null, "typeRef", null, 0, 1, DataTypePropertyElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getDataTypePropertyElement_Attribute(), this.getDataTypeAttribute(), null, "attribute", null, 0, 1, DataTypePropertyElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(entityPropertyElementEClass, EntityPropertyElement.class, "EntityPropertyElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEntityPropertyElement_TypeRef(), theDatatypePackage.getEntity(), null, "typeRef", null, 0, 1, EntityPropertyElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEntityPropertyElement_Attribute(), this.getModelAttribute(), "attribute", null, 0, 1, EntityPropertyElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(entityExpressionRefEClass, EntityExpressionRef.class, "EntityExpressionRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(dataTypeAttributeEClass, DataTypeAttribute.class, "DataTypeAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDataTypeAttribute_Attribute(), this.getModelAttribute(), "attribute", null, 0, 1, DataTypeAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(enumMappingEClass, EnumMapping.class, "EnumMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumMapping_EnumMappingRules(), this.getEnumMappingRule(), null, "enumMappingRules", null, 0, -1, EnumMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumMappingRuleEClass, EnumMappingRule.class, "EnumMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumMappingRule_EnumElements(), this.getEnumSourceElement(), null, "enumElements", null, 0, -1, EnumMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEnumMappingRule_EnumSourceElement(), this.getEnumSourceElement(), null, "EnumSourceElement", null, 0, -1, EnumMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEnumMappingRule_TargetElement(), this.getEnumTargetElement(), null, "targetElement", null, 0, 1, EnumMappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumTargetElementEClass, EnumTargetElement.class, "EnumTargetElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(enumSourceElementEClass, EnumSourceElement.class, "EnumSourceElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumSourceElement_TypeRef(), theDatatypePackage.getEnum(), null, "typeRef", null, 0, 1, EnumSourceElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumPropertyElementEClass, EnumPropertyElement.class, "EnumPropertyElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEnumPropertyElement_Attribute(), this.getModelAttribute(), "attribute", null, 0, 1, EnumPropertyElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumExpressionEClass, EnumExpression.class, "EnumExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumExpression_Literal(), theDatatypePackage.getEnumLiteral(), null, "literal", null, 0, 1, EnumExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumReferenceEClass, EnumReference.class, "EnumReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumReference_Reference(), this.getEnumMapping(), null, "reference", null, 0, 1, EnumReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockReferenceEClass, FunctionBlockReference.class, "FunctionBlockReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFunctionBlockReference_Reference(), this.getFunctionBlockMapping(), null, "reference", null, 0, 1, FunctionBlockReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(dataTypeReferenceEClass, DataTypeReference.class, "DataTypeReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getDataTypeReference_Reference(), this.getDataTypeMapping(), null, "reference", null, 0, 1, DataTypeReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(dataTypeMappingEClass, DataTypeMapping.class, "DataTypeMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(stereoTypeReferenceEClass, StereoTypeReference.class, "StereoTypeReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getStereoTypeReference_TargetElement(), this.getStereoTypeElement(), null, "targetElement", null, 0, 1, StereoTypeReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1483,7 +1659,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEReference(getNestedEntityExpression_Tail(), theDatatypePackage.getProperty(), null, "tail", null, 0, 1, NestedEntityExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(entityExpressionEClass, EntityExpression.class, "EntityExpression", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getEntityExpression_Entity(), theDatatypePackage.getType(), null, "entity", null, 0, 1, EntityExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEntityExpression_Entity(), theDatatypePackage.getEntity(), null, "entity", null, 0, 1, EntityExpression.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(infoModelAttributeEEnum, InfoModelAttribute.class, "InfoModelAttribute");

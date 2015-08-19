@@ -14,7 +14,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  *
  * @generated
  */
-public class EntityExpressionRefImpl extends DataTypeSourceElementImpl implements EntityExpressionRef {
+public class EntityExpressionRefImpl extends EntitySourceElementImpl implements EntityExpressionRef {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

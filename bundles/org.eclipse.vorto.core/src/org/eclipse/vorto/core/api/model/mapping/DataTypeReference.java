@@ -19,7 +19,7 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @model
  * @generated
  */
-public interface DataTypeReference extends FunctionBlockTargetElement, DataTypeTargetElement {
+public interface DataTypeReference extends FunctionBlockTargetElement, EntityTargetElement {
 	/**
 	 * Returns the value of the '<em><b>Reference</b></em>' reference.
 	 * <!-- begin-user-doc -->

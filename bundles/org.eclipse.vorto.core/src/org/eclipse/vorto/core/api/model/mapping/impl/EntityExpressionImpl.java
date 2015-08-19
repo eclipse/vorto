@@ -9,7 +9,7 @@ import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 
 import org.eclipse.vorto.core.api.model.mapping.EntityExpression;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
@@ -36,7 +36,7 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	 * @generated
 	 * @ordered
 	 */
-	protected Type entity;
+	protected Entity entity;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -62,10 +62,10 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Type getEntity() {
+	public Entity getEntity() {
 		if (entity != null && entity.eIsProxy()) {
 			InternalEObject oldEntity = (InternalEObject)entity;
-			entity = (Type)eResolveProxy(oldEntity);
+			entity = (Entity)eResolveProxy(oldEntity);
 			if (entity != oldEntity) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.ENTITY_EXPRESSION__ENTITY, oldEntity, entity));
@@ -79,7 +79,7 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Type basicGetEntity() {
+	public Entity basicGetEntity() {
 		return entity;
 	}
 
@@ -88,8 +88,8 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setEntity(Type newEntity) {
-		Type oldEntity = entity;
+	public void setEntity(Entity newEntity) {
+		Entity oldEntity = entity;
 		entity = newEntity;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_EXPRESSION__ENTITY, oldEntity, entity));
@@ -119,7 +119,7 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MappingPackage.ENTITY_EXPRESSION__ENTITY:
-				setEntity((Type)newValue);
+				setEntity((Entity)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -134,7 +134,7 @@ public class EntityExpressionImpl extends EntityExpressionRefImpl implements Ent
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case MappingPackage.ENTITY_EXPRESSION__ENTITY:
-				setEntity((Type)null);
+				setEntity((Entity)null);
 				return;
 		}
 		super.eUnset(featureID);

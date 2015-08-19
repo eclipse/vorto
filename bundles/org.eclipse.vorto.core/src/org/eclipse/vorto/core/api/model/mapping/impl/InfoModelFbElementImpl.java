@@ -3,7 +3,6 @@
 package org.eclipse.vorto.core.api.model.mapping.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -12,7 +11,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 
@@ -25,7 +23,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelFbElementImpl#getFunctionblock <em>Functionblock</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelFbElementImpl#getFunctionBlockElement <em>Function Block Element</em>}</li>
  * </ul>
  *
  * @generated
@@ -40,16 +37,6 @@ public class InfoModelFbElementImpl extends InfoModelChildImpl implements InfoMo
 	 * @ordered
 	 */
 	protected FunctionblockProperty functionblock;
-
-	/**
-	 * The cached value of the '{@link #getFunctionBlockElement() <em>Function Block Element</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFunctionBlockElement()
-	 * @generated
-	 * @ordered
-	 */
-	protected FunctionBlockElement functionBlockElement;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -113,71 +100,12 @@ public class InfoModelFbElementImpl extends InfoModelChildImpl implements InfoMo
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockElement getFunctionBlockElement() {
-		return functionBlockElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetFunctionBlockElement(FunctionBlockElement newFunctionBlockElement, NotificationChain msgs) {
-		FunctionBlockElement oldFunctionBlockElement = functionBlockElement;
-		functionBlockElement = newFunctionBlockElement;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT, oldFunctionBlockElement, newFunctionBlockElement);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setFunctionBlockElement(FunctionBlockElement newFunctionBlockElement) {
-		if (newFunctionBlockElement != functionBlockElement) {
-			NotificationChain msgs = null;
-			if (functionBlockElement != null)
-				msgs = ((InternalEObject)functionBlockElement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT, null, msgs);
-			if (newFunctionBlockElement != null)
-				msgs = ((InternalEObject)newFunctionBlockElement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT, null, msgs);
-			msgs = basicSetFunctionBlockElement(newFunctionBlockElement, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT, newFunctionBlockElement, newFunctionBlockElement));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT:
-				return basicSetFunctionBlockElement(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTIONBLOCK:
 				if (resolve) return getFunctionblock();
 				return basicGetFunctionblock();
-			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT:
-				return getFunctionBlockElement();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -192,9 +120,6 @@ public class InfoModelFbElementImpl extends InfoModelChildImpl implements InfoMo
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTIONBLOCK:
 				setFunctionblock((FunctionblockProperty)newValue);
-				return;
-			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT:
-				setFunctionBlockElement((FunctionBlockElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -211,9 +136,6 @@ public class InfoModelFbElementImpl extends InfoModelChildImpl implements InfoMo
 			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTIONBLOCK:
 				setFunctionblock((FunctionblockProperty)null);
 				return;
-			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT:
-				setFunctionBlockElement((FunctionBlockElement)null);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -228,8 +150,6 @@ public class InfoModelFbElementImpl extends InfoModelChildImpl implements InfoMo
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTIONBLOCK:
 				return functionblock != null;
-			case MappingPackage.INFO_MODEL_FB_ELEMENT__FUNCTION_BLOCK_ELEMENT:
-				return functionBlockElement != null;
 		}
 		return super.eIsSet(featureID);
 	}

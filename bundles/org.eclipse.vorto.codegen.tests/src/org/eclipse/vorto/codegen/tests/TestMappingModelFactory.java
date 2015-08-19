@@ -25,8 +25,8 @@ public class TestMappingModelFactory {
 		MappingModel mappingModel = MappingFactory.eINSTANCE
 				.createMappingModel();
 		mappingModel.setName("MyMapping");
-		mappingModel.getInfoModelMappingRules().add(createChannelTypeRule());
-		mappingModel.getInfoModelMappingRules().add(createConfigurationRule());
+		//mappingModel.getInfoModelMappingRules().add(createChannelTypeRule());
+		//mappingModel.getInfoModelMappingRules().add(createConfigurationRule());
 		return mappingModel;
 	}
 

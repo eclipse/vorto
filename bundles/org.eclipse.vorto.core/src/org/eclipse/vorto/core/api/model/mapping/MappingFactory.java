@@ -31,6 +31,24 @@ public interface MappingFactory extends EFactory {
 	MappingModel createMappingModel();
 
 	/**
+	 * Returns a new object of class '<em>Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Type</em>'.
+	 * @generated
+	 */
+	MappingType createMappingType();
+
+	/**
+	 * Returns a new object of class '<em>Info Model Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Info Model Mapping</em>'.
+	 * @generated
+	 */
+	InfoModelMapping createInfoModelMapping();
+
+	/**
 	 * Returns a new object of class '<em>Info Model Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -202,67 +220,49 @@ public interface MappingFactory extends EFactory {
 	FBTypeElement createFBTypeElement();
 
 	/**
-	 * Returns a new object of class '<em>FB Type Element Child</em>'.
+	 * Returns a new object of class '<em>Entity Mapping</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>FB Type Element Child</em>'.
+	 * @return a new object of class '<em>Entity Mapping</em>'.
 	 * @generated
 	 */
-	FBTypeElementChild createFBTypeElementChild();
+	EntityMapping createEntityMapping();
 
 	/**
-	 * Returns a new object of class '<em>FB Type Property</em>'.
+	 * Returns a new object of class '<em>Entity Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>FB Type Property</em>'.
+	 * @return a new object of class '<em>Entity Mapping Rule</em>'.
 	 * @generated
 	 */
-	FBTypeProperty createFBTypeProperty();
+	EntityMappingRule createEntityMappingRule();
 
 	/**
-	 * Returns a new object of class '<em>Data Type Mapping</em>'.
+	 * Returns a new object of class '<em>Entity Target Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Mapping</em>'.
+	 * @return a new object of class '<em>Entity Target Element</em>'.
 	 * @generated
 	 */
-	DataTypeMapping createDataTypeMapping();
+	EntityTargetElement createEntityTargetElement();
 
 	/**
-	 * Returns a new object of class '<em>Data Type Mapping Rule</em>'.
+	 * Returns a new object of class '<em>Entity Source Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Mapping Rule</em>'.
+	 * @return a new object of class '<em>Entity Source Element</em>'.
 	 * @generated
 	 */
-	DataTypeMappingRule createDataTypeMappingRule();
+	EntitySourceElement createEntitySourceElement();
 
 	/**
-	 * Returns a new object of class '<em>Data Type Target Element</em>'.
+	 * Returns a new object of class '<em>Entity Property Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Target Element</em>'.
+	 * @return a new object of class '<em>Entity Property Element</em>'.
 	 * @generated
 	 */
-	DataTypeTargetElement createDataTypeTargetElement();
-
-	/**
-	 * Returns a new object of class '<em>Data Type Source Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Source Element</em>'.
-	 * @generated
-	 */
-	DataTypeSourceElement createDataTypeSourceElement();
-
-	/**
-	 * Returns a new object of class '<em>Data Type Property Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Property Element</em>'.
-	 * @generated
-	 */
-	DataTypePropertyElement createDataTypePropertyElement();
+	EntityPropertyElement createEntityPropertyElement();
 
 	/**
 	 * Returns a new object of class '<em>Entity Expression Ref</em>'.
@@ -274,13 +274,67 @@ public interface MappingFactory extends EFactory {
 	EntityExpressionRef createEntityExpressionRef();
 
 	/**
-	 * Returns a new object of class '<em>Data Type Attribute</em>'.
+	 * Returns a new object of class '<em>Enum Mapping</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Attribute</em>'.
+	 * @return a new object of class '<em>Enum Mapping</em>'.
 	 * @generated
 	 */
-	DataTypeAttribute createDataTypeAttribute();
+	EnumMapping createEnumMapping();
+
+	/**
+	 * Returns a new object of class '<em>Enum Mapping Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Mapping Rule</em>'.
+	 * @generated
+	 */
+	EnumMappingRule createEnumMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Enum Target Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Target Element</em>'.
+	 * @generated
+	 */
+	EnumTargetElement createEnumTargetElement();
+
+	/**
+	 * Returns a new object of class '<em>Enum Source Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Source Element</em>'.
+	 * @generated
+	 */
+	EnumSourceElement createEnumSourceElement();
+
+	/**
+	 * Returns a new object of class '<em>Enum Property Element</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Property Element</em>'.
+	 * @generated
+	 */
+	EnumPropertyElement createEnumPropertyElement();
+
+	/**
+	 * Returns a new object of class '<em>Enum Expression</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Expression</em>'.
+	 * @generated
+	 */
+	EnumExpression createEnumExpression();
+
+	/**
+	 * Returns a new object of class '<em>Enum Reference</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Reference</em>'.
+	 * @generated
+	 */
+	EnumReference createEnumReference();
 
 	/**
 	 * Returns a new object of class '<em>Function Block Reference</em>'.
@@ -299,6 +353,15 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	DataTypeReference createDataTypeReference();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Mapping</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Mapping</em>'.
+	 * @generated
+	 */
+	DataTypeMapping createDataTypeMapping();
 
 	/**
 	 * Returns a new object of class '<em>Stereo Type Reference</em>'.

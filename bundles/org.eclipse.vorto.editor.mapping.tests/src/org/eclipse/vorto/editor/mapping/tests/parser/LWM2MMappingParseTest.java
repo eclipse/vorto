@@ -1,13 +1,29 @@
 package org.eclipse.vorto.editor.mapping.tests.parser;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
+import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.junit.Before;
 import org.junit.Test;
 
 public class LWM2MMappingParseTest {
 	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/lwm2m/";
-	private static final String EXAMPLE_MAPPING_FILE = EXAMPLES_DIRECTORY
-			+ "LWM2M.mapping";
 
 	@Before
 	public void setup() {
@@ -15,87 +31,40 @@ public class LWM2MMappingParseTest {
 	}
 
 	@Test
-	public void parseLWM2MMapping()  {
-		
-	}
-/*	@Test
-	public void parseLWM2MMapping() throws IOException {
-		MappingModel lwMapping = this.loadMappingModel();
+	public void parseEntityLocationMapping() throws IOException {
+		MappingModel lwMapping = this.createMappingModel("LocationMapping.mapping");
 
-		InfoModelMappingRule objectTypeRule = lwMapping
-				.getInfoModelMappingRules().get(0);
-		StereoType objectType = objectTypeRule.getTargetElement()
-				.getStereoTypes().get(0);
-		assertObjectTypeAttributes(objectType);
+		EList<EntityMappingRule> rules = ((EntityMapping) lwMapping.getMappingType()).getEntityMappingRules();
+		assertEquals(3, rules.size());
 
-		assertFunctionBlockRule(lwMapping);
 	}
 
-	private void assertFunctionBlockRule(MappingModel lwMapping) {
-		EList<FunctionBlockMappingRule> functionBlockMappingRules = lwMapping
+	@Test
+	public void parseFunctionBlockDroneMapping() throws IOException {
+		MappingModel mappingModel = createMappingModel("DroneMapping.mapping");
+
+		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping) mappingModel.getMappingType())
 				.getFunctionBlockMappingRules();
-
-		for (FunctionBlockMappingRule rule : functionBlockMappingRules) {
-			FunctionBlockElement functionBlockElement = rule
-					.getFunctionBlockSourceElements().get(0)
-					.getFunctionBlockElement();
-			
-			if (functionBlockElement instanceof StatusElement) {
-				TargetElement targetElement = rule.getTargetElement();
-				StereoType itemStereoType = targetElement.getStereoTypes().get(
-						0);
-
-				Attribute itemId = this.getAttributeByName("ItemID",
-						itemStereoType);
-				Attribute unit = this.getAttributeByName("Units",
-						itemStereoType);
-				assertNotNull(itemId.getValue());
-				assertNotNull(unit.getValue());
-			}
-		}
+		assertEquals(2, rules.size());
 	}
 
-	private void assertObjectTypeAttributes(StereoType objectType) {
-		assertEquals("ObjectType", objectType.getName());
+	@Test
+	public void parseLWM2MMapping() throws IOException {
+		MappingModel mappingModel = createMappingModel("LWM2M.mapping");
 
-		Attribute type = this.getAttributeByName("Type", objectType);
-		Attribute name = this.getAttributeByName("Name", objectType);
-		Attribute objectID = this.getAttributeByName("ObjectID", objectType);
-		Attribute objectURN = this.getAttributeByName("ObjectURN", objectType);
-		Attribute multipleInstances = this.getAttributeByName(
-				"MultipleInstances", objectType);
-		Attribute mandatory = this.getAttributeByName("Mandatory", objectType);
-
-		assertEquals("MODefinition", type.getValue());
-		assertEquals("Location", name.getValue());
-		assertEquals("6", objectID.getValue());
-		assertEquals("TBD", objectURN.getValue());
-		assertEquals("Single", multipleInstances.getValue());
-		assertEquals("Optional", mandatory.getValue());
+		EList<InfoModelMappingRule> rules = ((InfoModelMapping) mappingModel.getMappingType())
+				.getInfoModelMappingRules();
+		assertEquals(2, rules.size());
 	}
 
-	private Attribute getAttributeByName(String attributeName,
-			StereoType stereoType) {
-		for (Attribute attribute : stereoType.getAttributes()) {
-			if (attributeName.equals(attribute.getName())) {
-				return attribute;
-			}
-		}
-		return null;
-	}
-
-	private MappingModel loadMappingModel() throws IOException {
+	private MappingModel createMappingModel(String mappingFileName) throws IOException {
 		ResourceSet rset = new ResourceSetImpl();
-		rset.getPackageRegistry().put(MappingPackage.eNS_URI,
-				MappingPackage.eINSTANCE);
-		rset.getResourceFactoryRegistry().getExtensionToFactoryMap()
-				.put("xmi", new XMIResourceFactoryImpl());
+		rset.getPackageRegistry().put(MappingPackage.eNS_URI, MappingPackage.eINSTANCE);
+		rset.getResourceFactoryRegistry().getExtensionToFactoryMap().put("xmi", new XMIResourceFactoryImpl());
 
-		Resource resource = rset.getResource(
-				URI.createFileURI(EXAMPLE_MAPPING_FILE), true);
+		Resource resource = rset.getResource(URI.createFileURI(EXAMPLES_DIRECTORY + mappingFileName), true);
 		resource.load(null);
-		MappingModel mappingModel = (MappingModel) resource.getContents()
-				.get(0);
+		MappingModel mappingModel = (MappingModel) resource.getContents().get(0);
 		return mappingModel;
-	}*/
+	}
 }

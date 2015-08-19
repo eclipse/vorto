@@ -1,15 +1,24 @@
 namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.fb.NewFunctionBlock;1.0.0
-mapping FunctionBlock_Property {
-	
-	 functionblock MyFunctionBlockMapping {
-	 	 from NewFunctionBlock.status.isOn to TargetStatus
-	 	 from NewFunctionBlock.configuration.configEntityA to TargetConfiguration
-	 	 from NewFunctionBlock.fault.faultCode to MyFaultCode
-	 	 from NewFunctionBlock.event.Ready to TargetReadyEvent
-	 	 from NewFunctionBlock.event.Ready.entityA to TargetReadyEvent with {default: "NotReady"}
-		 from NewFunctionBlock.operation.on,NewFunctionBlock.operation.off to TargetOperations
-	 }
+using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
+fbmapping FunctionBlock_Property {
+
+	from NewFunctionBlock.status.isOn
+	to TargetStatus
+
+	from NewFunctionBlock.configuration.configEntityA
+	to TargetConfiguration
+
+	from NewFunctionBlock.fault.faultCode
+	to MyFaultCode
+
+	from NewFunctionBlock.event.Ready
+	to TargetReadyEvent
+
+	from NewFunctionBlock.event.Ready.entityA
+	to TargetReadyEvent with { default : "NotReady" }
+
+	from NewFunctionBlock.operation.on, NewFunctionBlock.operation.off
+	to TargetOperations
 }

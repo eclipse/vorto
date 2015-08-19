@@ -19,7 +19,7 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @model
  * @generated
  */
-public interface StereoTypeReference extends InfoModelTargetElement, FunctionBlockTargetElement, DataTypeTargetElement {
+public interface StereoTypeReference extends InfoModelTargetElement, FunctionBlockTargetElement, EntityTargetElement, EnumTargetElement {
 	/**
 	 * Returns the value of the '<em><b>Target Element</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

@@ -16,7 +16,6 @@ import org.eclipse.vorto.core.api.model.datatype.Property;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElement#getProperty <em>Property</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElement#getChild <em>Child</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFBTypeElement()
@@ -49,31 +48,5 @@ public interface FBTypeElement extends EObject {
 	 * @generated
 	 */
 	void setProperty(Property value);
-
-	/**
-	 * Returns the value of the '<em><b>Child</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Child</em>' containment reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Child</em>' containment reference.
-	 * @see #setChild(FBTypeElementChild)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFBTypeElement_Child()
-	 * @model containment="true"
-	 * @generated
-	 */
-	FBTypeElementChild getChild();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElement#getChild <em>Child</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Child</em>' containment reference.
-	 * @see #getChild()
-	 * @generated
-	 */
-	void setChild(FBTypeElementChild value);
 
 } // FBTypeElement
