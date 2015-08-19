@@ -2,7 +2,7 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
-import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 
 /**
  * <!-- begin-user-doc -->
@@ -30,12 +30,12 @@ public interface EntityExpression extends EntityExpressionRef {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Entity</em>' reference.
-	 * @see #setEntity(Type)
+	 * @see #setEntity(Entity)
 	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityExpression_Entity()
 	 * @model
 	 * @generated
 	 */
-	Type getEntity();
+	Entity getEntity();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityExpression#getEntity <em>Entity</em>}' reference.
@@ -45,6 +45,6 @@ public interface EntityExpression extends EntityExpressionRef {
 	 * @see #getEntity()
 	 * @generated
 	 */
-	void setEntity(Type value);
+	void setEntity(Entity value);
 
 } // EntityExpression

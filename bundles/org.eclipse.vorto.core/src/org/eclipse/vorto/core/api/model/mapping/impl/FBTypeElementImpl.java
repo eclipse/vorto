@@ -3,7 +3,6 @@
 package org.eclipse.vorto.core.api.model.mapping.impl;
 
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -14,7 +13,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 
 import org.eclipse.vorto.core.api.model.mapping.FBTypeElement;
-import org.eclipse.vorto.core.api.model.mapping.FBTypeElementChild;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 
 /**
@@ -26,7 +24,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FBTypeElementImpl#getProperty <em>Property</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FBTypeElementImpl#getChild <em>Child</em>}</li>
  * </ul>
  *
  * @generated
@@ -41,16 +38,6 @@ public class FBTypeElementImpl extends MinimalEObjectImpl.Container implements F
 	 * @ordered
 	 */
 	protected Property property;
-
-	/**
-	 * The cached value of the '{@link #getChild() <em>Child</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getChild()
-	 * @generated
-	 * @ordered
-	 */
-	protected FBTypeElementChild child;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -114,71 +101,12 @@ public class FBTypeElementImpl extends MinimalEObjectImpl.Container implements F
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FBTypeElementChild getChild() {
-		return child;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetChild(FBTypeElementChild newChild, NotificationChain msgs) {
-		FBTypeElementChild oldChild = child;
-		child = newChild;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.FB_TYPE_ELEMENT__CHILD, oldChild, newChild);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setChild(FBTypeElementChild newChild) {
-		if (newChild != child) {
-			NotificationChain msgs = null;
-			if (child != null)
-				msgs = ((InternalEObject)child).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FB_TYPE_ELEMENT__CHILD, null, msgs);
-			if (newChild != null)
-				msgs = ((InternalEObject)newChild).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.FB_TYPE_ELEMENT__CHILD, null, msgs);
-			msgs = basicSetChild(newChild, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.FB_TYPE_ELEMENT__CHILD, newChild, newChild));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case MappingPackage.FB_TYPE_ELEMENT__CHILD:
-				return basicSetChild(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case MappingPackage.FB_TYPE_ELEMENT__PROPERTY:
 				if (resolve) return getProperty();
 				return basicGetProperty();
-			case MappingPackage.FB_TYPE_ELEMENT__CHILD:
-				return getChild();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -193,9 +121,6 @@ public class FBTypeElementImpl extends MinimalEObjectImpl.Container implements F
 		switch (featureID) {
 			case MappingPackage.FB_TYPE_ELEMENT__PROPERTY:
 				setProperty((Property)newValue);
-				return;
-			case MappingPackage.FB_TYPE_ELEMENT__CHILD:
-				setChild((FBTypeElementChild)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -212,9 +137,6 @@ public class FBTypeElementImpl extends MinimalEObjectImpl.Container implements F
 			case MappingPackage.FB_TYPE_ELEMENT__PROPERTY:
 				setProperty((Property)null);
 				return;
-			case MappingPackage.FB_TYPE_ELEMENT__CHILD:
-				setChild((FBTypeElementChild)null);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -229,8 +151,6 @@ public class FBTypeElementImpl extends MinimalEObjectImpl.Container implements F
 		switch (featureID) {
 			case MappingPackage.FB_TYPE_ELEMENT__PROPERTY:
 				return property != null;
-			case MappingPackage.FB_TYPE_ELEMENT__CHILD:
-				return child != null;
 		}
 		return super.eIsSet(featureID);
 	}

@@ -58,6 +58,8 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case MappingPackage.MAPPING_MODEL: return createMappingModel();
+			case MappingPackage.MAPPING_TYPE: return createMappingType();
+			case MappingPackage.INFO_MODEL_MAPPING: return createInfoModelMapping();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE: return createInfoModelMappingRule();
 			case MappingPackage.INFO_MODEL_TARGET_ELEMENT: return createInfoModelTargetElement();
 			case MappingPackage.INFO_MODEL_SOURCE_ELEMENT: return createInfoModelSourceElement();
@@ -77,17 +79,22 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.FAULT_ELEMENT: return createFaultElement();
 			case MappingPackage.EVENT_ELEMENT: return createEventElement();
 			case MappingPackage.FB_TYPE_ELEMENT: return createFBTypeElement();
-			case MappingPackage.FB_TYPE_ELEMENT_CHILD: return createFBTypeElementChild();
-			case MappingPackage.FB_TYPE_PROPERTY: return createFBTypeProperty();
-			case MappingPackage.DATA_TYPE_MAPPING: return createDataTypeMapping();
-			case MappingPackage.DATA_TYPE_MAPPING_RULE: return createDataTypeMappingRule();
-			case MappingPackage.DATA_TYPE_TARGET_ELEMENT: return createDataTypeTargetElement();
-			case MappingPackage.DATA_TYPE_SOURCE_ELEMENT: return createDataTypeSourceElement();
-			case MappingPackage.DATA_TYPE_PROPERTY_ELEMENT: return createDataTypePropertyElement();
+			case MappingPackage.ENTITY_MAPPING: return createEntityMapping();
+			case MappingPackage.ENTITY_MAPPING_RULE: return createEntityMappingRule();
+			case MappingPackage.ENTITY_TARGET_ELEMENT: return createEntityTargetElement();
+			case MappingPackage.ENTITY_SOURCE_ELEMENT: return createEntitySourceElement();
+			case MappingPackage.ENTITY_PROPERTY_ELEMENT: return createEntityPropertyElement();
 			case MappingPackage.ENTITY_EXPRESSION_REF: return createEntityExpressionRef();
-			case MappingPackage.DATA_TYPE_ATTRIBUTE: return createDataTypeAttribute();
+			case MappingPackage.ENUM_MAPPING: return createEnumMapping();
+			case MappingPackage.ENUM_MAPPING_RULE: return createEnumMappingRule();
+			case MappingPackage.ENUM_TARGET_ELEMENT: return createEnumTargetElement();
+			case MappingPackage.ENUM_SOURCE_ELEMENT: return createEnumSourceElement();
+			case MappingPackage.ENUM_PROPERTY_ELEMENT: return createEnumPropertyElement();
+			case MappingPackage.ENUM_EXPRESSION: return createEnumExpression();
+			case MappingPackage.ENUM_REFERENCE: return createEnumReference();
 			case MappingPackage.FUNCTION_BLOCK_REFERENCE: return createFunctionBlockReference();
 			case MappingPackage.DATA_TYPE_REFERENCE: return createDataTypeReference();
+			case MappingPackage.DATA_TYPE_MAPPING: return createDataTypeMapping();
 			case MappingPackage.STEREO_TYPE_REFERENCE: return createStereoTypeReference();
 			case MappingPackage.STEREO_TYPE_ELEMENT: return createStereoTypeElement();
 			case MappingPackage.STEREO_TYPE: return createStereoType();
@@ -145,6 +152,26 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public MappingModel createMappingModel() {
 		MappingModelImpl mappingModel = new MappingModelImpl();
 		return mappingModel;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MappingType createMappingType() {
+		MappingTypeImpl mappingType = new MappingTypeImpl();
+		return mappingType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public InfoModelMapping createInfoModelMapping() {
+		InfoModelMappingImpl infoModelMapping = new InfoModelMappingImpl();
+		return infoModelMapping;
 	}
 
 	/**
@@ -342,9 +369,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FBTypeElementChild createFBTypeElementChild() {
-		FBTypeElementChildImpl fbTypeElementChild = new FBTypeElementChildImpl();
-		return fbTypeElementChild;
+	public EntityMapping createEntityMapping() {
+		EntityMappingImpl entityMapping = new EntityMappingImpl();
+		return entityMapping;
 	}
 
 	/**
@@ -352,9 +379,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FBTypeProperty createFBTypeProperty() {
-		FBTypePropertyImpl fbTypeProperty = new FBTypePropertyImpl();
-		return fbTypeProperty;
+	public EntityMappingRule createEntityMappingRule() {
+		EntityMappingRuleImpl entityMappingRule = new EntityMappingRuleImpl();
+		return entityMappingRule;
 	}
 
 	/**
@@ -362,9 +389,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataTypeMapping createDataTypeMapping() {
-		DataTypeMappingImpl dataTypeMapping = new DataTypeMappingImpl();
-		return dataTypeMapping;
+	public EntityTargetElement createEntityTargetElement() {
+		EntityTargetElementImpl entityTargetElement = new EntityTargetElementImpl();
+		return entityTargetElement;
 	}
 
 	/**
@@ -372,9 +399,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataTypeMappingRule createDataTypeMappingRule() {
-		DataTypeMappingRuleImpl dataTypeMappingRule = new DataTypeMappingRuleImpl();
-		return dataTypeMappingRule;
+	public EntitySourceElement createEntitySourceElement() {
+		EntitySourceElementImpl entitySourceElement = new EntitySourceElementImpl();
+		return entitySourceElement;
 	}
 
 	/**
@@ -382,29 +409,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataTypeTargetElement createDataTypeTargetElement() {
-		DataTypeTargetElementImpl dataTypeTargetElement = new DataTypeTargetElementImpl();
-		return dataTypeTargetElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DataTypeSourceElement createDataTypeSourceElement() {
-		DataTypeSourceElementImpl dataTypeSourceElement = new DataTypeSourceElementImpl();
-		return dataTypeSourceElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DataTypePropertyElement createDataTypePropertyElement() {
-		DataTypePropertyElementImpl dataTypePropertyElement = new DataTypePropertyElementImpl();
-		return dataTypePropertyElement;
+	public EntityPropertyElement createEntityPropertyElement() {
+		EntityPropertyElementImpl entityPropertyElement = new EntityPropertyElementImpl();
+		return entityPropertyElement;
 	}
 
 	/**
@@ -422,9 +429,69 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataTypeAttribute createDataTypeAttribute() {
-		DataTypeAttributeImpl dataTypeAttribute = new DataTypeAttributeImpl();
-		return dataTypeAttribute;
+	public EnumMapping createEnumMapping() {
+		EnumMappingImpl enumMapping = new EnumMappingImpl();
+		return enumMapping;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumMappingRule createEnumMappingRule() {
+		EnumMappingRuleImpl enumMappingRule = new EnumMappingRuleImpl();
+		return enumMappingRule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumTargetElement createEnumTargetElement() {
+		EnumTargetElementImpl enumTargetElement = new EnumTargetElementImpl();
+		return enumTargetElement;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumSourceElement createEnumSourceElement() {
+		EnumSourceElementImpl enumSourceElement = new EnumSourceElementImpl();
+		return enumSourceElement;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumPropertyElement createEnumPropertyElement() {
+		EnumPropertyElementImpl enumPropertyElement = new EnumPropertyElementImpl();
+		return enumPropertyElement;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumExpression createEnumExpression() {
+		EnumExpressionImpl enumExpression = new EnumExpressionImpl();
+		return enumExpression;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumReference createEnumReference() {
+		EnumReferenceImpl enumReference = new EnumReferenceImpl();
+		return enumReference;
 	}
 
 	/**
@@ -445,6 +512,16 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public DataTypeReference createDataTypeReference() {
 		DataTypeReferenceImpl dataTypeReference = new DataTypeReferenceImpl();
 		return dataTypeReference;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DataTypeMapping createDataTypeMapping() {
+		DataTypeMappingImpl dataTypeMapping = new DataTypeMappingImpl();
+		return dataTypeMapping;
 	}
 
 	/**

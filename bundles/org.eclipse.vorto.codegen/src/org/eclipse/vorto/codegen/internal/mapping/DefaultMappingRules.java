@@ -35,7 +35,6 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.OperationElement;
 import org.eclipse.vorto.core.api.model.mapping.StatusElement;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
 
 public class DefaultMappingRules implements IMappingRules {
 
@@ -48,7 +47,7 @@ public class DefaultMappingRules implements IMappingRules {
 	@Override
 	public List<IMappingRule> getRules(EObject currentModelElement) {
 		List<IMappingRule> mappingRules = new ArrayList<IMappingRule>();
-		for (InfoModelMappingRule rule : mappingModel.getInfoModelMappingRules()) {
+/*		for (InfoModelMappingRule rule : mappingModel.getInfoModelMappingRules()) {
 			if (currentModelElement instanceof Event) {
 				eventCompare(currentModelElement, mappingRules, rule);
 			}
@@ -58,7 +57,7 @@ public class DefaultMappingRules implements IMappingRules {
 			if (currentModelElement instanceof Property) {
 				propertyCompare(currentModelElement, mappingRules, rule);
 			}
-		}
+		}*/
 		return mappingRules;
 	}
 
@@ -122,7 +121,7 @@ public class DefaultMappingRules implements IMappingRules {
 			return null;
 		}
 		InfoModelFbElement functionBlockModelElement = (InfoModelFbElement) informationModelChild;
-		return functionBlockModelElement.getFunctionBlockElement();
+		return null; //functionBlockModelElement.getFunctionBlockElement();
 	}
 
 	private void eventCompare(EObject currentModelElement,

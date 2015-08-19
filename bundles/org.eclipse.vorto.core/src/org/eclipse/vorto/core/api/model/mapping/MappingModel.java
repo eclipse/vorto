@@ -2,8 +2,6 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
-import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.vorto.core.api.model.model.Model;
 
 /**
@@ -15,9 +13,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getInfoModelMappingRules <em>Info Model Mapping Rules</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getFunctionBlockMappings <em>Function Block Mappings</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getDataTypeMappings <em>Data Type Mappings</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getMappingType <em>Mapping Type</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel()
@@ -26,51 +22,29 @@ import org.eclipse.vorto.core.api.model.model.Model;
  */
 public interface MappingModel extends Model {
 	/**
-	 * Returns the value of the '<em><b>Info Model Mapping Rules</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule}.
+	 * Returns the value of the '<em><b>Mapping Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Info Model Mapping Rules</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Mapping Type</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Info Model Mapping Rules</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel_InfoModelMappingRules()
+	 * @return the value of the '<em>Mapping Type</em>' containment reference.
+	 * @see #setMappingType(MappingType)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel_MappingType()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<InfoModelMappingRule> getInfoModelMappingRules();
+	MappingType getMappingType();
 
 	/**
-	 * Returns the value of the '<em><b>Function Block Mappings</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping}.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getMappingType <em>Mapping Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Function Block Mappings</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Function Block Mappings</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel_FunctionBlockMappings()
-	 * @model containment="true"
+	 * @param value the new value of the '<em>Mapping Type</em>' containment reference.
+	 * @see #getMappingType()
 	 * @generated
 	 */
-	EList<FunctionBlockMapping> getFunctionBlockMappings();
-
-	/**
-	 * Returns the value of the '<em><b>Data Type Mappings</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.DataTypeMapping}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Data Type Mappings</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Data Type Mappings</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel_DataTypeMappings()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<DataTypeMapping> getDataTypeMappings();
+	void setMappingType(MappingType value);
 
 } // MappingModel

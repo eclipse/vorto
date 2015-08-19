@@ -1,0 +1,8 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.type.EntityA ; 1.0.0
+entitymapping Entity_Property {
+
+	from EntityA.entityB.entityC.intParam
+	to MyIntParam with { DefaultValue : "0" }
+}

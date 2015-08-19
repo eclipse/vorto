@@ -24,9 +24,9 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.mapping.Attribute
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationElement
 import org.eclipse.vorto.core.api.model.mapping.EntityExpression
+import org.eclipse.vorto.core.api.model.mapping.EnumExpression
 import org.eclipse.vorto.core.api.model.mapping.EventElement
 import org.eclipse.vorto.core.api.model.mapping.FBTypeElement
-import org.eclipse.vorto.core.api.model.mapping.FBTypeProperty
 import org.eclipse.vorto.core.api.model.mapping.FaultElement
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement
@@ -63,22 +63,16 @@ class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 		return getEntityElementProperties(exp);
 	}
 
-	
-	def IScope scope_FBTypeProperty_property(FBTypeProperty exp, EReference ref) {
-		var fbTypeElement = exp.eContainer as FBTypeElement;
-		var property = fbTypeElement.property;
-		if (property.type instanceof ObjectPropertyType) {
-			var propertyType = property.type as ObjectPropertyType;
-			return getScopeForType(propertyType.type as Type);
-		}
-		return IScope.NULLSCOPE;
-	} 
-
 	def IScope scope_EventElement_event(EventElement exp, EReference ref) {
 		var FunctionBlock functionBlock = getFunctionBlock(exp);
 		return Scopes::scopeFor(functionBlock.events);
 	}
 
+	def IScope scope_EnumExpression_literal(EnumExpression exp, EReference ref) {
+		var enumType =  exp.typeRef;
+		return Scopes::scopeFor(enumType.enums);
+	}
+	
 	private def IScope getEntityElementProperties(FBTypeElement exp) {
 		var functionBlockElement = (exp.eContainer as FunctionBlockChildElement);
 		var functionBlock = getFunctionBlock(functionBlockElement);

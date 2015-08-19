@@ -13,5 +13,5 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @model
  * @generated
  */
-public interface EntityExpressionRef extends DataTypeSourceElement {
+public interface EntityExpressionRef extends EntitySourceElement {
 } // EntityExpressionRef

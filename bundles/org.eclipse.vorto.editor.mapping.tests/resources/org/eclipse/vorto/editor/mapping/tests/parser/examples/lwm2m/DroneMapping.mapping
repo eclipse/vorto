@@ -1,0 +1,14 @@
+namespace org.openmobilealliance.map
+version 1.0.0
+using com.mycompany.fb.Drone ; 1.0.0
+using com.mycompany.fb.Switcher ; 1.0.0
+using com.mycompany.map.LocationMapping ; 1.0.0
+
+fbmapping DroneMapping {
+
+	from Drone.status.location
+	to reference LocationMapping
+
+	from Drone.operation.ascend, Switcher.operation.on
+	to Resource with { ItemID : "0", Operations : "R" }
+}

@@ -1,12 +1,14 @@
 namespace com.mycompany.fb
 version 1.0.0
 using com.mycompany.type.EntityA;1.0.0
+using com.mycompany.type.EnumA;1.0.0
 functionblock NewFunctionBlock {
 	displayname "NewFunctionBlock"
 	description "Function block model for NewFunctionBlock"
 	category demo
 	configuration {
 		optional configEntityA as EntityA
+		optional enumAParam as EnumA
 	}
 
 	status {

@@ -1,5 +1,0 @@
-namespace com.mycompany.type
-version 1.0.0
-enum EnumA {
-	 Value1, Value2
-}

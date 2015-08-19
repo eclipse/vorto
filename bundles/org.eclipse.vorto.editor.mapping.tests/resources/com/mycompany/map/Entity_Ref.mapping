@@ -1,0 +1,9 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.type.EntityA ; 1.0.0
+using com.mycompany.map.Entity_Attribute ; 1.0.0
+entitymapping Entity_Ref {
+
+	from EntityA.entityB
+	to reference Entity_Attribute
+}

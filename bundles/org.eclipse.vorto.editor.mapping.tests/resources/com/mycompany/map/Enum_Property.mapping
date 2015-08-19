@@ -1,0 +1,11 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.type.EnumA ; 1.0.0
+enummapping Enum_Property {
+
+	from EnumA.Option1
+	to O1 with { Label : "Option 1" }
+
+	from EnumA.Option2
+	to O2 with { Label : "Option 2" }
+}

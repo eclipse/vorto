@@ -1,7 +1,9 @@
 namespace com.mycompany.type
 version 1.0.0
 using com.mycompany.type.EntityB ; 1.0.0
+using com.mycompany.type.EnumA;1.0.0
 entity EntityA
 {
 	optional entityB as EntityB
+	mandatory enumA as EnumA
 }

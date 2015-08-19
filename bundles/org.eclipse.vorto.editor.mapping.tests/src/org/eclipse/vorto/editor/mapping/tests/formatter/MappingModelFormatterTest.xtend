@@ -57,65 +57,54 @@ class MappingModelFormatterTest extends AbstractXtextTests {
 	def private getUnformatted() {
 		return '''namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.DummyMapping ; 1.0.0
-using com.mycompany.NewInfomodel ; 1.0.0
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
-using com.mycompany.type.EntityA ; 1.0.0
-using com.mycompany.type.EntityB ; 1.0.0
-mapping AllInOne {
 
-	datatype EntityAMapping {
+fbmapping FunctionBlock_Property {
 
-		from EntityA.entityB 
-			ref EntityBMapping
-	}
+	from NewFunctionBlock.status.isOn
+				to TargetStatus
 
-	datatype EntityBMapping {
+			from NewFunctionBlock.configuration.configEntityA
+	to TargetConfiguration
+from NewFunctionBlock.fault.faultCode
+	to MyFaultCode
 
-		from EntityB.entityC.intParam
-			to MyIntParam with { DefaultValue : "0" }
-	}
+	from NewFunctionBlock.event.Ready to TargetReadyEvent
 
-	functionblock MyFunctionBlockMapping {
-		from NewFunctionBlock.configuration.configEntityA 
-				ref EntityAMapping
-	}
+	from NewFunctionBlock.event.Ready.entityA
+	to 
+	TargetReadyEvent with { default : "NotReady" }
 
-	from NewInfomodel.myfunctionBlock 
-				ref MyFunctionBlockMapping
+	from NewFunctionBlock.operation.on,
+NewFunctionBlock.operation.off
+	to TargetOperations
 }'''
 	}
 	
 	def private getformatted() {
 		return '''namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.DummyMapping ; 1.0.0
-using com.mycompany.NewInfomodel ; 1.0.0
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
-using com.mycompany.type.EntityA ; 1.0.0
-using com.mycompany.type.EntityB ; 1.0.0
-mapping AllInOne {
 
-	datatype EntityAMapping {
+fbmapping FunctionBlock_Property {
 
-		from EntityA.entityB
-		ref EntityBMapping
-	}
+	from NewFunctionBlock.status.isOn
+	to TargetStatus
 
-	datatype EntityBMapping {
+	from NewFunctionBlock.configuration.configEntityA
+	to TargetConfiguration
 
-		from EntityB.entityC.intParam
-		to MyIntParam with { DefaultValue : "0" }
-	}
+	from NewFunctionBlock.fault.faultCode
+	to MyFaultCode
 
-	functionblock MyFunctionBlockMapping {
+	from NewFunctionBlock.event.Ready
+	to TargetReadyEvent
 
-		from NewFunctionBlock.configuration.configEntityA
-		ref EntityAMapping
-	}
+	from NewFunctionBlock.event.Ready.entityA
+	to TargetReadyEvent with { default : "NotReady" }
 
-	from NewInfomodel.myfunctionBlock
-	ref MyFunctionBlockMapping
+	from NewFunctionBlock.operation.on, NewFunctionBlock.operation.off
+	to TargetOperations
 }'''
 	}	
 }

@@ -1,0 +1,8 @@
+namespace com.mycompany.map
+version 1.0.0
+using com.mycompany.type.EnumA;1.0.0
+enummapping Mapping_Enum_Attribute {
+	 from EnumA.name to TargetName
+	 from EnumA.namespace to TargetNameSpace
+	 from EnumA.version to TargetVersion	 	 
+}

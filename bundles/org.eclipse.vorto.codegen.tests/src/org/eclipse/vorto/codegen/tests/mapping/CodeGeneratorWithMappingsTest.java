@@ -151,7 +151,7 @@ public class CodeGeneratorWithMappingsTest {
 		MappingModel mappingModel = MappingFactory.eINSTANCE
 				.createMappingModel();
 		mappingModel.setName("MyMapping");
-		mappingModel.getInfoModelMappingRules().add(createeRule());
+		//mappingModel.getInfoModelMappingRules().add(createeRule());
 		return mappingModel;
 	}
 

@@ -18,11 +18,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
-import org.eclipse.vorto.core.api.model.mapping.DataTypeMapping;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingType;
 
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
@@ -38,9 +36,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getInfoModelMappingRules <em>Info Model Mapping Rules</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getFunctionBlockMappings <em>Function Block Mappings</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getDataTypeMappings <em>Data Type Mappings</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getMappingType <em>Mapping Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -117,34 +113,14 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	protected EList<ModelReference> references;
 
 	/**
-	 * The cached value of the '{@link #getInfoModelMappingRules() <em>Info Model Mapping Rules</em>}' containment reference list.
+	 * The cached value of the '{@link #getMappingType() <em>Mapping Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getInfoModelMappingRules()
+	 * @see #getMappingType()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<InfoModelMappingRule> infoModelMappingRules;
-
-	/**
-	 * The cached value of the '{@link #getFunctionBlockMappings() <em>Function Block Mappings</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getFunctionBlockMappings()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<FunctionBlockMapping> functionBlockMappings;
-
-	/**
-	 * The cached value of the '{@link #getDataTypeMappings() <em>Data Type Mappings</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDataTypeMappings()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<DataTypeMapping> dataTypeMappings;
+	protected MappingType mappingType;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -245,11 +221,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<InfoModelMappingRule> getInfoModelMappingRules() {
-		if (infoModelMappingRules == null) {
-			infoModelMappingRules = new EObjectContainmentEList<InfoModelMappingRule>(InfoModelMappingRule.class, this, MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES);
-		}
-		return infoModelMappingRules;
+	public MappingType getMappingType() {
+		return mappingType;
 	}
 
 	/**
@@ -257,11 +230,14 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<FunctionBlockMapping> getFunctionBlockMappings() {
-		if (functionBlockMappings == null) {
-			functionBlockMappings = new EObjectContainmentEList<FunctionBlockMapping>(FunctionBlockMapping.class, this, MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS);
+	public NotificationChain basicSetMappingType(MappingType newMappingType, NotificationChain msgs) {
+		MappingType oldMappingType = mappingType;
+		mappingType = newMappingType;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING_TYPE, oldMappingType, newMappingType);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
-		return functionBlockMappings;
+		return msgs;
 	}
 
 	/**
@@ -269,11 +245,18 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<DataTypeMapping> getDataTypeMappings() {
-		if (dataTypeMappings == null) {
-			dataTypeMappings = new EObjectContainmentEList<DataTypeMapping>(DataTypeMapping.class, this, MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS);
+	public void setMappingType(MappingType newMappingType) {
+		if (newMappingType != mappingType) {
+			NotificationChain msgs = null;
+			if (mappingType != null)
+				msgs = ((InternalEObject)mappingType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING_TYPE, null, msgs);
+			if (newMappingType != null)
+				msgs = ((InternalEObject)newMappingType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING_TYPE, null, msgs);
+			msgs = basicSetMappingType(newMappingType, msgs);
+			if (msgs != null) msgs.dispatch();
 		}
-		return dataTypeMappings;
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING_TYPE, newMappingType, newMappingType));
 	}
 
 	/**
@@ -286,12 +269,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 		switch (featureID) {
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return ((InternalEList<?>)getReferences()).basicRemove(otherEnd, msgs);
-			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
-				return ((InternalEList<?>)getInfoModelMappingRules()).basicRemove(otherEnd, msgs);
-			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS:
-				return ((InternalEList<?>)getFunctionBlockMappings()).basicRemove(otherEnd, msgs);
-			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS:
-				return ((InternalEList<?>)getDataTypeMappings()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
+				return basicSetMappingType(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -312,12 +291,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return getVersion();
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return getReferences();
-			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
-				return getInfoModelMappingRules();
-			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS:
-				return getFunctionBlockMappings();
-			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS:
-				return getDataTypeMappings();
+			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
+				return getMappingType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -344,17 +319,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
-			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
-				getInfoModelMappingRules().clear();
-				getInfoModelMappingRules().addAll((Collection<? extends InfoModelMappingRule>)newValue);
-				return;
-			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS:
-				getFunctionBlockMappings().clear();
-				getFunctionBlockMappings().addAll((Collection<? extends FunctionBlockMapping>)newValue);
-				return;
-			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS:
-				getDataTypeMappings().clear();
-				getDataTypeMappings().addAll((Collection<? extends DataTypeMapping>)newValue);
+			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
+				setMappingType((MappingType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -380,14 +346,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
-			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
-				getInfoModelMappingRules().clear();
-				return;
-			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS:
-				getFunctionBlockMappings().clear();
-				return;
-			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS:
-				getDataTypeMappings().clear();
+			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
+				setMappingType((MappingType)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -409,12 +369,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
-			case MappingPackage.MAPPING_MODEL__INFO_MODEL_MAPPING_RULES:
-				return infoModelMappingRules != null && !infoModelMappingRules.isEmpty();
-			case MappingPackage.MAPPING_MODEL__FUNCTION_BLOCK_MAPPINGS:
-				return functionBlockMappings != null && !functionBlockMappings.isEmpty();
-			case MappingPackage.MAPPING_MODEL__DATA_TYPE_MAPPINGS:
-				return dataTypeMappings != null && !dataTypeMappings.isEmpty();
+			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
+				return mappingType != null;
 		}
 		return super.eIsSet(featureID);
 	}

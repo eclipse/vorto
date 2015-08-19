@@ -1,12 +1,10 @@
 namespace com.mycompany.map
 version 1.0.0
-using com.mycompany.NewInfomodel;1.0.0
+using com.mycompany.NewInfomodel ; 1.0.0
+using com.mycompany.map.FunctionBlock_Attribute ; 1.0.0
 
-mapping Infomodel_FBRef {
-	 from NewInfomodel.category to TargetCategory
-	 from NewInfomodel.description to TargetDesc
-	 from NewInfomodel.displayname to TargetDisplay
-	 from NewInfomodel.name to TargetName
-	 from NewInfomodel.namespace to TargetNameSpace
-	 from NewInfomodel.version to TargetVersion
+immapping Infomodel_FBRef {
+
+	from NewInfomodel.myfunctionBlock
+	to reference FunctionBlock_Attribute
 }

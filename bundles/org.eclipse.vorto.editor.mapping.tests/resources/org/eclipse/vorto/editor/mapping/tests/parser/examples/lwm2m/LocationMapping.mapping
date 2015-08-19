@@ -1,0 +1,14 @@
+namespace org.openmobilealliance.map
+version 1.0.0
+using com.mycompany.type.GeoLocation ; 1.0.0
+entitymapping LocationMapping {
+
+	from GeoLocation.latitude
+	to Resource with { ItemID : "0", Units : "deg" }
+
+	from GeoLocation.longitude
+	to Resource with { ItemID : "1", Units : "deg" }
+
+	from GeoLocation.altitude
+	to Resource with { ItemID : "2", Units : "m" }
+}

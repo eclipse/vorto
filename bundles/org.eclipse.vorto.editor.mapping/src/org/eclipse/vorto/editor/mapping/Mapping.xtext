@@ -25,21 +25,23 @@ MappingModel:
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*	
-	'mapping' name=ID  '{'
-		
-		(dataTypeMappings+=DataTypeMapping)*
+	 mappingType = MappingType
+;
 
-		(functionBlockMappings+=FunctionBlockMapping)*
-				
-		(infoModelMappingRules+=InfoModelMappingRule)*		
-
-	'}';
-
+MappingType:
+	InfoModelMapping | FunctionBlockMapping | DataTypeMapping
+;
 
 /*----------------------Start Information Model Mapping Definition---------------------------*/
+InfoModelMapping:
+	'immapping' name=ID  '{'
+			(infoModelMappingRules +=InfoModelMappingRule)*
+	'}'	
+;
+
 InfoModelMappingRule:
 	'from' infoModelSourceElements+=InfoModelSourceElement (',' infoModelSourceElements+=InfoModelSourceElement)*
-	target = InfoModelTargetElement
+	'to' target = InfoModelTargetElement
 ;
 
 InfoModelTargetElement:
@@ -70,15 +72,14 @@ enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 
 
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMapping:
-{FunctionBlockMapping}
-	'functionblock' name=ID  '{'
+	'fbmapping' name=ID  '{'
 			(functionBlockMappingRules +=FunctionBlockMappingRule)*
 	'}'	
 ;
 
 FunctionBlockMappingRule:
 	'from' functionBlockSourceElements+=FunctionBlockSourceElement (',' functionBlockSourceElements+=FunctionBlockSourceElement)*
-	target = FunctionBlockTargetElement;
+	'to' target = FunctionBlockTargetElement;
 
 FunctionBlockTargetElement:
 	StereoTypeReference | DataTypeReference
@@ -130,26 +131,26 @@ enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  v
 /*----------------------End Function Block Mapping Definition---------------------------*/
 
 /*----------------------Start Entity Mapping Definition---------------------------*/
-DataTypeMapping:
-	'datatype' name=ID  '{'
-		(datatypeMappingRules +=DataTypeMappingRule)*
+EntityMapping:
+	'entitymapping' name=ID  '{'
+		(entityMappingRules +=EntityMappingRule)*
 	'}'	
 ;
 
-DataTypeMappingRule:
-	'from' dataTypeMappingElements+=DataTypeSourceElement (',' DataTypeSourceElement+=DataTypeSourceElement)*
-	targetElement=DataTypeTargetElement;	
+EntityMappingRule:
+	'from' entityMappingElements+=EntitySourceElement (',' EntitySourceElement+=EntitySourceElement)*
+	'to' targetElement=EntityTargetElement;	
 
-DataTypeTargetElement:
+EntityTargetElement:
 	StereoTypeReference | DataTypeReference
 ;
 
-DataTypeSourceElement:
-	DataTypePropertyElement | NestedEntityExpression
+EntitySourceElement:
+	EntityPropertyElement | NestedEntityExpression
 ;
 
-DataTypePropertyElement:
-	typeRef = [datatype::Type] attribute = DataTypeAttribute
+EntityPropertyElement:
+	typeRef = [datatype::Entity] '.' attribute = ModelAttribute
 ;	
 
 NestedEntityExpression returns EntityExpressionRef:
@@ -157,24 +158,61 @@ NestedEntityExpression returns EntityExpressionRef:
 ;
  
 EntityExpression returns EntityExpressionRef:
-    {EntityExpression} entity=[datatype::Type]
+    {EntityExpression} entity=[datatype::Entity]
 ; 
 
-DataTypeAttribute:
-	'.' attribute = ModelAttribute 	
-;
 
 /*----------------------End Entity Mapping Definition---------------------------*/
 
+/*----------------------Start Enum Mapping Definition---------------------------*/
+EnumMapping:
+	'enummapping' name=ID  '{'
+		(enumMappingRules +=EnumMappingRule)*
+	'}'	
+;
+
+EnumMappingRule:
+	'from' enumElements+=EnumSourceElement (',' EnumSourceElement+=EnumSourceElement)*
+	'to' targetElement=EnumTargetElement
+;	
+
+EnumTargetElement:
+	StereoTypeReference | EnumReference
+;
+
+	
+EnumSourceElement:
+	EnumPropertyElement | EnumExpression
+;
+
+
+EnumPropertyElement:
+	typeRef = [datatype::Enum] '.' attribute = ModelAttribute
+;	
+
+
+EnumExpression:
+   typeRef = [datatype::Enum] "." literal=[datatype::EnumLiteral]
+;
+
+EnumReference:
+	'reference' reference=  [EnumMapping|QualifiedName]	
+;
+
+/*----------------------End Enum Mapping Definition---------------------------*/
+
+
 /*----------------------Start Reference Element Definition---------------------------*/
 FunctionBlockReference:
-	{FunctionBlockReference}
-	'ref' reference=  [FunctionBlockMapping]
+	'reference' reference=  [FunctionBlockMapping|QualifiedName]
 ;
 
 DataTypeReference:
-	{DataTypeReference}
-	'ref' reference=  [DataTypeMapping]	
+	'reference' reference = [DataTypeMapping|QualifiedName] 
+;
+
+DataTypeMapping:
+	EntityMapping | EnumMapping
 ;
 
 /*----------------------End Reference Element Definition---------------------------*/	
@@ -182,7 +220,7 @@ DataTypeReference:
 	
 /*----------------------Start Target Element Definition---------------------------*/
 StereoTypeReference:
-	'to' targetElement=StereoTypeElement
+	targetElement=StereoTypeElement
 ;
 
 StereoTypeElement:
