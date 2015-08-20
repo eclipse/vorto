@@ -75,16 +75,16 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.MAPPING_TYPE: {
-				MappingType mappingType = (MappingType)theEObject;
-				T result = caseMappingType(mappingType);
+			case MappingPackage.MAPPING: {
+				Mapping mapping = (Mapping)theEObject;
+				T result = caseMapping(mapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case MappingPackage.INFO_MODEL_MAPPING: {
 				InfoModelMapping infoModelMapping = (InfoModelMapping)theEObject;
 				T result = caseInfoModelMapping(infoModelMapping);
-				if (result == null) result = caseMappingType(infoModelMapping);
+				if (result == null) result = caseMapping(infoModelMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -129,7 +129,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.FUNCTION_BLOCK_MAPPING: {
 				FunctionBlockMapping functionBlockMapping = (FunctionBlockMapping)theEObject;
 				T result = caseFunctionBlockMapping(functionBlockMapping);
-				if (result == null) result = caseMappingType(functionBlockMapping);
+				if (result == null) result = caseMapping(functionBlockMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -219,7 +219,7 @@ public class MappingSwitch<T> extends Switch<T> {
 				EntityMapping entityMapping = (EntityMapping)theEObject;
 				T result = caseEntityMapping(entityMapping);
 				if (result == null) result = caseDataTypeMapping(entityMapping);
-				if (result == null) result = caseMappingType(entityMapping);
+				if (result == null) result = caseMapping(entityMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -259,7 +259,7 @@ public class MappingSwitch<T> extends Switch<T> {
 				EnumMapping enumMapping = (EnumMapping)theEObject;
 				T result = caseEnumMapping(enumMapping);
 				if (result == null) result = caseDataTypeMapping(enumMapping);
-				if (result == null) result = caseMappingType(enumMapping);
+				if (result == null) result = caseMapping(enumMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -320,7 +320,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.DATA_TYPE_MAPPING: {
 				DataTypeMapping dataTypeMapping = (DataTypeMapping)theEObject;
 				T result = caseDataTypeMapping(dataTypeMapping);
-				if (result == null) result = caseMappingType(dataTypeMapping);
+				if (result == null) result = caseMapping(dataTypeMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -388,17 +388,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Mapping</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Mapping</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseMappingType(MappingType object) {
+	public T caseMapping(Mapping object) {
 		return null;
 	}
 

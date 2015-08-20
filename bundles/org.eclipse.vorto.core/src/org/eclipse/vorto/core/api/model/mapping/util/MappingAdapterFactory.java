@@ -74,8 +74,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createMappingModelAdapter();
 			}
 			@Override
-			public Adapter caseMappingType(MappingType object) {
-				return createMappingTypeAdapter();
+			public Adapter caseMapping(Mapping object) {
+				return createMappingAdapter();
 			}
 			@Override
 			public Adapter caseInfoModelMapping(InfoModelMapping object) {
@@ -284,16 +284,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.MappingType <em>Type</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.Mapping <em>Mapping</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingType
+	 * @see org.eclipse.vorto.core.api.model.mapping.Mapping
 	 * @generated
 	 */
-	public Adapter createMappingTypeAdapter() {
+	public Adapter createMappingAdapter() {
 		return null;
 	}
 

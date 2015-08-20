@@ -54,10 +54,10 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.InformationModelProperty;
+import org.eclipse.vorto.core.api.model.mapping.Mapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.MappingType;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression;
 import org.eclipse.vorto.core.api.model.mapping.OperationElement;
@@ -87,7 +87,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EClass mappingTypeEClass = null;
+	private EClass mappingEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -483,7 +483,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getMappingModel_MappingType() {
+	public EReference getMappingModel_Mapping() {
 		return (EReference)mappingModelEClass.getEStructuralFeatures().get(0);
 	}
 
@@ -492,8 +492,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EClass getMappingType() {
-		return mappingTypeEClass;
+	public EClass getMapping() {
+		return mappingEClass;
 	}
 
 	/**
@@ -501,8 +501,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getMappingType_Name() {
-		return (EAttribute)mappingTypeEClass.getEStructuralFeatures().get(0);
+	public EAttribute getMapping_Name() {
+		return (EAttribute)mappingEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -1326,10 +1326,10 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		// Create classes and their features
 		mappingModelEClass = createEClass(MAPPING_MODEL);
-		createEReference(mappingModelEClass, MAPPING_MODEL__MAPPING_TYPE);
+		createEReference(mappingModelEClass, MAPPING_MODEL__MAPPING);
 
-		mappingTypeEClass = createEClass(MAPPING_TYPE);
-		createEAttribute(mappingTypeEClass, MAPPING_TYPE__NAME);
+		mappingEClass = createEClass(MAPPING);
+		createEAttribute(mappingEClass, MAPPING__NAME);
 
 		infoModelMappingEClass = createEClass(INFO_MODEL_MAPPING);
 		createEReference(infoModelMappingEClass, INFO_MODEL_MAPPING__INFO_MODEL_MAPPING_RULES);
@@ -1499,10 +1499,10 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		// Add supertypes to classes
 		mappingModelEClass.getESuperTypes().add(theModelPackage.getModel());
-		infoModelMappingEClass.getESuperTypes().add(this.getMappingType());
+		infoModelMappingEClass.getESuperTypes().add(this.getMapping());
 		infoModelFbElementEClass.getESuperTypes().add(this.getInfoModelChild());
 		informationModelPropertyEClass.getESuperTypes().add(this.getInfoModelChild());
-		functionBlockMappingEClass.getESuperTypes().add(this.getMappingType());
+		functionBlockMappingEClass.getESuperTypes().add(this.getMapping());
 		functionBlockElementAttributeEClass.getESuperTypes().add(this.getFunctionBlockElement());
 		functionBlockChildElementEClass.getESuperTypes().add(this.getFunctionBlockElement());
 		configurationElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
@@ -1519,7 +1519,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		functionBlockReferenceEClass.getESuperTypes().add(this.getInfoModelTargetElement());
 		dataTypeReferenceEClass.getESuperTypes().add(this.getFunctionBlockTargetElement());
 		dataTypeReferenceEClass.getESuperTypes().add(this.getEntityTargetElement());
-		dataTypeMappingEClass.getESuperTypes().add(this.getMappingType());
+		dataTypeMappingEClass.getESuperTypes().add(this.getMapping());
 		stereoTypeReferenceEClass.getESuperTypes().add(this.getInfoModelTargetElement());
 		stereoTypeReferenceEClass.getESuperTypes().add(this.getFunctionBlockTargetElement());
 		stereoTypeReferenceEClass.getESuperTypes().add(this.getEntityTargetElement());
@@ -1529,10 +1529,10 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 
 		// Initialize classes, features, and operations; add parameters
 		initEClass(mappingModelEClass, MappingModel.class, "MappingModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getMappingModel_MappingType(), this.getMappingType(), null, "mappingType", null, 0, 1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getMappingModel_Mapping(), this.getMapping(), null, "mapping", null, 0, 1, MappingModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		initEClass(mappingTypeEClass, MappingType.class, "MappingType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getMappingType_Name(), ecorePackage.getEString(), "name", null, 0, 1, MappingType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(mappingEClass, Mapping.class, "Mapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getMapping_Name(), ecorePackage.getEString(), "name", null, 0, 1, Mapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(infoModelMappingEClass, InfoModelMapping.class, "InfoModelMapping", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInfoModelMapping_InfoModelMappingRules(), this.getInfoModelMappingRule(), null, "infoModelMappingRules", null, 0, -1, InfoModelMapping.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

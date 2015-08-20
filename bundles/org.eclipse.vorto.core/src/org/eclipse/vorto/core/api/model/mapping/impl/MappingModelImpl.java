@@ -18,9 +18,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
+import org.eclipse.vorto.core.api.model.mapping.Mapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
-import org.eclipse.vorto.core.api.model.mapping.MappingType;
 
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
@@ -36,7 +36,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getMappingType <em>Mapping Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getMapping <em>Mapping</em>}</li>
  * </ul>
  *
  * @generated
@@ -113,14 +113,14 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	protected EList<ModelReference> references;
 
 	/**
-	 * The cached value of the '{@link #getMappingType() <em>Mapping Type</em>}' containment reference.
+	 * The cached value of the '{@link #getMapping() <em>Mapping</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getMappingType()
+	 * @see #getMapping()
 	 * @generated
 	 * @ordered
 	 */
-	protected MappingType mappingType;
+	protected Mapping mapping;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -221,8 +221,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MappingType getMappingType() {
-		return mappingType;
+	public Mapping getMapping() {
+		return mapping;
 	}
 
 	/**
@@ -230,11 +230,11 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetMappingType(MappingType newMappingType, NotificationChain msgs) {
-		MappingType oldMappingType = mappingType;
-		mappingType = newMappingType;
+	public NotificationChain basicSetMapping(Mapping newMapping, NotificationChain msgs) {
+		Mapping oldMapping = mapping;
+		mapping = newMapping;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING_TYPE, oldMappingType, newMappingType);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING, oldMapping, newMapping);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -245,18 +245,18 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setMappingType(MappingType newMappingType) {
-		if (newMappingType != mappingType) {
+	public void setMapping(Mapping newMapping) {
+		if (newMapping != mapping) {
 			NotificationChain msgs = null;
-			if (mappingType != null)
-				msgs = ((InternalEObject)mappingType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING_TYPE, null, msgs);
-			if (newMappingType != null)
-				msgs = ((InternalEObject)newMappingType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING_TYPE, null, msgs);
-			msgs = basicSetMappingType(newMappingType, msgs);
+			if (mapping != null)
+				msgs = ((InternalEObject)mapping).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING, null, msgs);
+			if (newMapping != null)
+				msgs = ((InternalEObject)newMapping).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.MAPPING_MODEL__MAPPING, null, msgs);
+			msgs = basicSetMapping(newMapping, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING_TYPE, newMappingType, newMappingType));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__MAPPING, newMapping, newMapping));
 	}
 
 	/**
@@ -269,8 +269,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 		switch (featureID) {
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return ((InternalEList<?>)getReferences()).basicRemove(otherEnd, msgs);
-			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
-				return basicSetMappingType(null, msgs);
+			case MappingPackage.MAPPING_MODEL__MAPPING:
+				return basicSetMapping(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -291,8 +291,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return getVersion();
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return getReferences();
-			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
-				return getMappingType();
+			case MappingPackage.MAPPING_MODEL__MAPPING:
+				return getMapping();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -319,8 +319,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
-			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
-				setMappingType((MappingType)newValue);
+			case MappingPackage.MAPPING_MODEL__MAPPING:
+				setMapping((Mapping)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -346,8 +346,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
-			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
-				setMappingType((MappingType)null);
+			case MappingPackage.MAPPING_MODEL__MAPPING:
+				setMapping((Mapping)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -369,8 +369,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
-			case MappingPackage.MAPPING_MODEL__MAPPING_TYPE:
-				return mappingType != null;
+			case MappingPackage.MAPPING_MODEL__MAPPING:
+				return mapping != null;
 		}
 		return super.eIsSet(featureID);
 	}

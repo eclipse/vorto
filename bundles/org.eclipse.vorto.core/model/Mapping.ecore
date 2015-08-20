@@ -3,13 +3,13 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mapping" nsURI="http://www.eclipse.org/vorto/metamodel/Mapping"
     nsPrefix="mapping">
   <eClassifiers xsi:type="ecore:EClass" name="MappingModel" eSuperTypes="Model.ecore#//Model">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="mappingType" eType="#//MappingType"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mapping" eType="#//Mapping"
         containment="true"/>
   </eClassifiers>
-<eClassifiers xsi:type="ecore:EClass" name="MappingType">
+  <eClassifiers xsi:type="ecore:EClass" name="Mapping">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMapping" eSuperTypes="#//MappingType">
+  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMapping" eSuperTypes="#//Mapping">
     <eStructuralFeatures xsi:type="ecore:EReference" name="infoModelMappingRules"
         upperBound="-1" eType="#//InfoModelMappingRule" containment="true"/>
   </eClassifiers>
@@ -21,13 +21,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelTargetElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelSourceElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="infoModel" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/InformationModel.ecore#//InformationModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="infoModel" eType="ecore:EClass InformationModel.ecore#//InformationModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="infoModelChild" eType="#//InfoModelChild"
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelChild"/>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelFbElement" eSuperTypes="#//InfoModelChild">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="functionblock" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/InformationModel.ecore#//FunctionblockProperty"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="functionblock" eType="ecore:EClass InformationModel.ecore#//FunctionblockProperty"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InformationModelProperty" eSuperTypes="#//InfoModelChild">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//InfoModelAttribute"/>
@@ -40,7 +40,7 @@
     <eLiterals name="category" value="4" literal="category"/>
     <eLiterals name="description" value="5" literal="description"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMapping" eSuperTypes="#//MappingType">
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMapping" eSuperTypes="#//Mapping">
     <eStructuralFeatures xsi:type="ecore:EReference" name="functionBlockMappingRules"
         upperBound="-1" eType="#//FunctionBlockMappingRule" containment="true"/>
   </eClassifiers>
@@ -52,7 +52,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockTargetElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockSourceElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="functionblock" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//FunctionblockModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="functionblock" eType="ecore:EClass Functionblock.ecore#//FunctionblockModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="functionBlockElement" eType="#//FunctionBlockElement"
         containment="true"/>
   </eClassifiers>
@@ -67,16 +67,16 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OperationElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//Operation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass Functionblock.ecore#//Operation"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConfigurationElement" eSuperTypes="#//FunctionBlockChildElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="StatusElement" eSuperTypes="#//FunctionBlockChildElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="FaultElement" eSuperTypes="#//FunctionBlockChildElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="EventElement" eSuperTypes="#//FunctionBlockChildElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//Event"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass Functionblock.ecore#//Event"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBTypeElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Property"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass Datatype.ecore#//Property"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="FunctionblockModelAttribute">
     <eLiterals name="name" literal="name"/>
@@ -101,7 +101,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="EntityTargetElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="EntitySourceElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="EntityPropertyElement" eSuperTypes="#//EntitySourceElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="ecore:EClass Datatype.ecore#//Entity"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//ModelAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityExpressionRef" eSuperTypes="#//EntitySourceElement"/>
@@ -119,13 +119,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumTargetElement"/>
   <eClassifiers xsi:type="ecore:EClass" name="EnumSourceElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Enum"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="ecore:EClass Datatype.ecore#//Enum"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumPropertyElement" eSuperTypes="#//EnumSourceElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//ModelAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumExpression" eSuperTypes="#//EnumSourceElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="literal" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//EnumLiteral"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="literal" eType="ecore:EClass Datatype.ecore#//EnumLiteral"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EnumReference" eSuperTypes="#//EnumTargetElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="reference" eType="#//EnumMapping"/>
@@ -136,7 +136,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="DataTypeReference" eSuperTypes="#//FunctionBlockTargetElement #//EntityTargetElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="reference" eType="#//DataTypeMapping"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="DataTypeMapping" eSuperTypes="#//MappingType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DataTypeMapping" eSuperTypes="#//Mapping"/>
   <eClassifiers xsi:type="ecore:EClass" name="StereoTypeReference" eSuperTypes="#//InfoModelTargetElement #//FunctionBlockTargetElement #//EntityTargetElement #//EnumTargetElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="targetElement" eType="#//StereoTypeElement"
         containment="true"/>
@@ -162,9 +162,9 @@
   <eClassifiers xsi:type="ecore:EClass" name="NestedEntityExpression" eSuperTypes="#//EntityExpressionRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ref" eType="#//EntityExpressionRef"
         containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Property"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="tail" eType="ecore:EClass Datatype.ecore#//Property"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityExpression" eSuperTypes="#//EntityExpressionRef">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entity" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="entity" eType="ecore:EClass Datatype.ecore#//Entity"/>
   </eClassifiers>
 </ecore:EPackage>

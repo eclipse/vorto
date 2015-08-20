@@ -33,6 +33,8 @@ public interface IMappingRules {
 	 */
 	List<IMappingRule> getRules(EObject modelElement);
 
+	List<IMappingRule> getRules(String modelAttribute);
+	
 	/**
 	 * gets all mapping rules for the specified stereotype name. A stereotype is
 	 * platform specific and specified in the DSL as e.g. "channel-type"
