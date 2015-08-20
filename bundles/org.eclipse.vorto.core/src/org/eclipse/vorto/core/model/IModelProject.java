@@ -48,6 +48,12 @@ public interface IModelProject extends IModelElement {
 	 * @param reference
 	 */
 	void addReference(IModelElement reference);
+	
+	/**
+	 * Returns a reference to the shared model under the
+	 * src/shared_models given by modelId. 
+	 */
+	IModelElement getSharedModelReference(ModelId modelId);
 
 	/**
 	 * 
