@@ -155,4 +155,13 @@ public class DefaultMappingRules implements IMappingRules {
 		}*/
 		return mappingRules;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.vorto.codegen.api.mapping.IMappingRules#getRules(java.lang.String)
+	 */
+	@Override
+	public List<IMappingRule> getRules(String modelAttribute) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

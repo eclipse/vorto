@@ -25,10 +25,10 @@ MappingModel:
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*	
-	 mappingType = MappingType
+	 mapping = Mapping
 ;
 
-MappingType:
+Mapping:
 	InfoModelMapping | FunctionBlockMapping | DataTypeMapping
 ;
 

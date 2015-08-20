@@ -31,7 +31,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  *
  * @generated
  */
-public class InfoModelMappingImpl extends MappingTypeImpl implements InfoModelMapping {
+public class InfoModelMappingImpl extends MappingImpl implements InfoModelMapping {
 	/**
 	 * The cached value of the '{@link #getInfoModelMappingRules() <em>Info Model Mapping Rules</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

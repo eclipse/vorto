@@ -106,13 +106,13 @@ public interface MappingPackage extends EPackage {
 	int MAPPING_MODEL__REFERENCES = ModelPackage.MODEL__REFERENCES;
 
 	/**
-	 * The feature id for the '<em><b>Mapping Type</b></em>' containment reference.
+	 * The feature id for the '<em><b>Mapping</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPING_MODEL__MAPPING_TYPE = ModelPackage.MODEL_FEATURE_COUNT + 0;
+	int MAPPING_MODEL__MAPPING = ModelPackage.MODEL_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Model</em>' class.
@@ -133,14 +133,14 @@ public interface MappingPackage extends EPackage {
 	int MAPPING_MODEL_OPERATION_COUNT = ModelPackage.MODEL_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingTypeImpl <em>Type</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingImpl <em>Mapping</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingTypeImpl
-	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getMappingType()
+	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingImpl
+	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getMapping()
 	 * @generated
 	 */
-	int MAPPING_TYPE = 1;
+	int MAPPING = 1;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -149,25 +149,25 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPING_TYPE__NAME = 0;
+	int MAPPING__NAME = 0;
 
 	/**
-	 * The number of structural features of the '<em>Type</em>' class.
+	 * The number of structural features of the '<em>Mapping</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPING_TYPE_FEATURE_COUNT = 1;
+	int MAPPING_FEATURE_COUNT = 1;
 
 	/**
-	 * The number of operations of the '<em>Type</em>' class.
+	 * The number of operations of the '<em>Mapping</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MAPPING_TYPE_OPERATION_COUNT = 0;
+	int MAPPING_OPERATION_COUNT = 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingImpl <em>Info Model Mapping</em>}' class.
@@ -186,7 +186,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFO_MODEL_MAPPING__NAME = MAPPING_TYPE__NAME;
+	int INFO_MODEL_MAPPING__NAME = MAPPING__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Info Model Mapping Rules</b></em>' containment reference list.
@@ -195,7 +195,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFO_MODEL_MAPPING__INFO_MODEL_MAPPING_RULES = MAPPING_TYPE_FEATURE_COUNT + 0;
+	int INFO_MODEL_MAPPING__INFO_MODEL_MAPPING_RULES = MAPPING_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Info Model Mapping</em>' class.
@@ -204,7 +204,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFO_MODEL_MAPPING_FEATURE_COUNT = MAPPING_TYPE_FEATURE_COUNT + 1;
+	int INFO_MODEL_MAPPING_FEATURE_COUNT = MAPPING_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Info Model Mapping</em>' class.
@@ -213,7 +213,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFO_MODEL_MAPPING_OPERATION_COUNT = MAPPING_TYPE_OPERATION_COUNT + 0;
+	int INFO_MODEL_MAPPING_OPERATION_COUNT = MAPPING_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl <em>Info Model Mapping Rule</em>}' class.
@@ -454,7 +454,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_MAPPING__NAME = MAPPING_TYPE__NAME;
+	int FUNCTION_BLOCK_MAPPING__NAME = MAPPING__NAME;
 
 	/**
 	 * The feature id for the '<em><b>Function Block Mapping Rules</b></em>' containment reference list.
@@ -463,7 +463,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_MAPPING__FUNCTION_BLOCK_MAPPING_RULES = MAPPING_TYPE_FEATURE_COUNT + 0;
+	int FUNCTION_BLOCK_MAPPING__FUNCTION_BLOCK_MAPPING_RULES = MAPPING_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Function Block Mapping</em>' class.
@@ -472,7 +472,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_MAPPING_FEATURE_COUNT = MAPPING_TYPE_FEATURE_COUNT + 1;
+	int FUNCTION_BLOCK_MAPPING_FEATURE_COUNT = MAPPING_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Function Block Mapping</em>' class.
@@ -481,7 +481,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_MAPPING_OPERATION_COUNT = MAPPING_TYPE_OPERATION_COUNT + 0;
+	int FUNCTION_BLOCK_MAPPING_OPERATION_COUNT = MAPPING_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl <em>Function Block Mapping Rule</em>}' class.
@@ -998,7 +998,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_TYPE_MAPPING__NAME = MAPPING_TYPE__NAME;
+	int DATA_TYPE_MAPPING__NAME = MAPPING__NAME;
 
 	/**
 	 * The number of structural features of the '<em>Data Type Mapping</em>' class.
@@ -1007,7 +1007,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_TYPE_MAPPING_FEATURE_COUNT = MAPPING_TYPE_FEATURE_COUNT + 0;
+	int DATA_TYPE_MAPPING_FEATURE_COUNT = MAPPING_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Data Type Mapping</em>' class.
@@ -1016,7 +1016,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int DATA_TYPE_MAPPING_OPERATION_COUNT = MAPPING_TYPE_OPERATION_COUNT + 0;
+	int DATA_TYPE_MAPPING_OPERATION_COUNT = MAPPING_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingImpl <em>Entity Mapping</em>}' class.
@@ -1909,36 +1909,36 @@ public interface MappingPackage extends EPackage {
 	EClass getMappingModel();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getMappingType <em>Mapping Type</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getMapping <em>Mapping</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Mapping Type</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingModel#getMappingType()
+	 * @return the meta object for the containment reference '<em>Mapping</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingModel#getMapping()
 	 * @see #getMappingModel()
 	 * @generated
 	 */
-	EReference getMappingModel_MappingType();
+	EReference getMappingModel_Mapping();
 
 	/**
-	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.MappingType <em>Type</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.Mapping <em>Mapping</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Type</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingType
+	 * @return the meta object for class '<em>Mapping</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.Mapping
 	 * @generated
 	 */
-	EClass getMappingType();
+	EClass getMapping();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.mapping.MappingType#getName <em>Name</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.mapping.Mapping#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingType#getName()
-	 * @see #getMappingType()
+	 * @see org.eclipse.vorto.core.api.model.mapping.Mapping#getName()
+	 * @see #getMapping()
 	 * @generated
 	 */
-	EAttribute getMappingType_Name();
+	EAttribute getMapping_Name();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMapping <em>Info Model Mapping</em>}'.
@@ -2897,22 +2897,22 @@ public interface MappingPackage extends EPackage {
 		EClass MAPPING_MODEL = eINSTANCE.getMappingModel();
 
 		/**
-		 * The meta object literal for the '<em><b>Mapping Type</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Mapping</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference MAPPING_MODEL__MAPPING_TYPE = eINSTANCE.getMappingModel_MappingType();
+		EReference MAPPING_MODEL__MAPPING = eINSTANCE.getMappingModel_Mapping();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingTypeImpl <em>Type</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingImpl <em>Mapping</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingTypeImpl
-		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getMappingType()
+		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingImpl
+		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getMapping()
 		 * @generated
 		 */
-		EClass MAPPING_TYPE = eINSTANCE.getMappingType();
+		EClass MAPPING = eINSTANCE.getMapping();
 
 		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
@@ -2920,7 +2920,7 @@ public interface MappingPackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute MAPPING_TYPE__NAME = eINSTANCE.getMappingType_Name();
+		EAttribute MAPPING__NAME = eINSTANCE.getMapping_Name();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingImpl <em>Info Model Mapping</em>}' class.

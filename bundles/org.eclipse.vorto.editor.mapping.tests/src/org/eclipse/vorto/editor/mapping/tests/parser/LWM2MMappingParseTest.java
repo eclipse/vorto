@@ -1,3 +1,17 @@
+/*******************************************************************************
+* Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* and Eclipse Distribution License v1.0 which accompany this distribution.
+*
+* The Eclipse Public License is available at
+* http://www.eclipse.org/legal/epl-v10.html
+* The Eclipse Distribution License is available at
+* http://www.eclipse.org/org/documents/edl-v10.php.
+*
+* Contributors:
+* Bosch Software Innovations GmbH - Please refer to git log
+*******************************************************************************/
 package org.eclipse.vorto.editor.mapping.tests.parser;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +48,7 @@ public class LWM2MMappingParseTest {
 	public void parseEntityLocationMapping() throws IOException {
 		MappingModel lwMapping = this.createMappingModel("LocationMapping.mapping");
 
-		EList<EntityMappingRule> rules = ((EntityMapping) lwMapping.getMappingType()).getEntityMappingRules();
+		EList<EntityMappingRule> rules = ((EntityMapping) lwMapping.getMapping()).getEntityMappingRules();
 		assertEquals(3, rules.size());
 
 	}
@@ -43,7 +57,7 @@ public class LWM2MMappingParseTest {
 	public void parseFunctionBlockDroneMapping() throws IOException {
 		MappingModel mappingModel = createMappingModel("DroneMapping.mapping");
 
-		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping) mappingModel.getMappingType())
+		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping) mappingModel.getMapping())
 				.getFunctionBlockMappingRules();
 		assertEquals(2, rules.size());
 	}
@@ -52,7 +66,7 @@ public class LWM2MMappingParseTest {
 	public void parseLWM2MMapping() throws IOException {
 		MappingModel mappingModel = createMappingModel("LWM2M.mapping");
 
-		EList<InfoModelMappingRule> rules = ((InfoModelMapping) mappingModel.getMappingType())
+		EList<InfoModelMappingRule> rules = ((InfoModelMapping) mappingModel.getMapping())
 				.getInfoModelMappingRules();
 		assertEquals(2, rules.size());
 	}

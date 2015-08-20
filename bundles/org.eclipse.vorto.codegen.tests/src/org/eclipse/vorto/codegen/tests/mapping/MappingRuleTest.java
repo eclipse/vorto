@@ -16,26 +16,48 @@ package org.eclipse.vorto.codegen.tests.mapping;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
-import org.eclipse.vorto.codegen.internal.mapping.DefaultMappingRules;
-import org.eclipse.vorto.codegen.tests.TestMappingModelFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingRuleWrapper;
+import org.eclipse.vorto.codegen.tests.mapping.helper.TestMappingInfoModelFactory;
+import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.junit.Test;
 
 public class MappingRuleTest {
 	@Test
-	public void testGetStereoType() {
-		MappingModel mappingModel = TestMappingModelFactory.createRuleModel();
-		IMappingRules mappingRule = new DefaultMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule
-				.getRulesContainStereoType("channelType");
-		IMappingRule myRule = mappingRules.get(0);
-		assertEquals("channelType", myRule.getStereoType("channelType")
-				.getName());
-		assertEquals("color",
-				myRule.getStereoTypeAttribute("channelType", "name").getValue());
+	public void testGetRule() {
+		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
+
+		EObject modelMappingRule = mappingRule.getRule();
+		assertEquals(modelMappingRule, infoModelMappingRule);
+
 	}
+
+	@Test
+	public void testGetStereoType() {
+		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
+
+		StereoType stereoType = mappingRule.getStereoType("DummyStereoType");
+
+		assertEquals("DummyStereoType", stereoType.getName());
+		assertEquals(1, stereoType.getAttributes().size());
+		assertEquals("DummyAttribute", stereoType.getAttributes().get(0).getName());
+		assertEquals("Dummy Attribute Value", stereoType.getAttributes().get(0).getValue());
+	}
+
+	@Test
+	public void testGetStereoTypeAttribute() {
+		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
+
+		Attribute attribute = mappingRule.getStereoTypeAttribute("DummyStereoType", "DummyAttribute");
+
+		assertEquals("DummyAttribute", attribute.getName());
+		assertEquals("Dummy Attribute Value", attribute.getValue());
+	}
+
 }

@@ -1,8 +1,0 @@
-namespace com.mycompany.type
-version 1.0.0
-
-entity GeoLocation {
-	optional altitude as string "The decimal notation of latitude, e.g. -43.5723 [World Geodetic System 1984]."
-	mandatory latitude as string "The decimal notation of longitude, e.g. 153.21760 [World Geodetic System 1984]."
-	mandatory longitude as string "The decimal notation of altitude in meters above sea level."
-}

@@ -58,7 +58,7 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case MappingPackage.MAPPING_MODEL: return createMappingModel();
-			case MappingPackage.MAPPING_TYPE: return createMappingType();
+			case MappingPackage.MAPPING: return createMapping();
 			case MappingPackage.INFO_MODEL_MAPPING: return createInfoModelMapping();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE: return createInfoModelMappingRule();
 			case MappingPackage.INFO_MODEL_TARGET_ELEMENT: return createInfoModelTargetElement();
@@ -159,9 +159,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MappingType createMappingType() {
-		MappingTypeImpl mappingType = new MappingTypeImpl();
-		return mappingType;
+	public Mapping createMapping() {
+		MappingImpl mapping = new MappingImpl();
+		return mapping;
 	}
 
 	/**

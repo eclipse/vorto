@@ -31,7 +31,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  *
  * @generated
  */
-public class FunctionBlockMappingImpl extends MappingTypeImpl implements FunctionBlockMapping {
+public class FunctionBlockMappingImpl extends MappingImpl implements FunctionBlockMapping {
 	/**
 	 * The cached value of the '{@link #getFunctionBlockMappingRules() <em>Function Block Mapping Rules</em>}' containment reference list.
 	 * <!-- begin-user-doc -->

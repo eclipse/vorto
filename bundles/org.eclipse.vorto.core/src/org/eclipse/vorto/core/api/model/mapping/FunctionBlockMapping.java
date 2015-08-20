@@ -20,7 +20,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface FunctionBlockMapping extends MappingType {
+public interface FunctionBlockMapping extends Mapping {
 	/**
 	 * Returns the value of the '<em><b>Function Block Mapping Rules</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule}.

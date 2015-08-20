@@ -6,21 +6,21 @@ import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Type</b></em>'.
+ * A representation of the model object '<em><b>Mapping</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingType#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.Mapping#getName <em>Name</em>}</li>
  * </ul>
  *
- * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingType()
+ * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMapping()
  * @model
  * @generated
  */
-public interface MappingType extends EObject {
+public interface Mapping extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
@@ -31,14 +31,14 @@ public interface MappingType extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingType_Name()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMapping_Name()
 	 * @model
 	 * @generated
 	 */
 	String getName();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.MappingType#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.Mapping#getName <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Name</em>' attribute.
@@ -47,4 +47,4 @@ public interface MappingType extends EObject {
 	 */
 	void setName(String value);
 
-} // MappingType
+} // Mapping

@@ -31,13 +31,13 @@ public interface MappingFactory extends EFactory {
 	MappingModel createMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Type</em>'.
+	 * Returns a new object of class '<em>Mapping</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Type</em>'.
+	 * @return a new object of class '<em>Mapping</em>'.
 	 * @generated
 	 */
-	MappingType createMappingType();
+	Mapping createMapping();
 
 	/**
 	 * Returns a new object of class '<em>Info Model Mapping</em>'.

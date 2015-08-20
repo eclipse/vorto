@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api.mapping;
 
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 
 /**
@@ -29,7 +29,7 @@ public interface IMappingRule {
 	 * 
 	 * @return
 	 */
-	InfoModelMappingRule getRule();
+	EObject getRule();
 
 	/**
 	 * finds a stereotype by its name
