@@ -29,6 +29,14 @@ import org.eclipse.vorto.core.model.ModelType;
 public interface IModelProjectService {
 
 	/**
+	 * Returns a resolver that can resolve modelIds if they are workspace
+	 * projects
+	 * 
+	 * @return
+	 */
+	IModelElementResolver getWorkspaceProjectResolver();
+
+	/**
 	 * Gets a model project by its project name
 	 * 
 	 * @param modelProjectName
