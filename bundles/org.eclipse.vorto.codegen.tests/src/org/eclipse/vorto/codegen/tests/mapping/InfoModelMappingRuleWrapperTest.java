@@ -19,16 +19,16 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingRuleWrapper;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestMappingInfoModelFactory;
+import org.eclipse.vorto.codegen.tests.mapping.helper.TestInfoModelMappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.junit.Test;
 
-public class MappingRuleTest {
+public class InfoModelMappingRuleWrapperTest {
 	@Test
 	public void testGetRule() {
-		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		InfoModelMappingRule infoModelMappingRule = TestInfoModelMappingFactory.createInfoModelStereoTypeMappingRule();
 		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
 
 		EObject modelMappingRule = mappingRule.getRule();
@@ -38,7 +38,7 @@ public class MappingRuleTest {
 
 	@Test
 	public void testGetStereoType() {
-		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		InfoModelMappingRule infoModelMappingRule = TestInfoModelMappingFactory.createInfoModelStereoTypeMappingRule();
 		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
 
 		StereoType stereoType = mappingRule.getStereoType("DummyStereoType");
@@ -51,7 +51,7 @@ public class MappingRuleTest {
 
 	@Test
 	public void testGetStereoTypeAttribute() {
-		InfoModelMappingRule infoModelMappingRule = TestMappingInfoModelFactory.createInfoModelStereoTypeMappingRule();
+		InfoModelMappingRule infoModelMappingRule = TestInfoModelMappingFactory.createInfoModelStereoTypeMappingRule();
 		IMappingRule mappingRule = new InfoModelMappingRuleWrapper(infoModelMappingRule);
 
 		Attribute attribute = mappingRule.getStereoTypeAttribute("DummyStereoType", "DummyAttribute");

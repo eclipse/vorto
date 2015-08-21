@@ -5,21 +5,21 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Enum Property Element</b></em>'.
+ * A representation of the model object '<em><b>Enum Attribute Element</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement#getAttribute <em>Attribute</em>}</li>
  * </ul>
  *
- * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumPropertyElement()
+ * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumAttributeElement()
  * @model
  * @generated
  */
-public interface EnumPropertyElement extends EnumSourceElement {
+public interface EnumAttributeElement extends EnumSourceElement {
 	/**
 	 * Returns the value of the '<em><b>Attribute</b></em>' attribute.
 	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.mapping.ModelAttribute}.
@@ -32,14 +32,14 @@ public interface EnumPropertyElement extends EnumSourceElement {
 	 * @return the value of the '<em>Attribute</em>' attribute.
 	 * @see org.eclipse.vorto.core.api.model.mapping.ModelAttribute
 	 * @see #setAttribute(ModelAttribute)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumPropertyElement_Attribute()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumAttributeElement_Attribute()
 	 * @model
 	 * @generated
 	 */
 	ModelAttribute getAttribute();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement#getAttribute <em>Attribute</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement#getAttribute <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Attribute</em>' attribute.
@@ -49,4 +49,4 @@ public interface EnumPropertyElement extends EnumSourceElement {
 	 */
 	void setAttribute(ModelAttribute value);
 
-} // EnumPropertyElement
+} // EnumAttributeElement

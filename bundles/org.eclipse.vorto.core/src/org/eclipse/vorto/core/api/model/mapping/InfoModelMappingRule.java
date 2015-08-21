@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getSourceElements <em>Source Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getInfoModelSourceElements <em>Info Model Source Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
@@ -24,6 +25,22 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface InfoModelMappingRule extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Source Elements</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Source Elements</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Source Elements</em>' containment reference list.
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInfoModelMappingRule_SourceElements()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<InfoModelSourceElement> getSourceElements();
+
 	/**
 	 * Returns the value of the '<em><b>Info Model Source Elements</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement}.

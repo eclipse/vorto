@@ -14,33 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api.mapping;
 
-import java.util.List;
-
-import org.eclipse.emf.ecore.EObject;
-
 /**
- * Resolves mapping rules for a specific element or stereotype
- * 
+ * @author sgp0247
+ *
  */
-public interface IMappingRules {
-
-	/**
-	 * gets the mapping rules for the specified Model element
-	 * 
-	 * @param modelElement
-	 *            modelElement whose meta data ought to be looked up
-	 * @return mapping rules
-	 */
-	List<IMappingRule> getRules(EObject modelElement);
-
-	List<IMappingRule> getRules(MappingAttribute mappingAttribute);
-	
-	/**
-	 * gets all mapping rules for the specified stereotype name. A stereotype is
-	 * platform specific and specified in the DSL as e.g. "channel-type"
-	 * 
-	 * @param stereoType
-	 * @return list of mapping rule objects
-	 */
-	List<IMappingRule> getRulesContainStereoType(String stereoTypeName);
+public enum MappingAttribute {
+	name, namespace, version, displayname, description, category
 }

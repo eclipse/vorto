@@ -5,21 +5,21 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Information Model Property</b></em>'.
+ * A representation of the model object '<em><b>Information Model Attribute</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InformationModelProperty#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute#getAttribute <em>Attribute</em>}</li>
  * </ul>
  *
- * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInformationModelProperty()
+ * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInformationModelAttribute()
  * @model
  * @generated
  */
-public interface InformationModelProperty extends InfoModelChild {
+public interface InformationModelAttribute extends InfoModelChild {
 	/**
 	 * Returns the value of the '<em><b>Attribute</b></em>' attribute.
 	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute}.
@@ -32,14 +32,14 @@ public interface InformationModelProperty extends InfoModelChild {
 	 * @return the value of the '<em>Attribute</em>' attribute.
 	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute
 	 * @see #setAttribute(InfoModelAttribute)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInformationModelProperty_Attribute()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getInformationModelAttribute_Attribute()
 	 * @model
 	 * @generated
 	 */
 	InfoModelAttribute getAttribute();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelProperty#getAttribute <em>Attribute</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute#getAttribute <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Attribute</em>' attribute.
@@ -49,4 +49,4 @@ public interface InformationModelProperty extends InfoModelChild {
 	 */
 	void setAttribute(InfoModelAttribute value);
 
-} // InformationModelProperty
+} // InformationModelAttribute

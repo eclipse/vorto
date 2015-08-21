@@ -33,7 +33,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getEntityMappingElements <em>Entity Mapping Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getEntitySourceElement <em>Entity Source Element</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,14 +60,14 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	protected EList<EntitySourceElement> entitySourceElement;
 
 	/**
-	 * The cached value of the '{@link #getTargetElement() <em>Target Element</em>}' containment reference.
+	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTargetElement()
+	 * @see #getTarget()
 	 * @generated
 	 * @ordered
 	 */
-	protected EntityTargetElement targetElement;
+	protected EntityTargetElement target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -117,8 +117,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityTargetElement getTargetElement() {
-		return targetElement;
+	public EntityTargetElement getTarget() {
+		return target;
 	}
 
 	/**
@@ -126,11 +126,11 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTargetElement(EntityTargetElement newTargetElement, NotificationChain msgs) {
-		EntityTargetElement oldTargetElement = targetElement;
-		targetElement = newTargetElement;
+	public NotificationChain basicSetTarget(EntityTargetElement newTarget, NotificationChain msgs) {
+		EntityTargetElement oldTarget = target;
+		target = newTarget;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT, oldTargetElement, newTargetElement);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_MAPPING_RULE__TARGET, oldTarget, newTarget);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -141,18 +141,18 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTargetElement(EntityTargetElement newTargetElement) {
-		if (newTargetElement != targetElement) {
+	public void setTarget(EntityTargetElement newTarget) {
+		if (newTarget != target) {
 			NotificationChain msgs = null;
-			if (targetElement != null)
-				msgs = ((InternalEObject)targetElement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			if (newTargetElement != null)
-				msgs = ((InternalEObject)newTargetElement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			msgs = basicSetTargetElement(newTargetElement, msgs);
+			if (target != null)
+				msgs = ((InternalEObject)target).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENTITY_MAPPING_RULE__TARGET, null, msgs);
+			if (newTarget != null)
+				msgs = ((InternalEObject)newTarget).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENTITY_MAPPING_RULE__TARGET, null, msgs);
+			msgs = basicSetTarget(newTarget, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT, newTargetElement, newTargetElement));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_MAPPING_RULE__TARGET, newTarget, newTarget));
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 				return ((InternalEList<?>)getEntityMappingElements()).basicRemove(otherEnd, msgs);
 			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
 				return ((InternalEList<?>)getEntitySourceElement()).basicRemove(otherEnd, msgs);
-			case MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT:
-				return basicSetTargetElement(null, msgs);
+			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
+				return basicSetTarget(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -185,8 +185,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 				return getEntityMappingElements();
 			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
 				return getEntitySourceElement();
-			case MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT:
-				return getTargetElement();
+			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
+				return getTarget();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -208,8 +208,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 				getEntitySourceElement().clear();
 				getEntitySourceElement().addAll((Collection<? extends EntitySourceElement>)newValue);
 				return;
-			case MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((EntityTargetElement)newValue);
+			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
+				setTarget((EntityTargetElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -229,8 +229,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
 				getEntitySourceElement().clear();
 				return;
-			case MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((EntityTargetElement)null);
+			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
+				setTarget((EntityTargetElement)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -248,8 +248,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 				return entityMappingElements != null && !entityMappingElements.isEmpty();
 			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
 				return entitySourceElement != null && !entitySourceElement.isEmpty();
-			case MappingPackage.ENTITY_MAPPING_RULE__TARGET_ELEMENT:
-				return targetElement != null;
+			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
+				return target != null;
 		}
 		return super.eIsSet(featureID);
 	}

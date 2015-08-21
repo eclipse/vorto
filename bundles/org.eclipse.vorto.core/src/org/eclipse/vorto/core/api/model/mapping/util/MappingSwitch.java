@@ -119,10 +119,10 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.INFORMATION_MODEL_PROPERTY: {
-				InformationModelProperty informationModelProperty = (InformationModelProperty)theEObject;
-				T result = caseInformationModelProperty(informationModelProperty);
-				if (result == null) result = caseInfoModelChild(informationModelProperty);
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE: {
+				InformationModelAttribute informationModelAttribute = (InformationModelAttribute)theEObject;
+				T result = caseInformationModelAttribute(informationModelAttribute);
+				if (result == null) result = caseInfoModelChild(informationModelAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -241,10 +241,10 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_PROPERTY_ELEMENT: {
-				EntityPropertyElement entityPropertyElement = (EntityPropertyElement)theEObject;
-				T result = caseEntityPropertyElement(entityPropertyElement);
-				if (result == null) result = caseEntitySourceElement(entityPropertyElement);
+			case MappingPackage.ENTITY_ATTRIBUTE_ELEMENT: {
+				EntityAttributeElement entityAttributeElement = (EntityAttributeElement)theEObject;
+				T result = caseEntityAttributeElement(entityAttributeElement);
+				if (result == null) result = caseEntitySourceElement(entityAttributeElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -281,10 +281,10 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENUM_PROPERTY_ELEMENT: {
-				EnumPropertyElement enumPropertyElement = (EnumPropertyElement)theEObject;
-				T result = caseEnumPropertyElement(enumPropertyElement);
-				if (result == null) result = caseEnumSourceElement(enumPropertyElement);
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT: {
+				EnumAttributeElement enumAttributeElement = (EnumAttributeElement)theEObject;
+				T result = caseEnumAttributeElement(enumAttributeElement);
+				if (result == null) result = caseEnumSourceElement(enumAttributeElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -493,17 +493,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Information Model Property</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Information Model Attribute</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Information Model Property</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Information Model Attribute</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInformationModelProperty(InformationModelProperty object) {
+	public T caseInformationModelAttribute(InformationModelAttribute object) {
 		return null;
 	}
 
@@ -763,17 +763,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Property Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Entity Attribute Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Property Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Entity Attribute Element</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityPropertyElement(EntityPropertyElement object) {
+	public T caseEntityAttributeElement(EntityAttributeElement object) {
 		return null;
 	}
 
@@ -853,17 +853,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Property Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Attribute Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Property Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Attribute Element</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnumPropertyElement(EnumPropertyElement object) {
+	public T caseEnumAttributeElement(EnumAttributeElement object) {
 		return null;
 	}
 

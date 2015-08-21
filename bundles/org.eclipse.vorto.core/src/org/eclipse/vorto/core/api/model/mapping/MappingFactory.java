@@ -94,13 +94,13 @@ public interface MappingFactory extends EFactory {
 	InfoModelFbElement createInfoModelFbElement();
 
 	/**
-	 * Returns a new object of class '<em>Information Model Property</em>'.
+	 * Returns a new object of class '<em>Information Model Attribute</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Information Model Property</em>'.
+	 * @return a new object of class '<em>Information Model Attribute</em>'.
 	 * @generated
 	 */
-	InformationModelProperty createInformationModelProperty();
+	InformationModelAttribute createInformationModelAttribute();
 
 	/**
 	 * Returns a new object of class '<em>Function Block Mapping</em>'.
@@ -256,13 +256,13 @@ public interface MappingFactory extends EFactory {
 	EntitySourceElement createEntitySourceElement();
 
 	/**
-	 * Returns a new object of class '<em>Entity Property Element</em>'.
+	 * Returns a new object of class '<em>Entity Attribute Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Entity Property Element</em>'.
+	 * @return a new object of class '<em>Entity Attribute Element</em>'.
 	 * @generated
 	 */
-	EntityPropertyElement createEntityPropertyElement();
+	EntityAttributeElement createEntityAttributeElement();
 
 	/**
 	 * Returns a new object of class '<em>Entity Expression Ref</em>'.
@@ -310,13 +310,13 @@ public interface MappingFactory extends EFactory {
 	EnumSourceElement createEnumSourceElement();
 
 	/**
-	 * Returns a new object of class '<em>Enum Property Element</em>'.
+	 * Returns a new object of class '<em>Enum Attribute Element</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Enum Property Element</em>'.
+	 * @return a new object of class '<em>Enum Attribute Element</em>'.
 	 * @generated
 	 */
-	EnumPropertyElement createEnumPropertyElement();
+	EnumAttributeElement createEnumAttributeElement();
 
 	/**
 	 * Returns a new object of class '<em>Enum Expression</em>'.

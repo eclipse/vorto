@@ -33,7 +33,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumMappingRuleImpl#getEnumElements <em>Enum Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumMappingRuleImpl#getEnumSourceElement <em>Enum Source Element</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumMappingRuleImpl#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
  *
  * @generated
@@ -60,14 +60,14 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 	protected EList<EnumSourceElement> enumSourceElement;
 
 	/**
-	 * The cached value of the '{@link #getTargetElement() <em>Target Element</em>}' containment reference.
+	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getTargetElement()
+	 * @see #getTarget()
 	 * @generated
 	 * @ordered
 	 */
-	protected EnumTargetElement targetElement;
+	protected EnumTargetElement target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -117,8 +117,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumTargetElement getTargetElement() {
-		return targetElement;
+	public EnumTargetElement getTarget() {
+		return target;
 	}
 
 	/**
@@ -126,11 +126,11 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTargetElement(EnumTargetElement newTargetElement, NotificationChain msgs) {
-		EnumTargetElement oldTargetElement = targetElement;
-		targetElement = newTargetElement;
+	public NotificationChain basicSetTarget(EnumTargetElement newTarget, NotificationChain msgs) {
+		EnumTargetElement oldTarget = target;
+		target = newTarget;
 		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT, oldTargetElement, newTargetElement);
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_MAPPING_RULE__TARGET, oldTarget, newTarget);
 			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
@@ -141,18 +141,18 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTargetElement(EnumTargetElement newTargetElement) {
-		if (newTargetElement != targetElement) {
+	public void setTarget(EnumTargetElement newTarget) {
+		if (newTarget != target) {
 			NotificationChain msgs = null;
-			if (targetElement != null)
-				msgs = ((InternalEObject)targetElement).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			if (newTargetElement != null)
-				msgs = ((InternalEObject)newTargetElement).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT, null, msgs);
-			msgs = basicSetTargetElement(newTargetElement, msgs);
+			if (target != null)
+				msgs = ((InternalEObject)target).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENUM_MAPPING_RULE__TARGET, null, msgs);
+			if (newTarget != null)
+				msgs = ((InternalEObject)newTarget).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - MappingPackage.ENUM_MAPPING_RULE__TARGET, null, msgs);
+			msgs = basicSetTarget(newTarget, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
 		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT, newTargetElement, newTargetElement));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_MAPPING_RULE__TARGET, newTarget, newTarget));
 	}
 
 	/**
@@ -167,8 +167,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 				return ((InternalEList<?>)getEnumElements()).basicRemove(otherEnd, msgs);
 			case MappingPackage.ENUM_MAPPING_RULE__ENUM_SOURCE_ELEMENT:
 				return ((InternalEList<?>)getEnumSourceElement()).basicRemove(otherEnd, msgs);
-			case MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT:
-				return basicSetTargetElement(null, msgs);
+			case MappingPackage.ENUM_MAPPING_RULE__TARGET:
+				return basicSetTarget(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -185,8 +185,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 				return getEnumElements();
 			case MappingPackage.ENUM_MAPPING_RULE__ENUM_SOURCE_ELEMENT:
 				return getEnumSourceElement();
-			case MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT:
-				return getTargetElement();
+			case MappingPackage.ENUM_MAPPING_RULE__TARGET:
+				return getTarget();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -208,8 +208,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 				getEnumSourceElement().clear();
 				getEnumSourceElement().addAll((Collection<? extends EnumSourceElement>)newValue);
 				return;
-			case MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((EnumTargetElement)newValue);
+			case MappingPackage.ENUM_MAPPING_RULE__TARGET:
+				setTarget((EnumTargetElement)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -229,8 +229,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 			case MappingPackage.ENUM_MAPPING_RULE__ENUM_SOURCE_ELEMENT:
 				getEnumSourceElement().clear();
 				return;
-			case MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT:
-				setTargetElement((EnumTargetElement)null);
+			case MappingPackage.ENUM_MAPPING_RULE__TARGET:
+				setTarget((EnumTargetElement)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -248,8 +248,8 @@ public class EnumMappingRuleImpl extends MinimalEObjectImpl.Container implements
 				return enumElements != null && !enumElements.isEmpty();
 			case MappingPackage.ENUM_MAPPING_RULE__ENUM_SOURCE_ELEMENT:
 				return enumSourceElement != null && !enumSourceElement.isEmpty();
-			case MappingPackage.ENUM_MAPPING_RULE__TARGET_ELEMENT:
-				return targetElement != null;
+			case MappingPackage.ENUM_MAPPING_RULE__TARGET:
+				return target != null;
 		}
 		return super.eIsSet(featureID);
 	}

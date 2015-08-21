@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getEntityMappingElements <em>Entity Mapping Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getEntitySourceElement <em>Entity Source Element</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule()
@@ -58,29 +58,29 @@ public interface EntityMappingRule extends EObject {
 	EList<EntitySourceElement> getEntitySourceElement();
 
 	/**
-	 * Returns the value of the '<em><b>Target Element</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Target</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Target Element</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Target</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Target Element</em>' containment reference.
-	 * @see #setTargetElement(EntityTargetElement)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_TargetElement()
+	 * @return the value of the '<em>Target</em>' containment reference.
+	 * @see #setTarget(EntityTargetElement)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_Target()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EntityTargetElement getTargetElement();
+	EntityTargetElement getTarget();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTargetElement <em>Target Element</em>}' containment reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTarget <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Target Element</em>' containment reference.
-	 * @see #getTargetElement()
+	 * @param value the new value of the '<em>Target</em>' containment reference.
+	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTargetElement(EntityTargetElement value);
+	void setTarget(EntityTargetElement value);
 
 } // EntityMappingRule

@@ -21,6 +21,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
@@ -90,7 +91,7 @@ public class DefaultMappingRules implements IMappingRules {
 			String eObjectName, String nameInRule) {
 		boolean elementsHaveSameName = nameInRule.equals(eObjectName);
 		if (elementsHaveSameName) {
-			mappingRules.add(new DefaultMappingRule(rule));
+			//mappingRules.add(new DefaultMappingRule(rule));
 		}
 	}
 
@@ -160,7 +161,7 @@ public class DefaultMappingRules implements IMappingRules {
 	 * @see org.eclipse.vorto.codegen.api.mapping.IMappingRules#getRules(java.lang.String)
 	 */
 	@Override
-	public List<IMappingRule> getRules(String modelAttribute) {
+	public List<IMappingRule> getRules(MappingAttribute mappingAttribute) {
 		// TODO Auto-generated method stub
 		return null;
 	}

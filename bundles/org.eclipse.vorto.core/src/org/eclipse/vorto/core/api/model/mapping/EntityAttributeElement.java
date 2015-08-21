@@ -6,22 +6,22 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Entity Property Element</b></em>'.
+ * A representation of the model object '<em><b>Entity Attribute Element</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement#getTypeRef <em>Type Ref</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement#getTypeRef <em>Type Ref</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement#getAttribute <em>Attribute</em>}</li>
  * </ul>
  *
- * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityPropertyElement()
+ * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityAttributeElement()
  * @model
  * @generated
  */
-public interface EntityPropertyElement extends EntitySourceElement {
+public interface EntityAttributeElement extends EntitySourceElement {
 	/**
 	 * Returns the value of the '<em><b>Type Ref</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -32,14 +32,14 @@ public interface EntityPropertyElement extends EntitySourceElement {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Type Ref</em>' reference.
 	 * @see #setTypeRef(Entity)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityPropertyElement_TypeRef()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityAttributeElement_TypeRef()
 	 * @model
 	 * @generated
 	 */
 	Entity getTypeRef();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement#getTypeRef <em>Type Ref</em>}' reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement#getTypeRef <em>Type Ref</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Type Ref</em>' reference.
@@ -60,14 +60,14 @@ public interface EntityPropertyElement extends EntitySourceElement {
 	 * @return the value of the '<em>Attribute</em>' attribute.
 	 * @see org.eclipse.vorto.core.api.model.mapping.ModelAttribute
 	 * @see #setAttribute(ModelAttribute)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityPropertyElement_Attribute()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityAttributeElement_Attribute()
 	 * @model
 	 * @generated
 	 */
 	ModelAttribute getAttribute();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement#getAttribute <em>Attribute</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement#getAttribute <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Attribute</em>' attribute.
@@ -77,4 +77,4 @@ public interface EntityPropertyElement extends EntitySourceElement {
 	 */
 	void setAttribute(ModelAttribute value);
 
-} // EntityPropertyElement
+} // EntityAttributeElement
