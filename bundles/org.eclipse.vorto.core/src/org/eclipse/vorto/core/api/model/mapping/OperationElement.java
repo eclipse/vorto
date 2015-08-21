@@ -2,8 +2,6 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
-import org.eclipse.emf.ecore.EObject;
-
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
 /**
@@ -22,7 +20,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
  * @model
  * @generated
  */
-public interface OperationElement extends EObject {
+public interface OperationElement extends FunctionBlockChildElement {
 	/**
 	 * Returns the value of the '<em><b>Operation</b></em>' reference.
 	 * <!-- begin-user-doc -->

@@ -8,8 +8,6 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
@@ -28,7 +26,7 @@ import org.eclipse.vorto.core.api.model.mapping.OperationElement;
  *
  * @generated
  */
-public class OperationElementImpl extends MinimalEObjectImpl.Container implements OperationElement {
+public class OperationElementImpl extends FunctionBlockChildElementImpl implements OperationElement {
 	/**
 	 * The cached value of the '{@link #getOperation() <em>Operation</em>}' reference.
 	 * <!-- begin-user-doc -->

@@ -2,7 +2,7 @@ namespace com.mycompany.map
 version 1.0.0
 using com.mycompany.NewInfomodel ; 1.0.0
 
-immapping Infomodel_Attribute {
+infomodelmapping Infomodel_Attribute {
 
 	from NewInfomodel.category
 	to TargetCategory

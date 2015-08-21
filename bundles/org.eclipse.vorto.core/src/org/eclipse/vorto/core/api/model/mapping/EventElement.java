@@ -14,6 +14,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Event;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventElement#getEvent <em>Event</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventElement#getTypeRef <em>Type Ref</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventElement()
@@ -46,5 +47,31 @@ public interface EventElement extends FunctionBlockChildElement {
 	 * @generated
 	 */
 	void setEvent(Event value);
+
+	/**
+	 * Returns the value of the '<em><b>Type Ref</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Type Ref</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Type Ref</em>' containment reference.
+	 * @see #setTypeRef(FBTypeElement)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventElement_TypeRef()
+	 * @model containment="true"
+	 * @generated
+	 */
+	FBTypeElement getTypeRef();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EventElement#getTypeRef <em>Type Ref</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Type Ref</em>' containment reference.
+	 * @see #getTypeRef()
+	 * @generated
+	 */
+	void setTypeRef(FBTypeElement value);
 
 } // EventElement

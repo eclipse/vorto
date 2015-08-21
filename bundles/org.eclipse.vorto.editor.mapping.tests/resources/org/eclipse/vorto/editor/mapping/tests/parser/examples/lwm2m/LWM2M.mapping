@@ -3,7 +3,7 @@ version 1.0.0
 using com.mycompany.DjiPhantomVision ; 3.0.0-Plus
 using com.mycompany.map.DroneMapping ; 1.0.0
 
-immapping LWM2M {
+infomodelmapping LWM2M {
 
 		from DjiPhantomVision
 		to ObjectType with {

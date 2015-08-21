@@ -3,7 +3,7 @@ version 1.0.0
 using com.mycompany.NewInfomodel ; 1.0.0
 using com.mycompany.map.FunctionBlock_Attribute ; 1.0.0
 
-immapping Infomodel_FBRef {
+infomodelmapping Infomodel_FBRef {
 
 	from NewInfomodel.myfunctionBlock
 	to reference FunctionBlock_Attribute

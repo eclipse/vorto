@@ -33,12 +33,11 @@ public class TestInfoModelFactory {
 
 		informationModel
 				.getProperties()
-				.add(createPropertyFromFunctionBlockModel(TestFunctionblockModelFactory
-						.populateFBmodelWithProperties()));
+				.add(createFunctionblockProperty(TestFunctionBlockFactory.createFunctionBlockModel()));
 		return informationModel;
 	}
 
-	private static FunctionblockProperty createPropertyFromFunctionBlockModel(
+	private static FunctionblockProperty createFunctionblockProperty(
 			FunctionblockModel fbm) {
 		FunctionblockProperty fbp = InformationModelFactory.eINSTANCE
 				.createFunctionblockProperty();

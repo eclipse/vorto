@@ -63,8 +63,6 @@ public class MappingModelSyntaxTest {
 
 		EList<EntityMappingRule> rules = ((EntityMapping)mappingModel.getMapping()).getEntityMappingRules();
 		EntityMappingRule rule = rules.get(0);
-		EntitySourceElement entitySourceElement = rule.getEntitySourceElement().get(0);
-		EntityTargetElement entityTargetElement = rule.getTargetElement();
 		assertEquals(1, rules.size());
 	}
 	

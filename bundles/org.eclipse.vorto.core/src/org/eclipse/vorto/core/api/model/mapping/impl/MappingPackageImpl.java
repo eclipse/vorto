@@ -762,24 +762,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getFunctionBlockChildElement_Type() {
-		return (EReference)functionBlockChildElementEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getFunctionBlockChildElement_TypeRef() {
-		return (EReference)functionBlockChildElementEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getOperationElement() {
 		return operationElementEClass;
 	}
@@ -807,6 +789,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getConfigurationElement_TypeRef() {
+		return (EReference)configurationElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getStatusElement() {
 		return statusElementEClass;
 	}
@@ -816,8 +807,26 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getStatusElement_TypeRef() {
+		return (EReference)statusElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getFaultElement() {
 		return faultElementEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFaultElement_TypeRef() {
+		return (EReference)faultElementEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -836,6 +845,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 */
 	public EReference getEventElement_Event() {
 		return (EReference)eventElementEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEventElement_TypeRef() {
+		return (EReference)eventElementEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -1381,20 +1399,22 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		createEAttribute(functionBlockElementAttributeEClass, FUNCTION_BLOCK_ELEMENT_ATTRIBUTE__ATTRIBUTE);
 
 		functionBlockChildElementEClass = createEClass(FUNCTION_BLOCK_CHILD_ELEMENT);
-		createEReference(functionBlockChildElementEClass, FUNCTION_BLOCK_CHILD_ELEMENT__TYPE);
-		createEReference(functionBlockChildElementEClass, FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF);
 
 		operationElementEClass = createEClass(OPERATION_ELEMENT);
 		createEReference(operationElementEClass, OPERATION_ELEMENT__OPERATION);
 
 		configurationElementEClass = createEClass(CONFIGURATION_ELEMENT);
+		createEReference(configurationElementEClass, CONFIGURATION_ELEMENT__TYPE_REF);
 
 		statusElementEClass = createEClass(STATUS_ELEMENT);
+		createEReference(statusElementEClass, STATUS_ELEMENT__TYPE_REF);
 
 		faultElementEClass = createEClass(FAULT_ELEMENT);
+		createEReference(faultElementEClass, FAULT_ELEMENT__TYPE_REF);
 
 		eventElementEClass = createEClass(EVENT_ELEMENT);
 		createEReference(eventElementEClass, EVENT_ELEMENT__EVENT);
+		createEReference(eventElementEClass, EVENT_ELEMENT__TYPE_REF);
 
 		fbTypeElementEClass = createEClass(FB_TYPE_ELEMENT);
 		createEReference(fbTypeElementEClass, FB_TYPE_ELEMENT__PROPERTY);
@@ -1515,6 +1535,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		functionBlockMappingEClass.getESuperTypes().add(this.getMapping());
 		functionBlockElementAttributeEClass.getESuperTypes().add(this.getFunctionBlockElement());
 		functionBlockChildElementEClass.getESuperTypes().add(this.getFunctionBlockElement());
+		operationElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		configurationElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		statusElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
 		faultElementEClass.getESuperTypes().add(this.getFunctionBlockChildElement());
@@ -1585,20 +1606,22 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEAttribute(getFunctionBlockElementAttribute_Attribute(), this.getFunctionblockModelAttribute(), "attribute", null, 0, 1, FunctionBlockElementAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockChildElementEClass, FunctionBlockChildElement.class, "FunctionBlockChildElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getFunctionBlockChildElement_Type(), this.getOperationElement(), null, "type", null, 0, 1, FunctionBlockChildElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getFunctionBlockChildElement_TypeRef(), this.getFBTypeElement(), null, "typeRef", null, 0, 1, FunctionBlockChildElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(operationElementEClass, OperationElement.class, "OperationElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getOperationElement_Operation(), theFunctionblockPackage.getOperation(), null, "operation", null, 0, 1, OperationElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(configurationElementEClass, ConfigurationElement.class, "ConfigurationElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getConfigurationElement_TypeRef(), this.getFBTypeElement(), null, "typeRef", null, 0, 1, ConfigurationElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(statusElementEClass, StatusElement.class, "StatusElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getStatusElement_TypeRef(), this.getFBTypeElement(), null, "typeRef", null, 0, 1, StatusElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(faultElementEClass, FaultElement.class, "FaultElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getFaultElement_TypeRef(), this.getFBTypeElement(), null, "typeRef", null, 0, 1, FaultElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(eventElementEClass, EventElement.class, "EventElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEventElement_Event(), theFunctionblockPackage.getEvent(), null, "event", null, 0, 1, EventElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEventElement_TypeRef(), this.getFBTypeElement(), null, "typeRef", null, 0, 1, EventElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(fbTypeElementEClass, FBTypeElement.class, "FBTypeElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFBTypeElement_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, FBTypeElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

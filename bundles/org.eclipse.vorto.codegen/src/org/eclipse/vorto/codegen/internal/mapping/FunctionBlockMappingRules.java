@@ -22,22 +22,23 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
 import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
-import org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement;
-import org.eclipse.vorto.core.api.model.mapping.EnumExpression;
-import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
-import org.eclipse.vorto.core.api.model.mapping.EnumMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EnumSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.EnumTargetElement;
+import org.eclipse.vorto.codegen.internal.mapping.functionblock.FunctionBlockPropertyRulesFilter;
+import org.eclipse.vorto.codegen.internal.mapping.functionblock.FunctionBlockRuleFilterFactory;
+import org.eclipse.vorto.codegen.internal.mapping.functionblock.FunctionBlockRulesFilter;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElementAttribute;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
 
-public class EnumMappingRules implements IMappingRules {
+public class FunctionBlockMappingRules implements IMappingRules {
 	private MappingModel mappingModel;
 
-	public EnumMappingRules(MappingModel mappingModel) {
+	public FunctionBlockMappingRules(MappingModel mappingModel) {
 		this.mappingModel = mappingModel;
 	}
 
@@ -50,45 +51,31 @@ public class EnumMappingRules implements IMappingRules {
 	 */
 	@Override
 	public List<IMappingRule> getRules(EObject modelElement) {
-		EnumMapping mapping = (EnumMapping) this.mappingModel.getMapping();
+
+		FunctionBlockMapping mapping = (FunctionBlockMapping) mappingModel.getMapping();
 		List<IMappingRule> mappingRules = new ArrayList<>();
-		for (EnumMappingRule rule : mapping.getEnumMappingRules()) {
-			for (EnumSourceElement sourceElement : rule.getEnumSourceElement()) {
-				this.addRuleIfContainsModelElement(modelElement, mappingRules, rule, sourceElement);
+		for (FunctionBlockMappingRule rule : mapping.getFunctionBlockMappingRules()) {
+			for (FunctionBlockSourceElement sourceElement : rule.getFunctionBlockSourceElements()) {
+				addRuleIfContainsEObject(modelElement, mappingRules, rule, sourceElement);
 			}
 		}
+
 
 		return mappingRules;
 	}
 
-	private void addRuleIfContainsModelElement(EObject modelElement, List<IMappingRule> mappingRules,
-			EnumMappingRule rule, EnumSourceElement sourceElement) {
-
-		if (sourceElement instanceof EnumExpression) {
-			EnumLiteral enumLiteral = ((EnumExpression) sourceElement).getLiteral();
-			Enum enumType = sourceElement.getTypeRef();
-			if (matchesFunctionBlockModel(enumType, enumLiteral, modelElement)) {
-				mappingRules.add(new EnumMappingRuleWrapper(rule));
-			}
-		}
-	}
-
 	/**
-	 * @param enumType
-	 * @param enumLiteral
 	 * @param modelElement
-	 * @return
+	 * @param mappingRules
+	 * @param rule
+	 * @param sourceElement
 	 */
-	private boolean matchesFunctionBlockModel(Enum enumType, EnumLiteral enumLiteral, EObject modelElement) {
-		if (!(modelElement instanceof EnumLiteral)) {
-			return false;
+	private void addRuleIfContainsEObject(EObject modelElement, List<IMappingRule> mappingRules,
+			FunctionBlockMappingRule rule, FunctionBlockSourceElement sourceElement) {
+		FunctionBlockRulesFilter functionBlockRulesFilter = FunctionBlockRuleFilterFactory.getFunctionBlockRulesFilter(sourceElement.getFunctionBlockElement(), modelElement);
+		if(functionBlockRulesFilter!=null && functionBlockRulesFilter.isRuleContainsContainsModelElement(rule, sourceElement, modelElement)){
+			mappingRules.add(new FunctionBlockMappingRuleWrapper(rule));
 		}
-
-		EnumLiteral elementEnumLiteral = ((EnumLiteral) modelElement);
-		Enum elementEnum = (Enum) elementEnumLiteral.eContainer();
-		return StringUtils.equals(elementEnumLiteral.getName(), enumLiteral.getName())
-				&& StringUtils.equals(elementEnum.getNamespace(), enumType.getNamespace())
-				&& StringUtils.equals(elementEnum.getVersion(), enumType.getVersion());
 	}
 
 	/*
@@ -100,10 +87,10 @@ public class EnumMappingRules implements IMappingRules {
 	 */
 	@Override
 	public List<IMappingRule> getRules(MappingAttribute mappingAttribute) {
-		EnumMapping mapping = (EnumMapping) this.mappingModel.getMapping();
+		FunctionBlockMapping mapping = (FunctionBlockMapping) this.mappingModel.getMapping();
 		List<IMappingRule> mappingRules = new ArrayList<>();
-		for (EnumMappingRule rule : mapping.getEnumMappingRules()) {
-			for (EnumSourceElement sourceElement : rule.getEnumSourceElement()) {
+		for (FunctionBlockMappingRule rule : mapping.getFunctionBlockMappingRules()) {
+			for (FunctionBlockSourceElement sourceElement : rule.getFunctionBlockSourceElements()) {
 				addRuleIfContainsAttribute(mappingAttribute, mappingRules, rule, sourceElement);
 			}
 		}
@@ -111,12 +98,13 @@ public class EnumMappingRules implements IMappingRules {
 	}
 
 	private void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<IMappingRule> mappingRules,
-			EnumMappingRule rule, EnumSourceElement sourceElement) {
+			FunctionBlockMappingRule rule, FunctionBlockSourceElement sourceElement) {
 
-		if (sourceElement instanceof EnumAttributeElement) {
-			EnumAttributeElement attributeElement = (EnumAttributeElement) sourceElement;
+		FunctionBlockElement functionBlockElement = sourceElement.getFunctionBlockElement();
+		if (functionBlockElement instanceof FunctionBlockElementAttribute) {
+			FunctionBlockElementAttribute attributeElement = (FunctionBlockElementAttribute) functionBlockElement;
 			if (StringUtils.equals(attributeElement.getAttribute().toString(), mappingAttribute.name())) {
-				mappingRules.add(new EnumMappingRuleWrapper(rule));
+				mappingRules.add(new FunctionBlockMappingRuleWrapper(rule));
 			}
 		}
 	}
@@ -129,22 +117,22 @@ public class EnumMappingRules implements IMappingRules {
 	 */
 	@Override
 	public List<IMappingRule> getRulesContainStereoType(String stereoTypeName) {
-		EnumMapping mapping = (EnumMapping) this.mappingModel.getMapping();
+		FunctionBlockMapping mapping = (FunctionBlockMapping) this.mappingModel.getMapping();
 		List<IMappingRule> mappingRules = new ArrayList<>();
-		for (EnumMappingRule rule : mapping.getEnumMappingRules()) {
-			EnumTargetElement targetElement = rule.getTarget();
+		for (FunctionBlockMappingRule rule : mapping.getFunctionBlockMappingRules()) {
+			FunctionBlockTargetElement targetElement = rule.getTarget();
 			addRuleIfContainsStereoTypeName(stereoTypeName, mappingRules, rule, targetElement);
 		}
 		return mappingRules;
 	}
 
 	private void addRuleIfContainsStereoTypeName(String stereoTypeName, List<IMappingRule> mappingRules,
-			EnumMappingRule rule, EnumTargetElement targetElement) {
+			FunctionBlockMappingRule rule, FunctionBlockTargetElement targetElement) {
 		if (targetElement instanceof StereoTypeReference) {
 			StereoTypeReference reference = (StereoTypeReference) targetElement;
 			StereoTypeElement stereoTypeElement = reference.getTargetElement();
 			if (StereoTypeHelper.containsStereoType(stereoTypeElement.getStereoTypes(), stereoTypeName)) {
-				mappingRules.add(new EnumMappingRuleWrapper(rule));
+				mappingRules.add(new FunctionBlockMappingRuleWrapper(rule));
 			}
 
 		}

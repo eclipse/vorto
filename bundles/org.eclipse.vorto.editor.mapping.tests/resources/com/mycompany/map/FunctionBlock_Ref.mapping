@@ -4,7 +4,7 @@ using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 using com.mycompany.map.Entity_Attribute ; 1.0.0
 using com.mycompany.map.Enum_Property ; 1.0.0
 
-fbmapping FunctionBlock_Ref {
+functionblockmapping FunctionBlock_Ref {
 
 	from NewFunctionBlock.configuration.configEntityA
 	to reference Entity_Attribute

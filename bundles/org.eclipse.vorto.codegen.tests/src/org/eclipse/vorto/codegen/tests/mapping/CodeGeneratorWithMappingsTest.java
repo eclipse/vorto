@@ -63,8 +63,8 @@ public class CodeGeneratorWithMappingsTest {
 
 		MappingModel mappingModel = this.createRuleModel(leftSideModel);
 
-		((IMappingRulesAware) generator)
-				.setMappingRules(new DefaultMappingRules(mappingModel));
+	/*	((IMappingRulesAware) generator)
+				.setMappingRules(new DefaultMappingRules(mappingModel));*/
 
 		generator.generate(leftSideModel, null);
 
