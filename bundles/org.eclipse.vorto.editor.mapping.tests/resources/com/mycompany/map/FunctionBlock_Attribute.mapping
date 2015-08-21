@@ -2,7 +2,7 @@ namespace com.mycompany.map
 version 1.0.0
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
-fbmapping FunctionBlock_Attribute {
+functionblockmapping FunctionBlock_Attribute {
 
 	from NewFunctionBlock.category
 	to TargetCategory

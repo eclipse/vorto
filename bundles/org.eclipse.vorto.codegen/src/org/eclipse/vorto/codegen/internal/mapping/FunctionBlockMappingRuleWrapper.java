@@ -17,8 +17,8 @@ package org.eclipse.vorto.codegen.internal.mapping;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.EnumMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EnumTargetElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
@@ -27,11 +27,10 @@ import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
  * @author sgp0247
  *
  */
-public class EnumMappingRuleWrapper implements IMappingRule {
+public class FunctionBlockMappingRuleWrapper implements IMappingRule {
+	private FunctionBlockMappingRule rule;
 
-	private EnumMappingRule rule;
-
-	public EnumMappingRuleWrapper(EnumMappingRule rule) {
+	public FunctionBlockMappingRuleWrapper(FunctionBlockMappingRule rule) {
 		this.rule = rule;
 	}
 	
@@ -48,13 +47,13 @@ public class EnumMappingRuleWrapper implements IMappingRule {
 	 */
 	@Override
 	public StereoType getStereoType(String stereoTypeName) {
-		EnumTargetElement targetElement = this.rule.getTarget();
+		FunctionBlockTargetElement targetElement = this.rule.getTarget();
 		if(!(targetElement instanceof StereoTypeReference)){
 			return null;
 		}
 		
 		StereoTypeElement stereoTypeElement = ((StereoTypeReference)targetElement).getTargetElement();
-		return StereoTypeHelper.getStereoType(stereoTypeElement.getStereoTypes(), stereoTypeName);		
+		return StereoTypeHelper.getStereoType(stereoTypeElement.getStereoTypes(), stereoTypeName);
 	}
 
 	/* (non-Javadoc)
@@ -66,5 +65,6 @@ public class EnumMappingRuleWrapper implements IMappingRule {
 
 		return StereoTypeHelper.getAttribute(stereoType, attributeName);
 	}
+
 
 }

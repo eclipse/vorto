@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
 import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
@@ -37,7 +36,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.OperationElement;
 import org.eclipse.vorto.core.api.model.mapping.StatusElement;
 
-public class DefaultMappingRules implements IMappingRules {
+public class DefaultMappingRules  {
 
 	private MappingModel mappingModel;
 
@@ -45,7 +44,7 @@ public class DefaultMappingRules implements IMappingRules {
 		this.mappingModel = mappingModel;
 	}
 
-	@Override
+
 	public List<IMappingRule> getRules(EObject currentModelElement) {
 		List<IMappingRule> mappingRules = new ArrayList<IMappingRule>();
 /*		for (InfoModelMappingRule rule : mappingModel.getInfoModelMappingRules()) {
@@ -142,7 +141,7 @@ public class DefaultMappingRules implements IMappingRules {
 		}
 	}
 
-	@Override
+
 	public List<IMappingRule> getRulesContainStereoType(String stereoTypeName) {
 		List<IMappingRule> mappingRules = new ArrayList<>();
 		/*for (InfoModelMappingRule rule : this.mappingModel.getInfoModelMappingRules()) {
@@ -160,7 +159,7 @@ public class DefaultMappingRules implements IMappingRules {
 	/* (non-Javadoc)
 	 * @see org.eclipse.vorto.codegen.api.mapping.IMappingRules#getRules(java.lang.String)
 	 */
-	@Override
+
 	public List<IMappingRule> getRules(MappingAttribute mappingAttribute) {
 		// TODO Auto-generated method stub
 		return null;

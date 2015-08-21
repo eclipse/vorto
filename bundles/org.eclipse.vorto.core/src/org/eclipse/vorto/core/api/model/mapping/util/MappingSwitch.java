@@ -174,6 +174,8 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.OPERATION_ELEMENT: {
 				OperationElement operationElement = (OperationElement)theEObject;
 				T result = caseOperationElement(operationElement);
+				if (result == null) result = caseFunctionBlockChildElement(operationElement);
+				if (result == null) result = caseFunctionBlockElement(operationElement);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}

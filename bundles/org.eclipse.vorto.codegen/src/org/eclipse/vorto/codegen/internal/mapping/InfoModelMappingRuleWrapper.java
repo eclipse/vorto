@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.internal.mapping;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
@@ -51,17 +50,12 @@ public class InfoModelMappingRuleWrapper implements IMappingRule {
 	@Override
 	public StereoType getStereoType(String stereoTypeName) {
 		InfoModelTargetElement infoModelTargetElement = this.rule.getTarget();
-		if(!(infoModelTargetElement instanceof StereoTypeReference)){
+		if (!(infoModelTargetElement instanceof StereoTypeReference)) {
 			return null;
 		}
-		
-		StereoTypeElement stereoTypeElement = ((StereoTypeReference)infoModelTargetElement).getTargetElement();
-		for (StereoType stereoType : stereoTypeElement.getStereoTypes()) {
-			if (StringUtils.equals(stereoType.getName(),stereoTypeName)) {
-				return stereoType;
-			}
-		}		
-		return null;
+
+		StereoTypeElement stereoTypeElement = ((StereoTypeReference) infoModelTargetElement).getTargetElement();
+		return StereoTypeHelper.getStereoType(stereoTypeElement.getStereoTypes(), stereoTypeName);
 	}
 
 	/*
@@ -75,17 +69,7 @@ public class InfoModelMappingRuleWrapper implements IMappingRule {
 	public Attribute getStereoTypeAttribute(String stereoTypeName, String attributeName) {
 		StereoType stereoType = this.getStereoType(stereoTypeName);
 
-		if (stereoType == null) {
-			return NullAttribute.INSTANCE;
-		}
-
-		for (Attribute attribute : stereoType.getAttributes()) {
-			if (attribute.getName().equals(attributeName)) {
-				return attribute;
-			}
-		}
-		return NullAttribute.INSTANCE;
-
+		return StereoTypeHelper.getAttribute(stereoType, attributeName);
 	}
 
 }

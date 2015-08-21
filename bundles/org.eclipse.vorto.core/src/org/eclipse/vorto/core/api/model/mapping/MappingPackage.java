@@ -688,31 +688,13 @@ public interface MappingPackage extends EPackage {
 	int FUNCTION_BLOCK_CHILD_ELEMENT = 15;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_BLOCK_CHILD_ELEMENT__TYPE = FUNCTION_BLOCK_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF = FUNCTION_BLOCK_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
 	 * The number of structural features of the '<em>Function Block Child Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_ELEMENT_FEATURE_COUNT + 2;
+	int FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of operations of the '<em>Function Block Child Element</em>' class.
@@ -740,7 +722,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OPERATION_ELEMENT__OPERATION = 0;
+	int OPERATION_ELEMENT__OPERATION = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Operation Element</em>' class.
@@ -749,7 +731,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OPERATION_ELEMENT_FEATURE_COUNT = 1;
+	int OPERATION_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Operation Element</em>' class.
@@ -758,7 +740,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int OPERATION_ELEMENT_OPERATION_COUNT = 0;
+	int OPERATION_ELEMENT_OPERATION_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_OPERATION_COUNT + 0;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.ConfigurationElementImpl <em>Configuration Element</em>}' class.
@@ -771,22 +753,13 @@ public interface MappingPackage extends EPackage {
 	int CONFIGURATION_ELEMENT = 17;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONFIGURATION_ELEMENT__TYPE = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF;
+	int CONFIGURATION_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Configuration Element</em>' class.
@@ -795,7 +768,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CONFIGURATION_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
+	int CONFIGURATION_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Configuration Element</em>' class.
@@ -817,22 +790,13 @@ public interface MappingPackage extends EPackage {
 	int STATUS_ELEMENT = 18;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STATUS_ELEMENT__TYPE = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int STATUS_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF;
+	int STATUS_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Status Element</em>' class.
@@ -841,7 +805,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int STATUS_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
+	int STATUS_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Status Element</em>' class.
@@ -863,22 +827,13 @@ public interface MappingPackage extends EPackage {
 	int FAULT_ELEMENT = 19;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FAULT_ELEMENT__TYPE = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE;
-
-	/**
 	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FAULT_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF;
+	int FAULT_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Fault Element</em>' class.
@@ -887,7 +842,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FAULT_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
+	int FAULT_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Fault Element</em>' class.
@@ -909,24 +864,6 @@ public interface MappingPackage extends EPackage {
 	int EVENT_ELEMENT = 20;
 
 	/**
-	 * The feature id for the '<em><b>Type</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EVENT_ELEMENT__TYPE = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE;
-
-	/**
-	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EVENT_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF;
-
-	/**
 	 * The feature id for the '<em><b>Event</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -936,13 +873,22 @@ public interface MappingPackage extends EPackage {
 	int EVENT_ELEMENT__EVENT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Type Ref</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EVENT_ELEMENT__TYPE_REF = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Event Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EVENT_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 1;
+	int EVENT_ELEMENT_FEATURE_COUNT = FUNCTION_BLOCK_CHILD_ELEMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The number of operations of the '<em>Event Element</em>' class.
@@ -2244,28 +2190,6 @@ public interface MappingPackage extends EPackage {
 	EClass getFunctionBlockChildElement();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getType <em>Type</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Type</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getType()
-	 * @see #getFunctionBlockChildElement()
-	 * @generated
-	 */
-	EReference getFunctionBlockChildElement_Type();
-
-	/**
-	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getTypeRef <em>Type Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Type Ref</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement#getTypeRef()
-	 * @see #getFunctionBlockChildElement()
-	 * @generated
-	 */
-	EReference getFunctionBlockChildElement_TypeRef();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.OperationElement <em>Operation Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2297,6 +2221,17 @@ public interface MappingPackage extends EPackage {
 	EClass getConfigurationElement();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.ConfigurationElement#getTypeRef <em>Type Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Type Ref</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.ConfigurationElement#getTypeRef()
+	 * @see #getConfigurationElement()
+	 * @generated
+	 */
+	EReference getConfigurationElement_TypeRef();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.StatusElement <em>Status Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2307,6 +2242,17 @@ public interface MappingPackage extends EPackage {
 	EClass getStatusElement();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.StatusElement#getTypeRef <em>Type Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Type Ref</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.StatusElement#getTypeRef()
+	 * @see #getStatusElement()
+	 * @generated
+	 */
+	EReference getStatusElement_TypeRef();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.FaultElement <em>Fault Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2315,6 +2261,17 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getFaultElement();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.FaultElement#getTypeRef <em>Type Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Type Ref</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FaultElement#getTypeRef()
+	 * @see #getFaultElement()
+	 * @generated
+	 */
+	EReference getFaultElement_TypeRef();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.EventElement <em>Event Element</em>}'.
@@ -2336,6 +2293,17 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getEventElement_Event();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.mapping.EventElement#getTypeRef <em>Type Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Type Ref</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.EventElement#getTypeRef()
+	 * @see #getEventElement()
+	 * @generated
+	 */
+	EReference getEventElement_TypeRef();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.FBTypeElement <em>FB Type Element</em>}'.
@@ -3195,22 +3163,6 @@ public interface MappingPackage extends EPackage {
 		EClass FUNCTION_BLOCK_CHILD_ELEMENT = eINSTANCE.getFunctionBlockChildElement();
 
 		/**
-		 * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_BLOCK_CHILD_ELEMENT__TYPE = eINSTANCE.getFunctionBlockChildElement_Type();
-
-		/**
-		 * The meta object literal for the '<em><b>Type Ref</b></em>' containment reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FUNCTION_BLOCK_CHILD_ELEMENT__TYPE_REF = eINSTANCE.getFunctionBlockChildElement_TypeRef();
-
-		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.OperationElementImpl <em>Operation Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3239,6 +3191,14 @@ public interface MappingPackage extends EPackage {
 		EClass CONFIGURATION_ELEMENT = eINSTANCE.getConfigurationElement();
 
 		/**
+		 * The meta object literal for the '<em><b>Type Ref</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CONFIGURATION_ELEMENT__TYPE_REF = eINSTANCE.getConfigurationElement_TypeRef();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.StatusElementImpl <em>Status Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3249,6 +3209,14 @@ public interface MappingPackage extends EPackage {
 		EClass STATUS_ELEMENT = eINSTANCE.getStatusElement();
 
 		/**
+		 * The meta object literal for the '<em><b>Type Ref</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference STATUS_ELEMENT__TYPE_REF = eINSTANCE.getStatusElement_TypeRef();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.FaultElementImpl <em>Fault Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3257,6 +3225,14 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EClass FAULT_ELEMENT = eINSTANCE.getFaultElement();
+
+		/**
+		 * The meta object literal for the '<em><b>Type Ref</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FAULT_ELEMENT__TYPE_REF = eINSTANCE.getFaultElement_TypeRef();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.EventElementImpl <em>Event Element</em>}' class.
@@ -3275,6 +3251,14 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EReference EVENT_ELEMENT__EVENT = eINSTANCE.getEventElement_Event();
+
+		/**
+		 * The meta object literal for the '<em><b>Type Ref</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EVENT_ELEMENT__TYPE_REF = eINSTANCE.getEventElement_TypeRef();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.FBTypeElementImpl <em>FB Type Element</em>}' class.

@@ -12,23 +12,18 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping.helper;
+package org.eclipse.vorto.codegen.internal.mapping.functionblock;
 
-import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
-import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement;
 
-public class TestEnumFactory {
-
-	public static org.eclipse.vorto.core.api.model.datatype.Enum createEnum() {
-		org.eclipse.vorto.core.api.model.datatype.Enum enumType = DatatypeFactory.eINSTANCE.createEnum();
-
-		EnumLiteral option1 = DatatypeFactory.eINSTANCE.createEnumLiteral();
-		option1.setName("Option1");
-
-		EnumLiteral option2 = DatatypeFactory.eINSTANCE.createEnumLiteral();
-		option1.setName("Option2");
-		enumType.getEnums().add(option1);
-		enumType.getEnums().add(option2);
-		return enumType;
-	}
+/**
+ * @author sgp0247
+ *
+ */
+public interface FunctionBlockRulesFilter {
+	boolean isRuleContainsContainsModelElement(FunctionBlockMappingRule rule,
+			FunctionBlockSourceElement sourceElement, EObject modelElement);
 }

@@ -6,7 +6,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="mapping" eType="#//Mapping"
         containment="true"/>
   </eClassifiers>
- <eClassifiers xsi:type="ecore:EClass" name="Mapping">
+<eClassifiers xsi:type="ecore:EClass" name="Mapping">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelMapping" eSuperTypes="#//Mapping">
@@ -62,20 +62,26 @@
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockElementAttribute" eSuperTypes="#//FunctionBlockElement">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//FunctionblockModelAttribute"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockChildElement" eSuperTypes="#//FunctionBlockElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//OperationElement"
-        containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockChildElement" eSuperTypes="#//FunctionBlockElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="OperationElement" eSuperTypes="#//FunctionBlockChildElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//Operation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConfigurationElement" eSuperTypes="#//FunctionBlockChildElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="#//FBTypeElement"
         containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="OperationElement">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//Operation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="StatusElement" eSuperTypes="#//FunctionBlockChildElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="#//FBTypeElement"
+        containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ConfigurationElement" eSuperTypes="#//FunctionBlockChildElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="StatusElement" eSuperTypes="#//FunctionBlockChildElement"/>
-  <eClassifiers xsi:type="ecore:EClass" name="FaultElement" eSuperTypes="#//FunctionBlockChildElement"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FaultElement" eSuperTypes="#//FunctionBlockChildElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="#//FBTypeElement"
+        containment="true"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventElement" eSuperTypes="#//FunctionBlockChildElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Functionblock.ecore#//Event"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="typeRef" eType="#//FBTypeElement"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FBTypeElement">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass platform:/resource/org.eclipse.vorto.core/model/Datatype.ecore#//Property"/>

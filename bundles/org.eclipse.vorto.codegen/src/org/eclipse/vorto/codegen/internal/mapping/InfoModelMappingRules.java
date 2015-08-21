@@ -32,7 +32,6 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
 import org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
 
@@ -103,20 +102,11 @@ public class InfoModelMappingRules implements IMappingRules {
 		if (targetElement instanceof StereoTypeReference) {
 			StereoTypeReference reference = (StereoTypeReference) targetElement;
 			StereoTypeElement stereoTypeElement = reference.getTargetElement();
-			if (this.containsStereoType(stereoTypeElement, stereoTypeName)) {
+			if (StereoTypeHelper.containsStereoType(stereoTypeElement.getStereoTypes(), stereoTypeName)) {
 				mappingRules.add(new InfoModelMappingRuleWrapper(rule));
 			}
 
 		}
-	}
-
-	private boolean containsStereoType(StereoTypeElement stereoTypeElement, String stereoTypeName) {
-		for (StereoType stereoType : stereoTypeElement.getStereoTypes()) {
-			if (StringUtils.endsWith(stereoType.getName(), stereoTypeName)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override
