@@ -9,23 +9,23 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
-import org.eclipse.vorto.core.api.model.mapping.InformationModelProperty;
+import org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Information Model Property</b></em>'.
+ * An implementation of the model object '<em><b>Information Model Attribute</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InformationModelPropertyImpl#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InformationModelAttributeImpl#getAttribute <em>Attribute</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class InformationModelPropertyImpl extends InfoModelChildImpl implements InformationModelProperty {
+public class InformationModelAttributeImpl extends InfoModelChildImpl implements InformationModelAttribute {
 	/**
 	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -51,7 +51,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected InformationModelPropertyImpl() {
+	protected InformationModelAttributeImpl() {
 		super();
 	}
 
@@ -62,7 +62,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return MappingPackage.Literals.INFORMATION_MODEL_PROPERTY;
+		return MappingPackage.Literals.INFORMATION_MODEL_ATTRIBUTE;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 		InfoModelAttribute oldAttribute = attribute;
 		attribute = newAttribute == null ? ATTRIBUTE_EDEFAULT : newAttribute;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFORMATION_MODEL_PROPERTY__ATTRIBUTE, oldAttribute, attribute));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFORMATION_MODEL_ATTRIBUTE__ATTRIBUTE, oldAttribute, attribute));
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.INFORMATION_MODEL_PROPERTY__ATTRIBUTE:
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE__ATTRIBUTE:
 				return getAttribute();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -108,7 +108,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.INFORMATION_MODEL_PROPERTY__ATTRIBUTE:
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE__ATTRIBUTE:
 				setAttribute((InfoModelAttribute)newValue);
 				return;
 		}
@@ -123,7 +123,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.INFORMATION_MODEL_PROPERTY__ATTRIBUTE:
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE__ATTRIBUTE:
 				setAttribute(ATTRIBUTE_EDEFAULT);
 				return;
 		}
@@ -138,7 +138,7 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.INFORMATION_MODEL_PROPERTY__ATTRIBUTE:
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE__ATTRIBUTE:
 				return attribute != ATTRIBUTE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
@@ -160,4 +160,4 @@ public class InformationModelPropertyImpl extends InfoModelChildImpl implements 
 		return result.toString();
 	}
 
-} //InformationModelPropertyImpl
+} //InformationModelAttributeImpl

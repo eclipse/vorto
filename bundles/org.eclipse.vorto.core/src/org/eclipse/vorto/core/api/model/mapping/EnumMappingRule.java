@@ -17,7 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getEnumElements <em>Enum Elements</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getEnumSourceElement <em>Enum Source Element</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getTargetElement <em>Target Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumMappingRule()
@@ -58,29 +58,29 @@ public interface EnumMappingRule extends EObject {
 	EList<EnumSourceElement> getEnumSourceElement();
 
 	/**
-	 * Returns the value of the '<em><b>Target Element</b></em>' containment reference.
+	 * Returns the value of the '<em><b>Target</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Target Element</em>' containment reference isn't clear,
+	 * If the meaning of the '<em>Target</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Target Element</em>' containment reference.
-	 * @see #setTargetElement(EnumTargetElement)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumMappingRule_TargetElement()
+	 * @return the value of the '<em>Target</em>' containment reference.
+	 * @see #setTarget(EnumTargetElement)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumMappingRule_Target()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EnumTargetElement getTargetElement();
+	EnumTargetElement getTarget();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getTargetElement <em>Target Element</em>}' containment reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingRule#getTarget <em>Target</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Target Element</em>' containment reference.
-	 * @see #getTargetElement()
+	 * @param value the new value of the '<em>Target</em>' containment reference.
+	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTargetElement(EnumTargetElement value);
+	void setTarget(EnumTargetElement value);
 
 } // EnumMappingRule

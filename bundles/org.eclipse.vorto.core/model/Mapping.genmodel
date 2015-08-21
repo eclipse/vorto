@@ -32,15 +32,16 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//MappingModel/namespace"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//MappingModel/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//MappingModel/references"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//MappingModel/mappingType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//MappingModel/mapping"/>
     </genClasses>
-    <genClasses ecoreClass="Mapping.ecore#//MappingType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//MappingType/name"/>
+    <genClasses ecoreClass="Mapping.ecore#//Mapping">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//Mapping/name"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//InfoModelMapping">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//InfoModelMapping/infoModelMappingRules"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//InfoModelMappingRule">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//InfoModelMappingRule/sourceElements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//InfoModelMappingRule/infoModelSourceElements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//InfoModelMappingRule/target"/>
     </genClasses>
@@ -53,8 +54,8 @@
     <genClasses ecoreClass="Mapping.ecore#//InfoModelFbElement">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mapping.ecore#//InfoModelFbElement/functionblock"/>
     </genClasses>
-    <genClasses ecoreClass="Mapping.ecore#//InformationModelProperty">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//InformationModelProperty/attribute"/>
+    <genClasses ecoreClass="Mapping.ecore#//InformationModelAttribute">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//InformationModelAttribute/attribute"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//FunctionBlockMapping">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//FunctionBlockMapping/functionBlockMappingRules"/>
@@ -94,13 +95,13 @@
     <genClasses ecoreClass="Mapping.ecore#//EntityMappingRule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityMappingRule/entityMappingElements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityMappingRule/EntitySourceElement"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityMappingRule/targetElement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityMappingRule/target"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//EntityTargetElement"/>
     <genClasses ecoreClass="Mapping.ecore#//EntitySourceElement"/>
-    <genClasses ecoreClass="Mapping.ecore#//EntityPropertyElement">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityPropertyElement/typeRef"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//EntityPropertyElement/attribute"/>
+    <genClasses ecoreClass="Mapping.ecore#//EntityAttributeElement">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mapping.ecore#//EntityAttributeElement/typeRef"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//EntityAttributeElement/attribute"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//EntityExpressionRef"/>
     <genClasses ecoreClass="Mapping.ecore#//EnumMapping">
@@ -109,14 +110,14 @@
     <genClasses ecoreClass="Mapping.ecore#//EnumMappingRule">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumMappingRule/enumElements"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumMappingRule/EnumSourceElement"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumMappingRule/targetElement"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumMappingRule/target"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//EnumTargetElement"/>
     <genClasses ecoreClass="Mapping.ecore#//EnumSourceElement">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumSourceElement/typeRef"/>
     </genClasses>
-    <genClasses ecoreClass="Mapping.ecore#//EnumPropertyElement">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//EnumPropertyElement/attribute"/>
+    <genClasses ecoreClass="Mapping.ecore#//EnumAttributeElement">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Mapping.ecore#//EnumAttributeElement/attribute"/>
     </genClasses>
     <genClasses ecoreClass="Mapping.ecore#//EnumExpression">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Mapping.ecore#//EnumExpression/literal"/>

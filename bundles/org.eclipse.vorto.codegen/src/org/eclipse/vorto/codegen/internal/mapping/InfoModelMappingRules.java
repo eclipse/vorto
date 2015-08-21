@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelChild;
@@ -29,7 +30,7 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
-import org.eclipse.vorto.core.api.model.mapping.InformationModelProperty;
+import org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.StereoType;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
@@ -69,7 +70,7 @@ public class InfoModelMappingRules implements IMappingRules {
 			InfoModelFbElement fbElement = (InfoModelFbElement) infoModelChild;
 			FunctionblockModel functionblockModel = fbElement.getFunctionblock().getType();
 			if (matchesFunctionBlockModel(functionblockModel, modelElement)) {
-				mappingRules.add(new DefaultMappingRule(rule));
+				mappingRules.add(new InfoModelMappingRuleWrapper(rule));
 			}
 		}
 	}
@@ -103,7 +104,7 @@ public class InfoModelMappingRules implements IMappingRules {
 			StereoTypeReference reference = (StereoTypeReference) targetElement;
 			StereoTypeElement stereoTypeElement = reference.getTargetElement();
 			if (this.containsStereoType(stereoTypeElement, stereoTypeName)) {
-				mappingRules.add(new DefaultMappingRule(rule));
+				mappingRules.add(new InfoModelMappingRuleWrapper(rule));
 			}
 
 		}
@@ -119,24 +120,24 @@ public class InfoModelMappingRules implements IMappingRules {
 	}
 
 	@Override
-	public List<IMappingRule> getRules(String modelAttribute) {
+	public List<IMappingRule> getRules(MappingAttribute mappingAttribute) {
 		InfoModelMapping mapping = (InfoModelMapping) this.mappingModel.getMapping();
 		List<IMappingRule> mappingRules = new ArrayList<>();
 		for (InfoModelMappingRule rule : mapping.getInfoModelMappingRules()) {
 			for (InfoModelSourceElement sourceElement : rule.getInfoModelSourceElements()) {
-				addRuleIfContainsAttribute(modelAttribute, mappingRules, rule, sourceElement);
+				addRuleIfContainsAttribute(mappingAttribute, mappingRules, rule, sourceElement);
 			}
 		}
 		return mappingRules;
 	}
 
-	private void addRuleIfContainsAttribute(String modelAttribute, List<IMappingRule> mappingRules,
+	private void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<IMappingRule> mappingRules,
 			InfoModelMappingRule rule, InfoModelSourceElement sourceElement) {
 		InfoModelChild infoModelChild = sourceElement.getInfoModelChild();
-		if (infoModelChild instanceof InformationModelProperty) {
-			InformationModelProperty property = (InformationModelProperty) infoModelChild;
-			if (StringUtils.equals(property.getAttribute().toString(), modelAttribute)) {
-				mappingRules.add(new DefaultMappingRule(rule));
+		if (infoModelChild instanceof InformationModelAttribute) {
+			InformationModelAttribute attribute = (InformationModelAttribute) infoModelChild;
+			if (StringUtils.equals(attribute.getAttribute().toString(), mappingAttribute.name())) {
+				mappingRules.add(new InfoModelMappingRuleWrapper(rule));
 			}
 		}
 	}

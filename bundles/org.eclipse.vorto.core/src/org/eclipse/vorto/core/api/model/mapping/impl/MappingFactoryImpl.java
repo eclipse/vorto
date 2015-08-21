@@ -65,7 +65,7 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.INFO_MODEL_SOURCE_ELEMENT: return createInfoModelSourceElement();
 			case MappingPackage.INFO_MODEL_CHILD: return createInfoModelChild();
 			case MappingPackage.INFO_MODEL_FB_ELEMENT: return createInfoModelFbElement();
-			case MappingPackage.INFORMATION_MODEL_PROPERTY: return createInformationModelProperty();
+			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE: return createInformationModelAttribute();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING: return createFunctionBlockMapping();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE: return createFunctionBlockMappingRule();
 			case MappingPackage.FUNCTION_BLOCK_TARGET_ELEMENT: return createFunctionBlockTargetElement();
@@ -83,13 +83,13 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.ENTITY_MAPPING_RULE: return createEntityMappingRule();
 			case MappingPackage.ENTITY_TARGET_ELEMENT: return createEntityTargetElement();
 			case MappingPackage.ENTITY_SOURCE_ELEMENT: return createEntitySourceElement();
-			case MappingPackage.ENTITY_PROPERTY_ELEMENT: return createEntityPropertyElement();
+			case MappingPackage.ENTITY_ATTRIBUTE_ELEMENT: return createEntityAttributeElement();
 			case MappingPackage.ENTITY_EXPRESSION_REF: return createEntityExpressionRef();
 			case MappingPackage.ENUM_MAPPING: return createEnumMapping();
 			case MappingPackage.ENUM_MAPPING_RULE: return createEnumMappingRule();
 			case MappingPackage.ENUM_TARGET_ELEMENT: return createEnumTargetElement();
 			case MappingPackage.ENUM_SOURCE_ELEMENT: return createEnumSourceElement();
-			case MappingPackage.ENUM_PROPERTY_ELEMENT: return createEnumPropertyElement();
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT: return createEnumAttributeElement();
 			case MappingPackage.ENUM_EXPRESSION: return createEnumExpression();
 			case MappingPackage.ENUM_REFERENCE: return createEnumReference();
 			case MappingPackage.FUNCTION_BLOCK_REFERENCE: return createFunctionBlockReference();
@@ -229,9 +229,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InformationModelProperty createInformationModelProperty() {
-		InformationModelPropertyImpl informationModelProperty = new InformationModelPropertyImpl();
-		return informationModelProperty;
+	public InformationModelAttribute createInformationModelAttribute() {
+		InformationModelAttributeImpl informationModelAttribute = new InformationModelAttributeImpl();
+		return informationModelAttribute;
 	}
 
 	/**
@@ -409,9 +409,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityPropertyElement createEntityPropertyElement() {
-		EntityPropertyElementImpl entityPropertyElement = new EntityPropertyElementImpl();
-		return entityPropertyElement;
+	public EntityAttributeElement createEntityAttributeElement() {
+		EntityAttributeElementImpl entityAttributeElement = new EntityAttributeElementImpl();
+		return entityAttributeElement;
 	}
 
 	/**
@@ -469,9 +469,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumPropertyElement createEnumPropertyElement() {
-		EnumPropertyElementImpl enumPropertyElement = new EnumPropertyElementImpl();
-		return enumPropertyElement;
+	public EnumAttributeElement createEnumAttributeElement() {
+		EnumAttributeElementImpl enumAttributeElement = new EnumAttributeElementImpl();
+		return enumAttributeElement;
 	}
 
 	/**

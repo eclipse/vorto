@@ -15,7 +15,6 @@
 package org.eclipse.vorto.codegen.tests.mapping.helper;
 
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockReference;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelChild;
@@ -23,15 +22,12 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.InformationModelProperty;
+import org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
 
-public class TestMappingInfoModelFactory {
-	static InformationModel informationModel = TestInforModelFactory.createInformationModel();
+public class TestInfoModelMappingFactory {
+	static InformationModel informationModel = TestInfoModelFactory.createInformationModel();
 
 	public static MappingModel createInfoModelMappingModel() {
 		MappingModel mappingModel = MappingFactory.eINSTANCE.createMappingModel();
@@ -51,7 +47,7 @@ public class TestMappingInfoModelFactory {
 	public static InfoModelMappingRule createInfoModelStereoTypeMappingRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
 		rule.getInfoModelSourceElements().add(createInfoModelAttributeSourceElement());
-		rule.setTarget(createStereoTypeReference());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
 		return rule;
 	}
 
@@ -91,32 +87,9 @@ public class TestMappingInfoModelFactory {
 	}
 
 	private static InfoModelChild createInformationModelProperty() {
-		InformationModelProperty informationModelProperty = MappingFactory.eINSTANCE.createInformationModelProperty();
-		informationModelProperty.setAttribute(InfoModelAttribute.DISPLAYNAME);
+		InformationModelAttribute informationModelAttribute = MappingFactory.eINSTANCE.createInformationModelAttribute();
+		informationModelAttribute.setAttribute(InfoModelAttribute.DISPLAYNAME);
 
-		return informationModelProperty;
+		return informationModelAttribute;
 	}
-
-	private static StereoTypeReference createStereoTypeReference() {
-
-		StereoTypeReference stereoTypeReference = MappingFactory.eINSTANCE.createStereoTypeReference();
-		StereoTypeElement stereoTypeElement = MappingFactory.eINSTANCE.createStereoTypeElement();
-		stereoTypeElement.getStereoTypes().add(createStereoType());
-		stereoTypeReference.setTargetElement(stereoTypeElement);
-		return stereoTypeReference;
-	}
-
-	private static StereoType createStereoType() {
-		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
-		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
-		typeAttribute.setName("DummyAttribute");
-		typeAttribute.setValue("Dummy Attribute Value");
-
-		stereoType.setName("DummyStereoType");
-		stereoType.getAttributes().add(typeAttribute);
-
-		return stereoType;
-
-	}
-
 }

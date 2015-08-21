@@ -19,7 +19,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 
-public class TestInforModelFactory {
+public class TestInfoModelFactory {
 	public static InformationModel createInformationModel() {
 		InformationModel informationModel = InformationModelFactory.eINSTANCE
 				.createInformationModel();

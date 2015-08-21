@@ -46,7 +46,7 @@ public enum ModelAttribute implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	DESCRIPTION(2, "description", "version");
+	DESCRIPTION(2, "description", "description");
 
 	/**
 	 * The '<em><b>Name</b></em>' literal value.
@@ -87,7 +87,7 @@ public enum ModelAttribute implements Enumerator {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @see #DESCRIPTION
-	 * @model name="description" literal="version"
+	 * @model name="description"
 	 * @generated
 	 * @ordered
 	 */

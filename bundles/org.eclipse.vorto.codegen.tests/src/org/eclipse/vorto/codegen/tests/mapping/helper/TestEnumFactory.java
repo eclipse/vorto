@@ -12,15 +12,27 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
+package org.eclipse.vorto.codegen.tests.mapping.helper;
 
-package org.eclipse.vorto.codegen.internal.mapping;
+import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 
-import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
+/**
+ * @author sgp0247
+ *
+ */
+public class TestEnumFactory {
 
-public class DefaultMappingRule {
+	public static org.eclipse.vorto.core.api.model.datatype.Enum createEnum() {
+		org.eclipse.vorto.core.api.model.datatype.Enum enumType = DatatypeFactory.eINSTANCE.createEnum();
 
-	
+		EnumLiteral option1 = DatatypeFactory.eINSTANCE.createEnumLiteral();
+		option1.setName("Option1");
+
+		EnumLiteral option2 = DatatypeFactory.eINSTANCE.createEnumLiteral();
+		option1.setName("Option2");
+		enumType.getEnums().add(option1);
+		enumType.getEnums().add(option2);
+		return enumType;
+	}
 }

@@ -102,8 +102,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createInfoModelFbElementAdapter();
 			}
 			@Override
-			public Adapter caseInformationModelProperty(InformationModelProperty object) {
-				return createInformationModelPropertyAdapter();
+			public Adapter caseInformationModelAttribute(InformationModelAttribute object) {
+				return createInformationModelAttributeAdapter();
 			}
 			@Override
 			public Adapter caseFunctionBlockMapping(FunctionBlockMapping object) {
@@ -174,8 +174,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEntitySourceElementAdapter();
 			}
 			@Override
-			public Adapter caseEntityPropertyElement(EntityPropertyElement object) {
-				return createEntityPropertyElementAdapter();
+			public Adapter caseEntityAttributeElement(EntityAttributeElement object) {
+				return createEntityAttributeElementAdapter();
 			}
 			@Override
 			public Adapter caseEntityExpressionRef(EntityExpressionRef object) {
@@ -198,8 +198,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEnumSourceElementAdapter();
 			}
 			@Override
-			public Adapter caseEnumPropertyElement(EnumPropertyElement object) {
-				return createEnumPropertyElementAdapter();
+			public Adapter caseEnumAttributeElement(EnumAttributeElement object) {
+				return createEnumAttributeElementAdapter();
 			}
 			@Override
 			public Adapter caseEnumExpression(EnumExpression object) {
@@ -382,16 +382,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelProperty <em>Information Model Property</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute <em>Information Model Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.InformationModelProperty
+	 * @see org.eclipse.vorto.core.api.model.mapping.InformationModelAttribute
 	 * @generated
 	 */
-	public Adapter createInformationModelPropertyAdapter() {
+	public Adapter createInformationModelAttributeAdapter() {
 		return null;
 	}
 
@@ -634,16 +634,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement <em>Entity Property Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement <em>Entity Attribute Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.EntityPropertyElement
+	 * @see org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement
 	 * @generated
 	 */
-	public Adapter createEntityPropertyElementAdapter() {
+	public Adapter createEntityAttributeElementAdapter() {
 		return null;
 	}
 
@@ -718,16 +718,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement <em>Enum Property Element</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement <em>Enum Attribute Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement
+	 * @see org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement
 	 * @generated
 	 */
-	public Adapter createEnumPropertyElementAdapter() {
+	public Adapter createEnumAttributeElementAdapter() {
 		return null;
 	}
 

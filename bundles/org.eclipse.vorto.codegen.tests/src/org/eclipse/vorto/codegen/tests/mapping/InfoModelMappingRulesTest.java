@@ -20,27 +20,28 @@ import java.util.List;
 
 import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingRules;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestMappingInfoModelFactory;
+import org.eclipse.vorto.codegen.tests.mapping.helper.TestInfoModelMappingFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.junit.Test;
 
-public class MappingRulesTest {
+public class InfoModelMappingRulesTest {
 	@Test
 	public void testGetRuleByInfoModelAttribute() {
-		MappingModel mappingModel = TestMappingInfoModelFactory.createInfoModelMappingModel();
+		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 
 		IMappingRules mappingRule = new InfoModelMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRules("displayname");
+		List<IMappingRule> mappingRules = mappingRule.getRules(MappingAttribute.displayname);
 		assertEquals(1, mappingRules.size());
 	}
 
 	@Test
 	public void testGetRuleByInfoModelElement() {
-		MappingModel mappingModel = TestMappingInfoModelFactory.createInfoModelMappingModel();
+		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 		InfoModelMapping infoModelMapping = (InfoModelMapping) mappingModel.getMapping();
 		InformationModel infoModel = infoModelMapping.getInfoModelMappingRules().get(0).getInfoModelSourceElements()
 				.get(0).getInfoModel();
@@ -52,7 +53,7 @@ public class MappingRulesTest {
 
 	@Test
 	public void testGetRuleByStereoType() {
-		MappingModel mappingModel = TestMappingInfoModelFactory.createInfoModelMappingModel();
+		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 		IMappingRules mappingRule = new InfoModelMappingRules(mappingModel);
 		List<IMappingRule> mappingRules = mappingRule.getRulesContainStereoType("DummyStereoType");
 		assertEquals(1, mappingRules.size());

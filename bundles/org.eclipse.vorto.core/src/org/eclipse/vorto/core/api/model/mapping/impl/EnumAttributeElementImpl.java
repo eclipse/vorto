@@ -8,24 +8,24 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.vorto.core.api.model.mapping.EnumPropertyElement;
+import org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Enum Property Element</b></em>'.
+ * An implementation of the model object '<em><b>Enum Attribute Element</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumPropertyElementImpl#getAttribute <em>Attribute</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumAttributeElementImpl#getAttribute <em>Attribute</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class EnumPropertyElementImpl extends EnumSourceElementImpl implements EnumPropertyElement {
+public class EnumAttributeElementImpl extends EnumSourceElementImpl implements EnumAttributeElement {
 	/**
 	 * The default value of the '{@link #getAttribute() <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -51,7 +51,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EnumPropertyElementImpl() {
+	protected EnumAttributeElementImpl() {
 		super();
 	}
 
@@ -62,7 +62,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return MappingPackage.Literals.ENUM_PROPERTY_ELEMENT;
+		return MappingPackage.Literals.ENUM_ATTRIBUTE_ELEMENT;
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 		ModelAttribute oldAttribute = attribute;
 		attribute = newAttribute == null ? ATTRIBUTE_EDEFAULT : newAttribute;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_PROPERTY_ELEMENT__ATTRIBUTE, oldAttribute, attribute));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.ENUM_ATTRIBUTE_ELEMENT__ATTRIBUTE, oldAttribute, attribute));
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.ENUM_PROPERTY_ELEMENT__ATTRIBUTE:
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT__ATTRIBUTE:
 				return getAttribute();
 		}
 		return super.eGet(featureID, resolve, coreType);
@@ -108,7 +108,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.ENUM_PROPERTY_ELEMENT__ATTRIBUTE:
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT__ATTRIBUTE:
 				setAttribute((ModelAttribute)newValue);
 				return;
 		}
@@ -123,7 +123,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.ENUM_PROPERTY_ELEMENT__ATTRIBUTE:
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT__ATTRIBUTE:
 				setAttribute(ATTRIBUTE_EDEFAULT);
 				return;
 		}
@@ -138,7 +138,7 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.ENUM_PROPERTY_ELEMENT__ATTRIBUTE:
+			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT__ATTRIBUTE:
 				return attribute != ATTRIBUTE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
@@ -160,4 +160,4 @@ public class EnumPropertyElementImpl extends EnumSourceElementImpl implements En
 		return result.toString();
 	}
 
-} //EnumPropertyElementImpl
+} //EnumAttributeElementImpl
