@@ -23,13 +23,24 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.vorto.core.internal.model.ModelProjectFactory;
+import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
+import org.eclipse.vorto.core.service.IModelElementResolver;
 import org.eclipse.vorto.core.service.IModelProjectService;
 
 public class DefaultModelProjectService implements IModelProjectService {
 
+	@Override
+	public IModelElementResolver getWorkspaceProjectResolver() {
+		return new IModelElementResolver() {
+			public IModelElement resolve(ModelId modelId) {
+				return getProjectByModelId(modelId);
+			}
+		};
+	}
+	
 	@Override
 	public IModelProject getProjectByName(String modelProjectName) {
 		return ModelProjectFactory.getInstance().getProjectByName(

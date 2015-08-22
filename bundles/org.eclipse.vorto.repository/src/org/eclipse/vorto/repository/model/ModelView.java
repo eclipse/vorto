@@ -12,41 +12,33 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.api.repository;
+package org.eclipse.vorto.repository.model;
 
-import java.util.List;
+import org.eclipse.vorto.core.model.ModelId;
 
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.model.ModelType;
+public class ModelView {
+	private ModelId modelId;
+	private String description;
 
-/**
- *	This class represents a resource that we can get from
- *  the repository. 
- */
-public interface IModelContent {
-	/**
-	 * The actual content in byte array of this resource
-	 * @return
-	 */
-	byte[] getModelContent();
+	public ModelId getModelId() {
+		return modelId;
+	}
 
-	/**
-	 * Returns the EMF metamodel of this resource
-	 * 
-	 * @return
-	 */
-	Model getModel();
-	
-	/**
-	 * Returns the type of this resource
-	 * @return
-	 */
-	ModelType getType();
+	public void setModelId(ModelId modelId) {
+		this.modelId = modelId;
+	}
 
-	/**
-	 * Returns the dependencies of this resource
-	 * @return
-	 */
-	List<IModelContent> getReferences();
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public String toString() {
+		return "ModelView [modelId=" + modelId + ", description=" + description
+				+ "]";
+	}
 }
-

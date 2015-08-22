@@ -12,7 +12,7 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.perspective;
+package org.eclipse.vorto.perspective.contentprovider;
 
 import java.util.Collection;
 

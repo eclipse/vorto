@@ -22,6 +22,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.vorto.core.model.DatatypeModelProject;
+import org.eclipse.vorto.core.model.FunctionblockModelProject;
+import org.eclipse.vorto.core.model.InformationModelProject;
+import org.eclipse.vorto.core.model.ModelType;
 
 public class ModelFileLookupHelper {
 
@@ -64,6 +68,20 @@ public class ModelFileLookupHelper {
 					project);
 		}
 		return null;
+	}
+	
+	public IFile[] getSharedFilesByModelType(ModelType type) {
+		return getSharedFilesByExtension(getExtension(type));
+	}
+	
+	private String getExtension(ModelType modelType) {
+		if (modelType == ModelType.FUNCTIONBLOCK) {
+			return FunctionblockModelProject.FBMODEL;
+		} else if (modelType == ModelType.INFORMATIONMODEL){
+			return InformationModelProject.INFOMODEL;
+		} else {
+			return DatatypeModelProject.DATATYPE;
+		}
 	}
 
 	public IFile[] getSharedFilesByExtension(String modelExtension) {
