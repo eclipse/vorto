@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.Platform;
  */
 public class ModelRepositoryFactory {
 	private static final String CLASS = "class";
-	private static final String MODEL_REPO_EXT_PT_ID = "org.eclipse.vorto.core.api.repository.IModelRepository";
+	private static final String MODEL_REPO_EXT_PT_ID = "org.eclipse.vorto.core.IModelRepository";
 	
 	public static IModelRepository getModelRepository() {
 		IConfigurationElement[] config = Platform.getExtensionRegistry()

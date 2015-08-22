@@ -17,6 +17,9 @@ package org.eclipse.vorto.perspective;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.vorto.perspective.view.DTTreeViewPart;
+import org.eclipse.vorto.perspective.view.FBTreeViewPart;
+import org.eclipse.vorto.perspective.view.InfoModelTreeViewPart;
 
 public class VortoPerspective implements IPerspectiveFactory {
 

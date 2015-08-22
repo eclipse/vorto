@@ -14,8 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.api.repository;
 
-import java.io.InputStream;
-
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.ModelId;
 
 /**
@@ -37,7 +36,7 @@ public interface IModelRepository {
 	 * @param resource
 	 * @return
 	 */
-	IModelContent getModelContentForResource(ModelId modelId);
+	Model getModel(ModelId modelId);
 	
 	/**
 	 * Saves a model to the repository
@@ -45,5 +44,5 @@ public interface IModelRepository {
 	 * @param resource
 	 * @return
 	 */
-	void checkIn(ModelId modelId, InputStream file) throws ModelAlreadyExistException;
+	void saveModel(Model model) throws ModelAlreadyExistException;
 }
