@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.api.repository;
 
+import java.util.List;
+
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.ModelId;
 
@@ -24,25 +26,33 @@ import org.eclipse.vorto.core.model.ModelId;
 public interface IModelRepository {
 	
 	/**
-	 * creates a new model query builder
+	 * Searches model resources with the given full text search expression
 	 * 
 	 * @return
 	 */
-	IModelQuery newQuery();
+	List<ModelResource> search(String expression);
 	
 	/**
-	 * Gets the actual model for the given model resource
+	 * Gets the model resource and its references for the given model id. 
+	 * It does not download the actual content. Please use {@link IModelRepository#downloadContent(ModelId)}
 	 * 
 	 * @param resource
 	 * @return
 	 */
-	Model getModel(ModelId modelId);
+	ModelResource getModel(ModelId modelId);
+	
+	/**
+	 * Downloads the actual content for the given model id
+	 * @param modelId
+	 * @return model content in DSL representation 
+	 */
+	byte[] downloadContent(ModelId modelId);
 	
 	/**
 	 * Saves a model to the repository
 	 * 
 	 * @param resource
-	 * @return
+	 * @throws CheckInModelException Might occur if model already exists in the repository or references are missing
 	 */
-	void saveModel(Model model) throws ModelAlreadyExistException;
+	void saveModel(Model model) throws CheckInModelException;
 }

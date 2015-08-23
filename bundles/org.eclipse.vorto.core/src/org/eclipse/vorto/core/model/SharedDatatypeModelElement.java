@@ -1,9 +1,8 @@
 package org.eclipse.vorto.core.model;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.model.Model;
-
-import com.sun.org.apache.bcel.internal.generic.Type;
 
 public class SharedDatatypeModelElement extends AbstractSharedModelElement {
 
@@ -13,7 +12,7 @@ public class SharedDatatypeModelElement extends AbstractSharedModelElement {
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.DATATYPE;
+		return ModelType.Datatype;
 	}
 
 	@Override

@@ -25,10 +25,10 @@ public class ModelResource {
 	private ModelId id;
 	private String description;
 	private String displayName;
-	private List<ModelResource> references;
+	private List<ModelId> references;
 
 	public ModelResource(ModelId id, String description, String displayName,
-			List<ModelResource> references) {
+			List<ModelId> references) {
 		this.id = id;
 		this.description = description;
 		this.displayName = displayName;
@@ -66,7 +66,7 @@ public class ModelResource {
 	 * 
 	 * @return all references that the model resources dependents on
 	 */
-	public List<ModelResource> getReferences() {
+	public List<ModelId> getReferences() {
 		return references;
 	}
 
