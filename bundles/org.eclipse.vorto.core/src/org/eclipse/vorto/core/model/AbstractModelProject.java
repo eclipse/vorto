@@ -70,6 +70,18 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 		}
 		addModelReference(reference);
 	}
+	
+	@Override
+	public void addReference(ModelId modelId) {
+		ModelReference referenceToAdd = modelId.asModelReference();
+		
+		for (ModelReference modelReference : getModel().getReferences()) {
+			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
+				return; // model reference already exists
+			}
+		}
+		getModel().getReferences().add(referenceToAdd);
+	}
 
 	private void addProjectReference(IModelProject modelProject) {
 		try {
@@ -157,15 +169,15 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 	}
 
 	private boolean modelEquals(ModelId modelId, Model model) {
-		return modelId.getName().equals(model.getName()) &&
-				modelId.getNamespace().equals(model.getNamespace()) &&
+		return modelId.getName().equalsIgnoreCase(model.getName()) &&
+				modelId.getNamespace().equalsIgnoreCase(model.getNamespace()) &&
 				modelId.getVersion().equals(model.getVersion());
 	}
 
 	private Model getSharedModel(IFile file, ModelType modelType) {
-		if (modelType == ModelType.FUNCTIONBLOCK) {
+		if (modelType == ModelType.Functionblock) {
 			return modelParser.parseModel(file, FunctionblockModel.class);
-		} else if (modelType == ModelType.INFORMATIONMODEL){
+		} else if (modelType == ModelType.InformationModel){
 			return modelParser.parseModel(file, InformationModel.class);
 		} else {
 			return modelParser.parseModel(file, Type.class);

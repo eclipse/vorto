@@ -14,18 +14,24 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.function;
 
-import org.eclipse.vorto.repository.model.SearchResult;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.vorto.repository.model.ModelView;
 
 import com.google.common.base.Function;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
-public class StringToSearchResult implements Function<String, SearchResult> {
+public class StringToSearchResult implements Function<String, List<ModelView>> {
 
 	private Gson gson = new GsonBuilder().create();
 	
-	public SearchResult apply(String input) {
-		return gson.fromJson(input, SearchResult.class);
+	public List<ModelView> apply(String input) {
+		Type resourcesList = new TypeToken<ArrayList<ModelView>>() {}.getType();
+		return gson.fromJson(input, resourcesList);
 	}
 
 }

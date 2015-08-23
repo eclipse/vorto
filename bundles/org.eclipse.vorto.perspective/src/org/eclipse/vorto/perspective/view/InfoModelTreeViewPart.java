@@ -46,7 +46,7 @@ public class InfoModelTreeViewPart extends AbstractTreeViewPart {
 	public Set<IModelElement> getContent() {
 		return new TreeSet<IModelElement>(ModelProjectServiceFactory
 				.getDefault()
-				.getProjectsInWorkspace(ModelType.INFORMATIONMODEL));
+				.getProjectsInWorkspace(ModelType.InformationModel));
 	}
 
 }

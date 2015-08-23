@@ -12,8 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.model;
+package org.eclipse.vorto.repository.preferences;
 
-public enum ModelType {
-	Functionblock, InformationModel, Datatype
+import org.eclipse.vorto.repository.ConnectionInfo;
+
+public interface MutableConnectionInfo extends ConnectionInfo {
+
+	void setUrl(String url);
+	
+	void setUser(String user);
+	
+	void setPassword(String password);
 }

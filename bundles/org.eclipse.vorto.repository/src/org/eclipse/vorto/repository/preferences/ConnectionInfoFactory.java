@@ -12,8 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.repository;
+package org.eclipse.vorto.repository.preferences;
 
-public interface ConnectionInfoSupplier {
-	String connectionUrl();
+import org.eclipse.vorto.repository.ConnectionInfo;
+
+public class ConnectionInfoFactory {
+	
+	private static final MutableConnectionInfo INSTANCE = new ConnectionInfoPreferences();
+	
+	public static MutableConnectionInfo getConnectionInfoForEdit() {
+		return INSTANCE;
+	}
+	
+	public static ConnectionInfo getConnectionInfo() {
+		return INSTANCE;
+	}
+	
 }

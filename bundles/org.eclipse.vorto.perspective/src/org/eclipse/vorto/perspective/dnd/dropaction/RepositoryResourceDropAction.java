@@ -25,11 +25,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.api.model.model.ModelFactory;
-import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
@@ -39,9 +35,6 @@ import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.IModelProjectService;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 import org.eclipse.vorto.perspective.dnd.IDropAction;
-import org.eclipse.vorto.perspective.function.ModelToDslFunction;
-
-import com.google.common.base.Function;
 
 /**
  * A drop action for dropping a Model Resource from Repository view to an
@@ -66,8 +59,6 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 	private IModelProjectService projectService = ModelProjectServiceFactory.getDefault();
 
-	private Function<Model, String> modelToDsl = new ModelToDslFunction();
-
 	private Map<ModelType, String> modelFileExtensionMap = initializeExtensionMap();
 
 	@Override
@@ -77,43 +68,32 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 		ModelResource modelResource = (ModelResource) droppedObject;
 
-		Model droppedObjectModel = downloadAndSaveModel(receivingProject.getProject(), modelResource.getId());
+		ModelResource droppedObjectModel = downloadAndSaveModel(receivingProject.getProject(), modelResource.getId());
 
 		if (droppedObjectModel != null) {
-			// Add the dropped model to the receiving project's model
-			addReferenceToModel(receivingProject.getModel(), droppedObjectModel);
+			receivingProject.addReference(droppedObjectModel.getId());
 			ModelProjectServiceFactory.getDefault().save(receivingProject);
 		}
 
 		return true;
 	}
 
-	private void addReferenceToModel(Model targetModel, Model modelToBeAdded) {
-		ModelReference referenceToAdd = toModelReference(modelToBeAdded);
-		for (ModelReference modelReference : targetModel.getReferences()) {
-			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
-				return; // model reference already exists
-			}
-		}
-		targetModel.getReferences().add(referenceToAdd);
-		targetModel.eResource().getContents().add(modelToBeAdded);
-	}
-
 	// Download and save model from repository to local project.
 	// It also recursively do the same for the model references.
-	private Model downloadAndSaveModel(IProject project, ModelId modelId) {
+	private ModelResource downloadAndSaveModel(IProject project, ModelId modelId) {
 		// Check if we have a local project with that same modelId
 		if (projectService.getProjectByModelId(modelId) == null) {
 			MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
 
-			Model model = modelRepo.getModel(modelId);
+			ModelResource model = modelRepo.getModel(modelId);
 			if (model != null) {
+				byte[] modelContent = modelRepo.downloadContent(model.getId());
 				// Download references also
-				for (ModelReference reference : model.getReferences()) {
-					downloadAndSaveModel(project, toModelId(reference, modelId.getModelType()));
+				for (ModelId reference : model.getReferences()) {
+					downloadAndSaveModel(project, reference);
 				}
 
-				saveToProject(project, modelToDsl.apply(model), getFileName(model, modelId.getModelType()));
+				saveToProject(project, modelContent, getFileName(model, modelId.getModelType()));
 			} else {
 				MessageDisplayFactory.getMessageDisplay().displayError(
 						"Model " + modelId.toString() + " not found in repository.");
@@ -127,25 +107,9 @@ public class RepositoryResourceDropAction implements IDropAction {
 		}
 	}
 
-	private ModelId toModelId(ModelReference reference, ModelType parentType) {
-		String importedNamespace = reference.getImportedNamespace();
-		int lastIndex = importedNamespace.lastIndexOf('.');
-		if (lastIndex > 0) {
-			String namespace = importedNamespace.substring(0, lastIndex);
-			String name = importedNamespace.substring(lastIndex + 1, importedNamespace.length());
-			ModelType modelType = ModelType.DATATYPE;
-			if (parentType == ModelType.INFORMATIONMODEL) {
-				modelType = ModelType.FUNCTIONBLOCK;
-			}
-			return new ModelId(modelType, name, namespace, reference.getVersion());
-		}
-
-		throw new RuntimeException("Malformed imported namespace = " + importedNamespace);
-	}
-
-	private void saveToProject(IProject project, String fileAsString, String fileName) {
+	private void saveToProject(IProject project, byte[] modelContent, String fileName) {
 		assert (project != null);
-		assert (fileAsString != null);
+		assert (modelContent != null);
 		assert (fileName != null);
 		try {
 			IFolder folder = project.getFolder(SHARED_MODELS_DIR);
@@ -159,29 +123,21 @@ public class RepositoryResourceDropAction implements IDropAction {
 			}
 
 			MessageDisplayFactory.getMessageDisplay().display(String.format(SAVING, file.getFullPath().toString()));
-			file.create(new ByteArrayInputStream(fileAsString.getBytes()), true, new NullProgressMonitor());
+			file.create(new ByteArrayInputStream(modelContent), true, new NullProgressMonitor());
 		} catch (CoreException e) {
 			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
 	}
 
-	private ModelReference toModelReference(Model model) {
-		ModelReference reference = ModelFactory.eINSTANCE.createModelReference();
-		reference.setVersion(model.getVersion());
-		reference.setImportedNamespace(model.getNamespace() + "." + model.getName());
-
-		return reference;
-	}
-
-	private String getFileName(Model model, ModelType modelType) {
-		return model.getName() + modelFileExtensionMap.get(modelType);
+	private String getFileName(ModelResource model, ModelType modelType) {
+		return model.getId().getName() + modelFileExtensionMap.get(modelType);
 	}
 
 	private Map<ModelType, String> initializeExtensionMap() {
 		Map<ModelType, String> extensionMap = new HashMap<ModelType, String>();
-		extensionMap.put(ModelType.DATATYPE, TYPE_EXT);
-		extensionMap.put(ModelType.FUNCTIONBLOCK, FBMODEL_EXT);
-		extensionMap.put(ModelType.INFORMATIONMODEL, INFOMODEL_EXT);
+		extensionMap.put(ModelType.Datatype, TYPE_EXT);
+		extensionMap.put(ModelType.Functionblock, FBMODEL_EXT);
+		extensionMap.put(ModelType.InformationModel, INFOMODEL_EXT);
 		return extensionMap;
 	}
 }

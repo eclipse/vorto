@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.http.client.fluent.Request;
@@ -26,7 +27,6 @@ import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.repository.function.ModelViewToModelResource;
 import org.eclipse.vorto.repository.function.StringToSearchResult;
 import org.eclipse.vorto.repository.model.ModelView;
-import org.eclipse.vorto.repository.model.SearchResult;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -43,13 +43,14 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 	
 	private final Map<Operator, String> operatorToQueryStringMap = initOperatorToQueryStringMap(); 
 
-	private ConnectionInfoSupplier connectionInfo;
+	private ConnectionInfo connectionInfo;
 	private String queryString = null;
-	private Function<String, SearchResult> resultConverter = new StringToSearchResult();
-	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
+	private Function<String, List<ModelView>> resultConverter = new StringToSearchResult();
+	private Function<ModelView, ModelResource> modelToResource;
 
-	public RestModelQuery(ConnectionInfoSupplier connInfo) {
+	public RestModelQuery(ConnectionInfo connInfo, Function<ModelView, ModelResource> modelToResource) {
 		this.connectionInfo = connInfo;
+		this.modelToResource = modelToResource;
 	}
 
 	private Map<Operator, String> initOperatorToQueryStringMap() {
@@ -60,25 +61,25 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 		return opToQueryStrMap;
 	}
 
-	public RestModelQuery(ConnectionInfoSupplier connInfo, String queryString) {
-		this(connInfo);
+	public RestModelQuery(ConnectionInfo connInfo, String queryString, Function<ModelView, ModelResource> modelToResource) {
+		this(connInfo,modelToResource);
 		this.queryString = queryString;
 	}
 
 	public Collection<ModelResource> list() {
 		try {
-			String query = getQueryString(connectionInfo.connectionUrl(),
+			String query = getQueryString(connectionInfo.getUrl(),
 					queryString);
 			
 			String response = Request.Get(query).execute().returnContent()
 					.asString();
 
 			// Convert response to SearchResult
-			SearchResult result = resultConverter.apply(response);
+			List<ModelView> result = resultConverter.apply(response);
 
 			// Convert the searchResult in result to return type
-			return Collections2.transform(result.getSearchResult(),
-					modelViewToModelResource);
+			return Collections2.transform(result,
+					modelToResource);
 		} catch (Exception e) {
 			throw new RuntimeException(
 					"Error querying remote repository with queryString = "
@@ -90,12 +91,14 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 		StringBuilder connectionUrl = new StringBuilder();
 		connectionUrl.append(connectionHost).append(QUERY_SERVICE_URL);
 		
-		if (queryString != null) {
+		if (!queryString.isEmpty()) {
 			try {
 				connectionUrl.append(URLEncoder.encode(queryString, "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException("Error in encoding queryString = " + queryString, e);
 			}
+		} else {
+			connectionUrl.append("*");
 		}
 		
 		return connectionUrl.toString();
@@ -139,7 +142,7 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 
 	@Override
 	protected IModelQuery newQuery(String query) {
-		return new RestModelQuery(connectionInfo, query);
+		return new RestModelQuery(connectionInfo, query,modelToResource);
 	}
 
 }

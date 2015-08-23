@@ -12,31 +12,25 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.repository.model;
+package org.eclipse.vorto.repository;
 
-import java.util.Collection;
-
-public class SearchResult {
-	private Collection<ModelView> searchResult;
-
-	public Collection<ModelView> getSearchResult() {
-		return searchResult;
-	}
-
-	public void setSearchResult(Collection<ModelView> searchResult) {
-		this.searchResult = searchResult;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("SearchResult [searchResult=");
-		for (ModelView modelView : searchResult) {
-			buffer.append(modelView.toString());
-			buffer.append(",");
-		}
-		buffer.deleteCharAt(buffer.length() - 1);
-		buffer.append("]");
-		return buffer.toString();
-	}
+public interface ConnectionInfo {
+	
+	/**
+	 * URL of the information model repository
+	 * @return
+	 */
+	String getUrl();
+	
+	/**
+	 * username to access the repository
+	 * @return
+	 */
+	String getUserName();
+	
+	/**
+	 * password to access the repository
+	 * @return
+	 */
+	String getPassword();
 }

@@ -75,9 +75,9 @@ public class ModelFileLookupHelper {
 	}
 	
 	private String getExtension(ModelType modelType) {
-		if (modelType == ModelType.FUNCTIONBLOCK) {
+		if (modelType == ModelType.Functionblock) {
 			return FunctionblockModelProject.FBMODEL;
-		} else if (modelType == ModelType.INFORMATIONMODEL){
+		} else if (modelType == ModelType.InformationModel){
 			return InformationModelProject.INFOMODEL;
 		} else {
 			return DatatypeModelProject.DATATYPE;

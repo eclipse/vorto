@@ -14,31 +14,49 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.vorto.core.model.ModelId;
+import org.eclipse.vorto.core.model.ModelType;
 
 public class ModelView {
-	private ModelId modelId;
-	private String description;
-
-	public ModelId getModelId() {
-		return modelId;
+	private ModelId id = null;
+	private ModelType modelType = null;
+	private String description = null;
+	private String displayName = null;
+	private List<ModelId> references = new ArrayList<>();
+	public ModelId getId() {
+		return id;
+	}
+	public void setId(ModelId id) {
+		this.id = id;
 	}
 
-	public void setModelId(ModelId modelId) {
-		this.modelId = modelId;
+	public ModelType getModelType() {
+		return modelType;
 	}
-
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType;
+	}
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	@Override
-	public String toString() {
-		return "ModelView [modelId=" + modelId + ", description=" + description
-				+ "]";
+	public String getDisplayName() {
+		return displayName;
 	}
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+	public List<ModelId> getReferences() {
+		return references;
+	}
+	public void setReferences(List<ModelId> references) {
+		this.references = references;
+	}
+	
+	
 }

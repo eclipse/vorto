@@ -12,8 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.model;
+package org.eclipse.vorto.core.api.repository;
 
-public enum ModelType {
-	Functionblock, InformationModel, Datatype
+public class CheckInModelException extends RuntimeException {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6552743519658536939L;
+
+	public CheckInModelException(String errorMessage) {
+		super(errorMessage);
+	}
+	
+	public CheckInModelException(String errorMessage, Throwable cause) {
+		super(errorMessage,cause);
+	}
 }
