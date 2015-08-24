@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.model;
 public class UploadResult {
 	String handleId;
 	String errorMessage;
+	boolean valid;
 	ModelView modelResource;
 
 	public UploadResult() {
@@ -24,7 +25,7 @@ public class UploadResult {
 	}
 	
 	public boolean statusOk() {
-		return handleId != null && errorMessage == null;
+		return handleId != null && valid;
 	}
 
 	public String getHandleId() {
@@ -50,5 +51,14 @@ public class UploadResult {
 	public void setModelResource(ModelView modelResource) {
 		this.modelResource = modelResource;
 	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+	
 
 }
