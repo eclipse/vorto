@@ -12,7 +12,7 @@ public class SharedInformationModelElement extends AbstractSharedModelElement {
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.FUNCTIONBLOCK;
+		return ModelType.Functionblock;
 	}
 
 	@Override

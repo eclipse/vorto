@@ -1,6 +1,6 @@
 ## System Requirements
 
-For creating Eclipse extensions for Bosch M2M Toolchain code generator extension point the following software requirements must be met:
+For creating Eclipse extensions for the Vorto code generator extension point the following software requirements must be met:
 
 - Eclipse Kepler or higher  
   Please update your `eclipse.ini` file with the lines below to set the Java version and file encoding used for Xtext.  

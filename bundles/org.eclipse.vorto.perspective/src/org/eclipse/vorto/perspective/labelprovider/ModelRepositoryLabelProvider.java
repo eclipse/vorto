@@ -56,9 +56,9 @@ public class ModelRepositoryLabelProvider extends LabelProvider implements
 
 	private Map<ModelType, Image> getImageMap() {
 		Map<ModelType, Image> imageMap = new HashMap<ModelType, Image>();
-		imageMap.put(ModelType.INFORMATIONMODEL, getImage(SHARED_IM));
-		imageMap.put(ModelType.FUNCTIONBLOCK, getImage(SHARED_FB));
-		imageMap.put(ModelType.DATATYPE, getImage(SHARED_DT));
+		imageMap.put(ModelType.InformationModel, getImage(SHARED_IM));
+		imageMap.put(ModelType.Functionblock, getImage(SHARED_FB));
+		imageMap.put(ModelType.Datatype, getImage(SHARED_DT));
 		return imageMap;
 	}
 

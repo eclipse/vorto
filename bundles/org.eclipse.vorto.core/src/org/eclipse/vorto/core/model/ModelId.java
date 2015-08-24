@@ -34,6 +34,10 @@ public class ModelId implements Comparable<ModelId> {
 		this.version = version;
 	}
 
+	public void setModelType(ModelType modelType) {
+		this.modelType = modelType;
+	}
+	
 	public ModelType getModelType() {
 		return modelType;
 	}

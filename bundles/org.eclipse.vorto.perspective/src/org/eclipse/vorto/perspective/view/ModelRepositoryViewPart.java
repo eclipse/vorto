@@ -1,3 +1,17 @@
+/*******************************************************************************
+ *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ *  The Eclipse Public License is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ *  The Eclipse Distribution License is available at
+ *  http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ *  Contributors:
+ *  Bosch Software Innovations GmbH - Please refer to git log
+ *******************************************************************************/
 package org.eclipse.vorto.perspective.view;
 
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -17,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
@@ -59,16 +72,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 		btnSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String filter = searchField.getText();
-
-				IModelQuery modelQuery = modelRepo.newQuery();
-				if (filter != null && !filter.isEmpty()) {
-					modelQuery = modelQuery.or(
-							modelQuery.namespaceLike(filter),
-							modelQuery.nameLike(filter),
-							modelQuery.versionLike(filter));
-				}
-
-				viewer.setInput(modelQuery.list());
+				viewer.setInput(modelRepo.search(filter));
 			}
 		});
 
@@ -103,9 +107,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
 				new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new ModelDragListener(viewer));
-
-		//hookContextMenu();
-		//hookDoubleClickAction();
 
 		return viewer;
 	}
@@ -143,32 +144,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 		button.setText("Search");
 
 		return button;
-	}
-
-	private void hookContextMenu() {
-		// TODO : Might need this in the future
-		/*
-		 * MenuManager menuMgr = new MenuManager("#PopupMenu");
-		 * menuMgr.setRemoveAllWhenShown(true); menuMgr.addMenuListener(new
-		 * IMenuListener() { public void menuAboutToShow(IMenuManager manager) {
-		 * manager.add(action1); manager.add(action2); // Other plug-ins can
-		 * contribute there actions here manager.add(new
-		 * Separator(IWorkbenchActionConstants.MB_ADDITIONS)); } }); Menu menu =
-		 * menuMgr.createContextMenu(viewer.getControl());
-		 * viewer.getControl().setMenu(menu);
-		 * getSite().registerContextMenu(menuMgr, viewer);
-		 */
-	}
-
-	// private Action doubleClickAction;
-
-	private void hookDoubleClickAction() {
-		// TODO : Might need this in the future
-		/*
-		 * viewer.addDoubleClickListener(new IDoubleClickListener() { public
-		 * void doubleClick(DoubleClickEvent event) { doubleClickAction.run(); }
-		 * });
-		 */
 	}
 
 	/**

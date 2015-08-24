@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Bosch M2M Generators
+Bundle-Name: Vorto Bosch M2M Generators (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.bosch;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Eclipse.org/Vorto
