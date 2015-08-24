@@ -87,12 +87,11 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 			ModelResource model = modelRepo.getModel(modelId);
 			if (model != null) {
-				byte[] modelContent = modelRepo.downloadContent(model.getId());
 				// Download references also
 				for (ModelId reference : model.getReferences()) {
 					downloadAndSaveModel(project, reference);
 				}
-
+				byte[] modelContent = modelRepo.downloadContent(model.getId());
 				saveToProject(project, modelContent, getFileName(model, modelId.getModelType()));
 			} else {
 				MessageDisplayFactory.getMessageDisplay().displayError(
