@@ -14,10 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Observable;
 
@@ -25,9 +25,16 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+<<<<<<< HEAD
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
+=======
+import org.apache.http.message.BasicHeader;
+import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+>>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelQuery;
@@ -35,16 +42,17 @@ import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
+import org.eclipse.vorto.repository.function.ModelToDsl;
 import org.eclipse.vorto.repository.function.ModelToXmi;
 import org.eclipse.vorto.repository.function.ModelViewToModelResource;
 import org.eclipse.vorto.repository.function.StringToModelResourceResult;
 import org.eclipse.vorto.repository.function.StringToUploadResult;
+import org.eclipse.vorto.repository.function.XmiToModel;
 import org.eclipse.vorto.repository.model.ModelView;
 import org.eclipse.vorto.repository.model.UploadResult;
-import org.eclipse.xtext.resource.IResourceServiceProvider;
-import org.eclipse.xtext.serializer.ISerializer;
 
 import com.google.common.base.Function;
+import com.google.common.base.Functions;
 
 public class RestModelRepository extends Observable implements IModelRepository {
 
@@ -58,7 +66,14 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
 	
+<<<<<<< HEAD
 	private RestClient httpClient;
+=======
+	// A function, that given a modeltype, returns a function that converts from XMI to DSL
+	private Function<ModelType, Function<byte[], byte[]>> xmiToDslConverter = Functions.forMap(initializeContentConverters());
+	
+	private ConnectionInfo connectionUrlSupplier;
+>>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
 
 	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
 		Objects.requireNonNull(connectionUrlSupplier);
@@ -86,39 +101,11 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		String url = getUrlForModelDownload(modelId);
 		try {
 			byte[] xmiContent = Request.Get(url).execute().returnContent().asBytes();
-
-			return convertToDslContent(modelId, xmiContent);
+			
+			return xmiToDslConverter.apply(modelId.getModelType()).apply(xmiContent);
 		} catch (Exception e) {
 			throw new RuntimeException("Error downloading modelContent for resource", e);
 		}
-	}
-
-	private byte[] convertToDslContent(ModelId modelId, byte[] xmiContent) {
-		XMIResource resource = new XMIResourceImpl(URI.createURI("dummyResource.xmi"));
-		try {
-			resource.load(new ByteArrayInputStream(xmiContent), null);
-			ISerializer serializer = getSerializerForModel(modelId);
-			String dsl = serializer.serialize(resource.getContents().get(0));
-			return dsl.getBytes();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-	
-	private ISerializer getSerializerForModel(ModelId modelId) {
-		URI modelUri = null;
-		if (modelId.getModelType() == ModelType.Datatype) {
-			modelUri = URI.createURI("model.type");
-		} else if (modelId.getModelType() == ModelType.Functionblock) {
-			modelUri = URI.createURI("model.fbmodel");
-		} else {
-			modelUri = URI.createURI("model.infomodel");
-		}
-		IResourceServiceProvider rsp = IResourceServiceProvider.Registry.INSTANCE
-				.getResourceServiceProvider(modelUri);
-		return rsp.get(ISerializer.class);
 	}
 
 	@Override
@@ -188,4 +175,35 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		}
 	}
 
+<<<<<<< HEAD
+=======
+	/**
+	 * TODO: Currently the repo only supports form based authentication. That way a REST controller authenticate would need to be invoked 
+	 * and session needs to be passed along.
+	 * @return
+	 */
+	private Header createSecurityHeader() {
+		return new BasicHeader("Authorization", "Basic " + createAuth());
+	}
+
+	private String createAuth() {
+		return new String(Base64.encodeBase64(
+				(connectionUrlSupplier.getUserName() + ":" + connectionUrlSupplier.getPassword()).getBytes()));
+	}
+	
+	private Map<ModelType, Function<byte[], byte[]>> initializeContentConverters() {
+		Map<ModelType, Function<byte[], byte[]>> converters = new HashMap<ModelType, Function<byte[], byte[]>>();
+		
+		Function<Model, byte[]> modelToDsl = new ModelToDsl();
+
+		converters.put(ModelType.InformationModel,
+				Functions.compose(modelToDsl, new XmiToModel<InformationModel>(InformationModel.class)));
+		converters.put(ModelType.Functionblock,
+				Functions.compose(modelToDsl, new XmiToModel<FunctionblockModel>(FunctionblockModel.class)));
+		converters.put(ModelType.Datatype, 
+				Functions.compose(modelToDsl, new XmiToModel<Type>(Type.class)));
+
+		return converters;
+	}
+>>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
 }
