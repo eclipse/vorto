@@ -39,14 +39,14 @@ public enum ModelAttribute implements Enumerator {
 	NAMESPACE(1, "namespace", "namespace"),
 
 	/**
-	 * The '<em><b>Description</b></em>' literal object.
+	 * The '<em><b>Version</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #DESCRIPTION_VALUE
+	 * @see #VERSION_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	DESCRIPTION(2, "description", "description");
+	VERSION(2, "version", "version");
 
 	/**
 	 * The '<em><b>Name</b></em>' literal value.
@@ -79,19 +79,19 @@ public enum ModelAttribute implements Enumerator {
 	public static final int NAMESPACE_VALUE = 1;
 
 	/**
-	 * The '<em><b>Description</b></em>' literal value.
+	 * The '<em><b>Version</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>Description</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>Version</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #DESCRIPTION
-	 * @model name="description"
+	 * @see #VERSION
+	 * @model name="version"
 	 * @generated
 	 * @ordered
 	 */
-	public static final int DESCRIPTION_VALUE = 2;
+	public static final int VERSION_VALUE = 2;
 
 	/**
 	 * An array of all the '<em><b>Model Attribute</b></em>' enumerators.
@@ -103,7 +103,7 @@ public enum ModelAttribute implements Enumerator {
 		new ModelAttribute[] {
 			NAME,
 			NAMESPACE,
-			DESCRIPTION,
+			VERSION,
 		};
 
 	/**
@@ -162,7 +162,7 @@ public enum ModelAttribute implements Enumerator {
 		switch (value) {
 			case NAME_VALUE: return NAME;
 			case NAMESPACE_VALUE: return NAMESPACE;
-			case DESCRIPTION_VALUE: return DESCRIPTION;
+			case VERSION_VALUE: return VERSION;
 		}
 		return null;
 	}

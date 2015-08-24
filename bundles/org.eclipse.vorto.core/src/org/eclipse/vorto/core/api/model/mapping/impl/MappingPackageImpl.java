@@ -1715,7 +1715,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEEnum(modelAttributeEEnum, ModelAttribute.class, "ModelAttribute");
 		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.NAME);
 		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.NAMESPACE);
-		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.DESCRIPTION);
+		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.VERSION);
 
 		// Create resource
 		createResource(eNS_URI);
