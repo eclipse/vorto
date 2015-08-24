@@ -53,7 +53,7 @@ public class FunctionblockModelProject extends AbstractModelProject {
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.DATATYPE;
+		return ModelType.Datatype;
 	}
 
 }

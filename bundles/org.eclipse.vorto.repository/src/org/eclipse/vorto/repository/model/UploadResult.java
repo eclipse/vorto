@@ -15,41 +15,40 @@
 package org.eclipse.vorto.repository.model;
 
 public class UploadResult {
-	String status;
-	String message;
-	String exception;
+	String handleId;
+	String errorMessage;
+	ModelView modelResource;
 
 	public UploadResult() {
 
 	}
-
-	public void setStatus(String status) {
-		this.status = status;
+	
+	public boolean statusOk() {
+		return handleId != null && errorMessage == null;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public String getHandleId() {
+		return handleId;
 	}
 
-	public void setException(String exception) {
-		this.exception = exception;
+	public void setHandleId(String handleId) {
+		this.handleId = handleId;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 
-	public String getMessage() {
-		return message;
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
 	}
 
-	public String getException() {
-		return exception;
+	public ModelView getModelResource() {
+		return modelResource;
 	}
 
-	@Override
-	public String toString() {
-		return "UploadResult [status=" + status + ", message=" + message
-				+ ", exception=" + exception + "]";
+	public void setModelResource(ModelView modelResource) {
+		this.modelResource = modelResource;
 	}
+
 }

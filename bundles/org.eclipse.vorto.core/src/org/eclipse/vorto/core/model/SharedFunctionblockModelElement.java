@@ -12,7 +12,7 @@ public class SharedFunctionblockModelElement extends AbstractSharedModelElement 
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.DATATYPE;
+		return ModelType.Datatype;
 	}
 
 	@Override

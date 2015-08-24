@@ -23,7 +23,7 @@ public class ModelDropListenerFactory {
 						new ModelProjectDropAction(DatatypeModelProject.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								DatatypeModelProject.class, ModelType.DATATYPE),
+								DatatypeModelProject.class, ModelType.Datatype),
 						new RepositoryResourceDropAction());
 	}
 	
@@ -37,7 +37,7 @@ public class ModelDropListenerFactory {
 						new ModelProjectDropAction(DatatypeModelProject.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								FunctionblockModelProject.class, ModelType.DATATYPE),
+								FunctionblockModelProject.class, ModelType.Datatype),
 						new RepositoryResourceDropAction());
 	}
 	
@@ -51,7 +51,7 @@ public class ModelDropListenerFactory {
 						new ModelProjectDropAction(FunctionblockModelProject.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								InformationModelProject.class, ModelType.FUNCTIONBLOCK),
+								InformationModelProject.class, ModelType.Functionblock),
 						new RepositoryResourceDropAction());
 	}
 }

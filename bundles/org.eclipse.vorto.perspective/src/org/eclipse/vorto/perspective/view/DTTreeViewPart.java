@@ -47,6 +47,6 @@ public class DTTreeViewPart extends AbstractTreeViewPart {
 	@Override
 	public Set<IModelElement> getContent() {
 		return new TreeSet<IModelElement>(ModelProjectServiceFactory
-				.getDefault().getProjectsInWorkspace(ModelType.DATATYPE));
+				.getDefault().getProjectsInWorkspace(ModelType.Datatype));
 	}
 }

@@ -48,6 +48,6 @@ public class FBTreeViewPart extends AbstractTreeViewPart {
 	@Override
 	public Set<IModelElement> getContent() {
 		return new TreeSet<IModelElement>(ModelProjectServiceFactory
-				.getDefault().getProjectsInWorkspace(ModelType.FUNCTIONBLOCK));
+				.getDefault().getProjectsInWorkspace(ModelType.Functionblock));
 	}
 }
