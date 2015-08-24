@@ -84,8 +84,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 							.getMapping(mappingRulesAwareGenerator
 									.getMappingRulesFileName());
 					mappingRulesAwareGenerator
-							.setMappingRules(new DefaultMappingRules(
-									mappingModel));
+							.setMappingRules(null);
 
 				}
 
