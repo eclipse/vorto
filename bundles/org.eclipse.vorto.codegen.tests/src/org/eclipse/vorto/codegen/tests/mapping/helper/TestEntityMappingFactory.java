@@ -58,7 +58,7 @@ public class TestEntityMappingFactory {
 	private static EntitySourceElement createEntityAttributeSourceElement() {
 		EntityAttributeElement sourceElement = MappingFactory.eINSTANCE.createEntityAttributeElement();
 		sourceElement.setTypeRef(entity);
-		sourceElement.setAttribute(ModelAttribute.DESCRIPTION);
+		sourceElement.setAttribute(ModelAttribute.VERSION);
 		return sourceElement;
 	}
 

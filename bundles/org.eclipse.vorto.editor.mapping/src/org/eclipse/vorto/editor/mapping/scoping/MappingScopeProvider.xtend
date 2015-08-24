@@ -55,7 +55,7 @@ class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 	}
 
 	def IScope scope_OperationElement_operation(OperationElement exp, EReference ref) {
-		var FunctionBlock functionBlock = getFunctionBlock(exp.eContainer as FunctionBlockChildElement);
+		var FunctionBlock functionBlock = getFunctionBlock(exp);
 		return Scopes::scopeFor(functionBlock.operations);
 	}
 

@@ -234,7 +234,7 @@ Attribute:
 
 /*----------------------End Target Element Definition---------------------------*/
 
-enum ModelAttribute: name = 'name' | namespace = 'namespace'  |  description = 'description';
+enum ModelAttribute: name = 'name' | namespace = 'namespace'  |  version = 'version';
 	
 QualifiedName:
 	ID ('.' ID)*

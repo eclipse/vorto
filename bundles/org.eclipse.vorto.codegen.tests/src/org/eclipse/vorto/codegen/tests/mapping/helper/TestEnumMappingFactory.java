@@ -55,7 +55,7 @@ public class TestEnumMappingFactory {
 	private static EnumSourceElement createEnumAttributeSourceElement() {
 		EnumAttributeElement sourceElement = MappingFactory.eINSTANCE.createEnumAttributeElement();
 		sourceElement.setTypeRef(enumType);
-		sourceElement.setAttribute(ModelAttribute.DESCRIPTION);
+		sourceElement.setAttribute(ModelAttribute.VERSION);
 		return sourceElement;
 	}
 
