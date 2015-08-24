@@ -182,13 +182,13 @@ public class RestModelRepository extends Observable implements IModelRepository 
 					ContentType.APPLICATION_OCTET_STREAM, "");
 			HttpEntity fileToUpload = builder.build();
 
-			Content responseContent = Request.Post(getUrlForUpload()).addHeader(createSecurityHeader())
+			Content responseContent = Request.Post(getUrlForUpload())//.addHeader(createSecurityHeader())
 					.body(fileToUpload).execute().returnContent();
 
 			UploadResult uploadResult = uploadResponseConverter.apply(responseContent.asString());
 
 			if (uploadResult.statusOk()) {
-				Request.Put(getUrlForCheckin(uploadResult.getHandleId())).addHeader(createSecurityHeader());
+				Request.Put(getUrlForCheckin(uploadResult.getHandleId())).execute();//.addHeader(createSecurityHeader());
 			} else {
 				throw new CheckInModelException(uploadResult.getErrorMessage());
 			}
@@ -200,6 +200,11 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		}
 	}
 
+	/**
+	 * TODO: Currently the repo only supports form based authentication. That way a REST controller authenticate would need to be invoked 
+	 * and session needs to be passed along.
+	 * @return
+	 */
 	private Header createSecurityHeader() {
 		return new BasicHeader("Authorization", "Basic " + createAuth());
 	}
