@@ -21,21 +21,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.fluent.Content;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.message.BasicHeader;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
-import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
@@ -53,31 +49,30 @@ import com.google.common.base.Function;
 public class RestModelRepository extends Observable implements IModelRepository {
 
 	private static final String FILE_PARAMETER_NAME = "file";
-
-	private static final String FILE_DOWNLOAD_FORMAT = "%s/rest/model/file/%s/%s/%s";
-	private static final String MODELID_RESOURCE_FORMAT = "%s/rest/model/%s/%s/%s";
-	private static final String MODEL_RESOURCE_FORMAT = "%s/rest/model";
-	private static final String CHECKIN_FORMAT = "%s/rest/model/%s";
+	private static final String FILE_DOWNLOAD_FORMAT = "/file/%s/%s/%s";
+	private static final String MODELID_RESOURCE_FORMAT = "/%s/%s/%s";
+	private static final String CHECKIN_FORMAT = "%s";
 
 	private Function<Model, byte[]> modelToXMIConverter = new ModelToXmi();
 	private Function<String, UploadResult> uploadResponseConverter = new StringToUploadResult();
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
-
-	private ConnectionInfo connectionUrlSupplier;
+	
+	private RestClient httpClient;
 
 	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
-		this.connectionUrlSupplier = Objects.requireNonNull(connectionUrlSupplier);
+		Objects.requireNonNull(connectionUrlSupplier);
+		this.httpClient = new RestClient(connectionUrlSupplier);
 	}
 
 	public IModelQuery newQuery() {
-		return new RestModelQuery(connectionUrlSupplier, modelViewToModelResource);
+		return new RestModelQuery(httpClient,null, modelViewToModelResource);
 	}
 
 	@Override
 	public List<ModelResource> search(String expression) {
 		return new ArrayList<ModelResource>(
-				new RestModelQuery(connectionUrlSupplier, modelViewToModelResource).newQuery(expression).list());
+				new RestModelQuery(httpClient,null, modelViewToModelResource).newQuery(expression).list());
 	}
 
 	/**
@@ -145,7 +140,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
 
-		return String.format(FILE_DOWNLOAD_FORMAT, connectionUrlSupplier.getUrl(), modelId.getNamespace(),
+		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(),
 				modelId.getName().toLowerCase(), modelId.getVersion());
 	}
 
@@ -155,16 +150,12 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
 
-		return String.format(MODELID_RESOURCE_FORMAT, connectionUrlSupplier.getUrl(), modelId.getNamespace(),
+		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(),
 				modelId.getName().toLowerCase(), modelId.getVersion());
 	}
 
-	private String getUrlForUpload() {
-		return String.format(MODEL_RESOURCE_FORMAT, connectionUrlSupplier.getUrl());
-	}
-
 	private String getUrlForCheckin(String handleId) {
-		return String.format(CHECKIN_FORMAT, connectionUrlSupplier.getUrl(), handleId);
+		return String.format(CHECKIN_FORMAT,handleId);
 	}
 
 	/**
@@ -181,14 +172,11 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			builder.addBinaryBody(FILE_PARAMETER_NAME, modelToXMIConverter.apply(model),
 					ContentType.APPLICATION_OCTET_STREAM, "");
 			HttpEntity fileToUpload = builder.build();
-
-			Content responseContent = Request.Post(getUrlForUpload())//.addHeader(createSecurityHeader())
-					.body(fileToUpload).execute().returnContent();
-
-			UploadResult uploadResult = uploadResponseConverter.apply(responseContent.asString());
+			
+			UploadResult uploadResult = httpClient.executePost("/", fileToUpload,uploadResponseConverter);
 
 			if (uploadResult.statusOk()) {
-				Request.Put(getUrlForCheckin(uploadResult.getHandleId())).execute();//.addHeader(createSecurityHeader());
+				httpClient.executePut(getUrlForCheckin(uploadResult.getHandleId()));
 			} else {
 				throw new CheckInModelException(uploadResult.getErrorMessage());
 			}
@@ -200,17 +188,4 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		}
 	}
 
-	/**
-	 * TODO: Currently the repo only supports form based authentication. That way a REST controller authenticate would need to be invoked 
-	 * and session needs to be passed along.
-	 * @return
-	 */
-	private Header createSecurityHeader() {
-		return new BasicHeader("Authorization", "Basic " + createAuth());
-	}
-
-	private String createAuth() {
-		return new String(Base64.encodeBase64(
-				(connectionUrlSupplier.getUserName() + ":" + connectionUrlSupplier.getPassword()).getBytes()));
-	}
 }
