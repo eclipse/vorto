@@ -14,57 +14,53 @@
 *******************************************************************************/
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
-import "http://www.eclipse.org/vorto/metamodel/Mapping"
+generate Mapping "http://www.eclipse.org/vorto/metamodel/Mapping"
 import "http://www.eclipse.org/vorto/metamodel/InformationModel" as infomodel
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
 import "http://www.eclipse.org/vorto/metamodel/Model" as model
 
+/*----------------------Start Information Model Mapping Definition---------------------------*/
 MappingModel:
-	{MappingModel}
+  InfoModelMapping | FunctionBlockMapping | DataTypeMapping
+;
+
+InfoModelMapping:
+	{InfoModelMapping}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-     (references += ModelReference)*	
-	 mapping = Mapping
-;
-
-Mapping:
-	InfoModelMapping | FunctionBlockMapping | DataTypeMapping
-;
-
-/*----------------------Start Information Model Mapping Definition---------------------------*/
-InfoModelMapping:
+     (references += ModelReference)*		
 	'infomodelmapping' name=ID  '{'
 			(infoModelMappingRules +=InfoModelMappingRule)*
 	'}'	
 ;
 
 InfoModelMappingRule:
-	'from' sourceElements+=InfoModelSourceElement (',' infoModelSourceElements+=InfoModelSourceElement)*
-	'to' target = InfoModelTargetElement
-;
-
-InfoModelTargetElement:
-	StereoTypeReference | FunctionBlockReference
+	'from' sources+=InfomodelSource (',' sources+=InfomodelSource)*
+	'to' target = Target
 ;
 	
+/* 
 InfoModelSourceElement:
-	infoModel=[infomodel::InformationModel]  (infoModelChild = InfoModelChild)?
+	{InfoModelSourceElement}
+	(infomodelSource = InfomodelSource)?
+;
+*/	
+	
+InfomodelSource:
+	InfoModelAttributeSource | InfoModelPropertySource	
 ;
 
-InfoModelChild:
-	InfoModelFbElement|InformationModelAttribute
+InfoModelPropertySource:
+	model=[infomodel::InformationModel]  '.' element =[infomodel::FunctionblockProperty]  
 ;
 
-InfoModelFbElement:
-	'.' functionblock =[infomodel::FunctionblockProperty]  
+InfoModelAttributeSource:
+	model=[infomodel::InformationModel]  '.' element = InfoModelAttribute 
 ;
 
 
-InformationModelAttribute:
-	'.' attribute = InfoModelAttribute 
-;
-
+	
 enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
 
 /*----------------------End Information Model Mapping Definition---------------------------*/
@@ -72,19 +68,53 @@ enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 
 
 /*----------------------Start Function Block Mapping Definition---------------------------*/
 FunctionBlockMapping:
+	{FunctionBlockMapping}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+     (references += ModelReference)*
 	'functionblockmapping' name=ID  '{'
 			(functionBlockMappingRules +=FunctionBlockMappingRule)*
 	'}'	
 ;
 
 FunctionBlockMappingRule:
-	'from' functionBlockSourceElements+=FunctionBlockSourceElement (',' functionBlockSourceElements+=FunctionBlockSourceElement)*
-	'to' target = FunctionBlockTargetElement;
+	'from' sources+=FunctionBlockSource (',' sources+=FunctionBlockSource)*
+	'to' target = Target;
 
-FunctionBlockTargetElement:
-	StereoTypeReference | DataTypeReference
-;
 		
+FunctionBlockSource:
+	EntityAttributeSource | EntityPropertySource	
+;
+
+FunctionBlockPropertySource:
+    model = [functionblock::FunctionblockModel] "."  element=[datatype::Property] 
+;
+
+FunctionBlockAttributeSource:
+	model = [functionblock::FunctionblockModel]  '.' element = FunctionblockModelAttribute
+;
+
+
+ConfigurationResource:
+	model = [functionblock::FunctionblockModel] '.'  '.'  'configuration'  '.'  element=[datatype::Property] 
+;
+
+StatusResource:
+	model = [functionblock::FunctionblockModel] '.' '.'  'status' '.'  element=[datatype::Property] 
+;
+
+FaultResource:
+	model = [functionblock::FunctionblockModel] '.' '.'  'fault' '.'  element=[datatype::Property] 
+;
+
+OperationSource:
+	model = [functionblock::FunctionblockModel] '.'  'operation' '.' element=[functionblock::Operation]
+;
+
+EventResource:
+	 model = [functionblock::FunctionblockModel] '.' 'event' '.' element=[functionblock::Event] ('.' property=[datatype::Property] )?;
+	 		
+/*
 FunctionBlockSourceElement:
 	functionblock = [functionblock::FunctionblockModel]  (functionBlockElement = FunctionBlockElement)?
 ;
@@ -125,26 +155,42 @@ EventElement:
 FBTypeElement:
 	 '.'  property =[datatype::Property] 
 ;
-
+ */		
 enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
 
 /*----------------------End Function Block Mapping Definition---------------------------*/
 
 /*----------------------Start Entity Mapping Definition---------------------------*/
 EntityMapping:
+	{EntityMapping}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+     (references += ModelReference)*
 	'entitymapping' name=ID  '{'
 		(entityMappingRules +=EntityMappingRule)*
 	'}'	
 ;
 
 EntityMappingRule:
-	'from' entityMappingElements+=EntitySourceElement (',' EntitySourceElement+=EntitySourceElement)*
-	'to' target=EntityTargetElement;	
+	'from' sources+=EntitySource (',' sources+=EntitySource)*
+	'to' target=Target;	
 
-EntityTargetElement:
-	StereoTypeReference | DataTypeReference
+
+
+EntitySource:
+	EntityAttributeSource | EntityPropertySource	
 ;
 
+EntityPropertySource:
+    model = [datatype::Entity] "."  element=[datatype::Property] 
+;
+
+EntityAttributeSource:
+	model = [datatype::Entity] '.' element = ModelAttribute
+;
+
+
+/*
 EntitySourceElement:
 	EntityAttributeElement | NestedEntityExpression
 ;
@@ -160,27 +206,41 @@ NestedEntityExpression returns EntityExpressionRef:
 EntityExpression returns EntityExpressionRef:
     {EntityExpression} entity=[datatype::Entity]
 ; 
-
+ */
 
 /*----------------------End Entity Mapping Definition---------------------------*/
 
 /*----------------------Start Enum Mapping Definition---------------------------*/
 EnumMapping:
+	{EnumMapping}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+     (references += ModelReference)*
 	'enummapping' name=ID  '{'
 		(enumMappingRules +=EnumMappingRule)*
 	'}'	
 ;
 
 EnumMappingRule:
-	'from' enumElements+=EnumSourceElement (',' EnumSourceElement+=EnumSourceElement)*
-	'to' target=EnumTargetElement
-;	
-
-EnumTargetElement:
-	StereoTypeReference | EnumReference
+	'from' sources+=EnumSource (',' sources+=EnumSource)*
+	'to' target=Target
 ;
 
-	
+
+EnumSource:
+	EnumAttributeSource | EnumPropertySource	
+;
+
+EnumPropertySource:
+    model = [datatype::Enum] "."  element=[datatype::EnumLiteral] 
+;
+
+EnumAttributeSource:
+	model = [datatype::Enum] '.' element = ModelAttribute
+;
+
+
+/*
 EnumSourceElement:
 	EnumAttributeElement | EnumExpression
 ;
@@ -198,7 +258,7 @@ EnumExpression:
 EnumReference:
 	'reference' reference=  [EnumMapping|QualifiedName]	
 ;
-
+ */	
 /*----------------------End Enum Mapping Definition---------------------------*/
 
 
@@ -207,27 +267,31 @@ FunctionBlockReference:
 	'reference' reference=  [FunctionBlockMapping|QualifiedName]
 ;
 
-DataTypeReference:
-	'reference' reference = [DataTypeMapping|QualifiedName] 
-;
 
 DataTypeMapping:
 	EntityMapping | EnumMapping
 ;
 
 /*----------------------End Reference Element Definition---------------------------*/	
-	
+
+/*----------------------Start Rule Source Definition---------------------------*/
+
+
+/*----------------------End Rule Source Definition---------------------------*/	
 	
 /*----------------------Start Target Element Definition---------------------------*/
-StereoTypeReference:
-	targetElement=StereoTypeElement
+Target:
+	StereoTypeTarget | ReferenceTarget
 ;
 
-StereoTypeElement:
-	stereoTypes+=StereoType (',' stereoTypes+=StereoType)*;
+ReferenceTarget:
+	'reference' mappingModel = [MappingModel|QualifiedName]
+;	
 
-StereoType:
-	name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
+
+
+StereoTypeTarget:
+	 name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
 
 Attribute:
 	name=ID ':' value=STRING;
