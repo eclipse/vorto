@@ -3,6 +3,7 @@
 package org.eclipse.vorto.core.api.model.mapping.impl;
 
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 

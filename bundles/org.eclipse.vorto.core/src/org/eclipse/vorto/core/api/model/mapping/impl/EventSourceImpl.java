@@ -8,27 +8,29 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.vorto.core.api.model.datatype.Property;
 
 import org.eclipse.vorto.core.api.model.functionblock.Event;
-import org.eclipse.vorto.core.api.model.mapping.EventResource;
+
+import org.eclipse.vorto.core.api.model.mapping.EventSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Event Resource</b></em>'.
+ * An implementation of the model object '<em><b>Event Source</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventResourceImpl#getEvent <em>Event</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventResourceImpl#getEventProperty <em>Event Property</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventSourceImpl#getEvent <em>Event</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EventSourceImpl#getEventProperty <em>Event Property</em>}</li>
  * </ul>
  *
  * @generated
  */
-public class EventResourceImpl extends FunctionBlockSourceImpl implements EventResource {
+public class EventSourceImpl extends FunctionBlockSourceImpl implements EventSource {
 	/**
 	 * The cached value of the '{@link #getEvent() <em>Event</em>}' reference.
 	 * <!-- begin-user-doc -->
@@ -54,7 +56,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected EventResourceImpl() {
+	protected EventSourceImpl() {
 		super();
 	}
 
@@ -65,7 +67,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return MappingPackage.Literals.EVENT_RESOURCE;
+		return MappingPackage.Literals.EVENT_SOURCE;
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 			event = (Event)eResolveProxy(oldEvent);
 			if (event != oldEvent) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_RESOURCE__EVENT, oldEvent, event));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_SOURCE__EVENT, oldEvent, event));
 			}
 		}
 		return event;
@@ -103,7 +105,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 		Event oldEvent = event;
 		event = newEvent;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_RESOURCE__EVENT, oldEvent, event));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_SOURCE__EVENT, oldEvent, event));
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 			eventProperty = (Property)eResolveProxy(oldEventProperty);
 			if (eventProperty != oldEventProperty) {
 				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY, oldEventProperty, eventProperty));
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, MappingPackage.EVENT_SOURCE__EVENT_PROPERTY, oldEventProperty, eventProperty));
 			}
 		}
 		return eventProperty;
@@ -141,7 +143,7 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 		Property oldEventProperty = eventProperty;
 		eventProperty = newEventProperty;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY, oldEventProperty, eventProperty));
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.EVENT_SOURCE__EVENT_PROPERTY, oldEventProperty, eventProperty));
 	}
 
 	/**
@@ -152,10 +154,10 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.EVENT_RESOURCE__EVENT:
+			case MappingPackage.EVENT_SOURCE__EVENT:
 				if (resolve) return getEvent();
 				return basicGetEvent();
-			case MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY:
+			case MappingPackage.EVENT_SOURCE__EVENT_PROPERTY:
 				if (resolve) return getEventProperty();
 				return basicGetEventProperty();
 		}
@@ -170,10 +172,10 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.EVENT_RESOURCE__EVENT:
+			case MappingPackage.EVENT_SOURCE__EVENT:
 				setEvent((Event)newValue);
 				return;
-			case MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY:
+			case MappingPackage.EVENT_SOURCE__EVENT_PROPERTY:
 				setEventProperty((Property)newValue);
 				return;
 		}
@@ -188,10 +190,10 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.EVENT_RESOURCE__EVENT:
+			case MappingPackage.EVENT_SOURCE__EVENT:
 				setEvent((Event)null);
 				return;
-			case MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY:
+			case MappingPackage.EVENT_SOURCE__EVENT_PROPERTY:
 				setEventProperty((Property)null);
 				return;
 		}
@@ -206,12 +208,12 @@ public class EventResourceImpl extends FunctionBlockSourceImpl implements EventR
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.EVENT_RESOURCE__EVENT:
+			case MappingPackage.EVENT_SOURCE__EVENT:
 				return event != null;
-			case MappingPackage.EVENT_RESOURCE__EVENT_PROPERTY:
+			case MappingPackage.EVENT_SOURCE__EVENT_PROPERTY:
 				return eventProperty != null;
 		}
 		return super.eIsSet(featureID);
 	}
 
-} //EventResourceImpl
+} //EventSourceImpl

@@ -18,17 +18,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.IMapping;
 import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.codegen.internal.mapping.EntityMappingRules;
+import org.eclipse.vorto.codegen.internal.mapping.EntityMappingResource;
 import org.eclipse.vorto.codegen.tests.mapping.helper.TestEntityMappingFactory;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Property;
-import org.eclipse.vorto.core.api.model.mapping.EntityExpression;
 import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.junit.Test;
 
 /**
@@ -40,28 +37,26 @@ public class EntityMappingRulesTest {
 	public void testGetRuleByEntityAttribute() {
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
 
-		IMappingRules mappingRule = new EntityMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRules(MappingAttribute.description);
+		IMapping mappingRule = new EntityMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.version);
 		assertEquals(1, mappingRules.size());
 	}
 	
 	@Test
 	public void testGetRuleByEntityProperty() {
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
-		EntityMapping entityMapping = (EntityMapping) mappingModel.getMapping();
-		NestedEntityExpression nestedEntityExpression = (NestedEntityExpression)entityMapping.getEntityMappingRules().get(1).getEntitySourceElement().get(0);
-		Entity entity = ((EntityExpression)nestedEntityExpression.getRef()).getEntity();
-		Property entityProperty = entity.getProperties().get(0);
-		IMappingRules mappingRule = new EntityMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRules(entityProperty);
+		
+		Property entityProperty = TestEntityMappingFactory.entity.getProperties().get(0);
+		IMapping mappingRule = new EntityMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(entityProperty);
 		assertEquals(1, mappingRules.size());
 	}
 
 	@Test
 	public void testGetRuleByStereoType() {
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
-		IMappingRules mappingRule = new EntityMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRulesContainStereoType("DummyStereoType");
+		IMapping mappingRule = new EntityMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByStereoType("DummyStereoType");
 		assertEquals(2, mappingRules.size());
 	}	
 }

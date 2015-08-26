@@ -16,23 +16,13 @@ package org.eclipse.vorto.codegen.tests.mapping.helper;
 
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeElement;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeReference;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
 
 public class TestStereoTypeFactory {
-	public static StereoTypeReference createStereoTypeReference() {
 
-		StereoTypeReference stereoTypeReference = MappingFactory.eINSTANCE.createStereoTypeReference();
-		StereoTypeElement stereoTypeElement = MappingFactory.eINSTANCE.createStereoTypeElement();
-		stereoTypeElement.getStereoTypes().add(createStereoType());
-		stereoTypeReference.setTargetElement(stereoTypeElement);
-		return stereoTypeReference;
-	}
-
-	public static StereoType createStereoType() {
-		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
+	public static StereoTypeTarget createStereoTypeTarget() {
+		StereoTypeTarget stereoType = MappingFactory.eINSTANCE.createStereoTypeTarget();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("DummyAttribute");
 		typeAttribute.setValue("Dummy Attribute Value");

@@ -37,6 +37,7 @@ public class InfoModelPropertySourceImpl extends InfomodelSourceImpl implements 
 	 * @ordered
 	 */
 	protected FunctionblockProperty property;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

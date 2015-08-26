@@ -2,17 +2,12 @@
 <ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="mapping" nsURI="http://www.eclipse.org/vorto/metamodel/Mapping"
     nsPrefix="mapping">
-  <eClassifiers xsi:type="ecore:EClass" name="MappingModel" eSuperTypes="Model.ecore#//Model"/>
-  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMapping" eSuperTypes="#//MappingModel">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="infoModelMappingRules"
-        upperBound="-1" eType="#//InfoModelMappingRule" containment="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="MappingModel" eSuperTypes="Model.ecore#//Model">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rules" upperBound="-1"
+        eType="#//MappingRule" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMappingRule">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" upperBound="-1"
-        eType="#//InfomodelSource" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Target"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMapping" eSuperTypes="#//MappingModel"/>
+  <eClassifiers xsi:type="ecore:EClass" name="InfoModelMappingRule" eSuperTypes="#//MappingRule"/>
   <eClassifiers xsi:type="ecore:EClass" name="InfomodelSource" eSuperTypes="#//Source"/>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelPropertySource" eSuperTypes="#//InfomodelSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass InformationModel.ecore#//FunctionblockProperty"/>
@@ -28,16 +23,8 @@
     <eLiterals name="category" value="4" literal="category"/>
     <eLiterals name="description" value="5" literal="description"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMapping" eSuperTypes="#//MappingModel">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="functionBlockMappingRules"
-        upperBound="-1" eType="#//FunctionBlockMappingRule" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMappingRule">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" upperBound="-1"
-        eType="#//FunctionBlockSource" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Target"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMapping" eSuperTypes="#//MappingModel"/>
+  <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMappingRule" eSuperTypes="#//MappingRule"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockSource" eSuperTypes="#//Source"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockPropertySource" eSuperTypes="#//FunctionBlockSource"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockAttributeSource" eSuperTypes="#//FunctionBlockSource">
@@ -52,7 +39,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="OperationSource" eSuperTypes="#//FunctionBlockSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass Functionblock.ecore#//Operation"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EventResource" eSuperTypes="#//FunctionBlockSource">
+  <eClassifiers xsi:type="ecore:EClass" name="EventSource" eSuperTypes="#//FunctionBlockSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass Functionblock.ecore#//Event"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eventProperty" eType="ecore:EClass Datatype.ecore#//Property"/>
   </eClassifiers>
@@ -64,16 +51,8 @@
     <eLiterals name="category" value="4" literal="category"/>
     <eLiterals name="description" value="5" literal="description"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EntityMapping" eSuperTypes="#//DataTypeMapping">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="entityMappingRules" upperBound="-1"
-        eType="#//EntityMappingRule" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EntityMappingRule">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" upperBound="-1"
-        eType="#//EntitySource" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Target"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityMapping" eSuperTypes="#//DataTypeMapping"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EntityMappingRule" eSuperTypes="#//MappingRule"/>
   <eClassifiers xsi:type="ecore:EClass" name="EntitySource" eSuperTypes="#//Source"/>
   <eClassifiers xsi:type="ecore:EClass" name="EntityPropertySource" eSuperTypes="#//EntitySource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass Datatype.ecore#//Property"/>
@@ -81,16 +60,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="EntityAttributeSource" eSuperTypes="#//EntitySource">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//ModelAttribute"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EnumMapping" eSuperTypes="#//DataTypeMapping">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="enumMappingRules" upperBound="-1"
-        eType="#//EnumMappingRule" containment="true"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="EnumMappingRule">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" upperBound="-1"
-        eType="#//EnumSource" containment="true"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Target"
-        containment="true"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumMapping" eSuperTypes="#//DataTypeMapping"/>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumMappingRule" eSuperTypes="#//MappingRule"/>
   <eClassifiers xsi:type="ecore:EClass" name="EnumSource" eSuperTypes="#//Source"/>
   <eClassifiers xsi:type="ecore:EClass" name="EnumPropertySource" eSuperTypes="#//EnumSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass Datatype.ecore#//EnumLiteral"/>
@@ -122,5 +93,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FaultSource" eSuperTypes="#//FunctionBlockPropertySource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass Datatype.ecore#//Property"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MappingRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" eType="#//Target"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sources" ordered="false"
+        upperBound="-1" eType="#//Source" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

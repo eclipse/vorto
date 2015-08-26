@@ -14,28 +14,26 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.internal.mapping;
 
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.IMapping;
 import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
 import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
-import org.eclipse.vorto.core.api.model.mapping.Mapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 
 public class MappingRulesFactory {
 
-	public static IMappingRules createMappingRules(MappingModel mappingModel) {
-		Mapping mapping = mappingModel.getMapping();
-		if (mapping instanceof InfoModelMapping) {
-			return new InfoModelMappingRules(mappingModel);
-		} else if (mapping instanceof FunctionBlockMapping) {
-			return new FunctionBlockMappingRules(mappingModel);
-		} else if (mapping instanceof EntityMapping) {
-			return new EntityMappingRules(mappingModel);
-		} else if (mapping instanceof EnumMapping) {
-			return new EnumMappingRules(mappingModel);
+	public static IMapping createMappingRules(MappingModel mappingModel) {
+		if (mappingModel instanceof InfoModelMapping) {
+			return new InfoModelMappingResource(mappingModel);
+		} else if (mappingModel instanceof FunctionBlockMapping) {
+			return new FunctionBlockMappingResource(mappingModel);
+		} else if (mappingModel instanceof EntityMapping) {
+			return new EntityMappingResource(mappingModel);
+		} else if (mappingModel instanceof EnumMapping) {
+			return new EnumMappingResource(mappingModel);
 		}
 		throw new UnsupportedOperationException(
-				"Mapping rules not registered for type : " + mapping.getClass().getName());
+				"Mapping rules not registered for type : " + mappingModel.getClass().getName());
 	}
 }

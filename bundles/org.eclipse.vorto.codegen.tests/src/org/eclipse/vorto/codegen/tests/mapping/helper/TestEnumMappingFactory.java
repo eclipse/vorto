@@ -14,14 +14,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.tests.mapping.helper;
 
-import org.eclipse.vorto.core.api.model.mapping.EnumAttributeElement;
-import org.eclipse.vorto.core.api.model.mapping.EnumExpression;
+import org.eclipse.vorto.core.api.model.mapping.EnumAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
 import org.eclipse.vorto.core.api.model.mapping.EnumMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EnumSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.Mapping;
+import org.eclipse.vorto.core.api.model.mapping.EnumPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 /**
@@ -31,45 +28,39 @@ import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 public class TestEnumMappingFactory {
 	static org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
 
-	public static MappingModel createEnumMappingModel() {
-		MappingModel mappingModel = MappingFactory.eINSTANCE.createMappingModel();
+	public static EnumMapping createEnumMappingModel() {
+		EnumMapping mappingModel = MappingFactory.eINSTANCE.createEnumMapping();
 		mappingModel.setName("MyEnumMapping");
-		mappingModel.setMapping(createEnumMapping());
+		mappingModel.getRules().add(createEnumAttributeToStereoTypeMappingRule());
+		mappingModel.getRules().add(createEnumElementToStereoTypeMappingRule());
 		return mappingModel;
-	}
-
-	private static Mapping createEnumMapping() {
-		EnumMapping enumMapping = MappingFactory.eINSTANCE.createEnumMapping();
-		enumMapping.getEnumMappingRules().add(createEnumAttributeToStereoTypeMappingRule());
-		enumMapping.getEnumMappingRules().add(createEnumElementToStereoTypeMappingRule());
-		return enumMapping;
 	}
 
 	public static EnumMappingRule createEnumAttributeToStereoTypeMappingRule() {
 		EnumMappingRule rule = MappingFactory.eINSTANCE.createEnumMappingRule();
-		rule.getEnumSourceElement().add(createEnumAttributeSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createEnumAttributeSource());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static EnumSourceElement createEnumAttributeSourceElement() {
-		EnumAttributeElement sourceElement = MappingFactory.eINSTANCE.createEnumAttributeElement();
-		sourceElement.setTypeRef(enumType);
-		sourceElement.setAttribute(ModelAttribute.VERSION);
-		return sourceElement;
+	private static EnumAttributeSource createEnumAttributeSource() {
+		EnumAttributeSource source = MappingFactory.eINSTANCE.createEnumAttributeSource();
+		source.setModel(enumType);
+		source.setAttribute(ModelAttribute.VERSION);
+		return source;
 	}
 
 	private static EnumMappingRule createEnumElementToStereoTypeMappingRule() {
 		EnumMappingRule rule = MappingFactory.eINSTANCE.createEnumMappingRule();
-		rule.getEnumSourceElement().add(createEnumElementSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createEnumElementSourceElement());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static EnumSourceElement createEnumElementSourceElement() {
-		EnumExpression sourceElement = MappingFactory.eINSTANCE.createEnumExpression();
-		sourceElement.setTypeRef(enumType);
-		sourceElement.setLiteral(enumType.getEnums().get(0));
-		return sourceElement;
+	static EnumPropertySource createEnumElementSourceElement() {
+		EnumPropertySource source = MappingFactory.eINSTANCE.createEnumPropertySource();
+		source.setModel(enumType);
+		source.setProperty(enumType.getEnums().get(0));
+		return source;
 	}
 }

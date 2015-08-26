@@ -24,14 +24,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
-import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,9 +41,9 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseEntityLocationMapping() throws IOException {
-		MappingModel lwMapping = this.createMappingModel("LocationMapping.mapping");
+		MappingModel mappingModel = this.createMappingModel("LocationMapping.mapping");
 
-		EList<EntityMappingRule> rules = ((EntityMapping) lwMapping.getMapping()).getEntityMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
 
 	}
@@ -57,8 +52,7 @@ public class LWM2MMappingParseTest {
 	public void parseFunctionBlockDroneMapping() throws IOException {
 		MappingModel mappingModel = createMappingModel("DroneMapping.mapping");
 
-		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping) mappingModel.getMapping())
-				.getFunctionBlockMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());
 	}
 
@@ -66,8 +60,7 @@ public class LWM2MMappingParseTest {
 	public void parseLWM2MMapping() throws IOException {
 		MappingModel mappingModel = createMappingModel("LWM2M.mapping");
 
-		EList<InfoModelMappingRule> rules = ((InfoModelMapping) mappingModel.getMapping())
-				.getInfoModelMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());
 	}
 

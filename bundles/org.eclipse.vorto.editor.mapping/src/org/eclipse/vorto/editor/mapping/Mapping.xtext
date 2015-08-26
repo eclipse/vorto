@@ -35,7 +35,7 @@ InfoModelMapping:
     'version' version = VERSION
      (references += ModelReference)*		
 	'infomodelmapping' name=ID  '{'
-			(infoModelMappingRules +=InfoModelMappingRule)*
+			(rules +=InfoModelMappingRule)*
 	'}'	
 ;
 
@@ -69,7 +69,7 @@ FunctionBlockMapping:
     'version' version = VERSION
      (references += ModelReference)*
 	'functionblockmapping' name=ID  '{'
-			(functionBlockMappingRules +=FunctionBlockMappingRule)*
+			(rules +=FunctionBlockMappingRule)*
 	'}'	
 ;
 
@@ -79,7 +79,7 @@ FunctionBlockMappingRule:
 
 		
 FunctionBlockSource:
-	FunctionBlockAttributeSource | FunctionBlockPropertySource	|OperationSource |EventResource
+	FunctionBlockAttributeSource | FunctionBlockPropertySource	|OperationSource |EventSource
 ;
 
 FunctionBlockPropertySource:
@@ -107,7 +107,7 @@ OperationSource:
 	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation]
 ;
 
-EventResource:
+EventSource:
 	 model = [functionblock::FunctionblockModel] '.' 'event' '.' event=[functionblock::Event] ('.' eventProperty=[datatype::Property] )?;
 
 enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
@@ -122,7 +122,7 @@ EntityMapping:
     'version' version = VERSION
      (references += ModelReference)*
 	'entitymapping' name=ID  '{'
-		(entityMappingRules +=EntityMappingRule)*
+		(rules +=EntityMappingRule)*
 	'}'	
 ;
 
@@ -153,7 +153,7 @@ EnumMapping:
     'version' version = VERSION
      (references += ModelReference)*
 	'enummapping' name=ID  '{'
-		(enumMappingRules +=EnumMappingRule)*
+		(rules +=EnumMappingRule)*
 	'}'	
 ;
 
@@ -184,8 +184,6 @@ Target:
 ReferenceTarget:
 	'reference' mappingModel = [MappingModel|QualifiedName]
 ;	
-
-
 
 StereoTypeTarget:
 	 name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;

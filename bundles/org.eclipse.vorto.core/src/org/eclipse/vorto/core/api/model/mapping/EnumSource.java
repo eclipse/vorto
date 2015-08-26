@@ -2,6 +2,7 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Enum Source</b></em>'.
@@ -13,5 +14,4 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @generated
  */
 public interface EnumSource extends Source {
-
 } // EnumSource

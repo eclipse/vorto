@@ -5,7 +5,9 @@ package org.eclipse.vorto.core.api.model.mapping.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;

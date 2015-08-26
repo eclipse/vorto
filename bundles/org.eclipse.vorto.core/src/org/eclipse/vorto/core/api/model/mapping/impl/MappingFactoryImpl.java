@@ -71,7 +71,7 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.CONFIGURATION_SOURCE: return createConfigurationSource();
 			case MappingPackage.STATUS_SOURCE: return createStatusSource();
 			case MappingPackage.OPERATION_SOURCE: return createOperationSource();
-			case MappingPackage.EVENT_RESOURCE: return createEventResource();
+			case MappingPackage.EVENT_SOURCE: return createEventSource();
 			case MappingPackage.ENTITY_MAPPING: return createEntityMapping();
 			case MappingPackage.ENTITY_MAPPING_RULE: return createEntityMappingRule();
 			case MappingPackage.ENTITY_SOURCE: return createEntitySource();
@@ -89,6 +89,7 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.ATTRIBUTE: return createAttribute();
 			case MappingPackage.SOURCE: return createSource();
 			case MappingPackage.FAULT_SOURCE: return createFaultSource();
+			case MappingPackage.MAPPING_RULE: return createMappingRule();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -277,9 +278,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EventResource createEventResource() {
-		EventResourceImpl eventResource = new EventResourceImpl();
-		return eventResource;
+	public EventSource createEventSource() {
+		EventSourceImpl eventSource = new EventSourceImpl();
+		return eventSource;
 	}
 
 	/**
@@ -450,6 +451,16 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public FaultSource createFaultSource() {
 		FaultSourceImpl faultSource = new FaultSourceImpl();
 		return faultSource;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public MappingRule createMappingRule() {
+		MappingRuleImpl mappingRule = new MappingRuleImpl();
+		return mappingRule;
 	}
 
 	/**

@@ -24,18 +24,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
-import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EntitySourceElement;
-import org.eclipse.vorto.core.api.model.mapping.EntityTargetElement;
-import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
-import org.eclipse.vorto.core.api.model.mapping.EnumMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +44,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithEntityAttribute() throws IOException {
 		MappingModel mappingModel = createMappingModel("Entity_Attribute.mapping");
 
-		EList<EntityMappingRule> rules = ((EntityMapping)mappingModel.getMapping()).getEntityMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
 	}
 	
@@ -61,8 +52,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithEntityProperty() throws IOException {
 		MappingModel mappingModel = createMappingModel("Entity_Property.mapping");
 
-		EList<EntityMappingRule> rules = ((EntityMapping)mappingModel.getMapping()).getEntityMappingRules();
-		EntityMappingRule rule = rules.get(0);
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());
 	}
 	
@@ -70,7 +60,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithEntityReference() throws IOException {
 		MappingModel mappingModel = createMappingModel("Entity_Ref.mapping");
 
-		EList<EntityMappingRule> rules = ((EntityMapping)mappingModel.getMapping()).getEntityMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());
 	}
 	
@@ -78,7 +68,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithEnumAttribute() throws IOException {
 		MappingModel mappingModel = createMappingModel("Enum_Attribute.mapping");
 
-		EList<EnumMappingRule> rules = ((EnumMapping)mappingModel.getMapping()).getEnumMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
 	}
 	
@@ -86,7 +76,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithEnumProperty() throws IOException {
 		MappingModel mappingModel = createMappingModel("Enum_Property.mapping");
 
-		EList<EnumMappingRule> rules = ((EnumMapping)mappingModel.getMapping()).getEnumMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());
 	}
 	
@@ -94,7 +84,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithFunctionBlockAttribute() throws IOException {
 		MappingModel mappingModel = createMappingModel("FunctionBlock_Attribute.mapping");
 
-		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping)mappingModel.getMapping()).getFunctionBlockMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(6, rules.size());
 	}
 	
@@ -102,7 +92,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithFunctionBlockProperty() throws IOException {
 		MappingModel mappingModel = createMappingModel("FunctionBlock_Property.mapping");
 
-		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping)mappingModel.getMapping()).getFunctionBlockMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(6, rules.size());
 	}
 	
@@ -110,7 +100,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithFunctionBlockReference() throws IOException {
 		MappingModel mappingModel = createMappingModel("FunctionBlock_Ref.mapping");
 
-		EList<FunctionBlockMappingRule> rules = ((FunctionBlockMapping)mappingModel.getMapping()).getFunctionBlockMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());
 	}
 	
@@ -118,7 +108,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithInfoModelAttribute() throws IOException {
 		MappingModel mappingModel = createMappingModel("Infomodel_Attribute.mapping");
 
-		EList<InfoModelMappingRule> rules = ((InfoModelMapping)mappingModel.getMapping()).getInfoModelMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(6, rules.size());
 	}
 	
@@ -126,7 +116,7 @@ public class MappingModelSyntaxTest {
 	public void parseMappingWithInfomodelReference() throws IOException {
 		MappingModel mappingModel = createMappingModel("Infomodel_FBRef.mapping");
 
-		EList<InfoModelMappingRule> rules = ((InfoModelMapping)mappingModel.getMapping()).getInfoModelMappingRules();
+		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());
 	}
 

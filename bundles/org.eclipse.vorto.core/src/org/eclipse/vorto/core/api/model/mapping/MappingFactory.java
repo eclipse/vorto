@@ -148,13 +148,13 @@ public interface MappingFactory extends EFactory {
 	OperationSource createOperationSource();
 
 	/**
-	 * Returns a new object of class '<em>Event Resource</em>'.
+	 * Returns a new object of class '<em>Event Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Event Resource</em>'.
+	 * @return a new object of class '<em>Event Source</em>'.
 	 * @generated
 	 */
-	EventResource createEventResource();
+	EventSource createEventSource();
 
 	/**
 	 * Returns a new object of class '<em>Entity Mapping</em>'.
@@ -308,6 +308,15 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	FaultSource createFaultSource();
+
+	/**
+	 * Returns a new object of class '<em>Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Rule</em>'.
+	 * @generated
+	 */
+	MappingRule createMappingRule();
 
 	/**
 	 * Returns the package supported by this factory.
