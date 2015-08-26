@@ -12,25 +12,12 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping.helper;
+package org.eclipse.vorto.core.model;
 
-import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
-
-
-public class TestStereoTypeFactory {
-
-	public static StereoTypeTarget createStereoTypeTarget() {
-		StereoTypeTarget stereoType = MappingFactory.eINSTANCE.createStereoTypeTarget();
-		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
-		typeAttribute.setName("DummyAttribute");
-		typeAttribute.setValue("Dummy Attribute Value");
-
-		stereoType.setName("DummyStereoType");
-		stereoType.getAttributes().add(typeAttribute);
-
-		return stereoType;
-
-	}
+/**
+ * @author sgp0247
+ *
+ */
+public enum MappingAttribute {
+	name, namespace, version, displayname, description, category
 }

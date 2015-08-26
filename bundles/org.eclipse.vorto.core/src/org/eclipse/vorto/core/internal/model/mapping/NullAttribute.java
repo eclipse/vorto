@@ -13,7 +13,7 @@
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
 
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.lang.reflect.InvocationTargetException;
 

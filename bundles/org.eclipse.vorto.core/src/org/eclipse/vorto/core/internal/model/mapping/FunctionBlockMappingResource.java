@@ -12,13 +12,12 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
@@ -32,6 +31,8 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
+import org.eclipse.vorto.core.model.MappingAttribute;
+
 
 public class FunctionBlockMappingResource extends AbstractMappingResource {
 

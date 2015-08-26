@@ -12,13 +12,12 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.mapping.EntityAttributeSource;
@@ -27,6 +26,8 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.model.MappingAttribute;
+
 
 /**
  * @author sgp0247
@@ -71,4 +72,5 @@ public class EntityMappingResource extends AbstractMappingResource {
 			}
 		}
 	}
+
 }

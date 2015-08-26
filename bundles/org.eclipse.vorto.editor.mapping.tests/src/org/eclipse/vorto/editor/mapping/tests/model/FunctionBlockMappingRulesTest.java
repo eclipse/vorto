@@ -12,21 +12,21 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping;
+package org.eclipse.vorto.editor.mapping.tests.model;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.codegen.internal.mapping.FunctionBlockMappingResource;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestFunctionBlockMappingFactory;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.model.IMapping;
+import org.eclipse.vorto.core.model.MappingAttribute;
+import org.eclipse.vorto.core.model.MappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestFunctionBlockMappingFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,7 +45,7 @@ public class FunctionBlockMappingRulesTest {
 
 	@Test
 	public void testGetRuleByFunctionBlockAttribute() {
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.description);
 		assertEquals(1, mappingRules.size());
 	}
@@ -53,7 +53,7 @@ public class FunctionBlockMappingRulesTest {
 	@Test
 	public void testGetRuleByConfigurationProperty() {
 		Property property = functionblockModel.getFunctionblock().getConfiguration().getProperties().get(0);
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(property);
 		assertEquals(1, mappingRules.size());
 	}
@@ -61,7 +61,7 @@ public class FunctionBlockMappingRulesTest {
 	@Test
 	public void testGetRuleByStatusProperty() {
 		Property property = functionblockModel.getFunctionblock().getStatus().getProperties().get(0);
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(property);
 		assertEquals(1, mappingRules.size());
 	}
@@ -69,7 +69,7 @@ public class FunctionBlockMappingRulesTest {
 	@Test
 	public void testGetRuleByFaultProperty() {
 		Property property = functionblockModel.getFunctionblock().getFault().getProperties().get(0);
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(property);
 		assertEquals(1, mappingRules.size());
 	}
@@ -77,14 +77,14 @@ public class FunctionBlockMappingRulesTest {
 	@Test
 	public void testGetRuleByOperation() {
 		Operation operation = functionblockModel.getFunctionblock().getOperations().get(0);
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(operation);
 		assertEquals(1, mappingRules.size());
 	}
 
 	@Test
 	public void testGetRuleByStereoType() {
-		IMapping mappingRule = new FunctionBlockMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByStereoType("DummyStereoType");
 		assertEquals(2, mappingRules.size());
 	}

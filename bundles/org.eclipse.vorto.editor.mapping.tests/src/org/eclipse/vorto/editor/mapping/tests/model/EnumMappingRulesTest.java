@@ -12,21 +12,21 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping;
+package org.eclipse.vorto.editor.mapping.tests.model;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.codegen.internal.mapping.EnumMappingResource;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestEnumFactory;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestEnumMappingFactory;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.model.IMapping;
+import org.eclipse.vorto.core.model.MappingAttribute;
+import org.eclipse.vorto.core.model.MappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEnumFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEnumMappingFactory;
 import org.junit.Test;
 
 /**
@@ -40,7 +40,7 @@ public class EnumMappingRulesTest {
 	public void testGetRuleByEnumAttribute() {
 		MappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
 
-		IMapping mappingRule = new EnumMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.version);
 		assertEquals(1, mappingRules.size());
 	}
@@ -49,7 +49,7 @@ public class EnumMappingRulesTest {
 	public void testGetRuleByEnumLiteral() {
 		EnumMapping mappingModel = TestEnumMappingFactory.createEnumMappingModel();
 		EnumLiteral enumLiteral = enumType.getEnums().get(0);
-		IMapping mappingRule = new EnumMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(enumLiteral);
 		assertEquals(1, mappingRules.size());
 	}
@@ -57,7 +57,7 @@ public class EnumMappingRulesTest {
 	@Test
 	public void testGetRuleByStereoType() {
 		MappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
-		IMapping mappingRule = new EnumMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByStereoType("DummyStereoType");
 		assertEquals(2, mappingRules.size());
 	}	

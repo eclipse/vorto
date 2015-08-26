@@ -12,18 +12,21 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.model;
 
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
 import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
 import org.eclipse.vorto.core.api.model.mapping.EnumMapping;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.internal.model.mapping.EntityMappingResource;
+import org.eclipse.vorto.core.internal.model.mapping.EnumMappingResource;
+import org.eclipse.vorto.core.internal.model.mapping.FunctionBlockMappingResource;
+import org.eclipse.vorto.core.internal.model.mapping.InfoModelMappingResource;
 
-public class MappingRulesFactory {
+public class MappingFactory {
 
-	public static IMapping createMappingRules(MappingModel mappingModel) {
+	public static IMapping createMapping(MappingModel mappingModel) {
 		if (mappingModel instanceof InfoModelMapping) {
 			return new InfoModelMappingResource(mappingModel);
 		} else if (mappingModel instanceof FunctionBlockMapping) {
