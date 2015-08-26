@@ -17,24 +17,16 @@ package org.eclipse.vorto.editor.mapping.scoping
 import org.eclipse.emf.ecore.EReference
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
-import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
-import org.eclipse.vorto.core.api.model.datatype.Property
-import org.eclipse.vorto.core.api.model.datatype.Type
-import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
-import org.eclipse.vorto.core.api.model.mapping.Attribute
-import org.eclipse.vorto.core.api.model.mapping.ConfigurationElement
-import org.eclipse.vorto.core.api.model.mapping.EntityExpression
-import org.eclipse.vorto.core.api.model.mapping.EnumExpression
-import org.eclipse.vorto.core.api.model.mapping.EventElement
-import org.eclipse.vorto.core.api.model.mapping.FBTypeElement
-import org.eclipse.vorto.core.api.model.mapping.FaultElement
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement
-import org.eclipse.vorto.core.api.model.mapping.InfoModelFbElement
-import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement
-import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression
-import org.eclipse.vorto.core.api.model.mapping.OperationElement
-import org.eclipse.vorto.core.api.model.mapping.StatusElement
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource
+import org.eclipse.vorto.core.api.model.mapping.EnumPropertySource
+import org.eclipse.vorto.core.api.model.mapping.EventResource
+import org.eclipse.vorto.core.api.model.mapping.FaultSource
+import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource
+import org.eclipse.vorto.core.api.model.mapping.OperationSource
+import org.eclipse.vorto.core.api.model.mapping.StatusSource
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
@@ -48,6 +40,53 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  */
 class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 
+
+	def IScope scope_EnumPropertySource_property(EnumPropertySource exp, EReference ref) {
+		var enumType =  exp.model as Enum;
+		return Scopes::scopeFor(enumType.enums);
+	}
+	
+	def IScope scope_EntityPropertySource_property(EntityPropertySource exp, EReference ref) {
+		var model =  exp.model as Entity;
+		return Scopes::scopeFor(model.properties);
+	}
+		
+
+	def IScope scope_InfoModelPropertySource_property(InfoModelPropertySource exp, EReference ref) {
+		var model = exp.model as InformationModel
+		return Scopes::scopeFor(model.properties);
+	}
+	
+	
+	def IScope scope_ConfigurationSource_property(ConfigurationSource exp, EReference ref) {
+		var model = exp.model as FunctionblockModel;
+		return Scopes::scopeFor(model.functionblock.configuration.properties);
+	}
+
+	def IScope scope_StatusSource_property(StatusSource exp, EReference ref) {
+		var model = exp.model as FunctionblockModel;
+		return Scopes::scopeFor(model.functionblock.status.properties);
+	}
+	
+	def IScope scope_FaultSource_property(FaultSource exp, EReference ref) {
+		var model = exp.model as FunctionblockModel;
+		return Scopes::scopeFor(model.functionblock.fault.properties);
+	}
+	
+	def IScope scope_OperationSource_operation(OperationSource exp, EReference ref) {
+		var model = exp.model as FunctionblockModel;
+		return Scopes::scopeFor(model.functionblock.operations);
+	}
+	
+	def IScope scope_EventResource_event(EventResource exp, EReference ref) {
+		var model = exp.model as FunctionblockModel;
+		return Scopes::scopeFor(model.functionblock.events);
+	}		
+	
+	def IScope scope_EventResource_eventProperty(EventResource exp, EReference ref) {
+		return Scopes::scopeFor(exp.event.properties);
+	}	
+	/*
 	def IScope scope_InfoModelFbElement_functionblock(InfoModelFbElement exp, EReference ref) {
 		var infoModelSourceElement = exp.eContainer as  InfoModelSourceElement;
 		var model = infoModelSourceElement.infoModel;
@@ -136,5 +175,5 @@ class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 			return Scopes::scopeFor(enum.enums);
 		}
 		return IScope::NULLSCOPE;
-	}
+	} */
 }

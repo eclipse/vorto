@@ -15,8 +15,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getEntityMappingElements <em>Entity Mapping Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getEntitySourceElement <em>Entity Source Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getSources <em>Sources</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTarget <em>Target</em>}</li>
  * </ul>
  *
@@ -26,36 +25,20 @@ import org.eclipse.emf.ecore.EObject;
  */
 public interface EntityMappingRule extends EObject {
 	/**
-	 * Returns the value of the '<em><b>Entity Mapping Elements</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.EntitySourceElement}.
+	 * Returns the value of the '<em><b>Sources</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.EntitySource}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Entity Mapping Elements</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Sources</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Entity Mapping Elements</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_EntityMappingElements()
+	 * @return the value of the '<em>Sources</em>' containment reference list.
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_Sources()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<EntitySourceElement> getEntityMappingElements();
-
-	/**
-	 * Returns the value of the '<em><b>Entity Source Element</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.EntitySourceElement}.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Entity Source Element</em>' containment reference list isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Entity Source Element</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_EntitySourceElement()
-	 * @model containment="true"
-	 * @generated
-	 */
-	EList<EntitySourceElement> getEntitySourceElement();
+	EList<EntitySource> getSources();
 
 	/**
 	 * Returns the value of the '<em><b>Target</b></em>' containment reference.
@@ -66,12 +49,12 @@ public interface EntityMappingRule extends EObject {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Target</em>' containment reference.
-	 * @see #setTarget(EntityTargetElement)
+	 * @see #setTarget(Target)
 	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntityMappingRule_Target()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EntityTargetElement getTarget();
+	Target getTarget();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingRule#getTarget <em>Target</em>}' containment reference.
@@ -81,6 +64,6 @@ public interface EntityMappingRule extends EObject {
 	 * @see #getTarget()
 	 * @generated
 	 */
-	void setTarget(EntityTargetElement value);
+	void setTarget(Target value);
 
 } // EntityMappingRule

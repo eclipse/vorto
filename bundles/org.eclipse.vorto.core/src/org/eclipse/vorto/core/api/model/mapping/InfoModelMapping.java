@@ -20,7 +20,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface InfoModelMapping extends Mapping {
+public interface InfoModelMapping extends MappingModel {
 	/**
 	 * Returns the value of the '<em><b>Info Model Mapping Rules</b></em>' containment reference list.
 	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule}.

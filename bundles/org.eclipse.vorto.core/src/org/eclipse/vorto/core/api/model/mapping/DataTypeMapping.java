@@ -13,5 +13,5 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @model
  * @generated
  */
-public interface DataTypeMapping extends Mapping {
+public interface DataTypeMapping extends MappingModel {
 } // DataTypeMapping

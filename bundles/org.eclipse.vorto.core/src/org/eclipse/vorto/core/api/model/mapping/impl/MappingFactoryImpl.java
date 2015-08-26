@@ -58,49 +58,37 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case MappingPackage.MAPPING_MODEL: return createMappingModel();
-			case MappingPackage.MAPPING: return createMapping();
 			case MappingPackage.INFO_MODEL_MAPPING: return createInfoModelMapping();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE: return createInfoModelMappingRule();
-			case MappingPackage.INFO_MODEL_TARGET_ELEMENT: return createInfoModelTargetElement();
-			case MappingPackage.INFO_MODEL_SOURCE_ELEMENT: return createInfoModelSourceElement();
-			case MappingPackage.INFO_MODEL_CHILD: return createInfoModelChild();
-			case MappingPackage.INFO_MODEL_FB_ELEMENT: return createInfoModelFbElement();
-			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE: return createInformationModelAttribute();
+			case MappingPackage.INFOMODEL_SOURCE: return createInfomodelSource();
+			case MappingPackage.INFO_MODEL_PROPERTY_SOURCE: return createInfoModelPropertySource();
+			case MappingPackage.INFO_MODEL_ATTRIBUTE_SOURCE: return createInfoModelAttributeSource();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING: return createFunctionBlockMapping();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE: return createFunctionBlockMappingRule();
-			case MappingPackage.FUNCTION_BLOCK_TARGET_ELEMENT: return createFunctionBlockTargetElement();
-			case MappingPackage.FUNCTION_BLOCK_SOURCE_ELEMENT: return createFunctionBlockSourceElement();
-			case MappingPackage.FUNCTION_BLOCK_ELEMENT: return createFunctionBlockElement();
-			case MappingPackage.FUNCTION_BLOCK_ELEMENT_ATTRIBUTE: return createFunctionBlockElementAttribute();
-			case MappingPackage.FUNCTION_BLOCK_CHILD_ELEMENT: return createFunctionBlockChildElement();
-			case MappingPackage.OPERATION_ELEMENT: return createOperationElement();
-			case MappingPackage.CONFIGURATION_ELEMENT: return createConfigurationElement();
-			case MappingPackage.STATUS_ELEMENT: return createStatusElement();
-			case MappingPackage.FAULT_ELEMENT: return createFaultElement();
-			case MappingPackage.EVENT_ELEMENT: return createEventElement();
-			case MappingPackage.FB_TYPE_ELEMENT: return createFBTypeElement();
+			case MappingPackage.FUNCTION_BLOCK_SOURCE: return createFunctionBlockSource();
+			case MappingPackage.FUNCTION_BLOCK_PROPERTY_SOURCE: return createFunctionBlockPropertySource();
+			case MappingPackage.FUNCTION_BLOCK_ATTRIBUTE_SOURCE: return createFunctionBlockAttributeSource();
+			case MappingPackage.CONFIGURATION_SOURCE: return createConfigurationSource();
+			case MappingPackage.STATUS_SOURCE: return createStatusSource();
+			case MappingPackage.OPERATION_SOURCE: return createOperationSource();
+			case MappingPackage.EVENT_RESOURCE: return createEventResource();
 			case MappingPackage.ENTITY_MAPPING: return createEntityMapping();
 			case MappingPackage.ENTITY_MAPPING_RULE: return createEntityMappingRule();
-			case MappingPackage.ENTITY_TARGET_ELEMENT: return createEntityTargetElement();
-			case MappingPackage.ENTITY_SOURCE_ELEMENT: return createEntitySourceElement();
-			case MappingPackage.ENTITY_ATTRIBUTE_ELEMENT: return createEntityAttributeElement();
-			case MappingPackage.ENTITY_EXPRESSION_REF: return createEntityExpressionRef();
+			case MappingPackage.ENTITY_SOURCE: return createEntitySource();
+			case MappingPackage.ENTITY_PROPERTY_SOURCE: return createEntityPropertySource();
+			case MappingPackage.ENTITY_ATTRIBUTE_SOURCE: return createEntityAttributeSource();
 			case MappingPackage.ENUM_MAPPING: return createEnumMapping();
 			case MappingPackage.ENUM_MAPPING_RULE: return createEnumMappingRule();
-			case MappingPackage.ENUM_TARGET_ELEMENT: return createEnumTargetElement();
-			case MappingPackage.ENUM_SOURCE_ELEMENT: return createEnumSourceElement();
-			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT: return createEnumAttributeElement();
-			case MappingPackage.ENUM_EXPRESSION: return createEnumExpression();
-			case MappingPackage.ENUM_REFERENCE: return createEnumReference();
-			case MappingPackage.FUNCTION_BLOCK_REFERENCE: return createFunctionBlockReference();
-			case MappingPackage.DATA_TYPE_REFERENCE: return createDataTypeReference();
+			case MappingPackage.ENUM_SOURCE: return createEnumSource();
+			case MappingPackage.ENUM_PROPERTY_SOURCE: return createEnumPropertySource();
+			case MappingPackage.ENUM_ATTRIBUTE_SOURCE: return createEnumAttributeSource();
 			case MappingPackage.DATA_TYPE_MAPPING: return createDataTypeMapping();
-			case MappingPackage.STEREO_TYPE_REFERENCE: return createStereoTypeReference();
-			case MappingPackage.STEREO_TYPE_ELEMENT: return createStereoTypeElement();
-			case MappingPackage.STEREO_TYPE: return createStereoType();
+			case MappingPackage.TARGET: return createTarget();
+			case MappingPackage.REFERENCE_TARGET: return createReferenceTarget();
+			case MappingPackage.STEREO_TYPE_TARGET: return createStereoTypeTarget();
 			case MappingPackage.ATTRIBUTE: return createAttribute();
-			case MappingPackage.NESTED_ENTITY_EXPRESSION: return createNestedEntityExpression();
-			case MappingPackage.ENTITY_EXPRESSION: return createEntityExpression();
+			case MappingPackage.SOURCE: return createSource();
+			case MappingPackage.FAULT_SOURCE: return createFaultSource();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -159,16 +147,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Mapping createMapping() {
-		MappingImpl mapping = new MappingImpl();
-		return mapping;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public InfoModelMapping createInfoModelMapping() {
 		InfoModelMappingImpl infoModelMapping = new InfoModelMappingImpl();
 		return infoModelMapping;
@@ -189,9 +167,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InfoModelTargetElement createInfoModelTargetElement() {
-		InfoModelTargetElementImpl infoModelTargetElement = new InfoModelTargetElementImpl();
-		return infoModelTargetElement;
+	public InfomodelSource createInfomodelSource() {
+		InfomodelSourceImpl infomodelSource = new InfomodelSourceImpl();
+		return infomodelSource;
 	}
 
 	/**
@@ -199,9 +177,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InfoModelSourceElement createInfoModelSourceElement() {
-		InfoModelSourceElementImpl infoModelSourceElement = new InfoModelSourceElementImpl();
-		return infoModelSourceElement;
+	public InfoModelPropertySource createInfoModelPropertySource() {
+		InfoModelPropertySourceImpl infoModelPropertySource = new InfoModelPropertySourceImpl();
+		return infoModelPropertySource;
 	}
 
 	/**
@@ -209,29 +187,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InfoModelChild createInfoModelChild() {
-		InfoModelChildImpl infoModelChild = new InfoModelChildImpl();
-		return infoModelChild;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InfoModelFbElement createInfoModelFbElement() {
-		InfoModelFbElementImpl infoModelFbElement = new InfoModelFbElementImpl();
-		return infoModelFbElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InformationModelAttribute createInformationModelAttribute() {
-		InformationModelAttributeImpl informationModelAttribute = new InformationModelAttributeImpl();
-		return informationModelAttribute;
+	public InfoModelAttributeSource createInfoModelAttributeSource() {
+		InfoModelAttributeSourceImpl infoModelAttributeSource = new InfoModelAttributeSourceImpl();
+		return infoModelAttributeSource;
 	}
 
 	/**
@@ -259,9 +217,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockTargetElement createFunctionBlockTargetElement() {
-		FunctionBlockTargetElementImpl functionBlockTargetElement = new FunctionBlockTargetElementImpl();
-		return functionBlockTargetElement;
+	public FunctionBlockSource createFunctionBlockSource() {
+		FunctionBlockSourceImpl functionBlockSource = new FunctionBlockSourceImpl();
+		return functionBlockSource;
 	}
 
 	/**
@@ -269,9 +227,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockSourceElement createFunctionBlockSourceElement() {
-		FunctionBlockSourceElementImpl functionBlockSourceElement = new FunctionBlockSourceElementImpl();
-		return functionBlockSourceElement;
+	public FunctionBlockPropertySource createFunctionBlockPropertySource() {
+		FunctionBlockPropertySourceImpl functionBlockPropertySource = new FunctionBlockPropertySourceImpl();
+		return functionBlockPropertySource;
 	}
 
 	/**
@@ -279,9 +237,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockElement createFunctionBlockElement() {
-		FunctionBlockElementImpl functionBlockElement = new FunctionBlockElementImpl();
-		return functionBlockElement;
+	public FunctionBlockAttributeSource createFunctionBlockAttributeSource() {
+		FunctionBlockAttributeSourceImpl functionBlockAttributeSource = new FunctionBlockAttributeSourceImpl();
+		return functionBlockAttributeSource;
 	}
 
 	/**
@@ -289,9 +247,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockElementAttribute createFunctionBlockElementAttribute() {
-		FunctionBlockElementAttributeImpl functionBlockElementAttribute = new FunctionBlockElementAttributeImpl();
-		return functionBlockElementAttribute;
+	public ConfigurationSource createConfigurationSource() {
+		ConfigurationSourceImpl configurationSource = new ConfigurationSourceImpl();
+		return configurationSource;
 	}
 
 	/**
@@ -299,9 +257,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockChildElement createFunctionBlockChildElement() {
-		FunctionBlockChildElementImpl functionBlockChildElement = new FunctionBlockChildElementImpl();
-		return functionBlockChildElement;
+	public StatusSource createStatusSource() {
+		StatusSourceImpl statusSource = new StatusSourceImpl();
+		return statusSource;
 	}
 
 	/**
@@ -309,9 +267,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public OperationElement createOperationElement() {
-		OperationElementImpl operationElement = new OperationElementImpl();
-		return operationElement;
+	public OperationSource createOperationSource() {
+		OperationSourceImpl operationSource = new OperationSourceImpl();
+		return operationSource;
 	}
 
 	/**
@@ -319,49 +277,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ConfigurationElement createConfigurationElement() {
-		ConfigurationElementImpl configurationElement = new ConfigurationElementImpl();
-		return configurationElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public StatusElement createStatusElement() {
-		StatusElementImpl statusElement = new StatusElementImpl();
-		return statusElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FaultElement createFaultElement() {
-		FaultElementImpl faultElement = new FaultElementImpl();
-		return faultElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EventElement createEventElement() {
-		EventElementImpl eventElement = new EventElementImpl();
-		return eventElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FBTypeElement createFBTypeElement() {
-		FBTypeElementImpl fbTypeElement = new FBTypeElementImpl();
-		return fbTypeElement;
+	public EventResource createEventResource() {
+		EventResourceImpl eventResource = new EventResourceImpl();
+		return eventResource;
 	}
 
 	/**
@@ -389,9 +307,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityTargetElement createEntityTargetElement() {
-		EntityTargetElementImpl entityTargetElement = new EntityTargetElementImpl();
-		return entityTargetElement;
+	public EntitySource createEntitySource() {
+		EntitySourceImpl entitySource = new EntitySourceImpl();
+		return entitySource;
 	}
 
 	/**
@@ -399,9 +317,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntitySourceElement createEntitySourceElement() {
-		EntitySourceElementImpl entitySourceElement = new EntitySourceElementImpl();
-		return entitySourceElement;
+	public EntityPropertySource createEntityPropertySource() {
+		EntityPropertySourceImpl entityPropertySource = new EntityPropertySourceImpl();
+		return entityPropertySource;
 	}
 
 	/**
@@ -409,19 +327,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityAttributeElement createEntityAttributeElement() {
-		EntityAttributeElementImpl entityAttributeElement = new EntityAttributeElementImpl();
-		return entityAttributeElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EntityExpressionRef createEntityExpressionRef() {
-		EntityExpressionRefImpl entityExpressionRef = new EntityExpressionRefImpl();
-		return entityExpressionRef;
+	public EntityAttributeSource createEntityAttributeSource() {
+		EntityAttributeSourceImpl entityAttributeSource = new EntityAttributeSourceImpl();
+		return entityAttributeSource;
 	}
 
 	/**
@@ -449,9 +357,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumTargetElement createEnumTargetElement() {
-		EnumTargetElementImpl enumTargetElement = new EnumTargetElementImpl();
-		return enumTargetElement;
+	public EnumSource createEnumSource() {
+		EnumSourceImpl enumSource = new EnumSourceImpl();
+		return enumSource;
 	}
 
 	/**
@@ -459,9 +367,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumSourceElement createEnumSourceElement() {
-		EnumSourceElementImpl enumSourceElement = new EnumSourceElementImpl();
-		return enumSourceElement;
+	public EnumPropertySource createEnumPropertySource() {
+		EnumPropertySourceImpl enumPropertySource = new EnumPropertySourceImpl();
+		return enumPropertySource;
 	}
 
 	/**
@@ -469,49 +377,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumAttributeElement createEnumAttributeElement() {
-		EnumAttributeElementImpl enumAttributeElement = new EnumAttributeElementImpl();
-		return enumAttributeElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EnumExpression createEnumExpression() {
-		EnumExpressionImpl enumExpression = new EnumExpressionImpl();
-		return enumExpression;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EnumReference createEnumReference() {
-		EnumReferenceImpl enumReference = new EnumReferenceImpl();
-		return enumReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FunctionBlockReference createFunctionBlockReference() {
-		FunctionBlockReferenceImpl functionBlockReference = new FunctionBlockReferenceImpl();
-		return functionBlockReference;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public DataTypeReference createDataTypeReference() {
-		DataTypeReferenceImpl dataTypeReference = new DataTypeReferenceImpl();
-		return dataTypeReference;
+	public EnumAttributeSource createEnumAttributeSource() {
+		EnumAttributeSourceImpl enumAttributeSource = new EnumAttributeSourceImpl();
+		return enumAttributeSource;
 	}
 
 	/**
@@ -529,9 +397,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public StereoTypeReference createStereoTypeReference() {
-		StereoTypeReferenceImpl stereoTypeReference = new StereoTypeReferenceImpl();
-		return stereoTypeReference;
+	public Target createTarget() {
+		TargetImpl target = new TargetImpl();
+		return target;
 	}
 
 	/**
@@ -539,9 +407,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public StereoTypeElement createStereoTypeElement() {
-		StereoTypeElementImpl stereoTypeElement = new StereoTypeElementImpl();
-		return stereoTypeElement;
+	public ReferenceTarget createReferenceTarget() {
+		ReferenceTargetImpl referenceTarget = new ReferenceTargetImpl();
+		return referenceTarget;
 	}
 
 	/**
@@ -549,9 +417,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public StereoType createStereoType() {
-		StereoTypeImpl stereoType = new StereoTypeImpl();
-		return stereoType;
+	public StereoTypeTarget createStereoTypeTarget() {
+		StereoTypeTargetImpl stereoTypeTarget = new StereoTypeTargetImpl();
+		return stereoTypeTarget;
 	}
 
 	/**
@@ -569,9 +437,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NestedEntityExpression createNestedEntityExpression() {
-		NestedEntityExpressionImpl nestedEntityExpression = new NestedEntityExpressionImpl();
-		return nestedEntityExpression;
+	public Source createSource() {
+		SourceImpl source = new SourceImpl();
+		return source;
 	}
 
 	/**
@@ -579,9 +447,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityExpression createEntityExpression() {
-		EntityExpressionImpl entityExpression = new EntityExpressionImpl();
-		return entityExpression;
+	public FaultSource createFaultSource() {
+		FaultSourceImpl faultSource = new FaultSourceImpl();
+		return faultSource;
 	}
 
 	/**
