@@ -18,44 +18,42 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.IMapping;
 import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingRules;
+import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingResource;
 import org.eclipse.vorto.codegen.tests.mapping.helper.TestInfoModelMappingFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.junit.Test;
 
-public class InfoModelMappingRulesTest {
+public class InfoModelMappingResourceTest {
 	@Test
 	public void testGetRuleByInfoModelAttribute() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 
-		IMappingRules mappingRule = new InfoModelMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRules(MappingAttribute.displayname);
+		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.displayname);
 		assertEquals(1, mappingRules.size());
 	}
 
 	@Test
-	public void testGetRuleByInfoModelElement() {
+	public void testGetRuleByInfoModelObject() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
-		InfoModelMapping infoModelMapping = (InfoModelMapping) mappingModel.getMapping();
-		InformationModel infoModel = infoModelMapping.getInfoModelMappingRules().get(0).getInfoModelSourceElements()
-				.get(0).getInfoModel();
+
+		InformationModel infoModel = (InformationModel) mappingModel.getRules().get(0).getSources().get(0).getModel();
 		FunctionblockProperty functionblockProperty = infoModel.getProperties().get(0);
-		IMappingRules mappingRule = new InfoModelMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRules(functionblockProperty);
+		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(functionblockProperty);
 		assertEquals(1, mappingRules.size());
 	}
 
 	@Test
 	public void testGetRuleByStereoType() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
-		IMappingRules mappingRule = new InfoModelMappingRules(mappingModel);
-		List<IMappingRule> mappingRules = mappingRule.getRulesContainStereoType("DummyStereoType");
+		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		List<MappingRule> mappingRules = mappingRule.getRulesByStereoType("DummyStereoType");
 		assertEquals(1, mappingRules.size());
 	}
 }

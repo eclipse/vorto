@@ -4,7 +4,6 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 import org.eclipse.vorto.core.api.model.datatype.Property;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Configuration Source</b></em>'.
@@ -22,7 +21,6 @@ import org.eclipse.vorto.core.api.model.datatype.Property;
  * @generated
  */
 public interface ConfigurationSource extends FunctionBlockPropertySource {
-
 	/**
 	 * Returns the value of the '<em><b>Property</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -48,4 +46,5 @@ public interface ConfigurationSource extends FunctionBlockPropertySource {
 	 * @generated
 	 */
 	void setProperty(Property value);
+
 } // ConfigurationSource

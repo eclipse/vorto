@@ -2,6 +2,7 @@
  */
 package org.eclipse.vorto.core.api.model.mapping;
 
+
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Function Block Source</b></em>'.

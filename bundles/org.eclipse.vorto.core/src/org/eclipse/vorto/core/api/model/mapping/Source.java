@@ -3,6 +3,7 @@
 package org.eclipse.vorto.core.api.model.mapping;
 
 import org.eclipse.emf.ecore.EObject;
+
 import org.eclipse.vorto.core.api.model.model.Model;
 
 /**
@@ -22,7 +23,6 @@ import org.eclipse.vorto.core.api.model.model.Model;
  * @generated
  */
 public interface Source extends EObject {
-
 	/**
 	 * Returns the value of the '<em><b>Model</b></em>' reference.
 	 * <!-- begin-user-doc -->

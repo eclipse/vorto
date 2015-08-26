@@ -86,6 +86,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.INFO_MODEL_MAPPING_RULE: {
 				InfoModelMappingRule infoModelMappingRule = (InfoModelMappingRule)theEObject;
 				T result = caseInfoModelMappingRule(infoModelMappingRule);
+				if (result == null) result = caseMappingRule(infoModelMappingRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -123,6 +124,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE: {
 				FunctionBlockMappingRule functionBlockMappingRule = (FunctionBlockMappingRule)theEObject;
 				T result = caseFunctionBlockMappingRule(functionBlockMappingRule);
+				if (result == null) result = caseMappingRule(functionBlockMappingRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -175,11 +177,11 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.EVENT_RESOURCE: {
-				EventResource eventResource = (EventResource)theEObject;
-				T result = caseEventResource(eventResource);
-				if (result == null) result = caseFunctionBlockSource(eventResource);
-				if (result == null) result = caseSource(eventResource);
+			case MappingPackage.EVENT_SOURCE: {
+				EventSource eventSource = (EventSource)theEObject;
+				T result = caseEventSource(eventSource);
+				if (result == null) result = caseFunctionBlockSource(eventSource);
+				if (result == null) result = caseSource(eventSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -195,6 +197,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.ENTITY_MAPPING_RULE: {
 				EntityMappingRule entityMappingRule = (EntityMappingRule)theEObject;
 				T result = caseEntityMappingRule(entityMappingRule);
+				if (result == null) result = caseMappingRule(entityMappingRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -233,6 +236,7 @@ public class MappingSwitch<T> extends Switch<T> {
 			case MappingPackage.ENUM_MAPPING_RULE: {
 				EnumMappingRule enumMappingRule = (EnumMappingRule)theEObject;
 				T result = caseEnumMappingRule(enumMappingRule);
+				if (result == null) result = caseMappingRule(enumMappingRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -305,6 +309,12 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = caseFunctionBlockPropertySource(faultSource);
 				if (result == null) result = caseFunctionBlockSource(faultSource);
 				if (result == null) result = caseSource(faultSource);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case MappingPackage.MAPPING_RULE: {
+				MappingRule mappingRule = (MappingRule)theEObject;
+				T result = caseMappingRule(mappingRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -523,17 +533,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Event Resource</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Event Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Event Resource</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Event Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEventResource(EventResource object) {
+	public T caseEventSource(EventSource object) {
 		return null;
 	}
 
@@ -789,6 +799,21 @@ public class MappingSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseFaultSource(FaultSource object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Rule</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseMappingRule(MappingRule object) {
 		return null;
 	}
 

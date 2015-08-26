@@ -126,8 +126,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createOperationSourceAdapter();
 			}
 			@Override
-			public Adapter caseEventResource(EventResource object) {
-				return createEventResourceAdapter();
+			public Adapter caseEventSource(EventSource object) {
+				return createEventSourceAdapter();
 			}
 			@Override
 			public Adapter caseEntityMapping(EntityMapping object) {
@@ -196,6 +196,10 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseFaultSource(FaultSource object) {
 				return createFaultSourceAdapter();
+			}
+			@Override
+			public Adapter caseMappingRule(MappingRule object) {
+				return createMappingRuleAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -418,16 +422,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EventResource <em>Event Resource</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EventSource <em>Event Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.EventResource
+	 * @see org.eclipse.vorto.core.api.model.mapping.EventSource
 	 * @generated
 	 */
-	public Adapter createEventResourceAdapter() {
+	public Adapter createEventSourceAdapter() {
 		return null;
 	}
 
@@ -666,6 +670,20 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createFaultSourceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.MappingRule <em>Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingRule
+	 * @generated
+	 */
+	public Adapter createMappingRuleAdapter() {
 		return null;
 	}
 

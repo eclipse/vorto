@@ -18,13 +18,14 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
 /**
  * @author sgp0247
  *
  */
 public class StereoTypeHelper {
+	
 	/**
 	 * Get StereoType of given name from given List
 	 * @param stereoTypes
@@ -32,8 +33,8 @@ public class StereoTypeHelper {
 	 * @return StereoType with given name, or null if Stereo type of given name
 	 *         does not exist
 	 */
-	public static StereoType getStereoType(List<StereoType> stereoTypes, String stereoTypeName) {
-		for (StereoType stereoType : stereoTypes) {
+	public static StereoTypeTarget getStereoType(List<StereoTypeTarget> stereoTypes, String stereoTypeName) {
+		for (StereoTypeTarget stereoType : stereoTypes) {
 			if (StringUtils.equals(stereoType.getName(), stereoTypeName)) {
 				return stereoType;
 			}
@@ -47,8 +48,8 @@ public class StereoTypeHelper {
 	 * @param stereoTypeName
 	 * @return: true if given StereoTypes contains given stereoTypeName, false otherwise
 	 */
-	public static boolean containsStereoType(List<StereoType> stereoTypes, String stereoTypeName) {
-		StereoType stereoType = getStereoType(stereoTypes, stereoTypeName);
+	public static boolean containsStereoType(List<StereoTypeTarget> stereoTypes, String stereoTypeName) {
+		StereoTypeTarget stereoType = getStereoType(stereoTypes, stereoTypeName);
 		return stereoType == null ? false : true;
 	}
 
@@ -60,7 +61,7 @@ public class StereoTypeHelper {
 	 * @return Attribute of given attributeName, or NullAttribute if not
 	 *         attribute with given name does not exist
 	 */
-	public static Attribute getAttribute(StereoType stereoType, String attributeName) {
+	public static Attribute getAttribute(StereoTypeTarget stereoType, String attributeName) {
 		if (stereoType == null) {
 			return NullAttribute.INSTANCE;
 		}

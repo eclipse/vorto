@@ -8,22 +8,22 @@ import org.eclipse.vorto.core.api.model.functionblock.Event;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the model object '<em><b>Event Resource</b></em>'.
+ * A representation of the model object '<em><b>Event Source</b></em>'.
  * <!-- end-user-doc -->
  *
  * <p>
  * The following features are supported:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventResource#getEvent <em>Event</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventResource#getEventProperty <em>Event Property</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventSource#getEvent <em>Event</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EventSource#getEventProperty <em>Event Property</em>}</li>
  * </ul>
  *
- * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventResource()
+ * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventSource()
  * @model
  * @generated
  */
-public interface EventResource extends FunctionBlockSource {
+public interface EventSource extends FunctionBlockSource {
 	/**
 	 * Returns the value of the '<em><b>Event</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -34,14 +34,14 @@ public interface EventResource extends FunctionBlockSource {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Event</em>' reference.
 	 * @see #setEvent(Event)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventResource_Event()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventSource_Event()
 	 * @model
 	 * @generated
 	 */
 	Event getEvent();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EventResource#getEvent <em>Event</em>}' reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EventSource#getEvent <em>Event</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Event</em>' reference.
@@ -60,14 +60,14 @@ public interface EventResource extends FunctionBlockSource {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Event Property</em>' reference.
 	 * @see #setEventProperty(Property)
-	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventResource_EventProperty()
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEventSource_EventProperty()
 	 * @model
 	 * @generated
 	 */
 	Property getEventProperty();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EventResource#getEventProperty <em>Event Property</em>}' reference.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.EventSource#getEventProperty <em>Event Property</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Event Property</em>' reference.
@@ -76,4 +76,4 @@ public interface EventResource extends FunctionBlockSource {
 	 */
 	void setEventProperty(Property value);
 
-} // EventResource
+} // EventSource

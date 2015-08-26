@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
@@ -35,6 +36,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getRules <em>Rules</em>}</li>
  * </ul>
  *
  * @generated
@@ -109,6 +111,16 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @ordered
 	 */
 	protected EList<ModelReference> references;
+
+	/**
+	 * The cached value of the '{@link #getRules() <em>Rules</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getRules()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<MappingRule> rules;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -209,11 +221,25 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<MappingRule> getRules() {
+		if (rules == null) {
+			rules = new EObjectContainmentEList<MappingRule>(MappingRule.class, this, MappingPackage.MAPPING_MODEL__RULES);
+		}
+		return rules;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return ((InternalEList<?>)getReferences()).basicRemove(otherEnd, msgs);
+			case MappingPackage.MAPPING_MODEL__RULES:
+				return ((InternalEList<?>)getRules()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -234,6 +260,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return getVersion();
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return getReferences();
+			case MappingPackage.MAPPING_MODEL__RULES:
+				return getRules();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -260,6 +288,10 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
+			case MappingPackage.MAPPING_MODEL__RULES:
+				getRules().clear();
+				getRules().addAll((Collection<? extends MappingRule>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -284,6 +316,9 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
+			case MappingPackage.MAPPING_MODEL__RULES:
+				getRules().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -304,6 +339,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
+			case MappingPackage.MAPPING_MODEL__RULES:
+				return rules != null && !rules.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

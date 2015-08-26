@@ -17,12 +17,13 @@ package org.eclipse.vorto.codegen.api.mapping;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 
 /**
  * Resolves mapping rules for a specific element or stereotype
  * 
  */
-public interface IMappingRules {
+public interface IMapping {
 
 	/**
 	 * gets the mapping rules for the specified Model element
@@ -31,9 +32,9 @@ public interface IMappingRules {
 	 *            modelElement whose meta data ought to be looked up
 	 * @return mapping rules
 	 */
-	List<IMappingRule> getRules(EObject modelElement);
+	List<MappingRule> getRulesByModelObject(EObject modelElement);
 
-	List<IMappingRule> getRules(MappingAttribute mappingAttribute);
+	List<MappingRule> getRulesByModelAttribute(MappingAttribute mappingAttribute);
 	
 	/**
 	 * gets all mapping rules for the specified stereotype name. A stereotype is
@@ -42,5 +43,5 @@ public interface IMappingRules {
 	 * @param stereoType
 	 * @return list of mapping rule objects
 	 */
-	List<IMappingRule> getRulesContainStereoType(String stereoTypeName);
+	List<MappingRule> getRulesByStereoType(String stereoTypeName);
 }

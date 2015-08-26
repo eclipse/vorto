@@ -16,11 +16,11 @@ package org.eclipse.vorto.codegen.tests.mapping;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
-import org.eclipse.vorto.codegen.internal.mapping.EntityMappingRules;
-import org.eclipse.vorto.codegen.internal.mapping.EnumMappingRules;
-import org.eclipse.vorto.codegen.internal.mapping.FunctionBlockMappingRules;
-import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.IMapping;
+import org.eclipse.vorto.codegen.internal.mapping.EntityMappingResource;
+import org.eclipse.vorto.codegen.internal.mapping.EnumMappingResource;
+import org.eclipse.vorto.codegen.internal.mapping.FunctionBlockMappingResource;
+import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingResource;
 import org.eclipse.vorto.codegen.internal.mapping.MappingRulesFactory;
 import org.eclipse.vorto.codegen.tests.mapping.helper.TestEntityMappingFactory;
 import org.eclipse.vorto.codegen.tests.mapping.helper.TestEnumMappingFactory;
@@ -37,28 +37,28 @@ public class MappingRulesFactoryTest {
 	@Test
 	public void createInfoModelMappingRules(){
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
-		IMappingRules mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof InfoModelMappingRules);
+		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
+		assertTrue(mappingRules instanceof InfoModelMappingResource);
 	}
 	
 	@Test
 	public void createFunctionBlockMappingRules(){
 		MappingModel mappingModel = TestFunctionBlockMappingFactory.createFunctionBlockMappingModel();
-		IMappingRules mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof FunctionBlockMappingRules);
+		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
+		assertTrue(mappingRules instanceof FunctionBlockMappingResource);
 	}
 	
 	@Test
 	public void createEntityMappingRules(){
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
-		IMappingRules mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof EntityMappingRules);
+		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
+		assertTrue(mappingRules instanceof EntityMappingResource);
 	}
 	
 	@Test
 	public void createEnumMappingRules(){
 		MappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
-		IMappingRules mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof EnumMappingRules);
+		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
+		assertTrue(mappingRules instanceof EnumMappingResource);
 	}	
 }

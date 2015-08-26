@@ -37,6 +37,7 @@ public class EnumPropertySourceImpl extends EnumSourceImpl implements EnumProper
 	 * @ordered
 	 */
 	protected EnumLiteral property;
+
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

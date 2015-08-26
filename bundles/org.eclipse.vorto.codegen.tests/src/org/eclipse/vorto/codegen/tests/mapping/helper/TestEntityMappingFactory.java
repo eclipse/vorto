@@ -15,71 +15,56 @@
 package org.eclipse.vorto.codegen.tests.mapping.helper;
 
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
-import org.eclipse.vorto.core.api.model.mapping.EntityAttributeElement;
-import org.eclipse.vorto.core.api.model.mapping.EntityExpression;
-import org.eclipse.vorto.core.api.model.mapping.EntityExpressionRef;
+import org.eclipse.vorto.core.api.model.mapping.EntityAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.EntityMapping;
 import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EntitySourceElement;
-import org.eclipse.vorto.core.api.model.mapping.Mapping;
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
-import org.eclipse.vorto.core.api.model.mapping.NestedEntityExpression;
 
 /**
  * @author sgp0247
  *
  */
 public class TestEntityMappingFactory {
-	static org.eclipse.vorto.core.api.model.datatype.Entity entity = TestEntityFactory.createEntity();
+	public static org.eclipse.vorto.core.api.model.datatype.Entity entity = TestEntityFactory.createEntity();
 
-	public static MappingModel createEntityMappingModel() {
-		MappingModel mappingModel = MappingFactory.eINSTANCE.createMappingModel();
-		mappingModel.setName("MyEntityMapping");
-		mappingModel.setMapping(createEntityMapping());
-		return mappingModel;
-	}
-
-	private static Mapping createEntityMapping() {
+	public static EntityMapping createEntityMappingModel() {
 		EntityMapping entityMapping = MappingFactory.eINSTANCE.createEntityMapping();
-		entityMapping.getEntityMappingRules().add(createEntityAttributeToStereoTypeMappingRule());
-		entityMapping.getEntityMappingRules().add(createEntityElementToStereoTypeMappingRule());
+		entityMapping.setName("MyEntityMapping");
+		entityMapping.getRules().add(createEntityAttributeToStereoTypeMappingRule());
+		entityMapping.getRules().add(createEntityElementToStereoTypeMappingRule());
 		return entityMapping;
 	}
 
+
 	public static EntityMappingRule createEntityAttributeToStereoTypeMappingRule() {
 		EntityMappingRule rule = MappingFactory.eINSTANCE.createEntityMappingRule();
-		rule.getEntitySourceElement().add(createEntityAttributeSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createEntityAttributeSource());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static EntitySourceElement createEntityAttributeSourceElement() {
-		EntityAttributeElement sourceElement = MappingFactory.eINSTANCE.createEntityAttributeElement();
-		sourceElement.setTypeRef(entity);
-		sourceElement.setAttribute(ModelAttribute.VERSION);
-		return sourceElement;
+	private static EntityAttributeSource createEntityAttributeSource() {
+		EntityAttributeSource source = MappingFactory.eINSTANCE.createEntityAttributeSource();
+		source.setModel(entity);
+		source.setAttribute(ModelAttribute.VERSION);
+		return source;
 	}
 
 	private static EntityMappingRule createEntityElementToStereoTypeMappingRule() {
 		EntityMappingRule rule = MappingFactory.eINSTANCE.createEntityMappingRule();
-		rule.getEntitySourceElement().add(createEntityElementSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createEntityPropertySource());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static EntitySourceElement createEntityElementSourceElement() {
-		NestedEntityExpression sourceElement = MappingFactory.eINSTANCE.createNestedEntityExpression();
-		sourceElement.setRef(createEntityExpression());
-		sourceElement.setTail(TestEntityFactory.createPrimitiveProperty("testString", PrimitiveType.STRING));
-		return sourceElement;
+	private static EntityPropertySource createEntityPropertySource() {
+		EntityPropertySource source = MappingFactory.eINSTANCE.createEntityPropertySource();
+		source.setModel(entity);
+		source.setProperty(TestEntityFactory.createPrimitiveProperty("testString", PrimitiveType.STRING));	
+		return source;
 	}
 
-	private static EntityExpressionRef createEntityExpression() {
-		EntityExpression entityExpression =MappingFactory.eINSTANCE.createEntityExpression();
-		entityExpression.setEntity(entity);
-		return entityExpression;
-	}
 
 }

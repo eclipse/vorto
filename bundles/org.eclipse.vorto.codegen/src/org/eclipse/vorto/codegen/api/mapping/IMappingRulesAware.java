@@ -34,5 +34,5 @@ public interface IMappingRulesAware {
 	 * 
 	 * @param rules
 	 */
-	void setMappingRules(IMappingRules rules);
+	void setMappingRules(IMapping rules);
 }

@@ -16,112 +16,78 @@ package org.eclipse.vorto.codegen.tests.mapping.helper;
 
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.functionblock.Operation;
-import org.eclipse.vorto.core.api.model.mapping.ConfigurationElement;
-import org.eclipse.vorto.core.api.model.mapping.FBTypeElement;
-import org.eclipse.vorto.core.api.model.mapping.FaultElement;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockChildElement;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockElementAttribute;
+import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
+import org.eclipse.vorto.core.api.model.mapping.FaultSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement;
 import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
-import org.eclipse.vorto.core.api.model.mapping.Mapping;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.OperationElement;
-import org.eclipse.vorto.core.api.model.mapping.StatusElement;
+import org.eclipse.vorto.core.api.model.mapping.OperationSource;
+import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 
 public class TestFunctionBlockMappingFactory {
-	static FunctionblockModel functionblockModel = TestFunctionBlockFactory.createFunctionBlockModel();
+	public static FunctionblockModel functionblockModel = TestFunctionBlockFactory.createFunctionBlockModel();
 
-	public static MappingModel createFunctionBlockMappingModel() {
-		MappingModel mappingModel = MappingFactory.eINSTANCE.createMappingModel();
+	public static FunctionBlockMapping createFunctionBlockMappingModel() {
+		FunctionBlockMapping mappingModel = MappingFactory.eINSTANCE.createFunctionBlockMapping();
 		mappingModel.setName("MyFunctionBlockMapping");
-		mappingModel.setMapping(createFunctionBlockMapping());
-		return mappingModel;
-	}
+		mappingModel.getRules().add(createFunctionBlockAttributeToStereoTypeMappingRule());
+		mappingModel.getRules().add(createFunctionBlockElementToStereoTypeMappingRule());
 
-	private static Mapping createFunctionBlockMapping() {
-		FunctionBlockMapping functionBlockMapping = MappingFactory.eINSTANCE.createFunctionBlockMapping();
-		functionBlockMapping.getFunctionBlockMappingRules().add(createFunctionBlockAttributeToStereoTypeMappingRule());
-		functionBlockMapping.getFunctionBlockMappingRules().add(createFunctionBlockElementToStereoTypeMappingRule());
-		return functionBlockMapping;
+		return mappingModel;
 	}
 
 	public static FunctionBlockMappingRule createFunctionBlockAttributeToStereoTypeMappingRule() {
 		FunctionBlockMappingRule rule = MappingFactory.eINSTANCE.createFunctionBlockMappingRule();
-		rule.getFunctionBlockSourceElements().add(createFunctionBlockAttributeSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createFunctionBlockAttributeSource());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static FunctionBlockSourceElement createFunctionBlockAttributeSourceElement() {
-		FunctionBlockElementAttribute attributeElement = MappingFactory.eINSTANCE.createFunctionBlockElementAttribute();
-		attributeElement.setAttribute(FunctionblockModelAttribute.DESCRIPTION);
-
-		FunctionBlockSourceElement functionBlockSourceElement = MappingFactory.eINSTANCE
-				.createFunctionBlockSourceElement();
-		functionBlockSourceElement.setFunctionblock(functionblockModel);
-		functionBlockSourceElement.setFunctionBlockElement(attributeElement);
-		return functionBlockSourceElement;
+	private static FunctionBlockAttributeSource createFunctionBlockAttributeSource() {
+		FunctionBlockAttributeSource source = MappingFactory.eINSTANCE.createFunctionBlockAttributeSource();
+		source.setAttribute(FunctionblockModelAttribute.DESCRIPTION);
+		source.setModel(functionblockModel);
+		return source;
 	}
 
 	private static FunctionBlockMappingRule createFunctionBlockElementToStereoTypeMappingRule() {
 		FunctionBlockMappingRule rule = MappingFactory.eINSTANCE.createFunctionBlockMappingRule();
-		rule.getFunctionBlockSourceElements().add(createFunctionBlockConfigSourceElement());
-		rule.getFunctionBlockSourceElements().add(createFunctionBlockStatusSourceElement());
-		rule.getFunctionBlockSourceElements().add(createFunctionBlockFaultSourceElement());
-		rule.getFunctionBlockSourceElements().add(createFunctionBlockOperationSourceElement());
-		rule.setTarget(TestStereoTypeFactory.createStereoTypeReference());
+		rule.getSources().add(createConfigurationSource());
+		rule.getSources().add(createStatusSource());
+		rule.getSources().add(createFaultSource());
+		rule.getSources().add(createOperationSource());
+		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
 
-	private static FunctionBlockSourceElement createFunctionBlockConfigSourceElement() {
-		ConfigurationElement sourceElement = MappingFactory.eINSTANCE.createConfigurationElement();
-		sourceElement.setTypeRef(createFBTypeElement("configStringParam"));
-
-		FunctionBlockSourceElement functionBlockSourceElement = createFunctionBlockSourceElement(sourceElement);
-		return functionBlockSourceElement;
+	private static ConfigurationSource createConfigurationSource() {
+		ConfigurationSource source = MappingFactory.eINSTANCE.createConfigurationSource();
+		source.setProperty(TestEntityFactory.createPrimitiveProperty("configStringParam", PrimitiveType.STRING));
+		source.setModel(functionblockModel);
+		return source;
 	}
 
-	private static FunctionBlockSourceElement createFunctionBlockStatusSourceElement() {
-		StatusElement sourceElement = MappingFactory.eINSTANCE.createStatusElement();
-		sourceElement.setTypeRef(createFBTypeElement("statusStringParam"));
-
-		FunctionBlockSourceElement functionBlockSourceElement = createFunctionBlockSourceElement(sourceElement);
-		return functionBlockSourceElement;
+	private static StatusSource createStatusSource() {
+		StatusSource source = MappingFactory.eINSTANCE.createStatusSource();
+		source.setProperty(TestEntityFactory.createPrimitiveProperty("statusStringParam", PrimitiveType.STRING));
+		source.setModel(functionblockModel);
+		return source;
 	}
 
-	private static FunctionBlockSourceElement createFunctionBlockFaultSourceElement() {
-		FaultElement sourceElement = MappingFactory.eINSTANCE.createFaultElement();
-		sourceElement.setTypeRef(createFBTypeElement("faultStringParam"));
-
-		FunctionBlockSourceElement functionBlockSourceElement = createFunctionBlockSourceElement(sourceElement);
-		return functionBlockSourceElement;
+	private static FaultSource createFaultSource() {
+		FaultSource source = MappingFactory.eINSTANCE.createFaultSource();
+		source.setProperty(TestEntityFactory.createPrimitiveProperty("faultStringParam", PrimitiveType.STRING));
+		source.setModel(functionblockModel);
+		return source;
 	}
 
-	private static FunctionBlockSourceElement createFunctionBlockOperationSourceElement() {
-		OperationElement sourceElement = MappingFactory.eINSTANCE.createOperationElement();
-		sourceElement.setOperation(TestFunctionBlockFactory.createOnOperation());
-
-		FunctionBlockSourceElement functionBlockSourceElement = createFunctionBlockSourceElement(sourceElement);
-		return functionBlockSourceElement;
-	}
-
-	private static FunctionBlockSourceElement createFunctionBlockSourceElement(
-			FunctionBlockChildElement sourceElement) {
-		FunctionBlockSourceElement functionBlockSourceElement = MappingFactory.eINSTANCE
-				.createFunctionBlockSourceElement();
-		functionBlockSourceElement.setFunctionblock(functionblockModel);
-		functionBlockSourceElement.setFunctionBlockElement(sourceElement);
-		return functionBlockSourceElement;
-	}
-
-	private static FBTypeElement createFBTypeElement(String paramName) {
-		FBTypeElement fbTypeElement = MappingFactory.eINSTANCE.createFBTypeElement();
-		fbTypeElement.setProperty(TestEntityFactory.createPrimitiveProperty(paramName, PrimitiveType.STRING));
-		return fbTypeElement;
+	private static OperationSource createOperationSource() {
+		OperationSource source = MappingFactory.eINSTANCE.createOperationSource();
+		source.setOperation(TestFunctionBlockFactory.createOnOperation());
+		source.setModel(functionblockModel);
+		return source;
 	}
 
 }
