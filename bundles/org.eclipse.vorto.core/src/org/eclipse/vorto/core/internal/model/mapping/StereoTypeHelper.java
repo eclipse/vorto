@@ -12,13 +12,14 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
+
 
 /**
  * @author sgp0247

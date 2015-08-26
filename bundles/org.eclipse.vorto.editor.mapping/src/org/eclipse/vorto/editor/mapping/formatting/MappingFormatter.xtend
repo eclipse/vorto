@@ -33,6 +33,80 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 
 	override protected void configureFormatting(FormattingConfig c) {
 
+		//Basic information
+		c.setLinewrap(1).after(f.modelReferenceAccess.group)	
+			
+		c.setLinewrap(1).after(f.infoModelMappingAccess.namespaceAssignment_2);
+		c.setLinewrap(1).after(f.infoModelMappingAccess.versionAssignment_4);
+		c.setLinewrap(1).after(f.functionBlockMappingAccess.namespaceAssignment_2);
+		c.setLinewrap(1).after(f.functionBlockMappingAccess.versionAssignment_4);
+		c.setLinewrap(1).after(f.entityMappingAccess.namespaceAssignment_2);
+		c.setLinewrap(1).after(f.entityMappingAccess.versionAssignment_4);	
+		c.setLinewrap(1).after(f.enumMappingAccess.namespaceAssignment_2);
+		c.setLinewrap(1).after(f.enumMappingAccess.versionAssignment_4);
+		
+		c.setLinewrap(1).after(f.modelReferenceAccess.versionAssignment_3);	
+									
+		//Comments
+		c.setLinewrap(0, 1, 2).before(SL_COMMENTRule)
+		c.setLinewrap(0, 1, 2).before(ML_COMMENTRule)
+		c.setLinewrap(0, 1, 1).after(ML_COMMENTRule)
+
+		//Mapping related key words
+		for (Keyword k : findKeywords(",")) {
+			c.setNoSpace.before(k)
+			c.setNoLinewrap.after(k)
+		}
+		for (Keyword k : findKeywords(".")) {
+			c.setNoSpace.before(k)
+			c.setNoSpace.after(k)
+		}
+		for (Keyword k : findKeywords(":")) {
+			c.setNoLinewrap.after(k)
+			c.setNoLinewrap.before(k)
+		}
+		
+		for (Keyword k : findKeywords("infomodelmapping")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}			
+					
+		for (Keyword k : findKeywords("functionblockmapping")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}
+		
+		for (Keyword k : findKeywords("entitymapping")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}		
+		
+		for (Keyword k : findKeywords("enummapping")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}			
+				
+		for (Keyword k : findKeywords("from")) {
+			c.setLinewrap(2).before(k)
+			c.setNoLinewrap.after(k)
+		}
+		for (Keyword k : findKeywords("to")) {
+			c.setLinewrap(1).before(k)
+			c.setNoLinewrap.after(k)
+		}
+		
+				
+				
+		for (Keyword k : f.stereoTypeTargetAccess.findKeywords("with")) {
+			c.setNoLinewrap.before(k)
+			c.setNoLinewrap.after(k)
+		}
+
+		//Block elements in stereo types environment
+		stereoTypeTargetAccess.findKeywordPairs("{", "}").forEach [
+			c.setNoLinewrap.after(first)
+			c.setNoLinewrap.before(second)
+		]
 
 		//Remaining block elements
 		findKeywordPairs("{", "}").forEach [

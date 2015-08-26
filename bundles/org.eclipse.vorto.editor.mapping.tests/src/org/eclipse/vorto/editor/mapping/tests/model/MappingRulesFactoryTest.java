@@ -12,21 +12,17 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping;
+package org.eclipse.vorto.editor.mapping.tests.model;
 
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
-import org.eclipse.vorto.codegen.internal.mapping.EntityMappingResource;
-import org.eclipse.vorto.codegen.internal.mapping.EnumMappingResource;
-import org.eclipse.vorto.codegen.internal.mapping.FunctionBlockMappingResource;
-import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingResource;
-import org.eclipse.vorto.codegen.internal.mapping.MappingRulesFactory;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestEntityMappingFactory;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestEnumMappingFactory;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestFunctionBlockMappingFactory;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestInfoModelMappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.model.IMapping;
+import org.eclipse.vorto.core.model.MappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEntityMappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEnumMappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestFunctionBlockMappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestInfoModelMappingFactory;
 import org.junit.Test;
 
 /**
@@ -37,28 +33,28 @@ public class MappingRulesFactoryTest {
 	@Test
 	public void createInfoModelMappingRules(){
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
-		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof InfoModelMappingResource);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
+		assertTrue(mappingRule.getClass().getName().endsWith("InfoModelMappingResource"));
 	}
 	
 	@Test
 	public void createFunctionBlockMappingRules(){
 		MappingModel mappingModel = TestFunctionBlockMappingFactory.createFunctionBlockMappingModel();
-		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof FunctionBlockMappingResource);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
+		assertTrue(mappingRule.getClass().getName().endsWith("FunctionBlockMappingResource"));
 	}
 	
 	@Test
 	public void createEntityMappingRules(){
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
-		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof EntityMappingResource);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
+		assertTrue(mappingRule.getClass().getName().endsWith("EntityMappingResource"));
 	}
 	
 	@Test
 	public void createEnumMappingRules(){
 		MappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
-		IMapping mappingRules  = MappingRulesFactory.createMappingRules(mappingModel);
-		assertTrue(mappingRules instanceof EnumMappingResource);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
+		assertTrue(mappingRule.getClass().getName().endsWith("EnumMappingResource"));
 	}	
 }

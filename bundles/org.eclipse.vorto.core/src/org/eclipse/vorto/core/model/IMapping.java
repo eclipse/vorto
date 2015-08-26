@@ -12,7 +12,7 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.api.mapping;
+package org.eclipse.vorto.core.model;
 
 import java.util.List;
 
@@ -23,17 +23,24 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
  * Resolves mapping rules for a specific element or stereotype
  * 
  */
-public interface IMapping {
+public interface IMapping extends IModelElement{
 
 	/**
-	 * gets the mapping rules for the specified Model element
+	 * gets the mapping rules for the specified Model Object
 	 * 
-	 * @param modelElement
-	 *            modelElement whose meta data ought to be looked up
+	 * @param modelObject
+	 *            modelObject whose meta data ought to be looked up
 	 * @return mapping rules
 	 */
-	List<MappingRule> getRulesByModelObject(EObject modelElement);
+	List<MappingRule> getRulesByModelObject(EObject modelObject);
 
+	/**
+	 * gets the mapping rules for the specified Model Attribute
+	 * 
+	 * @param modelObject
+	 *            modelObject whose meta data ought to be looked up
+	 * @return mapping rules
+	 */
 	List<MappingRule> getRulesByModelAttribute(MappingAttribute mappingAttribute);
 	
 	/**

@@ -12,20 +12,20 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.tests.mapping;
+package org.eclipse.vorto.editor.mapping.tests.model;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
-import org.eclipse.vorto.codegen.internal.mapping.InfoModelMappingResource;
-import org.eclipse.vorto.codegen.tests.mapping.helper.TestInfoModelMappingFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.model.IMapping;
+import org.eclipse.vorto.core.model.MappingAttribute;
+import org.eclipse.vorto.core.model.MappingFactory;
+import org.eclipse.vorto.editor.mapping.tests.model.helper.TestInfoModelMappingFactory;
 import org.junit.Test;
 
 public class InfoModelMappingResourceTest {
@@ -33,7 +33,7 @@ public class InfoModelMappingResourceTest {
 	public void testGetRuleByInfoModelAttribute() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 
-		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.displayname);
 		assertEquals(1, mappingRules.size());
 	}
@@ -44,7 +44,7 @@ public class InfoModelMappingResourceTest {
 
 		InformationModel infoModel = (InformationModel) mappingModel.getRules().get(0).getSources().get(0).getModel();
 		FunctionblockProperty functionblockProperty = infoModel.getProperties().get(0);
-		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(functionblockProperty);
 		assertEquals(1, mappingRules.size());
 	}
@@ -52,7 +52,7 @@ public class InfoModelMappingResourceTest {
 	@Test
 	public void testGetRuleByStereoType() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
-		IMapping mappingRule = new InfoModelMappingResource(mappingModel);
+		IMapping mappingRule = MappingFactory.createMapping(mappingModel);
 		List<MappingRule> mappingRules = mappingRule.getRulesByStereoType("DummyStereoType");
 		assertEquals(1, mappingRules.size());
 	}

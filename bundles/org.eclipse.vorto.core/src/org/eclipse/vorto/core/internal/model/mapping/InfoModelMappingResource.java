@@ -12,13 +12,15 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.internal.mapping;
+package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.vorto.codegen.api.mapping.MappingAttribute;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
@@ -27,6 +29,10 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.core.model.MappingAttribute;
+import org.eclipse.vorto.core.model.ModelId;
 
 public class InfoModelMappingResource extends AbstractMappingResource {
 

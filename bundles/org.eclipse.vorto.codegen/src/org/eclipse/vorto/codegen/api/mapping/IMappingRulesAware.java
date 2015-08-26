@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api.mapping;
 
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
+
 /**
  * 
  * Code Generators which need to process mapping rules during generation, should
@@ -34,5 +36,5 @@ public interface IMappingRulesAware {
 	 * 
 	 * @param rules
 	 */
-	void setMappingRules(IMapping rules);
+	void setMappingRules(InfoModelMapping rules);
 }
