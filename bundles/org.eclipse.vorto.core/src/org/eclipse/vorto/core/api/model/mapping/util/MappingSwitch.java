@@ -75,16 +75,11 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.MAPPING: {
-				Mapping mapping = (Mapping)theEObject;
-				T result = caseMapping(mapping);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case MappingPackage.INFO_MODEL_MAPPING: {
 				InfoModelMapping infoModelMapping = (InfoModelMapping)theEObject;
 				T result = caseInfoModelMapping(infoModelMapping);
-				if (result == null) result = caseMapping(infoModelMapping);
+				if (result == null) result = caseMappingModel(infoModelMapping);
+				if (result == null) result = caseModel(infoModelMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -94,42 +89,34 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.INFO_MODEL_TARGET_ELEMENT: {
-				InfoModelTargetElement infoModelTargetElement = (InfoModelTargetElement)theEObject;
-				T result = caseInfoModelTargetElement(infoModelTargetElement);
+			case MappingPackage.INFOMODEL_SOURCE: {
+				InfomodelSource infomodelSource = (InfomodelSource)theEObject;
+				T result = caseInfomodelSource(infomodelSource);
+				if (result == null) result = caseSource(infomodelSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.INFO_MODEL_SOURCE_ELEMENT: {
-				InfoModelSourceElement infoModelSourceElement = (InfoModelSourceElement)theEObject;
-				T result = caseInfoModelSourceElement(infoModelSourceElement);
+			case MappingPackage.INFO_MODEL_PROPERTY_SOURCE: {
+				InfoModelPropertySource infoModelPropertySource = (InfoModelPropertySource)theEObject;
+				T result = caseInfoModelPropertySource(infoModelPropertySource);
+				if (result == null) result = caseInfomodelSource(infoModelPropertySource);
+				if (result == null) result = caseSource(infoModelPropertySource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.INFO_MODEL_CHILD: {
-				InfoModelChild infoModelChild = (InfoModelChild)theEObject;
-				T result = caseInfoModelChild(infoModelChild);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.INFO_MODEL_FB_ELEMENT: {
-				InfoModelFbElement infoModelFbElement = (InfoModelFbElement)theEObject;
-				T result = caseInfoModelFbElement(infoModelFbElement);
-				if (result == null) result = caseInfoModelChild(infoModelFbElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.INFORMATION_MODEL_ATTRIBUTE: {
-				InformationModelAttribute informationModelAttribute = (InformationModelAttribute)theEObject;
-				T result = caseInformationModelAttribute(informationModelAttribute);
-				if (result == null) result = caseInfoModelChild(informationModelAttribute);
+			case MappingPackage.INFO_MODEL_ATTRIBUTE_SOURCE: {
+				InfoModelAttributeSource infoModelAttributeSource = (InfoModelAttributeSource)theEObject;
+				T result = caseInfoModelAttributeSource(infoModelAttributeSource);
+				if (result == null) result = caseInfomodelSource(infoModelAttributeSource);
+				if (result == null) result = caseSource(infoModelAttributeSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case MappingPackage.FUNCTION_BLOCK_MAPPING: {
 				FunctionBlockMapping functionBlockMapping = (FunctionBlockMapping)theEObject;
 				T result = caseFunctionBlockMapping(functionBlockMapping);
-				if (result == null) result = caseMapping(functionBlockMapping);
+				if (result == null) result = caseMappingModel(functionBlockMapping);
+				if (result == null) result = caseModel(functionBlockMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -139,81 +126,60 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_TARGET_ELEMENT: {
-				FunctionBlockTargetElement functionBlockTargetElement = (FunctionBlockTargetElement)theEObject;
-				T result = caseFunctionBlockTargetElement(functionBlockTargetElement);
+			case MappingPackage.FUNCTION_BLOCK_SOURCE: {
+				FunctionBlockSource functionBlockSource = (FunctionBlockSource)theEObject;
+				T result = caseFunctionBlockSource(functionBlockSource);
+				if (result == null) result = caseSource(functionBlockSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_SOURCE_ELEMENT: {
-				FunctionBlockSourceElement functionBlockSourceElement = (FunctionBlockSourceElement)theEObject;
-				T result = caseFunctionBlockSourceElement(functionBlockSourceElement);
+			case MappingPackage.FUNCTION_BLOCK_PROPERTY_SOURCE: {
+				FunctionBlockPropertySource functionBlockPropertySource = (FunctionBlockPropertySource)theEObject;
+				T result = caseFunctionBlockPropertySource(functionBlockPropertySource);
+				if (result == null) result = caseFunctionBlockSource(functionBlockPropertySource);
+				if (result == null) result = caseSource(functionBlockPropertySource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_ELEMENT: {
-				FunctionBlockElement functionBlockElement = (FunctionBlockElement)theEObject;
-				T result = caseFunctionBlockElement(functionBlockElement);
+			case MappingPackage.FUNCTION_BLOCK_ATTRIBUTE_SOURCE: {
+				FunctionBlockAttributeSource functionBlockAttributeSource = (FunctionBlockAttributeSource)theEObject;
+				T result = caseFunctionBlockAttributeSource(functionBlockAttributeSource);
+				if (result == null) result = caseFunctionBlockSource(functionBlockAttributeSource);
+				if (result == null) result = caseSource(functionBlockAttributeSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_ELEMENT_ATTRIBUTE: {
-				FunctionBlockElementAttribute functionBlockElementAttribute = (FunctionBlockElementAttribute)theEObject;
-				T result = caseFunctionBlockElementAttribute(functionBlockElementAttribute);
-				if (result == null) result = caseFunctionBlockElement(functionBlockElementAttribute);
+			case MappingPackage.CONFIGURATION_SOURCE: {
+				ConfigurationSource configurationSource = (ConfigurationSource)theEObject;
+				T result = caseConfigurationSource(configurationSource);
+				if (result == null) result = caseFunctionBlockPropertySource(configurationSource);
+				if (result == null) result = caseFunctionBlockSource(configurationSource);
+				if (result == null) result = caseSource(configurationSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_CHILD_ELEMENT: {
-				FunctionBlockChildElement functionBlockChildElement = (FunctionBlockChildElement)theEObject;
-				T result = caseFunctionBlockChildElement(functionBlockChildElement);
-				if (result == null) result = caseFunctionBlockElement(functionBlockChildElement);
+			case MappingPackage.STATUS_SOURCE: {
+				StatusSource statusSource = (StatusSource)theEObject;
+				T result = caseStatusSource(statusSource);
+				if (result == null) result = caseFunctionBlockPropertySource(statusSource);
+				if (result == null) result = caseFunctionBlockSource(statusSource);
+				if (result == null) result = caseSource(statusSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.OPERATION_ELEMENT: {
-				OperationElement operationElement = (OperationElement)theEObject;
-				T result = caseOperationElement(operationElement);
-				if (result == null) result = caseFunctionBlockChildElement(operationElement);
-				if (result == null) result = caseFunctionBlockElement(operationElement);
+			case MappingPackage.OPERATION_SOURCE: {
+				OperationSource operationSource = (OperationSource)theEObject;
+				T result = caseOperationSource(operationSource);
+				if (result == null) result = caseFunctionBlockSource(operationSource);
+				if (result == null) result = caseSource(operationSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.CONFIGURATION_ELEMENT: {
-				ConfigurationElement configurationElement = (ConfigurationElement)theEObject;
-				T result = caseConfigurationElement(configurationElement);
-				if (result == null) result = caseFunctionBlockChildElement(configurationElement);
-				if (result == null) result = caseFunctionBlockElement(configurationElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.STATUS_ELEMENT: {
-				StatusElement statusElement = (StatusElement)theEObject;
-				T result = caseStatusElement(statusElement);
-				if (result == null) result = caseFunctionBlockChildElement(statusElement);
-				if (result == null) result = caseFunctionBlockElement(statusElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.FAULT_ELEMENT: {
-				FaultElement faultElement = (FaultElement)theEObject;
-				T result = caseFaultElement(faultElement);
-				if (result == null) result = caseFunctionBlockChildElement(faultElement);
-				if (result == null) result = caseFunctionBlockElement(faultElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.EVENT_ELEMENT: {
-				EventElement eventElement = (EventElement)theEObject;
-				T result = caseEventElement(eventElement);
-				if (result == null) result = caseFunctionBlockChildElement(eventElement);
-				if (result == null) result = caseFunctionBlockElement(eventElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.FB_TYPE_ELEMENT: {
-				FBTypeElement fbTypeElement = (FBTypeElement)theEObject;
-				T result = caseFBTypeElement(fbTypeElement);
+			case MappingPackage.EVENT_RESOURCE: {
+				EventResource eventResource = (EventResource)theEObject;
+				T result = caseEventResource(eventResource);
+				if (result == null) result = caseFunctionBlockSource(eventResource);
+				if (result == null) result = caseSource(eventResource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -221,7 +187,8 @@ public class MappingSwitch<T> extends Switch<T> {
 				EntityMapping entityMapping = (EntityMapping)theEObject;
 				T result = caseEntityMapping(entityMapping);
 				if (result == null) result = caseDataTypeMapping(entityMapping);
-				if (result == null) result = caseMapping(entityMapping);
+				if (result == null) result = caseMappingModel(entityMapping);
+				if (result == null) result = caseModel(entityMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -231,29 +198,26 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_TARGET_ELEMENT: {
-				EntityTargetElement entityTargetElement = (EntityTargetElement)theEObject;
-				T result = caseEntityTargetElement(entityTargetElement);
+			case MappingPackage.ENTITY_SOURCE: {
+				EntitySource entitySource = (EntitySource)theEObject;
+				T result = caseEntitySource(entitySource);
+				if (result == null) result = caseSource(entitySource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_SOURCE_ELEMENT: {
-				EntitySourceElement entitySourceElement = (EntitySourceElement)theEObject;
-				T result = caseEntitySourceElement(entitySourceElement);
+			case MappingPackage.ENTITY_PROPERTY_SOURCE: {
+				EntityPropertySource entityPropertySource = (EntityPropertySource)theEObject;
+				T result = caseEntityPropertySource(entityPropertySource);
+				if (result == null) result = caseEntitySource(entityPropertySource);
+				if (result == null) result = caseSource(entityPropertySource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_ATTRIBUTE_ELEMENT: {
-				EntityAttributeElement entityAttributeElement = (EntityAttributeElement)theEObject;
-				T result = caseEntityAttributeElement(entityAttributeElement);
-				if (result == null) result = caseEntitySourceElement(entityAttributeElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.ENTITY_EXPRESSION_REF: {
-				EntityExpressionRef entityExpressionRef = (EntityExpressionRef)theEObject;
-				T result = caseEntityExpressionRef(entityExpressionRef);
-				if (result == null) result = caseEntitySourceElement(entityExpressionRef);
+			case MappingPackage.ENTITY_ATTRIBUTE_SOURCE: {
+				EntityAttributeSource entityAttributeSource = (EntityAttributeSource)theEObject;
+				T result = caseEntityAttributeSource(entityAttributeSource);
+				if (result == null) result = caseEntitySource(entityAttributeSource);
+				if (result == null) result = caseSource(entityAttributeSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -261,7 +225,8 @@ public class MappingSwitch<T> extends Switch<T> {
 				EnumMapping enumMapping = (EnumMapping)theEObject;
 				T result = caseEnumMapping(enumMapping);
 				if (result == null) result = caseDataTypeMapping(enumMapping);
-				if (result == null) result = caseMapping(enumMapping);
+				if (result == null) result = caseMappingModel(enumMapping);
+				if (result == null) result = caseModel(enumMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -271,80 +236,54 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENUM_TARGET_ELEMENT: {
-				EnumTargetElement enumTargetElement = (EnumTargetElement)theEObject;
-				T result = caseEnumTargetElement(enumTargetElement);
+			case MappingPackage.ENUM_SOURCE: {
+				EnumSource enumSource = (EnumSource)theEObject;
+				T result = caseEnumSource(enumSource);
+				if (result == null) result = caseSource(enumSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENUM_SOURCE_ELEMENT: {
-				EnumSourceElement enumSourceElement = (EnumSourceElement)theEObject;
-				T result = caseEnumSourceElement(enumSourceElement);
+			case MappingPackage.ENUM_PROPERTY_SOURCE: {
+				EnumPropertySource enumPropertySource = (EnumPropertySource)theEObject;
+				T result = caseEnumPropertySource(enumPropertySource);
+				if (result == null) result = caseEnumSource(enumPropertySource);
+				if (result == null) result = caseSource(enumPropertySource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENUM_ATTRIBUTE_ELEMENT: {
-				EnumAttributeElement enumAttributeElement = (EnumAttributeElement)theEObject;
-				T result = caseEnumAttributeElement(enumAttributeElement);
-				if (result == null) result = caseEnumSourceElement(enumAttributeElement);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.ENUM_EXPRESSION: {
-				EnumExpression enumExpression = (EnumExpression)theEObject;
-				T result = caseEnumExpression(enumExpression);
-				if (result == null) result = caseEnumSourceElement(enumExpression);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.ENUM_REFERENCE: {
-				EnumReference enumReference = (EnumReference)theEObject;
-				T result = caseEnumReference(enumReference);
-				if (result == null) result = caseEnumTargetElement(enumReference);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.FUNCTION_BLOCK_REFERENCE: {
-				FunctionBlockReference functionBlockReference = (FunctionBlockReference)theEObject;
-				T result = caseFunctionBlockReference(functionBlockReference);
-				if (result == null) result = caseInfoModelTargetElement(functionBlockReference);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case MappingPackage.DATA_TYPE_REFERENCE: {
-				DataTypeReference dataTypeReference = (DataTypeReference)theEObject;
-				T result = caseDataTypeReference(dataTypeReference);
-				if (result == null) result = caseFunctionBlockTargetElement(dataTypeReference);
-				if (result == null) result = caseEntityTargetElement(dataTypeReference);
+			case MappingPackage.ENUM_ATTRIBUTE_SOURCE: {
+				EnumAttributeSource enumAttributeSource = (EnumAttributeSource)theEObject;
+				T result = caseEnumAttributeSource(enumAttributeSource);
+				if (result == null) result = caseEnumSource(enumAttributeSource);
+				if (result == null) result = caseSource(enumAttributeSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case MappingPackage.DATA_TYPE_MAPPING: {
 				DataTypeMapping dataTypeMapping = (DataTypeMapping)theEObject;
 				T result = caseDataTypeMapping(dataTypeMapping);
-				if (result == null) result = caseMapping(dataTypeMapping);
+				if (result == null) result = caseMappingModel(dataTypeMapping);
+				if (result == null) result = caseModel(dataTypeMapping);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.STEREO_TYPE_REFERENCE: {
-				StereoTypeReference stereoTypeReference = (StereoTypeReference)theEObject;
-				T result = caseStereoTypeReference(stereoTypeReference);
-				if (result == null) result = caseInfoModelTargetElement(stereoTypeReference);
-				if (result == null) result = caseFunctionBlockTargetElement(stereoTypeReference);
-				if (result == null) result = caseEntityTargetElement(stereoTypeReference);
-				if (result == null) result = caseEnumTargetElement(stereoTypeReference);
+			case MappingPackage.TARGET: {
+				Target target = (Target)theEObject;
+				T result = caseTarget(target);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.STEREO_TYPE_ELEMENT: {
-				StereoTypeElement stereoTypeElement = (StereoTypeElement)theEObject;
-				T result = caseStereoTypeElement(stereoTypeElement);
+			case MappingPackage.REFERENCE_TARGET: {
+				ReferenceTarget referenceTarget = (ReferenceTarget)theEObject;
+				T result = caseReferenceTarget(referenceTarget);
+				if (result == null) result = caseTarget(referenceTarget);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.STEREO_TYPE: {
-				StereoType stereoType = (StereoType)theEObject;
-				T result = caseStereoType(stereoType);
+			case MappingPackage.STEREO_TYPE_TARGET: {
+				StereoTypeTarget stereoTypeTarget = (StereoTypeTarget)theEObject;
+				T result = caseStereoTypeTarget(stereoTypeTarget);
+				if (result == null) result = caseTarget(stereoTypeTarget);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -354,19 +293,18 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.NESTED_ENTITY_EXPRESSION: {
-				NestedEntityExpression nestedEntityExpression = (NestedEntityExpression)theEObject;
-				T result = caseNestedEntityExpression(nestedEntityExpression);
-				if (result == null) result = caseEntityExpressionRef(nestedEntityExpression);
-				if (result == null) result = caseEntitySourceElement(nestedEntityExpression);
+			case MappingPackage.SOURCE: {
+				Source source = (Source)theEObject;
+				T result = caseSource(source);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_EXPRESSION: {
-				EntityExpression entityExpression = (EntityExpression)theEObject;
-				T result = caseEntityExpression(entityExpression);
-				if (result == null) result = caseEntityExpressionRef(entityExpression);
-				if (result == null) result = caseEntitySourceElement(entityExpression);
+			case MappingPackage.FAULT_SOURCE: {
+				FaultSource faultSource = (FaultSource)theEObject;
+				T result = caseFaultSource(faultSource);
+				if (result == null) result = caseFunctionBlockPropertySource(faultSource);
+				if (result == null) result = caseFunctionBlockSource(faultSource);
+				if (result == null) result = caseSource(faultSource);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -386,21 +324,6 @@ public class MappingSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseMappingModel(MappingModel object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Mapping</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Mapping</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseMapping(Mapping object) {
 		return null;
 	}
 
@@ -435,77 +358,47 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Info Model Target Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Infomodel Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Info Model Target Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Infomodel Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInfoModelTargetElement(InfoModelTargetElement object) {
+	public T caseInfomodelSource(InfomodelSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Info Model Source Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Info Model Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Info Model Source Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Info Model Property Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInfoModelSourceElement(InfoModelSourceElement object) {
+	public T caseInfoModelPropertySource(InfoModelPropertySource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Info Model Child</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Info Model Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Info Model Child</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Info Model Attribute Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInfoModelChild(InfoModelChild object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Info Model Fb Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Info Model Fb Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseInfoModelFbElement(InfoModelFbElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Information Model Attribute</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Information Model Attribute</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseInformationModelAttribute(InformationModelAttribute object) {
+	public T caseInfoModelAttributeSource(InfoModelAttributeSource object) {
 		return null;
 	}
 
@@ -540,167 +433,107 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Target Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Target Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockTargetElement(FunctionBlockTargetElement object) {
+	public T caseFunctionBlockSource(FunctionBlockSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Source Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Source Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Property Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockSourceElement(FunctionBlockSourceElement object) {
+	public T caseFunctionBlockPropertySource(FunctionBlockPropertySource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Attribute Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockElement(FunctionBlockElement object) {
+	public T caseFunctionBlockAttributeSource(FunctionBlockAttributeSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Element Attribute</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Configuration Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Element Attribute</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Configuration Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockElementAttribute(FunctionBlockElementAttribute object) {
+	public T caseConfigurationSource(ConfigurationSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Child Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Status Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Child Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Status Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockChildElement(FunctionBlockChildElement object) {
+	public T caseStatusSource(StatusSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Operation Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Operation Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Operation Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Operation Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseOperationElement(OperationElement object) {
+	public T caseOperationSource(OperationSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Configuration Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Event Resource</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Configuration Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Event Resource</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseConfigurationElement(ConfigurationElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Status Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Status Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStatusElement(StatusElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Fault Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Fault Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFaultElement(FaultElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Event Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Event Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEventElement(EventElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>FB Type Element</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>FB Type Element</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFBTypeElement(FBTypeElement object) {
+	public T caseEventResource(EventResource object) {
 		return null;
 	}
 
@@ -735,62 +568,47 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Target Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Entity Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Target Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Entity Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityTargetElement(EntityTargetElement object) {
+	public T caseEntitySource(EntitySource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Source Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Entity Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Source Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Entity Property Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntitySourceElement(EntitySourceElement object) {
+	public T caseEntityPropertySource(EntityPropertySource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Attribute Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Entity Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Attribute Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Entity Attribute Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityAttributeElement(EntityAttributeElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Expression Ref</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Expression Ref</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEntityExpressionRef(EntityExpressionRef object) {
+	public T caseEntityAttributeSource(EntityAttributeSource object) {
 		return null;
 	}
 
@@ -825,107 +643,47 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Target Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Target Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnumTargetElement(EnumTargetElement object) {
+	public T caseEnumSource(EnumSource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Source Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Source Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Property Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnumSourceElement(EnumSourceElement object) {
+	public T caseEnumPropertySource(EnumPropertySource object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Attribute Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Attribute Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Attribute Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnumAttributeElement(EnumAttributeElement object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Expression</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Expression</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEnumExpression(EnumExpression object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEnumReference(EnumReference object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFunctionBlockReference(FunctionBlockReference object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Type Reference</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Type Reference</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseDataTypeReference(DataTypeReference object) {
+	public T caseEnumAttributeSource(EnumAttributeSource object) {
 		return null;
 	}
 
@@ -945,47 +703,47 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type Reference</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Target</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Stereo Type Reference</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Target</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseStereoTypeReference(StereoTypeReference object) {
+	public T caseTarget(Target object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type Element</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Reference Target</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Stereo Type Element</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Reference Target</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseStereoTypeElement(StereoTypeElement object) {
+	public T caseReferenceTarget(ReferenceTarget object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Stereo Type Target</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Stereo Type</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Stereo Type Target</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseStereoType(StereoType object) {
+	public T caseStereoTypeTarget(StereoTypeTarget object) {
 		return null;
 	}
 
@@ -1005,32 +763,32 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Nested Entity Expression</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Nested Entity Expression</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseNestedEntityExpression(NestedEntityExpression object) {
+	public T caseSource(Source object) {
 		return null;
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Expression</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Fault Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Expression</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Fault Source</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityExpression(EntityExpression object) {
+	public T caseFaultSource(FaultSource object) {
 		return null;
 	}
 

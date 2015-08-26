@@ -14,7 +14,7 @@
 *******************************************************************************/
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
-generate Mapping "http://www.eclipse.org/vorto/metamodel/Mapping"
+import "http://www.eclipse.org/vorto/metamodel/Mapping"
 import "http://www.eclipse.org/vorto/metamodel/InformationModel" as infomodel
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
@@ -23,6 +23,10 @@ import "http://www.eclipse.org/vorto/metamodel/Model" as model
 /*----------------------Start Information Model Mapping Definition---------------------------*/
 MappingModel:
   InfoModelMapping | FunctionBlockMapping | DataTypeMapping
+;
+
+DataTypeMapping:
+	EntityMapping | EnumMapping	
 ;
 
 InfoModelMapping:
@@ -39,26 +43,18 @@ InfoModelMappingRule:
 	'from' sources+=InfomodelSource (',' sources+=InfomodelSource)*
 	'to' target = Target
 ;
-	
-/* 
-InfoModelSourceElement:
-	{InfoModelSourceElement}
-	(infomodelSource = InfomodelSource)?
-;
-*/	
-	
+		
 InfomodelSource:
 	InfoModelAttributeSource | InfoModelPropertySource	
 ;
 
 InfoModelPropertySource:
-	model=[infomodel::InformationModel]  '.' element =[infomodel::FunctionblockProperty]  
+	model=[infomodel::InformationModel]  '.' property =[infomodel::FunctionblockProperty]  
 ;
 
 InfoModelAttributeSource:
-	model=[infomodel::InformationModel]  '.' element = InfoModelAttribute 
+	model=[infomodel::InformationModel]  '.' attribute = InfoModelAttribute 
 ;
-
 
 	
 enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
@@ -83,80 +79,39 @@ FunctionBlockMappingRule:
 
 		
 FunctionBlockSource:
-	EntityAttributeSource | EntityPropertySource	
+	FunctionBlockAttributeSource | FunctionBlockPropertySource	|OperationSource |EventResource
 ;
 
 FunctionBlockPropertySource:
-    model = [functionblock::FunctionblockModel] "."  element=[datatype::Property] 
+    ConfigurationSource | StatusSource | FaultSource 
 ;
 
 FunctionBlockAttributeSource:
-	model = [functionblock::FunctionblockModel]  '.' element = FunctionblockModelAttribute
+	model = [functionblock::FunctionblockModel]  '.' attribute = FunctionblockModelAttribute
 ;
 
 
-ConfigurationResource:
-	model = [functionblock::FunctionblockModel] '.'  '.'  'configuration'  '.'  element=[datatype::Property] 
+ConfigurationSource:
+	model = [functionblock::FunctionblockModel] '.'   'configuration'  '.'  property=[datatype::Property] 
 ;
 
-StatusResource:
-	model = [functionblock::FunctionblockModel] '.' '.'  'status' '.'  element=[datatype::Property] 
+StatusSource:
+	model = [functionblock::FunctionblockModel] '.' 'status' '.'  property=[datatype::Property] 
 ;
 
-FaultResource:
-	model = [functionblock::FunctionblockModel] '.' '.'  'fault' '.'  element=[datatype::Property] 
+FaultSource:
+	model = [functionblock::FunctionblockModel] '.'  'fault' '.'  property=[datatype::Property] 
 ;
 
 OperationSource:
-	model = [functionblock::FunctionblockModel] '.'  'operation' '.' element=[functionblock::Operation]
+	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation]
 ;
 
 EventResource:
-	 model = [functionblock::FunctionblockModel] '.' 'event' '.' element=[functionblock::Event] ('.' property=[datatype::Property] )?;
-	 		
-/*
-FunctionBlockSourceElement:
-	functionblock = [functionblock::FunctionblockModel]  (functionBlockElement = FunctionBlockElement)?
-;
+	 model = [functionblock::FunctionblockModel] '.' 'event' '.' event=[functionblock::Event] ('.' eventProperty=[datatype::Property] )?;
 
-FunctionBlockElement:
-	FunctionBlockElementAttribute | FunctionBlockChildElement
-;
-
-FunctionBlockElementAttribute:
-	'.' attribute = FunctionblockModelAttribute 	
-;
-
-FunctionBlockChildElement:
-	OperationElement | ConfigurationElement | StatusElement | FaultElement | EventElement	
-;
-
-
-OperationElement:
-	'.'  'operation' '.' operation=[functionblock::Operation]
-;
-
-ConfigurationElement:
-	 '.'  'configuration'   typeRef=FBTypeElement
-;
-
-StatusElement:
-	 '.'  'status'  typeRef=FBTypeElement
-;
-
-FaultElement:
-	 '.' 'fault' typeRef=FBTypeElement
-;
-
-EventElement:
-	 '.'  'event' '.' event=[functionblock::Event] (typeRef=FBTypeElement)?;
-
-		 	
-FBTypeElement:
-	 '.'  property =[datatype::Property] 
-;
- */		
 enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
+	 		
 
 /*----------------------End Function Block Mapping Definition---------------------------*/
 
@@ -182,31 +137,12 @@ EntitySource:
 ;
 
 EntityPropertySource:
-    model = [datatype::Entity] "."  element=[datatype::Property] 
+    model = [datatype::Entity] "."  property=[datatype::Property] 
 ;
 
 EntityAttributeSource:
-	model = [datatype::Entity] '.' element = ModelAttribute
+	model = [datatype::Entity] '.' attribute = ModelAttribute
 ;
-
-
-/*
-EntitySourceElement:
-	EntityAttributeElement | NestedEntityExpression
-;
-
-EntityAttributeElement:
-	typeRef = [datatype::Entity] '.' attribute = ModelAttribute
-;	
-
-NestedEntityExpression returns EntityExpressionRef:
-     EntityExpression ({NestedEntityExpression.ref=current}  "." tail=[datatype::Property])*
-;
- 
-EntityExpression returns EntityExpressionRef:
-    {EntityExpression} entity=[datatype::Entity]
-; 
- */
 
 /*----------------------End Entity Mapping Definition---------------------------*/
 
@@ -232,52 +168,13 @@ EnumSource:
 ;
 
 EnumPropertySource:
-    model = [datatype::Enum] "."  element=[datatype::EnumLiteral] 
+    model = [datatype::Enum] "."  property=[datatype::EnumLiteral] 
 ;
 
 EnumAttributeSource:
-	model = [datatype::Enum] '.' element = ModelAttribute
+	model = [datatype::Enum] '.' attribute = ModelAttribute
 ;
 
-
-/*
-EnumSourceElement:
-	EnumAttributeElement | EnumExpression
-;
-
-
-EnumAttributeElement:
-	typeRef = [datatype::Enum] '.' attribute = ModelAttribute
-;	
-
-
-EnumExpression:
-   typeRef = [datatype::Enum] "." literal=[datatype::EnumLiteral]
-;
-
-EnumReference:
-	'reference' reference=  [EnumMapping|QualifiedName]	
-;
- */	
-/*----------------------End Enum Mapping Definition---------------------------*/
-
-
-/*----------------------Start Reference Element Definition---------------------------*/
-FunctionBlockReference:
-	'reference' reference=  [FunctionBlockMapping|QualifiedName]
-;
-
-
-DataTypeMapping:
-	EntityMapping | EnumMapping
-;
-
-/*----------------------End Reference Element Definition---------------------------*/	
-
-/*----------------------Start Rule Source Definition---------------------------*/
-
-
-/*----------------------End Rule Source Definition---------------------------*/	
 	
 /*----------------------Start Target Element Definition---------------------------*/
 Target:

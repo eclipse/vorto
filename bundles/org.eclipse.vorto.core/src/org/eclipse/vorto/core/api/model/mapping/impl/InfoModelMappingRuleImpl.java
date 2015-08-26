@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelTargetElement;
+import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.Target;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,8 +31,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getSourceElements <em>Source Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getInfoModelSourceElements <em>Info Model Source Elements</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getSources <em>Sources</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
  *
@@ -40,24 +39,14 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  */
 public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container implements InfoModelMappingRule {
 	/**
-	 * The cached value of the '{@link #getSourceElements() <em>Source Elements</em>}' containment reference list.
+	 * The cached value of the '{@link #getSources() <em>Sources</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getSourceElements()
+	 * @see #getSources()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<InfoModelSourceElement> sourceElements;
-
-	/**
-	 * The cached value of the '{@link #getInfoModelSourceElements() <em>Info Model Source Elements</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getInfoModelSourceElements()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<InfoModelSourceElement> infoModelSourceElements;
+	protected EList<InfomodelSource> sources;
 
 	/**
 	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
@@ -67,7 +56,7 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * @generated
 	 * @ordered
 	 */
-	protected InfoModelTargetElement target;
+	protected Target target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -93,11 +82,11 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<InfoModelSourceElement> getSourceElements() {
-		if (sourceElements == null) {
-			sourceElements = new EObjectContainmentEList<InfoModelSourceElement>(InfoModelSourceElement.class, this, MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS);
+	public EList<InfomodelSource> getSources() {
+		if (sources == null) {
+			sources = new EObjectContainmentEList<InfomodelSource>(InfomodelSource.class, this, MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES);
 		}
-		return sourceElements;
+		return sources;
 	}
 
 	/**
@@ -105,19 +94,7 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<InfoModelSourceElement> getInfoModelSourceElements() {
-		if (infoModelSourceElements == null) {
-			infoModelSourceElements = new EObjectContainmentEList<InfoModelSourceElement>(InfoModelSourceElement.class, this, MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS);
-		}
-		return infoModelSourceElements;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InfoModelTargetElement getTarget() {
+	public Target getTarget() {
 		return target;
 	}
 
@@ -126,8 +103,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTarget(InfoModelTargetElement newTarget, NotificationChain msgs) {
-		InfoModelTargetElement oldTarget = target;
+	public NotificationChain basicSetTarget(Target newTarget, NotificationChain msgs) {
+		Target oldTarget = target;
 		target = newTarget;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET, oldTarget, newTarget);
@@ -141,7 +118,7 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTarget(InfoModelTargetElement newTarget) {
+	public void setTarget(Target newTarget) {
 		if (newTarget != target) {
 			NotificationChain msgs = null;
 			if (target != null)
@@ -163,10 +140,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS:
-				return ((InternalEList<?>)getSourceElements()).basicRemove(otherEnd, msgs);
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
-				return ((InternalEList<?>)getInfoModelSourceElements()).basicRemove(otherEnd, msgs);
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES:
+				return ((InternalEList<?>)getSources()).basicRemove(otherEnd, msgs);
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
 				return basicSetTarget(null, msgs);
 		}
@@ -181,10 +156,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS:
-				return getSourceElements();
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
-				return getInfoModelSourceElements();
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES:
+				return getSources();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
 				return getTarget();
 		}
@@ -200,16 +173,12 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS:
-				getSourceElements().clear();
-				getSourceElements().addAll((Collection<? extends InfoModelSourceElement>)newValue);
-				return;
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
-				getInfoModelSourceElements().clear();
-				getInfoModelSourceElements().addAll((Collection<? extends InfoModelSourceElement>)newValue);
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES:
+				getSources().clear();
+				getSources().addAll((Collection<? extends InfomodelSource>)newValue);
 				return;
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
-				setTarget((InfoModelTargetElement)newValue);
+				setTarget((Target)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -223,14 +192,11 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS:
-				getSourceElements().clear();
-				return;
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
-				getInfoModelSourceElements().clear();
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES:
+				getSources().clear();
 				return;
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
-				setTarget((InfoModelTargetElement)null);
+				setTarget((Target)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -244,10 +210,8 @@ public class InfoModelMappingRuleImpl extends MinimalEObjectImpl.Container imple
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCE_ELEMENTS:
-				return sourceElements != null && !sourceElements.isEmpty();
-			case MappingPackage.INFO_MODEL_MAPPING_RULE__INFO_MODEL_SOURCE_ELEMENTS:
-				return infoModelSourceElements != null && !infoModelSourceElements.isEmpty();
+			case MappingPackage.INFO_MODEL_MAPPING_RULE__SOURCES:
+				return sources != null && !sources.isEmpty();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE__TARGET:
 				return target != null;
 		}

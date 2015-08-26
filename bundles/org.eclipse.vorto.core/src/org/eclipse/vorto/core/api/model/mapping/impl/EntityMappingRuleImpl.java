@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.EntityMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.EntitySourceElement;
-import org.eclipse.vorto.core.api.model.mapping.EntityTargetElement;
+import org.eclipse.vorto.core.api.model.mapping.EntitySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.Target;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,8 +31,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getEntityMappingElements <em>Entity Mapping Elements</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getEntitySourceElement <em>Entity Source Element</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getSources <em>Sources</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
  *
@@ -40,24 +39,14 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  */
 public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implements EntityMappingRule {
 	/**
-	 * The cached value of the '{@link #getEntityMappingElements() <em>Entity Mapping Elements</em>}' containment reference list.
+	 * The cached value of the '{@link #getSources() <em>Sources</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getEntityMappingElements()
+	 * @see #getSources()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<EntitySourceElement> entityMappingElements;
-
-	/**
-	 * The cached value of the '{@link #getEntitySourceElement() <em>Entity Source Element</em>}' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getEntitySourceElement()
-	 * @generated
-	 * @ordered
-	 */
-	protected EList<EntitySourceElement> entitySourceElement;
+	protected EList<EntitySource> sources;
 
 	/**
 	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
@@ -67,7 +56,7 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 * @ordered
 	 */
-	protected EntityTargetElement target;
+	protected Target target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -93,11 +82,11 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<EntitySourceElement> getEntityMappingElements() {
-		if (entityMappingElements == null) {
-			entityMappingElements = new EObjectContainmentEList<EntitySourceElement>(EntitySourceElement.class, this, MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS);
+	public EList<EntitySource> getSources() {
+		if (sources == null) {
+			sources = new EObjectContainmentEList<EntitySource>(EntitySource.class, this, MappingPackage.ENTITY_MAPPING_RULE__SOURCES);
 		}
-		return entityMappingElements;
+		return sources;
 	}
 
 	/**
@@ -105,19 +94,7 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<EntitySourceElement> getEntitySourceElement() {
-		if (entitySourceElement == null) {
-			entitySourceElement = new EObjectContainmentEList<EntitySourceElement>(EntitySourceElement.class, this, MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT);
-		}
-		return entitySourceElement;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EntityTargetElement getTarget() {
+	public Target getTarget() {
 		return target;
 	}
 
@@ -126,8 +103,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTarget(EntityTargetElement newTarget, NotificationChain msgs) {
-		EntityTargetElement oldTarget = target;
+	public NotificationChain basicSetTarget(Target newTarget, NotificationChain msgs) {
+		Target oldTarget = target;
 		target = newTarget;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.ENTITY_MAPPING_RULE__TARGET, oldTarget, newTarget);
@@ -141,7 +118,7 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTarget(EntityTargetElement newTarget) {
+	public void setTarget(Target newTarget) {
 		if (newTarget != target) {
 			NotificationChain msgs = null;
 			if (target != null)
@@ -163,10 +140,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS:
-				return ((InternalEList<?>)getEntityMappingElements()).basicRemove(otherEnd, msgs);
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
-				return ((InternalEList<?>)getEntitySourceElement()).basicRemove(otherEnd, msgs);
+			case MappingPackage.ENTITY_MAPPING_RULE__SOURCES:
+				return ((InternalEList<?>)getSources()).basicRemove(otherEnd, msgs);
 			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
 				return basicSetTarget(null, msgs);
 		}
@@ -181,10 +156,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS:
-				return getEntityMappingElements();
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
-				return getEntitySourceElement();
+			case MappingPackage.ENTITY_MAPPING_RULE__SOURCES:
+				return getSources();
 			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
 				return getTarget();
 		}
@@ -200,16 +173,12 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS:
-				getEntityMappingElements().clear();
-				getEntityMappingElements().addAll((Collection<? extends EntitySourceElement>)newValue);
-				return;
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
-				getEntitySourceElement().clear();
-				getEntitySourceElement().addAll((Collection<? extends EntitySourceElement>)newValue);
+			case MappingPackage.ENTITY_MAPPING_RULE__SOURCES:
+				getSources().clear();
+				getSources().addAll((Collection<? extends EntitySource>)newValue);
 				return;
 			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
-				setTarget((EntityTargetElement)newValue);
+				setTarget((Target)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -223,14 +192,11 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS:
-				getEntityMappingElements().clear();
-				return;
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
-				getEntitySourceElement().clear();
+			case MappingPackage.ENTITY_MAPPING_RULE__SOURCES:
+				getSources().clear();
 				return;
 			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
-				setTarget((EntityTargetElement)null);
+				setTarget((Target)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -244,10 +210,8 @@ public class EntityMappingRuleImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_MAPPING_ELEMENTS:
-				return entityMappingElements != null && !entityMappingElements.isEmpty();
-			case MappingPackage.ENTITY_MAPPING_RULE__ENTITY_SOURCE_ELEMENT:
-				return entitySourceElement != null && !entitySourceElement.isEmpty();
+			case MappingPackage.ENTITY_MAPPING_RULE__SOURCES:
+				return sources != null && !sources.isEmpty();
 			case MappingPackage.ENTITY_MAPPING_RULE__TARGET:
 				return target != null;
 		}

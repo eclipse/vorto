@@ -19,9 +19,9 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSourceElement;
-import org.eclipse.vorto.core.api.model.mapping.FunctionBlockTargetElement;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.Target;
 
 /**
  * <!-- begin-user-doc -->
@@ -31,7 +31,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * The following features are implemented:
  * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getFunctionBlockSourceElements <em>Function Block Source Elements</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getSources <em>Sources</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockMappingRuleImpl#getTarget <em>Target</em>}</li>
  * </ul>
  *
@@ -39,14 +39,14 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  */
 public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container implements FunctionBlockMappingRule {
 	/**
-	 * The cached value of the '{@link #getFunctionBlockSourceElements() <em>Function Block Source Elements</em>}' containment reference list.
+	 * The cached value of the '{@link #getSources() <em>Sources</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getFunctionBlockSourceElements()
+	 * @see #getSources()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<FunctionBlockSourceElement> functionBlockSourceElements;
+	protected EList<FunctionBlockSource> sources;
 
 	/**
 	 * The cached value of the '{@link #getTarget() <em>Target</em>}' containment reference.
@@ -56,7 +56,7 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * @generated
 	 * @ordered
 	 */
-	protected FunctionBlockTargetElement target;
+	protected Target target;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -82,11 +82,11 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<FunctionBlockSourceElement> getFunctionBlockSourceElements() {
-		if (functionBlockSourceElements == null) {
-			functionBlockSourceElements = new EObjectContainmentEList<FunctionBlockSourceElement>(FunctionBlockSourceElement.class, this, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS);
+	public EList<FunctionBlockSource> getSources() {
+		if (sources == null) {
+			sources = new EObjectContainmentEList<FunctionBlockSource>(FunctionBlockSource.class, this, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES);
 		}
-		return functionBlockSourceElements;
+		return sources;
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockTargetElement getTarget() {
+	public Target getTarget() {
 		return target;
 	}
 
@@ -103,8 +103,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetTarget(FunctionBlockTargetElement newTarget, NotificationChain msgs) {
-		FunctionBlockTargetElement oldTarget = target;
+	public NotificationChain basicSetTarget(Target newTarget, NotificationChain msgs) {
+		Target oldTarget = target;
 		target = newTarget;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET, oldTarget, newTarget);
@@ -118,7 +118,7 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setTarget(FunctionBlockTargetElement newTarget) {
+	public void setTarget(Target newTarget) {
 		if (newTarget != target) {
 			NotificationChain msgs = null;
 			if (target != null)
@@ -140,8 +140,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
-				return ((InternalEList<?>)getFunctionBlockSourceElements()).basicRemove(otherEnd, msgs);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES:
+				return ((InternalEList<?>)getSources()).basicRemove(otherEnd, msgs);
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
 				return basicSetTarget(null, msgs);
 		}
@@ -156,8 +156,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
-				return getFunctionBlockSourceElements();
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES:
+				return getSources();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
 				return getTarget();
 		}
@@ -173,12 +173,12 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
-				getFunctionBlockSourceElements().clear();
-				getFunctionBlockSourceElements().addAll((Collection<? extends FunctionBlockSourceElement>)newValue);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES:
+				getSources().clear();
+				getSources().addAll((Collection<? extends FunctionBlockSource>)newValue);
 				return;
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
-				setTarget((FunctionBlockTargetElement)newValue);
+				setTarget((Target)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -192,11 +192,11 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
-				getFunctionBlockSourceElements().clear();
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES:
+				getSources().clear();
 				return;
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
-				setTarget((FunctionBlockTargetElement)null);
+				setTarget((Target)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -210,8 +210,8 @@ public class FunctionBlockMappingRuleImpl extends MinimalEObjectImpl.Container i
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__FUNCTION_BLOCK_SOURCE_ELEMENTS:
-				return functionBlockSourceElements != null && !functionBlockSourceElements.isEmpty();
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__SOURCES:
+				return sources != null && !sources.isEmpty();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE__TARGET:
 				return target != null;
 		}

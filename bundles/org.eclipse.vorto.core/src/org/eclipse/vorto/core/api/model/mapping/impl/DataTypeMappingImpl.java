@@ -14,7 +14,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  *
  * @generated
  */
-public class DataTypeMappingImpl extends MappingImpl implements DataTypeMapping {
+public class DataTypeMappingImpl extends MappingModelImpl implements DataTypeMapping {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

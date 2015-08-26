@@ -33,64 +33,6 @@ public class MappingFormatter extends AbstractDeclarativeFormatter {
 
 	override protected void configureFormatting(FormattingConfig c) {
 
-		//Basic information
-		c.setLinewrap(1).after(f.modelReferenceAccess.group)
-		c.setLinewrap(1).after(f.mappingModelAccess.namespaceAssignment_2)
-		c.setLinewrap(1).after(f.mappingModelAccess.versionAssignment_4)
-		
-		//Comments
-		c.setLinewrap(0, 1, 2).before(SL_COMMENTRule)
-		c.setLinewrap(0, 1, 2).before(ML_COMMENTRule)
-		c.setLinewrap(0, 1, 1).after(ML_COMMENTRule)
-
-		//Mapping related key words
-		for (Keyword k : findKeywords(",")) {
-			c.setNoSpace.before(k)
-			c.setNoLinewrap.after(k)
-		}
-		for (Keyword k : findKeywords(".")) {
-			c.setNoSpace.before(k)
-			c.setNoSpace.after(k)
-		}
-		for (Keyword k : findKeywords(":")) {
-			c.setNoLinewrap.after(k)
-			c.setNoLinewrap.before(k)
-		}
-		
-		for (Keyword k : findKeywords("datamapping")) {
-			c.setLinewrap(2).before(k)
-			c.setNoLinewrap.after(k)
-		}
-				
-		for (Keyword k : findKeywords("fbmapping")) {
-			c.setLinewrap(2).before(k)
-			c.setNoLinewrap.after(k)
-		}
-		
-		for (Keyword k : findKeywords("immapping")) {
-			c.setLinewrap(2).before(k)
-			c.setNoLinewrap.after(k)
-		}		
-				
-		for (Keyword k : findKeywords("from")) {
-			c.setLinewrap(2).before(k)
-			c.setNoLinewrap.after(k)
-		}
-		for (Keyword k : findKeywords("to")) {
-			c.setLinewrap(1).before(k)
-			c.setNoLinewrap.after(k)
-		}
-						
-		for (Keyword k : f.stereoTypeAccess.findKeywords("with")) {
-			c.setNoLinewrap.before(k)
-			c.setNoLinewrap.after(k)
-		}
-
-		//Block elements in stereo types environment
-		stereoTypeAccess.findKeywordPairs("{", "}").forEach [
-			c.setNoLinewrap.after(first)
-			c.setNoLinewrap.before(second)
-		]
 
 		//Remaining block elements
 		findKeywordPairs("{", "}").forEach [
