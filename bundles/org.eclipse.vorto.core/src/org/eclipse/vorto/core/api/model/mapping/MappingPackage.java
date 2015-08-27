@@ -308,22 +308,13 @@ public interface MappingPackage extends EPackage {
 	int SOURCE = 30;
 
 	/**
-	 * The feature id for the '<em><b>Model</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SOURCE__MODEL = 0;
-
-	/**
 	 * The number of structural features of the '<em>Source</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOURCE_FEATURE_COUNT = 1;
+	int SOURCE_FEATURE_COUNT = 0;
 
 	/**
 	 * The number of operations of the '<em>Source</em>' class.
@@ -351,7 +342,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFOMODEL_SOURCE__MODEL = SOURCE__MODEL;
+	int INFOMODEL_SOURCE__MODEL = SOURCE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Infomodel Source</em>' class.
@@ -360,7 +351,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFOMODEL_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 0;
+	int INFOMODEL_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Infomodel Source</em>' class.
@@ -599,7 +590,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_SOURCE__MODEL = SOURCE__MODEL;
+	int FUNCTION_BLOCK_SOURCE__MODEL = SOURCE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Function Block Source</em>' class.
@@ -608,7 +599,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 0;
+	int FUNCTION_BLOCK_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Function Block Source</em>' class.
@@ -1104,7 +1095,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENTITY_SOURCE__MODEL = SOURCE__MODEL;
+	int ENTITY_SOURCE__MODEL = SOURCE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Entity Source</em>' class.
@@ -1113,7 +1104,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENTITY_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 0;
+	int ENTITY_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Entity Source</em>' class.
@@ -1352,7 +1343,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENUM_SOURCE__MODEL = SOURCE__MODEL;
+	int ENUM_SOURCE__MODEL = SOURCE_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Enum Source</em>' class.
@@ -1361,7 +1352,7 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENUM_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 0;
+	int ENUM_SOURCE_FEATURE_COUNT = SOURCE_FEATURE_COUNT + 1;
 
 	/**
 	 * The number of operations of the '<em>Enum Source</em>' class.
@@ -1750,6 +1741,17 @@ public interface MappingPackage extends EPackage {
 	EClass getInfomodelSource();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.mapping.InfomodelSource#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfomodelSource#getModel()
+	 * @see #getInfomodelSource()
+	 * @generated
+	 */
+	EReference getInfomodelSource_Model();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource <em>Info Model Property Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1820,6 +1822,17 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getFunctionBlockSource();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource#getModel()
+	 * @see #getFunctionBlockSource()
+	 * @generated
+	 */
+	EReference getFunctionBlockSource_Model();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource <em>Function Block Property Source</em>}'.
@@ -1978,6 +1991,17 @@ public interface MappingPackage extends EPackage {
 	EClass getEntitySource();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.mapping.EntitySource#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.EntitySource#getModel()
+	 * @see #getEntitySource()
+	 * @generated
+	 */
+	EReference getEntitySource_Model();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.EntityPropertySource <em>Entity Property Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2048,6 +2072,17 @@ public interface MappingPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getEnumSource();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.mapping.EnumSource#getModel <em>Model</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Model</em>'.
+	 * @see org.eclipse.vorto.core.api.model.mapping.EnumSource#getModel()
+	 * @see #getEnumSource()
+	 * @generated
+	 */
+	EReference getEnumSource_Model();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.EnumPropertySource <em>Enum Property Source</em>}'.
@@ -2207,17 +2242,6 @@ public interface MappingPackage extends EPackage {
 	EClass getSource();
 
 	/**
-	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.mapping.Source#getModel <em>Model</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Model</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.Source#getModel()
-	 * @see #getSource()
-	 * @generated
-	 */
-	EReference getSource_Model();
-
-	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.mapping.FaultSource <em>Fault Source</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2372,6 +2396,14 @@ public interface MappingPackage extends EPackage {
 		EClass INFOMODEL_SOURCE = eINSTANCE.getInfomodelSource();
 
 		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference INFOMODEL_SOURCE__MODEL = eINSTANCE.getInfomodelSource_Model();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.InfoModelPropertySourceImpl <em>Info Model Property Source</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2436,6 +2468,14 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EClass FUNCTION_BLOCK_SOURCE = eINSTANCE.getFunctionBlockSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FUNCTION_BLOCK_SOURCE__MODEL = eINSTANCE.getFunctionBlockSource_Model();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.FunctionBlockPropertySourceImpl <em>Function Block Property Source</em>}' class.
@@ -2576,6 +2616,14 @@ public interface MappingPackage extends EPackage {
 		EClass ENTITY_SOURCE = eINSTANCE.getEntitySource();
 
 		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENTITY_SOURCE__MODEL = eINSTANCE.getEntitySource_Model();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.EntityPropertySourceImpl <em>Entity Property Source</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2640,6 +2688,14 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ENUM_SOURCE = eINSTANCE.getEnumSource();
+
+		/**
+		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENUM_SOURCE__MODEL = eINSTANCE.getEnumSource_Model();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.EnumPropertySourceImpl <em>Enum Property Source</em>}' class.
@@ -2776,14 +2832,6 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EClass SOURCE = eINSTANCE.getSource();
-
-		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference SOURCE__MODEL = eINSTANCE.getSource_Model();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.impl.FaultSourceImpl <em>Fault Source</em>}' class.

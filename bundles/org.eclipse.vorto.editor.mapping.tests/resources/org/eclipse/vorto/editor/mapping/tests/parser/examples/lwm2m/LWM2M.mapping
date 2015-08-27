@@ -1,16 +1,16 @@
-namespace org.openmobilealliance.map
+namespace com.mycompany.lwm2m
 version 1.0.0
-using com.mycompany.DjiPhantomVision ; 3.0.0-Plus
-using com.mycompany.map.DroneMapping ; 1.0.0
+using com.mycompany.lwm2m.DjiPhantomVision ; 3.0.0-Plus
+using com.mycompany.lwm2m.fb.DroneMapping ; 1.0.0
 
 infomodelmapping LWM2M {
-
-		from DjiPhantomVision
+		
+		from DjiPhantomVision.switcher
 		to ObjectType with {
 		Type : "MODefinition", Name : "Location", ObjectID : "6", ObjectURN : "TBD", MultipleInstances : "Single", Mandatory : "Optional"
 		}
 
-		from DjiPhantomVision.drone
+		from DjiPhantomVision.switcher
 		to reference DroneMapping
 	
 }

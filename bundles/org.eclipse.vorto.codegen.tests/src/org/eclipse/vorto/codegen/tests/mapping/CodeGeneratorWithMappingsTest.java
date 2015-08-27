@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.IMapping;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRulesAware;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -35,11 +34,13 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
+import org.eclipse.vorto.core.model.IMapping;
 import org.junit.Test;
 
 public class CodeGeneratorWithMappingsTest {
@@ -58,6 +59,13 @@ public class CodeGeneratorWithMappingsTest {
 				rules.addAll(mappingRules
 						.getRulesByStereoType("configDescription"));
 			}
+
+			@Override
+			public void setMapping(IMapping mapping) {
+				// TODO Auto-generated method stub
+				
+			}
+
 		};
 
 		MappingModel mappingModel = this.createRuleModel(leftSideModel);
@@ -75,15 +83,6 @@ public class CodeGeneratorWithMappingsTest {
 
 		protected IMapping mappingRules;
 
-		@Override
-		public String getMappingRulesFileName() {
-			return "demo.mapping";
-		}
-
-		@Override
-		public void setMappingRules(IMapping rules) {
-			this.mappingRules = rules;
-		}
 
 		@Override
 		public String getName() {

@@ -14,27 +14,20 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api.mapping;
 
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
+import org.eclipse.vorto.core.model.IMapping;
 
 /**
  * 
- * Code Generators which need to process mapping rules during generation, should
+ * Code Generators which need to process mapping during generation, should
  * be implementing this interface
  * 
  */
 public interface IMappingRulesAware {
 
 	/**
+	 * injects the mapping for the specific target platform
 	 * 
-	 * @return the name of the mapping for the current code generator, e.g.
-	 *         myplatform
+	 * @param mapping
 	 */
-	String getMappingRulesFileName();
-
-	/**
-	 * injects the mapping rules for the specific target platform
-	 * 
-	 * @param rules
-	 */
-	void setMappingRules(InfoModelMapping rules);
+	void setMapping(IMapping mapping);
 }

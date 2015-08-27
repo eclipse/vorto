@@ -1,6 +1,6 @@
-namespace com.mycompany.map
+namespace com.mycompany.mydevice
 version 1.0.0
-using com.mycompany.NewInfomodel ; 1.0.0
+using com.mycompany.mydevice.NewInfomodel ; 1.0.0
 
 infomodelmapping Infomodel_Attribute {
 

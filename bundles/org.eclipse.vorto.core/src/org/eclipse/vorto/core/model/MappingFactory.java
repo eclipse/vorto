@@ -24,8 +24,16 @@ import org.eclipse.vorto.core.internal.model.mapping.EnumMappingResource;
 import org.eclipse.vorto.core.internal.model.mapping.FunctionBlockMappingResource;
 import org.eclipse.vorto.core.internal.model.mapping.InfoModelMappingResource;
 
+/**
+ * Factory to create IMapping from MappingModel
+ */
 public class MappingFactory {
 
+	/**
+	 * Create IMapping implementation instance based on given mappingModel
+	 * @param mappingModel
+	 * @return
+	 */
 	public static IMapping createMapping(MappingModel mappingModel) {
 		if (mappingModel instanceof InfoModelMapping) {
 			return new InfoModelMappingResource(mappingModel);

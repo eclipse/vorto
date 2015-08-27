@@ -21,13 +21,12 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget;
 
 public class TestInfoModelMappingFactory {
-	static InformationModel informationModel = TestInfoModelFactory.createInformationModel();
+	public static InformationModel informationModel = TestInfoModelFactory.createInformationModel();
 
-	public static MappingModel createInfoModelMappingModel() {
+	public static InfoModelMapping createInfoModelMappingModel() {
 		InfoModelMapping mappingModel = MappingFactory.eINSTANCE.createInfoModelMapping();
 		mappingModel.setName("MyInfoModelMapping");
 		mappingModel.getRules().add(createInfoModelStereoTypeMappingRule());

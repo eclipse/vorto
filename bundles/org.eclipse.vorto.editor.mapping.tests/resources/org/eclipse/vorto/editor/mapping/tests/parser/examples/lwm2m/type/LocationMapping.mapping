@@ -1,6 +1,6 @@
-namespace org.openmobilealliance.map
+namespace com.mycompany.lwm2m.type
 version 1.0.0
-using com.mycompany.type.GeoLocation ; 1.0.0
+using com.mycompany.lwm2m.type.GeoLocation ; 1.0.0
 entitymapping LocationMapping {
 
 	from GeoLocation.latitude

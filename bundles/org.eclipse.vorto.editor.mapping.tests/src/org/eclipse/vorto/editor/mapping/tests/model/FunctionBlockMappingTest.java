@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author sgp0247
  *
  */
-public class FunctionBlockMappingRulesTest {
+public class FunctionBlockMappingTest {
 	MappingModel mappingModel = TestFunctionBlockMappingFactory.createFunctionBlockMappingModel();
 	FunctionblockModel functionblockModel = TestFunctionBlockMappingFactory.functionblockModel;
 

@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author sgp0247
  *
  */
-public class MappingRulesFactoryTest {
+public class MappingFactoryTest {
 	@Test
 	public void createInfoModelMappingRules(){
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
