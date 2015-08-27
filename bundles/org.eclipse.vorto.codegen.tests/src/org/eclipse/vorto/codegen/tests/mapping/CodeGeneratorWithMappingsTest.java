@@ -34,7 +34,6 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelMapping;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -49,29 +48,27 @@ public class CodeGeneratorWithMappingsTest {
 	public void testGetRuleForInfoModel() {
 		InformationModel leftSideModel = createInformationModel();
 
-		final List<MappingRule> rules = new ArrayList<>();
-
+		final List<MappingRule> rules = new ArrayList<MappingRule>();
 		ICodeGenerator<InformationModel> generator = new AbstractGenerator() {
 
 			@Override
 			public void generate(InformationModel ctx, IProgressMonitor monitor) {
 
-				rules.addAll(mappingRules
+				rules.addAll(mapping
 						.getRulesByStereoType("configDescription"));
 			}
 
 			@Override
 			public void setMapping(IMapping mapping) {
-				// TODO Auto-generated method stub
-				
+				this.mapping = mapping;
 			}
 
 		};
 
-		MappingModel mappingModel = this.createRuleModel(leftSideModel);
+		MappingModel mappingModel = this.createMappingModel(leftSideModel);
 
-	/*	((IMappingRulesAware) generator)
-				.setMappingRules(new DefaultMappingRules(mappingModel));*/
+		((IMappingRulesAware) generator)
+				.setMapping(org.eclipse.vorto.core.model.MappingFactory.createMapping(mappingModel));
 
 		generator.generate(leftSideModel, null);
 
@@ -81,7 +78,7 @@ public class CodeGeneratorWithMappingsTest {
 	private abstract class AbstractGenerator implements
 			ICodeGenerator<InformationModel>, IMappingRulesAware {
 
-		protected IMapping mappingRules;
+		protected IMapping mapping;
 
 
 		@Override
@@ -129,25 +126,15 @@ public class CodeGeneratorWithMappingsTest {
 		return fbp;
 	}
 
-	/*
-	 * mapping { model BoschXYZ target smarthome
-	 * 
-	 * from Switcher.configuration.brightness to "configDescription" with {name:
-	 * "brightness", type: "Number",}
-	 * 
-	 * }
-	 */
-	private MappingModel createRuleModel(InformationModel infoModel) {
-		MappingModel mappingModel = MappingFactory.eINSTANCE
-				.createMappingModel();
+	private MappingModel createMappingModel(InformationModel infoModel) {
+		MappingModel mappingModel = MappingFactory.eINSTANCE.createInfoModelMapping();
 		mappingModel.setName("MyMapping");
-		//mappingModel.getInfoModelMappingRules().add(createeRule());
+		mappingModel.getRules().add(createRule());
 		return mappingModel;
 	}
 
-	private static InfoModelMappingRule createeRule() {
+	private static InfoModelMappingRule createRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
-		//TargetElement targetElement = null;
 		StereoTypeTarget stereoType = MappingFactory.eINSTANCE.createStereoTypeTarget();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("type");
@@ -161,9 +148,7 @@ public class CodeGeneratorWithMappingsTest {
 		stereoType.getAttributes().add(nameAttribute);
 		stereoType.getAttributes().add(typeAttribute);
 
-		//targetElement.getStereoTypes().add(stereoType);
-
-		//rule.setTargetElement(targetElement);
+		rule.setTarget(stereoType);
 		return rule;
 	}
 
