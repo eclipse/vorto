@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Core
+Bundle-Name: Vorto Core (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.core;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-ClassPath: .

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Wizard
+Bundle-Name: Vorto Wizard (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.wizard;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-ClassPath: .
