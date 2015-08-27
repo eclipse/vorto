@@ -43,14 +43,6 @@ import org.eclipse.vorto.perspective.dnd.IDropAction;
  */
 public class RepositoryResourceDropAction implements IDropAction {
 
-	private static final String INFOMODEL_EXT = ".infomodel";
-
-	private static final String FBMODEL_EXT = ".fbmodel";
-
-	private static final String TYPE_EXT = ".type";
-
-	private static final String SHARED_MODELS_DIR = "src/shared_models/";
-
 	private static final String SHARED_MODEL_IS_PROJ_ERROR = "Cannot copy shared model %s to %s, a local project already exist for shared model.";
 
 	private static final String SAVING = "Saving model to %s";
@@ -111,7 +103,7 @@ public class RepositoryResourceDropAction implements IDropAction {
 		assert (modelContent != null);
 		assert (fileName != null);
 		try {
-			IFolder folder = project.getFolder(SHARED_MODELS_DIR);
+			IFolder folder = project.getFolder(IModelProjectService.SHARED_MODELS_DIR);
 			if (!folder.exists()) {
 				folder.create(IResource.NONE, true, null);
 			}
@@ -134,9 +126,9 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 	private Map<ModelType, String> initializeExtensionMap() {
 		Map<ModelType, String> extensionMap = new HashMap<ModelType, String>();
-		extensionMap.put(ModelType.Datatype, TYPE_EXT);
-		extensionMap.put(ModelType.Functionblock, FBMODEL_EXT);
-		extensionMap.put(ModelType.InformationModel, INFOMODEL_EXT);
+		extensionMap.put(ModelType.Datatype, IModelProjectService.TYPE_EXT);
+		extensionMap.put(ModelType.Functionblock, IModelProjectService.FBMODEL_EXT);
+		extensionMap.put(ModelType.InformationModel, IModelProjectService.INFOMODEL_EXT);
 		return extensionMap;
 	}
 }

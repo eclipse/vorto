@@ -15,39 +15,21 @@
 package org.eclipse.vorto.repository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Observable;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-<<<<<<< HEAD
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
-=======
-import org.apache.http.message.BasicHeader;
-import org.eclipse.vorto.core.api.model.datatype.Type;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
->>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelType;
-import org.eclipse.vorto.repository.function.ModelToDsl;
-import org.eclipse.vorto.repository.function.ModelToXmi;
 import org.eclipse.vorto.repository.function.ModelViewToModelResource;
 import org.eclipse.vorto.repository.function.StringToModelResourceResult;
 import org.eclipse.vorto.repository.function.StringToUploadResult;
-import org.eclipse.vorto.repository.function.XmiToModel;
 import org.eclipse.vorto.repository.model.ModelView;
 import org.eclipse.vorto.repository.model.UploadResult;
 
@@ -57,23 +39,16 @@ import com.google.common.base.Functions;
 public class RestModelRepository extends Observable implements IModelRepository {
 
 	private static final String FILE_PARAMETER_NAME = "file";
-	private static final String FILE_DOWNLOAD_FORMAT = "/file/%s/%s/%s";
-	private static final String MODELID_RESOURCE_FORMAT = "/%s/%s/%s";
+	private static final String FILE_DOWNLOAD_FORMAT = "file/%s/%s/%s";
+	private static final String MODELID_RESOURCE_FORMAT = "%s/%s/%s";
 	private static final String CHECKIN_FORMAT = "%s";
 
-	private Function<Model, byte[]> modelToXMIConverter = new ModelToXmi();
 	private Function<String, UploadResult> uploadResponseConverter = new StringToUploadResult();
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
-	
-<<<<<<< HEAD
+	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource, contentConverters);
+
 	private RestClient httpClient;
-=======
-	// A function, that given a modeltype, returns a function that converts from XMI to DSL
-	private Function<ModelType, Function<byte[], byte[]>> xmiToDslConverter = Functions.forMap(initializeContentConverters());
-	
-	private ConnectionInfo connectionUrlSupplier;
->>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
 
 	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
 		Objects.requireNonNull(connectionUrlSupplier);
@@ -81,28 +56,26 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	}
 
 	public IModelQuery newQuery() {
-		return new RestModelQuery(httpClient,null, modelViewToModelResource);
+		return new RestModelQuery(httpClient, null, modelViewToModelResource);
 	}
 
 	@Override
 	public List<ModelResource> search(String expression) {
-		return new ArrayList<ModelResource>(
-				new RestModelQuery(httpClient,null, modelViewToModelResource).newQuery(expression).list());
+		return new ArrayList<ModelResource>(new RestModelQuery(httpClient, null, modelViewToModelResource).newQuery(
+				expression).list());
 	}
 
-	/**
-	 * First downloads the model content XMI and then converts the XMI
-	 * to the DSL representation
-	 */
 	@Override
 	public byte[] downloadContent(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
 
 		String url = getUrlForModelDownload(modelId);
 		try {
-			byte[] xmiContent = Request.Get(url).execute().returnContent().asBytes();
-			
-			return xmiToDslConverter.apply(modelId.getModelType()).apply(xmiContent);
+			return httpClient.executeGet(url, new Function<String, byte[]>() {
+				public byte[] apply(String input) {
+					return input.getBytes();
+				}
+			});
 		} catch (Exception e) {
 			throw new RuntimeException("Error downloading modelContent for resource", e);
 		}
@@ -114,8 +87,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 
 		String url = getUrlForModel(modelId);
 		try {
-			ModelView modelView = contentConverters.apply(Request.Get(url).execute().returnContent().asString());
-			return modelViewToModelResource.apply(modelView);
+			return httpClient.executeGet(url, stringToModelResource);
 		} catch (Exception e) {
 			throw new RuntimeException("Error getting model info for resource", e);
 		}
@@ -127,8 +99,8 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
 
-		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(),
-				modelId.getName().toLowerCase(), modelId.getVersion());
+		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+				modelId.getVersion());
 	}
 
 	private String getUrlForModel(ModelId modelId) {
@@ -137,30 +109,23 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
 
-		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(),
-				modelId.getName().toLowerCase(), modelId.getVersion());
+		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+				modelId.getVersion());
 	}
 
 	private String getUrlForCheckin(String handleId) {
-		return String.format(CHECKIN_FORMAT,handleId);
+		return String.format(CHECKIN_FORMAT, handleId);
 	}
 
-	/**
-	 * 1. Convert the model to XMI representation
-	 * 2. Uploads the XMI to the repository to verify correct file. A handle is returned.
-	 * 3. Checks in the uploaded model by its handle.
-	 */
 	@Override
-	public void saveModel(Model model) throws CheckInModelException {
+	public void saveModel(String name, byte[] model) throws CheckInModelException {
 		Objects.requireNonNull(model);
-
 		try {
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody(FILE_PARAMETER_NAME, modelToXMIConverter.apply(model),
-					ContentType.APPLICATION_OCTET_STREAM, "");
+			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
 			HttpEntity fileToUpload = builder.build();
-			
-			UploadResult uploadResult = httpClient.executePost("/", fileToUpload,uploadResponseConverter);
+
+			UploadResult uploadResult = httpClient.executePost(null, fileToUpload, uploadResponseConverter);
 
 			if (uploadResult.statusOk()) {
 				httpClient.executePut(getUrlForCheckin(uploadResult.getHandleId()));
@@ -174,36 +139,4 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			throw new CheckInModelException("Error in uploading file to remote repository", e);
 		}
 	}
-
-<<<<<<< HEAD
-=======
-	/**
-	 * TODO: Currently the repo only supports form based authentication. That way a REST controller authenticate would need to be invoked 
-	 * and session needs to be passed along.
-	 * @return
-	 */
-	private Header createSecurityHeader() {
-		return new BasicHeader("Authorization", "Basic " + createAuth());
-	}
-
-	private String createAuth() {
-		return new String(Base64.encodeBase64(
-				(connectionUrlSupplier.getUserName() + ":" + connectionUrlSupplier.getPassword()).getBytes()));
-	}
-	
-	private Map<ModelType, Function<byte[], byte[]>> initializeContentConverters() {
-		Map<ModelType, Function<byte[], byte[]>> converters = new HashMap<ModelType, Function<byte[], byte[]>>();
-		
-		Function<Model, byte[]> modelToDsl = new ModelToDsl();
-
-		converters.put(ModelType.InformationModel,
-				Functions.compose(modelToDsl, new XmiToModel<InformationModel>(InformationModel.class)));
-		converters.put(ModelType.Functionblock,
-				Functions.compose(modelToDsl, new XmiToModel<FunctionblockModel>(FunctionblockModel.class)));
-		converters.put(ModelType.Datatype, 
-				Functions.compose(modelToDsl, new XmiToModel<Type>(Type.class)));
-
-		return converters;
-	}
->>>>>>> Fixed the problem where an xmi can't be converted to a model because of missing dependencies.
 }
