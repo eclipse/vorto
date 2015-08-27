@@ -1,8 +1,8 @@
-namespace org.openmobilealliance.map
+namespace com.mycompany.lwm2m.fb
 version 1.0.0
-using com.mycompany.fb.Drone ; 1.0.0
-using com.mycompany.fb.Switcher ; 1.0.0
-using com.mycompany.map.LocationMapping ; 1.0.0
+using com.mycompany.lwm2m.fb.Drone ; 1.0.0
+using com.mycompany.lwm2m.fb.Switcher ; 1.0.0
+using com.mycompany.lwm2m.type.LocationMapping ; 1.0.0
 
 functionblockmapping DroneMapping {
 

@@ -182,7 +182,7 @@ Target:
 ;
 
 ReferenceTarget:
-	'reference' mappingModel = [MappingModel|QualifiedName]
+	'reference' mappingModel = [MappingModel]
 ;	
 
 StereoTypeTarget:

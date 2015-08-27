@@ -1,4 +1,4 @@
-namespace com.mycompany.type
+namespace com.mycompany.lwm2m.type
 version 1.0.0
 
 entity GeoLocation {

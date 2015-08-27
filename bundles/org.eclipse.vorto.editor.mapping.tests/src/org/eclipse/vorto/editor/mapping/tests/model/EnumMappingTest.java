@@ -33,7 +33,7 @@ import org.junit.Test;
  * @author sgp0247
  *
  */
-public class EnumMappingRulesTest {
+public class EnumMappingTest {
 	org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
 	
 	@Test

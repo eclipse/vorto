@@ -1,4 +1,4 @@
-namespace com.mycompany.fb
+namespace com.mycompany.lwm2m.fb
 version 1.0.0
 functionblock Switcher {
 	displayname "Switcher"

@@ -20,7 +20,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 
 /**
- * Resolves mapping rules for a specific element or stereotype
+ * Resolves mapping  for Mapping Model
  * 
  */
 public interface IMapping extends IModelElement{

@@ -26,7 +26,9 @@ import org.eclipse.vorto.core.api.model.mapping.EventSource
 import org.eclipse.vorto.core.api.model.mapping.FaultSource
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource
 import org.eclipse.vorto.core.api.model.mapping.OperationSource
+import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget
 import org.eclipse.vorto.core.api.model.mapping.StatusSource
+import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
@@ -39,11 +41,11 @@ import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
  * 
  */
 class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
-
+	
 	def IScope scope_EnumPropertySource_property(EnumPropertySource exp, EReference ref) {
 		var enumType = exp.model as Enum;
 		return Scopes::scopeFor(enumType.enums);
-	}
+	} 
 
 	def IScope scope_EntityPropertySource_property(EntityPropertySource exp, EReference ref) {
 		var model = exp.model as Entity;

@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class MappingModelSyntaxTest {
-	private static final String EXAMPLES_DIRECTORY = "resources/com/mycompany/map/";
+	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/mydevice/";
 
 	@Before
 	public void setup() {
@@ -42,7 +42,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithEntityAttribute() throws IOException {
-		MappingModel mappingModel = createMappingModel("Entity_Attribute.mapping");
+		MappingModel mappingModel = createMappingModel("type/Entity_Attribute.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
@@ -50,7 +50,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithEntityProperty() throws IOException {
-		MappingModel mappingModel = createMappingModel("Entity_Property.mapping");
+		MappingModel mappingModel = createMappingModel("type/Entity_Property.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());
@@ -58,7 +58,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithEntityReference() throws IOException {
-		MappingModel mappingModel = createMappingModel("Entity_Ref.mapping");
+		MappingModel mappingModel = createMappingModel("type/Entity_Ref.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());
@@ -66,7 +66,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithEnumAttribute() throws IOException {
-		MappingModel mappingModel = createMappingModel("Enum_Attribute.mapping");
+		MappingModel mappingModel = createMappingModel("type/Enum_Attribute.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
@@ -74,7 +74,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithEnumProperty() throws IOException {
-		MappingModel mappingModel = createMappingModel("Enum_Property.mapping");
+		MappingModel mappingModel = createMappingModel("type/Enum_Property.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());
@@ -82,7 +82,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithFunctionBlockAttribute() throws IOException {
-		MappingModel mappingModel = createMappingModel("FunctionBlock_Attribute.mapping");
+		MappingModel mappingModel = createMappingModel("fb/FunctionBlock_Attribute.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(6, rules.size());
@@ -90,7 +90,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithFunctionBlockProperty() throws IOException {
-		MappingModel mappingModel = createMappingModel("FunctionBlock_Property.mapping");
+		MappingModel mappingModel = createMappingModel("fb/FunctionBlock_Property.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(6, rules.size());
@@ -98,7 +98,7 @@ public class MappingModelSyntaxTest {
 	
 	@Test
 	public void parseMappingWithFunctionBlockReference() throws IOException {
-		MappingModel mappingModel = createMappingModel("FunctionBlock_Ref.mapping");
+		MappingModel mappingModel = createMappingModel("fb/FunctionBlock_Ref.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());

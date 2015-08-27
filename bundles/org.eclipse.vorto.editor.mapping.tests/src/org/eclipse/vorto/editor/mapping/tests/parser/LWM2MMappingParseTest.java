@@ -41,7 +41,7 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseEntityLocationMapping() throws IOException {
-		MappingModel mappingModel = this.createMappingModel("LocationMapping.mapping");
+		MappingModel mappingModel = this.createMappingModel("type/LocationMapping.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
@@ -50,7 +50,7 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseFunctionBlockDroneMapping() throws IOException {
-		MappingModel mappingModel = createMappingModel("DroneMapping.mapping");
+		MappingModel mappingModel = createMappingModel("fb/DroneMapping.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(2, rules.size());

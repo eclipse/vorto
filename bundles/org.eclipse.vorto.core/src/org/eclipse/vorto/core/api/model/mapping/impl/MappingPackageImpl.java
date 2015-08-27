@@ -431,6 +431,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getInfomodelSource_Model() {
+		return (EReference)infomodelSourceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getInfoModelPropertySource() {
 		return infoModelPropertySourceEClass;
 	}
@@ -487,6 +496,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 */
 	public EClass getFunctionBlockSource() {
 		return functionBlockSourceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFunctionBlockSource_Model() {
+		return (EReference)functionBlockSourceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -629,6 +647,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getEntitySource_Model() {
+		return (EReference)entitySourceEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getEntityPropertySource() {
 		return entityPropertySourceEClass;
 	}
@@ -685,6 +712,15 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 */
 	public EClass getEnumSource() {
 		return enumSourceEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumSource_Model() {
+		return (EReference)enumSourceEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -827,15 +863,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getSource_Model() {
-		return (EReference)sourceEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getFaultSource() {
 		return faultSourceEClass;
 	}
@@ -939,6 +966,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		infoModelMappingRuleEClass = createEClass(INFO_MODEL_MAPPING_RULE);
 
 		infomodelSourceEClass = createEClass(INFOMODEL_SOURCE);
+		createEReference(infomodelSourceEClass, INFOMODEL_SOURCE__MODEL);
 
 		infoModelPropertySourceEClass = createEClass(INFO_MODEL_PROPERTY_SOURCE);
 		createEReference(infoModelPropertySourceEClass, INFO_MODEL_PROPERTY_SOURCE__PROPERTY);
@@ -951,6 +979,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		functionBlockMappingRuleEClass = createEClass(FUNCTION_BLOCK_MAPPING_RULE);
 
 		functionBlockSourceEClass = createEClass(FUNCTION_BLOCK_SOURCE);
+		createEReference(functionBlockSourceEClass, FUNCTION_BLOCK_SOURCE__MODEL);
 
 		functionBlockPropertySourceEClass = createEClass(FUNCTION_BLOCK_PROPERTY_SOURCE);
 
@@ -975,6 +1004,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		entityMappingRuleEClass = createEClass(ENTITY_MAPPING_RULE);
 
 		entitySourceEClass = createEClass(ENTITY_SOURCE);
+		createEReference(entitySourceEClass, ENTITY_SOURCE__MODEL);
 
 		entityPropertySourceEClass = createEClass(ENTITY_PROPERTY_SOURCE);
 		createEReference(entityPropertySourceEClass, ENTITY_PROPERTY_SOURCE__PROPERTY);
@@ -987,6 +1017,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		enumMappingRuleEClass = createEClass(ENUM_MAPPING_RULE);
 
 		enumSourceEClass = createEClass(ENUM_SOURCE);
+		createEReference(enumSourceEClass, ENUM_SOURCE__MODEL);
 
 		enumPropertySourceEClass = createEClass(ENUM_PROPERTY_SOURCE);
 		createEReference(enumPropertySourceEClass, ENUM_PROPERTY_SOURCE__PROPERTY);
@@ -1010,7 +1041,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		createEAttribute(attributeEClass, ATTRIBUTE__VALUE);
 
 		sourceEClass = createEClass(SOURCE);
-		createEReference(sourceEClass, SOURCE__MODEL);
 
 		faultSourceEClass = createEClass(FAULT_SOURCE);
 		createEReference(faultSourceEClass, FAULT_SOURCE__PROPERTY);
@@ -1051,8 +1081,8 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		// Obtain other dependent packages
 		ModelPackage theModelPackage = (ModelPackage)EPackage.Registry.INSTANCE.getEPackage(ModelPackage.eNS_URI);
 		InformationModelPackage theInformationModelPackage = (InformationModelPackage)EPackage.Registry.INSTANCE.getEPackage(InformationModelPackage.eNS_URI);
-		DatatypePackage theDatatypePackage = (DatatypePackage)EPackage.Registry.INSTANCE.getEPackage(DatatypePackage.eNS_URI);
 		FunctionblockPackage theFunctionblockPackage = (FunctionblockPackage)EPackage.Registry.INSTANCE.getEPackage(FunctionblockPackage.eNS_URI);
+		DatatypePackage theDatatypePackage = (DatatypePackage)EPackage.Registry.INSTANCE.getEPackage(DatatypePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1098,6 +1128,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEClass(infoModelMappingRuleEClass, InfoModelMappingRule.class, "InfoModelMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(infomodelSourceEClass, InfomodelSource.class, "InfomodelSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getInfomodelSource_Model(), theInformationModelPackage.getInformationModel(), null, "model", null, 0, 1, InfomodelSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(infoModelPropertySourceEClass, InfoModelPropertySource.class, "InfoModelPropertySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getInfoModelPropertySource_Property(), theInformationModelPackage.getFunctionblockProperty(), null, "property", null, 0, 1, InfoModelPropertySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1110,6 +1141,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEClass(functionBlockMappingRuleEClass, FunctionBlockMappingRule.class, "FunctionBlockMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(functionBlockSourceEClass, FunctionBlockSource.class, "FunctionBlockSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getFunctionBlockSource_Model(), theFunctionblockPackage.getFunctionblockModel(), null, "model", null, 0, 1, FunctionBlockSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockPropertySourceEClass, FunctionBlockPropertySource.class, "FunctionBlockPropertySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1134,6 +1166,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEClass(entityMappingRuleEClass, EntityMappingRule.class, "EntityMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(entitySourceEClass, EntitySource.class, "EntitySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEntitySource_Model(), theDatatypePackage.getEntity(), null, "model", null, 0, 1, EntitySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(entityPropertySourceEClass, EntityPropertySource.class, "EntityPropertySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEntityPropertySource_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, EntityPropertySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1146,6 +1179,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEClass(enumMappingRuleEClass, EnumMappingRule.class, "EnumMappingRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(enumSourceEClass, EnumSource.class, "EnumSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getEnumSource_Model(), theDatatypePackage.getEnum(), null, "model", null, 0, 1, EnumSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(enumPropertySourceEClass, EnumPropertySource.class, "EnumPropertySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getEnumPropertySource_Property(), theDatatypePackage.getEnumLiteral(), null, "property", null, 0, 1, EnumPropertySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1169,7 +1203,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEAttribute(getAttribute_Value(), ecorePackage.getEString(), "value", null, 0, 1, Attribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(sourceEClass, Source.class, "Source", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getSource_Model(), theModelPackage.getModel(), null, "model", null, 0, 1, Source.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(faultSourceEClass, FaultSource.class, "FaultSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getFaultSource_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, FaultSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

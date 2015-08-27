@@ -25,6 +25,7 @@ import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
 import org.eclipse.vorto.core.api.model.mapping.EventSource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
@@ -51,7 +52,7 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 
-		FunctionblockModel functionblockModel = (FunctionblockModel) source.getModel();
+		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource)source).getModel();
 		if (source instanceof ConfigurationSource) {
 			addRuleIfMatchesProperty(modelObject, mappingRules, rule, functionblockModel,
 					((ConfigurationSource) source).getProperty());

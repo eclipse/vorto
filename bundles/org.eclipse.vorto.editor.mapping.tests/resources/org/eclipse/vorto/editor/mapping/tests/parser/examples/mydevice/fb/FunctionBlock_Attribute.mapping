@@ -1,6 +1,6 @@
-namespace com.mycompany.map
+namespace com.mycompany.mydevice.fb
 version 1.0.0
-using com.mycompany.fb.NewFunctionBlock ; 1.0.0
+using com.mycompany.mydevice.fb.NewFunctionBlock ; 1.0.0
 
 functionblockmapping FunctionBlock_Attribute {
 

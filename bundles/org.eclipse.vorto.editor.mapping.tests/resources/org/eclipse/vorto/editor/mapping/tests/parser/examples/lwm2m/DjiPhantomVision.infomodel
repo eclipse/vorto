@@ -1,7 +1,7 @@
-namespace com.mycompany
+namespace com.mycompany.lwm2m
 version 3.0.0-Plus
-using com.mycompany.fb.Drone ; 1.0.0
-using com.mycompany.fb.Switcher ; 1.0.0
+using com.mycompany.lwm2m.fb.Drone ; 1.0.0
+using com.mycompany.lwm2m.fb.Switcher ; 1.0.0
 
 infomodel DjiPhantomVision {
 	displayname "DjiPhantomVision"
