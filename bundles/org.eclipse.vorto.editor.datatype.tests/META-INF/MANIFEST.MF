@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.eclipse.vorto.editor.datatype.tests
+Bundle-Name: Vorto Datatype Editor Tests (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.datatype.tests; singleton:=true
