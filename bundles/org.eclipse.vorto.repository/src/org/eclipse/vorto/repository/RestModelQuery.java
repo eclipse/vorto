@@ -28,15 +28,14 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 
-
 public class RestModelQuery extends AbstractModelQuery<String> {
 
 	private static final String OP_SEPARATOR = ",";
 	private static final String OP_END = ")";
 	private static final String QUERY_ATTR_FORMAT = "%s(\"%s\")";
 	private static final String QUERY_ATTRLIKE_FORMAT = "%sLike(\"%s\")";
-	
-	private final Map<Operator, String> operatorToQueryStringMap = initOperatorToQueryStringMap(); 
+
+	private final Map<Operator, String> operatorToQueryStringMap = initOperatorToQueryStringMap();
 
 	private RestClient httpClient;
 	private String queryString = null;
@@ -57,24 +56,21 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 	}
 
 	public RestModelQuery(RestClient httpClient, String queryString, Function<ModelView, ModelResource> modelToResource) {
-		this(httpClient,modelToResource);
+		this(httpClient, modelToResource);
 		this.queryString = queryString;
 	}
 
 	public Collection<ModelResource> list() {
-		try {			
+		try {
 			if (queryString.isEmpty()) {
 				queryString += "*";
 			}
-			List<ModelView> result = httpClient.executeGet("query="+queryString,resultConverter);
-			
+			List<ModelView> result = httpClient.executeGet("query=" + queryString, resultConverter);
+
 			// Convert the searchResult in result to return type
-			return Collections2.transform(result,
-					modelToResource);
+			return Collections2.transform(result, modelToResource);
 		} catch (Exception e) {
-			throw new RuntimeException(
-					"Error querying remote repository with queryString = "
-							+ queryString, e);
+			throw new RuntimeException("Error querying remote repository with queryString = " + queryString, e);
 		}
 	}
 
@@ -82,7 +78,7 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 	public String getQuery() {
 		return queryString;
 	}
-	
+
 	// We need this for the joiner
 	@Override
 	public String toString() {
@@ -94,12 +90,9 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 		if (!operatorToQueryStringMap.containsKey(operator)) {
 			throw new IllegalArgumentException("Operator " + operator.name() + " isn't allowed in this expression.");
 		}
-		
-		return new StringBuilder()
-					.append(operatorToQueryStringMap.get(operator))
-					.append(Joiner.on(OP_SEPARATOR).join(queries))
-					.append(OP_END)
-					.toString();
+
+		return new StringBuilder().append(operatorToQueryStringMap.get(operator))
+				.append(Joiner.on(OP_SEPARATOR).join(queries)).append(OP_END).toString();
 	}
 
 	@Override
@@ -110,13 +103,12 @@ public class RestModelQuery extends AbstractModelQuery<String> {
 			return String.format(QUERY_ATTRLIKE_FORMAT, name, value);
 		}
 
-		throw new RuntimeException("Query doesn't accept " + operator.name()
-				+ " for this method.");
+		throw new RuntimeException("Query doesn't accept " + operator.name() + " for this method.");
 	}
 
 	@Override
 	protected IModelQuery newQuery(String query) {
-		return new RestModelQuery(httpClient, query,modelToResource);
+		return new RestModelQuery(httpClient, query, modelToResource);
 	}
 
 }

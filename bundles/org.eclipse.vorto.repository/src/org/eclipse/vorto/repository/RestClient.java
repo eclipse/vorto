@@ -1,8 +1,6 @@
 package org.eclipse.vorto.repository;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -24,95 +22,97 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 
 public class RestClient {
 
 	private ConnectionInfo connectionInfo;
-	
+
 	private static final String RESOURCE_URL = "/rest/model/";
-	
+
 	public RestClient(ConnectionInfo connectionInfo) {
 		this.connectionInfo = connectionInfo;
 	}
-	
+
 	@SuppressWarnings("restriction")
-	public <Result> Result executeGet(String query, final Function<String, Result> responseConverter) throws ClientProtocolException, IOException {
-		
+	public <Result> Result executeGet(String query, final Function<String, Result> responseConverter)
+			throws ClientProtocolException, IOException {
+
 		CloseableHttpClient client = HttpClients.custom().build();
-		
-		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
-		return client.execute(request,new ResponseHandler<Result>() {
+
+		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query))
+				.addHeader(createSecurityHeader()).build();
+		return client.execute(request, new ResponseHandler<Result>() {
 
 			@Override
-			public Result handleResponse(HttpResponse response)
-					throws ClientProtocolException, IOException {
+			public Result handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
 			}
 		});
 	}
-	
+
 	@SuppressWarnings("restriction")
-	public <Result> Result executePost(String query,HttpEntity content, final Function<String,Result> responseConverter) throws ClientProtocolException, IOException {
-		
+	public <Result> Result executePost(String query, HttpEntity content,
+			final Function<String, Result> responseConverter) throws ClientProtocolException, IOException {
+
 		CloseableHttpClient client = HttpClients.custom().build();
+
+		HttpUriRequest request = RequestBuilder.post().setConfig(createProxyConfiguration()).setUri(createQuery(query))
+				.addHeader(createSecurityHeader()).setEntity(content).build();
 		
-		HttpUriRequest request = RequestBuilder.post().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
-		
-		return client.execute(request,new ResponseHandler<Result>() {
+		return client.execute(request, new ResponseHandler<Result>() {
 
 			@Override
-			public Result handleResponse(HttpResponse response)
-					throws ClientProtocolException, IOException {
+			public Result handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
 			}
 		});
 	}
-	
+
 	@SuppressWarnings("restriction")
 	public void executePut(String query) throws ClientProtocolException, IOException {
 		CloseableHttpClient client = HttpClients.custom().build();
-		
-		HttpUriRequest request = RequestBuilder.put().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
+
+		HttpUriRequest request = RequestBuilder.put().setConfig(createProxyConfiguration()).setUri(createQuery(query))
+				.addHeader(createSecurityHeader()).build();
 		client.execute(request);
 	}
-		
+
 	private String createQuery(String queryFragment) {
 		StringBuilder connectionUrl = new StringBuilder();
 		connectionUrl.append(connectionInfo.getUrl()).append(RESOURCE_URL);
+
+		if (!Strings.isNullOrEmpty(queryFragment)) {
+			connectionUrl.append(queryFragment);
+		}
 		
-		if (!queryFragment.isEmpty()) {
-			try {
-				connectionUrl.append(URLEncoder.encode(queryFragment, "UTF-8"));
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException("Error in encoding query: " + queryFragment, e);
-			}
-		} 
 		return connectionUrl.toString();
 	}
-	
-	
+
 	private RequestConfig createProxyConfiguration() {
 		IProxyService proxyService = getProxyService();
-        IProxyData[] proxyDataForHost = proxyService.select(java.net.URI.create(connectionInfo.getUrl()));
-        RequestConfig.Builder configBuilder = RequestConfig.custom();
-		 for (IProxyData data : proxyDataForHost) {
-			 HttpHost proxyConfig = new HttpHost(data.getHost(), data.getPort(), data.getType());
-			 configBuilder.setProxy(proxyConfig);
-		 }
-		return configBuilder.build();   
+		IProxyData[] proxyDataForHost = proxyService.select(java.net.URI.create(connectionInfo.getUrl()));
+		RequestConfig.Builder configBuilder = RequestConfig.custom();
+		for (IProxyData data : proxyDataForHost) {
+			HttpHost proxyConfig = new HttpHost(data.getHost(), data.getPort(), data.getType());
+			configBuilder.setProxy(proxyConfig);
+		}
+		return configBuilder.build();
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static IProxyService getProxyService() {
-	    BundleContext bc = Activator.getDefault().getBundle().getBundleContext();
-	    ServiceReference serviceReference = bc.getServiceReference(IProxyService.class.getName());
-	    IProxyService service = (IProxyService) bc.getService(serviceReference);
-	    return service;
+		BundleContext bc = Activator.getDefault().getBundle().getBundleContext();
+		ServiceReference serviceReference = bc.getServiceReference(IProxyService.class.getName());
+		IProxyService service = (IProxyService) bc.getService(serviceReference);
+		return service;
 	}
-	
+
 	/**
-	 * TODO: Currently the repo only supports form based authentication. That way a REST controller authenticate would need to be invoked 
-	 * and session needs to be passed along.
+	 * TODO: Currently the repo only supports form based authentication. That
+	 * way a REST controller authenticate would need to be invoked and session
+	 * needs to be passed along.
+	 * 
 	 * @return
 	 */
 	private Header createSecurityHeader() {
@@ -120,7 +120,7 @@ public class RestClient {
 	}
 
 	private String createAuth() {
-		return new String(Base64.encodeBase64(
-				(connectionInfo.getUserName() + ":" + connectionInfo.getPassword()).getBytes()));
+		return new String(Base64.encodeBase64((connectionInfo.getUserName() + ":" + connectionInfo.getPassword())
+				.getBytes()));
 	}
 }

@@ -16,7 +16,6 @@ package org.eclipse.vorto.core.api.repository;
 
 import java.util.List;
 
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.ModelId;
 
 /**
@@ -51,8 +50,9 @@ public interface IModelRepository {
 	/**
 	 * Saves a model to the repository
 	 * 
-	 * @param resource
+	 * @param name The name of the file
+	 * @param model The file
 	 * @throws CheckInModelException Might occur if model already exists in the repository or references are missing
 	 */
-	void saveModel(Model model) throws CheckInModelException;
+	void saveModel(String name, byte[] model) throws CheckInModelException;
 }

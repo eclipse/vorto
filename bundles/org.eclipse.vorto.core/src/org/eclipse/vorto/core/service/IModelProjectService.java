@@ -27,6 +27,16 @@ import org.eclipse.vorto.core.model.ModelType;
  * 
  */
 public interface IModelProjectService {
+	
+	public static final String INFOMODEL_EXT = ".infomodel";
+
+	public static final String FBMODEL_EXT = ".fbmodel";
+
+	public static final String TYPE_EXT = ".type";
+
+	public static final String SHARED_MODELS_DIR = "src/shared_models/";
+	
+	public static final String MODELS_DIR = "src/models/";
 
 	/**
 	 * Returns a resolver that can resolve modelIds if they are workspace
