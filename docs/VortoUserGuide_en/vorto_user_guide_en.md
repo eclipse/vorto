@@ -1,4 +1,4 @@
-# Vorto User Guide
+sky# Vorto User Guide
 
 ### Version 0.3
 
@@ -477,6 +477,7 @@ Edit the information model by extending the generated source file in the informa
 
         namespace com.mycompany.fb
         version 1.0.0
+		using com.mycompany.type.Color;1.0.0
         functionblock ColorLight {
             displayname "ColorLight"
             description "A light makes the environment bright and colorful"
@@ -484,6 +485,7 @@ Edit the information model by extending the generated source file in the informa
 
             configuration {
                 optional brightnessLevel as int
+				optional defaultColor as Color
             }
 
             fault {
@@ -521,10 +523,74 @@ Edit the information model by extending the generated source file in the informa
 
 Vorto allows the user to define mapping rules to map Vorto models to other target platform domain models.
 
+
 **Prerequisites**
 
- - You have created an Vorto model (refer to [Creating a new Information Model](#creating-a-new-information-model)).
+ - You have followed previous steps to create Entity, Function Block, and Information models.
  - You have selected the Java perspective.
+
+## Define a Entity Mapping
+In entity mapping, you can define mapping rules for entity types. 
+**Proceed as follows**
+			
+1. In the data type project Color, navigate to the folder `src/models`.
+
+2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
+   The **New File** dialog opens.
+
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyColor.mapping`.
+
+4. Edit the mapping file according to your needs.
+
+**Example of an entity mapping file**
+
+	namespace com.mycompany.type
+	version 1.0.0
+	using com.mycompany.type.Color ; 1.0.0
+	
+	entitymapping MyColor {
+	
+		from Color.version
+		to MyColor with { Revision : "Rev-" }
+	
+		from Color.r, Color.g, Color.b
+		to MyColor with { r : "Red", g : "Green", b : "Blue" }
+	}
+-----
+
+## Define a Function Block Mapping
+In function block model mapping, you can define mapping rules for function block model attributes, as well as detailed function block properties, and data types used in function blocks.
+
+**Proceed as follows**
+
+1. In the function block project you want to create the mapping for (`ColorLight` in the example), navigate to the folder `src/models`.
+
+2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
+   The **New File** dialog opens.
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyColorLight.mapping`.
+
+4. Edit the mapping file according to your needs.
+   Please note that in addition to map function block elements to target Stereo Type element, you can also specify to refer function block properties to use an imported entity mapping (MyColor.mapping).
+
+**Example of a function block mapping file**
+
+	namespace com.mycompany
+	version 1.0.0
+	using com.mycompany.fb.ColorLight ; 1.0.0
+	using com.mycompany.type.MyColor; 1.0.0
+	functionblockmapping MyColorLight {
+	
+		from ColorLight.displayname
+		to TargetDisplayName
+	
+		from ColorLight.configuration.defaultColor to reference MyColor
+		
+		from ColorLight.operation.setR, ColorLight.operation.setG, ColorLight.operation.setB
+		to channelType with { Attribute : "color" }
+	
+	}
+
+-----
 
 ## Define an Information Model Mapping
 In information model mapping, you can define mapping rules for information model attributes, as well as detailed function block properties for each function block variable, and data types used in function blocks.
@@ -532,145 +598,35 @@ In information model mapping, you can define mapping rules for information model
 **Proceed as follows**
 
 1. In the information model project you want to create the mapping for (`PhilipsHue` in the example), navigate to the folder `src/models`.
+
 2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
    The **New File** dialog opens.
-3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `SmartHome.mapping`.
-4. Edit the mapping file according to your needs.
 
-**Example of mapping file**
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `SmartHome.mapping`.
+
+4. Edit the mapping file according to your needs.
+   Please note that in addition to map information model elements to a stereo type, you can also specify to refer information model function block  to use an imported function block mapping (MyColorLight.mapping).
+
+**Example of an information model mapping file**
+
 	namespace com.mycompany
 	version 1.0.0
 	using com.philips.PhilipsHue ; 1.0.0
-	mapping SmartHome {
+	using com.mycompany.fb.MyColorLight ; 1.0.0
+	
+	infomodelmapping SmartHome {
 	
 		from PhilipsHue.displayname
 		to TargetDisplayName
 	
-		//Mapping function block Switchable
-		from PhilipsHue.switchable to MySwitch
-		
-		//Mapping function block ColorLight
-		from PhilipsHue.colorlight.operation.setR, PhilipsHue.colorlight.operation.setG, PhilipsHue.colorlight.operation.setB
-		to channelType with { Attribute : "color" }
+		from PhilipsHue.switchable
+		to MySwitch with { Icon : "switch.png" }
 	
-		from PhilipsHue.colorlight.configuration.brightnessLevel
-		to channelType with { Attribute : "brightness" }, configDescription with {
-		Attribute : "brightness", type : "Number" }
+		from PhilipsHue.colorlight
+		to reference MyColorLight
 	}
 
 -----
-
-## Define a Function Block Mapping
-In function block model mapping, you can define mapping rules for function block model attributes, as well as detailed function block properties, and data types used in function blocks.
-
-**Proceed as follows**
-1. In the function block project you want to create the mapping for (`ColorLight` in the example), navigate to the folder `src/models`.
-2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
-   The **New File** dialog opens.
-3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyColorLight.mapping`.
-4. Edit the mapping file according to your needs.
-
-**Example of mapping file**
-	namespace com.mycompany
-	version 1.0.0
-	using com.mycompany.fb.ColorLight ; 1.0.0
-	mapping MyColorLightMapping {
-	
-		functionblock {
-	
-			from ColorLight.displayname
-			to TargetDisplayName
-	
-			from ColorLight.operation.setR, ColorLight.operation.setG, ColorLight.operation.setB
-			to channelType with { Attribute : "color" }
-	
-			from ColorLight.configuration.brightnessLevel
-			to channelType with { Attribute : "brightness" }, configDescription with {
-			Attribute : "brightness", type : "Number" }
-		}
-	}
-
------
-
-## Define a Data Type Mapping
-In data type model mapping, you can define mapping rules for data types (Entity/Enum). For entity mapping, you can even define complex type that are nested. Please read example below.
-
-**Proceed as follows**
-1. Define Entity types EntityA/EntityB/EntityC/EntityD, and Enum type EnumA as shown below.
-
-	namespace com.mycompany.type
-	version 1.0.0
-	using com.mycompany.type.EntityB ; 1.0.0
-	using com.mycompany.type.EnumA ; 1.0.0
-	entity EntityA {
-		optional paramRefEntityB as EntityB
-		optional paramEnumA as EnumA
-	}
-
-	namespace com.mycompany.type
-	version 1.0.0
-	using com.mycompany.type.EntityC ; 1.0.0
-	entity EntityB {
-		optional entityBIntProperty as int
-		optional paramRefEntityC as EntityC
-	}
-
-	namespace com.mycompany.type
-	version 1.0.0
-	using com.mycompany.type.EntityD ; 1.0.0
-	
-	entity EntityC {
-		optional paramRefEntityD as EntityD
-	}
-
-	namespace com.mycompany.type
-	version 1.0.0
-	entity EntityD {
-		optional entityDIntParam as int
-	}
-
-	namespace com.mycompany.type
-	version 1.0.0
-	enum EnumA {
-		 Value1, Value2
-	}
-			
-2. In the data type project EntityA, navigate to the folder `src/models`.
-3. Select the folder `models` and right-click and choose **New > File** from the context menu.  
-   The **New File** dialog opens.
-4. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyEntity.mapping`.
-5. Edit the mapping file according to your needs.
-
-**Example of mapping file**
-	namespace com.mycompany
-	version 1.0.0
-	using com.mycompany.type.EntityA ; 1.0.0
-	using com.mycompany.type.EnumA ; 1.0.0
-	mapping MyEntityMapping {
-	
-		datatype {
-			from EntityA
-			to TargetEntity with { Attribute1 : "d1", Attribute2 : "d2" }
-			
-			from EntityA.name
-			to TargetName
-	
-			from EntityA.version
-			to TargetVerson
-	
-			from EntityA.paramRefEntityB.paramRefEntityC.paramRefEntityD
-			to TargetNestedEntity
-	
-			from EnumA
-			to TargetEnumA with { Value1 : "dummy value 1", Value2 : "dummy value 2" }
-	
-			from EnumA.name
-			to TargetEnumAName
-		}
-	}
-
------
-
 
 # Code Generators
 
