@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.eclipse.vorto.editor.mapping.tests
+Bundle-Name: Vorto Mapping Editor Tests (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.mapping.tests; singleton:=true

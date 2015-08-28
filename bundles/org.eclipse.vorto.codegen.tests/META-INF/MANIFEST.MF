@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Code Generator Tests
+Bundle-Name: Vorto Code Generator Tests (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.codegen.tests;singleton:=true

@@ -1,6 +1,6 @@
 sky# Vorto User Guide
 
-### Version 0.3
+### Version 0.4 Milestone 1
 
 ### Bosch Software Innovations
 
@@ -47,9 +47,7 @@ sky# Vorto User Guide
 - [Code Generators](#code-generators)  
   - [Code Generators Overview](#code-generators-overview)  
   - [Example Code Generator - Web Device Application](#example-code-generator-web-device-application)  
-  - [Example Code Generator - Eclipse Smart Home](#example-code-generator-eclipse-smart-home)  
   - [Example Code Generator - Bosch M2M Platform](#example-code-generator-bosch-m2m-platform)  
-  - [Example Code Generator - Kura Service Generator](example-code-generator-kura-service-generator)  
 - [Uninstalling the Vorto Plug-ins](#uninstalling-the-vorto-plug-ins)  
 - [Troubleshooting](#troubleshooting)  
   - [Installation Issues](#installation-issues)  
@@ -634,9 +632,7 @@ This section details the following topics:
 
 [Code Generators Overview](#code-generators-overview)  
 [Example Code Generator - Web Device Application)](#example-code-generator-web-device-application)  
-[Example Code Generator - Eclipse Smart Home](#example-code-generator-eclipse-smart-home)  
 [Example Code Generator - Bosch M2M Platform](#example-code-generator-bosch-m2m-platform)  
-[Example Code Generator - Kura Service Generator](example-code-generator-kura-service-generator)  
 
 ## Code Generators Overview
 
@@ -743,16 +739,6 @@ The default REST service class `Switchable` generated provides a service to retu
 5. Click the **On** button.  
 The **On** status is changed to **true**.
 
-## Example Code Generator - Eclipse Smart Home
-
-**Prerequisites**
-
-**Proceed as follows**
-
-Select the information model project you want to generate for smart home. From the context menu, choose **Generate Code > Eclipse Smart Home Generator**.  
-An Eclipse project, which contains thing type definitions required by smart home is generated.  
-![Eclipse Smarthome](m2m_vorto_eclipse_smarthome.png)
-
 ## Example Code Generator - Bosch M2M Platform
 
 A function block model contains necessary artifacts (e.g., Java representation of the model) which can be used by the M2M Agent Hub and the Central Registry at run time.
@@ -791,26 +777,6 @@ A function block model contains necessary artifacts (e.g., Java representation o
   <tr>
     <td class="notesign"><img src="./Note_32.png" alt="Note"></td>
     <td>Please note that the default generated function block service uses the latest M2M API that exist in maven repository for dependency. If your target platform is not the latest (e.g., latest is 2.2.5 but your target platform is running 2.2.0), then you need to update the property <code>m2m.version</code> in the <code>pom.xml</code> file in your service project to your actual M2M version. Then update your project. You can check the actual M2M version used by expanding maven dependencies from your service project.</td>
-  </tr>
-</table>
-
-## Example Code Generator - Kura Service Generator
-
-**Prerequisites**
-
-- You have created and edited a function block project (refer to [Creating a New Function Block](#creating-a-new-function-block) and [Editing a Function Block](#editing-a-function-block)).  
-- You have selected the Vorto perspective.
-
-**Proceed as follows**
-
-1. In the **Function Block Models** browser, select the function block project you want to generate code for.
-2. Right-click to open the context menu and click **Generate Code > Kura Service Generator**.  
-   An Eclipse project, which contains service implementation required by Kura platform is generated. 
-
-<table class="note">
-  <tr>
-    <td class="notesign"><img src="./Note_32.png" alt="Note"></td>
-    <td>Please note that the generated project will display some errors as it depends on some kura libraries that are not included in Vorto bundle.</td>
   </tr>
 </table>
 

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Code-Generation Infrastructure
+Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.vorto.codegen.Activator
