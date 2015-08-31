@@ -12,16 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.core.api.repository;
+package org.eclipse.vorto.repository.function;
 
-public class ModelAlreadyExistException extends RuntimeException {
+import org.eclipse.vorto.repository.model.ModelView;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6552743519658536939L;
+import com.google.common.base.Function;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-	public ModelAlreadyExistException(String msg) {
-		super(msg);
+public class StringToModelResourceResult implements Function<String, ModelView> {
+
+	private Gson gson = new GsonBuilder().create();
+	
+	public ModelView apply(String input) {
+		return gson.fromJson(input, ModelView.class);
 	}
+
 }

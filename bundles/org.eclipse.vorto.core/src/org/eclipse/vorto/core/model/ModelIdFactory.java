@@ -28,7 +28,7 @@ public class ModelIdFactory {
 
 	public static ModelId newInstance(ModelType modelType, String namespace,
 			String version, String name) {
-		return new ModelId(modelType, namespace, version, name);
+		return new ModelId(modelType, name, namespace, version);
 	}
 
 	public static ModelId newInstance(Model model) {
@@ -38,11 +38,11 @@ public class ModelIdFactory {
 
 	private static ModelType getModelType(Model model) {
 		if (model instanceof InformationModel) {
-			return ModelType.INFORMATIONMODEL;
+			return ModelType.InformationModel;
 		} else if (model instanceof FunctionblockModel) {
-			return ModelType.FUNCTIONBLOCK;
+			return ModelType.Functionblock;
 		} else {
-			return ModelType.DATATYPE;
+			return ModelType.Datatype;
 		}
 	}
 
