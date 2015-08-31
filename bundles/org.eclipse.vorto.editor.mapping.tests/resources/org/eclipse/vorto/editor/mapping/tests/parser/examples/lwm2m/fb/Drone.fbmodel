@@ -1,0 +1,21 @@
+namespace com.mycompany.lwm2m.fb
+version 1.0.0
+using com.mycompany.lwm2m.type.GeoLocation ; 1.0.0
+
+functionblock Drone {
+	displayname "Drone"
+	description "Function block model for Drone"
+	category demo
+	status {
+		mandatory location as GeoLocation
+	}
+
+	operations {
+		forward()
+		backward()
+		rotate()
+		ascend()
+		descend()
+	}
+
+}

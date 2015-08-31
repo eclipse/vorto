@@ -1,3 +1,0 @@
-mapping {model org.eclipse.vorto.example.MyDevice target MyApplication from org.eclipse.vorto.example.MyFunctionblock.operation.myOperation	to myApplication with { name :"MyName", description: "MyDescription" }
-from org.eclipse.vorto.example.MyFunctionblock.operation.myOperation2,org.eclipse.vorto.example.MyFunctionblock.operation.myOperation3	to myApplication2 with { name :"MyName2", description: "MyDescription2" }
-,myApplication3 with { name :"MyName3", description: "MyDescription3" }}

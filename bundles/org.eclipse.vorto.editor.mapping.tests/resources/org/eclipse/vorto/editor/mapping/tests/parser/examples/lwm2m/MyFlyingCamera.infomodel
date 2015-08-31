@@ -1,0 +1,15 @@
+namespace com.mycompany.lwm2m
+version 3.0.0-Plus
+using com.mycompany.lwm2m.fb.Drone ; 1.0.0
+using com.mycompany.lwm2m.fb.Switcher ; 1.0.0
+
+infomodel MyFlyingCamera {
+	displayname "MyFlyingCamera"
+	description "Information model for MyFlyingCamera"
+	category demo
+
+	functionblocks {
+		drone as Drone
+		switcher as Switcher
+	}
+}

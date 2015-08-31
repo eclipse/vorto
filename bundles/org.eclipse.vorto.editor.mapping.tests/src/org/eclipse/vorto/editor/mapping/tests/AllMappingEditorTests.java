@@ -14,14 +14,15 @@
  *******************************************************************************/
 package org.eclipse.vorto.editor.mapping.tests;
 
-import org.eclipse.vorto.editor.mapping.tests.parser.MappingParserTest;
+import org.eclipse.vorto.editor.mapping.tests.formatter.MappingModelFormatterTest;
+import org.eclipse.vorto.editor.mapping.tests.parser.LWM2MMappingParseTest;
+import org.eclipse.vorto.editor.mapping.tests.parser.MappingModelSyntaxTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({MappingParserTest.class})
+@SuiteClasses({ MappingModelSyntaxTest.class, MappingModelFormatterTest.class, LWM2MMappingParseTest.class})
 public class AllMappingEditorTests {
-	
 
 }
