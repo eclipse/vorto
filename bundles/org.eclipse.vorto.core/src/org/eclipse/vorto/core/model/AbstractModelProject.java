@@ -15,14 +15,11 @@
 package org.eclipse.vorto.core.model;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -32,17 +29,19 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.internal.model.ModelFileLookupHelper;
 import org.eclipse.vorto.core.parser.IModelParser;
+import org.eclipse.vorto.core.service.IModelElementResolver;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.core.service.SharedModelServiceFactory;
 
-public abstract class AbstractModelProject extends AbstractModelElement
-		implements IModelProject {
+public abstract class AbstractModelProject extends AbstractModelElement implements IModelProject {
 
 	protected IProject project;
 	protected IModelParser modelParser;
@@ -55,24 +54,9 @@ public abstract class AbstractModelProject extends AbstractModelElement
 		this.modelParser = modelParser;
 		this.modelLookupHelper = new ModelFileLookupHelper(project);
 		this.model = parseModel(getModelFile());
-
 	}
 
 	protected abstract Model parseModel(IFile modelFile);
-
-	@Override
-	public Image getImage() {
-		URL url = null;
-		try {
-			url = new URL(getImageURLAsString());
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(
-					"URL to datatype model image is not correct!", e);
-		}
-		return ImageDescriptor.createFromURL(url).createImage();
-	}
-
-	protected abstract String getImageURLAsString();
 
 	@Override
 	public Model getModel() {
@@ -86,13 +70,24 @@ public abstract class AbstractModelProject extends AbstractModelElement
 		}
 		addModelReference(reference);
 	}
+	
+	@Override
+	public void addReference(ModelId modelId) {
+		ModelReference referenceToAdd = modelId.asModelReference();
+		
+		for (ModelReference modelReference : getModel().getReferences()) {
+			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
+				return; // model reference already exists
+			}
+		}
+		getModel().getReferences().add(referenceToAdd);
+	}
 
 	private void addProjectReference(IModelProject modelProject) {
 		try {
-			Set<IProject> immutableReferencedProjects = new HashSet<IProject>(
-					Arrays.asList(project.getReferencedProjects()));
-			if (immutableReferencedProjects == null
-					|| immutableReferencedProjects.isEmpty()) {
+			Set<IProject> immutableReferencedProjects = new HashSet<IProject>(Arrays.asList(project
+					.getReferencedProjects()));
+			if (immutableReferencedProjects == null || immutableReferencedProjects.isEmpty()) {
 				immutableReferencedProjects = new HashSet<IProject>();
 			}
 			Set<IProject> referencedProjects = new HashSet<IProject>();
@@ -101,8 +96,7 @@ public abstract class AbstractModelProject extends AbstractModelElement
 
 			IProjectDescription prjDescriptor = project.getDescription();
 
-			prjDescriptor.setReferencedProjects(referencedProjects
-					.toArray(new IProject[referencedProjects.size()]));
+			prjDescriptor.setReferencedProjects(referencedProjects.toArray(new IProject[referencedProjects.size()]));
 			project.setDescription(prjDescriptor, new NullProgressMonitor());
 
 		} catch (Exception ex) {
@@ -111,16 +105,14 @@ public abstract class AbstractModelProject extends AbstractModelElement
 	}
 
 	protected void addModelReference(IModelElement modelElementReference) {
-		ModelReference referenceToAdd = modelElementReference.getId()
-				.asModelReference();
+		ModelReference referenceToAdd = modelElementReference.getId().asModelReference();
 		for (ModelReference modelReference : getModel().getReferences()) {
 			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
 				return; // model reference already exists
 			}
 		}
 		getModel().getReferences().add(referenceToAdd);
-		getModel().eResource().getContents()
-				.add(modelElementReference.getModel());
+		getModel().eResource().getContents().add(modelElementReference.getModel());
 
 	}
 
@@ -139,8 +131,7 @@ public abstract class AbstractModelProject extends AbstractModelElement
 			model.eResource().save(options);
 
 		} catch (IOException e) {
-			throw new RuntimeException(
-					"Something went wrong during infomodel serialization", e);
+			throw new RuntimeException("Something went wrong during infomodel serialization", e);
 		}
 	}
 
@@ -154,32 +145,42 @@ public abstract class AbstractModelProject extends AbstractModelElement
 	}
 
 	public MappingModel getMapping(String modelName) {
-		IFile mappingFile = modelLookupHelper.getModelFile(modelName
-				+ ".mapping");
+		IFile mappingFile = modelLookupHelper.getModelFile(modelName + ".mapping");
 		return modelParser.parseModel(mappingFile, MappingModel.class);
 	}
 	
-	@Override
-	public Set<IModelElement> getReferences() {
-		Set<IModelElement> references = new TreeSet<>();
+	protected IModelElementResolver[] getResolvers() {
+		return new IModelElementResolver[] {
+				ModelProjectServiceFactory.getDefault().getWorkspaceProjectResolver(),
+				SharedModelServiceFactory.getDefault().getSharedModelResolver(this)
+		};
+	}
 
-		for (ModelReference modelReference : getModel().getReferences()) {
-			try {
-				IModelElement reference = ModelProjectServiceFactory.getDefault()
-				.getProjectByModelId(
-						ModelIdFactory.newInstance(getPossibleReferenceType(),
-								modelReference));
-				if (reference != null) {
-					references.add(reference);
-				}
-
-			} catch (Exception ex) {
-				ex.printStackTrace();
+	public IModelElement getSharedModelReference(ModelId modelId) {
+		IFile[] sharedModelFiles = modelLookupHelper.getSharedFilesByModelType(modelId.getModelType());
+		for(IFile sharedModelFile : sharedModelFiles) {
+			Model model = getSharedModel(sharedModelFile, modelId.getModelType());
+			if (modelEquals(modelId, model)) {
+				return SharedModelServiceFactory.getDefault().createSharedModelElement(this, sharedModelFile, model);
 			}
 		}
-		return references;
+		
+		return null;
 	}
-	
-	protected abstract ModelType getPossibleReferenceType();
 
+	private boolean modelEquals(ModelId modelId, Model model) {
+		return modelId.getName().equalsIgnoreCase(model.getName()) &&
+				modelId.getNamespace().equalsIgnoreCase(model.getNamespace()) &&
+				modelId.getVersion().equals(model.getVersion());
+	}
+
+	private Model getSharedModel(IFile file, ModelType modelType) {
+		if (modelType == ModelType.Functionblock) {
+			return modelParser.parseModel(file, FunctionblockModel.class);
+		} else if (modelType == ModelType.InformationModel){
+			return modelParser.parseModel(file, InformationModel.class);
+		} else {
+			return modelParser.parseModel(file, Type.class);
+		}
+	}
 }

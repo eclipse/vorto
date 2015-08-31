@@ -117,7 +117,7 @@ public class InformationModelProject extends AbstractModelProject {
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.FUNCTIONBLOCK;
+		return ModelType.Functionblock;
 	}
 
 }

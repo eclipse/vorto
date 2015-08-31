@@ -14,29 +14,51 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.model;
 
-import java.util.Collection;
+public class UploadResult {
+	String handleId;
+	String errorMessage;
+	boolean valid;
+	ModelView modelResource;
 
-public class SearchResult {
-	private Collection<ModelView> searchResult;
+	public UploadResult() {
 
-	public Collection<ModelView> getSearchResult() {
-		return searchResult;
+	}
+	
+	public boolean statusOk() {
+		return handleId != null && valid;
 	}
 
-	public void setSearchResult(Collection<ModelView> searchResult) {
-		this.searchResult = searchResult;
+	public String getHandleId() {
+		return handleId;
 	}
 
-	@Override
-	public String toString() {
-		StringBuilder buffer = new StringBuilder();
-		buffer.append("SearchResult [searchResult=");
-		for (ModelView modelView : searchResult) {
-			buffer.append(modelView.toString());
-			buffer.append(",");
-		}
-		buffer.deleteCharAt(buffer.length() - 1);
-		buffer.append("]");
-		return buffer.toString();
+	public void setHandleId(String handleId) {
+		this.handleId = handleId;
 	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public ModelView getModelResource() {
+		return modelResource;
+	}
+
+	public void setModelResource(ModelView modelResource) {
+		this.modelResource = modelResource;
+	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
+	public void setValid(boolean valid) {
+		this.valid = valid;
+	}
+	
+
 }
