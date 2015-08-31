@@ -15,7 +15,7 @@ public class ModelTypeValidator implements IDropValidator {
 	
 	@Override
 	public boolean allow(IModelProject receivingProject, Object droppedObject) {
-		if (receivingProject == null && ModelResource.class.isInstance(droppedObject)) {
+		if (receivingProject == null && droppedObject instanceof ModelResource) {
 			ModelResource model = (ModelResource) droppedObject;
 			return model.getId().getModelType() == modelType;
 		}
