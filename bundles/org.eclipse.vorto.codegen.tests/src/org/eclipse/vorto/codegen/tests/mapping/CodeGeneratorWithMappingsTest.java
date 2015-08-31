@@ -21,10 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRule;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRules;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRulesAware;
-import org.eclipse.vorto.codegen.internal.mapping.DefaultMappingRules;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
@@ -37,11 +34,12 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.mapping.Rule;
-import org.eclipse.vorto.core.api.model.mapping.StereoType;
-import org.eclipse.vorto.core.api.model.mapping.TargetElement;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
+import org.eclipse.vorto.core.model.IMapping;
 import org.junit.Test;
 
 public class CodeGeneratorWithMappingsTest {
@@ -50,50 +48,38 @@ public class CodeGeneratorWithMappingsTest {
 	public void testGetRuleForInfoModel() {
 		InformationModel leftSideModel = createInformationModel();
 
-		final List<IMappingRule> rules = new ArrayList<>();
-
+		final List<MappingRule> rules = new ArrayList<MappingRule>();
 		ICodeGenerator<InformationModel> generator = new AbstractGenerator() {
 
 			@Override
 			public void generate(InformationModel ctx, IProgressMonitor monitor) {
 
-				rules.addAll(mappingRules
-						.getRulesContainStereoType("configDescription"));
+				rules.addAll(mapping
+						.getRulesByStereoType("configDescription"));
 			}
+
+			@Override
+			public void setMapping(IMapping mapping) {
+				this.mapping = mapping;
+			}
+
 		};
 
-		MappingModel mappingModel = this.createRuleModel(leftSideModel);
+		MappingModel mappingModel = this.createMappingModel(leftSideModel);
 
 		((IMappingRulesAware) generator)
-				.setMappingRules(new DefaultMappingRules(mappingModel));
+				.setMapping(org.eclipse.vorto.core.model.MappingFactory.createMapping(mappingModel));
 
 		generator.generate(leftSideModel, null);
 
 		assertEquals(1, rules.size());
-		assertEquals("brightness",
-				rules.get(0)
-						.getStereoTypeAttribute("configDescription", "name")
-						.getValue());
-		assertEquals("Number",
-				rules.get(0)
-						.getStereoTypeAttribute("configDescription", "type")
-						.getValue());
 	}
 
 	private abstract class AbstractGenerator implements
 			ICodeGenerator<InformationModel>, IMappingRulesAware {
 
-		protected IMappingRules mappingRules;
+		protected IMapping mapping;
 
-		@Override
-		public String getMappingRulesFileName() {
-			return "demo.mapping";
-		}
-
-		@Override
-		public void setMappingRules(IMappingRules rules) {
-			this.mappingRules = rules;
-		}
 
 		@Override
 		public String getName() {
@@ -140,27 +126,16 @@ public class CodeGeneratorWithMappingsTest {
 		return fbp;
 	}
 
-	/*
-	 * mapping { model BoschXYZ target smarthome
-	 * 
-	 * from Switcher.configuration.brightness to "configDescription" with {name:
-	 * "brightness", type: "Number",}
-	 * 
-	 * }
-	 */
-	private MappingModel createRuleModel(InformationModel infoModel) {
-		MappingModel mappingModel = MappingFactory.eINSTANCE
-				.createMappingModel();
-		mappingModel.setInfomodel(infoModel);
-		mappingModel.getRules().add(createeRule());
+	private MappingModel createMappingModel(InformationModel infoModel) {
+		MappingModel mappingModel = MappingFactory.eINSTANCE.createInfoModelMapping();
+		mappingModel.setName("MyMapping");
+		mappingModel.getRules().add(createRule());
 		return mappingModel;
 	}
 
-	private static Rule createeRule() {
-		Rule rule = MappingFactory.eINSTANCE.createRule();
-		TargetElement targetElement = MappingFactory.eINSTANCE
-				.createTargetElement();
-		StereoType stereoType = MappingFactory.eINSTANCE.createStereoType();
+	private static InfoModelMappingRule createRule() {
+		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
+		StereoTypeTarget stereoType = MappingFactory.eINSTANCE.createStereoTypeTarget();
 		Attribute typeAttribute = MappingFactory.eINSTANCE.createAttribute();
 		typeAttribute.setName("type");
 		typeAttribute.setValue("Number");
@@ -173,9 +148,7 @@ public class CodeGeneratorWithMappingsTest {
 		stereoType.getAttributes().add(nameAttribute);
 		stereoType.getAttributes().add(typeAttribute);
 
-		targetElement.getStereoTypes().add(stereoType);
-
-		rule.setTargetElement(targetElement);
+		rule.setTarget(stereoType);
 		return rule;
 	}
 
