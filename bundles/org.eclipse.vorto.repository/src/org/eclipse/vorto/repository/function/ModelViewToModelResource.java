@@ -24,14 +24,13 @@ import org.eclipse.vorto.repository.model.ModelView;
 
 import com.google.common.base.Function;
 
-public class ModelViewToModelResource implements
-		Function<ModelView, ModelResource> {
+public class ModelViewToModelResource implements Function<ModelView, ModelResource> {
 
 	public ModelResource apply(ModelView input) {
-		ModelId modelId = ModelIdFactory.newInstance(input.getModelType(), input.getId().getNamespace(), input.getId().getVersion(), input.getId().getName());
-		return new ModelResource(modelId, input.getDescription(),
-				input.getDisplayName(),
-				transformReferences(input,input.getReferences()));
+		ModelId modelId = ModelIdFactory.newInstance(input.getModelType(), input.getId().getNamespace(), input.getId()
+				.getVersion(), input.getId().getName());
+		return new ModelResource(modelId, input.getDescription(), input.getDisplayName(), transformReferences(input,
+				input.getReferences()));
 	}
 
 	private List<ModelId> transformReferences(ModelView modelView, List<ModelId> references) {
@@ -49,7 +48,5 @@ public class ModelViewToModelResource implements
 		}
 		return ModelType.Datatype;
 	}
-	
-	
 
 }

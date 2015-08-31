@@ -103,12 +103,12 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	}
 
 	private String getUrlForModelDownload(ModelId modelId) {
-		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName(),
 				modelId.getVersion());
 	}
 
 	private String getUrlForModel(ModelId modelId) {
-		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName(),
 				modelId.getVersion());
 	}
 
