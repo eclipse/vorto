@@ -596,7 +596,7 @@ In information model mapping, you can define mapping rules for information model
 
 **Proceed as follows**
 
-1. In the information model project you want to create the mapping for (`PhilipsHue` in the example), navigate to the folder `src/models`.
+1. In the information model project you want to create the mapping for (`MyLightingDevice` in the example), navigate to the folder `src/models`.
 
 2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
    The **New File** dialog opens.
@@ -610,7 +610,7 @@ In information model mapping, you can define mapping rules for information model
 
 	namespace com.mycompany
 	version 1.0.0
-	using com.philips.PhilipsHue ; 1.0.0
+	using com.mycompany.MyLightingDevice ; 1.0.0
 	using com.mycompany.fb.MyColorLight ; 1.0.0
 	
 	infomodelmapping SmartHome {
@@ -702,18 +702,18 @@ Run the generated Web device application to visualize it.
 
 **Proceed as follows**
 
-1. In the Package Explorer, select the Web device application project (`philipshue-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
+1. In the Package Explorer, select the Web device application project (`mylightingdevice-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
    The **Run Configurations** dialog opens.
 2. In the configuration list on the left side, expand **Maven Build** and click the sub item **New_configuration**.  
    A configuration form opens.
-3. Change the entry in the **Name** field to, e.g., `Philipshue_configuration`.
-4. In the **Base directory** input field, enter `${workspace_loc}/philipshue-webapp`.
+3. Change the entry in the **Name** field to, e.g., `MyLightingDevice_configuration`.
+4. In the **Base directory** input field, enter `${workspace_loc}/mylightingdevice-webapp`.
 5. In the **Goals** input field, enter `jetty:run`.
 6. Click **Run**.  
    ![Run Jetty](m2m_vorto_jetty_run.png)  
    Wait a few seconds for jetty server to start. Upon successfully start, message `[INFO] Started Jetty Server` should be displayed in the Eclipse console.
-7. Open the URL `http://localhost:8080/philipshue-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
-   ![Philipshue Web UI](m2m_vorto_philipshue_webui.png)
+7. Open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
+   ![mylightingdevice Web UI](m2m_vorto_philipshue_webui.png)
 
 ### Modifying the Behavior of the Generated Web Device Application
 
@@ -736,7 +736,7 @@ The default REST service class `Switchable` generated provides a service to retu
 
 2. Stop the application by clicking the red square beside the Console tab in your IDE.
 3. Start the application again by selecting the project and choosing **Run As > Run configurations** from the context menu.
-4. In your browser, open the URL `http://localhost:8080/philipshue-webapp/index.html` again.
+4. In your browser, open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` again.
 5. Click the **On** button.  
 The **On** status is changed to **true**.
 
@@ -1554,7 +1554,7 @@ InformationModel:
     <td>Name</td>
     <td>Y</td>
     <td>A descriptive name</td>
-    <td>Philips Hue</td>
+    <td>My Lighting Device</td>
   </tr>
   <tr>
     <td>description</td>
@@ -1566,7 +1566,7 @@ InformationModel:
     <td>vendor</td>
     <td>Y</td>
     <td>Vendor Identifier </td>
-    <td>www.philips.com</td>
+    <td>www.mycompany.com</td>
   </tr>
   <tr>
     <td>category</td>
