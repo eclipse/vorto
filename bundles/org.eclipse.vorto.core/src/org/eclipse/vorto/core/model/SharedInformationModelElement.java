@@ -21,6 +21,6 @@ public class SharedInformationModelElement extends AbstractSharedModelElement {
 	}
 
 	public static boolean appliesTo(Model model) {
-		return InformationModel.class.isInstance(model);
+		return model instanceof InformationModel;
 	}
 }

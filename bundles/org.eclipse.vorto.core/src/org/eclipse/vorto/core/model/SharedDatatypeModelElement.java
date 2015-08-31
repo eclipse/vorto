@@ -21,7 +21,7 @@ public class SharedDatatypeModelElement extends AbstractSharedModelElement {
 	}
 	
 	public static boolean appliesTo(Model model) {
-		return Type.class.isInstance(model);
+		return model instanceof Type;
 	}
 
 }

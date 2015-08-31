@@ -21,6 +21,6 @@ public class SharedFunctionblockModelElement extends AbstractSharedModelElement 
 	}
 
 	public static boolean appliesTo(Model model) {
-		return FunctionblockModel.class.isInstance(model);
+		return model instanceof FunctionblockModel;
 	}
 }
