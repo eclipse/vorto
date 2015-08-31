@@ -137,7 +137,7 @@ public class ModelQueryTestBase {
 		modelView.add(ModelFactory.newFunctionBlockView("com.mantos", "1.0.1",
 				"radio", "A light for the world"));
 		modelView.add(ModelFactory.newFunctionBlockView("com.mantos", "1.0.1",
-				"spi", "SPI shit"));
+				"spi", "SPI"));
 
 		return modelView;
 	}
