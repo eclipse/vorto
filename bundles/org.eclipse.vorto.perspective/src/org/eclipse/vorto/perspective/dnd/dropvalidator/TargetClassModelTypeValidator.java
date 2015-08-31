@@ -29,15 +29,13 @@ public class TargetClassModelTypeValidator implements IDropValidator {
 	private Class<?> targetClass;
 	private ModelType modelType;
 
-	public TargetClassModelTypeValidator(Class<?> targetClass,
-			ModelType modelType) {
+	public TargetClassModelTypeValidator(Class<?> targetClass, ModelType modelType) {
 		this.targetClass = targetClass;
 		this.modelType = modelType;
 	}
 
 	public boolean allow(IModelProject receivingProject, Object droppedObject) {
-		if (ModelResource.class.isInstance(droppedObject)
-				&& targetClass.isInstance(receivingProject)) {
+		if (droppedObject instanceof ModelResource && targetClass.isInstance(receivingProject)) {
 			ModelResource model = (ModelResource) droppedObject;
 			return model.getId().getModelType() == modelType;
 		}
