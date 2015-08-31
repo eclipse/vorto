@@ -3,9 +3,9 @@ version 3.0.0-Plus
 using com.mycompany.lwm2m.fb.Drone ; 1.0.0
 using com.mycompany.lwm2m.fb.Switcher ; 1.0.0
 
-infomodel DjiPhantomVision {
-	displayname "DjiPhantomVision"
-	description "Information model for DjiPhantomVision"
+infomodel MyFlyingCamera {
+	displayname "MyFlyingCamera"
+	description "Information model for MyFlyingCamera"
 	category demo
 
 	functionblocks {

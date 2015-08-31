@@ -1,4 +1,4 @@
-namespace com.mycompany.fb
+namespace com.mycompany.light.fb
 version 1.0.0
 
 functionblock Switchable {

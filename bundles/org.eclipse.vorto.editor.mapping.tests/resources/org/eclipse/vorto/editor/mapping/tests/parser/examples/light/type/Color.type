@@ -1,4 +1,4 @@
-namespace com.mycompany.type
+namespace com.mycompany.light.type
 version 1.0.0
 
 entity Color {

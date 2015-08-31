@@ -5,12 +5,12 @@ using com.mycompany.lwm2m.fb.DroneMapping ; 1.0.0
 
 infomodelmapping LWM2M {
 		
-		from DjiPhantomVision.switcher
+		from MyFlyingCamera.switcher
 		to ObjectType with {
 		Type : "MODefinition", Name : "Location", ObjectID : "6", ObjectURN : "TBD", MultipleInstances : "Single", Mandatory : "Optional"
 		}
 
-		from DjiPhantomVision.switcher
+		from MyFlyingCamera.switcher
 		to reference DroneMapping
 	
 }

@@ -434,7 +434,8 @@ You have create a function block model (refer to [Creating a New Function Block 
    ![Create new information model](m2m_tc_create_new_information_model.png)  
    The **Create Information Model** dialog opens:  
    ![Create information model dialog](m2m_tc_create_information_model_dialog.png)
-2. Enter, e.g., `PhilipsHue` as **Information Model Name**.  
+2. Enter, e.g., `MyLightingDevice
+3. ` as **Information Model Name**.  
 3. Click **Finish**.
    The information model DSL source file (with suffix .infomodel) is generated and displayed in the information model editor. The file contains a complete structure according the DSL syntax with the values given in the preceding step.  
    ![Information model DSL editor](m2m_tc_information_model_dsl_editor.png)
@@ -497,17 +498,17 @@ Edit the information model by extending the generated source file in the informa
             }
         }
 
-3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **PhilipsHue** in the **Information Models** tab to create the reference.  
+3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **MyLightingDevice** in the **Information Models** tab to create the reference.  
    ![Drag and drop from Function Block to Information Model](m2m_tc_drag_drop_function_block_to_information_model.png)
 4. Update the information model according the following:
 
-        namespace com.philips
+        namespace com.mycompany
         version 1.0.0
         using com.mycompany.fb.Switchable ; 1.0.0
         using com.mycompany.fb.ColorLight ; 1.0.0
-        infomodel PhilipsHue {
-                displayname "PhilipsHue"
-                description "Information model for PhilipsHue"
+        infomodel MyLightingDevice {
+                displayname "MyLightingDevice"
+                description "Information model for MyLightingDevice"
                 category demo
 
                 functionblocks {
@@ -614,13 +615,13 @@ In information model mapping, you can define mapping rules for information model
 	
 	infomodelmapping SmartHome {
 	
-		from PhilipsHue.displayname
+		from MyLightingDevice.displayname
 		to TargetDisplayName
 	
-		from PhilipsHue.switchable
+		from MyLightingDevice.switchable
 		to MySwitch with { Icon : "switch.png" }
 	
-		from PhilipsHue.colorlight
+		from MyLightingDevice.colorlight
 		to reference MyColorLight
 	}
 
@@ -646,7 +647,7 @@ This section describes the use of an example code generator to generate a Web De
 
 **Prerequisites**
 
-- You have created the information model project `PhilipsHue` (refer to [Creating a new Information Model](#creating-a-new-information-model) and [Editing an Information Model](#editing-an-information-model)).
+- You have created the information model project `MyLightingDevice` (refer to [Creating a new Information Model](#creating-a-new-information-model) and [Editing an Information Model](#editing-an-information-model)).
 - You have selected the Vorto perspective.
 - Eclipse [M2E plug-in](http://download.eclipse.org/technology/m2e/releases) 1.5.\* (can already be packaged with Eclipse Luna)  
 
@@ -666,9 +667,9 @@ This section describes the use of an example code generator to generate a Web De
 
 **Proceed as follows**
 
-Select the information model project created (`PhilipsHue`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
+Select the information model project created (`MyLightingDevice`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
 
-The Web application project `philipshue-webapp` is generated and Eclipse switches to the Java perspective.
+The Web application project `MyLightingDevice-webapp` is generated and Eclipse switches to the Java perspective.
 
 ![Generated Web App](m2m_vorto_philipshue_webapp_java_layout.png)
 

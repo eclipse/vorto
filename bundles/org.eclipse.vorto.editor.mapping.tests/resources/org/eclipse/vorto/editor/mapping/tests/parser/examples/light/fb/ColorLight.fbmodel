@@ -1,12 +1,14 @@
-namespace com.mycompany.fb
+namespace com.mycompany.light.fb
 version 1.0.0
-
+using com.mycompany.light.type.Color;1.0.0
+ 
 functionblock ColorLight {
 	displayname "ColorLight"
 	description "A light makes the environment bright and colorful"
 	category hue
 	configuration {
 		optional brightnessLevel as int
+		optional defaultColor as Color
 	}
 
 	fault {
