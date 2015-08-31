@@ -10,6 +10,7 @@ import org.eclipse.vorto.codegen.api.context.IModelProjectContext;
 import org.eclipse.vorto.codegen.api.tasks.Generated;
 import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.tasks.IOutputter;
+import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
@@ -34,10 +35,11 @@ public class CreateProjectDropAction implements IDropAction {
 	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
 	private Function<ModelType, String> modelTypeToSuffix = Functions.forMap(modelTypeToSuffix());
 	private Function<ModelType, String[]> modelTypeToNature = Functions.forMap(modelTypeToNature());
+	private IModelProjectService projectService = ModelProjectServiceFactory.getDefault();
 
 	@Override
 	public boolean performDrop(IModelProject receivingProject, Object droppedObject) {
-		if (droppedObject == null || !ModelResource.class.isInstance(droppedObject)) {
+		if (droppedObject == null || !(droppedObject instanceof ModelResource)) {
 			throw new IllegalArgumentException("Dropped object should not be null and should be a ModelResource");
 		}
 
@@ -61,7 +63,7 @@ public class CreateProjectDropAction implements IDropAction {
 			}
 
 			@Override
-			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
+			protected ICodeGeneratorTask< IModelProjectContext> getCodeGeneratorTask() {
 				return new SharedModelCodeGenerationTask(model);
 			}
 
@@ -86,13 +88,18 @@ public class CreateProjectDropAction implements IDropAction {
 
 		private void generateModel(IOutputter outputter, String modelDir, ModelResource model) {
 			ModelId id = model.getId();
-			String content = new String(modelRepo.downloadContent(id), StandardCharsets.UTF_8);
-			Generated generated = new Generated(id.getName() + modelTypeToSuffix.apply(id.getModelType()), modelDir, content);
-			outputter.output(generated);
-			
-			for(ModelId referenceId : model.getReferences()) {
-				ModelResource referenceModel = modelRepo.getModel(referenceId);
-				generateModel(outputter, IModelProjectService.SHARED_MODELS_DIR, referenceModel);
+			if (projectService.getProjectByModelId(id) == null) {
+				String content = new String(modelRepo.downloadContent(id), StandardCharsets.UTF_8);
+				Generated generated = new Generated(id.getName() + modelTypeToSuffix.apply(id.getModelType()), modelDir, content);
+				outputter.output(generated);
+				
+				for(ModelId referenceId : model.getReferences()) {
+					ModelResource referenceModel = modelRepo.getModel(referenceId);
+					generateModel(outputter, IModelProjectService.SHARED_MODELS_DIR, referenceModel);
+				}
+			} else {
+				MessageDisplayFactory.getMessageDisplay().displayWarning(
+						String.format("Project %s already exist in workspace. Not copying from repository.", id.toString()));
 			}
 		}
 	}
