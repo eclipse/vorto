@@ -47,7 +47,12 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
 	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource, contentConverters);
-
+	private Function<String, byte[]> stringToByteArray = new Function<String, byte[]>() {
+		public byte[] apply(String input) {
+			return input.getBytes();
+		}
+	};
+	
 	private RestClient httpClient;
 
 	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
@@ -68,14 +73,14 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	@Override
 	public byte[] downloadContent(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
-
+		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
+		Objects.requireNonNull(modelId.getName(), "name should not be null");
+		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
+		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
+		
 		String url = getUrlForModelDownload(modelId);
 		try {
-			return httpClient.executeGet(url, new Function<String, byte[]>() {
-				public byte[] apply(String input) {
-					return input.getBytes();
-				}
-			});
+			return httpClient.executeGet(url, stringToByteArray);
 		} catch (Exception e) {
 			throw new RuntimeException("Error downloading modelContent for resource", e);
 		}
@@ -84,7 +89,11 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	@Override
 	public ModelResource getModel(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
-
+		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
+		Objects.requireNonNull(modelId.getName(), "name should not be null");
+		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
+		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
+		
 		String url = getUrlForModel(modelId);
 		try {
 			return httpClient.executeGet(url, stringToModelResource);
@@ -94,21 +103,11 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	}
 
 	private String getUrlForModelDownload(ModelId modelId) {
-		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
-		Objects.requireNonNull(modelId.getName(), "name should not be null");
-		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
-		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
-
 		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
 				modelId.getVersion());
 	}
 
 	private String getUrlForModel(ModelId modelId) {
-		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
-		Objects.requireNonNull(modelId.getName(), "name should not be null");
-		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
-		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
-
 		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
 				modelId.getVersion());
 	}
@@ -119,7 +118,8 @@ public class RestModelRepository extends Observable implements IModelRepository 
 
 	@Override
 	public void saveModel(String name, byte[] model) throws CheckInModelException {
-		Objects.requireNonNull(model);
+		Objects.requireNonNull(model, "Model should not be null.");
+		Objects.requireNonNull(name, "Name should not be null.");
 		try {
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
