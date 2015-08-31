@@ -12,8 +12,16 @@ Require-Bundle: org.eclipse.ui,
  org.apache.httpcomponents.httpcore,
  com.google.gson,
  org.apache.commons.logging,
- org.eclipse.emf.ecore.xmi
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.equinox.security,
+ org.apache.commons.codec,
+ org.eclipse.vorto.editor.datatype;bundle-version="0.4.0",
+ org.eclipse.vorto.editor.functionblock;bundle-version="0.4.0",
+ org.eclipse.vorto.editor.infomodel;bundle-version="0.4.0",
+ org.eclipse.core.net,
+ org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org/Vorto
 Export-Package: org.eclipse.vorto.repository
+Import-Package: org.eclipse.vorto.codegen.ui.display

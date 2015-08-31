@@ -14,130 +14,129 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.fluent.Content;
-import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.eclipse.vorto.core.api.model.datatype.Type;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelQuery;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
-import org.eclipse.vorto.core.api.repository.ModelAlreadyExistException;
-import org.eclipse.vorto.core.api.repository.ModelContent;
+import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelType;
-import org.eclipse.vorto.repository.function.ContentToModelContent;
+import org.eclipse.vorto.repository.function.ModelViewToModelResource;
+import org.eclipse.vorto.repository.function.StringToModelResourceResult;
+import org.eclipse.vorto.repository.function.StringToUploadResult;
+import org.eclipse.vorto.repository.model.ModelView;
+import org.eclipse.vorto.repository.model.UploadResult;
 
 import com.google.common.base.Function;
-import com.google.common.io.ByteStreams;
+import com.google.common.base.Functions;
 
 public class RestModelRepository extends Observable implements IModelRepository {
 
 	private static final String FILE_PARAMETER_NAME = "file";
+	private static final String FILE_DOWNLOAD_FORMAT = "file/%s/%s/%s";
+	private static final String MODELID_RESOURCE_FORMAT = "%s/%s/%s";
+	private static final String CHECKIN_FORMAT = "%s";
 
-	private static final String MODEL_ID_SERVICE_FORMAT = "%s/rest/model/%s/%s/%s/%s";
+	private Function<String, UploadResult> uploadResponseConverter = new StringToUploadResult();
+	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
+	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
+	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource, contentConverters);
+	private Function<String, byte[]> stringToByteArray = new Function<String, byte[]>() {
+		public byte[] apply(String input) {
+			return input.getBytes();
+		}
+	};
+	
+	private RestClient httpClient;
 
-	private static final String UPLOAD_FILE_URL_FORMAT = "%s/rest/model/upload";
-
-	private static final String UPLOAD_MSG = "Uploaded model with id: %s";
-
-	private static final String RESPONSE_MSG = "Response Status Code : %s %s";
-
-	private ConnectionInfoSupplier connectionUrlSupplier;
-	private Map<ModelType, Function<Content, ModelContent>> contentConverters = initializeContentConverters();
-
-	public RestModelRepository(ConnectionInfoSupplier connectionUrlSupplier) {
-		this.connectionUrlSupplier = Objects
-				.requireNonNull(connectionUrlSupplier);
-	}
-
-	private Map<ModelType, Function<Content, ModelContent>> initializeContentConverters() {
-		Map<ModelType, Function<Content, ModelContent>> converters = new HashMap<ModelType, Function<Content, ModelContent>>();
-
-		converters.put(ModelType.INFORMATIONMODEL,
-				new ContentToModelContent<InformationModel>(
-						InformationModel.class, ModelType.INFORMATIONMODEL));
-		converters.put(ModelType.FUNCTIONBLOCK,
-				new ContentToModelContent<FunctionblockModel>(
-						FunctionblockModel.class, ModelType.FUNCTIONBLOCK));
-		converters.put(ModelType.DATATYPE, new ContentToModelContent<Type>(
-				Type.class, ModelType.DATATYPE));
-
-		return converters;
+	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
+		Objects.requireNonNull(connectionUrlSupplier);
+		this.httpClient = new RestClient(connectionUrlSupplier);
 	}
 
 	public IModelQuery newQuery() {
-		return new RestModelQuery(connectionUrlSupplier);
+		return new RestModelQuery(httpClient, null, modelViewToModelResource);
 	}
 
 	@Override
-	public ModelContent getModelContentForResource(ModelId modelId) {
+	public List<ModelResource> search(String expression) {
+		return new ArrayList<ModelResource>(new RestModelQuery(httpClient, null, modelViewToModelResource).newQuery(
+				expression).list());
+	}
+
+	@Override
+	public byte[] downloadContent(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
-
-		String url = getUrlForModelId(modelId);
-
+		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
+		Objects.requireNonNull(modelId.getName(), "name should not be null");
+		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
+		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
+		
+		String url = getUrlForModelDownload(modelId);
 		try {
-			return contentConverters.get(modelId.getModelType()).apply(
-					Request.Get(url).execute().returnContent());
+			return httpClient.executeGet(url, stringToByteArray);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(
-					"Error getting modelContent for resource", e);
+			throw new RuntimeException("Error downloading modelContent for resource", e);
 		}
 	}
 
-	private String getUrlForModelId(ModelId modelId) {
-		Objects.requireNonNull(modelId.getModelType(),
-				"modelType should not be null");
+	@Override
+	public ModelResource getModel(ModelId modelId) {
+		Objects.requireNonNull(modelId, "modelId should not be null");
+		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
 		Objects.requireNonNull(modelId.getName(), "name should not be null");
-		Objects.requireNonNull(modelId.getNamespace(),
-				"namespace should not be null");
-		Objects.requireNonNull(modelId.getVersion(),
-				"version should not be null");
-
-		return String.format(MODEL_ID_SERVICE_FORMAT,
-				connectionUrlSupplier.connectionUrl(), modelId.getModelType()
-						.name().toLowerCase(), modelId.getNamespace(),
-				modelId.getName(), modelId.getVersion());
+		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
+		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
+		
+		String url = getUrlForModel(modelId);
+		try {
+			return httpClient.executeGet(url, stringToModelResource);
+		} catch (Exception e) {
+			throw new RuntimeException("Error getting model info for resource", e);
+		}
 	}
 
-	private String getUrlForUpload() {
-		return String.format(UPLOAD_FILE_URL_FORMAT,
-				connectionUrlSupplier.connectionUrl());
+	private String getUrlForModelDownload(ModelId modelId) {
+		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+				modelId.getVersion());
+	}
+
+	private String getUrlForModel(ModelId modelId) {
+		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName().toLowerCase(),
+				modelId.getVersion());
+	}
+
+	private String getUrlForCheckin(String handleId) {
+		return String.format(CHECKIN_FORMAT, handleId);
 	}
 
 	@Override
-	public void checkIn(ModelId modelId, InputStream file)
-			throws ModelAlreadyExistException {
-		Objects.requireNonNull(modelId);
-		Objects.requireNonNull(file);
-
+	public void saveModel(String name, byte[] model) throws CheckInModelException {
+		Objects.requireNonNull(model, "Model should not be null.");
+		Objects.requireNonNull(name, "Name should not be null.");
 		try {
 			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody(FILE_PARAMETER_NAME,
-					ByteStreams.toByteArray(file),
-					ContentType.APPLICATION_OCTET_STREAM, "");
+			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
 			HttpEntity fileToUpload = builder.build();
 
-			HttpResponse response = Request.Post(getUrlForUpload())
-					.body(fileToUpload).execute().returnResponse();
+			UploadResult uploadResult = httpClient.executePost(null, fileToUpload, uploadResponseConverter);
 
-			notifyObservers(String.format(UPLOAD_MSG, modelId));
-			notifyObservers(String.format(RESPONSE_MSG, response
-					.getStatusLine().getStatusCode(), response.getEntity()
-					.getContentLength()));
+			if (uploadResult.statusOk()) {
+				httpClient.executePut(getUrlForCheckin(uploadResult.getHandleId()));
+			} else {
+				throw new CheckInModelException(uploadResult.getErrorMessage());
+			}
+
+			setChanged();
+			notifyObservers(uploadResult);
 		} catch (Exception e) {
-			throw new RuntimeException(
-					"Error in uploading file to remote repository", e);
+			throw new CheckInModelException("Error in uploading file to remote repository", e);
 		}
 	}
 }
