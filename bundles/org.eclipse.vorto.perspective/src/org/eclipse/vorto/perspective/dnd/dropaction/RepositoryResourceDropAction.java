@@ -76,33 +76,30 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 		return true;
 	}
-
+	
 	// Download and save model from repository to local project.
 	// It also recursively do the same for the model references.
 	private ModelResource downloadAndSaveModel(IProject project, ModelId modelId) {
-		// Check if we have a local project with that same modelId
-		if (projectService.getProjectByModelId(modelId) == null) {
-			MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
-
-			ModelResource model = modelRepo.getModel(modelId);
-			if (model != null) {
+		ModelResource model = modelRepo.getModel(modelId);
+		if (model != null) {
+			if (projectService.getProjectByModelId(modelId) == null) {
 				// Download references also
 				for (ModelId reference : model.getReferences()) {
 					downloadAndSaveModel(project, reference);
 				}
+				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
 				byte[] modelContent = modelRepo.downloadContent(model.getId());
 				saveToProject(project, modelContent, getFileName(model, modelId.getModelType()));
 			} else {
 				MessageDisplayFactory.getMessageDisplay().displayError(
-						"Model " + modelId.toString() + " not found in repository.");
+						String.format(SHARED_MODEL_IS_PROJ_ERROR, modelId.toString(), project.getName()));
 			}
-
-			return model;
 		} else {
 			MessageDisplayFactory.getMessageDisplay().displayError(
-					String.format(SHARED_MODEL_IS_PROJ_ERROR, modelId.toString(), project.getName()));
-			return null;
+					"Model " + modelId.toString() + " not found in repository.");
 		}
+
+		return model;
 	}
 
 	private void saveToProject(IProject project, byte[] modelContent, String fileName) {
