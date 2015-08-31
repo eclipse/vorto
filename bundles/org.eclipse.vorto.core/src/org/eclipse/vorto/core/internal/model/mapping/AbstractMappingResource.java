@@ -32,10 +32,6 @@ import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.ModelId;
 
-/**
- * @author sgp0247
- *
- */
 public abstract class AbstractMappingResource implements IMapping {
 	protected MappingModel mappingModel;
 

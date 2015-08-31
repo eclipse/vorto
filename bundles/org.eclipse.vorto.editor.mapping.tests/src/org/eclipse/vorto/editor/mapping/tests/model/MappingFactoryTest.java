@@ -25,10 +25,6 @@ import org.eclipse.vorto.editor.mapping.tests.model.helper.TestFunctionBlockMapp
 import org.eclipse.vorto.editor.mapping.tests.model.helper.TestInfoModelMappingFactory;
 import org.junit.Test;
 
-/**
- * @author sgp0247
- *
- */
 public class MappingFactoryTest {
 	@Test
 	public void createInfoModelMappingRules(){

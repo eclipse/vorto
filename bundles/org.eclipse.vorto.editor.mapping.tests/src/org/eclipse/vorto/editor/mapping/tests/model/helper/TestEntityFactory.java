@@ -20,10 +20,6 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 
-/**
- * @author sgp0247
- *
- */
 public class TestEntityFactory {
 	public static Entity createEntity() {
 		Entity entity = DatatypeFactory.eINSTANCE.createEntity();

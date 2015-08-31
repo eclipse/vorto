@@ -22,10 +22,6 @@ import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
-/**
- * @author sgp0247
- *
- */
 public class TestEntityMappingFactory {
 	public static org.eclipse.vorto.core.api.model.datatype.Entity entity = TestEntityFactory.createEntity();
 

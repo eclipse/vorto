@@ -20,11 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
-
-/**
- * @author sgp0247
- *
- */
 public class StereoTypeHelper {
 	
 	/**

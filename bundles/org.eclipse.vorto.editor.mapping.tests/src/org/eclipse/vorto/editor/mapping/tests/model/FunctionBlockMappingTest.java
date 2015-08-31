@@ -30,10 +30,6 @@ import org.eclipse.vorto.editor.mapping.tests.model.helper.TestFunctionBlockMapp
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author sgp0247
- *
- */
 public class FunctionBlockMappingTest {
 	MappingModel mappingModel = TestFunctionBlockMappingFactory.createFunctionBlockMappingModel();
 	FunctionblockModel functionblockModel = TestFunctionBlockMappingFactory.functionblockModel;

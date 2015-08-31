@@ -21,10 +21,6 @@ import org.eclipse.vorto.core.api.model.mapping.EnumPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
-/**
- * @author sgp0247
- *
- */
 public class TestEnumMappingFactory {
 	static org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
 

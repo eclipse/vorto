@@ -14,10 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.model;
 
-/**
- * @author sgp0247
- *
- */
 public enum MappingAttribute {
 	name, namespace, version, displayname, description, category
 }

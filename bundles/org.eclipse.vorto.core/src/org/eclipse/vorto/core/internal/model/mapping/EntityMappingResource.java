@@ -28,11 +28,6 @@ import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.model.MappingAttribute;
 
-
-/**
- * @author sgp0247
- *
- */
 public class EntityMappingResource extends AbstractMappingResource {
 	public EntityMappingResource(MappingModel mappingModel) {
 		super(mappingModel);

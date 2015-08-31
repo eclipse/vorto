@@ -27,10 +27,6 @@ import org.eclipse.vorto.core.model.MappingFactory;
 import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEntityMappingFactory;
 import org.junit.Test;
 
-/**
- * @author sgp0247
- *
- */
 public class EntityMappingTest {
 	@Test
 	public void testGetRuleByEntityAttribute() {

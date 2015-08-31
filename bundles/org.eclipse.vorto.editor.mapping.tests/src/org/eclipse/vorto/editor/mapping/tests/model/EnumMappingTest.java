@@ -29,10 +29,6 @@ import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEnumFactory;
 import org.eclipse.vorto.editor.mapping.tests.model.helper.TestEnumMappingFactory;
 import org.junit.Test;
 
-/**
- * @author sgp0247
- *
- */
 public class EnumMappingTest {
 	org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
 	
