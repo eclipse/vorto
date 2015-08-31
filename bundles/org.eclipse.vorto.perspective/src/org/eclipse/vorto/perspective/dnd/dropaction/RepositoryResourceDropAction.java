@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
@@ -52,6 +53,12 @@ public class RepositoryResourceDropAction implements IDropAction {
 	private IModelProjectService projectService = ModelProjectServiceFactory.getDefault();
 
 	private Map<ModelType, String> modelFileExtensionMap = initializeExtensionMap();
+	
+	private ResourceAttributes readOnlyAttribute =new ResourceAttributes();
+	
+	public RepositoryResourceDropAction() {
+		readOnlyAttribute.setReadOnly(true);
+	}
 
 	@Override
 	public boolean performDrop(IModelProject receivingProject, Object droppedObject) {
@@ -115,6 +122,7 @@ public class RepositoryResourceDropAction implements IDropAction {
 
 			MessageDisplayFactory.getMessageDisplay().display(String.format(SAVING, file.getFullPath().toString()));
 			file.create(new ByteArrayInputStream(modelContent), true, new NullProgressMonitor());
+			file.setResourceAttributes(readOnlyAttribute);
 		} catch (CoreException e) {
 			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
