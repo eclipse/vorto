@@ -1,0 +1,12 @@
+namespace com.mycompany.light.type
+version 1.0.0
+using com.mycompany.light.type.Color ; 1.0.0
+
+entitymapping MyColor {
+
+	from Color.version
+	to MyColor with { Revision : "Rev-" }
+
+	from Color.r, Color.g, Color.b
+	to MyColor with { r : "Red", g : "Green", b : "Blue" }
+}
