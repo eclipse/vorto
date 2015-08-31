@@ -1679,7 +1679,7 @@ This section details the following topics:
 		<td>model</td>
 		<td>Y</td>
 		<td>Information Model Name   </td>
-		<td>PhilipsHue</td>
+		<td>MyLightingDevice</td>
 	</tr>
 	<tr>
 		<td>target</td>
@@ -1704,8 +1704,8 @@ This section details the following topics:
 <!---
 |Parameter|Mandatory|Description|Example|
 |:--------|:--------|:----------|:------|
-|model|Y|Information Model Name|PhilipsHue|
-|target|Y|Target platform mapping is used for|PhilipsHue|
+|model|Y|Information Model Name|MyLightingDevice|
+|target|Y|Target platform mapping is used for|MyLightingDevice|
 |from|Y|Information model element|ColorLight.operation.setR|
 |to|Y|Target plaform platform element|channelType|
 -->
