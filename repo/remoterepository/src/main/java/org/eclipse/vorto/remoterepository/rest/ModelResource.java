@@ -43,6 +43,7 @@ import org.eclipse.vorto.remoterepository.model.ModelId;
 import org.eclipse.vorto.remoterepository.model.ModelType;
 import org.eclipse.vorto.remoterepository.model.ModelView;
 import org.eclipse.vorto.remoterepository.rest.model.SearchResult;
+import org.eclipse.vorto.remoterepository.rest.model.UploadResult;
 import org.eclipse.vorto.remoterepository.rest.utils.RestCallback;
 import org.eclipse.vorto.remoterepository.rest.utils.RestTemplate;
 import org.eclipse.vorto.remoterepository.service.IModelRepoService;
@@ -51,7 +52,6 @@ import org.eclipse.vorto.remoterepository.service.search.IModelQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
 
 /**
@@ -68,7 +68,7 @@ public class ModelResource {
 	private static final String SUFFIX_FBMODEL = ".fbmodel";
 
 	private Log log = LogFactory.getLog(ModelResource.class);
-
+	
 	@Autowired
 	private IModelRepoService modelRepoService;
 
@@ -227,25 +227,24 @@ public class ModelResource {
 	@POST
 	@Path("/upload")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response uploadModel(
+	@Produces(MediaType.APPLICATION_JSON)
+	public UploadResult uploadModel(
 			final @FormDataParam("file") InputStream fileInputStream) {
-
-		return restTemplate.execute(new RestCallback() {
-			@Override
-			public Response execute() throws Exception {
-				if (fileInputStream != null) {
-					ModelContent modelContent = modelConverterService
-							.convertToModelContent(IOUtils
-									.toByteArray(fileInputStream));
-					log.info("Uploading model ["
-							+ modelContent.getModelId().toString() + "]");
-					modelRepoService.saveModel(modelContent);
-					return Response.ok().build();
-				} else {
-					return Response.noContent().build();
-				}
+		try {
+			if (fileInputStream != null) {
+				ModelContent modelContent = modelConverterService
+						.convertToModelContent(IOUtils
+								.toByteArray(fileInputStream));
+				log.info("Uploading model ["
+						+ modelContent.getModelId().toString() + "]");
+				modelRepoService.saveModel(modelContent);
+				return new UploadResult(UploadResult.Status.SUCCESS, modelContent.getModelId().toString() + " uploaded successfully.");
+			} else {
+				return new UploadResult(UploadResult.Status.FAILURE, "File is empty."); 
 			}
-		});
+		} catch(Exception e) {
+			return new UploadResult(UploadResult.Status.FAILURE, "Exception while uploading.", e);
+		}
 	}
 
 	private byte[] extractFileFromUploadContent(HttpServletRequest request)

@@ -12,13 +12,41 @@
      
        <extension
            point="org.eclipse.ui.views">
+          <category
+                id="org.eclipse.vorto.perspective"
+                name="Vorto">
+          </category>
+          <view
+                category="org.eclipse.vorto.perspective"
+                class="org.eclipse.vorto.perspective.view.DTTreeViewPart"
+                icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
+                id="org.eclipse.vorto.ui.perspective.dttreeview"
+                name="Datatype Models"
+                restorable="true">
+          </view>
         <view
-              class="org.eclipse.vorto.perspective.FBTreeViewPart"
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.FBTreeViewPart"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/fb_large.png"
               id="org.eclipse.vorto.ui.perspective.fbtreeview"
               name="Function Block Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/fb_large.png"
               restorable="true">
-        </view> 
+        </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.InfoModelTreeViewPart"
+              icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
+              id="org.eclipse.vorto.ui.perspective.imtreeview"
+              name="Information Models"
+              restorable="true">
+        </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.ModelRepositoryViewPart"
+              icon="icons/sample.gif"
+              id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+              name="Model Repository">
+        </view>
    </extension> 
      
    <extension point="org.eclipse.ui.perspectiveExtensions">
@@ -32,16 +60,6 @@
    </extension>
           
      <!-- datatype wizard and perspective -->
-   <extension
-           point="org.eclipse.ui.views">
-        <view
-              class="org.eclipse.vorto.perspective.DTTreeViewPart"
-              id="org.eclipse.vorto.ui.perspective.dttreeview"
-              name="Datatype Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
-              restorable="true">
-        </view> 
-     </extension>          
      
    
    <extension
@@ -72,6 +90,32 @@
                  name="org.eclipse.vorto.editor.datatype.newdatatype.project"
                  value="enum">
            </parameter>
+        </command>
+        <separator
+              name="additions1"
+              visible="true">
+        </separator>
+     </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
+        <command
+              commandId="org.eclipse.vorto.perspective.checkin"
+              icon="icons/sample.gif"
+              label="Check-in to repository">
+           <visibleWhen
+                 checkEnabled="true">
+              <with
+                    variable="selection">
+                 <iterate
+                       ifEmpty="false"
+                       operator="and">
+                    <instanceof
+                          value="org.eclipse.vorto.core.model.IModelProject">
+                    </instanceof>
+                 </iterate>
+              </with>
+           </visibleWhen>
         </command>
         <separator
               name="additions1"
@@ -114,6 +158,32 @@
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
+        <command
+              commandId="org.eclipse.vorto.perspective.checkin"
+              icon="icons/sample.gif"
+              label="Check-in to repository">
+           <visibleWhen
+                 checkEnabled="true">
+              <with
+                    variable="selection">
+                 <iterate
+                       ifEmpty="false"
+                       operator="and">
+                    <instanceof
+                          value="org.eclipse.vorto.core.model.IModelProject">
+                    </instanceof>
+                 </iterate>
+              </with>
+           </visibleWhen>
+        </command>
+        <separator
+              name="additions1"
+              visible="true">
+        </separator>
+     </menuContribution>
 	    <menuContribution
 	          allPopups="false"
 	          locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
@@ -137,16 +207,6 @@
 	 
 	 <!-- Infomodel -->
 	 
-	 <extension
-           point="org.eclipse.ui.views">
-        <view
-              class="org.eclipse.vorto.perspective.InfoModelTreeViewPart"
-              id="org.eclipse.vorto.ui.perspective.imtreeview"
-              name="Information Models"
-              icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
-              restorable="true">
-        </view> 
-     </extension>   
      
      	<extension
 	       point="org.eclipse.ui.menus">
@@ -178,6 +238,32 @@
 		             </visibleWhen>
 	        </menu>
 	     </menuContribution>
+         <menuContribution
+               allPopups="false"
+               locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
+            <command
+                  commandId="org.eclipse.vorto.perspective.checkin"
+                  icon="icons/sample.gif"
+                  label="Check-in to repository">
+               <visibleWhen
+                     checkEnabled="true">
+                  <with
+                        variable="selection">
+                     <iterate
+                           ifEmpty="false"
+                           operator="and">
+                        <instanceof
+                              value="org.eclipse.vorto.core.model.IModelProject">
+                        </instanceof>
+                     </iterate>
+                  </with>
+               </visibleWhen>
+            </command>
+            <separator
+                  name="additions1"
+                  visible="true">
+            </separator>
+         </menuContribution>
 	    <menuContribution
 	          allPopups="false"
 	          locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
@@ -197,6 +283,22 @@
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>		 	     	     
-	 </extension>  
+	 </extension>
+      <extension
+            point="org.eclipse.ui.commands">
+         <command
+               defaultHandler="org.eclipse.vorto.perspective.command.CheckinModelHandler"
+               id="org.eclipse.vorto.perspective.checkin"
+               name="CheckIn">
+         </command>
+      </extension>
+      <extension
+            point="org.eclipse.ui.preferencePages">
+         <page
+               class="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
+               id="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
+               name="Vorto">
+         </page>
+      </extension>  
      
 </plugin>
