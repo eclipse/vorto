@@ -1,0 +1,14 @@
+namespace com.mycompany.mydevice.type
+version 1.0.0
+using com.mycompany.mydevice.type.EntityA ; 1.0.0
+entitymapping Entity_Attribute {
+    
+	from EntityA.name
+	to TargetName with { DefaultValue : "MyName" }
+ 
+	from EntityA.namespace
+	to TargetNameSpace
+
+	from EntityA.version
+	to TargetVersion
+}
