@@ -125,37 +125,23 @@ public class LuceneIndexService implements IIndexService {
 	}
 
 	private Document generateIndexDocument(ModelView modelView) {
-
 		Document document = new Document();
 		ModelId mId = modelView.getModelId();
-
-		Field modelnameField = new StringField(
-				Constants.INDEX_FIELD_MODEL_NAME, mId.getName(),
-				Field.Store.YES);
-
-		Field modelnamespaceField = new StringField(
-				Constants.INDEX_FIELD_MODEL_NAMESPACE, mId.getNamespace(),// infoModel.getName(),
-				Field.Store.YES);
-
-		Field modelversionField = new StringField(
-				Constants.INDEX_FIELD_MODEL_VERSION, mId.getVersion(),
-				Field.Store.YES);
-
-		Field modeltypeField = new StringField(
-				Constants.INDEX_FIELD_MODEL_TYPE,
-				mId.getModelType().toString(), Field.Store.YES);
-
-		Field modeldescField = new StringField(
-				Constants.INDEX_FIELD_DESCRIPTION, modelView.getDescription(),
-				Field.Store.YES);
-
-		document.add(modelnameField);
-		document.add(modelnamespaceField);
-		document.add(modelversionField);
-		document.add(modeltypeField);
-		document.add(modeldescField);
+		
+		addField(document, Constants.INDEX_FIELD_MODEL_NAME, mId.getName());
+		addField(document, Constants.INDEX_FIELD_MODEL_NAMESPACE, mId.getNamespace());
+		addField(document, Constants.INDEX_FIELD_MODEL_VERSION, mId.getVersion());
+		addField(document, Constants.INDEX_FIELD_MODEL_TYPE, mId.getModelType().toString());
+		addField(document, Constants.INDEX_FIELD_DESCRIPTION, modelView.getDescription());
 
 		return document;
+	}
+	
+	private void addField(Document document, String name, String value) {
+		if (value != null) {
+			Field field = new StringField(name, value, Field.Store.YES);
+			document.add(field);
+		}
 	}
 
 	private void indexModelType(ModelType modelType) throws IOException {

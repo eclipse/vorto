@@ -55,6 +55,6 @@ public class DatatypeModelProject extends AbstractModelProject {
 
 	@Override
 	protected ModelType getPossibleReferenceType() {
-		return ModelType.DATATYPE;
+		return ModelType.Datatype;
 	}
 }
