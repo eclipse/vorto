@@ -1,0 +1,10 @@
+namespace com.mycompany.mydevice
+version 1.0.0
+using com.mycompany.mydevice.NewInfomodel ; 1.0.0
+using com.mycompany.mydevice.fb.FunctionBlock_Attribute ; 1.0.0
+
+infomodelmapping Infomodel_FBRef {
+
+	from NewInfomodel.myfunctionBlock
+	to reference FunctionBlock_Attribute
+}
