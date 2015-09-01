@@ -1,0 +1,24 @@
+namespace com.mycompany.mydevice
+version 1.0.0
+using com.mycompany.mydevice.NewInfomodel ; 1.0.0
+
+infomodelmapping Infomodel_Attribute {
+
+	from NewInfomodel.category
+	to TargetCategory
+
+	from NewInfomodel.description
+	to TargetDesc
+
+	from NewInfomodel.displayname
+	to TargetDisplay
+
+	from NewInfomodel.name
+	to TargetName
+
+	from NewInfomodel.namespace
+	to TargetNameSpace
+
+	from NewInfomodel.version
+	to TargetVersion
+}

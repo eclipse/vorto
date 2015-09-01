@@ -1,0 +1,8 @@
+namespace com.mycompany.light.type
+version 1.0.0
+
+entity Color {
+	mandatory r as int <MIN 0,MAX 255>
+	mandatory g as int <MIN 0,MAX 255>
+	mandatory b as int <MIN 0,MAX 255>
+}

@@ -1,0 +1,15 @@
+namespace com.company.light
+version 1.0.0
+using com.mycompany.light.fb.Switchable ; 1.0.0
+using com.mycompany.light.fb.ColorLight ; 1.0.0
+
+infomodel MyLightingDevice {
+	displayname "MyLightingDevice"
+	description "Information model for MyLightingDevice"
+	category demo
+
+	functionblocks {
+		switchable as Switchable
+		colorlight as ColorLight
+	}
+}
