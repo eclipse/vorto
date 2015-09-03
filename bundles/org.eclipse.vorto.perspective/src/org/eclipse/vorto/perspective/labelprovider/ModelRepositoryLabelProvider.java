@@ -20,7 +20,7 @@ public class ModelRepositoryLabelProvider extends LabelProvider implements
 	private static final String SHARED_DT = "shared_dt.png";
 	private static final String SHARED_FB = "shared_fb.png";
 	private static final String SHARED_IM = "shared_im.png";
-	private static final String BUNDLE_ICON_URL = "platform:/plugin/org.eclipse.vorto.perspective/icons/";
+	private static final String BUNDLE_ICON_URL = "platform:/plugin/org.eclipse.vorto.core/icons/";
 	private Map<ModelType, Image> modelImageMap = getImageMap();
 
 	public String getColumnText(Object obj, int index) {
