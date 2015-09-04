@@ -19,7 +19,8 @@
 		<module>org.eclipse.vorto.feature.dependencies</module>
 		<module>org.eclipse.vorto.feature.codegen.examples</module>
 		<module>org.eclipse.vorto.feature.editor</module>
-		<module>org.eclipse.vorto.feature.editor.perspective</module>				
+		<module>org.eclipse.vorto.feature.editor.perspective</module>
+		<module>org.eclipse.vorto.feature.repository</module>	
   </modules>
   
 </project>
