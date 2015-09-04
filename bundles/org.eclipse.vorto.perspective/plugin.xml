@@ -106,7 +106,7 @@
         <command
               commandId="org.eclipse.vorto.perspective.checkin"
               icon="icons/sample.gif"
-              label="Check-in to repository">
+              label="Share to repository">
            <visibleWhen
                  checkEnabled="true">
               <with
