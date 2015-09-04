@@ -1,0 +1,14 @@
+namespace com.mycompany.fb
+version 1.0.0
+functionblock Switcher {
+	displayname "Switcher"
+	description "Switcher switches a device on or off"
+	category demo
+
+	operations {
+		on()
+		off()
+		toggle()
+	}
+
+}
