@@ -20,12 +20,12 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.IMappingRulesAware;
-import org.eclipse.vorto.codegen.internal.mapping.DefaultMappingRules;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.core.model.MappingFactory;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
 /**
@@ -75,17 +75,15 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 				ICodeGenerator<InformationModel> informationModelCodeGenerator = (ICodeGenerator<InformationModel>) codeGenerator;
 
 				/**
-				 * read mapping model and inject Mapping Rules into code
+				 * read mapping model and inject Mapping into code
 				 * generator
 				 */
 				if (informationModelCodeGenerator instanceof IMappingRulesAware) {
 					IMappingRulesAware mappingRulesAwareGenerator = ((IMappingRulesAware) informationModelCodeGenerator);
 					MappingModel mappingModel = selectedProject
-							.getMapping(mappingRulesAwareGenerator
-									.getMappingRulesFileName());
+							.getMapping(informationModelCodeGenerator.getName());
 					mappingRulesAwareGenerator
-							.setMappingRules(new DefaultMappingRules(
-									mappingModel));
+							.setMapping(MappingFactory.createMapping(mappingModel));
 
 				}
 

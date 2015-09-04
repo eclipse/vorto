@@ -1,0 +1,14 @@
+namespace com.mycompany.lwm2m.fb
+version 1.0.0
+using com.mycompany.lwm2m.fb.Drone ; 1.0.0
+using com.mycompany.lwm2m.fb.Switcher ; 1.0.0
+using com.mycompany.lwm2m.type.LocationMapping ; 1.0.0
+
+functionblockmapping DroneMapping {
+
+	from Drone.status.location
+	to reference LocationMapping
+
+	from Drone.operation.ascend, Switcher.operation.on
+	to Resource with { ItemID : "0", Operations : "R" }
+}
