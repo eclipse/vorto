@@ -1,0 +1,104 @@
+
+      <div class="row">
+
+        <div class="col-sm-12 main">
+
+            <div class="row">
+            <div class="project-selection">
+
+            <a href="./#/"><i class="fa fa-fw fa-long-arrow-left"></i>Go Back</a>  
+            </div>
+          </div>
+
+          <h3 class="modelHeader">{{model.displayName}}</h3>
+
+          <div class="col-sm-12 modelDetails">
+             <div class="col-sm-4">
+           <!--img src="" width="200" height="auto"-->
+          <div class="placeHolder">
+            <div class="noimg">No Image Yet</div>
+            <div class="upload">
+            <a href="#"><i class="fa fa-upload"></i> Click to upload image</a>
+          </div>
+          </div>
+          </div>
+          <div class="col-sm-8">
+           <table>
+	       <tr>
+           <td><label>Name: </label></td>
+           <td> {{model.displayName}}</td>
+	       </tr>
+	       <tr>
+		          <td><label>Description:  </label></td>
+		          <td>{{model.description}}</td>
+	         </tr>
+	         <tr>
+	          <td><label>Display Name: </label></td>
+	          <td>{{model.displayName}}</td>
+	         </tr>
+         <tr>
+          <td>
+           <label>Namespace: </label></td>
+          <td>  {{model.id.namespace}}
+           </td>
+         </tr>
+         <tr>
+          <td>
+           <label>Version: </label></td>
+          <td>  {{model.id.version}}
+            </td>
+         </tr>
+          <tr>
+          <td>
+           <label>Created On: </label></td>
+          <td>  {{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}
+            </td>
+         </tr>
+         <tr>
+          <td>
+           <label>Created By: </label></td>
+          <td>  {{model.author}}
+            </td>
+         </tr>
+         <tr>
+          <td>
+           <label>References: </label></td>
+          <td>
+           <table><tr ng-repeat="reference in model.references"><td><a href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></td></tr></table>
+            </td>
+         </tr>
+         <tr>
+          <td>
+           <label>Used By: </label></td>
+          <td>
+           <table><tr ng-repeat="usage in model.referencedBy"><td><a href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a></td></tr></table>
+            </td>
+         </tr>
+         <tr>
+          <td> </td>
+          <td>
+           <a href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}?output=XMI" class="pull-center"><i class="fa fa-fw fa-download"></i>XMI</a>
+             <a href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}" class="pull-center"><i class="fa fa-fw fa-download"></i>DSL</a>
+          </td>
+          </tr>
+          <tr>
+          	<td colspan=2><button ng-click="remove()" ng-show="hasRole('ROLE_SUPERADMIN')">Remove Model</button></td>        
+          </tr>
+          </tbody></table>
+      </div>
+
+       <div class="col-sm-12">
+        <div class="modelFilePreview">
+          <h4>Model Preview</h4>
+          <pre><code>{{content}}</code>
+        </pre>
+        </div>
+       </div> 
+      </div>
+        </div>
+      </div>
+        </div>
+      </div>
+    
+
+
