@@ -54,8 +54,12 @@
   	         <view
 	               id="org.eclipse.ui.console.ConsoleView"
 	               relationship="bottom"
-	               ratio="0.8"
-	               relative="org.eclipse.ui.editorss"/>  
+	               ratio="0.75"
+	               relative="org.eclipse.ui.editorss"/>
+	         <view
+	               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+	               relationship="stack"
+	               relative="org.eclipse.ui.console.ConsoleView"/>  
         </perspectiveExtension>      
    </extension>
           
