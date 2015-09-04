@@ -1,6 +1,6 @@
 # Vorto Developer Guide
 
-### Version 0.3
+### Version 0.4 Milestone 1
 
 ### Bosch Software Innovations
 

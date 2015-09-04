@@ -4,7 +4,7 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>infomodelrepository</artifactId>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<properties>
@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-spring</artifactId>
-			<version>1.17</version>
+			<version>${jersey-version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.springframework</groupId>
@@ -178,9 +178,6 @@
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
-			<resource>
-        		<directory>src/main/webapp</directory>
-      		</resource>
 		</resources>
 		<plugins>
 			<plugin>

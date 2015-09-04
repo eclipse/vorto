@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Functionblock Editor
+Bundle-Name: Vorto Functionblock Editor (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.functionblock;singleton:=true
@@ -23,14 +23,15 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.vorto.editor,
  org.eclipse.xtext.xbase.lib
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.vorto.editor.functionblock; uses:="org.eclipse.xtext,  org.eclipse.xtext.service,  org.eclipse.xtext.common.types,  com.google.inject",
- org.eclipse.vorto.editor.functionblock.formatting,
- org.eclipse.vorto.editor.functionblock.generator;uses:="org.eclipse.xtext.generator",
- org.eclipse.vorto.editor.functionblock.parser.antlr,
- org.eclipse.vorto.editor.functionblock.parser.antlr.internal,
- org.eclipse.vorto.editor.functionblock.scoping,
- org.eclipse.vorto.editor.functionblock.serializer,
- org.eclipse.vorto.editor.functionblock.services,
- org.eclipse.vorto.editor.functionblock.validation;uses:="org.eclipse.vorto.editor.validation"
+Export-Package: org.eclipse.vorto.editor.functionblock; uses:="org.ecl
+ ipse.xtext,  org.eclipse.xtext.service,  org.eclipse.xtext.common.typ
+ es,  com.google.inject",org.eclipse.vorto.editor.functionblock.format
+ ting,org.eclipse.vorto.editor.functionblock.generator;uses:="org.ecli
+ pse.xtext.generator",org.eclipse.vorto.editor.functionblock.parser.an
+ tlr,org.eclipse.vorto.editor.functionblock.parser.antlr.internal,org.
+ eclipse.vorto.editor.functionblock.scoping,org.eclipse.vorto.editor.f
+ unctionblock.serializer,org.eclipse.vorto.editor.functionblock.servic
+ es,org.eclipse.vorto.editor.functionblock.validation;uses:="org.eclip
+ se.vorto.editor.validation"
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j

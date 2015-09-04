@@ -1,6 +1,6 @@
-# Vorto User Guide
+sky# Vorto User Guide
 
-### Version 0.3
+### Version 0.4 Milestone 1
 
 ### Bosch Software Innovations
 
@@ -47,9 +47,7 @@
 - [Code Generators](#code-generators)  
   - [Code Generators Overview](#code-generators-overview)  
   - [Example Code Generator - Web Device Application](#example-code-generator-web-device-application)  
-  - [Example Code Generator - Eclipse Smart Home](#example-code-generator-eclipse-smart-home)  
   - [Example Code Generator - Bosch M2M Platform](#example-code-generator-bosch-m2m-platform)  
-  - [Example Code Generator - Kura Service Generator](example-code-generator-kura-service-generator)  
 - [Uninstalling the Vorto Plug-ins](#uninstalling-the-vorto-plug-ins)  
 - [Troubleshooting](#troubleshooting)  
   - [Installation Issues](#installation-issues)  
@@ -436,7 +434,8 @@ You have create a function block model (refer to [Creating a New Function Block 
    ![Create new information model](m2m_tc_create_new_information_model.png)  
    The **Create Information Model** dialog opens:  
    ![Create information model dialog](m2m_tc_create_information_model_dialog.png)
-2. Enter, e.g., `PhilipsHue` as **Information Model Name**.  
+2. Enter, e.g., `MyLightingDevice
+3. ` as **Information Model Name**.  
 3. Click **Finish**.
    The information model DSL source file (with suffix .infomodel) is generated and displayed in the information model editor. The file contains a complete structure according the DSL syntax with the values given in the preceding step.  
    ![Information model DSL editor](m2m_tc_information_model_dsl_editor.png)
@@ -477,6 +476,7 @@ Edit the information model by extending the generated source file in the informa
 
         namespace com.mycompany.fb
         version 1.0.0
+		using com.mycompany.type.Color;1.0.0
         functionblock ColorLight {
             displayname "ColorLight"
             description "A light makes the environment bright and colorful"
@@ -484,6 +484,7 @@ Edit the information model by extending the generated source file in the informa
 
             configuration {
                 optional brightnessLevel as int
+				optional defaultColor as Color
             }
 
             fault {
@@ -497,17 +498,17 @@ Edit the information model by extending the generated source file in the informa
             }
         }
 
-3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **PhilipsHue** in the **Information Models** tab to create the reference.  
+3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **MyLightingDevice** in the **Information Models** tab to create the reference.  
    ![Drag and drop from Function Block to Information Model](m2m_tc_drag_drop_function_block_to_information_model.png)
 4. Update the information model according the following:
 
-        namespace com.philips
+        namespace com.mycompany
         version 1.0.0
         using com.mycompany.fb.Switchable ; 1.0.0
         using com.mycompany.fb.ColorLight ; 1.0.0
-        infomodel PhilipsHue {
-                displayname "PhilipsHue"
-                description "Information model for PhilipsHue"
+        infomodel MyLightingDevice {
+                displayname "MyLightingDevice"
+                description "Information model for MyLightingDevice"
                 category demo
 
                 functionblocks {
@@ -517,36 +518,112 @@ Edit the information model by extending the generated source file in the informa
 
 -----
 
-# Defining an Information Model Mapping
+# Defining a Model Mapping
 
-Vorto allows the user to define mapping rules to map information models to target platforms.
+Vorto allows the user to define mapping rules to map Vorto models to other target platform domain models.
+
 
 **Prerequisites**
 
- - You have created an information model (refer to [Creating a new Information Model](#creating-a-new-information-model)).
+ - You have followed previous steps to create Entity, Function Block, and Information models.
  - You have selected the Java perspective.
+
+## Define a Entity Mapping
+In entity mapping, you can define mapping rules for entity types. 
+**Proceed as follows**
+			
+1. In the data type project Color, navigate to the folder `src/models`.
+
+2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
+   The **New File** dialog opens.
+
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyColor.mapping`.
+
+4. Edit the mapping file according to your needs.
+
+**Example of an entity mapping file**
+
+	namespace com.mycompany.type
+	version 1.0.0
+	using com.mycompany.type.Color ; 1.0.0
+	
+	entitymapping MyColor {
+	
+		from Color.version
+		to MyColor with { Revision : "Rev-" }
+	
+		from Color.r, Color.g, Color.b
+		to MyColor with { r : "Red", g : "Green", b : "Blue" }
+	}
+-----
+
+## Define a Function Block Mapping
+In function block model mapping, you can define mapping rules for function block model attributes, as well as detailed function block properties, and data types used in function blocks.
 
 **Proceed as follows**
 
-1. In the information model project you want to create the mapping for (`PhilipsHue` in the example), navigate to the folder `src/models`.
+1. In the function block project you want to create the mapping for (`ColorLight` in the example), navigate to the folder `src/models`.
+
 2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
    The **New File** dialog opens.
-3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `smarthome.mapping`.
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `MyColorLight.mapping`.
+
 4. Edit the mapping file according to your needs.
+   Please note that in addition to map function block elements to target Stereo Type element, you can also specify to refer function block properties to use an imported entity mapping (MyColor.mapping).
 
-**Example of mapping file**
+**Example of a function block mapping file**
 
-    mapping {
-      model com.philips.PhilipsHue
-      target smarthome
-      from com.mycompany.fb.ColorLight.operation.setR,
-           com.mycompany.fb.ColorLight.operation.setG,
-           com.mycompany.fb.ColorLight.operation.setB
-      to channelType with {name:"color"}
-      from com.mycompany.fb.ColorLight.configuration.brightnessLevel
-      to channelType with {name: "brightness"},
-         configDescription with {name: "brightness", type: "Number"}
-    }
+	namespace com.mycompany
+	version 1.0.0
+	using com.mycompany.fb.ColorLight ; 1.0.0
+	using com.mycompany.type.MyColor; 1.0.0
+	functionblockmapping MyColorLight {
+	
+		from ColorLight.displayname
+		to TargetDisplayName
+	
+		from ColorLight.configuration.defaultColor to reference MyColor
+		
+		from ColorLight.operation.setR, ColorLight.operation.setG, ColorLight.operation.setB
+		to channelType with { Attribute : "color" }
+	
+	}
+
+-----
+
+## Define an Information Model Mapping
+In information model mapping, you can define mapping rules for information model attributes, as well as detailed function block properties for each function block variable, and data types used in function blocks.
+
+**Proceed as follows**
+
+1. In the information model project you want to create the mapping for (`MyLightingDevice` in the example), navigate to the folder `src/models`.
+
+2. Select the folder `models` and right-click and choose **New > File** from the context menu.  
+   The **New File** dialog opens.
+
+3. Enter a file name describing your actual platform with the suffix `.mapping`, e.g., `SmartHome.mapping`.
+
+4. Edit the mapping file according to your needs.
+   Please note that in addition to map information model elements to a stereo type, you can also specify to refer information model function block  to use an imported function block mapping (MyColorLight.mapping).
+
+**Example of an information model mapping file**
+
+	namespace com.mycompany
+	version 1.0.0
+	using com.mycompany.MyLightingDevice ; 1.0.0
+	using com.mycompany.fb.MyColorLight ; 1.0.0
+	
+	infomodelmapping SmartHome {
+	
+		from MyLightingDevice.displayname
+		to TargetDisplayName
+	
+		from MyLightingDevice.switchable
+		to MySwitch with { Icon : "switch.png" }
+	
+		from MyLightingDevice.colorlight
+		to reference MyColorLight
+	}
 
 -----
 
@@ -556,9 +633,7 @@ This section details the following topics:
 
 [Code Generators Overview](#code-generators-overview)  
 [Example Code Generator - Web Device Application)](#example-code-generator-web-device-application)  
-[Example Code Generator - Eclipse Smart Home](#example-code-generator-eclipse-smart-home)  
 [Example Code Generator - Bosch M2M Platform](#example-code-generator-bosch-m2m-platform)  
-[Example Code Generator - Kura Service Generator](example-code-generator-kura-service-generator)  
 
 ## Code Generators Overview
 
@@ -572,7 +647,7 @@ This section describes the use of an example code generator to generate a Web De
 
 **Prerequisites**
 
-- You have created the information model project `PhilipsHue` (refer to [Creating a new Information Model](#creating-a-new-information-model) and [Editing an Information Model](#editing-an-information-model)).
+- You have created the information model project `MyLightingDevice` (refer to [Creating a new Information Model](#creating-a-new-information-model) and [Editing an Information Model](#editing-an-information-model)).
 - You have selected the Vorto perspective.
 - Eclipse [M2E plug-in](http://download.eclipse.org/technology/m2e/releases) 1.5.\* (can already be packaged with Eclipse Luna)  
 
@@ -592,9 +667,9 @@ This section describes the use of an example code generator to generate a Web De
 
 **Proceed as follows**
 
-Select the information model project created (`PhilipsHue`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
+Select the information model project created (`MyLightingDevice`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
 
-The Web application project `philipshue-webapp` is generated and Eclipse switches to the Java perspective.
+The Web application project `MyLightingDevice-webapp` is generated and Eclipse switches to the Java perspective.
 
 ![Generated Web App](m2m_vorto_philipshue_webapp_java_layout.png)
 
@@ -627,18 +702,18 @@ Run the generated Web device application to visualize it.
 
 **Proceed as follows**
 
-1. In the Package Explorer, select the Web device application project (`philipshue-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
+1. In the Package Explorer, select the Web device application project (`mylightingdevice-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
    The **Run Configurations** dialog opens.
 2. In the configuration list on the left side, expand **Maven Build** and click the sub item **New_configuration**.  
    A configuration form opens.
-3. Change the entry in the **Name** field to, e.g., `Philipshue_configuration`.
-4. In the **Base directory** input field, enter `${workspace_loc}/philipshue-webapp`.
+3. Change the entry in the **Name** field to, e.g., `MyLightingDevice_configuration`.
+4. In the **Base directory** input field, enter `${workspace_loc}/mylightingdevice-webapp`.
 5. In the **Goals** input field, enter `jetty:run`.
 6. Click **Run**.  
    ![Run Jetty](m2m_vorto_jetty_run.png)  
    Wait a few seconds for jetty server to start. Upon successfully start, message `[INFO] Started Jetty Server` should be displayed in the Eclipse console.
-7. Open the URL `http://localhost:8080/philipshue-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
-   ![Philipshue Web UI](m2m_vorto_philipshue_webui.png)
+7. Open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
+   ![mylightingdevice Web UI](m2m_vorto_philipshue_webui.png)
 
 ### Modifying the Behavior of the Generated Web Device Application
 
@@ -661,19 +736,9 @@ The default REST service class `Switchable` generated provides a service to retu
 
 2. Stop the application by clicking the red square beside the Console tab in your IDE.
 3. Start the application again by selecting the project and choosing **Run As > Run configurations** from the context menu.
-4. In your browser, open the URL `http://localhost:8080/philipshue-webapp/index.html` again.
+4. In your browser, open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` again.
 5. Click the **On** button.  
 The **On** status is changed to **true**.
-
-## Example Code Generator - Eclipse Smart Home
-
-**Prerequisites**
-
-**Proceed as follows**
-
-Select the information model project you want to generate for smart home. From the context menu, choose **Generate Code > Eclipse Smart Home Generator**.  
-An Eclipse project, which contains thing type definitions required by smart home is generated.  
-![Eclipse Smarthome](m2m_vorto_eclipse_smarthome.png)
 
 ## Example Code Generator - Bosch M2M Platform
 
@@ -713,26 +778,6 @@ A function block model contains necessary artifacts (e.g., Java representation o
   <tr>
     <td class="notesign"><img src="./Note_32.png" alt="Note"></td>
     <td>Please note that the default generated function block service uses the latest M2M API that exist in maven repository for dependency. If your target platform is not the latest (e.g., latest is 2.2.5 but your target platform is running 2.2.0), then you need to update the property <code>m2m.version</code> in the <code>pom.xml</code> file in your service project to your actual M2M version. Then update your project. You can check the actual M2M version used by expanding maven dependencies from your service project.</td>
-  </tr>
-</table>
-
-## Example Code Generator - Kura Service Generator
-
-**Prerequisites**
-
-- You have created and edited a function block project (refer to [Creating a New Function Block](#creating-a-new-function-block) and [Editing a Function Block](#editing-a-function-block)).  
-- You have selected the Vorto perspective.
-
-**Proceed as follows**
-
-1. In the **Function Block Models** browser, select the function block project you want to generate code for.
-2. Right-click to open the context menu and click **Generate Code > Kura Service Generator**.  
-   An Eclipse project, which contains service implementation required by Kura platform is generated. 
-
-<table class="note">
-  <tr>
-    <td class="notesign"><img src="./Note_32.png" alt="Note"></td>
-    <td>Please note that the generated project will display some errors as it depends on some kura libraries that are not included in Vorto bundle.</td>
   </tr>
 </table>
 
@@ -1509,7 +1554,7 @@ InformationModel:
     <td>Name</td>
     <td>Y</td>
     <td>A descriptive name</td>
-    <td>Philips Hue</td>
+    <td>My Lighting Device</td>
   </tr>
   <tr>
     <td>description</td>
@@ -1521,7 +1566,7 @@ InformationModel:
     <td>vendor</td>
     <td>Y</td>
     <td>Vendor Identifier </td>
-    <td>www.philips.com</td>
+    <td>www.mycompany.com</td>
   </tr>
   <tr>
     <td>category</td>
@@ -1634,7 +1679,7 @@ This section details the following topics:
 		<td>model</td>
 		<td>Y</td>
 		<td>Information Model Name   </td>
-		<td>PhilipsHue</td>
+		<td>MyLightingDevice</td>
 	</tr>
 	<tr>
 		<td>target</td>
@@ -1659,8 +1704,8 @@ This section details the following topics:
 <!---
 |Parameter|Mandatory|Description|Example|
 |:--------|:--------|:----------|:------|
-|model|Y|Information Model Name|PhilipsHue|
-|target|Y|Target platform mapping is used for|PhilipsHue|
+|model|Y|Information Model Name|MyLightingDevice|
+|target|Y|Target platform mapping is used for|MyLightingDevice|
 |from|Y|Information model element|ColorLight.operation.setR|
 |to|Y|Target plaform platform element|channelType|
 -->

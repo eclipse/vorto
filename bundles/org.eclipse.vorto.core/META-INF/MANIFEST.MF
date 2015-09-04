@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Core
+Bundle-Name: Vorto Core (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.core;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-ClassPath: .
@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.core.resources,
  org.apache.commons.collections,
- org.eclipse.core.expressions
+ org.eclipse.core.expressions,
+ org.eclipse.emf.ecore.xmi,
+ org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.core.api.model.datatype,
@@ -29,6 +31,7 @@ Export-Package: org.eclipse.vorto.core.api.model.datatype,
  org.eclipse.vorto.core.api.model.model,
  org.eclipse.vorto.core.api.model.model.impl,
  org.eclipse.vorto.core.api.model.model.util,
+ org.eclipse.vorto.core.api.repository,
  org.eclipse.vorto.core.model,
  org.eclipse.vorto.core.model.nature,
  org.eclipse.vorto.core.parser;uses:="org.eclipse.core.resources",

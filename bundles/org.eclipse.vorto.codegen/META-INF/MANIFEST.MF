@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto Code-Generation Infrastructure
+Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.vorto.codegen.Activator
@@ -20,26 +20,34 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.text
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.vorto.codegen;uses:="org.osgi.framework,or
- g.eclipse.ui.plugin",org.eclipse.vorto.codegen.api,org.eclipse.vorto.
- codegen.api.context,org.eclipse.vorto.codegen.api.filewrite;uses:="or
- g.eclipse.core.resources",org.eclipse.vorto.codegen.api.mapping;uses:
- ="org.eclipse.emf.ecore,org.eclipse.vorto.api.metamodel.mapping",org.
- eclipse.vorto.codegen.api.tasks,org.eclipse.vorto.codegen.api.tasks.e
- clipse; uses:="org.eclipse.core.runtime,  org.eclipse.jdt.core,  org.
- eclipse.vorto.codegen.api,  org.eclipse.vorto.codegen.api.tasks,  org
- .eclipse.core.resources",org.eclipse.vorto.codegen.api.tasks.eclipse.
- natures;uses:="org.eclipse.vorto.codegen.api.tasks.eclipse,org.eclips
- e.vorto.codegen.api.tasks",org.eclipse.vorto.codegen.internal.context
- ,org.eclipse.vorto.codegen.internal.mapping,org.eclipse.vorto.codegen
- .internal.ui.wizard,org.eclipse.vorto.codegen.internal.ui.wizard.gene
- ration.tasks,org.eclipse.vorto.codegen.internal.ui.wizard.generation.
- templates,org.eclipse.vorto.codegen.ui; uses:="org.eclipse.vorto.core
- .ui.progresstask,  org.eclipse.core.runtime,  org.eclipse.vorto.codeg
- en.api.tasks,  org.eclipse.core.resources,  org.eclipse.core.commands
- ,  org.eclipse.jface.wizard,  org.eclipse.vorto.core.project",org.ecl
- ipse.vorto.codegen.ui.display,org.eclipse.vorto.codegen.ui.progressta
- sk,org.eclipse.vorto.codegen.utils
+Export-Package: org.eclipse.vorto.codegen;uses:="org.osgi.framework,org.eclipse.ui.plugin",
+ org.eclipse.vorto.codegen.api,
+ org.eclipse.vorto.codegen.api.context,
+ org.eclipse.vorto.codegen.api.filewrite;uses:="org.eclipse.core.resources",
+ org.eclipse.vorto.codegen.api.mapping;uses:="org.eclipse.emf.ecore,org.eclipse.vorto.api.metamodel.mapping",
+ org.eclipse.vorto.codegen.api.tasks,
+ org.eclipse.vorto.codegen.api.tasks.eclipse;
+  uses:="org.eclipse.core.runtime,
+   org.eclipse.jdt.core,
+   org.eclipse.vorto.codegen.api,
+   org.eclipse.vorto.codegen.api.tasks,
+   org.eclipse.core.resources",
+ org.eclipse.vorto.codegen.api.tasks.eclipse.natures;uses:="org.eclipse.vorto.codegen.api.tasks.eclipse,org.eclipse.vorto.codegen.api.tasks",
+ org.eclipse.vorto.codegen.internal.context,
+ org.eclipse.vorto.codegen.internal.ui.wizard,
+ org.eclipse.vorto.codegen.internal.ui.wizard.generation.tasks,
+ org.eclipse.vorto.codegen.internal.ui.wizard.generation.templates,
+ org.eclipse.vorto.codegen.ui;
+  uses:="org.eclipse.vorto.core.ui.progresstask,
+   org.eclipse.core.runtime,
+   org.eclipse.vorto.codegen.api.tasks,
+   org.eclipse.core.resources,
+   org.eclipse.core.commands,
+   org.eclipse.jface.wizard,
+   org.eclipse.vorto.core.project",
+ org.eclipse.vorto.codegen.ui.display,
+ org.eclipse.vorto.codegen.ui.progresstask,
+ org.eclipse.vorto.codegen.utils
 Bundle-ClassPath: icons/,
  .
 Import-Package: org.eclipse.emf.common.util
