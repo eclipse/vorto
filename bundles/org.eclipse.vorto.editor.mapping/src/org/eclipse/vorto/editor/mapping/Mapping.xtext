@@ -20,21 +20,22 @@ import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
 import "http://www.eclipse.org/vorto/metamodel/Model" as model
 
-/*----------------------Start Information Model Mapping Definition---------------------------*/
 MappingModel:
-  InfoModelMapping | FunctionBlockMapping | DataTypeMapping
+  InfoModelMappingModel | FunctionBlockMappingModel | DataTypeMappingModel
 ;
 
-DataTypeMapping:
-	EntityMapping | EnumMapping	
+DataTypeMappingModel:
+	EntityMappingModel | EnumMappingModel	
 ;
 
-InfoModelMapping:
-	{InfoModelMapping}
+/*----------------------Start Information Model Mapping Definition---------------------------*/
+InfoModelMappingModel:
+	{InfoModelMappingModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*		
 	'infomodelmapping' name=ID  '{'
+			'targetplatform' targetPlatform = ID
 			(rules +=InfoModelMappingRule)*
 	'}'	
 ;
@@ -49,7 +50,7 @@ InfomodelSource:
 ;
 
 InfoModelPropertySource:
-	model=[infomodel::InformationModel]  '.' property =[infomodel::FunctionblockProperty]  
+	model=[infomodel::InformationModel]  ('.' property =[infomodel::FunctionblockProperty])?  
 ;
 
 InfoModelAttributeSource:
@@ -63,12 +64,13 @@ enum InfoModelAttribute:  name = 'name' | namespace = 'namespace'  |  version = 
 
 
 /*----------------------Start Function Block Mapping Definition---------------------------*/
-FunctionBlockMapping:
-	{FunctionBlockMapping}
+FunctionBlockMappingModel:
+	{FunctionBlockMappingModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*
 	'functionblockmapping' name=ID  '{'
+			'targetplatform' targetPlatform = ID	
 			(rules +=FunctionBlockMappingRule)*
 	'}'	
 ;
@@ -87,7 +89,7 @@ FunctionBlockPropertySource:
 ;
 
 FunctionBlockAttributeSource:
-	model = [functionblock::FunctionblockModel]  '.' attribute = FunctionblockModelAttribute
+	model = [functionblock::FunctionblockModel]  ('.' attribute = FunctionblockModelAttribute)?
 ;
 
 
@@ -116,12 +118,13 @@ enum FunctionblockModelAttribute:  name = 'name' | namespace = 'namespace'  |  v
 /*----------------------End Function Block Mapping Definition---------------------------*/
 
 /*----------------------Start Entity Mapping Definition---------------------------*/
-EntityMapping:
-	{EntityMapping}
+EntityMappingModel:
+	{EntityMappingModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*
 	'entitymapping' name=ID  '{'
+		'targetplatform' targetPlatform = ID	
 		(rules +=EntityMappingRule)*
 	'}'	
 ;
@@ -141,18 +144,19 @@ EntityPropertySource:
 ;
 
 EntityAttributeSource:
-	model = [datatype::Entity] '.' attribute = ModelAttribute
+	model = [datatype::Entity] ('.' attribute = ModelAttribute)?
 ;
 
 /*----------------------End Entity Mapping Definition---------------------------*/
 
 /*----------------------Start Enum Mapping Definition---------------------------*/
-EnumMapping:
-	{EnumMapping}
+EnumMappingModel:
+	{EnumMappingModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
      (references += ModelReference)*
 	'enummapping' name=ID  '{'
+		'targetplatform' targetPlatform = ID	
 		(rules +=EnumMappingRule)*
 	'}'	
 ;
@@ -172,9 +176,10 @@ EnumPropertySource:
 ;
 
 EnumAttributeSource:
-	model = [datatype::Enum] '.' attribute = ModelAttribute
+	model = [datatype::Enum] ('.' attribute = ModelAttribute)?
 ;
 
+/*----------------------End Enum Mapping Definition---------------------------*/
 	
 /*----------------------Start Target Element Definition---------------------------*/
 Target:

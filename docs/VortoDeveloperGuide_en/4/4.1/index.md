@@ -1,34 +1,53 @@
-## Creating and Editing a Function Block Definition
+## Creating and Editing a Information Model Definition
 
 **Prerequisites**
 
-You have started your IDE.
+You have started your IDE, and you are in Vorto Perspective
 
 **Proceed as follows**
 
-1. Create a new function block with name Lamp.
-2. Update the function block with following properties.    
+1. Create a new function block with name Lamp, update the function block with following properties.    
 
-        functionblock Lamp {    
-            displayname "Lamp"    
-            description "A lamp makes the environment bright"   
-            vendor www.bosch.com    
-            category demo   
-            version 1.0.0    
-            configuration{    
-                optional blink as boolean   
-                optional on as boolean    
-            }    
-            status {    
-                optional on as boolean    
-                optional powerConsumption as int    
-            }    
-            fault{    
-                optional bulbBroken as boolean    
-            }    
-            operations{    
-                off() "turns the lamp off"    
-                on() "turns the lamp on"    
-                toggle() "switches the lamp on or off"    
-            }    
-        }    
+	namespace com.mycompany.fb
+	version 1.0.0
+	functionblock Lamp {
+		displayname "Lamp"
+		description "A lamp makes the environment bright"
+		category demo
+	
+		configuration{ 
+			optional blink as boolean
+			optional on as boolean
+		}
+	
+		status{ 
+			optional on as boolean
+			optional powerConsumption as int  
+		}
+	
+		fault{
+			optional bulbBroken as boolean
+		}
+	
+		operations{
+			off() "turns the lamp off"  
+			on() "turns the lamp on" 
+			toggle() "switches the lamp on or off"
+		}
+	}	  
+
+2. Create a new information model with name "MyLightingDevice", in Vorto perspective, drag function block "Lamp" to this information model.
+
+	namespace com.mycompany
+	version 1.0.0
+	using com.mycompany.fb.Lamp ; 1.0.0
+	
+	infomodel MyLightingDevice {
+		displayname "MyLightingDevice"
+		description "Information model for MyLightingDevice"
+		category demo
+	
+		functionblocks {
+			lamp as Lamp
+		}
+	}

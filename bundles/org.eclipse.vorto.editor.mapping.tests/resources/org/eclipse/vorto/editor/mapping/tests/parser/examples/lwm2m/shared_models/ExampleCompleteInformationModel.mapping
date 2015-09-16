@@ -1,0 +1,14 @@
+namespace com.mycompany.iot
+version 1.0.0
+using com.mycompany.iot.MyQuadcopter ; 3.0.0-Plus
+using com.mycompany.iot.fb.ExampleCompleteFunctionBlock ; 1.0.0
+
+infomodelmapping LWM2M_ObjectType {
+	targetplatform IoT
+
+	from MyQuadcopter
+	to ObjectType with {
+	Type : "FlyingThing", MultipleInstances : "Single", Mandatory : "Optional" }
+	
+	from MyQuadcopter.drone to reference ExampleCompleteFunctionBlock
+}

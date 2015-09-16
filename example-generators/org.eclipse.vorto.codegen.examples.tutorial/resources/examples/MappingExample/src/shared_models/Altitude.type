@@ -1,0 +1,7 @@
+namespace com.mycompany.iot.type
+version 1.0.0
+
+entity Altitude {
+	optional value as double "The decimal notation of altitude in meters above sea level."
+	mandatory unit as string 
+}

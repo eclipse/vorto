@@ -2,15 +2,15 @@
 
 **Prerequisites**
 
-You have created a plug-in project (refer to [Creating and Editing a Function Block Definition](../4.1/index.md)).
+You have created a plug-in project (refer to [Creating and Editing an Information Model Definition](../4.1/index.md)).
 
 **Proceed as follows**
 
-1.  In Java perspective, select the function block you want to generate code from.
+1.  In Java perspective, select the information model "MyLightingDevice" you want to generate code from.
 2. From the context menu, choose **Vorto \> Generate Code \> Web Device Application Generator**.    
    ![run configuration](../../images/m2m_tc_generate_code_web_device_application_generator.png)   
-   A Web application project LampWebapp will be generated.
-3. Select the project LampWebapp. From the context menu, choose **Maven \> Update Project** to resolve the compilation errors.
+   A Web application project mylightingdevice-webapp will be generated.
+3. Select the project mylightingdevice-webapp. From the context menu, choose **Maven \> Update Project** to resolve the compilation errors.
 4. In the opening **Update Maven Project** dialog, click **OK**.     
    The generated project contains following resources:    
    ![run configuration](../../images/m2m_tc_generate_code_generated_resources.png)  

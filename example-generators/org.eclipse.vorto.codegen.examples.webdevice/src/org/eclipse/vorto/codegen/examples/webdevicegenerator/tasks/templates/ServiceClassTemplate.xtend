@@ -18,11 +18,14 @@
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
-class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
+class ServiceClassTemplate implements ITemplate<FunctionblockProperty> {
 		
-	override getContent(FunctionblockModel model) {
-		'''
+	override getContent(FunctionblockProperty fbProperty) {
+		var FunctionblockModel model = fbProperty.getType()
+		
+		return '''
 		package «ModuleUtil.getServicePackage(model)»;
 
 		import java.lang.reflect.InvocationTargetException;
@@ -38,22 +41,23 @@ class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
 		import javax.ws.rs.Path;
 		import javax.ws.rs.Produces;
 		import javax.ws.rs.core.MediaType;
+		import javax.ws.rs.core.Response;
 		
 		import org.apache.commons.beanutils.BeanUtils;
 		
-		import com.bosch.iot.«model.name.toLowerCase».model.«model.name»;
-		import com.bosch.iot.«model.name.toLowerCase».model.«model.name»Configuration;		
+		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»;
+		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»Configuration;		
 		
-		@Path("/«model.name»")
-		public class «model.name»Service {	
-			private static Logger logger = Logger.getLogger("«model.name»"); 		
-			private static «model.name» «model.name.toFirstLower»instance = new «model.name»();
+		@Path("/«fbProperty.name»")
+		public class «ModuleUtil.getCamelCase(fbProperty.name)»Service {	
+			private static Logger logger = Logger.getLogger("«fbProperty.name»"); 		
+			private static «fbProperty.name.toFirstUpper» «fbProperty.name.toFirstLower»instance = new «fbProperty.name.toFirstUpper»();
 
 			@GET
 			@Path("/instance")
 			@Produces(MediaType.APPLICATION_JSON)
-			public «model.name» getInstance(){
-				return «model.name.toFirstLower»instance ;			
+			public Response getInstance(){
+				return Response.status(200).entity(«fbProperty.name.toFirstLower»instance).header("Access-Control-Allow-Origin", "*").build();
 			}		
 										
 			«FOR operation : model.functionblock.operations»				
@@ -78,7 +82,7 @@ class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
 				logger.info("saveConfiguration invoked: " + configurationData);
 				Map<String, String> rawMap = (Map<String, String>) configurationData;
 		
-				«model.name»Configuration configuration = «model.name.toFirstLower»instance.getConfiguration();
+				«ModuleUtil.getCamelCase(fbProperty.name)»Configuration configuration = «fbProperty.name.toFirstLower»instance.getConfiguration();
 				BeanUtils.populate(configuration, getMapWithoutKeyPrefix(rawMap));
 		
 			}
@@ -97,4 +101,5 @@ class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
 			}							
 		}'''
 	}
+	
 }

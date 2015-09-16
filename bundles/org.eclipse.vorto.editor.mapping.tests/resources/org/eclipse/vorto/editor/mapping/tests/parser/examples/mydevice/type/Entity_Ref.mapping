@@ -3,7 +3,7 @@ version 1.0.0
 using com.mycompany.mydevice.type.EntityA ; 1.0.0
 using com.mycompany.mydevice.type.Entity_Attribute ; 1.0.0
 entitymapping Entity_Ref {
-
+	targetplatform mym2m
 	from EntityA.entityB
 	to reference Entity_Attribute
 }

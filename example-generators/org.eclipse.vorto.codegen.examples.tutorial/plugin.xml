@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<plugin>
+	     <extension
+	         id="ExampleMappingGenerator"
+	         name="ExampleMappingGenerator"
+	         point="org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators">
+		      <client
+		            class="org.eclipse.vorto.codegen.examples.tutorial.ExampleMappingGenerator"
+		            menuLabel="Tutorial Example Generator">
+		      </client>
+	     </extension>
+
+	     <extension
+	         point="org.eclipse.ui.newWizards"
+	         id = "org.eclipse.ui.newWizards.VortoTutorial">
+			 <wizard
+					id="org.eclipse.vorto.codegen.examples.tutorial.InstallationWizard"
+					name="Tutorial Examples"
+					class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+					category="org.eclipse.vorto.functionblock.ui.wizards"
+					project="true"
+					icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif">
+					<description></description>
+			 </wizard>		           
+	     </extension>	
+	     		
+		<extension point="org.eclipse.emf.common.ui.examples">
+			<example
+				id="org.eclipse.vorto.codegen.examples.tutorial"
+				wizardID="org.eclipse.vorto.codegen.examples.tutorial.InstallationWizard"
+				pageImage="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif">
+				<projectDescriptor
+					name="Mapping Examples"
+					contentURI="resources/examples/MappingExample/"
+					description="Various mapping examples mapping from Information models to other platform specific representations"/>			
+			</example>
+		 </extension>		
+	</plugin>
