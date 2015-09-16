@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class LWM2MMappingParseTest {
-	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/lwm2m/";
+	private static final String EXAMPLES_DIRECTORY = "resources/org/eclipse/vorto/editor/mapping/tests/parser/examples/lwm2m/shared_models/";
 
 	@Before
 	public void setup() {
@@ -40,28 +40,37 @@ public class LWM2MMappingParseTest {
 	}
 
 	@Test
-	public void parseEntityLocationMapping() throws IOException {
-		MappingModel mappingModel = this.createMappingModel("type/LocationMapping.mapping");
+	public void parseEntityMapping() throws IOException {
+		MappingModel mappingModel = this.createMappingModel("ExampleEntity.mapping");
+
+		EList<MappingRule> rules = mappingModel.getRules();
+		assertEquals(4, rules.size());
+
+	}
+
+	@Test
+	public void parseEnumMapping() throws IOException {
+		MappingModel mappingModel = this.createMappingModel("ExampleEnum.mapping");
+
+		EList<MappingRule> rules = mappingModel.getRules();
+		assertEquals(4, rules.size());
+
+	}
+	
+	@Test
+	public void parseFunctionBlockMapping() throws IOException {
+		MappingModel mappingModel = createMappingModel("ExampleFunctionBlock.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
-
 	}
 
 	@Test
-	public void parseFunctionBlockDroneMapping() throws IOException {
-		MappingModel mappingModel = createMappingModel("fb/DroneMapping.mapping");
+	public void parseInformationModelMapping() throws IOException {
+		MappingModel mappingModel = createMappingModel("ExampleInfoModel.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
-		assertEquals(2, rules.size());
-	}
-
-	@Test
-	public void parseLWM2MMapping() throws IOException {
-		MappingModel mappingModel = createMappingModel("LWM2M.mapping");
-
-		EList<MappingRule> rules = mappingModel.getRules();
-		assertEquals(2, rules.size());
+		assertEquals(1, rules.size());
 	}
 
 	private MappingModel createMappingModel(String mappingFileName) throws IOException {

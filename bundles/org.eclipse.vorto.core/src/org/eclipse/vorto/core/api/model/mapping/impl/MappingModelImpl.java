@@ -37,6 +37,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getRules <em>Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getTargetPlatform <em>Target Platform</em>}</li>
  * </ul>
  *
  * @generated
@@ -121,6 +122,26 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @ordered
 	 */
 	protected EList<MappingRule> rules;
+
+	/**
+	 * The default value of the '{@link #getTargetPlatform() <em>Target Platform</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTargetPlatform()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String TARGET_PLATFORM_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getTargetPlatform() <em>Target Platform</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTargetPlatform()
+	 * @generated
+	 * @ordered
+	 */
+	protected String targetPlatform = TARGET_PLATFORM_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -233,6 +254,27 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getTargetPlatform() {
+		return targetPlatform;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTargetPlatform(String newTargetPlatform) {
+		String oldTargetPlatform = targetPlatform;
+		targetPlatform = newTargetPlatform;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__TARGET_PLATFORM, oldTargetPlatform, targetPlatform));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -262,6 +304,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return getReferences();
 			case MappingPackage.MAPPING_MODEL__RULES:
 				return getRules();
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				return getTargetPlatform();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -292,6 +336,9 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				getRules().clear();
 				getRules().addAll((Collection<? extends MappingRule>)newValue);
 				return;
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				setTargetPlatform((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -319,6 +366,9 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 			case MappingPackage.MAPPING_MODEL__RULES:
 				getRules().clear();
 				return;
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				setTargetPlatform(TARGET_PLATFORM_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -341,6 +391,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return references != null && !references.isEmpty();
 			case MappingPackage.MAPPING_MODEL__RULES:
 				return rules != null && !rules.isEmpty();
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				return TARGET_PLATFORM_EDEFAULT == null ? targetPlatform != null : !TARGET_PLATFORM_EDEFAULT.equals(targetPlatform);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -361,6 +413,8 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 		result.append(namespace);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", targetPlatform: ");
+		result.append(targetPlatform);
 		result.append(')');
 		return result.toString();
 	}

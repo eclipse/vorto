@@ -32,7 +32,6 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.internal.model.ModelFileLookupHelper;
@@ -144,9 +143,9 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 		}
 	}
 
-	public MappingModel getMapping(String modelName) {
-		IFile mappingFile = modelLookupHelper.getModelFile(modelName + ".mapping");
-		return modelParser.parseModel(mappingFile, MappingModel.class);
+	@Override
+	public IMapping getMapping(String targetPlatform){
+		return MappingResourceFactory.getInstance().createMapping(this, targetPlatform);		
 	}
 	
 	protected IModelElementResolver[] getResolvers() {

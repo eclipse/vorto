@@ -15,5 +15,4 @@ import org.eclipse.emf.ecore.EObject;
  * @generated
  */
 public interface Source extends EObject {
-
 } // Source

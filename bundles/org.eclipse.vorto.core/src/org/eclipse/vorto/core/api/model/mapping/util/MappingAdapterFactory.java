@@ -74,8 +74,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createMappingModelAdapter();
 			}
 			@Override
-			public Adapter caseInfoModelMapping(InfoModelMapping object) {
-				return createInfoModelMappingAdapter();
+			public Adapter caseInfoModelMappingModel(InfoModelMappingModel object) {
+				return createInfoModelMappingModelAdapter();
 			}
 			@Override
 			public Adapter caseInfoModelMappingRule(InfoModelMappingRule object) {
@@ -94,8 +94,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createInfoModelAttributeSourceAdapter();
 			}
 			@Override
-			public Adapter caseFunctionBlockMapping(FunctionBlockMapping object) {
-				return createFunctionBlockMappingAdapter();
+			public Adapter caseFunctionBlockMappingModel(FunctionBlockMappingModel object) {
+				return createFunctionBlockMappingModelAdapter();
 			}
 			@Override
 			public Adapter caseFunctionBlockMappingRule(FunctionBlockMappingRule object) {
@@ -130,8 +130,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEventSourceAdapter();
 			}
 			@Override
-			public Adapter caseEntityMapping(EntityMapping object) {
-				return createEntityMappingAdapter();
+			public Adapter caseEntityMappingModel(EntityMappingModel object) {
+				return createEntityMappingModelAdapter();
 			}
 			@Override
 			public Adapter caseEntityMappingRule(EntityMappingRule object) {
@@ -150,8 +150,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEntityAttributeSourceAdapter();
 			}
 			@Override
-			public Adapter caseEnumMapping(EnumMapping object) {
-				return createEnumMappingAdapter();
+			public Adapter caseEnumMappingModel(EnumMappingModel object) {
+				return createEnumMappingModelAdapter();
 			}
 			@Override
 			public Adapter caseEnumMappingRule(EnumMappingRule object) {
@@ -170,8 +170,8 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 				return createEnumAttributeSourceAdapter();
 			}
 			@Override
-			public Adapter caseDataTypeMapping(DataTypeMapping object) {
-				return createDataTypeMappingAdapter();
+			public Adapter caseDataTypeMappingModel(DataTypeMappingModel object) {
+				return createDataTypeMappingModelAdapter();
 			}
 			@Override
 			public Adapter caseTarget(Target object) {
@@ -240,16 +240,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMapping <em>Info Model Mapping</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel <em>Info Model Mapping Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelMapping
+	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel
 	 * @generated
 	 */
-	public Adapter createInfoModelMappingAdapter() {
+	public Adapter createInfoModelMappingModelAdapter() {
 		return null;
 	}
 
@@ -310,16 +310,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping <em>Function Block Mapping</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel <em>Function Block Mapping Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockMapping
+	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel
 	 * @generated
 	 */
-	public Adapter createFunctionBlockMappingAdapter() {
+	public Adapter createFunctionBlockMappingModelAdapter() {
 		return null;
 	}
 
@@ -436,16 +436,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityMapping <em>Entity Mapping</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EntityMappingModel <em>Entity Mapping Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.EntityMapping
+	 * @see org.eclipse.vorto.core.api.model.mapping.EntityMappingModel
 	 * @generated
 	 */
-	public Adapter createEntityMappingAdapter() {
+	public Adapter createEntityMappingModelAdapter() {
 		return null;
 	}
 
@@ -506,16 +506,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EnumMapping <em>Enum Mapping</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.EnumMappingModel <em>Enum Mapping Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.EnumMapping
+	 * @see org.eclipse.vorto.core.api.model.mapping.EnumMappingModel
 	 * @generated
 	 */
-	public Adapter createEnumMappingAdapter() {
+	public Adapter createEnumMappingModelAdapter() {
 		return null;
 	}
 
@@ -576,16 +576,16 @@ public class MappingAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMapping <em>Data Type Mapping</em>}'.
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.mapping.DataTypeMappingModel <em>Data Type Mapping Model</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
 	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
-	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypeMapping
+	 * @see org.eclipse.vorto.core.api.model.mapping.DataTypeMappingModel
 	 * @generated
 	 */
-	public Adapter createDataTypeMappingAdapter() {
+	public Adapter createDataTypeMappingModelAdapter() {
 		return null;
 	}
 

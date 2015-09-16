@@ -23,8 +23,19 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Status
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 
 class TestFunctionblockModelFactory {
+
+	public static def FunctionblockProperty createFBProperty() {
+		var fbProperty = InformationModelFactory.eINSTANCE.createFunctionblockProperty();
+		
+		fbProperty.name = "Fridge"
+		fbProperty.type = createFBmodelWithProperties();
+		
+		return fbProperty;
+	}
 
 	public static def FunctionblockModel createFBmodelWithProperties() {
 		var fbmodel = FunctionblockFactory.eINSTANCE.createFunctionblockModel();

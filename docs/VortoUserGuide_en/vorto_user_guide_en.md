@@ -60,8 +60,8 @@ sky# Vorto User Guide
   - [Information Model DSL Syntax](#information-model-dsl-syntax)  
   - [Information Model DSL Semantics](#information-model-dsl-semantics)  
 - [Information Model Mapping DSL Reference](#information-model-mapping-dsl-reference)  
-  - [Information Model Mapping DSL Syntax](#information-model-mapping-dsl-syntax)  
-  - [Information Model Mapping DSL Semantics](#information-model-mapping-dsl-semantics)  
+  - [Mapping Model DSL Syntax](#mapping-model-dsl-syntax)  
+  - [Mapping Model DSL Semantics](#mapping-model-dsl-semantics)  
 
 -----
 
@@ -548,7 +548,9 @@ In entity mapping, you can define mapping rules for entity types.
 	using com.mycompany.type.Color ; 1.0.0
 	
 	entitymapping MyColor {
-	
+
+		targetplatform MyIOTPlatform
+
 		from Color.version
 		to MyColor with { Revision : "Rev-" }
 	
@@ -578,6 +580,8 @@ In function block model mapping, you can define mapping rules for function block
 	using com.mycompany.fb.ColorLight ; 1.0.0
 	using com.mycompany.type.MyColor; 1.0.0
 	functionblockmapping MyColorLight {
+
+		targetplatform MyIOTPlatform
 	
 		from ColorLight.displayname
 		to TargetDisplayName
@@ -614,7 +618,8 @@ In information model mapping, you can define mapping rules for information model
 	using com.mycompany.fb.MyColorLight ; 1.0.0
 	
 	infomodelmapping SmartHome {
-	
+
+		targetplatform MyIOTPlatform	
 		from MyLightingDevice.displayname
 		to TargetDisplayName
 	
@@ -1590,73 +1595,186 @@ InformationModel:
 
 -----
 
-# Information Model Mapping DSL Reference
+# Mapping Model DSL Reference
 
 This section details the following topics: 
 
-[Information Model Mapping DSL Syntax](#information-model-mapping-dsl-syntax)  
-[Information Model Mapping DSL Semantics](#information-model-mapping-dsl-semantics)  
+[Mapping Model DSL Syntax](#mapping-model-dsl-syntax)  
+[Mapping Model DSL Semantics](#mapping-model-dsl-semantics)  
 
-## Information Model Mapping DSL Syntax
+## Mapping Model DSL Syntax
 
-    'mapping' '{'
-		  'model' [infomodel::informationModel|qualifiedName]
-	      'target' id
-	      (rule)*
-    '}'
-    ;
-    
-    rule:
-      'from' informationModelElement (',' informationModelElement)*
-      'to' targetElement
-    ;
-    
-    informationModelElement:
-        [functionblock::functionblockModel|qualifiedName] '.'
-        functionBlockElement;
-    ;
-    
-    functionBlockElement:
-      (
-        operationElement | configurationElement | statusElement |
-        faultElement | eventElement
-      )
-    ;
-    
-    operationElement:
-      'operation.' [functionblock::operation]
-    ;
-    
-    configurationElement:
-      'configuration.' [datatype::property]
-    ;
-    
-    statusElement:
-      'status.' [datatype::property]
-    ;
-    
-    faultElement:
-      'fault.' [datatype::property
-    ;
-    
-    eventElement:
-      'event.' [functionblock::event]
-    ;
-    
-    targetElement:
-      (StereoType,)*
-    ;
-    
-    stereoType:
-      id (with Attribute (',' attribute)*)
-    ;
-    
-	qualifiedName: id ('.' id)*;
+
+
+	mappingModel:
+	  infoModelMappingModel | functionBlockMappingModel | dataTypeMappingModel
+	;
+	
+	dataTypeMappingModel:
+		entityMappingModel | enumMappingModel	
+	;
+	
+	infoModelMappingModel:
+		'namespace' qualifiedName
+	    'version'  version
+	     (modelReference)*		
+		'infomodelmapping' '{'
+				'targetplatform' ID
+				(infoModelMappingRule)*
+		'}'	
+	;
+	
+	infoModelMappingRule:
+		'from' infomodelSource (',' infomodelSource)*
+		'to' target 
+	;
+			
+	infomodelSource:
+		infoModelAttributeSource | infoModelPropertySource	
+	;
+	
+	infoModelPropertySource:
+		[infomodel::InformationModel]  ('.' [infomodel::FunctionblockProperty])?  
+	;
+	
+	infoModelAttributeSource:
+		[infomodel::InformationModel]  '.' infoModelAttribute 
+	;
+	
+		
+	enum infoModelAttribute:  'name' | 'namespace'  |  'version' | 'displayname' | 'category'  |  'description';
+
+	functionBlockMappingModel:
+		'namespace' qualifiedName
+	    'version' version
+	     (modelReference)*
+		'functionblockmapping' '{'
+				'targetplatform' ID	
+				(functionBlockMappingRule)*
+		'}'	
+	;
+	
+	functionBlockMappingRule:
+		'from' functionBlockSource (',' functionBlockSource)*
+		'to' target;
+	
+			
+	functionBlockSource:
+		functionBlockAttributeSource | functionBlockPropertySource	|operationSource |eventSource
+	;
+	
+	functionBlockPropertySource:
+	    configurationSource | statusSource | faultSource 
+	;
+	
+	functionBlockAttributeSource:
+		[functionblock::FunctionblockModel]  ('.' FunctionblockModelAttribute)?
+	;
+	
+	
+	configurationSource:
+		[functionblock::FunctionblockModel] '.'   'configuration'  '.'  [datatype::Property] 
+	;
+	
+	statusSource:
+		[functionblock::FunctionblockModel] '.' 'status' '.'  [datatype::Property] 
+	;
+	
+	faultSource:
+		[functionblock::FunctionblockModel] '.'  'fault' '.'  [datatype::Property] 
+	;
+	
+	operationSource:
+		[functionblock::FunctionblockModel] '.'  'operation' '.' [functionblock::Operation]
+	;
+	
+	eventSource:
+		 [functionblock::FunctionblockModel] '.' 'event' '.' [functionblock::Event] ('.' [datatype::Property] )?;
+	
+	enum functionblockModelAttribute:  'name' | 'namespace'  |  'version' | 'displayname' | 'category'  | 'description';
+		 		
+	
+	entityMappingModel:
+		'namespace' qualifiedName
+	    'version' version
+	     (modelReference)*
+		'entitymapping' '{'
+			'targetplatform' id	
+			(entityMappingRule)*
+		'}'	
+	;
+	
+	entityMappingRule:
+		'from' entitySource (',' entitySource)*
+		'to' target;	
+			
+	entitySource:
+		entityAttributeSource | entityPropertySource	
+	;
+	
+	entityPropertySource:
+	    [datatype::Entity] "."  [datatype::Property] 
+	;
+	
+	entityAttributeSource:
+		[datatype::Entity] ('.' modelAttribute)?
+	;
+	
+	enumMappingModel:
+		'namespace' qualifiedName
+	    'version' VERSION
+	     (modelReference)*
+		'enummapping' ID  '{'
+			'targetplatform' ID	
+			(enumMappingRule)*
+		'}'	
+	;
+	
+	enumMappingRule:
+		'from' enumSource (',' enumSource)*
+		'to' target
+	;
+		
+	enumSource:
+		enumAttributeSource | enumPropertySource	
+	;
+	
+	enumPropertySource:
+	    [datatype::Enum] "." [datatype::EnumLiteral] 
+	;
+	
+	enumAttributeSource:
+		[datatype::Enum] ('.' modelAttribute)?
+	;
+	
+	target:
+		stereoTypeTarget | referenceTarget
+	;
+	
+	referenceTarget:
+		'reference' [mappingModel]
+	;	
+	
+	stereoTypeTarget:
+		 id ('with {' attribute (',' attribute)* '}')?;
+	
 
     attribute:
       id ':' string
     ;
+	
+	enum modelAttribute: 'name' | 'namespace'  |  'version';
+		
+
+    version : int('.' int)*('-'id)?;
+	
+    stereoType:
+      id (with attribute (',' attribute)*)
+    ;
     
+	qualifiedName: id ('.' id)*;
+
+  
     id:
        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
     ;
@@ -1666,7 +1784,8 @@ This section details the following topics:
       "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
     ;
 
-## Information Model Mapping DSL Semantics
+
+## Mapping Model DSL Semantics
 
 <table>
 	<tr>
@@ -1676,13 +1795,7 @@ This section details the following topics:
 		<th>Example</th>
 	</tr>
 	<tr>
-		<td>model</td>
-		<td>Y</td>
-		<td>Information Model Name   </td>
-		<td>MyLightingDevice</td>
-	</tr>
-	<tr>
-		<td>target</td>
+		<td>targetplatform</td>
 		<td>Y</td>
 		<td>Target platform mapping is used for</td>
 		<td>smarthome</td>
@@ -1690,22 +1803,14 @@ This section details the following topics:
 	<tr>
 		<td>from</td>
 		<td>Y</td>
-		<td>Information model element</td>
+		<td>model proeprty/attribute</td>
 		<td>ColorLight.operation.setR</td>
 	</tr>
 	<tr>
 		<td>to</td>
 		<td>Y</td>
-		<td>Target plaform platform element</td>
-		<td>channelType</td>
+		<td>Stereo type target or reference target</td>
+		<td>channelType, or [myfunctionblock]</td>
 	</tr>
 </table>
 
-<!---
-|Parameter|Mandatory|Description|Example|
-|:--------|:--------|:----------|:------|
-|model|Y|Information Model Name|MyLightingDevice|
-|target|Y|Target platform mapping is used for|MyLightingDevice|
-|from|Y|Information model element|ColorLight.operation.setR|
-|to|Y|Target plaform platform element|channelType|
--->

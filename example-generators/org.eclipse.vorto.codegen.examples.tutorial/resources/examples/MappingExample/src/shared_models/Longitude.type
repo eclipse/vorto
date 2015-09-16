@@ -1,0 +1,7 @@
+namespace com.mycompany.iot.type
+version 1.0.0
+
+entity Longitude {
+	optional value as double "The decimal notation of longitude, e.g. 153.21760 [World Geodetic System 1984]."
+	mandatory unit as string
+}

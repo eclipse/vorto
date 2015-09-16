@@ -25,14 +25,14 @@ class ServiceClassTemplateTest {
 
 	@Test
 	def testGeneration() {
-		var model = TestFunctionblockModelFactory.createFBmodelWithProperties();
+		var fbProperty = TestFunctionblockModelFactory.createFBProperty();
 
-		var result = new ServiceClassTemplate().getContent(model);
+		var result = new ServiceClassTemplate().getContent(fbProperty);
 		assertEquals(fetchExpected, result);
 	}
 
 	private def String fetchExpected() {
-		'''package com.bosch.iot.fridge.service;
+		'''package org.eclipse.vorto.iot.fridge.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -47,11 +47,12 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.beanutils.BeanUtils;
 
-import com.bosch.iot.fridge.model.Fridge;
-import com.bosch.iot.fridge.model.FridgeConfiguration;		
+import org.eclipse.vorto.iot.fridge.model.Fridge;
+import org.eclipse.vorto.iot.fridge.model.FridgeConfiguration;		
 
 @Path("/Fridge")
 public class FridgeService {	
@@ -61,8 +62,8 @@ public class FridgeService {
 	@GET
 	@Path("/instance")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Fridge getInstance(){
-		return fridgeinstance ;			
+	public Response getInstance(){
+		return Response.status(200).entity(fridgeinstance).header("Access-Control-Allow-Origin", "*").build();
 	}		
 								
 	/**

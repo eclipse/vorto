@@ -17,7 +17,6 @@ package org.eclipse.vorto.core.model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 
 /**
  * 
@@ -62,11 +61,11 @@ public interface IModelProject extends IModelElement {
 	IModelElement getSharedModelReference(ModelId modelId);
 
 	/**
-	 * 
-	 * @param name
-	 * @return
+	 * Get MappingModel for given Target Platform
+	 * @param targetPlatform: Target platform name the mapping designed for
+	 * @return instance if IMapping
 	 */
-	MappingModel getMapping(String name);
+	IMapping getMapping(String targetPlatform);
 
 	/**
 	 * Saves the actual model project, after it has been modified, e.g. after

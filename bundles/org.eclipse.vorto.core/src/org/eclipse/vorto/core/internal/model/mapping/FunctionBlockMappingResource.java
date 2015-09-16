@@ -32,13 +32,13 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
+import org.eclipse.vorto.core.model.IMapping;
 import org.eclipse.vorto.core.model.MappingAttribute;
-
 
 public class FunctionBlockMappingResource extends AbstractMappingResource {
 
-	public FunctionBlockMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public FunctionBlockMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 
-		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource)source).getModel();
+		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource) source).getModel();
 		if (source instanceof ConfigurationSource) {
 			addRuleIfMatchesProperty(modelObject, mappingRules, rule, functionblockModel,
 					((ConfigurationSource) source).getProperty());
@@ -100,7 +100,7 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 
 	protected boolean matchesFunctionBlockProperty(FunctionblockModel functionBlockModel,
 			Property functionBlockProperty, EObject modelObject) {
-		if (!(modelObject instanceof Property)) {
+		if ((functionBlockProperty == null) || !(modelObject instanceof Property)) {
 			return false;
 		}
 		Property modelObjectProperty = ((Property) modelObject);

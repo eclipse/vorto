@@ -2,7 +2,7 @@ namespace com.mycompany.mydevice.type
 version 1.0.0
 using com.mycompany.mydevice.type.EntityA ; 1.0.0
 entitymapping Entity_Attribute {
-    
+    targetplatform mym2m
 	from EntityA.name
 	to TargetName with { DefaultValue : "MyName" }
  

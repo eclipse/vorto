@@ -25,19 +25,48 @@ class ConfigurationClassTemplateTest {
 
 	@Test
 	def testGeneration() {
-		var fbModel = TestFunctionblockModelFactory.createFBmodelWithProperties();
+		var fbProperty = TestFunctionblockModelFactory.createFBProperty();
 
-		var result = new ConfigurationClassTemplate().getContent(fbModel);
+		var result = new ConfigurationClassTemplate().getContent(fbProperty);
 		assertEquals(fetchExpected, result);
 	}
 
 	private def String fetchExpected() {
-		'''package com.bosch.iot.fridge.model;
+		'''package org.eclipse.vorto.iot.fridge.model;
+
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
+
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize
-public class FridgeConfiguration {			
+public class FridgeConfiguration {
+	public FridgeConfiguration() {
+		try {
+			Class<?> c = Class.forName(FridgeConfiguration.class
+				.getCanonicalName());
+			BeanInfo beanInfo = Introspector.getBeanInfo(c);
+			PropertyDescriptor propertyDescriptor[] = beanInfo
+				.getPropertyDescriptors();
+
+			for (int i = 0; i < propertyDescriptor.length; i++) {
+				if (!propertyDescriptor[i].getName().equals("configData")
+					&& !propertyDescriptor[i].getName().equals("class")) {
+					Class<?> type = propertyDescriptor[i].getPropertyType();
+					String typeName = (type instanceof Class && ((Class<?>) type)
+						.isEnum()) ? "enum_" + type.getSimpleName() : type.getSimpleName();
+					configData.put(propertyDescriptor[i].getName(), typeName);
+				}
+
+			}
+		} catch (Exception e) {
+			System.out.println("Exception caught. " + e);
+			}
+	}
 
 	private String testString = "";
 
@@ -47,7 +76,8 @@ public class FridgeConfiguration {
 			
 	public void setTestString(String testString) {
 		this.testString = testString;
-	}		
+	}
+	
 
 	private short testShort = 0;
 
@@ -57,7 +87,8 @@ public class FridgeConfiguration {
 			
 	public void setTestShort(short testShort) {
 		this.testShort = testShort;
-	}		
+	}
+	
 
 	private int testInt = 0;
 
@@ -67,7 +98,18 @@ public class FridgeConfiguration {
 			
 	public void setTestInt(int testInt) {
 		this.testInt = testInt;
-	}		
+	}
+	
+
+	private Map<String, String> configData = new HashMap<String, String>();
+
+	public Map<String, String> getConfigData() {
+		return configData;
+	}
+
+	public void setConfigData(Map<String, String> configData) {
+		this.configData = configData;
+	}
 }'''
 	}
 }

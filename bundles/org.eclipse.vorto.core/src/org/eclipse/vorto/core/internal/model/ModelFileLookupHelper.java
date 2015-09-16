@@ -93,7 +93,7 @@ public class ModelFileLookupHelper {
 		return foundFiles.toArray(new IFile[foundFiles.size()]);
 	}
 
-	private List<IFile> getFilesByExtension(IFolder folder,
+	public List<IFile> getFilesByExtension(IFolder folder,
 			String modelExtension) {
 		List<IFile> foundFiles = new ArrayList<>();
 

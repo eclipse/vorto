@@ -15,5 +15,5 @@
 package org.eclipse.vorto.core.model;
 
 public enum ModelType {
-	Functionblock, InformationModel, Datatype
+	Functionblock, InformationModel, Datatype, Mapping
 }

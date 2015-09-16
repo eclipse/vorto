@@ -4,7 +4,7 @@ using com.company.light.MyLightingDevice ; 1.0.0
 using com.mycompany.fb.MyColorLight ; 1.0.0
 
 infomodelmapping SmartHome {
-
+	targetplatform smarthome
 	from MyLightingDevice.displayname
 	to TargetDisplayName
 

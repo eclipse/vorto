@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>org.eclipse.vorto.parent</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>bundles</module>
@@ -91,7 +91,7 @@
 				<plugin>
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
-					<version>2.6.2</version>
+					<version>${xtext.version}</version>
 					<executions>
 						<execution>
 							<goals>
@@ -164,6 +164,9 @@
 						<execution>
 							<id>attach-javadocs</id>
 							<phase>package</phase>
+						    <configuration>
+							   <additionalparam>${javadoc.opts}</additionalparam>
+						    </configuration>							
 							<goals>
 								<goal>jar</goal>
 							</goals>
@@ -325,7 +328,18 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
 			</plugin>
-		</plugins>
+		</plugins>		
 	</build>
 	
+	<profiles>
+	  <profile>
+		<id>doclint-java8-disable</id>
+		<activation>
+		  <jdk>[1.8,)</jdk>
+		</activation>
+		<properties>
+		  <javadoc.opts>-Xdoclint:none</javadoc.opts>
+		</properties>
+	  </profile>
+	</profiles>			
 </project>
