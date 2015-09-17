@@ -70,18 +70,6 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 		addModelReference(reference);
 	}
 	
-	@Override
-	public void addReference(ModelId modelId) {
-		ModelReference referenceToAdd = modelId.asModelReference();
-		
-		for (ModelReference modelReference : getModel().getReferences()) {
-			if (EcoreUtil.equals(modelReference, referenceToAdd)) {
-				return; // model reference already exists
-			}
-		}
-		getModel().getReferences().add(referenceToAdd);
-	}
-
 	private void addProjectReference(IModelProject modelProject) {
 		try {
 			Set<IProject> immutableReferencedProjects = new HashSet<IProject>(Arrays.asList(project

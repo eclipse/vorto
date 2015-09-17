@@ -14,6 +14,33 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.model;
 
+import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.model.Model;
+
 public enum ModelType {
-	Functionblock, InformationModel, Datatype, Mapping
+	
+	Functionblock (".fbmodel", FunctionblockModel.class), 
+	InformationModel (".infomodel", InformationModel.class), 
+	Datatype (".type", Type.class), 
+	Mapping (".mapping", MappingModel.class);
+	
+	private String extension;
+	
+	private Class<?> modelClass;
+	
+	ModelType(String extension, Class<?> modelClass) {
+		this.extension = extension;
+		this.modelClass = modelClass;
+	}
+	
+	public String getExtension() {
+		return extension;
+ 	}
+	
+	public <M extends Model> Class<M> getModelClass() {
+		return (Class<M>)modelClass;
+	}
 }

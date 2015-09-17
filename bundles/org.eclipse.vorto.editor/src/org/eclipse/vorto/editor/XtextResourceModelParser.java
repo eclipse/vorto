@@ -31,7 +31,7 @@ import org.eclipse.xtext.resource.XtextResourceSet;
 public class XtextResourceModelParser implements IModelParser {
 
 	@Override
-	public <M> M parseModel(IFile modelFile, Class<M> modelClass) {
+	public <M extends Model> M parseModel(IFile modelFile, Class<M> modelClass) {
 		try {
 
 			URI uri = URI.createPlatformResourceURI(modelFile.getFullPath()
