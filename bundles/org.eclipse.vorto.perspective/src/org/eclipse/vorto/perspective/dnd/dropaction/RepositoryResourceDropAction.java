@@ -30,6 +30,7 @@ import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.ModelType;
@@ -70,7 +71,8 @@ public class RepositoryResourceDropAction implements IDropAction {
 		ModelResource droppedObjectModel = downloadAndSaveModel(receivingProject.getProject(), modelResource.getId());
 
 		if (droppedObjectModel != null) {
-			receivingProject.addReference(droppedObjectModel.getId());
+			IModelElement modelElement = receivingProject.getSharedModelReference(droppedObjectModel.getId());
+			receivingProject.addReference(modelElement);
 			ModelProjectServiceFactory.getDefault().save(receivingProject);
 		}
 
