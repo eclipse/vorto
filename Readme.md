@@ -6,7 +6,7 @@ Great, that you are interested in the Eclipse Vorto project!
 Prerequisites
 -------------
 
- - [Java] 1.7 or above 
+ - [Java] 1.8
  - [Eclipse] Luna SR2 (4.4.2) 
  - [Xtext] 2.7.x or above
  - [Xtext Antlr] 2.1.x or above 
