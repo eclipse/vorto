@@ -58,7 +58,7 @@ public class RepositoryResourceDropAction implements IDropAction {
 	private ResourceAttributes readOnlyAttribute =new ResourceAttributes();
 	
 	public RepositoryResourceDropAction() {
-		readOnlyAttribute.setReadOnly(true);
+		readOnlyAttribute.setReadOnly(false);
 	}
 
 	@Override
