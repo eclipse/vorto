@@ -1,14 +1,16 @@
 namespace com.mycompany.iot.fb
 version 1.0.0
+displayname "Drone"
+description "Function block model for Drone"
+category demo
 using com.mycompany.iot.type.Altitude ; 1.0.0
 using com.mycompany.iot.type.Latitude ; 1.0.0
 using com.mycompany.iot.type.Longitude ; 1.0.0
 using com.mycompany.iot.type.Location; 1.0.0
 using com.mycompany.iot.type.Direction; 1.0.0
+
 functionblock Drone {
-	displayname "Drone"
-	description "Function block model for Drone"
-	category demo
+
 	
 	configuration {
 		optional defaultLocation as Location "Default Location"	

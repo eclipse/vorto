@@ -21,8 +21,8 @@ import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
-import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 
@@ -47,7 +47,7 @@ public class TestFunctionBlockMappingFactory {
 
 	private static FunctionBlockAttributeSource createFunctionBlockAttributeSource() {
 		FunctionBlockAttributeSource source = MappingFactory.eINSTANCE.createFunctionBlockAttributeSource();
-		source.setAttribute(FunctionblockModelAttribute.DESCRIPTION);
+		source.setAttribute(ModelAttribute.DESCRIPTION);
 		source.setModel(functionblockModel);
 		return source;
 	}

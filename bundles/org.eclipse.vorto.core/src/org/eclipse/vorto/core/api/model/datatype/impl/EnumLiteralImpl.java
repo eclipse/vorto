@@ -18,10 +18,11 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralImpl#getDescription <em>Description</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -45,6 +46,26 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -91,11 +112,34 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDescription(String newDescription) {
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.ENUM_LITERAL__DESCRIPTION, oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case DatatypePackage.ENUM_LITERAL__NAME:
 				return getName();
+			case DatatypePackage.ENUM_LITERAL__DESCRIPTION:
+				return getDescription();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -110,6 +154,9 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 		switch (featureID) {
 			case DatatypePackage.ENUM_LITERAL__NAME:
 				setName((String)newValue);
+				return;
+			case DatatypePackage.ENUM_LITERAL__DESCRIPTION:
+				setDescription((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -126,6 +173,9 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 			case DatatypePackage.ENUM_LITERAL__NAME:
 				setName(NAME_EDEFAULT);
 				return;
+			case DatatypePackage.ENUM_LITERAL__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -140,6 +190,8 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 		switch (featureID) {
 			case DatatypePackage.ENUM_LITERAL__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case DatatypePackage.ENUM_LITERAL__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -156,6 +208,8 @@ public class EnumLiteralImpl extends MinimalEObjectImpl.Container implements Enu
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (name: ");
 		result.append(name);
+		result.append(", description: ");
+		result.append(description);
 		result.append(')');
 		return result.toString();
 	}

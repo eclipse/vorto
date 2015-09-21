@@ -20,14 +20,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 
 public class InfoModelMappingResource extends AbstractMappingResource {
 
@@ -65,12 +64,12 @@ public class InfoModelMappingResource extends AbstractMappingResource {
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
 
 		if (source instanceof InfoModelAttributeSource) {
-			InfoModelAttribute attribute = ((InfoModelAttributeSource) source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+			ModelAttribute attribute = ((InfoModelAttributeSource) source).getAttribute();
+			if (modelAttribute ==attribute) {
 				mappingRules.add(rule);
 			}
 		}

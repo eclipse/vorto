@@ -123,8 +123,8 @@ For the use of the Vorto plug-ins the following software requirements must be me
 
 - IDE
   - Eclipse (Luna or higher)
-  - Eclipse [Xtext plug-in](http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/) 2.7.\* (Xtext Redestributable)
-- [Oracle Java SE 7](http://www.oracle.com/technetwork/java/javase/downloads/)  
+  - Eclipse [Xtext plug-in](http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/) 2.7.\* or higher (Xtext Redestributable)
+- [Oracle Java SE 7 or higher](http://www.oracle.com/technetwork/java/javase/downloads/)  
 
 <table class="note">
   <tr>
@@ -263,9 +263,19 @@ If the **Vorto** button is not visible you must open the Vorto perspective.
 
 To switch to the Vorto perspective just click the **Vorto** button in the menu bar area for open perspectives.
 
-## Domain-specific Language
+## Getting Started with Vorto Domain-specific Language
 
-In the function block editor, you use the domain-specific language (DSL). The DSL uses a small set of elements so you can describe function blocks in an easy way. For a detailed language specification refer to [Function Block DSL Reference](#function-block-model-dsl-reference).
+In the DSL editor, you use the domain-specific language (DSL). The DSL uses a small set of elements so you can describe Vorto models in an easy way. For a detailed language specification refer to dsl reference for respective models.
+
+Before you create your first Vorto model, probably you should go through some of the existing models. It shows example usage of various grammar for data type, function block, information model, and mapping model. Please follow below steps to create example Vorto model projects:
+
+**Proceed as follows**
+
+1. In the main menu, click **File > New > Other...**.  
+   The **New** dialog opens.
+2. Navigate to `Vorto`, expand sub menu "Examples", select the type of example you want to open and click **Next**.
+3. The list examples available for selected type is displayed. Click **Finish** to open listed examples in Work space. 
+4. Example model projects will now be available in work space. You can double click to open model files in DSL editor.
 
 -----
 
@@ -313,6 +323,9 @@ You have created a data type (refer to [Create a new Data Type](#creating-a-new-
 
 	namespace com.mycompany.type
 	version 1.0.0
+    displayname "Color"
+    description "Entity model for Color"
+    category demo
     entity Color{
       mandatory r as int <MIN 0, MAX 255>
       mandatory g as int <MIN 0, MAX 255>
@@ -377,10 +390,10 @@ Edit the function block project by extending the generated source file in the fu
 
 	namespace com.mycompany.fb
 	version 1.0.0
+	displayname "Lamp"
+	description "A lamp makes the environment bright"
+	category demo
     functionblock Lamp {
-      displayname "Lamp"
-      description "A lamp makes the environment bright"
-      category demo
       
       configuration{
         mandatory blinking as boolean "if the lamp is currently blinking or not"
@@ -456,10 +469,10 @@ Edit the information model by extending the generated source file in the informa
 
         namespace com.mycompany.fb
         version 1.0.0
+        displayname "Switch"
+        description "Function block model for Switch"
+        category demo
         functionblock Switchable {
-            displayname "Switch"
-            description "Function block model for Switch"
-            category demo
 
             status {
                 optional on as boolean
@@ -476,11 +489,11 @@ Edit the information model by extending the generated source file in the informa
 
         namespace com.mycompany.fb
         version 1.0.0
+        displayname "ColorLight"
+        description "A light makes the environment bright and colorful"
+        category hue
 		using com.mycompany.type.Color;1.0.0
         functionblock ColorLight {
-            displayname "ColorLight"
-            description "A light makes the environment bright and colorful"
-            category hue
 
             configuration {
                 optional brightnessLevel as int
@@ -504,12 +517,12 @@ Edit the information model by extending the generated source file in the informa
 
         namespace com.mycompany
         version 1.0.0
+        displayname "MyLightingDevice"
+        description "Information model for MyLightingDevice"
+        category demo
         using com.mycompany.fb.Switchable ; 1.0.0
         using com.mycompany.fb.ColorLight ; 1.0.0
         infomodel MyLightingDevice {
-                displayname "MyLightingDevice"
-                description "Information model for MyLightingDevice"
-                category demo
 
                 functionblocks {
                         switchable as Switchable colorlight as ColorLight
@@ -545,6 +558,9 @@ In entity mapping, you can define mapping rules for entity types.
 
 	namespace com.mycompany.type
 	version 1.0.0
+    displayname "MyColor"
+    description "Mapping model for MyColor"
+    category demo
 	using com.mycompany.type.Color ; 1.0.0
 	
 	entitymapping MyColor {
@@ -577,6 +593,9 @@ In function block model mapping, you can define mapping rules for function block
 
 	namespace com.mycompany
 	version 1.0.0
+    displayname "MyColorLight"
+    description "Mapping model for MyColorLight"
+    category demo
 	using com.mycompany.fb.ColorLight ; 1.0.0
 	using com.mycompany.type.MyColor; 1.0.0
 	functionblockmapping MyColorLight {
@@ -614,6 +633,9 @@ In information model mapping, you can define mapping rules for information model
 
 	namespace com.mycompany
 	version 1.0.0
+    displayname "SmartHome"
+    description "Mapping model for SmartHome"
+    category demo
 	using com.mycompany.MyLightingDevice ; 1.0.0
 	using com.mycompany.fb.MyColorLight ; 1.0.0
 	
@@ -881,6 +903,9 @@ The following code represents the Data Type Model DSL syntax.
     entity:
 	   'namespace' qualifiedName
 	   'version' version
+       'displayname' stirng
+       ('description' string)?
+       'category' category
 	   (modelReference)*	
 	   'entity' id ('extends' [entity|qualifiedName])? '{'
         	(property)*
@@ -890,13 +915,16 @@ The following code represents the Data Type Model DSL syntax.
 	enumeration:
 	   'namespace' qualifiedName
 	   'version' version
+       'displayname' stirng
+       ('description' string)?
+       'category' category
 	   (modelReference)*	
 		'enum' id '{'
         	(enumLiteral)*
 		'}'
 	;
     
-    enumLiteral: id;
+    enumLiteral: id (description)?;
     
 	property:
 	    presence ('multiple')? id 'as' type (description)?
@@ -915,6 +943,8 @@ The following code represents the Data Type Model DSL syntax.
 	 
 	constraintIntervalType: int| signedint| float| datetime| string;
     
+    category:id;
+
     id: '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
     
     string:  
@@ -968,6 +998,9 @@ The following code represents the Function Block Model DSL syntax. Function bloc
 	functionblockmodel:
 		'namespace' qualifiedName
 	    'version' version
+	    'displayname' string
+	    ('description' string)?
+	    'category' category
 	     (modelReference)*	
 		'functionblock' id '{'
 			functionblock 
@@ -975,9 +1008,6 @@ The following code represents the Function Block Model DSL syntax. Function bloc
 	;
 	
 	functionblock:
-	    'displayname' string
-	    ('description' string)?
-	    'category' category
 	    'configuration' '{'
 	        (property)*
 	    '}'
@@ -1040,6 +1070,8 @@ The following code represents the Function Block Model DSL syntax. Function bloc
 
     version : int('.' int)*('-'id)?;
 
+    category:id;
+
     id:
       '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
     ;
@@ -1068,10 +1100,10 @@ Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-dsl-s
 
 	namespace com.mycompany.fb
 	version 1.0.0
+    displayname "Lamp"  
+    description "A lamp makes the environment bright"  
+    category demo  
     functionblock Lamp {  
-      displayname "Lamp"  
-      description "A lamp makes the environment bright"  
-      category demo  
       configuration{  
         mandatory blinking as boolean "if the lamp is currently blinking or not"  
         mandatory on as boolean "if the lamp is currently switched on"  
@@ -1182,10 +1214,10 @@ The following table describes the parameters and elements of a `functionblock`. 
 
     namespace com.mycompany.fb
     version 1.0.0
+    displayname "Lamp"
+    description "A lamp makes the environment bright"
+    category demo
     functionblock Lamp {  
-      displayname "Lamp"
-      description "A lamp makes the environment bright"
-      category demo
       configuration{
         mandatory blinking as boolean "if the lamp is currently blinking or not"
         mandatory on as boolean "if the lamp is currently switched on"
@@ -1518,11 +1550,11 @@ InformationModel:
 
 	  'namespace' qualifiedName
 	  'version' version
-      (modelReference)*
-      'infomodel' id '{'
       'displayname' stirng
       ('description' string)?
       'category' category
+      (modelReference)*
+      'infomodel' id '{'
       'functionblocks' '{'
         (functionblockProperty)*
       '}'
@@ -1617,6 +1649,9 @@ This section details the following topics:
 	infoModelMappingModel:
 		'namespace' qualifiedName
 	    'version'  version
+      	'displayname' stirng
+      	('description' string)?
+      	'category' category
 	     (modelReference)*		
 		'infomodelmapping' '{'
 				'targetplatform' ID
@@ -1647,6 +1682,9 @@ This section details the following topics:
 	functionBlockMappingModel:
 		'namespace' qualifiedName
 	    'version' version
+      	'displayname' stirng
+      	('description' string)?
+      	'category' category
 	     (modelReference)*
 		'functionblockmapping' '{'
 				'targetplatform' ID	
@@ -1697,6 +1735,9 @@ This section details the following topics:
 	entityMappingModel:
 		'namespace' qualifiedName
 	    'version' version
+      	'displayname' stirng
+      	('description' string)?
+      	'category' category
 	     (modelReference)*
 		'entitymapping' '{'
 			'targetplatform' id	
@@ -1723,6 +1764,9 @@ This section details the following topics:
 	enumMappingModel:
 		'namespace' qualifiedName
 	    'version' VERSION
+      	'displayname' stirng
+      	('description' string)?
+      	'category' category
 	     (modelReference)*
 		'enummapping' ID  '{'
 			'targetplatform' ID	
@@ -1774,6 +1818,7 @@ This section details the following topics:
     
 	qualifiedName: id ('.' id)*;
 
+    category:id;
   
     id:
        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*

@@ -29,13 +29,13 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getDescription <em>Description</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

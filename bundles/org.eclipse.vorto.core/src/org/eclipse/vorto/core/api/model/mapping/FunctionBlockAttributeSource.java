@@ -22,7 +22,7 @@ package org.eclipse.vorto.core.api.model.mapping;
 public interface FunctionBlockAttributeSource extends FunctionBlockSource {
 	/**
 	 * Returns the value of the '<em><b>Attribute</b></em>' attribute.
-	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute}.
+	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.mapping.ModelAttribute}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Attribute</em>' attribute isn't clear,
@@ -30,23 +30,23 @@ public interface FunctionBlockAttributeSource extends FunctionBlockSource {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Attribute</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute
-	 * @see #setAttribute(FunctionblockModelAttribute)
+	 * @see org.eclipse.vorto.core.api.model.mapping.ModelAttribute
+	 * @see #setAttribute(ModelAttribute)
 	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getFunctionBlockAttributeSource_Attribute()
 	 * @model
 	 * @generated
 	 */
-	FunctionblockModelAttribute getAttribute();
+	ModelAttribute getAttribute();
 
 	/**
 	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource#getAttribute <em>Attribute</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Attribute</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute
+	 * @see org.eclipse.vorto.core.api.model.mapping.ModelAttribute
 	 * @see #getAttribute()
 	 * @generated
 	 */
-	void setAttribute(FunctionblockModelAttribute value);
+	void setAttribute(ModelAttribute value);
 
 } // FunctionBlockAttributeSource

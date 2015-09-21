@@ -42,18 +42,59 @@ class DatatypeModelFormatterTest extends AbstractXtextTests {
 	
 	@Test
 	def void testFormattingEntity() {
-		val expectedText = this.readFileIntoString("resources/EntityColorFormatted.type")
-		val rawText = this.readFileIntoString("resources/EntityColorUnformatted.type")
+		val expectedText = getEntityColorFormatted()
+		val rawText = getEntityColorUnFormatted()
 		rawText.assertFormattedAs(expectedText)
+	}
+	
+	def String getEntityColorFormatted(){
+		return '''namespace org.eclipse.vorto.example
+version 1.0.0
+displayname "Color"
+description "Type for Color"
+category demo
+
+entity Color {
+	mandatory r as int
+	mandatory g as int
+	mandatory b as int
+}'''
+	}
+	
+	def String getEntityColorUnFormatted(){
+		return '''namespace org.eclipse.vorto.example version 1.0.0 
+displayname "Color" description "Type for Color" category demo
+entity Color {mandatory r as int mandatory g as int mandatory b as int }
+'''
 	}
 	
 	@Test
 	def void testFormattingEnum() {
-		val expectedText = this.readFileIntoString("resources/EnumColorFormatted.type")
-		val rawText = this.readFileIntoString("resources/EnumColorUnformatted.type")
+		val expectedText = getEnumColorFormatted
+		val rawText = getEnumColorUnFormatted
 		rawText.assertFormattedAs(expectedText)
 	}
+
+	def String getEnumColorFormatted(){
+		return '''namespace org.eclipse.vorto.example
+version 1.0.0
+displayname "Color"
+description "Type for Color"
+category demo
+
+enum Color {
+	RED,
+	GREEN,
+	BLUE
+}'''
+	}
 	
+	def String getEnumColorUnFormatted(){
+		return '''namespace org.eclipse.vorto.example version 1.0.0 
+displayname "Color" description "Type for Color" category demo
+enum Color {RED, GREEN, BLUE}'''
+	}
+		
 	def void assertFormattedAs(CharSequence input, CharSequence expected) {
 		val expectedText = expected.toString
 		val formattedText = (input.parse.eResource as XtextResource).parseResult.rootNode.format(0, input.length).formattedText

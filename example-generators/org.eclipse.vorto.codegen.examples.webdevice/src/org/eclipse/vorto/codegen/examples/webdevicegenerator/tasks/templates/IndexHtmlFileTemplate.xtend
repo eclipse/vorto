@@ -70,7 +70,19 @@ class IndexHtmlFileTemplate implements ITemplate<InformationModel> {
 		        </div>
 		      </div>
 		    </div>
+		  <div class="row" ng-show="responseMessage">
+		  	<div class="col-md-12">
+		  		<div class="panel panel-success">
+		  			<div class="panel-heading">
+		  				<h3 class="panel-title">Information Panel </h3>
+		  			</div>
+		  			<div class="panel-body">
+		  				{{responseMessage}}
+		  			</div>
+		  		</div>
+		  	</div>
 		  </div>
+		 </div>
 		
 		</body>
 		</html>
@@ -84,7 +96,7 @@ class IndexHtmlFileTemplate implements ITemplate<InformationModel> {
 			«FOR functionBlockProperty : model.properties»
 			<li ng-class="{active:tab==«i»}">
 				«getTabContent(functionBlockProperty.name, i++)»
-			<li>
+			</li>
         	«ENDFOR»
 		</ul>
 		'''

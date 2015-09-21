@@ -46,7 +46,7 @@ deviceApp
 				}
 	});
 
-deviceApp.run(function($rootScope) {
+deviceApp.run(['$http', '$rootScope', function($http, $rootScope) {
          $rootScope.filterConfiguration = function(data) {
            var result = {};
            angular.forEach(data, function(value, key) {
@@ -56,15 +56,24 @@ deviceApp.run(function($rootScope) {
            });
            return result;
          };
-         $rootScope.isObject = angular.isObject;
+         $rootScope.isObject = function(object) {
+         	return (object.constructor === {}.constructor) ? true: false;
+         };
          
          $rootScope.isBasicFieldOrEnum = function(object, key) {
-	         if(key.indexOf("enum_") == 0  || !angular.isObject(object))
-	         	return true;
-	         else
-	         	return false;
+	         return (key.indexOf("enum_") == 0  || !angular.isObject(object)) ? true : false;
          };
-});
+         $rootScope.invokeOperation = function(fbName, operationName) {
+         	var response = $http.put('service/'+fbName +'/' + operationName +'/');
+         	response.success(function(data, status, headers, config) {
+         		$rootScope.responseMessage = fbName + ": " + operationName + " invoked.";
+         	});
+         	
+         	response.error(function(data, status, headers, config) {
+         		$rootScope.responseMessage("AJAX failed to get data, status=" + status);
+         	});
+         }
+}]);
 
 deviceApp.config(function($routeProvider) {
   $routeProvider
@@ -81,7 +90,7 @@ deviceApp.config(function($routeProvider) {
 	    controller  : 'fbm2Controller'
 	})
 });
- deviceApp.controller('mainController',['$scope', '$http', function($scope,$http) {
+ deviceApp.controller('mainController',['$scope', '$http', '$rootScope', function($scope,$http, $rootScope) {
      $http.get('service/informationmodel/instance')
      .success(function(data){
        $scope.infomodelData = data;
@@ -91,12 +100,16 @@ deviceApp.config(function($routeProvider) {
      .success(function(data){
        $scope.modelinfo = data;
      });
+     $scope.functionBlockName = 'fbm1';
+     $rootScope.responseMessage = null;
  }]);
-deviceApp.controller('fbm2Controller', ['$scope', '$http', function($scope,$http) {
+deviceApp.controller('fbm2Controller', ['$scope', '$http', '$rootScope', function($scope,$http, $rootScope) {
    $http.get('service/fbm2/instance')
    .success(function(data){
      $scope.modelinfo = data;
    });
+   $scope.functionBlockName = 'fbm2';
+   $rootScope.responseMessage = null;
  }]);
 '''
 		

@@ -34,8 +34,8 @@ import org.junit.Before;
 
 
 public class AbstractTutorialTest {
-	protected static final String INFOMODEL_FILE = "resources/examples/MappingExample/src/models/MyQuadcopter.infomodel";
-	protected static final String SHARED_MODELS_DIRECTORY = "resources/examples/MappingExample/src/shared_models/";
+	protected static final String INFOMODEL_FILE = "resources/examples/MappingExamples/LWM2M/src/models/MyQuadcopter.infomodel";
+	protected static final String SHARED_MODELS_DIRECTORY = "resources/examples/MappingExamples/LWM2M/src/shared_models/";
 	
 	@Before
 	public void setup() {

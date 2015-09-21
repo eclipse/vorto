@@ -20,10 +20,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl
 import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 import org.eclipse.xtext.formatting.INodeModelFormatter
+import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
-import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.BeforeClass
 import org.junit.Test
@@ -43,11 +43,41 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		
 	@Test
 	def void testFormattingForBasicBlock() {
-		val expectedText = this.readFileIntoString("ColorLampFormatted.infomodel")
-		val rawText = this.readFileIntoString("ColorLampUnFormatted.infomodel")
+		val expectedText = getFormattedColorLamp
+		val rawText = getUnFormattedColorLamp
 		rawText.assertFormattedAs(expectedText)
 	}
 
+	def String getFormattedColorLamp(){
+		return '''namespace org.eclipse.vorto.example
+version 1.0.0
+displayname "ColorLamp"
+description "Information model for a standard color lamp."
+category example
+using eclipse.vorto.basic.BinarySwitch ; 1.0.0
+using com.mycompany.fb.RGBColorPicker ; 1.0.0
+using com.mycompany.fb.Dimmer ; 1.0.0
+
+infomodel ColorLamp {
+
+	functionblocks {
+		binaryswitch as BinarySwitch
+		rgbcolorpicker as RGBColorPicker
+		dimmer as Dimmer
+	}
+}'''
+	}
+	
+	def String getUnFormattedColorLamp(){
+		return '''namespace org.eclipse.vorto.example version 1.0.0 
+displayname "ColorLamp" description "Information model for a standard color lamp." category example 		
+		using eclipse.vorto.basic.BinarySwitch ; 1.0.0 using com.mycompany.fb.RGBColorPicker ; 1.0.0 using com.mycompany.fb.Dimmer ; 1.0.0
+infomodel ColorLamp {functionblocks {binaryswitch as BinarySwitch rgbcolorpicker as RGBColorPicker 
+		dimmer as Dimmer
+	}
+}'''
+	}
+	
 	def void assertFormattedAs(CharSequence input, CharSequence expected) {
 		val expectedText = expected.toString
 		val formattedText = (input.parse.eResource as XtextResource).parseResult.rootNode.format(0, input.length).formattedText

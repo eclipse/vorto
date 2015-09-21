@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#isMultiplicity <em>Multiplicity</em>}</li>
@@ -21,7 +22,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraints <em>Constraints</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty()
  * @model

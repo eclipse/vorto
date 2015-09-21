@@ -10,10 +10,10 @@ You have started your IDE, and you are in Vorto Perspective
 
 	namespace com.mycompany.fb
 	version 1.0.0
+	displayname "Lamp"
+	description "A lamp makes the environment bright"
+	category demo
 	functionblock Lamp {
-		displayname "Lamp"
-		description "A lamp makes the environment bright"
-		category demo
 	
 		configuration{ 
 			optional blink as boolean
@@ -41,11 +41,11 @@ You have started your IDE, and you are in Vorto Perspective
 	namespace com.mycompany
 	version 1.0.0
 	using com.mycompany.fb.Lamp ; 1.0.0
-	
+	displayname "MyLightingDevice"
+	description "Information model for MyLightingDevice"
+	category demo	
+
 	infomodel MyLightingDevice {
-		displayname "MyLightingDevice"
-		description "Information model for MyLightingDevice"
-		category demo
 	
 		functionblocks {
 			lamp as Lamp

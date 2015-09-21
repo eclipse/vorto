@@ -38,7 +38,7 @@ class FaultClassTemplate implements ITemplate<FunctionblockProperty> {
 		import java.util.Map;
 
 		import org.codehaus.jackson.map.annotate.JsonSerialize;
-		«JavaClassGeneratorUtils.getImports(model.functionblock.status.properties)»
+		«JavaClassGeneratorUtils.getImportsForFaultProperty(model)»
 		
 		@JsonSerialize
 		public class «ModuleUtil.getCamelCase(fbProperty.name)»Fault {
@@ -80,11 +80,21 @@ class FaultClassTemplate implements ITemplate<FunctionblockProperty> {
 						this.«FaultField.name» = «FaultField.name»;
 					}		
 		    «ELSEIF FaultField.type instanceof ObjectPropertyType»
-				«var objectType = (FaultField.type as ObjectPropertyType).getType»
+				«var objectType = (FaultField.type as ObjectPropertyType).getType»;
 				«IF objectType instanceof Entity»
 					private «objectType.name» «FaultField.name» = new «objectType.name»();
 				«ELSEIF objectType instanceof Enum»
-					private «objectType.name» «FaultField.name»
+					private «objectType.name» «FaultField.name»;
+					
+					private «objectType.name.toFirstUpper»[] enum_«objectType.name.toFirstUpper» = «objectType.name.toFirstUpper».values();
+					
+					public «objectType.name.toFirstUpper»[] getEnum_«objectType.name.toFirstUpper»() {
+						return enum_«objectType.name.toFirstUpper»;
+					}
+					
+					public void setEnum_«objectType.name.toFirstUpper»(«objectType.name.toFirstUpper»[] enum_«objectType.name.toFirstUpper») {
+						this.enum_«objectType.name.toFirstUpper» = enum_«objectType.name.toFirstUpper»;
+					}
 				«ENDIF»
 				
 					public «objectType.name» get«FaultField.name.toFirstUpper»() {

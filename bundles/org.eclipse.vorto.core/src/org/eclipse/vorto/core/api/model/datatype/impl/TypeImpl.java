@@ -29,13 +29,16 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getDisplayname <em>Displayname</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getCategory <em>Category</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -109,6 +112,66 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 	 * @ordered
 	 */
 	protected EList<ModelReference> references;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DISPLAYNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected String displayname = DISPLAYNAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CATEGORY_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected String category = CATEGORY_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -209,6 +272,69 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDescription(String newDescription) {
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.TYPE__DESCRIPTION, oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getDisplayname() {
+		return displayname;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDisplayname(String newDisplayname) {
+		String oldDisplayname = displayname;
+		displayname = newDisplayname;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.TYPE__DISPLAYNAME, oldDisplayname, displayname));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCategory(String newCategory) {
+		String oldCategory = category;
+		category = newCategory;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.TYPE__CATEGORY, oldCategory, category));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -234,6 +360,12 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 				return getVersion();
 			case DatatypePackage.TYPE__REFERENCES:
 				return getReferences();
+			case DatatypePackage.TYPE__DESCRIPTION:
+				return getDescription();
+			case DatatypePackage.TYPE__DISPLAYNAME:
+				return getDisplayname();
+			case DatatypePackage.TYPE__CATEGORY:
+				return getCategory();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -260,6 +392,15 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
+			case DatatypePackage.TYPE__DESCRIPTION:
+				setDescription((String)newValue);
+				return;
+			case DatatypePackage.TYPE__DISPLAYNAME:
+				setDisplayname((String)newValue);
+				return;
+			case DatatypePackage.TYPE__CATEGORY:
+				setCategory((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -284,6 +425,15 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 			case DatatypePackage.TYPE__REFERENCES:
 				getReferences().clear();
 				return;
+			case DatatypePackage.TYPE__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
+			case DatatypePackage.TYPE__DISPLAYNAME:
+				setDisplayname(DISPLAYNAME_EDEFAULT);
+				return;
+			case DatatypePackage.TYPE__CATEGORY:
+				setCategory(CATEGORY_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -304,6 +454,12 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case DatatypePackage.TYPE__REFERENCES:
 				return references != null && !references.isEmpty();
+			case DatatypePackage.TYPE__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case DatatypePackage.TYPE__DISPLAYNAME:
+				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
+			case DatatypePackage.TYPE__CATEGORY:
+				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -324,6 +480,12 @@ public class TypeImpl extends MinimalEObjectImpl.Container implements Type {
 		result.append(namespace);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", description: ");
+		result.append(description);
+		result.append(", displayname: ");
+		result.append(displayname);
+		result.append(", category: ");
+		result.append(category);
 		result.append(')');
 		return result.toString();
 	}

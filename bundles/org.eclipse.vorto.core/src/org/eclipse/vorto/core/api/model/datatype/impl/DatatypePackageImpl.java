@@ -397,6 +397,15 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getEnumLiteral_Description() {
+		return (EAttribute)enumLiteralEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getType() {
 		return typeEClass;
 	}
@@ -486,6 +495,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		enumLiteralEClass = createEClass(ENUM_LITERAL);
 		createEAttribute(enumLiteralEClass, ENUM_LITERAL__NAME);
+		createEAttribute(enumLiteralEClass, ENUM_LITERAL__DESCRIPTION);
 
 		typeEClass = createEClass(TYPE);
 
@@ -564,6 +574,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		initEClass(enumLiteralEClass, EnumLiteral.class, "EnumLiteral", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEnumLiteral_Name(), ecorePackage.getEString(), "name", null, 0, 1, EnumLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEnumLiteral_Description(), ecorePackage.getEString(), "description", null, 0, 1, EnumLiteral.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(typeEClass, Type.class, "Type", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 

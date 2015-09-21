@@ -39,8 +39,8 @@ class FBImplGeneratorModuleTest extends GeneratorTestHelper{
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 		
 		fbmodel.setName("Lamp");
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("demo");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("demo");
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 
@@ -119,8 +119,8 @@ public class LampService extends AbstractDeviceService<IDummyDevice, LampPropert
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 		
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("demo");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("demo");
 
 		
 		var op = FunctionblockFactory.eINSTANCE.createOperation();
@@ -148,8 +148,8 @@ public class LampService extends AbstractDeviceService<IDummyDevice, LampPropert
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 		
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("demo");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("demo");
 		
 		var event = FunctionblockFactory.eINSTANCE.createEvent
 		event.name = "BlinkingStarted";
@@ -310,8 +310,8 @@ public class LampService extends AbstractDeviceService<IDummyDevice, LampPropert
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 		
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("demo");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("demo");
 		var op = FunctionblockFactory.eINSTANCE.createOperation();
 		op.setName("freezThings");
 		fb.operations.add(op);
@@ -399,8 +399,8 @@ public class LampService extends AbstractDeviceService<IDummyDevice, LampPropert
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 		fbmodel.setName("Lamp");
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("demo");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("demo");
 		
 		var op = FunctionblockFactory.eINSTANCE.createOperation();
 		op.setName("freezThings");
@@ -493,8 +493,8 @@ public class LampService extends AbstractDeviceService<IDummyDevice, LampPropert
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 		
 		fbmodel.setName("Lamp");
-		fb.setDescription("Function block model for Lamp");
-		fb.setCategory("iot");
+		fbmodel.setDescription("Function block model for Lamp");
+		fbmodel.setCategory("iot");
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.1.0");
 

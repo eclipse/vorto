@@ -34,6 +34,9 @@ class DataTypeFileTemplate implements ITemplate<IModelProjectContext> {
 		return '''
 		namespace com.mycompany.type
 		version 1.0.0
+		displayname "«context.modelName»"
+		description "«context.modelDescription»"
+		category demo		
 		«typeName» «context.modelName» {
 			//Enter «typeName» details
 		}

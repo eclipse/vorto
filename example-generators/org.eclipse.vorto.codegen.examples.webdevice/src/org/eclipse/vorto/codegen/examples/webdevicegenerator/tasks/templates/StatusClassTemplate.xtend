@@ -39,7 +39,7 @@ class StatusClassTemplate implements ITemplate<FunctionblockProperty> {
 		import java.util.Map;
 
 		import org.codehaus.jackson.map.annotate.JsonSerialize;
-		«JavaClassGeneratorUtils.getImports(model.functionblock.status.properties)»
+		«JavaClassGeneratorUtils.getImportsForStatusProperty(model)»
 		
 		@JsonSerialize
 		public class «ModuleUtil.getCamelCase(fbProperty.name)»Status {
@@ -81,11 +81,21 @@ class StatusClassTemplate implements ITemplate<FunctionblockProperty> {
 					}
 					
 					«ELSEIF statusField.type instanceof ObjectPropertyType»
-					«var objectType = (statusField.type as ObjectPropertyType).getType»
+					«var objectType = (statusField.type as ObjectPropertyType).getType»;
 					«IF objectType instanceof Entity»
 					private «ModuleUtil.getCamelCase(objectType.name)» «statusField.name» = new «objectType.name»();
 				«ELSEIF objectType instanceof Enum»
-					private «ModuleUtil.getCamelCase(objectType.name)» «statusField.name»
+					private «ModuleUtil.getCamelCase(objectType.name)» «statusField.name»;
+					
+					private «objectType.name.toFirstUpper»[] enum_«objectType.name.toFirstUpper» = «objectType.name.toFirstUpper».values();
+					
+					public «objectType.name.toFirstUpper»[] getEnum_«objectType.name.toFirstUpper»() {
+						return enum_«objectType.name.toFirstUpper»;
+					}
+					
+					public void setEnum_«objectType.name.toFirstUpper»(«objectType.name.toFirstUpper»[] enum_«objectType.name.toFirstUpper») {
+						this.enum_«objectType.name.toFirstUpper» = enum_«objectType.name.toFirstUpper»;
+					}
 				«ENDIF»
 				
 					public «objectType.name» get«statusField.name.toFirstUpper»() {

@@ -26,14 +26,13 @@ import org.eclipse.vorto.core.api.model.mapping.EventSource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 
 public class FunctionBlockMappingResource extends AbstractMappingResource {
 
@@ -113,12 +112,12 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
 
 		if (source instanceof FunctionBlockAttributeSource) {
-			FunctionblockModelAttribute attribute = ((FunctionBlockAttributeSource) source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+			ModelAttribute attribute = ((FunctionBlockAttributeSource) source).getAttribute();
+			if (modelAttribute ==attribute) {
 				mappingRules.add(rule);
 			}
 		}

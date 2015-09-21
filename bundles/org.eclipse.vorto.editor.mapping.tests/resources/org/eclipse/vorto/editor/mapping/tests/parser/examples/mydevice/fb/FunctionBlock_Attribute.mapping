@@ -1,5 +1,8 @@
 namespace com.mycompany.mydevice.fb
 version 1.0.0
+displayname "FunctionBlock_Attribute"
+description "..."
+category demo
 using com.mycompany.mydevice.fb.NewFunctionBlock ; 1.0.0
 
 functionblockmapping FunctionBlock_Attribute {

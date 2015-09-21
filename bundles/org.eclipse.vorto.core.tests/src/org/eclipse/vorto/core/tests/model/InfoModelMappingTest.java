@@ -24,8 +24,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.MappingResourceFactory;
 import org.eclipse.vorto.core.tests.model.helper.TestInfoModelMappingFactory;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class InfoModelMappingTest {
 
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
 				Collections.<IMapping> emptyList());
-		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.displayname);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(ModelAttribute.DISPLAYNAME);
 		assertEquals(1, mappingRules.size());
 	}
 

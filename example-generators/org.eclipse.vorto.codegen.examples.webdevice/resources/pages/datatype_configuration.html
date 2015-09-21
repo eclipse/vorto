@@ -1,0 +1,6 @@
+ <div ng-if="isObject(modelinfo.configuration[key])" class="col-md-12" id="datatypebox">
+	<h1 id="datatypetitle"><span id="datatypetitletext"><b>{{modelinfo.configuration.configData[key]}}</b> : {{key}} </span></h1>
+	<div ng-repeat="(k, v) in modelinfo.configuration[key].configData">
+	  <div class="col-md-6" ng-include="'pages/inputfield.html'"></div>
+	</div>
+</div>

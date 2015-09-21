@@ -36,8 +36,6 @@ import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
@@ -294,20 +292,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * @generated
 	 */
 	private EClass mappingRuleEClass = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum infoModelAttributeEEnum = null;
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	private EEnum functionblockModelAttributeEEnum = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -917,24 +901,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getInfoModelAttribute() {
-		return infoModelAttributeEEnum;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EEnum getFunctionblockModelAttribute() {
-		return functionblockModelAttributeEEnum;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EEnum getModelAttribute() {
 		return modelAttributeEEnum;
 	}
@@ -1060,8 +1026,6 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		createEReference(mappingRuleEClass, MAPPING_RULE__SOURCES);
 
 		// Create enums
-		infoModelAttributeEEnum = createEEnum(INFO_MODEL_ATTRIBUTE);
-		functionblockModelAttributeEEnum = createEEnum(FUNCTIONBLOCK_MODEL_ATTRIBUTE);
 		modelAttributeEEnum = createEEnum(MODEL_ATTRIBUTE);
 	}
 
@@ -1145,7 +1109,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEReference(getInfoModelPropertySource_Property(), theInformationModelPackage.getFunctionblockProperty(), null, "property", null, 0, 1, InfoModelPropertySource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(infoModelAttributeSourceEClass, InfoModelAttributeSource.class, "InfoModelAttributeSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInfoModelAttributeSource_Attribute(), this.getInfoModelAttribute(), "attribute", null, 0, 1, InfoModelAttributeSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getInfoModelAttributeSource_Attribute(), this.getModelAttribute(), "attribute", null, 0, 1, InfoModelAttributeSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockMappingModelEClass, FunctionBlockMappingModel.class, "FunctionBlockMappingModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
@@ -1157,7 +1121,7 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEClass(functionBlockPropertySourceEClass, FunctionBlockPropertySource.class, "FunctionBlockPropertySource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(functionBlockAttributeSourceEClass, FunctionBlockAttributeSource.class, "FunctionBlockAttributeSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFunctionBlockAttributeSource_Attribute(), this.getFunctionblockModelAttribute(), "attribute", null, 0, 1, FunctionBlockAttributeSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getFunctionBlockAttributeSource_Attribute(), this.getModelAttribute(), "attribute", null, 0, 1, FunctionBlockAttributeSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(configurationSourceEClass, ConfigurationSource.class, "ConfigurationSource", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConfigurationSource_Property(), theDatatypePackage.getProperty(), null, "property", null, 0, 1, ConfigurationSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1223,26 +1187,13 @@ public class MappingPackageImpl extends EPackageImpl implements MappingPackage {
 		initEReference(getMappingRule_Sources(), this.getSource(), null, "sources", null, 0, -1, MappingRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, !IS_ORDERED);
 
 		// Initialize enums and add enum literals
-		initEEnum(infoModelAttributeEEnum, InfoModelAttribute.class, "InfoModelAttribute");
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.NAME);
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.NAMESPACE);
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.VERSION);
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.DISPLAYNAME);
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.CATEGORY);
-		addEEnumLiteral(infoModelAttributeEEnum, InfoModelAttribute.DESCRIPTION);
-
-		initEEnum(functionblockModelAttributeEEnum, FunctionblockModelAttribute.class, "FunctionblockModelAttribute");
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.NAME);
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.NAMESPACE);
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.VERSION);
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.DISPLAYNAME);
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.CATEGORY);
-		addEEnumLiteral(functionblockModelAttributeEEnum, FunctionblockModelAttribute.DESCRIPTION);
-
 		initEEnum(modelAttributeEEnum, ModelAttribute.class, "ModelAttribute");
 		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.NAME);
 		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.NAMESPACE);
 		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.VERSION);
+		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.DISPLAYNAME);
+		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.DESCRIPTION);
+		addEEnumLiteral(modelAttributeEEnum, ModelAttribute.CATEGORY);
 
 		// Create resource
 		createResource(eNS_URI);

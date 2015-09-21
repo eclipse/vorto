@@ -27,7 +27,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 
 public class EnumMappingResource extends AbstractMappingResource {
 
@@ -60,12 +59,12 @@ public class EnumMappingResource extends AbstractMappingResource {
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
 
 		if (source instanceof EnumAttributeSource) {
 			ModelAttribute attribute = ((EnumAttributeSource) source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+			if (modelAttribute ==attribute) {
 				mappingRules.add(rule);
 			}
 		}

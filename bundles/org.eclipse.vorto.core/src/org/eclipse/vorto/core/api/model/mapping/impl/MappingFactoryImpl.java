@@ -103,10 +103,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case MappingPackage.INFO_MODEL_ATTRIBUTE:
-				return createInfoModelAttributeFromString(eDataType, initialValue);
-			case MappingPackage.FUNCTIONBLOCK_MODEL_ATTRIBUTE:
-				return createFunctionblockModelAttributeFromString(eDataType, initialValue);
 			case MappingPackage.MODEL_ATTRIBUTE:
 				return createModelAttributeFromString(eDataType, initialValue);
 			default:
@@ -122,10 +118,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case MappingPackage.INFO_MODEL_ATTRIBUTE:
-				return convertInfoModelAttributeToString(eDataType, instanceValue);
-			case MappingPackage.FUNCTIONBLOCK_MODEL_ATTRIBUTE:
-				return convertFunctionblockModelAttributeToString(eDataType, instanceValue);
 			case MappingPackage.MODEL_ATTRIBUTE:
 				return convertModelAttributeToString(eDataType, instanceValue);
 			default:
@@ -461,46 +453,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public MappingRule createMappingRule() {
 		MappingRuleImpl mappingRule = new MappingRuleImpl();
 		return mappingRule;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InfoModelAttribute createInfoModelAttributeFromString(EDataType eDataType, String initialValue) {
-		InfoModelAttribute result = InfoModelAttribute.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertInfoModelAttributeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FunctionblockModelAttribute createFunctionblockModelAttributeFromString(EDataType eDataType, String initialValue) {
-		FunctionblockModelAttribute result = FunctionblockModelAttribute.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertFunctionblockModelAttributeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**

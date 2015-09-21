@@ -1,0 +1,6 @@
+namespace examples.datatypes.measurement
+version 1.0.0
+
+entity Percent {
+	mandatory value as int <MIN 0,MAX 100> "The value representing the percentage."
+}

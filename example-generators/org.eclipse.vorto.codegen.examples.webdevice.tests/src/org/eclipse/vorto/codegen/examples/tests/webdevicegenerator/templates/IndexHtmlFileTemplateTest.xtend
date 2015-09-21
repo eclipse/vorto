@@ -77,17 +77,29 @@ class IndexHtmlFileTemplateTest {
 		<ul class="nav nav-pills" ng-init="tab=1">
 			<li ng-class="{active:tab==1}">
 				<a href="#/" data-toggle="tab" ng-click="tab=1">{{"fbm1" | titlecase}}</a>
-			<li>
+			</li>
 			<li ng-class="{active:tab==2}">
 				<a href="#/fbm2" data-toggle="tab" ng-click="tab=2">{{"fbm2" | titlecase}}</a>
-			<li>
+			</li>
 		</ul>
         <div id="main" class="panel panel-primary">
           <div ng-view></div>
         </div>
       </div>
     </div>
+  <div class="row" ng-show="responseMessage">
+  	<div class="col-md-12">
+  		<div class="panel panel-success">
+  			<div class="panel-heading">
+  				<h3 class="panel-title">Information Panel </h3>
+  			</div>
+  			<div class="panel-body">
+  				{{responseMessage}}
+  			</div>
+  		</div>
+  	</div>
   </div>
+ </div>
 
 </body>
 </html>

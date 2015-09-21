@@ -42,6 +42,14 @@ class WebXmlTemplate implements ITemplate<FunctionblockProperty> {
 				<servlet-name>jersey-serlvet</servlet-name>
 				<url-pattern>/service/*</url-pattern>
 			</servlet-mapping>
+			<servlet>
+			<servlet-name>default</servlet-name>
+				<servlet-class>org.eclipse.jetty.servlet.DefaultServlet</servlet-class>
+				<init-param>
+					<param-name>useFileMappedBuffer</param-name>
+					<param-value>false</param-value>
+				</init-param>
+			</servlet>	
 		
 		</web-app>'''
 	}
