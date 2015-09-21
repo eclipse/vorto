@@ -10,7 +10,7 @@
 	<artifactId>org.eclipse.vorto.codegen.examples.webdevice</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>Vorto Code Generator Examples</name>
+	<name>Vorto Example Web UI Generator</name>
 
 	<build>
 		<plugins>

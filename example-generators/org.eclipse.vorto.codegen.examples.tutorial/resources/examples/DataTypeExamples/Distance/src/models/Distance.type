@@ -1,0 +1,8 @@
+namespace examples.datatypes.measurement
+version 1.0.0
+using examples.datatypes.measurement.units.DistanceUnit ; 1.0.0
+
+entity Distance {
+	mandatory value as float "The value representing the distance."
+	mandatory measurementUnit as DistanceUnit "The measurement unit of the distance."
+}

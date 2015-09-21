@@ -46,7 +46,7 @@ class LWM2MObjectTypeCompleteTemplateTest extends AbstractTutorialTest {
 		<Name>MyQuadcopter</Name>
 		<MultipleInstances>Single</MultipleInstances>
 		<Mandatory>Optional</Mandatory>
-		<Description>Information model for DjiPhantomVision</Description>
+		<Description>Information model for MyQuadcopter</Description>
 		<Resources>
 			    <Item>
 			    	<Name>Altitude</Name>

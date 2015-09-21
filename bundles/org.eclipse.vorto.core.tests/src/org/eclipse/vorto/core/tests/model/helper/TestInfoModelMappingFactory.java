@@ -15,12 +15,12 @@
 package org.eclipse.vorto.core.tests.model.helper;
 
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingRule;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget;
 
 public class TestInfoModelMappingFactory {
@@ -67,7 +67,7 @@ public class TestInfoModelMappingFactory {
 	private static InfoModelAttributeSource createInfoModelAttributeSource() {
 		InfoModelAttributeSource infoModelAttributeSource = MappingFactory.eINSTANCE.createInfoModelAttributeSource();
 		infoModelAttributeSource.setModel(informationModel);
-		infoModelAttributeSource.setAttribute(InfoModelAttribute.DISPLAYNAME);
+		infoModelAttributeSource.setAttribute(ModelAttribute.DISPLAYNAME);
 		return infoModelAttributeSource;
 	}
 }

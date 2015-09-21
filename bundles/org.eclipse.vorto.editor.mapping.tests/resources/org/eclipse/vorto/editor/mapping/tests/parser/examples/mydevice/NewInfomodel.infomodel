@@ -1,11 +1,11 @@
 namespace com.mycompany.mydevice
 version 1.0.0
+displayname "NewInfomodel"
+description "Information model for NewInfomodel"
+category demo
 using com.mycompany.mydevice.fb.NewFunctionBlock ; 1.0.0
 
 infomodel NewInfomodel {
-	displayname "NewInfomodel"
-	description "Information model for NewInfomodel"
-	category demo
 
 	functionblocks {
 		myfunctionBlock as NewFunctionBlock

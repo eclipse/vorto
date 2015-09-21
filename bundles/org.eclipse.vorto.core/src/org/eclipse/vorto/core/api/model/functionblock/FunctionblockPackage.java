@@ -104,6 +104,33 @@ public interface FunctionblockPackage extends EPackage {
 	int FUNCTIONBLOCK_MODEL__REFERENCES = ModelPackage.MODEL__REFERENCES;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTIONBLOCK_MODEL__DESCRIPTION = ModelPackage.MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTIONBLOCK_MODEL__DISPLAYNAME = ModelPackage.MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTIONBLOCK_MODEL__CATEGORY = ModelPackage.MODEL__CATEGORY;
+
+	/**
 	 * The feature id for the '<em><b>Functionblock</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -150,40 +177,13 @@ public interface FunctionblockPackage extends EPackage {
 	int FUNCTION_BLOCK = 1;
 
 	/**
-	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_BLOCK__DISPLAYNAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_BLOCK__DESCRIPTION = 1;
-
-	/**
-	 * The feature id for the '<em><b>Category</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FUNCTION_BLOCK__CATEGORY = 2;
-
-	/**
 	 * The feature id for the '<em><b>Configuration</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK__CONFIGURATION = 3;
+	int FUNCTION_BLOCK__CONFIGURATION = 0;
 
 	/**
 	 * The feature id for the '<em><b>Status</b></em>' containment reference.
@@ -192,7 +192,7 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK__STATUS = 4;
+	int FUNCTION_BLOCK__STATUS = 1;
 
 	/**
 	 * The feature id for the '<em><b>Fault</b></em>' containment reference.
@@ -201,7 +201,7 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK__FAULT = 5;
+	int FUNCTION_BLOCK__FAULT = 2;
 
 	/**
 	 * The feature id for the '<em><b>Events</b></em>' containment reference list.
@@ -210,7 +210,7 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK__EVENTS = 6;
+	int FUNCTION_BLOCK__EVENTS = 3;
 
 	/**
 	 * The feature id for the '<em><b>Operations</b></em>' containment reference list.
@@ -219,7 +219,7 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK__OPERATIONS = 7;
+	int FUNCTION_BLOCK__OPERATIONS = 4;
 
 	/**
 	 * The number of structural features of the '<em>Function Block</em>' class.
@@ -228,7 +228,7 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTION_BLOCK_FEATURE_COUNT = 8;
+	int FUNCTION_BLOCK_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.ConfigurationImpl <em>Configuration</em>}' class.
@@ -692,39 +692,6 @@ public interface FunctionblockPackage extends EPackage {
 	EClass getFunctionBlock();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDisplayname <em>Displayname</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Displayname</em>'.
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDisplayname()
-	 * @see #getFunctionBlock()
-	 * @generated
-	 */
-	EAttribute getFunctionBlock_Displayname();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDescription <em>Description</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Description</em>'.
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDescription()
-	 * @see #getFunctionBlock()
-	 * @generated
-	 */
-	EAttribute getFunctionBlock_Description();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getCategory <em>Category</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Category</em>'.
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getCategory()
-	 * @see #getFunctionBlock()
-	 * @generated
-	 */
-	EAttribute getFunctionBlock_Category();
-
-	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getConfiguration <em>Configuration</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1130,30 +1097,6 @@ public interface FunctionblockPackage extends EPackage {
 		 * @generated
 		 */
 		EClass FUNCTION_BLOCK = eINSTANCE.getFunctionBlock();
-
-		/**
-		 * The meta object literal for the '<em><b>Displayname</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_BLOCK__DISPLAYNAME = eINSTANCE.getFunctionBlock_Displayname();
-
-		/**
-		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_BLOCK__DESCRIPTION = eINSTANCE.getFunctionBlock_Description();
-
-		/**
-		 * The meta object literal for the '<em><b>Category</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FUNCTION_BLOCK__CATEGORY = eINSTANCE.getFunctionBlock_Category();
 
 		/**
 		 * The meta object literal for the '<em><b>Configuration</b></em>' containment reference feature.

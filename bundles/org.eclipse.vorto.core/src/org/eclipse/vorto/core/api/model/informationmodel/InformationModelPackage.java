@@ -104,22 +104,22 @@ public interface InformationModelPackage extends EPackage {
 	int INFORMATION_MODEL__REFERENCES = ModelPackage.MODEL__REFERENCES;
 
 	/**
-	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int INFORMATION_MODEL__DISPLAYNAME = ModelPackage.MODEL_FEATURE_COUNT + 0;
-
-	/**
 	 * The feature id for the '<em><b>Description</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int INFORMATION_MODEL__DESCRIPTION = ModelPackage.MODEL_FEATURE_COUNT + 1;
+	int INFORMATION_MODEL__DESCRIPTION = ModelPackage.MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFORMATION_MODEL__DISPLAYNAME = ModelPackage.MODEL__DISPLAYNAME;
 
 	/**
 	 * The feature id for the '<em><b>Category</b></em>' attribute.
@@ -128,7 +128,7 @@ public interface InformationModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFORMATION_MODEL__CATEGORY = ModelPackage.MODEL_FEATURE_COUNT + 2;
+	int INFORMATION_MODEL__CATEGORY = ModelPackage.MODEL__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Properties</b></em>' containment reference list.
@@ -137,7 +137,7 @@ public interface InformationModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFORMATION_MODEL__PROPERTIES = ModelPackage.MODEL_FEATURE_COUNT + 3;
+	int INFORMATION_MODEL__PROPERTIES = ModelPackage.MODEL_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Information Model</em>' class.
@@ -146,7 +146,7 @@ public interface InformationModelPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int INFORMATION_MODEL_FEATURE_COUNT = ModelPackage.MODEL_FEATURE_COUNT + 4;
+	int INFORMATION_MODEL_FEATURE_COUNT = ModelPackage.MODEL_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.informationmodel.impl.FunctionblockPropertyImpl <em>Functionblock Property</em>}' class.
@@ -204,39 +204,6 @@ public interface InformationModelPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getInformationModel();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getDisplayname <em>Displayname</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Displayname</em>'.
-	 * @see org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getDisplayname()
-	 * @see #getInformationModel()
-	 * @generated
-	 */
-	EAttribute getInformationModel_Displayname();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getDescription <em>Description</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Description</em>'.
-	 * @see org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getDescription()
-	 * @see #getInformationModel()
-	 * @generated
-	 */
-	EAttribute getInformationModel_Description();
-
-	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getCategory <em>Category</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Category</em>'.
-	 * @see org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getCategory()
-	 * @see #getInformationModel()
-	 * @generated
-	 */
-	EAttribute getInformationModel_Category();
 
 	/**
 	 * Returns the meta object for the containment reference list '{@link org.eclipse.vorto.core.api.model.informationmodel.InformationModel#getProperties <em>Properties</em>}'.
@@ -323,30 +290,6 @@ public interface InformationModelPackage extends EPackage {
 		 * @generated
 		 */
 		EClass INFORMATION_MODEL = eINSTANCE.getInformationModel();
-
-		/**
-		 * The meta object literal for the '<em><b>Displayname</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INFORMATION_MODEL__DISPLAYNAME = eINSTANCE.getInformationModel_Displayname();
-
-		/**
-		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INFORMATION_MODEL__DESCRIPTION = eINSTANCE.getInformationModel_Description();
-
-		/**
-		 * The meta object literal for the '<em><b>Category</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute INFORMATION_MODEL__CATEGORY = eINSTANCE.getInformationModel_Category();
 
 		/**
 		 * The meta object literal for the '<em><b>Properties</b></em>' containment reference list feature.

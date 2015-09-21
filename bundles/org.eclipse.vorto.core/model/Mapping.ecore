@@ -16,15 +16,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass InformationModel.ecore#//FunctionblockProperty"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="InfoModelAttributeSource" eSuperTypes="#//InfomodelSource">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//InfoModelAttribute"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="InfoModelAttribute">
-    <eLiterals name="name" literal="name"/>
-    <eLiterals name="namespace" value="1" literal="namespace"/>
-    <eLiterals name="version" value="2" literal="version"/>
-    <eLiterals name="displayname" value="3" literal="displayname"/>
-    <eLiterals name="category" value="4" literal="category"/>
-    <eLiterals name="description" value="5" literal="description"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//ModelAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMappingModel" eSuperTypes="#//MappingModel"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockMappingRule" eSuperTypes="#//MappingRule"/>
@@ -33,7 +25,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockPropertySource" eSuperTypes="#//FunctionBlockSource"/>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlockAttributeSource" eSuperTypes="#//FunctionBlockSource">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//FunctionblockModelAttribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="attribute" eType="#//ModelAttribute"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ConfigurationSource" eSuperTypes="#//FunctionBlockPropertySource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="property" eType="ecore:EClass Datatype.ecore#//Property"/>
@@ -47,14 +39,6 @@
   <eClassifiers xsi:type="ecore:EClass" name="EventSource" eSuperTypes="#//FunctionBlockSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass Functionblock.ecore#//Event"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="eventProperty" eType="ecore:EClass Datatype.ecore#//Property"/>
-  </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="FunctionblockModelAttribute">
-    <eLiterals name="name" literal="name"/>
-    <eLiterals name="namespace" value="1" literal="namespace"/>
-    <eLiterals name="version" value="2" literal="version"/>
-    <eLiterals name="displayname" value="3" literal="displayname"/>
-    <eLiterals name="category" value="4" literal="category"/>
-    <eLiterals name="description" value="5" literal="description"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EntityMappingModel" eSuperTypes="#//DataTypeMappingModel"/>
   <eClassifiers xsi:type="ecore:EClass" name="EntityMappingRule" eSuperTypes="#//MappingRule"/>
@@ -96,6 +80,9 @@
     <eLiterals name="name" literal="name"/>
     <eLiterals name="namespace" value="1" literal="namespace"/>
     <eLiterals name="version" value="2" literal="version"/>
+    <eLiterals name="displayname" value="3"/>
+    <eLiterals name="description" value="4"/>
+    <eLiterals name="category" value="5"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Source"/>
   <eClassifiers xsi:type="ecore:EClass" name="FaultSource" eSuperTypes="#//FunctionBlockPropertySource">

@@ -102,13 +102,40 @@ public interface ModelPackage extends EPackage {
 	int MODEL__REFERENCES = 3;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__DESCRIPTION = 4;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__DISPLAYNAME = 5;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MODEL__CATEGORY = 6;
+
+	/**
 	 * The number of structural features of the '<em>Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MODEL_FEATURE_COUNT = 4;
+	int MODEL_FEATURE_COUNT = 7;
 
 	/**
 	 * The number of operations of the '<em>Model</em>' class.
@@ -222,6 +249,39 @@ public interface ModelPackage extends EPackage {
 	EReference getModel_References();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.model.Model#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.vorto.core.api.model.model.Model#getDescription()
+	 * @see #getModel()
+	 * @generated
+	 */
+	EAttribute getModel_Description();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.model.Model#getDisplayname <em>Displayname</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Displayname</em>'.
+	 * @see org.eclipse.vorto.core.api.model.model.Model#getDisplayname()
+	 * @see #getModel()
+	 * @generated
+	 */
+	EAttribute getModel_Displayname();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.model.Model#getCategory <em>Category</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Category</em>'.
+	 * @see org.eclipse.vorto.core.api.model.model.Model#getCategory()
+	 * @see #getModel()
+	 * @generated
+	 */
+	EAttribute getModel_Category();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.model.ModelReference <em>Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -316,6 +376,30 @@ public interface ModelPackage extends EPackage {
 		 * @generated
 		 */
 		EReference MODEL__REFERENCES = eINSTANCE.getModel_References();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL__DESCRIPTION = eINSTANCE.getModel_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Displayname</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL__DISPLAYNAME = eINSTANCE.getModel_Displayname();
+
+		/**
+		 * The meta object literal for the '<em><b>Category</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MODEL__CATEGORY = eINSTANCE.getModel_Category();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.model.impl.ModelReferenceImpl <em>Reference</em>}' class.

@@ -1,5 +1,8 @@
 namespace com.mycompany.light.type
 version 1.0.0
+displayname "MyColor"
+description "..."
+category hue
 using com.mycompany.light.type.Color ; 1.0.0
 
 entitymapping MyColor {

@@ -12,7 +12,7 @@
         <label class="control-label input-label" style="width:40%;">{{key | titlecase}} </label>
         <br/>
         <div class="col-md-12" style="text-align:center;">
-          <a ng-repeat="operationName in modelinfo.operation.names" href="#" class="btn btn-primary button-extra">{{operationName | titlecase}}</a>
+          <button ng-repeat="operationName in modelinfo.operation.names" ng-click="invokeOperation(functionBlockName,operationName);" class="btn btn-primary button-extra">{{operationName | titlecase}}</button>
         </div>
         <br/>  <br/>
       </div>
@@ -28,8 +28,8 @@
   <fieldset class="scheduler-border">
   <div ng-repeat="filteredVal in filterConfiguration(modelinfo.configuration)">
     <div ng-repeat="(key, value) in filteredVal">
-      <div ng-if="isObject(modelinfo.configuration[key])"  ng-include="'pages/datatype.html'"></div>
-      <div class="col-md-6" ng-if="isBasicFieldOrEnum(modelinfo.configuration[key], key)"  ng-include="'pages/basic.html'" ></div>
+      <div ng-if="isObject(modelinfo.configuration[key])"  ng-include="'pages/datatype_configuration.html'"></div>
+      <div class="col-md-6" ng-if="isBasicFieldOrEnum(modelinfo.configuration[key], key)"  ng-include="'pages/basic_configuration.html'" ></div>
     </div>
     </div>
     <div class="col-md-12">
@@ -49,8 +49,8 @@
   <fieldset class="scheduler-border">
   <div ng-repeat="filteredVal in filterConfiguration(modelinfo.status)">
     <div ng-repeat="(key, value) in filteredVal">
-      <div ng-if="isObject(modelinfo.status[key])"  ng-include="'pages/datatype.html'"></div>
-      <div class="col-md-6" ng-if="!isObject(modelinfo.status[key])"  ng-include="'pages/basic.html'" ></div>
+      <div ng-if="isObject(modelinfo.status[key])"  ng-include="'pages/datatype_status.html'"></div>
+      <div class="col-md-6" ng-if="isBasicFieldOrEnum(modelinfo.status[key], key)"  ng-include="'pages/basic_status.html'" ></div>
     </div>
     </div>
   </fieldset>
@@ -66,8 +66,8 @@
   <fieldset class="scheduler-border">
   <div ng-repeat="filteredVal in filterConfiguration(modelinfo.fault)">
     <div ng-repeat="(key, value) in filteredVal">
-      <div ng-if="isObject(modelinfo.fault[key])"  ng-include="'pages/datatype.html'"></div>
-      <div class="col-md-6" ng-if="!isObject(modelinfo.fault[key])"  ng-include="'pages/basic.html'" ></div>
+      <div ng-if="isObject(modelinfo.fault[key])"  ng-include="'pages/datatype_fault.html'"></div>
+      <div class="col-md-6" ng-if="isBasicFieldOrEnum(modelinfo.fault[key], key)"  ng-include="'pages/basic_fault.html'" ></div>
     </div>
     </div>
   </fieldset>

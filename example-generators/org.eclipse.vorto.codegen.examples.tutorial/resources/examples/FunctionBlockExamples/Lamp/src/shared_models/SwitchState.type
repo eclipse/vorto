@@ -1,0 +1,7 @@
+namespace examples.datatypes.state
+version 1.0.0
+
+enum SwitchState {
+	on,
+	off
+}

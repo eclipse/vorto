@@ -105,6 +105,33 @@ public interface DatatypePackage extends EPackage {
 	int TYPE__REFERENCES = ModelPackage.MODEL__REFERENCES;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE__DESCRIPTION = ModelPackage.MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE__DISPLAYNAME = ModelPackage.MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TYPE__CATEGORY = ModelPackage.MODEL__CATEGORY;
+
+	/**
 	 * The number of structural features of the '<em>Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -158,6 +185,33 @@ public interface DatatypePackage extends EPackage {
 	 * @ordered
 	 */
 	int ENTITY__REFERENCES = TYPE__REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY__DESCRIPTION = TYPE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY__DISPLAYNAME = TYPE__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY__CATEGORY = TYPE__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Super Type</b></em>' reference.
@@ -446,6 +500,33 @@ public interface DatatypePackage extends EPackage {
 	int ENUM__REFERENCES = TYPE__REFERENCES;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM__DESCRIPTION = TYPE__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM__DISPLAYNAME = TYPE__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM__CATEGORY = TYPE__CATEGORY;
+
+	/**
 	 * The feature id for the '<em><b>Enums</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -483,13 +564,22 @@ public interface DatatypePackage extends EPackage {
 	int ENUM_LITERAL__NAME = 0;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_LITERAL__DESCRIPTION = 1;
+
+	/**
 	 * The number of structural features of the '<em>Enum Literal</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENUM_LITERAL_FEATURE_COUNT = 1;
+	int ENUM_LITERAL_FEATURE_COUNT = 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
@@ -758,6 +848,17 @@ public interface DatatypePackage extends EPackage {
 	EAttribute getEnumLiteral_Name();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteral#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteral#getDescription()
+	 * @see #getEnumLiteral()
+	 * @generated
+	 */
+	EAttribute getEnumLiteral_Description();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.Type <em>Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1018,6 +1119,14 @@ public interface DatatypePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ENUM_LITERAL__NAME = eINSTANCE.getEnumLiteral_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENUM_LITERAL__DESCRIPTION = eINSTANCE.getEnumLiteral_Description();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl <em>Type</em>}' class.

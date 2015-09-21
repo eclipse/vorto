@@ -31,11 +31,11 @@ public class TestFunctionBlockFactory {
 		FunctionBlock fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 
 		fbmodel.setName("Fridge");
-		fb.setCategory("demo");
-		fb.setDescription("A Simple Fridge Functionblock for tester");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("A Simple Fridge Functionblock for tester");
 		fbmodel.setNamespace("www.bosch.com");
 		fbmodel.setVersion("1.2.3");
-		fb.setDisplayname("Fridge Function Block");
+		fbmodel.setDisplayname("Fridge Function Block");
 		fb.getOperations().add(createOnOperation());
 		fb.getOperations().add(createOffOperation());
 		fb.getOperations().add(createToggleOperation());

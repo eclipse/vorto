@@ -33,7 +33,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	  <artifactId>com.bosch.« wrappedfbm.functionBlockName.toLowerCase »-model</artifactId>
 	  <version>« context.version »</version>
 	  <name>« context.name »</name>
-	  <description>« context.functionblock.description »</description>
+	  <description>« context.description »</description>
 	  <packaging>bundle</packaging>
 	  
 	  <parent>

@@ -41,7 +41,7 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseEntityMapping() throws IOException {
-		MappingModel mappingModel = this.createMappingModel("ExampleEntity.mapping");
+		MappingModel mappingModel = this.createMappingModel("LWM2MResourceEntity.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(4, rules.size());
@@ -50,7 +50,7 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseEnumMapping() throws IOException {
-		MappingModel mappingModel = this.createMappingModel("ExampleEnum.mapping");
+		MappingModel mappingModel = this.createMappingModel("LWM2MResourceEnum.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(4, rules.size());
@@ -59,7 +59,7 @@ public class LWM2MMappingParseTest {
 	
 	@Test
 	public void parseFunctionBlockMapping() throws IOException {
-		MappingModel mappingModel = createMappingModel("ExampleFunctionBlock.mapping");
+		MappingModel mappingModel = createMappingModel("LWM2MResourceComplete.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(3, rules.size());
@@ -67,7 +67,7 @@ public class LWM2MMappingParseTest {
 
 	@Test
 	public void parseInformationModelMapping() throws IOException {
-		MappingModel mappingModel = createMappingModel("ExampleInfoModel.mapping");
+		MappingModel mappingModel = createMappingModel("LWM2MObjectType.mapping");
 
 		EList<MappingRule> rules = mappingModel.getRules();
 		assertEquals(1, rules.size());

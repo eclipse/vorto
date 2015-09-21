@@ -115,7 +115,7 @@ public class XpathConverterService implements IModelConverterService {
 		return new XpathModelViewBuilder(ModelType.FUNCTIONBLOCK,
 				"/FunctionblockModel/@name", "/FunctionblockModel/@namespace",
 				"/FunctionblockModel/@version",
-				"/FunctionblockModel/functionblock/@description",
+				"/FunctionblockModel/@description",
 				"/FunctionblockModel/references");
 	}
 

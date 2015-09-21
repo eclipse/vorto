@@ -22,8 +22,8 @@ import java.util.List;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.MappingResourceFactory;
 import org.eclipse.vorto.core.tests.model.helper.TestEntityMappingFactory;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class EntityMappingTest {
 
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
 				Collections.<IMapping> emptyList());
-		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.version);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(ModelAttribute.VERSION);
 		assertEquals(1, mappingRules.size());
 	}
 
