@@ -70,3 +70,25 @@
 .panel-primary > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #0081c7;
 }
+
+/* Datatype Borders*
+=========================*/
+
+#datatypebox{
+    border: 1px solid #0081c7;
+    margin : 7px 2px 2px 2px ;
+    //width: 200px;
+    //height: 200px;
+}
+
+#datatypebox #datatypetitle{
+    text-align: left;
+    margin-top: -10px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 15px;
+}
+
+#datatypebox #datatypetitle #datatypetitletext{
+    background-color: white;
+}

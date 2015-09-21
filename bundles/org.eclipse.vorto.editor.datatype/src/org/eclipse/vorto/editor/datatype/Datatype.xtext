@@ -37,6 +37,9 @@ Type:
 Entity:	
    'namespace' namespace = QualifiedName
    'version' version = VERSION
+   ('displayname' displayname=STRING)?      
+   ('description' description=STRING)? 
+   ('category' category=CATEGORY)?   
    (references += ModelReference)*	
   'entity' name = ID ('extends' superType = [Entity|QualifiedName])? '{'
   	 (properties += Property)*
@@ -46,6 +49,9 @@ Entity:
 Enum:
    'namespace' namespace = QualifiedName
    'version' version = VERSION
+   ('displayname' displayname=STRING)?      
+   ('description' description=STRING)? 
+   ('category' category=CATEGORY)?      
    (references += ModelReference)*	
 	'enum' name = ID '{'
 		( enums += EnumLiteral (',' enums += EnumLiteral)* )?
@@ -53,7 +59,7 @@ Enum:
 ;
 
 EnumLiteral:
-	name = ID
+	name = ID (description=STRING)?
 ;
 
 Property:
@@ -89,6 +95,8 @@ enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | reg
 IntervalType:
 	INT | SIGNEDINT | FLOAT | DATETIME | STRING
 ;
+
+CATEGORY: ID ('/' ID)*;
 
 terminal SIGNEDINT :
 	'-'INT

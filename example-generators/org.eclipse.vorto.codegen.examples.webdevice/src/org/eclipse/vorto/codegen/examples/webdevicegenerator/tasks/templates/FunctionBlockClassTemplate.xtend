@@ -29,10 +29,10 @@ class FunctionBlockClassTemplate implements ITemplate<FunctionblockProperty> {
 
 		public class «fbProperty.name.toFirstUpper» {
 			
-			private String displayName = "«model.functionblock.displayname»";
-			private String description = "«model.functionblock.description»";
+			private String displayName = "«model.displayname»";
+			private String description = "«model.description»";
 			private String namespace = "«model.namespace»";
-			private String category = "«model.functionblock.category»";
+			private String category = "«model.category»";
 			private String version = "«model.version»";
 			
 			private «fbProperty.name.toFirstUpper»Configuration configuration = new «fbProperty.name.toFirstUpper»Configuration();

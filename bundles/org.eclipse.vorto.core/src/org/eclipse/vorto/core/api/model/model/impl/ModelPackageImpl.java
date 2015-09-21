@@ -144,6 +144,33 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getModel_Description() {
+		return (EAttribute)modelEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getModel_Displayname() {
+		return (EAttribute)modelEClass.getEStructuralFeatures().get(5);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getModel_Category() {
+		return (EAttribute)modelEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getModelReference() {
 		return modelReferenceEClass;
 	}
@@ -199,6 +226,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		createEAttribute(modelEClass, MODEL__NAMESPACE);
 		createEAttribute(modelEClass, MODEL__VERSION);
 		createEReference(modelEClass, MODEL__REFERENCES);
+		createEAttribute(modelEClass, MODEL__DESCRIPTION);
+		createEAttribute(modelEClass, MODEL__DISPLAYNAME);
+		createEAttribute(modelEClass, MODEL__CATEGORY);
 
 		modelReferenceEClass = createEClass(MODEL_REFERENCE);
 		createEAttribute(modelReferenceEClass, MODEL_REFERENCE__VERSION);
@@ -240,6 +270,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 		initEAttribute(getModel_Namespace(), ecorePackage.getEString(), "namespace", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getModel_Version(), ecorePackage.getEString(), "version", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getModel_References(), this.getModelReference(), null, "references", null, 0, -1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModel_Description(), ecorePackage.getEString(), "description", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModel_Displayname(), ecorePackage.getEString(), "displayname", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getModel_Category(), ecorePackage.getEString(), "category", null, 0, 1, Model.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(modelReferenceEClass, ModelReference.class, "ModelReference", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getModelReference_Version(), ecorePackage.getEString(), "version", null, 0, 1, ModelReference.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

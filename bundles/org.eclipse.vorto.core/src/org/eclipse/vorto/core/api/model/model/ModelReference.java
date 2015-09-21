@@ -11,11 +11,11 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.model.ModelReference#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.model.ModelReference#getImportedNamespace <em>Imported Namespace</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.model.ModelPackage#getModelReference()
  * @model

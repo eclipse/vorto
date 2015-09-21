@@ -1,11 +1,11 @@
 namespace com.mycompany.iot
 version 3.0.0-Plus
+displayname "MyQuadcopter"
+description "Information model for MyQuadcopter"
+category demo
 using com.mycompany.iot.fb.Drone ; 1.0.0
 
 infomodel MyQuadcopter {
-	displayname "DjiPhantomVision"
-	description "Information model for DjiPhantomVision"
-	category demo
 
 	functionblocks {
 		drone as Drone 

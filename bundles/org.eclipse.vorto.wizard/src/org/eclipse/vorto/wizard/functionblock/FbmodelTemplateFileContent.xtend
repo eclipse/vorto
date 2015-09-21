@@ -24,10 +24,10 @@ class FbmodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 		return '''
 	namespace com.mycompany.fb
 	version «context.modelVersion»
+	displayname "«context.modelName»"
+	description "«context.modelDescription»"
+	category demo	
 	functionblock «context.modelName» {
-		displayname "«context.modelName»"
-		description "«context.modelDescription»"
-		category demo
 
 		configuration{ 
 			//Please enter functionblock configuration details.

@@ -23,6 +23,7 @@ import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
+import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.JavaClassGeneratorUtils
 
 class ConfigurationClassTemplate implements ITemplate<FunctionblockProperty> {
 		
@@ -40,9 +41,7 @@ class ConfigurationClassTemplate implements ITemplate<FunctionblockProperty> {
 
 		
 		import org.codehaus.jackson.map.annotate.JsonSerialize;
-		«JavaClassGeneratorUtils.getImports(model.functionblock.status.properties)»
-		«JavaClassGeneratorUtils.getImports(model.functionblock.configuration.properties)»
-		«JavaClassGeneratorUtils.getImports(model.functionblock.fault.properties)»
+		«JavaClassGeneratorUtils.getImportsForConfigurationProperty(model)»
 		
 		@JsonSerialize
 		public class «ModuleUtil.getCamelCase(fbProperty.name)»Configuration {
@@ -126,4 +125,5 @@ class ConfigurationClassTemplate implements ITemplate<FunctionblockProperty> {
 			}
 		}'''
 	}
+	
 }

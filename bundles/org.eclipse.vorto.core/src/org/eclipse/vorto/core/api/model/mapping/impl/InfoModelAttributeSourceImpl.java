@@ -8,9 +8,9 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,7 +34,7 @@ public class InfoModelAttributeSourceImpl extends InfomodelSourceImpl implements
 	 * @generated
 	 * @ordered
 	 */
-	protected static final InfoModelAttribute ATTRIBUTE_EDEFAULT = InfoModelAttribute.NAME;
+	protected static final ModelAttribute ATTRIBUTE_EDEFAULT = ModelAttribute.NAME;
 
 	/**
 	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute.
@@ -44,7 +44,7 @@ public class InfoModelAttributeSourceImpl extends InfomodelSourceImpl implements
 	 * @generated
 	 * @ordered
 	 */
-	protected InfoModelAttribute attribute = ATTRIBUTE_EDEFAULT;
+	protected ModelAttribute attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,7 +70,7 @@ public class InfoModelAttributeSourceImpl extends InfomodelSourceImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InfoModelAttribute getAttribute() {
+	public ModelAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -79,8 +79,8 @@ public class InfoModelAttributeSourceImpl extends InfomodelSourceImpl implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAttribute(InfoModelAttribute newAttribute) {
-		InfoModelAttribute oldAttribute = attribute;
+	public void setAttribute(ModelAttribute newAttribute) {
+		ModelAttribute oldAttribute = attribute;
 		attribute = newAttribute == null ? ATTRIBUTE_EDEFAULT : newAttribute;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.INFO_MODEL_ATTRIBUTE_SOURCE__ATTRIBUTE, oldAttribute, attribute));
@@ -109,7 +109,7 @@ public class InfoModelAttributeSourceImpl extends InfomodelSourceImpl implements
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MappingPackage.INFO_MODEL_ATTRIBUTE_SOURCE__ATTRIBUTE:
-				setAttribute((InfoModelAttribute)newValue);
+				setAttribute((ModelAttribute)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

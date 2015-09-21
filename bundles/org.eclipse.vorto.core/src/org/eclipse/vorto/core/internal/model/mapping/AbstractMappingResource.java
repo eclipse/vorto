@@ -24,12 +24,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.AbstractModelElement;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.IModelElementResolver;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
@@ -150,35 +150,35 @@ public abstract class AbstractMappingResource extends AbstractModelElement imple
 			MappingRule rule, Source source);
 
 	@Override
-	public List<MappingRule> getRulesByModelAttribute(MappingAttribute mappingAttribute) {
+	public List<MappingRule> getRulesByModelAttribute(ModelAttribute modelAttribute) {
 		List<MappingRule> mappingRules = new ArrayList<>();
-		mappingRules.addAll(this.getLocalRulesByModelAttribute(mappingAttribute));
-		mappingRules.addAll(this.getReferenceRulesByModelAttribute(mappingAttribute));
+		mappingRules.addAll(this.getLocalRulesByModelAttribute(modelAttribute));
+		mappingRules.addAll(this.getReferenceRulesByModelAttribute(modelAttribute));
 		return mappingRules;
 	}
 
-	private List<MappingRule> getLocalRulesByModelAttribute(MappingAttribute mappingAttribute) {
+	private List<MappingRule> getLocalRulesByModelAttribute(ModelAttribute modelAttribute) {
 		if (isEmptyMappingModel())
 			return Collections.emptyList();
 
 		List<MappingRule> mappingRules = new ArrayList<>();
 		for (MappingRule rule : this.mappingModel.getRules()) {
 			for (Source source : rule.getSources()) {
-				addRuleIfContainsAttribute(mappingAttribute, mappingRules, rule, source);
+				addRuleIfContainsAttribute(modelAttribute, mappingRules, rule, source);
 			}
 		}
 		return mappingRules;
 	}
 
-	private List<MappingRule> getReferenceRulesByModelAttribute(MappingAttribute mappingAttribute) {
+	private List<MappingRule> getReferenceRulesByModelAttribute(ModelAttribute modelAttribute) {
 		List<MappingRule> mappingRules = new ArrayList<>();
 		for (IMapping mapping : this.getMappings()) {
-			mappingRules.addAll(mapping.getRulesByModelAttribute(mappingAttribute));
+			mappingRules.addAll(mapping.getRulesByModelAttribute(modelAttribute));
 		}
 		return mappingRules;
 	}
 
-	abstract protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute,
+	abstract protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute,
 			List<MappingRule> mappingRules, MappingRule rule, Source source);
 
 	protected List<IMapping> getMappings() {

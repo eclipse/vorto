@@ -54,7 +54,7 @@ class FbModelWrapper {
 	}
 	
 	private def String getCategory() {
-		model.functionblock.category
+		model.category
 	}
 	
 	private def String getNamespace() {

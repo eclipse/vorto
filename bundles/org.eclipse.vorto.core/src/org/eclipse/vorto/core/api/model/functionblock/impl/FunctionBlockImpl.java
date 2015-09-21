@@ -32,81 +32,18 @@ import org.eclipse.vorto.core.api.model.functionblock.Status;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getDisplayname <em>Displayname</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getConfiguration <em>Configuration</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getStatus <em>Status</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getFault <em>Fault</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getEvents <em>Events</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl#getOperations <em>Operations</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
 public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements FunctionBlock {
-	/**
-	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDisplayname()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String DISPLAYNAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDisplayname()
-	 * @generated
-	 * @ordered
-	 */
-	protected String displayname = DISPLAYNAME_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDescription()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String DESCRIPTION_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDescription()
-	 * @generated
-	 * @ordered
-	 */
-	protected String description = DESCRIPTION_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCategory()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String CATEGORY_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getCategory() <em>Category</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getCategory()
-	 * @generated
-	 * @ordered
-	 */
-	protected String category = CATEGORY_EDEFAULT;
-
 	/**
 	 * The cached value of the '{@link #getConfiguration() <em>Configuration</em>}' containment reference.
 	 * <!-- begin-user-doc -->
@@ -174,69 +111,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 	@Override
 	protected EClass eStaticClass() {
 		return FunctionblockPackage.Literals.FUNCTION_BLOCK;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getDisplayname() {
-		return displayname;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDisplayname(String newDisplayname) {
-		String oldDisplayname = displayname;
-		displayname = newDisplayname;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTION_BLOCK__DISPLAYNAME, oldDisplayname, displayname));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setDescription(String newDescription) {
-		String oldDescription = description;
-		description = newDescription;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTION_BLOCK__DESCRIPTION, oldDescription, description));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String getCategory() {
-		return category;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setCategory(String newCategory) {
-		String oldCategory = category;
-		category = newCategory;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTION_BLOCK__CATEGORY, oldCategory, category));
 	}
 
 	/**
@@ -422,12 +296,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case FunctionblockPackage.FUNCTION_BLOCK__DISPLAYNAME:
-				return getDisplayname();
-			case FunctionblockPackage.FUNCTION_BLOCK__DESCRIPTION:
-				return getDescription();
-			case FunctionblockPackage.FUNCTION_BLOCK__CATEGORY:
-				return getCategory();
 			case FunctionblockPackage.FUNCTION_BLOCK__CONFIGURATION:
 				return getConfiguration();
 			case FunctionblockPackage.FUNCTION_BLOCK__STATUS:
@@ -451,15 +319,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case FunctionblockPackage.FUNCTION_BLOCK__DISPLAYNAME:
-				setDisplayname((String)newValue);
-				return;
-			case FunctionblockPackage.FUNCTION_BLOCK__DESCRIPTION:
-				setDescription((String)newValue);
-				return;
-			case FunctionblockPackage.FUNCTION_BLOCK__CATEGORY:
-				setCategory((String)newValue);
-				return;
 			case FunctionblockPackage.FUNCTION_BLOCK__CONFIGURATION:
 				setConfiguration((Configuration)newValue);
 				return;
@@ -489,15 +348,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case FunctionblockPackage.FUNCTION_BLOCK__DISPLAYNAME:
-				setDisplayname(DISPLAYNAME_EDEFAULT);
-				return;
-			case FunctionblockPackage.FUNCTION_BLOCK__DESCRIPTION:
-				setDescription(DESCRIPTION_EDEFAULT);
-				return;
-			case FunctionblockPackage.FUNCTION_BLOCK__CATEGORY:
-				setCategory(CATEGORY_EDEFAULT);
-				return;
 			case FunctionblockPackage.FUNCTION_BLOCK__CONFIGURATION:
 				setConfiguration((Configuration)null);
 				return;
@@ -525,12 +375,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case FunctionblockPackage.FUNCTION_BLOCK__DISPLAYNAME:
-				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
-			case FunctionblockPackage.FUNCTION_BLOCK__DESCRIPTION:
-				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-			case FunctionblockPackage.FUNCTION_BLOCK__CATEGORY:
-				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
 			case FunctionblockPackage.FUNCTION_BLOCK__CONFIGURATION:
 				return configuration != null;
 			case FunctionblockPackage.FUNCTION_BLOCK__STATUS:
@@ -543,26 +387,6 @@ public class FunctionBlockImpl extends MinimalEObjectImpl.Container implements F
 				return operations != null && !operations.isEmpty();
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (displayname: ");
-		result.append(displayname);
-		result.append(", description: ");
-		result.append(description);
-		result.append(", category: ");
-		result.append(category);
-		result.append(')');
-		return result.toString();
 	}
 
 } //FunctionBlockImpl

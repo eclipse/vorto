@@ -107,10 +107,11 @@ class FbGeneratorPOMTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo					
+				
 					configuration{
 						optional temperature as int
 					}
@@ -125,11 +126,11 @@ class FbGeneratorPOMTest {
 		val model2 = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0			
+				version 1.0.0		
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
 				functionblock NewFridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
 					configuration{
 						optional temperature as int
 					}
@@ -452,11 +453,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		val model = parseHelper.parse(
 			'''
 				namespace com.redelephant
-				version 1.0.0			
+				version 1.0.0
+						displayname 'Refrigerator'
+						description 'comment'
+						category demo/indigo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo/indigo
+
 					configuration{
 						optional temperature as int
 					}
@@ -778,11 +780,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.2.0			
+				version 1.2.0	
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
+
 					configuration{
 						optional temperature as int
 					}
@@ -1103,11 +1106,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 11.2.11-RELEASE			
+				version 11.2.11-RELEASE		
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
+
 					configuration{
 						optional temperature as int
 					}

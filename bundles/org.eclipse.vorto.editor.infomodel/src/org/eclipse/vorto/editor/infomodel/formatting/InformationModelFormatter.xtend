@@ -33,9 +33,9 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(dsl.modelReferenceAccess.group)
 		c.setLinewrap(1).after(dsl.informationModelAccess.namespaceAssignment_2)
 		c.setLinewrap(1).after(dsl.informationModelAccess.versionAssignment_4)
-		c.setLinewrap(1).after(dsl.informationModelAccess.displaynameAssignment_10)
-		c.setLinewrap(1).after(dsl.informationModelAccess.descriptionAssignment_11_1)
-		c.setLinewrap(1).after(dsl.informationModelAccess.categoryAssignment_13)	
+		c.setLinewrap(1).after(dsl.informationModelAccess.displaynameAssignment_6)
+		c.setLinewrap(1).after(dsl.informationModelAccess.descriptionAssignment_7_1)
+		c.setLinewrap(1).after(dsl.informationModelAccess.categoryAssignment_9)	
 		
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)

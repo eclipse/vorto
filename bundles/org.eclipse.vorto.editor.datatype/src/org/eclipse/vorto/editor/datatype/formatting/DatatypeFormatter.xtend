@@ -38,9 +38,16 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(f.modelReferenceAccess.group)
 		c.setLinewrap(1).after(f.entityAccess.namespaceAssignment_1)
 		c.setLinewrap(1).after(f.entityAccess.versionAssignment_3)
+		c.setLinewrap(1).after(f.entityAccess.displaynameAssignment_4_1)
+		c.setLinewrap(1).after(f.entityAccess.descriptionAssignment_5_1)
+		c.setLinewrap(1).after(f.entityAccess.categoryAssignment_6_1)
+				
 		c.setLinewrap(1).after(f.enumAccess.namespaceAssignment_1)
 		c.setLinewrap(1).after(f.enumAccess.versionAssignment_3)
-		
+		c.setLinewrap(1).after(f.enumAccess.displaynameAssignment_4_1)
+		c.setLinewrap(1).after(f.enumAccess.descriptionAssignment_5_1)
+		c.setLinewrap(1).after(f.enumAccess.categoryAssignment_6_1)
+				
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
 		c.setLinewrap(1, 1, 2).before(ML_COMMENTRule)
@@ -50,7 +57,7 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		//Properties
 		c.setLinewrap(1).before(f.findKeywords("mandatory").get(0))
 		c.setLinewrap(1).before(f.findKeywords("optional").get(0))
-		c.setLinewrap(1).before(f.enumLiteralAccess.nameAssignment)
+		c.setLinewrap(1).before(f.enumLiteralAccess.nameAssignment_0)
 		
 		//Block Elements
 		findKeywordPairs("{","}").forEach[
@@ -74,6 +81,6 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_2_0)
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_2_0)	
 		
-		c.setNoSpace().before(f.enumAccess.commaKeyword_8_1_0)
+		c.setNoSpace().before(f.enumAccess.commaKeyword_11_1_0)
 	}
 }

@@ -9,8 +9,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,7 +34,7 @@ public class FunctionBlockAttributeSourceImpl extends FunctionBlockSourceImpl im
 	 * @generated
 	 * @ordered
 	 */
-	protected static final FunctionblockModelAttribute ATTRIBUTE_EDEFAULT = FunctionblockModelAttribute.NAME;
+	protected static final ModelAttribute ATTRIBUTE_EDEFAULT = ModelAttribute.NAME;
 
 	/**
 	 * The cached value of the '{@link #getAttribute() <em>Attribute</em>}' attribute.
@@ -44,7 +44,7 @@ public class FunctionBlockAttributeSourceImpl extends FunctionBlockSourceImpl im
 	 * @generated
 	 * @ordered
 	 */
-	protected FunctionblockModelAttribute attribute = ATTRIBUTE_EDEFAULT;
+	protected ModelAttribute attribute = ATTRIBUTE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -70,7 +70,7 @@ public class FunctionBlockAttributeSourceImpl extends FunctionBlockSourceImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionblockModelAttribute getAttribute() {
+	public ModelAttribute getAttribute() {
 		return attribute;
 	}
 
@@ -79,8 +79,8 @@ public class FunctionBlockAttributeSourceImpl extends FunctionBlockSourceImpl im
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setAttribute(FunctionblockModelAttribute newAttribute) {
-		FunctionblockModelAttribute oldAttribute = attribute;
+	public void setAttribute(ModelAttribute newAttribute) {
+		ModelAttribute oldAttribute = attribute;
 		attribute = newAttribute == null ? ATTRIBUTE_EDEFAULT : newAttribute;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.FUNCTION_BLOCK_ATTRIBUTE_SOURCE__ATTRIBUTE, oldAttribute, attribute));
@@ -109,7 +109,7 @@ public class FunctionBlockAttributeSourceImpl extends FunctionBlockSourceImpl im
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MappingPackage.FUNCTION_BLOCK_ATTRIBUTE_SOURCE__ATTRIBUTE:
-				setAttribute((FunctionblockModelAttribute)newValue);
+				setAttribute((ModelAttribute)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

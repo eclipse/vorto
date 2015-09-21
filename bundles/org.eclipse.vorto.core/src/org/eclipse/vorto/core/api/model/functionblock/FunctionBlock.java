@@ -13,101 +13,20 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDisplayname <em>Displayname</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getConfiguration <em>Configuration</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getStatus <em>Status</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getFault <em>Fault</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getEvents <em>Events</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getOperations <em>Operations</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getFunctionBlock()
  * @model
  * @generated
  */
 public interface FunctionBlock extends EObject {
-	/**
-	 * Returns the value of the '<em><b>Displayname</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Displayname</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Displayname</em>' attribute.
-	 * @see #setDisplayname(String)
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getFunctionBlock_Displayname()
-	 * @model
-	 * @generated
-	 */
-	String getDisplayname();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDisplayname <em>Displayname</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Displayname</em>' attribute.
-	 * @see #getDisplayname()
-	 * @generated
-	 */
-	void setDisplayname(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Description</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Description</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Description</em>' attribute.
-	 * @see #setDescription(String)
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getFunctionBlock_Description()
-	 * @model
-	 * @generated
-	 */
-	String getDescription();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getDescription <em>Description</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Description</em>' attribute.
-	 * @see #getDescription()
-	 * @generated
-	 */
-	void setDescription(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Category</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Category</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Category</em>' attribute.
-	 * @see #setCategory(String)
-	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getFunctionBlock_Category()
-	 * @model
-	 * @generated
-	 */
-	String getCategory();
-
-	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock#getCategory <em>Category</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Category</em>' attribute.
-	 * @see #getCategory()
-	 * @generated
-	 */
-	void setCategory(String value);
-
 	/**
 	 * Returns the value of the '<em><b>Configuration</b></em>' containment reference.
 	 * <!-- begin-user-doc -->

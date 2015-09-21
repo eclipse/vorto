@@ -46,7 +46,37 @@ public enum ModelAttribute implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	VERSION(2, "version", "version");
+	VERSION(2, "version", "version"),
+
+	/**
+	 * The '<em><b>Displayname</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #DISPLAYNAME_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	DISPLAYNAME(3, "displayname", "displayname"),
+
+	/**
+	 * The '<em><b>Description</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #DESCRIPTION_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	DESCRIPTION(4, "description", "description"),
+
+	/**
+	 * The '<em><b>Category</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #CATEGORY_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	CATEGORY(5, "category", "category");
 
 	/**
 	 * The '<em><b>Name</b></em>' literal value.
@@ -94,6 +124,51 @@ public enum ModelAttribute implements Enumerator {
 	public static final int VERSION_VALUE = 2;
 
 	/**
+	 * The '<em><b>Displayname</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Displayname</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #DISPLAYNAME
+	 * @model name="displayname"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int DISPLAYNAME_VALUE = 3;
+
+	/**
+	 * The '<em><b>Description</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Description</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #DESCRIPTION
+	 * @model name="description"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int DESCRIPTION_VALUE = 4;
+
+	/**
+	 * The '<em><b>Category</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Category</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #CATEGORY
+	 * @model name="category"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int CATEGORY_VALUE = 5;
+
+	/**
 	 * An array of all the '<em><b>Model Attribute</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -104,6 +179,9 @@ public enum ModelAttribute implements Enumerator {
 			NAME,
 			NAMESPACE,
 			VERSION,
+			DISPLAYNAME,
+			DESCRIPTION,
+			CATEGORY,
 		};
 
 	/**
@@ -163,6 +241,9 @@ public enum ModelAttribute implements Enumerator {
 			case NAME_VALUE: return NAME;
 			case NAMESPACE_VALUE: return NAMESPACE;
 			case VERSION_VALUE: return VERSION;
+			case DISPLAYNAME_VALUE: return DISPLAYNAME;
+			case DESCRIPTION_VALUE: return DESCRIPTION;
+			case CATEGORY_VALUE: return CATEGORY;
 		}
 		return null;
 	}

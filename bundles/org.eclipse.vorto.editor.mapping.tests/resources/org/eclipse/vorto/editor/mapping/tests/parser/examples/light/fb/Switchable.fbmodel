@@ -1,10 +1,10 @@
 namespace com.mycompany.light.fb
 version 1.0.0
-
+displayname "Switch"
+description "Function block model for Switch"
+category demo
 functionblock Switchable {
-	displayname "Switch"
-	description "Function block model for Switch"
-	category demo
+
 	status {
 		optional on as boolean
 	}

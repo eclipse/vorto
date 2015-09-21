@@ -23,8 +23,8 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.mapping.EnumMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.MappingResourceFactory;
 import org.eclipse.vorto.core.tests.model.helper.TestEnumFactory;
 import org.eclipse.vorto.core.tests.model.helper.TestEnumMappingFactory;
@@ -39,7 +39,7 @@ public class EnumMappingTest {
 
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
 				Collections.<IMapping> emptyList());
-		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.version);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(ModelAttribute.VERSION);
 		assertEquals(1, mappingRules.size());
 	}
 

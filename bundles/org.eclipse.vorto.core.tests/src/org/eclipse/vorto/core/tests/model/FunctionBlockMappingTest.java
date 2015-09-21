@@ -24,8 +24,8 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.MappingAttribute;
 import org.eclipse.vorto.core.model.MappingResourceFactory;
 import org.eclipse.vorto.core.tests.model.helper.TestFunctionBlockMappingFactory;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class FunctionBlockMappingTest {
 	public void testGetRuleByFunctionBlockAttribute() {
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
 				Collections.<IMapping> emptyList());
-		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(MappingAttribute.description);
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelAttribute(ModelAttribute.DESCRIPTION);
 		assertEquals(1, mappingRules.size());
 	}
 

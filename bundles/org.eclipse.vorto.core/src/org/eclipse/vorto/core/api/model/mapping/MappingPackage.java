@@ -106,6 +106,33 @@ public interface MappingPackage extends EPackage {
 	int MAPPING_MODEL__REFERENCES = ModelPackage.MODEL__REFERENCES;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPING_MODEL__DESCRIPTION = ModelPackage.MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPING_MODEL__DISPLAYNAME = ModelPackage.MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MAPPING_MODEL__CATEGORY = ModelPackage.MODEL__CATEGORY;
+
+	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -186,6 +213,33 @@ public interface MappingPackage extends EPackage {
 	 * @ordered
 	 */
 	int INFO_MODEL_MAPPING_MODEL__REFERENCES = MAPPING_MODEL__REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFO_MODEL_MAPPING_MODEL__DESCRIPTION = MAPPING_MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFO_MODEL_MAPPING_MODEL__DISPLAYNAME = MAPPING_MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int INFO_MODEL_MAPPING_MODEL__CATEGORY = MAPPING_MODEL__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
@@ -517,6 +571,33 @@ public interface MappingPackage extends EPackage {
 	 * @ordered
 	 */
 	int FUNCTION_BLOCK_MAPPING_MODEL__REFERENCES = MAPPING_MODEL__REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION_BLOCK_MAPPING_MODEL__DESCRIPTION = MAPPING_MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION_BLOCK_MAPPING_MODEL__DISPLAYNAME = MAPPING_MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTION_BLOCK_MAPPING_MODEL__CATEGORY = MAPPING_MODEL__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
@@ -960,6 +1041,33 @@ public interface MappingPackage extends EPackage {
 	int DATA_TYPE_MAPPING_MODEL__REFERENCES = MAPPING_MODEL__REFERENCES;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE_MAPPING_MODEL__DESCRIPTION = MAPPING_MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE_MAPPING_MODEL__DISPLAYNAME = MAPPING_MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DATA_TYPE_MAPPING_MODEL__CATEGORY = MAPPING_MODEL__CATEGORY;
+
+	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1040,6 +1148,33 @@ public interface MappingPackage extends EPackage {
 	 * @ordered
 	 */
 	int ENTITY_MAPPING_MODEL__REFERENCES = DATA_TYPE_MAPPING_MODEL__REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY_MAPPING_MODEL__DESCRIPTION = DATA_TYPE_MAPPING_MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY_MAPPING_MODEL__DISPLAYNAME = DATA_TYPE_MAPPING_MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENTITY_MAPPING_MODEL__CATEGORY = DATA_TYPE_MAPPING_MODEL__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
@@ -1297,6 +1432,33 @@ public interface MappingPackage extends EPackage {
 	 * @ordered
 	 */
 	int ENUM_MAPPING_MODEL__REFERENCES = DATA_TYPE_MAPPING_MODEL__REFERENCES;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_MAPPING_MODEL__DESCRIPTION = DATA_TYPE_MAPPING_MODEL__DESCRIPTION;
+
+	/**
+	 * The feature id for the '<em><b>Displayname</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_MAPPING_MODEL__DISPLAYNAME = DATA_TYPE_MAPPING_MODEL__DISPLAYNAME;
+
+	/**
+	 * The feature id for the '<em><b>Category</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_MAPPING_MODEL__CATEGORY = DATA_TYPE_MAPPING_MODEL__CATEGORY;
 
 	/**
 	 * The feature id for the '<em><b>Rules</b></em>' containment reference list.
@@ -1713,26 +1875,6 @@ public interface MappingPackage extends EPackage {
 	int FAULT_SOURCE_OPERATION_COUNT = FUNCTION_BLOCK_PROPERTY_SOURCE_OPERATION_COUNT + 0;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute <em>Info Model Attribute</em>}' enum.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute
-	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getInfoModelAttribute()
-	 * @generated
-	 */
-	int INFO_MODEL_ATTRIBUTE = 33;
-
-	/**
-	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute <em>Functionblock Model Attribute</em>}' enum.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute
-	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getFunctionblockModelAttribute()
-	 * @generated
-	 */
-	int FUNCTIONBLOCK_MODEL_ATTRIBUTE = 34;
-
-	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.mapping.ModelAttribute <em>Model Attribute</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1740,7 +1882,7 @@ public interface MappingPackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getModelAttribute()
 	 * @generated
 	 */
-	int MODEL_ATTRIBUTE = 35;
+	int MODEL_ATTRIBUTE = 33;
 
 
 	/**
@@ -2360,26 +2502,6 @@ public interface MappingPackage extends EPackage {
 	EReference getMappingRule_Sources();
 
 	/**
-	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute <em>Info Model Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Info Model Attribute</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute
-	 * @generated
-	 */
-	EEnum getInfoModelAttribute();
-
-	/**
-	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute <em>Functionblock Model Attribute</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Functionblock Model Attribute</em>'.
-	 * @see org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute
-	 * @generated
-	 */
-	EEnum getFunctionblockModelAttribute();
-
-	/**
 	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.mapping.ModelAttribute <em>Model Attribute</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2949,26 +3071,6 @@ public interface MappingPackage extends EPackage {
 		 * @generated
 		 */
 		EReference MAPPING_RULE__SOURCES = eINSTANCE.getMappingRule_Sources();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute <em>Info Model Attribute</em>}' enum.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute
-		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getInfoModelAttribute()
-		 * @generated
-		 */
-		EEnum INFO_MODEL_ATTRIBUTE = eINSTANCE.getInfoModelAttribute();
-
-		/**
-		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute <em>Functionblock Model Attribute</em>}' enum.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute
-		 * @see org.eclipse.vorto.core.api.model.mapping.impl.MappingPackageImpl#getFunctionblockModelAttribute()
-		 * @generated
-		 */
-		EEnum FUNCTIONBLOCK_MODEL_ATTRIBUTE = eINSTANCE.getFunctionblockModelAttribute();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.mapping.ModelAttribute <em>Model Attribute</em>}' enum.
