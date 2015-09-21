@@ -80,6 +80,7 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
+        	category="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
             class="org.eclipse.vorto.editor.infomodel.ui.InformationModelExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
             id="org.eclipse.vorto.editor.infomodel.InformationModel"
             name="InformationModel">
