@@ -1,10 +1,10 @@
 namespace com.mycompany.fb
 version 1.0.0
+displayname "Switcher"
+description "Switcher switches a device on or off"
+category demo
 functionblock Switcher {
-	displayname "Switcher"
-	description "Switcher switches a device on or off"
-	category demo
-
+	
 	operations {
 		on()
 		off()
