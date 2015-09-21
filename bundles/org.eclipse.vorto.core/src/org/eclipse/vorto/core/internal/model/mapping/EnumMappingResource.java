@@ -15,12 +15,9 @@
 package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.mapping.EnumAttributeSource;
@@ -29,24 +26,21 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.core.model.IMapping;
 import org.eclipse.vorto.core.model.MappingAttribute;
-import org.eclipse.vorto.core.model.ModelId;
 
 public class EnumMappingResource extends AbstractMappingResource {
 
-	public EnumMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public EnumMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
-
 	@Override
-	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules,
-			MappingRule rule, Source source) {
-		if(source instanceof EnumPropertySource){
-			EnumLiteral enumLiteral = ((EnumPropertySource)source).getProperty();
-			Enum enumType = (Enum)((EnumPropertySource)source).getModel();
+	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
+		if (source instanceof EnumPropertySource) {
+			EnumLiteral enumLiteral = ((EnumPropertySource) source).getProperty();
+			Enum enumType = (Enum) ((EnumPropertySource) source).getModel();
 			if (matchesEnumLiteral(enumType, enumLiteral, modelObject)) {
 				mappingRules.add(rule);
 			}
@@ -54,7 +48,7 @@ public class EnumMappingResource extends AbstractMappingResource {
 	}
 
 	private boolean matchesEnumLiteral(Enum enumType, EnumLiteral enumLiteral, EObject modelElement) {
-		if (!(modelElement instanceof EnumLiteral)) {
+		if ((enumLiteral == null) || !(modelElement instanceof EnumLiteral)) {
 			return false;
 		}
 
@@ -68,9 +62,9 @@ public class EnumMappingResource extends AbstractMappingResource {
 	@Override
 	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
-		
-		if(source instanceof EnumAttributeSource){
-			ModelAttribute attribute = ((EnumAttributeSource)source).getAttribute();
+
+		if (source instanceof EnumAttributeSource) {
+			ModelAttribute attribute = ((EnumAttributeSource) source).getAttribute();
 			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
 				mappingRules.add(rule);
 			}

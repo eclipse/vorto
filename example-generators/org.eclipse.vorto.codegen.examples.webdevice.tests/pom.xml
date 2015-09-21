@@ -12,7 +12,7 @@
 
 	<name>Vorto Code Generator Examples Tests</name>
 
-		<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>

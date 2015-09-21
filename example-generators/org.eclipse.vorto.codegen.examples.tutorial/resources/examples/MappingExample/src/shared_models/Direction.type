@@ -1,0 +1,6 @@
+namespace com.mycompany.iot.type
+version 1.0.0
+
+enum Direction {
+	East, West, South, North
+}

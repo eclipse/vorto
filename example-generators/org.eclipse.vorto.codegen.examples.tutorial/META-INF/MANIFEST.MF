@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Tutorial
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.tutorial;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.vorto.codegen.examples.tutorial.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.vorto.core,
+ org.eclipse.core.runtime,
+ org.eclipse.vorto.codegen,
+ org.eclipse.xtend.lib,
+ org.apache.commons.lang3,
+ org.eclipse.emf.example.installer;resolution:=optional,
+ org.eclipse.emf.common.ui,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.eclipse.vorto.codegen.examples.tutorial.tasks.templates
+Import-Package: org.eclipse.vorto.wizard
+

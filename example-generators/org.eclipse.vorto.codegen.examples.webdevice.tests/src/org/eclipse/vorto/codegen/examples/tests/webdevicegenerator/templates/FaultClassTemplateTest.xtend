@@ -25,19 +25,47 @@ class FaultClassTemplateTest {
 
 	@Test
 	def testGeneration() {
-		var model = TestFunctionblockModelFactory.createFBmodelWithProperties();
+		var fbProperty = TestFunctionblockModelFactory.createFBProperty();
 
-		var result = new FaultClassTemplate().getContent(model);
+		var result = new FaultClassTemplate().getContent(fbProperty);
 		assertEquals(fetchExpected, result);
 	}
 
 	private def String fetchExpected() {
-		'''package com.bosch.iot.fridge.model;
+		'''package org.eclipse.vorto.iot.fridge.model;
+
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize
-public class FridgeFault {			
+public class FridgeFault {
+	public FridgeFault() {
+		try {
+			Class<?> c = Class.forName(FridgeFault.class
+				.getCanonicalName());
+			BeanInfo beanInfo = Introspector.getBeanInfo(c);
+			PropertyDescriptor propertyDescriptor[] = beanInfo
+				.getPropertyDescriptors();
+
+			for (int i = 0; i < propertyDescriptor.length; i++) {
+				if (!propertyDescriptor[i].getName().equals("configData")
+					&& !propertyDescriptor[i].getName().equals("class")) {
+					Class<?> type = propertyDescriptor[i].getPropertyType();
+					String typeName = (type instanceof Class && ((Class<?>) type)
+						.isEnum()) ? "enum_" + type.getSimpleName() : type.getSimpleName();
+					configData.put(propertyDescriptor[i].getName(), typeName);
+				}
+
+			}
+		} catch (Exception e) {
+			System.out.println("Exception caught. " + e);
+			}
+	}
 
 	private boolean isFault = false;
 
@@ -47,6 +75,15 @@ public class FridgeFault {
 			
 	public void setIsFault(boolean isFault) {
 		this.isFault = isFault;
+	}		
+	private Map<String, String> configData = new HashMap<String, String>();
+
+	public Map<String, String> getConfigData() {
+		return configData;
+	}
+
+	public void setConfigData(Map<String, String> configData) {
+		this.configData = configData;
 	}		
 }'''
 	}

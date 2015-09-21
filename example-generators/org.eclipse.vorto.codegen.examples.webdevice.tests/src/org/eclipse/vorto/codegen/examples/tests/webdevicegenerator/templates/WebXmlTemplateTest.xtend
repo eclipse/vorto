@@ -25,9 +25,9 @@ class WebXmlTemplateTest {
 
 	@Test
 	def testGeneration() {
-		var model = TestFunctionblockModelFactory.createFBmodelWithProperties();
+		var fbProperty = TestFunctionblockModelFactory.createFBProperty();
 
-		var result = new WebXmlTemplate().getContent(model);
+		var result = new WebXmlTemplate().getContent(fbProperty);
 		assertEquals(fetchExpected, result);
 	}
 

@@ -59,7 +59,7 @@ class MappingModelFormatterTest extends AbstractXtextTests {
 version 1.0.0
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
-functionblockmapping FunctionBlock_Property {
+functionblockmapping FunctionBlock_Property { 	targetplatform mym2m
 
 	from NewFunctionBlock.status.isOn
 				to TargetStatus
@@ -87,6 +87,7 @@ version 1.0.0
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
 functionblockmapping FunctionBlock_Property {
+	targetplatform mym2m
 
 	from NewFunctionBlock.status.isOn
 	to TargetStatus

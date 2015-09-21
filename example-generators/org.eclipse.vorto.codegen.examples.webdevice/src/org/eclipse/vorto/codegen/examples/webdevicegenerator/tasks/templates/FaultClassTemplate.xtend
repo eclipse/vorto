@@ -17,19 +17,53 @@
 
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil
+import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
-class FaultClassTemplate implements ITemplate<FunctionblockModel> {
+class FaultClassTemplate implements ITemplate<FunctionblockProperty> {
 		
-	override getContent(FunctionblockModel model) {
+	override getContent(FunctionblockProperty fbProperty) {
+		var FunctionblockModel model = fbProperty.type
 		'''
 		package «ModuleUtil.getModelPackage(model)»;
+		
+		import java.beans.BeanInfo;
+		import java.beans.Introspector;
+		import java.beans.PropertyDescriptor;
+		import java.util.HashMap;
+		import java.util.Map;
 
 		import org.codehaus.jackson.map.annotate.JsonSerialize;
+		«JavaClassGeneratorUtils.getImports(model.functionblock.status.properties)»
 		
 		@JsonSerialize
-		public class «model.name»Fault {			
+		public class «ModuleUtil.getCamelCase(fbProperty.name)»Fault {
+			public «ModuleUtil.getCamelCase(fbProperty.name)»Fault() {
+				try {
+					Class<?> c = Class.forName(«ModuleUtil.getCamelCase(fbProperty.name)»Fault.class
+						.getCanonicalName());
+					BeanInfo beanInfo = Introspector.getBeanInfo(c);
+					PropertyDescriptor propertyDescriptor[] = beanInfo
+						.getPropertyDescriptors();
+
+					for (int i = 0; i < propertyDescriptor.length; i++) {
+						if (!propertyDescriptor[i].getName().equals("configData")
+							&& !propertyDescriptor[i].getName().equals("class")) {
+							Class<?> type = propertyDescriptor[i].getPropertyType();
+							String typeName = (type instanceof Class && ((Class<?>) type)
+								.isEnum()) ? "enum_" + type.getSimpleName() : type.getSimpleName();
+							configData.put(propertyDescriptor[i].getName(), typeName);
+						}
+
+					}
+				} catch (Exception e) {
+					System.out.println("Exception caught. " + e);
+					}
+			}
 		«IF model.functionblock.fault!=null»
 			«FOR FaultField : model.functionblock.fault.properties»	
 			«IF FaultField.type instanceof PrimitivePropertyType»			
@@ -45,9 +79,33 @@ class FaultClassTemplate implements ITemplate<FunctionblockModel> {
 					public void set«FaultField.name.toFirstUpper»(«primitiveJavaType» «FaultField.name») {
 						this.«FaultField.name» = «FaultField.name»;
 					}		
-		    «ENDIF»
+		    «ELSEIF FaultField.type instanceof ObjectPropertyType»
+				«var objectType = (FaultField.type as ObjectPropertyType).getType»
+				«IF objectType instanceof Entity»
+					private «objectType.name» «FaultField.name» = new «objectType.name»();
+				«ELSEIF objectType instanceof Enum»
+					private «objectType.name» «FaultField.name»
+				«ENDIF»
+				
+					public «objectType.name» get«FaultField.name.toFirstUpper»() {
+						return «FaultField.name»;
+					}
+				
+					public void set«FaultField.name.toFirstUpper»(«objectType.name» «FaultField.name») {
+						this.«FaultField.name» = «FaultField.name»;
+					}
+			«ENDIF»
 			«ENDFOR»						
-		«ENDIF»			
+		«ENDIF»
+			private Map<String, String> configData = new HashMap<String, String>();
+		
+			public Map<String, String> getConfigData() {
+				return configData;
+			}
+		
+			public void setConfigData(Map<String, String> configData) {
+				this.configData = configData;
+			}		
 		}'''
 	}
 }

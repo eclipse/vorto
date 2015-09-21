@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRulesAware;
+import org.eclipse.vorto.codegen.api.mapping.IMappingAware;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
@@ -40,6 +40,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.model.IMapping;
+import org.eclipse.vorto.core.model.MappingResourceFactory;
 import org.junit.Test;
 
 public class CodeGeneratorWithMappingsTest {
@@ -50,36 +51,37 @@ public class CodeGeneratorWithMappingsTest {
 
 		final List<MappingRule> rules = new ArrayList<MappingRule>();
 		ICodeGenerator<InformationModel> generator = new AbstractGenerator() {
+			IMapping mapping = null;
 
 			@Override
 			public void generate(InformationModel ctx, IProgressMonitor monitor) {
 
-				rules.addAll(mapping
-						.getRulesByStereoType("configDescription"));
+				rules.addAll(mapping.getRulesByStereoType("configDescription"));
+			}
+
+			@Override
+			public String getTargetPlatform() {
+				return "MyIotPlatform";
 			}
 
 			@Override
 			public void setMapping(IMapping mapping) {
 				this.mapping = mapping;
 			}
-
 		};
 
 		MappingModel mappingModel = this.createMappingModel(leftSideModel);
-
-		((IMappingRulesAware) generator)
-				.setMapping(org.eclipse.vorto.core.model.MappingFactory.createMapping(mappingModel));
+		IMapping mapping = MappingResourceFactory.getInstance().createMapping(mappingModel, new ArrayList<IMapping>());
+		((IMappingAware) generator).setMapping(mapping);
 
 		generator.generate(leftSideModel, null);
 
 		assertEquals(1, rules.size());
 	}
 
-	private abstract class AbstractGenerator implements
-			ICodeGenerator<InformationModel>, IMappingRulesAware {
+	private abstract class AbstractGenerator implements ICodeGenerator<InformationModel>, IMappingAware {
 
 		protected IMapping mapping;
-
 
 		@Override
 		public String getName() {
@@ -89,21 +91,17 @@ public class CodeGeneratorWithMappingsTest {
 	}
 
 	private InformationModel createInformationModel() {
-		InformationModel infoModel = InformationModelFactory.eINSTANCE
-				.createInformationModel();
+		InformationModel infoModel = InformationModelFactory.eINSTANCE.createInformationModel();
 		infoModel.setName("BoschXYZ");
 
-		FunctionblockModel fbm = FunctionblockFactory.eINSTANCE
-				.createFunctionblockModel();
+		FunctionblockModel fbm = FunctionblockFactory.eINSTANCE.createFunctionblockModel();
 		fbm.setName("Switcher");
 
 		FunctionBlock fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
-		Configuration config = FunctionblockFactory.eINSTANCE
-				.createConfiguration();
+		Configuration config = FunctionblockFactory.eINSTANCE.createConfiguration();
 		Property property = DatatypeFactory.eINSTANCE.createProperty();
 
-		PrimitivePropertyType p = DatatypeFactory.eINSTANCE
-				.createPrimitivePropertyType();
+		PrimitivePropertyType p = DatatypeFactory.eINSTANCE.createPrimitivePropertyType();
 		property.setName("brightness");
 		p.setType(PrimitiveType.INT);
 
@@ -112,22 +110,19 @@ public class CodeGeneratorWithMappingsTest {
 		config.getProperties().add(property);
 
 		fbm.setFunctionblock(fb);
-		infoModel.getProperties()
-				.add(createPropertyFromFunctionBlockModel(fbm));
+		infoModel.getProperties().add(createPropertyFromFunctionBlockModel(fbm));
 		return infoModel;
 	}
 
-	private static FunctionblockProperty createPropertyFromFunctionBlockModel(
-			FunctionblockModel fbm) {
-		FunctionblockProperty fbp = InformationModelFactory.eINSTANCE
-				.createFunctionblockProperty();
+	private static FunctionblockProperty createPropertyFromFunctionBlockModel(FunctionblockModel fbm) {
+		FunctionblockProperty fbp = InformationModelFactory.eINSTANCE.createFunctionblockProperty();
 		fbp.setName("fbm1");
 		fbp.setType(fbm);
 		return fbp;
 	}
 
 	private MappingModel createMappingModel(InformationModel infoModel) {
-		MappingModel mappingModel = MappingFactory.eINSTANCE.createInfoModelMapping();
+		MappingModel mappingModel = MappingFactory.eINSTANCE.createInfoModelMappingModel();
 		mappingModel.setName("MyMapping");
 		mappingModel.getRules().add(createRule());
 		return mappingModel;

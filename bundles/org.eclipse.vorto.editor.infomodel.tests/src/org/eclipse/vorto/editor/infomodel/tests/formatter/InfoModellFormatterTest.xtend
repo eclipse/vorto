@@ -20,10 +20,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl
 import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 import org.eclipse.xtext.formatting.INodeModelFormatter
-import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
+import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.resource.XtextResource
 import org.junit.BeforeClass
 import org.junit.Test
@@ -43,8 +43,8 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		
 	@Test
 	def void testFormattingForBasicBlock() {
-		val expectedText = this.readFileIntoString("resources/ColorLampFormatted.infomodel")
-		val rawText = this.readFileIntoString("resources/ColorLampUnformatted.infomodel")
+		val expectedText = this.readFileIntoString("ColorLampFormatted.infomodel")
+		val rawText = this.readFileIntoString("ColorLampUnFormatted.infomodel")
 		rawText.assertFormattedAs(expectedText)
 	}
 

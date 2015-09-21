@@ -3,7 +3,7 @@ version 1.0.0
 using com.mycompany.mydevice.type.EnumA ; 1.0.0
 
 enummapping Enum_Property {
-
+	targetplatform mym2m
 	from EnumA.Option1
 	to O1 with { Label : "Option 1" }
 

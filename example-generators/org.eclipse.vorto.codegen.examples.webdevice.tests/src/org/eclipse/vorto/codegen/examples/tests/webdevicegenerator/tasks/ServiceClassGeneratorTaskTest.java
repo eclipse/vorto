@@ -21,16 +21,15 @@ import org.eclipse.vorto.codegen.examples.tests.TestFunctionblockModelFactory;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ServiceClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.ServiceClassTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ServiceClassGeneratorTaskTest {
 	ServiceClassGeneratorTask serviceClassGenerator;
 
-	FunctionblockModel model = TestFunctionblockModelFactory
-			.createFBmodelWithProperties();
-
+	FunctionblockProperty fbProperty = TestFunctionblockModelFactory
+			.createFBProperty();
 	@Before
 	public void init() {
 		serviceClassGenerator = new ServiceClassGeneratorTask();
@@ -38,14 +37,14 @@ public class ServiceClassGeneratorTaskTest {
 
 	@Test
 	public void testGetFileName() {
-		String expectedFileName = model.getName() + "Service.java";
-		assertEquals(expectedFileName, serviceClassGenerator.getFileName(model));
+		String expectedFileName = fbProperty.getName() + "Service.java";
+		assertEquals(expectedFileName, serviceClassGenerator.getFileName(fbProperty));
 	}
 
 	@Test
 	public void testGetPath() {
-		String expectedPath = ModuleUtil.getServicePath(model);
-		assertEquals(expectedPath, serviceClassGenerator.getPath(model));
+		String expectedPath = ModuleUtil.getServicePath(fbProperty.getType());
+		assertEquals(expectedPath, serviceClassGenerator.getPath(fbProperty));
 	}
 
 	@Test

@@ -17,6 +17,7 @@
 
   <modules>
 		<module>org.eclipse.vorto.core</module>
+		<module>org.eclipse.vorto.core.tests</module>
 		<module>org.eclipse.vorto.editor</module>
 	
 		<module>org.eclipse.vorto.editor.datatype</module>

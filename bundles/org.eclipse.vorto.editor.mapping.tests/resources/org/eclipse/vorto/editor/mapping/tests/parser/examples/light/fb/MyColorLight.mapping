@@ -3,7 +3,7 @@ version 1.0.0
 using com.mycompany.light.fb.ColorLight ; 1.0.0
 using com.mycompany.light.type.MyColor; 1.0.0
 functionblockmapping MyColorLight {
-
+	targetplatform smarthome
 	from ColorLight.displayname
 	to TargetDisplayName
 

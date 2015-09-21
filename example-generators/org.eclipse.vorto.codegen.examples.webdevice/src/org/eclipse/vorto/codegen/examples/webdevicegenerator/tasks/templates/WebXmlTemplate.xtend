@@ -16,13 +16,13 @@
  package org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates
 
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
-class WebXmlTemplate implements ITemplate<FunctionblockModel> {
+class WebXmlTemplate implements ITemplate<FunctionblockProperty> {
 		
-	override getContent(FunctionblockModel model) {
+	override getContent(FunctionblockProperty fbProperty) {
 		return '''
-		<web-app id="«model.name»" version="2.4"
+		<web-app id="«fbProperty.name»" version="2.4"
 			xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
 			http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">

@@ -26,11 +26,12 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.model.IMapping;
 import org.eclipse.vorto.core.model.MappingAttribute;
 
 public class EntityMappingResource extends AbstractMappingResource {
-	public EntityMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public EntityMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class EntityMappingResource extends AbstractMappingResource {
 	}
 
 	private boolean matchesEntityProperty(Entity entity, Property property, EObject modelObject) {
-		if (!(modelObject instanceof Property)) {
+		if ((property == null) || !(modelObject instanceof Property)) {
 			return false;
 		}
 		Property modelProperty = ((Property) modelObject);

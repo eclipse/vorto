@@ -14,26 +14,27 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.codegen.api.tasks.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.tasks.ITemplate;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.FaultClassTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 
 public class FaultClassGeneratorTask extends
-		AbstractTemplateGeneratorTask<FunctionblockModel> {
+		AbstractTemplateGeneratorTask<FunctionblockProperty> {
 
 	@Override
-	public String getFileName(final FunctionblockModel model) {
-		return model.getName() + "Fault.java";
+	public String getFileName(final FunctionblockProperty fbProperty) {
+		return StringUtils.capitalize(fbProperty.getName()) + "Fault.java";
 	}
 
 	@Override
-	public String getPath(final FunctionblockModel model) {
-		return ModuleUtil.getModelPath(model);
+	public String getPath(final FunctionblockProperty fbProperty) {
+		return ModuleUtil.getModelPath(fbProperty.getType());
 	}
 
 	@Override
-	public ITemplate<FunctionblockModel> getTemplate() {
+	public ITemplate<FunctionblockProperty> getTemplate() {
 		return new FaultClassTemplate();
 	}
 }

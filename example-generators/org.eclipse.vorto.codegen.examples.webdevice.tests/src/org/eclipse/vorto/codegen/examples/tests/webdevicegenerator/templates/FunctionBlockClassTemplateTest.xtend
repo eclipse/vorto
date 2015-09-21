@@ -25,14 +25,14 @@ class FunctionBlockClassTemplateTest {
 
 	@Test
 	def testGeneration() {
-		var model = TestFunctionblockModelFactory.createFBmodelWithProperties();
+		var fbProperty = TestFunctionblockModelFactory.createFBProperty();
 
-		var result = new FunctionBlockClassTemplate().getContent(model);
+		var result = new FunctionBlockClassTemplate().getContent(fbProperty);
 		assertEquals(fetchExpected, result);
 	}
 
 	private def String fetchExpected() {
-		return '''package com.bosch.iot.fridge.model;
+		return '''package org.eclipse.vorto.iot.fridge.model;
 
 public class Fridge {
 	
@@ -47,6 +47,8 @@ public class Fridge {
 	private FridgeStatus status = new FridgeStatus();
 	
 	private FridgeFault fault = new FridgeFault();
+	
+	private FridgeOperation operation = new FridgeOperation();
 	
 	public String getDisplayName() {
 		return displayName;
@@ -78,6 +80,10 @@ public class Fridge {
 	
 	public FridgeFault getFault() {
 		return fault;
+	}
+	
+	public FridgeOperation getOperation() {
+		return operation;
 	}
 }'''
 	}

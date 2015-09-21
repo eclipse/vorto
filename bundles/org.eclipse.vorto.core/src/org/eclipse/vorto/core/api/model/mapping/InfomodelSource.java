@@ -4,7 +4,6 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Infomodel Source</b></em>'.
@@ -22,7 +21,6 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  * @generated
  */
 public interface InfomodelSource extends Source {
-
 	/**
 	 * Returns the value of the '<em><b>Model</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -48,4 +46,5 @@ public interface InfomodelSource extends Source {
 	 * @generated
 	 */
 	void setModel(InformationModel value);
+
 } // InfomodelSource

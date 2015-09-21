@@ -5,7 +5,7 @@ using com.mycompany.mydevice.type.Entity_Attribute ; 1.0.0
 using com.mycompany.mydevice.type.Enum_Property ; 1.0.0
 
 functionblockmapping FunctionBlock_Ref {
-
+	targetplatform mym2m
 	from NewFunctionBlock.configuration.configEntityA
 	to reference Entity_Attribute
 

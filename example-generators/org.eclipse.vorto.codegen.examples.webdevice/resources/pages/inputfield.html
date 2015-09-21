@@ -1,0 +1,13 @@
+<label class="control-label input-label"  style="width:40%;">{{k | titlecase}}</label>
+<div ng-switch on="v" style=" display: inline-block;">
+  <input ng-switch-when="int" type="number" name="{{k}}" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="double" type="number" name="{{k}}" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="float" type="number" name="{{k}}" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="long" type="number" name="{{k}}"  value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="byte" type="number" name="{{k}}" value="{{dataValues[k]}}" class="ng-pristine ng-valid" min="-127" max="128">
+  <input ng-switch-when="Date" type="datetime" name="{{k}}"  value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="boolean" type="checkbox" name="{{k}}" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-when="byte[]" type="file" name="{{k}}">
+  <input ng-switch-when="String" type="text" name="{{k}}"   placeholder="Enter value" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+  <input ng-switch-default="true" type="number" name="{{k}}"  placeholder="Enter value" value="{{dataValues[k]}}" class="ng-pristine ng-valid">
+</div>
