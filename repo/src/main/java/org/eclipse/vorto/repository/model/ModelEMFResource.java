@@ -38,23 +38,11 @@ public class ModelEMFResource extends ModelResource {
 	}
 	
 	public String getDisplayName() {
-		if (model instanceof FunctionblockModel) {
-			return ((FunctionblockModel)model).getFunctionblock().getDisplayname();
-		} else if (model instanceof InformationModel) {
-			return ((InformationModel)model).getDisplayname();
-		} else {
-			return model.getName();
-		}
+		return model.getDescription() != null ?model.getDisplayname() : getId().getName();
 	}
 
 	public String getDescription() {
-		if (model instanceof FunctionblockModel) {
-			return ((FunctionblockModel)model).getFunctionblock().getDescription();
-		} else if (model instanceof InformationModel) {
-			return ((InformationModel)model).getDescription();
-		} else {
-			return null;
-		}
+		return model.getDescription();
 	}
 
 	public List<ModelId> getReferences() {
