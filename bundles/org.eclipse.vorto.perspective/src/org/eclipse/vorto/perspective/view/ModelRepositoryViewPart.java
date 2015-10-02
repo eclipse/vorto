@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
@@ -72,7 +73,11 @@ public class ModelRepositoryViewPart extends ViewPart {
 		btnSearch.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				String filter = searchField.getText();
-				viewer.setInput(modelRepo.search(filter));
+				try {
+					viewer.setInput(modelRepo.search(filter));
+				} catch (Exception ex) {
+					MessageDisplayFactory.getMessageDisplay().displayError(ex.getCause());
+				}
 			}
 		});
 
