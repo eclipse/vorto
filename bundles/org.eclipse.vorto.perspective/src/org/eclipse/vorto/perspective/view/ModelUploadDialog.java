@@ -38,7 +38,7 @@ import com.google.common.base.Strings;
 
 public class ModelUploadDialog extends TitleAreaDialog {
 
-	// private static final String REFERENCES_LABEL = "References";
+	private static final String REFERENCES_LABEL = "References";
 	private static final String DESCRIPTION_LABEL = "Description";
 	private static final String DISPLAY_NAME_LABEL = "DisplayName";
 	private static final String MODELTYPE_LABEL = "Modeltype";
@@ -103,7 +103,6 @@ public class ModelUploadDialog extends TitleAreaDialog {
 		createField(container, MODELTYPE_LABEL, modelType);
 		createField(container, DISPLAY_NAME_LABEL, displayName);
 		createField(container, DESCRIPTION_LABEL, description);
-		// createField(container, REFERENCES_LABEL, references);
 		createReferencesTable(container, modelResource.getReferences());
 
 		return composite;
@@ -125,7 +124,7 @@ public class ModelUploadDialog extends TitleAreaDialog {
 
 	private void createReferencesTable(Composite container, List<ModelId> references) {
 		Label lbtFirstName = new Label(container, SWT.NONE);
-		lbtFirstName.setText("References");
+		lbtFirstName.setText(REFERENCES_LABEL);
 
 		GridData data = new GridData();
 		data.grabExcessHorizontalSpace = true;
@@ -133,6 +132,7 @@ public class ModelUploadDialog extends TitleAreaDialog {
 
 		Table table = new Table(container, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		table.setLayoutData(data);
+		table.setHeaderVisible(true);
 		table.setLinesVisible (true);
 
 		for (String columnName : COLUMNS) {
