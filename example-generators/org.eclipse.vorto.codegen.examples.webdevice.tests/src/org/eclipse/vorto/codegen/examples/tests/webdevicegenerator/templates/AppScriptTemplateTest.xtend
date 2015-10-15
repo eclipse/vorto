@@ -46,7 +46,10 @@ deviceApp
 				}
 	});
 
-deviceApp.run(['$http', '$rootScope', function($http, $rootScope) {
+deviceApp.run(['$http', '$rootScope', '$location', function($http, $rootScope,$location) {
+		$rootScope.isActiveTab = function(route) {
+			return route === $location.path();
+		};
          $rootScope.filterConfiguration = function(data) {
            var result = {};
            angular.forEach(data, function(value, key) {
@@ -57,7 +60,7 @@ deviceApp.run(['$http', '$rootScope', function($http, $rootScope) {
            return result;
          };
          $rootScope.isObject = function(object) {
-         	return (object.constructor === {}.constructor) ? true: false;
+         	return (object !=null && object.constructor === {}.constructor) ? true: false;
          };
          
          $rootScope.isBasicFieldOrEnum = function(object, key) {

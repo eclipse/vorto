@@ -91,12 +91,17 @@ class IndexHtmlFileTemplate implements ITemplate<InformationModel> {
 	
 	def getFunctionBlockTabs(InformationModel model) {
 		return '''
-		<ul class="nav nav-pills" ng-init="tab=1">
+		<ul class="nav nav-pills">
 		«var i=1»
 			«FOR functionBlockProperty : model.properties»
-			<li ng-class="{active:tab==«i»}">
+			«IF i == 1»
+			<li ng-class="{active:isActiveTab('/')}">
+			«ELSE»
+			<li ng-class="{active:isActiveTab('/«functionBlockProperty.name»')}">
+			«ENDIF»
 				«getTabContent(functionBlockProperty.name, i++)»
 			</li>
+			
         	«ENDFOR»
 		</ul>
 		'''
@@ -104,8 +109,8 @@ class IndexHtmlFileTemplate implements ITemplate<InformationModel> {
 	
 	def getTabContent(String fbName, int i) {
 		if(i==1) 
-			return '''<a href="#/" data-toggle="tab" ng-click="tab=«i»">{{"«fbName»" | titlecase}}</a>'''
+			return '''<a href="#/">{{"«fbName»" | titlecase}}</a>'''
 		else
-			return '''<a href="#/«fbName»" data-toggle="tab" ng-click="tab=«i»">{{"«fbName»" | titlecase}}</a>'''
+			return '''<a href="#/«fbName»">{{"«fbName»" | titlecase}}</a>'''
 	}
 }
