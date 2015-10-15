@@ -127,8 +127,13 @@ public class MappingResourceFactory {
 
 	private MappingModel getMappingModel(IModelElement ownerModelElement, String targetPlatform) {
 		MappingModel mappingModel = getMappingModelFromFolder(ownerModelElement, targetPlatform,
-				ownerModelElement.getModelFile().getProject().getFolder("src/models"));
+				ownerModelElement.getModelFile().getProject().getFolder("src/mappings"));
 
+		if (mappingModel == null) {
+			mappingModel = getMappingModelFromFolder(ownerModelElement, targetPlatform,
+					ownerModelElement.getModelFile().getProject().getFolder("src/models"));
+		}
+		
 		if (mappingModel == null) {
 			mappingModel = getMappingModelFromFolder(ownerModelElement, targetPlatform,
 					ownerModelElement.getModelFile().getProject().getFolder("src/shared_models"));

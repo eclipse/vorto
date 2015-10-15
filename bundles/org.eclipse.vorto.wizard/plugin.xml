@@ -9,36 +9,65 @@
 			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
 			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
 			        label="Create new Entity">
-       <parameter
-             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
-             value="entity">
-       </parameter>           	            
+			       <parameter
+			             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
+			             value="entity">
+			       </parameter>           	            
 			  	</command>
-    <command
-          commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-          icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
-          label="Create new Enum">
-       <parameter
-             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
-             value="enum">
-       </parameter>
-    </command>	   
+			    <command
+			          commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
+			          icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			          label="Create new Enum">
+			       <parameter
+			             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
+			             value="enum">
+			       </parameter>
+			    </command>
+				<command
+			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			        label="Create new Function Block Model">           	            
+			  	</command>	
+				<command
+			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			        label="Create new Information Model">           	            
+			  	</command>			
+				<command
+			  		commandId="org.eclipse.vorto.wizard.mapping.commoand.NewMappingModelHandler"
+			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			        label="Create new Mapping Model"> 
+	               <visibleWhen
+	                     checkEnabled="true">
+	                  <with
+	                        variable="selection">
+	                     <iterate
+	                           ifEmpty="false"
+	                           operator="and">
+	                        <instanceof
+	                              value="org.eclipse.core.resources.IProject">
+	                        </instanceof>
+	                     </iterate>
+	                  </with>
+	               </visibleWhen>			                  	            
+			  	</command>	   			  	  	   			    	   
 			  	<separator name="additions1" visible="true"/>
 	  	</menuContribution> 	
+		
 	</extension>
 	
 	<extension 
 			point="org.eclipse.ui.commands">
-    <command
-          defaultHandler="org.eclipse.vorto.wizard.datatype.NewDatatypeProjectHandler"
-          id="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-          name="NewDataTypeProjectCommand">
-       <commandParameter
-             id="org.eclipse.vorto.editor.datatype.newdatatype.project"
-             name="NewDataTypeProject"
-             optional="true">
-       </commandParameter>
-    </command>
+	    <command
+	          defaultHandler="org.eclipse.vorto.wizard.datatype.NewDatatypeProjectHandler"
+	          id="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
+	          name="NewDataTypeProjectCommand">
+	       <commandParameter
+	             id="org.eclipse.vorto.editor.datatype.newdatatype.project"
+	             name="NewDataTypeProject"
+	             optional="true">
+	       </commandParameter>
+	    </command>
   </extension>
        
   <!-- Wizards -->
@@ -70,20 +99,7 @@
 	       </menu>
 	    </menuContribution>
 	 </extension>
-	 
-	 <extension
-			point="org.eclipse.ui.menus">
-		<menuContribution
-				locationURI="popup:org.eclipse.vorto.project.menu">	
-				<command
-			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
-			        label="Create new Function Block Model">           	            
-			  	</command>	   
-			  	<separator name="additions1" visible="true"/>
-	  	</menuContribution> 	
-	</extension>
-	
+	 	
 	<extension 
 			point="org.eclipse.ui.commands">
 	    <command defaultHandler="org.eclipse.vorto.wizard.functionblock.NewFunctionBlockProjectHandler"
@@ -91,8 +107,7 @@
 	    </command>		    			
 	</extension>
 	
-	<!-- Infomodel -->
-	
+	<!-- Infomodel -->	
 	   <extension
          point="org.eclipse.ui.newWizards">
       <category
@@ -109,7 +124,7 @@
             project="true">
       </wizard>
    </extension>	   
- <extension
+   <extension
 	       point="org.eclipse.ui.menus">
 	    <menuContribution
 	          allPopups="false"
@@ -120,20 +135,7 @@
 	       </menu>
 	    </menuContribution>
 	 </extension>
-	
-	<extension
-			point="org.eclipse.ui.menus">
-	  <menuContribution
-				locationURI="popup:org.eclipse.vorto.project.menu">	
-				<command
-			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
-			        label="Create new Information Model">           	            
-			  	</command>	   
-			  	<separator name="additions1" visible="true"/>
-	  	</menuContribution> 	
-	</extension>
-	
+
 	 <extension point="org.eclipse.ui.newWizards">
       <category
             name="Vorto"
@@ -163,7 +165,10 @@
 			point="org.eclipse.ui.commands">
 	    <command defaultHandler="org.eclipse.vorto.wizard.infomodel.NewInfomodelHandler"
 	      	id="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject" name="NewInfomodelCommand">
-	    </command>			    
+	    </command>	
+	    <command defaultHandler="org.eclipse.vorto.wizard.mapping.NewMappingModelHandler"
+	      	id="org.eclipse.vorto.wizard.mapping.commoand.NewMappingModelHandler" name="NewMappingModelCommand">
+	    </command>		    		    
 	</extension>
 
 </plugin>
