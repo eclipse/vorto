@@ -74,13 +74,15 @@ class IndexHtmlFileTemplateTest {
         </div>
 
         <!-- Function Block Details -->
-		<ul class="nav nav-pills" ng-init="tab=1">
-			<li ng-class="{active:tab==1}">
-				<a href="#/" data-toggle="tab" ng-click="tab=1">{{"fbm1" | titlecase}}</a>
+		<ul class="nav nav-pills">
+			<li ng-class="{active:isActiveTab('/')}">
+				<a href="#/">{{"fbm1" | titlecase}}</a>
 			</li>
-			<li ng-class="{active:tab==2}">
-				<a href="#/fbm2" data-toggle="tab" ng-click="tab=2">{{"fbm2" | titlecase}}</a>
+			
+			<li ng-class="{active:isActiveTab('/fbm2')}">
+				<a href="#/fbm2">{{"fbm2" | titlecase}}</a>
 			</li>
+			
 		</ul>
         <div id="main" class="panel panel-primary">
           <div ng-view></div>
