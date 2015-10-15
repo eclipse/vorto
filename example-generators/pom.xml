@@ -22,7 +22,9 @@
 		<module>org.eclipse.vorto.codegen.examples.bosch.tests</module>
 		
 		<module>org.eclipse.vorto.codegen.examples.tutorial</module>
-		<module>org.eclipse.vorto.codegen.examples.tutorial.tests</module>		
+		<module>org.eclipse.vorto.codegen.examples.tutorial.tests</module>	
+
+		<module>org.eclipse.vorto.codegen.examples.java</module>	
   </modules>
   
 </project>

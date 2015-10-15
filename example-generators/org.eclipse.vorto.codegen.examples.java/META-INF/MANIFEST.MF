@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Example Java Code Generator
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.java;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Bundle-Activator: org.eclipse.vorto.codegen.examples.java.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.vorto.core,
+ org.eclipse.core.runtime,
+ org.eclipse.vorto.codegen,
+ org.eclipse.vorto.codegen.templates.java
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
