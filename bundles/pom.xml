@@ -37,13 +37,13 @@
 		<module>org.eclipse.vorto.editor.mapping.tests</module>	
 		
 		<module>org.eclipse.vorto.codegen</module>
-		<module>org.eclipse.vorto.codegen.tests</module>	
+		<module>org.eclipse.vorto.codegen.tests</module>			
+		<module>org.eclipse.vorto.codegen.templates.java</module>
+		
 		<module>org.eclipse.vorto.wizard</module>
 		<module>org.eclipse.vorto.repository</module>
 		<module>org.eclipse.vorto.perspective</module>	
 		
-
-
   </modules>
   
 </project>
