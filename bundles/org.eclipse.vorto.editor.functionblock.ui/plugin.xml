@@ -79,6 +79,7 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
+       		category="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
             class="org.eclipse.vorto.editor.functionblock.ui.FunctionblockExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
             id="org.eclipse.vorto.editor.functionblock.Functionblock"
             name="Functionblock">

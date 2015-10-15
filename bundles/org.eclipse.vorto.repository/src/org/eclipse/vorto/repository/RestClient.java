@@ -40,8 +40,7 @@ public class RestClient {
 
 		CloseableHttpClient client = HttpClients.custom().build();
 
-		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query))
-				.addHeader(createSecurityHeader()).build();
+		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
 		return client.execute(request, new ResponseHandler<Result>() {
 
 			@Override

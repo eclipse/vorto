@@ -54,5 +54,22 @@ public interface IModelRepository {
 	 * @param model The file
 	 * @throws CheckInModelException Might occur if model already exists in the repository or references are missing
 	 */
-	void saveModel(String name, byte[] model) throws CheckInModelException;
+	void saveModel(String name, byte[] model);
+	
+	/**
+	 * Uploads the file to the repository. It needs to be committed first though for the upload to be complete.
+	 * 
+	 * @param name
+	 * @param model
+	 * @return the handle of the uploaded model
+	 * @throws CheckInModelException
+	 */
+	UploadResult upload(String name, byte[] model);
+	
+	/**
+	 * Commits an uploaded file finalizing the upload.
+	 * 
+	 * @param String the handle of the uploaded model
+	 */
+	void commit(String handleId);
 }

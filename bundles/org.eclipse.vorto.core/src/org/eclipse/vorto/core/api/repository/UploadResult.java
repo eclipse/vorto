@@ -12,13 +12,13 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.repository.model;
+package org.eclipse.vorto.core.api.repository;
 
 public class UploadResult {
 	String handleId;
 	String errorMessage;
 	boolean valid;
-	ModelView modelResource;
+	ModelResource modelResource;
 
 	public UploadResult() {
 
@@ -44,11 +44,11 @@ public class UploadResult {
 		this.errorMessage = errorMessage;
 	}
 
-	public ModelView getModelResource() {
+	public ModelResource getModelResource() {
 		return modelResource;
 	}
 
-	public void setModelResource(ModelView modelResource) {
+	public void setModelResource(ModelResource modelResource) {
 		this.modelResource = modelResource;
 	}
 
@@ -59,6 +59,10 @@ public class UploadResult {
 	public void setValid(boolean valid) {
 		this.valid = valid;
 	}
-	
 
+	@Override
+	public String toString() {
+		return "UploadResult [handleId=" + handleId + ", errorMessage=" + errorMessage + ", valid=" + valid
+				+ ", modelResource=" + modelResource + "]";
+	}
 }
