@@ -9,12 +9,15 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
+import org.eclipse.vorto.core.api.repository.UploadResult;
 import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.perspective.view.ModelUploadDialog;
 
 import com.google.common.io.ByteStreams;
 
@@ -27,15 +30,22 @@ public class CheckinModelHandler extends AbstractHandler {
 		IModelProject project = getProject(event);
 
 		try {
-			modelRepo.saveModel(project.getModelFile().getName(),
+			UploadResult uploadResult = modelRepo.upload(project.getModelFile().getName(),
 					ByteStreams.toByteArray(project.getModelFile().getContents()));
-			MessageDisplayFactory.getMessageDisplay().display("Model " + project.getModelFile().getName() + " saved to repository.");
+			ModelUploadDialog uploadDialog = new ModelUploadDialog(HandlerUtil.getActiveShell(event), uploadResult);
+			uploadDialog.create();
+			int result = uploadDialog.open();
+			if (uploadResult.statusOk() && result == Window.OK) {
+				modelRepo.commit(uploadResult.getHandleId());
+				MessageDisplayFactory.getMessageDisplay().display(
+						"Model " + project.getModelFile().getName() + " saved to repository.");
+			}
 		} catch (CheckInModelException | IOException | CoreException e) {
 			MessageDisplayFactory.getMessageDisplay().displayError("Error uploading file to repository");
 			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
 
-		return project;
+		return project;	
 	}
 
 	private IModelProject getProject(ExecutionEvent event) {

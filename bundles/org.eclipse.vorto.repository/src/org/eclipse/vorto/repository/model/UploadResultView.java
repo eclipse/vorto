@@ -14,13 +14,23 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.model;
 
-public class UploadResult {
+import java.util.Collection;
+import java.util.Collections;
+
+import org.eclipse.vorto.core.model.ModelId;
+
+/**
+ * We need this views because of the difference in how data is structured between API
+ * in the client and server.
+ */
+public class UploadResultView {
 	String handleId;
 	String errorMessage;
 	boolean valid;
 	ModelView modelResource;
+	Collection<ModelId> unresolvedReferences = Collections.emptyList();
 
-	public UploadResult() {
+	public UploadResultView() {
 
 	}
 	
@@ -60,5 +70,17 @@ public class UploadResult {
 		this.valid = valid;
 	}
 	
+	public Collection<ModelId> getUnresolvedReferences() {
+		return unresolvedReferences;
+	}
 
+	public void setUnresolvedReferences(Collection<ModelId> unresolvedReferences) {
+		this.unresolvedReferences = unresolvedReferences;
+	}
+
+	@Override
+	public String toString() {
+		return "UploadResult [handleId=" + handleId + ", errorMessage=" + errorMessage + ", valid=" + valid
+				+ ", modelResource=" + modelResource + "]";
+	}
 }
