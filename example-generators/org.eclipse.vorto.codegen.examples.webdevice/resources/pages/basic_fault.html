@@ -5,6 +5,7 @@
   <input ng-if="value == 'float'" type="number" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid" step="0.01"/>
   <input ng-if="value == 'long'" type="number" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid"/>
   <input ng-if="value == 'byte'" type="number" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid" min="-127" max="128"/>
+  <input ng-if="value == 'short'" type="number" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid" min="-32768" max="32767"/>
   <input ng-if="value == 'Date'" type="datetime" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid"/>
   <input ng-if="value == 'boolean'" type="checkbox" name="{{key}}" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid"/>
   <input ng-if="value == 'String'" type="text" name="{{key}}" placeholder="Enter value" value="{{modelinfo.fault[key]}}" class="ng-pristine ng-valid"/>

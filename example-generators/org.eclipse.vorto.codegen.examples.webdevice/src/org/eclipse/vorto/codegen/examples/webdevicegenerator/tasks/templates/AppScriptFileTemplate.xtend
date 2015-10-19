@@ -56,6 +56,20 @@ deviceApp.run(['$http', '$rootScope', '$location', function($http, $rootScope,$l
          $rootScope.isBasicFieldOrEnum = function(object, key) {
 	         return (key.indexOf("enum_") == 0  || !angular.isObject(object)) ? true : false;
          };
+         $rootScope.saveConfiguration = function(fbName, formData) {
+	     	var response = $http({
+				method: 'POST',
+				data: formData,
+			 	url:'service/'+fbName + '/saveConfiguration',
+				headers: {'Content-Type':'application/json'}
+			});
+			response.success(function(data, status, headers, config) {
+	         		$rootScope.responseMessage = fbName + " :  saveConfiguration invoked.";
+         	});
+         	response.error(function(data, status, headers, config) {
+         		$rootScope.responseMessage = "Server request failed to get data, status=" + status;
+         	});
+        };
          $rootScope.invokeOperation = function(fbName, operationName) {
          	var response = $http.put('service/'+fbName +'/' + operationName +'/');
          	response.success(function(data, status, headers, config) {
@@ -63,7 +77,7 @@ deviceApp.run(['$http', '$rootScope', '$location', function($http, $rootScope,$l
          	});
          	
          	response.error(function(data, status, headers, config) {
-         		$rootScope.responseMessage("AJAX failed to get data, status=" + status);
+         		$rootScope.responseMessage = "Server failed to get data, status=" + status;
          	});
          }
 }]);
@@ -82,6 +96,7 @@ deviceApp.config(function($routeProvider) {
 		«ENDFOR»
 });
  deviceApp.controller('mainController',['$scope', '$http', '$rootScope', function($scope,$http, $rootScope) {
+ 	 $scope.formData = {};
      $http.get('service/informationmodel/instance')
      .success(function(data){
        $scope.infomodelData = data;
@@ -91,6 +106,9 @@ deviceApp.config(function($routeProvider) {
      .success(function(data){
        $scope.modelinfo = data;
      });
+     $scope.save = function(fbName) {
+		$rootScope.saveConfiguration(fbName,$scope.formData);
+	 };
      $scope.functionBlockName = '«infoModel.properties.get(0).name»';
      $rootScope.responseMessage = null;
  }]);
@@ -116,6 +134,9 @@ deviceApp.config(function($routeProvider) {
    .success(function(data){
      $scope.modelinfo = data;
    });
+	$scope.save = function(fbName) {
+		$rootScope.saveConfiguration(fbName,$scope.formData);
+	};
    $scope.functionBlockName = '«fbName»';
    $rootScope.responseMessage = null;
  }]);
@@ -125,6 +146,7 @@ deviceApp.config(function($routeProvider) {
 	def getControllerSecondPart() {
 		return '''
 ', ['$scope', '$http', '$rootScope', function($scope,$http, $rootScope) {
+   $scope.formData = {};
    $http.get('service/'''
 	}
 	
