@@ -16,10 +16,10 @@ package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -35,31 +35,46 @@ public class InfoModelMappingResource extends AbstractMappingResource {
 	}
 
 	@Override
-	protected void addRuleIfContainsModelObject(EObject modelObjecct, List<MappingRule> mappingRules, MappingRule rule,
+	protected void addRuleIfContainsModelObject(EObject modelElement, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 		if (source instanceof InfoModelPropertySource) {
-			FunctionblockProperty functionblockProperty = ((InfoModelPropertySource) source).getProperty();
+			if(modelElement instanceof InformationModel){
+				InformationModel sourceModel = ((InfoModelPropertySource) source).getModel();
+				if(this.matchesInformationModel(sourceModel, modelElement)){
+					mappingRules.add(rule);
+				}
+			}else if(modelElement instanceof FunctionblockProperty){
+				FunctionblockProperty functionblockProperty = ((InfoModelPropertySource) source).getProperty();
 
-			if (functionblockProperty == null) {
-				return;
-			}
+				if (functionblockProperty == null) {
+					return;
+				}
 
-			FunctionblockModel functionblockModel = functionblockProperty.getType();
-			if (matchesFunctionBlockModel(functionblockModel, modelObjecct)) {
-				mappingRules.add(rule);
+				FunctionblockModel functionblockModel = functionblockProperty.getType();
+				if (matchesFunctionBlockModel(functionblockModel, modelElement)) {
+					mappingRules.add(rule);
+				}
 			}
 		}
 	}
 
+	private boolean matchesInformationModel(InformationModel informationModel, EObject modelElement) {
+		if (!(modelElement instanceof InformationModel)) {
+			return false;
+		}
+
+		InformationModel elementModel = (InformationModel) modelElement;
+		return this.matchesModel(informationModel, elementModel);
+
+	}
+	
 	private boolean matchesFunctionBlockModel(FunctionblockModel functionblockModel, EObject modelElement) {
 		if (!(modelElement instanceof FunctionblockProperty)) {
 			return false;
 		}
 
 		FunctionblockModel elementModel = ((FunctionblockProperty) modelElement).getType();
-		return StringUtils.equals(elementModel.getName(), functionblockModel.getName())
-				&& StringUtils.equals(elementModel.getNamespace(), functionblockModel.getNamespace())
-				&& StringUtils.equals(elementModel.getVersion(), functionblockModel.getVersion());
+		return this.matchesModel(functionblockModel, elementModel);
 
 	}
 

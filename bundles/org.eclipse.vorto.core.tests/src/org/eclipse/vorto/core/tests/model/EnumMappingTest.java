@@ -44,6 +44,15 @@ public class EnumMappingTest {
 	}
 
 	@Test
+	public void testGetRuleByEnum() {
+		EnumMappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
+		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
+				Collections.<IMapping> emptyList());
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(enumType);
+		assertEquals(1, mappingRules.size());
+	}
+	
+	@Test
 	public void testGetRuleByEnumLiteral() {
 		EnumMappingModel mappingModel = TestEnumMappingFactory.createEnumMappingModel();
 		EnumLiteral enumLiteral = enumType.getEnums().get(0);

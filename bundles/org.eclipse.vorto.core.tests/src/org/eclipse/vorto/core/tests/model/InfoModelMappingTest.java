@@ -46,13 +46,24 @@ public class InfoModelMappingTest {
 		InfoModelMappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
 
 		InformationModel infoModel = TestInfoModelMappingFactory.informationModel;
+		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
+				Collections.<IMapping> emptyList());
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(infoModel);
+		assertEquals(1, mappingRules.size());
+	}
+
+	@Test
+	public void testGetRuleByInfoModelFunctionBlockObject() {
+		InfoModelMappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();
+
+		InformationModel infoModel = TestInfoModelMappingFactory.informationModel;
 		FunctionblockProperty functionblockProperty = infoModel.getProperties().get(0);
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
 				Collections.<IMapping> emptyList());
 		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(functionblockProperty);
 		assertEquals(1, mappingRules.size());
 	}
-
+	
 	@Test
 	public void testGetRuleByStereoType() {
 		MappingModel mappingModel = TestInfoModelMappingFactory.createInfoModelMappingModel();

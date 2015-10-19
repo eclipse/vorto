@@ -37,6 +37,7 @@ public class TestInfoModelMappingFactory {
 	public static InfoModelMappingRule createInfoModelStereoTypeMappingRule() {
 		InfoModelMappingRule rule = MappingFactory.eINSTANCE.createInfoModelMappingRule();
 		rule.getSources().add(createInfoModelAttributeSource());
+		rule.getSources().add(createInfoModelSource());
 		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
@@ -63,7 +64,11 @@ public class TestInfoModelMappingFactory {
 		return infoModelPropertySource;
 	}
 
-
+	private static InfoModelAttributeSource createInfoModelSource() {
+		InfoModelAttributeSource infoModelAttributeSource = MappingFactory.eINSTANCE.createInfoModelAttributeSource();
+		infoModelAttributeSource.setModel(informationModel);
+		return infoModelAttributeSource;
+	}
 	private static InfoModelAttributeSource createInfoModelAttributeSource() {
 		InfoModelAttributeSource infoModelAttributeSource = MappingFactory.eINSTANCE.createInfoModelAttributeSource();
 		infoModelAttributeSource.setModel(informationModel);
