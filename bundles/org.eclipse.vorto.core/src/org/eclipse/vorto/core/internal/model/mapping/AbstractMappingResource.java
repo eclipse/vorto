@@ -124,9 +124,10 @@ public abstract class AbstractMappingResource extends AbstractModelElement imple
 
 	private List<MappingRule> getLocalRulesByModelObject(EObject modelObjecct) {
 
-		if (isEmptyMappingModel())
+		if (isEmptyMappingModel() || (modelObjecct==null)){
 			return Collections.emptyList();
-
+		}
+		
 		List<MappingRule> mappingRules = new ArrayList<>();
 		for (MappingRule rule : this.mappingModel.getRules()) {
 			for (Source source : rule.getSources()) {
@@ -195,6 +196,13 @@ public abstract class AbstractMappingResource extends AbstractModelElement imple
 		return this.mappingModel;
 	}
 
+	protected boolean matchesModel(Model model1, Model model2) {
+		return StringUtils.equals(model1.getName(), model2.getName())
+				&& StringUtils.equals(model1.getNamespace(),
+						model2.getNamespace())
+				&& StringUtils.equals(model1.getVersion(), model2.getVersion());
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -37,6 +37,38 @@ public class EnumMappingResource extends AbstractMappingResource {
 	@Override
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
+		
+		if(modelObject instanceof Enum){
+			addRuleIfMatchesEnum((Enum)modelObject, mappingRules, rule, source);
+		}else if(modelObject instanceof EnumLiteral){					
+			addRuleIfMatchesEnumLiteral(modelObject, mappingRules, rule, source);
+		}
+	}
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	private void addRuleIfMatchesEnum(Enum modelObject, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
+		if (source instanceof EnumPropertySource) {
+			Enum enumType = (Enum) ((EnumPropertySource) source).getModel();
+			if (matchesModel(enumType, modelObject)) {
+				mappingRules.add(rule);
+			}
+		}
+	}
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	protected void addRuleIfMatchesEnumLiteral(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
 		if (source instanceof EnumPropertySource) {
 			EnumLiteral enumLiteral = ((EnumPropertySource) source).getProperty();
 			Enum enumType = (Enum) ((EnumPropertySource) source).getModel();

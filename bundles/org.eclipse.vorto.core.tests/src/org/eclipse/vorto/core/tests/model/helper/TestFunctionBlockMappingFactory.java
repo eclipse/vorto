@@ -44,7 +44,7 @@ public class TestFunctionBlockMappingFactory {
 		rule.setTarget(TestStereoTypeFactory.createStereoTypeTarget());
 		return rule;
 	}
-
+	
 	private static FunctionBlockAttributeSource createFunctionBlockAttributeSource() {
 		FunctionBlockAttributeSource source = MappingFactory.eINSTANCE.createFunctionBlockAttributeSource();
 		source.setAttribute(ModelAttribute.DESCRIPTION);

@@ -49,6 +49,14 @@ public class FunctionBlockMappingTest {
 	}
 
 	@Test
+	public void testGetRuleByFbModel() {
+		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
+				Collections.<IMapping> emptyList());
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(functionblockModel);
+		assertEquals(1, mappingRules.size());
+	}
+	
+	@Test
 	public void testGetRuleByConfigurationProperty() {
 		Property property = functionblockModel.getFunctionblock().getConfiguration().getProperties().get(0);
 		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,

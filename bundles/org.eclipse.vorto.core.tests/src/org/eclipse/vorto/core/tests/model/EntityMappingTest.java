@@ -40,6 +40,16 @@ public class EntityMappingTest {
 	}
 
 	@Test
+	public void testGetRuleByEntity() {
+		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
+
+		IMapping mappingRule = MappingResourceFactory.getInstance().createMapping(mappingModel,
+				Collections.<IMapping> emptyList());
+		List<MappingRule> mappingRules = mappingRule.getRulesByModelObject(TestEntityMappingFactory.entity);
+		assertEquals(1, mappingRules.size());
+	}
+	
+	@Test
 	public void testGetRuleByEntityProperty() {
 		MappingModel mappingModel = TestEntityMappingFactory.createEntityMappingModel();
 

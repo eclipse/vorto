@@ -51,6 +51,40 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 
+		if(modelObject instanceof FunctionblockModel){
+			addRuleIfMatchesFunctionBlockModel((FunctionblockModel)modelObject, mappingRules, rule, source);
+		}else {		
+			addRuleIfMatchesFunctionBlockProperty(modelObject, mappingRules, rule, source);
+		}
+
+	}
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	private void addRuleIfMatchesFunctionBlockModel(FunctionblockModel modelObject, List<MappingRule> mappingRules,
+			MappingRule rule, Source source) {
+		if (source instanceof FunctionBlockAttributeSource) {
+			FunctionblockModel functionblockModel = ((FunctionBlockAttributeSource) source).getModel();
+			if(matchesModel(modelObject, functionblockModel)){
+				mappingRules.add(rule);
+			}
+		}
+	}
+
+
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	protected void addRuleIfMatchesFunctionBlockProperty(EObject modelObject, List<MappingRule> mappingRules,
+			MappingRule rule, Source source) {
 		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource) source).getModel();
 		if (source instanceof ConfigurationSource) {
 			addRuleIfMatchesProperty(modelObject, mappingRules, rule, functionblockModel,
@@ -67,7 +101,6 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 		} else if (source instanceof EventSource) {
 
 		}
-
 	}
 
 	private void addRuleIfMatchesOperation(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
