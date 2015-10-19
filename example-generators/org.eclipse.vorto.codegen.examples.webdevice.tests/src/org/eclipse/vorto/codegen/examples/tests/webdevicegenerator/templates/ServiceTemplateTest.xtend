@@ -35,9 +35,6 @@ class ServiceClassTemplateTest {
 		'''package org.eclipse.vorto.iot.fridge.service;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
@@ -49,7 +46,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.beanutils.BeanUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import org.eclipse.vorto.iot.fridge.model.Fridge;
 import org.eclipse.vorto.iot.fridge.model.FridgeConfiguration;		
@@ -104,25 +101,12 @@ public class FridgeService {
 	public void saveConfiguration(Object configurationData)
 			throws IllegalAccessException, InvocationTargetException {
 		logger.info("saveConfiguration invoked: " + configurationData);
-		Map<String, String> rawMap = (Map<String, String>) configurationData;
+		ObjectMapper mapper = new ObjectMapper();
 
-		FridgeConfiguration configuration = fridgeinstance.getConfiguration();
-		BeanUtils.populate(configuration, getMapWithoutKeyPrefix(rawMap));
+		FridgeConfiguration convertValue = mapper.convertValue(configurationData, FridgeConfiguration.class);
+		fridgeinstance.setConfiguration(convertValue);
 
 	}
-
-	private Map<String, String> getMapWithoutKeyPrefix(
-			Map<String, String> rawMap) {
-		Map<String, String> mapWithoutKeyPrefix = new HashMap<String, String>();
-
-		String prefix = this.getInstance().getClass().getSimpleName()
-				+ "_configuration_id_";
-		for (Entry<String, String> entry : rawMap.entrySet()) {
-			String newKey = entry.getKey().substring(prefix.length());
-			mapWithoutKeyPrefix.put(newKey, entry.getValue());
-		}
-		return mapWithoutKeyPrefix;
-	}							
 }'''
 	}
 }

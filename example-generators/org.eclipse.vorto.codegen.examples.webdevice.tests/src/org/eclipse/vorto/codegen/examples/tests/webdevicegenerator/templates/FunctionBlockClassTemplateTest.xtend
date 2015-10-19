@@ -74,6 +74,10 @@ public class Fridge {
 		return configuration;
 	}
 	
+	public void setConfiguration(FridgeConfiguration configuration) {
+		this.configuration = configuration;
+	}
+	
 	public FridgeStatus getStatus() {
 		return status;
 	}

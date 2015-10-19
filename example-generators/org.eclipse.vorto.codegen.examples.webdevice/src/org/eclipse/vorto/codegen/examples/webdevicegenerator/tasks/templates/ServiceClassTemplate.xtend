@@ -29,9 +29,6 @@ class ServiceClassTemplate implements ITemplate<FunctionblockProperty> {
 		package «ModuleUtil.getServicePackage(model)»;
 
 		import java.lang.reflect.InvocationTargetException;
-		import java.util.HashMap;
-		import java.util.Map;
-		import java.util.Map.Entry;
 		import java.util.logging.Logger;
 		
 		import javax.ws.rs.Consumes;
@@ -43,7 +40,7 @@ class ServiceClassTemplate implements ITemplate<FunctionblockProperty> {
 		import javax.ws.rs.core.MediaType;
 		import javax.ws.rs.core.Response;
 		
-		import org.apache.commons.beanutils.BeanUtils;
+		import org.codehaus.jackson.map.ObjectMapper;
 		
 		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»;
 		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»Configuration;		
@@ -80,25 +77,12 @@ class ServiceClassTemplate implements ITemplate<FunctionblockProperty> {
 			public void saveConfiguration(Object configurationData)
 					throws IllegalAccessException, InvocationTargetException {
 				logger.info("saveConfiguration invoked: " + configurationData);
-				Map<String, String> rawMap = (Map<String, String>) configurationData;
+				ObjectMapper mapper = new ObjectMapper();
 		
-				«ModuleUtil.getCamelCase(fbProperty.name)»Configuration configuration = «fbProperty.name.toFirstLower»instance.getConfiguration();
-				BeanUtils.populate(configuration, getMapWithoutKeyPrefix(rawMap));
+				«ModuleUtil.getCamelCase(fbProperty.name)»Configuration convertValue = mapper.convertValue(configurationData, «fbProperty.name.toFirstUpper»Configuration.class);
+				«fbProperty.name.toFirstLower»instance.setConfiguration(convertValue);
 		
 			}
-		
-			private Map<String, String> getMapWithoutKeyPrefix(
-					Map<String, String> rawMap) {
-				Map<String, String> mapWithoutKeyPrefix = new HashMap<String, String>();
-		
-				String prefix = this.getInstance().getClass().getSimpleName()
-						+ "_configuration_id_";
-				for (Entry<String, String> entry : rawMap.entrySet()) {
-					String newKey = entry.getKey().substring(prefix.length());
-					mapWithoutKeyPrefix.put(newKey, entry.getValue());
-				}
-				return mapWithoutKeyPrefix;
-			}							
 		}'''
 	}
 	

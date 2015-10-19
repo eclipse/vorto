@@ -67,6 +67,10 @@ class FunctionBlockClassTemplate implements ITemplate<FunctionblockProperty> {
 				return configuration;
 			}
 			
+			public void setConfiguration(«fbProperty.name.toFirstUpper»Configuration configuration) {
+				this.configuration = configuration;
+			}
+			
 			public «fbProperty.name.toFirstUpper»Status getStatus() {
 				return status;
 			}
