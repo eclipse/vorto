@@ -38,7 +38,7 @@ public class ModelEMFResource extends ModelResource {
 	}
 	
 	public String getDisplayName() {
-		return model.getDescription() != null ?model.getDisplayname() : getId().getName();
+		return model.getDisplayname() != null ?model.getDisplayname() : getId().getName();
 	}
 
 	public String getDescription() {
