@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
@@ -28,7 +29,9 @@ public class ModelEMFResource extends ModelResource {
 			return ModelType.Functionblock;
 		} else if (model instanceof InformationModel) {
 			return ModelType.InformationModel;
-		} else  {
+		} else if (model instanceof MappingModel) {
+			return ModelType.Mapping;
+		}else  {
 			throw new UnsupportedOperationException("Model of type "+model.getClass()+ " cannot be parsed");
 		}
 	}

@@ -33,7 +33,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
-import javax.jcr.ReferentialIntegrityException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -63,7 +62,6 @@ import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.service.ModelRepositoryException;
 import org.eclipse.vorto.repository.validation.IModelValidator;
 import org.eclipse.vorto.repository.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,7 +105,7 @@ public class JcrModelRepository implements IModelRepository {
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
-				if (currentNode.hasProperty("vorto:type")) {
+				if (currentNode.hasProperty("vorto:type") && !isMappingNode(currentNode)) {
 					modelResources.add(createModelResource(currentNode));
 				}
 			}
@@ -116,6 +114,10 @@ public class JcrModelRepository implements IModelRepository {
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Could not create query manager", e);
 		}
+	}
+	
+	private boolean isMappingNode(Node node) throws RepositoryException {
+		return node.hasProperty("vorto:type") && ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
 	}
 	
 	private ModelResource createModelResource(Node node) throws RepositoryException {

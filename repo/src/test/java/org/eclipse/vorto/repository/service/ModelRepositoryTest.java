@@ -72,16 +72,17 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 		assertEquals(0, modelRepository.search("*").size());
 	}
 
-//	@Test
-//	public void testCheckinValidModel() throws Exception {
-//		UploadModelResult uploadResult = modelRepository.upload(IOUtils
-//				.toByteArray(new ClassPathResource("sample_models/Color.type")
-//						.getInputStream()), "Color.type");
-//		assertEquals(true, uploadResult.isValid());
-//		assertEquals(0, modelRepository.search("*").size());
-//		modelRepository.checkin(uploadResult.getHandleId());
-//		assertEquals(1, modelRepository.search("*").size());
-//	}
+	@Test
+	public void testCheckinValidModel() throws Exception {
+		UploadModelResult uploadResult = modelRepository.upload(IOUtils
+				.toByteArray(new ClassPathResource("sample_models/Color.type")
+						.getInputStream()), "Color.type");
+		assertEquals(true, uploadResult.isValid());
+		assertEquals(0, modelRepository.search("*").size());
+		modelRepository.checkin(uploadResult.getHandleId());
+		Thread.sleep(2000); // wait until index was updated by modeshape
+		assertEquals(1, modelRepository.search("*").size());
+	}
 	
 	@Test
 	public void testCheckinInvalidModel() throws Exception {
@@ -130,15 +131,15 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 		assertEquals("org.eclipse.vorto.examples.type.Color:1.0.0",result.getReferences().get(0).getPrettyFormat());
 	}
 	
-//	@Test
-//	public void testGetReferencedBy() {
-//		checkinModel("Color.type");
-//		checkinModel("Colorlight.fbmodel");
-//		assertEquals(2,modelRepository.search("*").size());
-//		ModelResource result = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
-//		assertEquals(1,result.getReferencedBy().size());
-//		assertEquals("org.eclipse.vorto.examples.fb.ColorLight:1.0.0",result.getReferencedBy().get(0).getPrettyFormat());
-//	}
+	@Test
+	public void testGetReferencedBy() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		assertEquals(2,modelRepository.search("*").size());
+		ModelResource result = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		assertEquals(1,result.getReferencedBy().size());
+		assertEquals("org.eclipse.vorto.examples.fb.ColorLight:1.0.0",result.getReferencedBy().get(0).getPrettyFormat());
+	}
 	
 	@Test
 	public void testDeleteUnUsedType() {
@@ -190,5 +191,44 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 		} catch(Exception ex) {
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	@Test
+	public void tesUploadMapping() throws IOException {
+		UploadModelResult uploadResult = modelRepository.upload(IOUtils
+				.toByteArray(new ClassPathResource("sample_models/Color.type")
+						.getInputStream()), "Color.type");
+		assertEquals(true, uploadResult.isValid());
+		assertNull(uploadResult.getErrorMessage());
+		assertNotNull(uploadResult.getHandleId());
+		ModelResource resource = uploadResult.getModelResource();
+		assertEquals("org.eclipse.vorto.examples.type", resource.getId()
+				.getNamespace());
+		assertEquals("Color", resource.getId().getName());
+		assertEquals("1.0.0", resource.getId().getVersion());
+		assertEquals(ModelType.Datatype, resource.getModelType());
+		assertEquals(0, resource.getReferences().size());
+		assertEquals("Color", resource.getDisplayName());
+		assertNull(resource.getDescription());
+		assertEquals(0, modelRepository.search("*").size());
+	}
+	
+	@Test
+	public void testCheckinValidMapping() throws Exception {
+		UploadModelResult uploadResult = modelRepository.upload(IOUtils
+				.toByteArray(new ClassPathResource("sample_models/Color.type")
+						.getInputStream()), "Color.type");
+		assertEquals(true, uploadResult.isValid());
+		assertEquals(0, modelRepository.search("*").size());
+		modelRepository.checkin(uploadResult.getHandleId());
+		Thread.sleep(2000); // hack coz it might take awhile until index is updated to do a search
+		assertEquals(1, modelRepository.search("*").size());
+		
+		uploadResult = modelRepository.upload(IOUtils
+				.toByteArray(new ClassPathResource("sample_models/sample.mapping")
+						.getInputStream()), "sample.mapping");
+		assertEquals(true, uploadResult.isValid());
+		modelRepository.checkin(uploadResult.getHandleId());
+		assertEquals(1, modelRepository.search("*").size());
 	}
 }

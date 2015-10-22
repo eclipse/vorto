@@ -22,7 +22,8 @@ package org.eclipse.vorto.repository.model;
 public enum ModelType {
 	Functionblock(".fbmodel"),
 	InformationModel(".infomodel"),
-	Datatype(".type");
+	Datatype(".type"),
+	Mapping(".mapping");
 	
 	private String extension;
 	
