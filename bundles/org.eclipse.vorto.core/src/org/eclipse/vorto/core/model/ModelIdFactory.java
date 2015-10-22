@@ -19,8 +19,10 @@ package org.eclipse.vorto.core.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
@@ -36,14 +38,17 @@ public class ModelIdFactory {
 				model.getNamespace(), model.getVersion());
 	}
 
-	private static ModelType getModelType(Model model) {
+	public static ModelType getModelType(Model model) {
 		if (model instanceof InformationModel) {
 			return ModelType.InformationModel;
 		} else if (model instanceof FunctionblockModel) {
 			return ModelType.Functionblock;
-		} else {
+		} else if(model instanceof Type){
 			return ModelType.Datatype;
+		} else if(model instanceof MappingModel){
+			return ModelType.Mapping;
 		}
+		throw new UnsupportedOperationException("ModelType not found for : " + model.getClass());
 	}
 
 	public static ModelId newInstance(ModelType modelType, Model model) {

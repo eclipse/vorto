@@ -1,0 +1,24 @@
+namespace examples.mappingmodels.flying
+version 1.0.0
+displayname "LWM2MResource"
+description "Function block model mapping for Drone"
+category demo
+using examples.functionblockmodels.flying.Drone ; 1.0.0
+using examples.mappingmodels.flying.AltitudeMapping ; 1.0.0
+using examples.mappingmodels.flying.LatitudeMapping ; 1.0.0
+using examples.mappingmodels.flying.LongitudeMapping ; 1.0.0
+
+functionblockmapping LWM2MResource {
+	
+	targetplatform LWM2MResource
+	
+	from Drone.status.altitude
+	to Altitude with {Units: "m", Operations : "Ascend, Descend"}
+
+	from Drone.status.latitude
+	to Latitude with {Units: "deg", Operations : "Forward, Back"}
+	
+	from Drone.status.longitude
+	to Longitude with {Units: "deg", Operations : "Left, Right"}
+
+}

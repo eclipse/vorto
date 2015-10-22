@@ -300,6 +300,8 @@ public enum PrimitiveType implements Enumerator {
 	 * Returns the '<em><b>Primitive Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param literal the literal.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static PrimitiveType get(String literal) {
@@ -316,6 +318,8 @@ public enum PrimitiveType implements Enumerator {
 	 * Returns the '<em><b>Primitive Type</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param name the name.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static PrimitiveType getByName(String name) {
@@ -332,6 +336,8 @@ public enum PrimitiveType implements Enumerator {
 	 * Returns the '<em><b>Primitive Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
+	 * @param value the integer value.
+	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static PrimitiveType get(int value) {

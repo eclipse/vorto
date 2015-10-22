@@ -26,19 +26,18 @@ import org.eclipse.vorto.core.api.model.mapping.EventSource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
-import org.eclipse.vorto.core.api.model.mapping.FunctionblockModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
-import org.eclipse.vorto.core.model.MappingAttribute;
-
+import org.eclipse.vorto.core.model.IMapping;
 
 public class FunctionBlockMappingResource extends AbstractMappingResource {
 
-	public FunctionBlockMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public FunctionBlockMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
 	/*
@@ -52,7 +51,41 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 
-		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource)source).getModel();
+		if(modelObject instanceof FunctionblockModel){
+			addRuleIfMatchesFunctionBlockModel((FunctionblockModel)modelObject, mappingRules, rule, source);
+		}else {		
+			addRuleIfMatchesFunctionBlockProperty(modelObject, mappingRules, rule, source);
+		}
+
+	}
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	private void addRuleIfMatchesFunctionBlockModel(FunctionblockModel modelObject, List<MappingRule> mappingRules,
+			MappingRule rule, Source source) {
+		if (source instanceof FunctionBlockAttributeSource) {
+			FunctionblockModel functionblockModel = ((FunctionBlockAttributeSource) source).getModel();
+			if(matchesModel(modelObject, functionblockModel)){
+				mappingRules.add(rule);
+			}
+		}
+	}
+
+
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	protected void addRuleIfMatchesFunctionBlockProperty(EObject modelObject, List<MappingRule> mappingRules,
+			MappingRule rule, Source source) {
+		FunctionblockModel functionblockModel = (FunctionblockModel) ((FunctionBlockSource) source).getModel();
 		if (source instanceof ConfigurationSource) {
 			addRuleIfMatchesProperty(modelObject, mappingRules, rule, functionblockModel,
 					((ConfigurationSource) source).getProperty());
@@ -68,7 +101,6 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 		} else if (source instanceof EventSource) {
 
 		}
-
 	}
 
 	private void addRuleIfMatchesOperation(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
@@ -100,7 +132,7 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 
 	protected boolean matchesFunctionBlockProperty(FunctionblockModel functionBlockModel,
 			Property functionBlockProperty, EObject modelObject) {
-		if (!(modelObject instanceof Property)) {
+		if ((functionBlockProperty == null) || !(modelObject instanceof Property)) {
 			return false;
 		}
 		Property modelObjectProperty = ((Property) modelObject);
@@ -113,12 +145,12 @@ public class FunctionBlockMappingResource extends AbstractMappingResource {
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
 
 		if (source instanceof FunctionBlockAttributeSource) {
-			FunctionblockModelAttribute attribute = ((FunctionBlockAttributeSource) source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+			ModelAttribute attribute = ((FunctionBlockAttributeSource) source).getAttribute();
+			if (modelAttribute ==attribute) {
 				mappingRules.add(rule);
 			}
 		}

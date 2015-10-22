@@ -16,6 +16,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getRules <em>Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getTargetPlatform <em>Target Platform</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel()
@@ -38,5 +39,31 @@ public interface MappingModel extends Model {
 	 * @generated
 	 */
 	EList<MappingRule> getRules();
+
+	/**
+	 * Returns the value of the '<em><b>Target Platform</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Target Platform</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Target Platform</em>' attribute.
+	 * @see #setTargetPlatform(String)
+	 * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel_TargetPlatform()
+	 * @model
+	 * @generated
+	 */
+	String getTargetPlatform();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getTargetPlatform <em>Target Platform</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Target Platform</em>' attribute.
+	 * @see #getTargetPlatform()
+	 * @generated
+	 */
+	void setTargetPlatform(String value);
 
 } // MappingModel

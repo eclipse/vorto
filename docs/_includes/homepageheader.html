@@ -1,0 +1,34 @@
+<!--Header section Site navigation -->
+
+{% include base.html %}
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top navbar-lp" role="navigation">
+		<div class="container">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="{{base}}/index.html">Vorto</a>
+				</div>
+				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
+						<ul class="nav navbar-nav pull-right">
+							{% for menu in site.data.menus %}
+								<li {% if page.path contains menu.url %} class ="active"{% endif %}>
+									{% if menu.url contains 'https://' or menu.url contains 'http://' %}
+										<a target="_blank" href="{{ menu.url }}">{{ menu.name }}</a>
+									{% else %}
+										<a href="{{base}}/{{ menu.url }}">{{ menu.name }}</a>
+
+									{% endif %}
+								</li>
+							{% endfor %}
+						</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+		</div>
+		<!-- /.container -->
+</nav>

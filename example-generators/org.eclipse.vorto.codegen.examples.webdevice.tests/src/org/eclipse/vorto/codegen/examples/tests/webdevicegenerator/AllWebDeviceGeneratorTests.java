@@ -23,6 +23,7 @@ import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.tasks.Service
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.tasks.StatusClassGeneratorTaskTest;
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.tasks.WebXmlGeneratorTaskTest;
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.tasks.WordSeperatorTest;
+import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.templates.AppScriptTemplateTest;
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.templates.ConfigurationClassTemplateTest;
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.templates.FaultClassTemplateTest;
 import org.eclipse.vorto.codegen.examples.tests.webdevicegenerator.templates.FunctionBlockClassTemplateTest;
@@ -37,6 +38,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+	AppScriptTemplateTest.class,
 	WordSeperatorTest.class,
 	ModuleUtilTest.class,
 	ConfigurationClassTemplateTest.class,
@@ -53,6 +55,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	IndexHtmlFileGeneratorTaskTest.class,
 	ServiceClassGeneratorTaskTest.class,
 	StatusClassGeneratorTaskTest.class,
+	AppScriptTemplateTest.class,
 	WebXmlGeneratorTaskTest.class	
 })
 public class AllWebDeviceGeneratorTests {

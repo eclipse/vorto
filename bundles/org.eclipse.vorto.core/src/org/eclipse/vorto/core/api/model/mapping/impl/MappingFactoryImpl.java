@@ -58,12 +58,12 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case MappingPackage.MAPPING_MODEL: return createMappingModel();
-			case MappingPackage.INFO_MODEL_MAPPING: return createInfoModelMapping();
+			case MappingPackage.INFO_MODEL_MAPPING_MODEL: return createInfoModelMappingModel();
 			case MappingPackage.INFO_MODEL_MAPPING_RULE: return createInfoModelMappingRule();
 			case MappingPackage.INFOMODEL_SOURCE: return createInfomodelSource();
 			case MappingPackage.INFO_MODEL_PROPERTY_SOURCE: return createInfoModelPropertySource();
 			case MappingPackage.INFO_MODEL_ATTRIBUTE_SOURCE: return createInfoModelAttributeSource();
-			case MappingPackage.FUNCTION_BLOCK_MAPPING: return createFunctionBlockMapping();
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_MODEL: return createFunctionBlockMappingModel();
 			case MappingPackage.FUNCTION_BLOCK_MAPPING_RULE: return createFunctionBlockMappingRule();
 			case MappingPackage.FUNCTION_BLOCK_SOURCE: return createFunctionBlockSource();
 			case MappingPackage.FUNCTION_BLOCK_PROPERTY_SOURCE: return createFunctionBlockPropertySource();
@@ -72,17 +72,17 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 			case MappingPackage.STATUS_SOURCE: return createStatusSource();
 			case MappingPackage.OPERATION_SOURCE: return createOperationSource();
 			case MappingPackage.EVENT_SOURCE: return createEventSource();
-			case MappingPackage.ENTITY_MAPPING: return createEntityMapping();
+			case MappingPackage.ENTITY_MAPPING_MODEL: return createEntityMappingModel();
 			case MappingPackage.ENTITY_MAPPING_RULE: return createEntityMappingRule();
 			case MappingPackage.ENTITY_SOURCE: return createEntitySource();
 			case MappingPackage.ENTITY_PROPERTY_SOURCE: return createEntityPropertySource();
 			case MappingPackage.ENTITY_ATTRIBUTE_SOURCE: return createEntityAttributeSource();
-			case MappingPackage.ENUM_MAPPING: return createEnumMapping();
+			case MappingPackage.ENUM_MAPPING_MODEL: return createEnumMappingModel();
 			case MappingPackage.ENUM_MAPPING_RULE: return createEnumMappingRule();
 			case MappingPackage.ENUM_SOURCE: return createEnumSource();
 			case MappingPackage.ENUM_PROPERTY_SOURCE: return createEnumPropertySource();
 			case MappingPackage.ENUM_ATTRIBUTE_SOURCE: return createEnumAttributeSource();
-			case MappingPackage.DATA_TYPE_MAPPING: return createDataTypeMapping();
+			case MappingPackage.DATA_TYPE_MAPPING_MODEL: return createDataTypeMappingModel();
 			case MappingPackage.TARGET: return createTarget();
 			case MappingPackage.REFERENCE_TARGET: return createReferenceTarget();
 			case MappingPackage.STEREO_TYPE_TARGET: return createStereoTypeTarget();
@@ -103,10 +103,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case MappingPackage.INFO_MODEL_ATTRIBUTE:
-				return createInfoModelAttributeFromString(eDataType, initialValue);
-			case MappingPackage.FUNCTIONBLOCK_MODEL_ATTRIBUTE:
-				return createFunctionblockModelAttributeFromString(eDataType, initialValue);
 			case MappingPackage.MODEL_ATTRIBUTE:
 				return createModelAttributeFromString(eDataType, initialValue);
 			default:
@@ -122,10 +118,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case MappingPackage.INFO_MODEL_ATTRIBUTE:
-				return convertInfoModelAttributeToString(eDataType, instanceValue);
-			case MappingPackage.FUNCTIONBLOCK_MODEL_ATTRIBUTE:
-				return convertFunctionblockModelAttributeToString(eDataType, instanceValue);
 			case MappingPackage.MODEL_ATTRIBUTE:
 				return convertModelAttributeToString(eDataType, instanceValue);
 			default:
@@ -148,9 +140,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public InfoModelMapping createInfoModelMapping() {
-		InfoModelMappingImpl infoModelMapping = new InfoModelMappingImpl();
-		return infoModelMapping;
+	public InfoModelMappingModel createInfoModelMappingModel() {
+		InfoModelMappingModelImpl infoModelMappingModel = new InfoModelMappingModelImpl();
+		return infoModelMappingModel;
 	}
 
 	/**
@@ -198,9 +190,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public FunctionBlockMapping createFunctionBlockMapping() {
-		FunctionBlockMappingImpl functionBlockMapping = new FunctionBlockMappingImpl();
-		return functionBlockMapping;
+	public FunctionBlockMappingModel createFunctionBlockMappingModel() {
+		FunctionBlockMappingModelImpl functionBlockMappingModel = new FunctionBlockMappingModelImpl();
+		return functionBlockMappingModel;
 	}
 
 	/**
@@ -288,9 +280,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EntityMapping createEntityMapping() {
-		EntityMappingImpl entityMapping = new EntityMappingImpl();
-		return entityMapping;
+	public EntityMappingModel createEntityMappingModel() {
+		EntityMappingModelImpl entityMappingModel = new EntityMappingModelImpl();
+		return entityMappingModel;
 	}
 
 	/**
@@ -338,9 +330,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EnumMapping createEnumMapping() {
-		EnumMappingImpl enumMapping = new EnumMappingImpl();
-		return enumMapping;
+	public EnumMappingModel createEnumMappingModel() {
+		EnumMappingModelImpl enumMappingModel = new EnumMappingModelImpl();
+		return enumMappingModel;
 	}
 
 	/**
@@ -388,9 +380,9 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DataTypeMapping createDataTypeMapping() {
-		DataTypeMappingImpl dataTypeMapping = new DataTypeMappingImpl();
-		return dataTypeMapping;
+	public DataTypeMappingModel createDataTypeMappingModel() {
+		DataTypeMappingModelImpl dataTypeMappingModel = new DataTypeMappingModelImpl();
+		return dataTypeMappingModel;
 	}
 
 	/**
@@ -461,46 +453,6 @@ public class MappingFactoryImpl extends EFactoryImpl implements MappingFactory {
 	public MappingRule createMappingRule() {
 		MappingRuleImpl mappingRule = new MappingRuleImpl();
 		return mappingRule;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public InfoModelAttribute createInfoModelAttributeFromString(EDataType eDataType, String initialValue) {
-		InfoModelAttribute result = InfoModelAttribute.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertInfoModelAttributeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public FunctionblockModelAttribute createFunctionblockModelAttributeFromString(EDataType eDataType, String initialValue) {
-		FunctionblockModelAttribute result = FunctionblockModelAttribute.get(initialValue);
-		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
-		return result;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public String convertFunctionblockModelAttributeToString(EDataType eDataType, Object instanceValue) {
-		return instanceValue == null ? null : instanceValue.toString();
 	}
 
 	/**

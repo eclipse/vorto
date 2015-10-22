@@ -19,10 +19,10 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnPrimitiveTypeImpl#getReturnType <em>Return Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

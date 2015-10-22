@@ -27,10 +27,40 @@ class FunctionblockModelFormatterTest extends AbstractXtextTests {
 	
 	@Test
 	def void testFormattingForBasicBlock() {
-		val expectedText = this.readFileIntoString("resources/BinarySwitchFormatted.fbmodel")
-		val rawText = this.readFileIntoString("resources/BinarySwitchUnformatted.fbmodel")
+		val expectedText = getFormatted
+		val rawText = getUnFormatted
 		rawText.assertFormattedAs(expectedText)
 	}
+	
+	def String getFormatted(){
+		'''namespace org.eclipse.vorto.example
+version 1.0.0
+displayname "BinarySwitch"
+description "Function block model for BinarySwitch"
+category example
+using eclipse.vorto.type.OnOff ; 1.0.0
+using eclipse.vorto.type.OnOffUnit ; 1.0.0
+
+functionblock BinarySwitch {
+	status {
+		mandatory currentStatus as OnOff
+	}
+
+	operations {
+		on()
+		off()
+		toggle()
+		setStatus(targetStatus as OnOffUnit) returns OnOff
+	}
+
+}'''
+	}
+	
+		def String getUnFormatted(){
+			return '''namespace org.eclipse.vorto.example version 1.0.0 
+			displayname "BinarySwitch" description "Function block model for BinarySwitch" category example
+			using eclipse.vorto.type.OnOff ; 1.0.0 using eclipse.vorto.type.OnOffUnit ; 1.0.0 functionblock BinarySwitch {	status { mandatory currentStatus as OnOff} operations {	on()	off() toggle() setStatus(targetStatus as OnOffUnit) returns OnOff}}'''
+		}
 	
 	def void assertFormattedAs(CharSequence input, CharSequence expected) {
 		val expectedText = expected.toString

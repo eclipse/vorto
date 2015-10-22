@@ -56,8 +56,8 @@ class FbServiceClassTemplate {
 			
 			@Override
 			protected Dictionary<String, String> addInformationModelInstanceProperties(Dictionary<String, String> properties) {
-				properties.put(InformationModelConstants.DESCRIPTION,"«context.model.functionblock.description»");
-				properties.put(InformationModelConstants.CATEGORY, "«context.model.functionblock.category»");
+				properties.put(InformationModelConstants.DESCRIPTION,"«context.model.description»");
+				properties.put(InformationModelConstants.CATEGORY, "«context.model.category»");
 				properties.put(org.osgi.service.device.Constants.DEVICE_CATEGORY, "«context.functionBlockName»FB");
 				return properties;
 			}

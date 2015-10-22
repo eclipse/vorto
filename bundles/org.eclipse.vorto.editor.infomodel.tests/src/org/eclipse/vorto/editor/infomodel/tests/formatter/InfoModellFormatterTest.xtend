@@ -43,11 +43,41 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 		
 	@Test
 	def void testFormattingForBasicBlock() {
-		val expectedText = this.readFileIntoString("resources/ColorLampFormatted.infomodel")
-		val rawText = this.readFileIntoString("resources/ColorLampUnformatted.infomodel")
+		val expectedText = getFormattedColorLamp
+		val rawText = getUnFormattedColorLamp
 		rawText.assertFormattedAs(expectedText)
 	}
 
+	def String getFormattedColorLamp(){
+		return '''namespace org.eclipse.vorto.example
+version 1.0.0
+displayname "ColorLamp"
+description "Information model for a standard color lamp."
+category example
+using eclipse.vorto.basic.BinarySwitch ; 1.0.0
+using com.mycompany.fb.RGBColorPicker ; 1.0.0
+using com.mycompany.fb.Dimmer ; 1.0.0
+
+infomodel ColorLamp {
+
+	functionblocks {
+		binaryswitch as BinarySwitch
+		rgbcolorpicker as RGBColorPicker
+		dimmer as Dimmer
+	}
+}'''
+	}
+	
+	def String getUnFormattedColorLamp(){
+		return '''namespace org.eclipse.vorto.example version 1.0.0 
+displayname "ColorLamp" description "Information model for a standard color lamp." category example 		
+		using eclipse.vorto.basic.BinarySwitch ; 1.0.0 using com.mycompany.fb.RGBColorPicker ; 1.0.0 using com.mycompany.fb.Dimmer ; 1.0.0
+infomodel ColorLamp {functionblocks {binaryswitch as BinarySwitch rgbcolorpicker as RGBColorPicker 
+		dimmer as Dimmer
+	}
+}'''
+	}
+	
 	def void assertFormattedAs(CharSequence input, CharSequence expected) {
 		val expectedText = expected.toString
 		val formattedText = (input.parse.eResource as XtextResource).parseResult.rootNode.format(0, input.length).formattedText

@@ -21,12 +21,12 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.FunctionblockPropertyImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.FunctionblockPropertyImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.FunctionblockPropertyImpl#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

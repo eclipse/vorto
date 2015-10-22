@@ -40,7 +40,7 @@ public interface IModelParser {
 	 *            {@link FunctionblockModel} {@link Type}
 	 * @return model object
 	 */
-	<M> M parseModel(IFile modelFile, Class<M> modelClass);
+	<M extends Model> M parseModel(IFile modelFile, Class<M> modelClass);
 
 	/**
 	 * Parses a given model file

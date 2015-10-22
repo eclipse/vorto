@@ -20,7 +20,6 @@ package org.eclipse.vorto.core.api.model.mapping;
  * @generated
  */
 public interface EnumSource extends Source {
-
 	/**
 	 * Returns the value of the '<em><b>Model</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -46,4 +45,5 @@ public interface EnumSource extends Source {
 	 * @generated
 	 */
 	void setModel(org.eclipse.vorto.core.api.model.datatype.Enum value);
+
 } // EnumSource
