@@ -30,6 +30,7 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#isMultiplicity <em>Multiplicity</em>}</li>
@@ -38,7 +39,6 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getConstraints <em>Constraints</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

@@ -16,7 +16,6 @@ package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Property;
@@ -26,15 +25,42 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.model.MappingAttribute;
+import org.eclipse.vorto.core.model.IMapping;
 
 public class EntityMappingResource extends AbstractMappingResource {
-	public EntityMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public EntityMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
 	@Override
 	protected void addRuleIfContainsModelObject(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
+
+		if (modelObject instanceof Entity) {
+			addRuleIfMatchesEntity((Entity) modelObject, mappingRules, rule, source);
+		} else if (modelObject instanceof Property) {
+			addRuleIfMatchesEntityProperty(modelObject, mappingRules, rule, source);
+		}
+
+	}
+
+	/**
+	 * @param modelObject
+	 * @param mappingRules
+	 * @param rule
+	 * @param source
+	 */
+	private void addRuleIfMatchesEntity(Entity modelObject, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
+		if (source instanceof EntityPropertySource) {
+			Entity entity = (Entity) ((EntityPropertySource) source).getModel();
+			if (this.matchesModel(modelObject, entity)) {
+				mappingRules.add(rule);
+			}
+		}
+	}
+
+	private void addRuleIfMatchesEntityProperty(EObject modelObject, List<MappingRule> mappingRules, MappingRule rule,
 			Source source) {
 		if (source instanceof EntityPropertySource) {
 			Property property = ((EntityPropertySource) source).getProperty();
@@ -42,27 +68,26 @@ public class EntityMappingResource extends AbstractMappingResource {
 			if (matchesEntityProperty(entity, property, modelObject)) {
 				mappingRules.add(rule);
 			}
+
 		}
 	}
 
 	private boolean matchesEntityProperty(Entity entity, Property property, EObject modelObject) {
-		if (!(modelObject instanceof Property)) {
+		if ((property == null) || !(modelObject instanceof Property)) {
 			return false;
 		}
 		Property modelProperty = ((Property) modelObject);
 		Entity modelEntity = (Entity) modelProperty.eContainer();
-		return StringUtils.equals(modelProperty.getName(), property.getName())
-				&& StringUtils.equals(modelEntity.getNamespace(), entity.getNamespace())
-				&& StringUtils.equals(modelEntity.getVersion(), entity.getVersion());
+		return this.matchesModel(entity, modelEntity);
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
 
 		if (source instanceof EntityAttributeSource) {
 			ModelAttribute attribute = ((EntityAttributeSource) source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+			if (modelAttribute == attribute) {
 				mappingRules.add(rule);
 			}
 		}

@@ -106,20 +106,9 @@
         <command
               commandId="org.eclipse.vorto.perspective.checkin"
               icon="icons/sample.gif"
-              label="Check-in to repository">
-           <visibleWhen
-                 checkEnabled="true">
-              <with
-                    variable="selection">
-                 <iterate
-                       ifEmpty="false"
-                       operator="and">
-                    <instanceof
-                          value="org.eclipse.vorto.core.model.IModelProject">
-                    </instanceof>
-                 </iterate>
-              </with>
-           </visibleWhen>
+              label="Share">
+              <adapt type="org.eclipse.vorto.core.model.DatatypeModelProject">
+              </adapt>
         </command>
         <separator
               name="additions1"
@@ -133,15 +122,9 @@
 			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.deletedatatypeproject"
 			  		id="id.package.menu.deletedatatype"
 			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
-			        label="Delete Data Type">   
-			      	<visibleWhen>
-		                  <with  variable="selection">
-		                   <iterate ifEmpty="false"
-		                        operator="or">
-		                         <instanceof value="org.eclipse.vorto.core.model.IModelProject"/>
-		                  </iterate>
-		                  </with>
-		             </visibleWhen>			                	            
+			        label="Delete Data Type">
+			        <adapt type="org.eclipse.vorto.core.model.DatatypeModelProject">
+		          	</adapt>   
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>
@@ -168,20 +151,9 @@
         <command
               commandId="org.eclipse.vorto.perspective.checkin"
               icon="icons/sample.gif"
-              label="Check-in to repository">
-           <visibleWhen
-                 checkEnabled="true">
-              <with
-                    variable="selection">
-                 <iterate
-                       ifEmpty="false"
-                       operator="and">
-                    <instanceof
-                          value="org.eclipse.vorto.core.model.IModelProject">
-                    </instanceof>
-                 </iterate>
-              </with>
-           </visibleWhen>
+              label="Share">
+               <adapt type="org.eclipse.vorto.core.model.FunctionblockModelProject">
+		          </adapt>
         </command>
         <separator
               name="additions1"
@@ -196,14 +168,8 @@
 			  		id="id.package.menu.deletefb"
 			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
 			        label="Delete Function Block">   
-			      	<visibleWhen>
-		                  <with  variable="selection">
-		                   <iterate ifEmpty="false"
-		                        operator="or">
-		                         <instanceof value="org.eclipse.vorto.core.model.FunctionblockModelProject"/>
-		                  </iterate>
-		                  </with>
-		             </visibleWhen>					                	            
+			        <adapt type="org.eclipse.vorto.core.model.FunctionblockModelProject">
+		          </adapt>
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>	   	     
@@ -232,14 +198,8 @@
 	              icon="platform:/plugin/org.eclipse.ui.browser/icons/elcl16/nav_go.gif"
 	              id="generate.code.submenu"
 	              label="Generate Code">
-	              <visibleWhen>
-		                  <with  variable="selection">
-		                   <iterate ifEmpty="false"
-		                        operator="or">
-		                         <instanceof value="org.eclipse.vorto.core.model.InformationModelProject"/>
-		                  </iterate>
-		                  </with>
-		             </visibleWhen>
+					<adapt type="org.eclipse.vorto.core.model.InformationModelProject">
+		          </adapt>	              
 	        </menu>
 	     </menuContribution>
          <menuContribution
@@ -248,20 +208,9 @@
             <command
                   commandId="org.eclipse.vorto.perspective.checkin"
                   icon="icons/sample.gif"
-                  label="Check-in to repository">
-               <visibleWhen
-                     checkEnabled="true">
-                  <with
-                        variable="selection">
-                     <iterate
-                           ifEmpty="false"
-                           operator="and">
-                        <instanceof
-                              value="org.eclipse.vorto.core.model.IModelProject">
-                        </instanceof>
-                     </iterate>
-                  </with>
-               </visibleWhen>
+                  label="Share">
+                  <adapt type="org.eclipse.vorto.core.model.InformationModelProject">
+		          </adapt>
             </command>
             <separator
                   name="additions1"
@@ -276,14 +225,8 @@
 			  		id="id.package.menu.deleteinfomodel"
 			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/delete.gif"
 			        label="Delete Information Model">   
-			      	<visibleWhen>
-		                  <with  variable="selection">
-		                   <iterate ifEmpty="false"
-		                        operator="or">
-		                         <instanceof value="org.eclipse.vorto.core.model.InformationModelProject"/>
-		                  </iterate>
-		                  </with>
-		             </visibleWhen>				                	            
+			      	<adapt type="org.eclipse.vorto.core.model.InformationModelProject">
+		          </adapt>
 			  	</command>
 				<separator name="additions1" visible="true"/>
 	    </menuContribution>		 	     	     

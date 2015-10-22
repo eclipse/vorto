@@ -48,9 +48,9 @@ public class GeneratorTestHelper {
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 		
 		fbmodel.setName("Fridge");
-		fb.setDescription("Refrigerator");
-		fb.setCategory("demo");
-		fb.setDescription("comment");
+		fbmodel.setDescription("Refrigerator");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("comment");
 		fbmodel.setNamespace("www.bosch.com");
 		fbmodel.setVersion("1.0.0");
 

@@ -69,8 +69,8 @@ class BlueprintgeneratorModuleTest {
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("1.0.0");
 		
-		fb.setDescription("Driver for function block Lamp");
-		fb.setCategory("demo");				
+		fbmodel.setDescription("Driver for function block Lamp");
+		fbmodel.setCategory("demo");				
 		fbmodel.setFunctionblock(fb);
 		
 		return fbmodel;

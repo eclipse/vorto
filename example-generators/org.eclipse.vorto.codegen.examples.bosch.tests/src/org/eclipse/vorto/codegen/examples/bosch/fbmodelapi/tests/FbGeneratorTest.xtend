@@ -54,10 +54,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
-				functionblock Fridge {
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo					
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
+				functionblock Fridge {				
 					configuration {
 						mandatory temperature as temperature
 					}
@@ -79,11 +79,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0			
+				version 1.0.0	
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -138,10 +138,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0		
+				displayname 'Refrigerator'
+				category indigo/demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category indigo/demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -204,10 +204,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0			
+				displayname 'Motion Detector'
+				category demo					
 				functionblock MotionDetector{
-					displayname 'Motion Detector'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -272,10 +272,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo								
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -335,10 +335,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0		
+				displayname 'Refrigerator'
+				category demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -405,11 +405,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0			
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
 				functionblock Fridge
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
 					configuration
 						mandatory temperature as int
 					operations
@@ -445,10 +445,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -543,10 +543,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -644,7 +644,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{
 						mandatory temperature as int
 					}'''
@@ -653,11 +655,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0	
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo					
 				using com.bosch.Temperature			
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as Temperature
 					}
@@ -731,7 +733,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{}'''
 				   ), emptyMap)
 				   		
@@ -739,10 +743,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature			
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as Temperature
 					}
@@ -815,7 +819,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 
 		temperatureRs.load(new StringInputStream(
 				'''namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'Temperature'
+				   category demo					   					   
 				   entity Temperature{
 				   	mandatory temperature as int
 				   }'''
@@ -825,7 +831,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 
 		powerConsumption.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'PowerConsumption'
+				   category demo					   					   
 				   entity PowerConsumption{
 				   	    mandatory value as int
 				   }'''
@@ -834,12 +842,12 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0	
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature;1.0.0
 				using com.bosch.PowerConsumption;1.0.0			
 				functionblock Fridge{
-				   	displayname 'Refrigerator'
-				   	category demo
 				   	configuration{
 				   		mandatory temperature as Temperature
 				   	}
@@ -918,10 +926,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1012,10 +1020,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1108,7 +1116,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		mytype.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{mandatory temperature as int} '''
 				   ), emptyMap)
 				   		
@@ -1116,10 +1126,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1217,10 +1227,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1321,6 +1331,8 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		mytype.load(new StringInputStream(
 			   '''namespace com.bosch
 			   version 1.0.0
+			   displayname 'dummy'
+			   category demo			   
 			   entity Temperature{mandatory temperature as int} '''
 				   ), emptyMap)
 				   		
@@ -1329,10 +1341,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1438,7 +1450,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{
 						mandatory temperature as int
 				   }'''
@@ -1447,11 +1461,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0		
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo					
 				using com.bosch.Temperature		
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1549,7 +1563,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		mytype.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{mandatory temperature as int} '''
 				   ), emptyMap)
 				   		
@@ -1557,10 +1573,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as int
 					}
@@ -1658,7 +1675,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{mandatory temperature as int} 	
 				   '''
 				   ), emptyMap)
@@ -1667,10 +1686,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.Temperature				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -1773,10 +1792,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory multiple temperature as int
 					}
@@ -1828,10 +1847,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						optional multiple temperature as int
 					}
@@ -1883,10 +1903,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						optional temperature as int
 					}
@@ -1938,10 +1959,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as dateTime
 					}
@@ -1995,7 +2017,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Temperature{
 						optional value as int
 				   }'''
@@ -2004,11 +2028,12 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0		
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo						
 				using com.bosch.Temperature		
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as int
 					}
@@ -2057,7 +2082,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		humidity.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   entity Humidity{
 						mandatory value as int
 				   }'''
@@ -2067,7 +2094,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 	
 		extraInfo.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0		
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   		
 				   using com.bosch.Humidity;1.0.0 			   
 				   entity ExtraInfo{
 						mandatory degrees as string
@@ -2079,7 +2108,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 
 		temperatureRs.load(new StringInputStream(
 				'''namespace com.bosch
-				   version 1.0.0	
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   	
 				   using com.bosch.ExtraInfo;1.0.0				   
 				   entity Temperature{
 						mandatory value as int
@@ -2090,13 +2121,14 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0	
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo					
 				using com.bosch.Humidity;1.0.0	
 				using com.bosch.ExtraInfo;1.0.0			
 				using com.bosch.Temperature;1.0.0			
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as Temperature
 					}
@@ -2181,10 +2213,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 2.0.0				
+				version 2.0.0
+				displayname 'Refrigerator'
+				category demo								
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as dateTime
 					}
@@ -2249,10 +2282,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 12.1.0-SNAPSHOT				
+				version 12.1.0-SNAPSHOT
+				displayname 'Refrigerator'
+				category demo								
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as dateTime
 					}
@@ -2317,11 +2350,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 12.1.0-SNAPSHOT				
+				version 12.1.0-SNAPSHOT	
+				displayname 'Refrigerator'
+				description 'This is nice refrigerator'
+				category demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'This is nice refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as dateTime
 					}
@@ -2388,10 +2421,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0		
+				displayname 'Refrigerator'
+				category demo						
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as dateTime 'this is the datetime'
 					}
@@ -2460,10 +2494,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo							
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as dateTime
 					}
@@ -2528,11 +2563,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0				
+				version 1.0.0
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo								
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -2589,7 +2624,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   enum unit{
 						Kelvin, Degree , Celcius
 				   }'''
@@ -2599,11 +2636,12 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo				
 				using com.bosch.unit				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					description 'comment'
-					category demo
+
 					configuration{
 						mandatory temperature as int
 						mandatory metricUnit as unit
@@ -2669,7 +2707,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   enum unit{
 						Kelvin, Degree , Celcius
 				   }'''
@@ -2679,10 +2719,10 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0	
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.unit			
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
 					configuration{
 						mandatory temperature as int
 					}
@@ -2783,6 +2823,8 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		mytype.load(new StringInputStream(
 			   '''namespace com.bosch
 			   version 1.0.0
+				   displayname 'dummy'
+				   category demo			   
 			   enum unit{
 					Kelvin, Degree , Celcius
 				}'''
@@ -2792,10 +2834,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.unit				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+					
 					configuration{
 						mandatory temperature as int
 					}
@@ -2896,7 +2939,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   enum unit{
 						Kelvin, Degree , Celcius
 				   }'''
@@ -2905,11 +2950,12 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		val model = parseHelper.parse(
 			'''
 				namespace com.bosch
-				version 1.0.0	
+				version 1.0.0
+				displayname 'Refrigerator'
+				category demo					
 				using com.bosch.unit	
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as int
 					}
@@ -3017,7 +3063,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   ''' namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   enum unit{
 						Kelvin, Degree , Celcius
 				   }'''
@@ -3028,10 +3076,11 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 			'''
 				namespace com.bosch
 				version 1.0.0
+				displayname 'Refrigerator'
+				category demo				
 				using com.bosch.unit				
 				functionblock Fridge{
-					displayname 'Refrigerator'
-					category demo
+
 					configuration{
 						mandatory temperature as int
 					}
@@ -3139,7 +3188,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		
 		unit.load(new StringInputStream(
 			   '''namespace com.bosch
-				   version 1.0.0					   
+				   version 1.0.0
+				   displayname 'dummy'
+				   category demo				   					   
 				   enum unit{
 						Kelvin, Degree , Celcius
 				   }'''
@@ -3150,7 +3201,9 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 		temp.load(new StringInputStream(
 			   ''' namespace com.bosch
 				   version 1.0.0
-				   using com.bosch.unit;1.0.0
+				   displayname 'dummy'
+				   category demo
+				   using com.bosch.unit;1.0.0				   				   
 				   entity Temperature{
 						mandatory temperature as int
 						mandatory metricUnit as unit
@@ -3159,12 +3212,13 @@ class CXFGeneratorTest extends FbAbstractGeneratorTest {
 				   				   		
 		val model = parseHelper.parse(			'''
 				namespace com.bosch
-				version 1.0.0	
+				version 1.0.0
+				displayname 'Refrigerator'
+				description 'comment'
+				category demo					
 				using com.bosch.Temperature;1.0.0				
 				functionblock Fridge{
-				      	displayname 'Refrigerator'
-				      	description 'comment'
-				      	category demo
+
 				      	configuration{
 				      		mandatory temperature as Temperature
 				      	}

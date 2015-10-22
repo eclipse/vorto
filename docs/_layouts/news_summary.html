@@ -1,0 +1,40 @@
+---
+layout: default
+---
+{% include base.html %}
+
+<div class="container content">
+  <div class="row">
+    <div class="span12">
+    <div class="page-header">
+        <h2>
+          News
+      </h2>
+    </div>
+    </div>
+  </div>
+  
+
+  {% for news in site.pages reversed   %}
+  {% if news.section == 'news' %}
+
+    <h2><a href="{{base}}{{ news.url }}">{{news.title}}</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> {{ news.date | date: "%b %-d, %Y" }}
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     {% if news.content contains '<!--more-->' %}
+     	{{ news.content | split:'<!--more-->' | first }}
+     	<a href="{{base}}{{ news.url }}">Read More...</a>
+     {% else %}
+		{{ news.content }}
+	{% endif %}	    
+    </section>
+  {% endif %}
+  {% endfor %}
+</div>

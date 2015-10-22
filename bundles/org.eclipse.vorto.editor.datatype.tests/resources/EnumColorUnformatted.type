@@ -1,1 +1,0 @@
-namespace org.eclipse.vorto.example version 1.0.0 enum Color {RED, GREEN, BLUE}

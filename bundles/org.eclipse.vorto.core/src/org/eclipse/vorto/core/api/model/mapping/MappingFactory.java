@@ -31,13 +31,13 @@ public interface MappingFactory extends EFactory {
 	MappingModel createMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Info Model Mapping</em>'.
+	 * Returns a new object of class '<em>Info Model Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Info Model Mapping</em>'.
+	 * @return a new object of class '<em>Info Model Mapping Model</em>'.
 	 * @generated
 	 */
-	InfoModelMapping createInfoModelMapping();
+	InfoModelMappingModel createInfoModelMappingModel();
 
 	/**
 	 * Returns a new object of class '<em>Info Model Mapping Rule</em>'.
@@ -76,13 +76,13 @@ public interface MappingFactory extends EFactory {
 	InfoModelAttributeSource createInfoModelAttributeSource();
 
 	/**
-	 * Returns a new object of class '<em>Function Block Mapping</em>'.
+	 * Returns a new object of class '<em>Function Block Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Function Block Mapping</em>'.
+	 * @return a new object of class '<em>Function Block Mapping Model</em>'.
 	 * @generated
 	 */
-	FunctionBlockMapping createFunctionBlockMapping();
+	FunctionBlockMappingModel createFunctionBlockMappingModel();
 
 	/**
 	 * Returns a new object of class '<em>Function Block Mapping Rule</em>'.
@@ -157,13 +157,13 @@ public interface MappingFactory extends EFactory {
 	EventSource createEventSource();
 
 	/**
-	 * Returns a new object of class '<em>Entity Mapping</em>'.
+	 * Returns a new object of class '<em>Entity Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Entity Mapping</em>'.
+	 * @return a new object of class '<em>Entity Mapping Model</em>'.
 	 * @generated
 	 */
-	EntityMapping createEntityMapping();
+	EntityMappingModel createEntityMappingModel();
 
 	/**
 	 * Returns a new object of class '<em>Entity Mapping Rule</em>'.
@@ -202,13 +202,13 @@ public interface MappingFactory extends EFactory {
 	EntityAttributeSource createEntityAttributeSource();
 
 	/**
-	 * Returns a new object of class '<em>Enum Mapping</em>'.
+	 * Returns a new object of class '<em>Enum Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Enum Mapping</em>'.
+	 * @return a new object of class '<em>Enum Mapping Model</em>'.
 	 * @generated
 	 */
-	EnumMapping createEnumMapping();
+	EnumMappingModel createEnumMappingModel();
 
 	/**
 	 * Returns a new object of class '<em>Enum Mapping Rule</em>'.
@@ -247,13 +247,13 @@ public interface MappingFactory extends EFactory {
 	EnumAttributeSource createEnumAttributeSource();
 
 	/**
-	 * Returns a new object of class '<em>Data Type Mapping</em>'.
+	 * Returns a new object of class '<em>Data Type Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Data Type Mapping</em>'.
+	 * @return a new object of class '<em>Data Type Mapping Model</em>'.
 	 * @generated
 	 */
-	DataTypeMapping createDataTypeMapping();
+	DataTypeMappingModel createDataTypeMappingModel();
 
 	/**
 	 * Returns a new object of class '<em>Target</em>'.

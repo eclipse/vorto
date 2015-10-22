@@ -4,7 +4,6 @@ package org.eclipse.vorto.core.api.model.mapping;
 
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 
-
 /**
  * <!-- begin-user-doc -->
  * A representation of the model object '<em><b>Entity Source</b></em>'.
@@ -22,7 +21,6 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
  * @generated
  */
 public interface EntitySource extends Source {
-
 	/**
 	 * Returns the value of the '<em><b>Model</b></em>' reference.
 	 * <!-- begin-user-doc -->
@@ -48,4 +46,5 @@ public interface EntitySource extends Source {
 	 * @generated
 	 */
 	void setModel(Entity value);
+
 } // EntitySource

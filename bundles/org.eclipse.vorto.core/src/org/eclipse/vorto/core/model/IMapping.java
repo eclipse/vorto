@@ -18,13 +18,18 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 /**
- * Resolves mapping  for Mapping Model
- * 
+ * Allow users to search element from MappingModel without the need to parse or navigate it
  */
 public interface IMapping extends IModelElement{
-
+	/**
+	 * Retrieve all rules 
+	 * @return mapping rules
+	 */
+	List<MappingRule> getAllRules();
+	
 	/**
 	 * gets the mapping rules for the specified Model Object
 	 * 
@@ -41,7 +46,7 @@ public interface IMapping extends IModelElement{
 	 *            modelObject whose meta data ought to be looked up
 	 * @return mapping rules
 	 */
-	List<MappingRule> getRulesByModelAttribute(MappingAttribute mappingAttribute);
+	List<MappingRule> getRulesByModelAttribute(ModelAttribute modelAttribute);
 	
 	/**
 	 * gets all mapping rules for the specified stereotype name. A stereotype is
@@ -51,4 +56,5 @@ public interface IMapping extends IModelElement{
 	 * @return list of mapping rule objects
 	 */
 	List<MappingRule> getRulesByStereoType(String stereoTypeName);
+
 }

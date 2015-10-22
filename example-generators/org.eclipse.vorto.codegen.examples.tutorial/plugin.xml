@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<plugin>
+	     <extension
+	         id="ExampleMappingGenerator"
+	         name="ExampleMappingGenerator"
+	         point="org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators">
+		      <client
+		            class="org.eclipse.vorto.codegen.examples.tutorial.ExampleMappingGenerator"
+		            menuLabel="Example LWM2M Code Generator">
+		      </client>
+	     </extension>
+
+	     <extension
+	         point="org.eclipse.ui.newWizards"
+	         id = "org.eclipse.ui.newWizards.VortoExampleProjects">
+			<category
+			    id="org.eclipse.vorto.codegen.examples.tutorial.projects"
+			    name="Examples"
+			    parentCategory="org.eclipse.vorto.functionblock.ui.wizards"/>	         
+			 <wizard
+					id="org.eclipse.vorto.codegen.examples.tutorial.mapping.InstallationWizard"
+					name="Mapping Examples"
+					class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+					category="org.eclipse.vorto.functionblock.ui.wizards/org.eclipse.vorto.codegen.examples.tutorial.projects"
+					project="true"
+					icon="platform:/plugin/org.eclipse.vorto.core/icons/mapping.png">
+					<description></description>
+			 </wizard>	
+			 <wizard
+					id="org.eclipse.vorto.codegen.examples.tutorial.datatype.InstallationWizard"
+					name="Data Type Examples"
+					class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+					category="org.eclipse.vorto.functionblock.ui.wizards/org.eclipse.vorto.codegen.examples.tutorial.projects"
+					project="true"
+					icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png">
+					<description></description>
+			 </wizard>	
+			 <wizard
+					id="org.eclipse.vorto.codegen.examples.tutorial.functionblock.InstallationWizard"
+					name="Function Block Examples"
+					class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+					category="org.eclipse.vorto.functionblock.ui.wizards/org.eclipse.vorto.codegen.examples.tutorial.projects"
+					project="true"
+					icon="platform:/plugin/org.eclipse.vorto.core/icons/fb.png">
+					<description></description>
+			 </wizard>
+			 <wizard
+					id="org.eclipse.vorto.codegen.examples.tutorial.infomodel.InstallationWizard"
+					name="Information Model Examples"
+					class="org.eclipse.emf.common.ui.wizard.ExampleInstallerWizard"
+					category="org.eclipse.vorto.functionblock.ui.wizards/org.eclipse.vorto.codegen.examples.tutorial.projects"
+					project="true"
+					icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png">
+					<description></description>
+			 </wizard>				 				 		 		 	           
+	     </extension>	
+	     		
+		<extension point="org.eclipse.emf.common.ui.examples">
+			<example
+				id="org.eclipse.vorto.codegen.examples.tutorial.mapping"
+				wizardID="org.eclipse.vorto.codegen.examples.tutorial.mapping.InstallationWizard">
+				<projectDescriptor
+					name="Mapping Examples (LWM2M)"
+					contentURI="resources/examples/MappingExamples/LWM2M/"
+					description="Mapping examples for LWM2M"/>			
+			</example>
+			<example
+				id="org.eclipse.vorto.codegen.examples.tutorial.datatype"
+				wizardID="org.eclipse.vorto.codegen.examples.tutorial.datatype.InstallationWizard">
+				<projectDescriptor
+					name="Entity Example (Distance)"
+					contentURI="resources/examples/DataTypeExamples/Distance/"
+					description="Entity model for distance"/>
+				<projectDescriptor
+					name="Entity Example (Speed)"
+					contentURI="resources/examples/DataTypeExamples/Speed/"
+					description="Entity model for speed"/>	
+				<projectDescriptor
+					name="Entity Example (Temperature)"
+					contentURI="resources/examples/DataTypeExamples/Temperature/"
+					description="Entity model for temperature"/>														
+			</example>
+			<example
+				id="org.eclipse.vorto.codegen.examples.tutorial.functionblock"
+				wizardID="org.eclipse.vorto.codegen.examples.tutorial.functionblock.InstallationWizard">
+				<projectDescriptor
+					name="Function Block Example (Battery)"
+					contentURI="resources/examples/FunctionBlockExamples/Battery/"
+					description="Battery function block model"/>
+				<projectDescriptor
+					name="Function Block Example (Motion Detector)"
+					contentURI="resources/examples/FunctionBlockExamples/MotionDetector/"
+					description="Motion Detector function block model"/>	
+				<projectDescriptor
+					name="Function Block Example (Lamp)"
+					contentURI="resources/examples/FunctionBlockExamples/Lamp/"
+					description="Lamp function block model"/>														
+			</example>			
+			<example
+				id="org.eclipse.vorto.codegen.examples.tutorial.infomodel"
+				wizardID="org.eclipse.vorto.codegen.examples.tutorial.infomodel.InstallationWizard">
+				<projectDescriptor
+					name="Information Model Example (Lighting)"
+					contentURI="resources/examples/InfoModelExamples/LightingSystem/"
+					description="Battery based LightingSystem information model"/>
+				<projectDescriptor
+					name="Information Model Example (Quadcopter)"
+					contentURI="resources/examples/InfoModelExamples/Quadcopter/"
+					description="Quadcopter information model"/>														
+			</example>											
+		 </extension>		
+	</plugin>

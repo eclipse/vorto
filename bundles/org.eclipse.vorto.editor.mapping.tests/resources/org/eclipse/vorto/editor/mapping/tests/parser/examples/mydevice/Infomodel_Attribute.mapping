@@ -1,8 +1,12 @@
 namespace com.mycompany.mydevice
 version 1.0.0
+displayname "Infomodel_Attribute"
+description "..."
+category demo
 using com.mycompany.mydevice.NewInfomodel ; 1.0.0
 
 infomodelmapping Infomodel_Attribute {
+	targetplatform mym2m
 
 	from NewInfomodel.category
 	to TargetCategory

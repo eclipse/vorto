@@ -23,19 +23,30 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockFactory
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Status
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 
 class TestFunctionblockModelFactory {
+
+	public static def FunctionblockProperty createFBProperty() {
+		var fbProperty = InformationModelFactory.eINSTANCE.createFunctionblockProperty();
+		
+		fbProperty.name = "Fridge"
+		fbProperty.type = createFBmodelWithProperties();
+		
+		return fbProperty;
+	}
 
 	public static def FunctionblockModel createFBmodelWithProperties() {
 		var fbmodel = FunctionblockFactory.eINSTANCE.createFunctionblockModel();
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 
 		fbmodel.setName("Fridge");
-		fb.setCategory("demo");
-		fb.setDescription("A Simple Fridge Functionblock for tester");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("A Simple Fridge Functionblock for tester");
 		fbmodel.setNamespace("www.bosch.com");
 		fbmodel.setVersion("1.2.3");
-		fb.displayname = "Fridge Function Block"
+		fbmodel.displayname = "Fridge Function Block"
 		fb.getOperations().add(createOnOperation());
 		fb.getOperations().add(createOffOperation());
 		fb.getOperations().add(createToggleOperation());
@@ -52,9 +63,9 @@ class TestFunctionblockModelFactory {
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
 
 		fbmodel.setName("Lamp");
-		fb.setDescription("Lighting device");
-		fb.setCategory("demo");
-		fb.setDescription("comment");
+		fbmodel.setDescription("Lighting device");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("comment");
 		fbmodel.setNamespace("www.mynamespace.com");
 		fbmodel.setVersion("1.2.3");
 		fb.getOperations().add(createOnOperation());

@@ -15,63 +15,76 @@
 package org.eclipse.vorto.core.internal.model.mapping;
 
 import java.util.List;
-import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
-import org.eclipse.vorto.core.api.model.mapping.InfoModelAttribute;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
-import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.model.IModelElement;
-import org.eclipse.vorto.core.model.MappingAttribute;
-import org.eclipse.vorto.core.model.ModelId;
+import org.eclipse.vorto.core.model.IMapping;
 
 public class InfoModelMappingResource extends AbstractMappingResource {
 
-	public InfoModelMappingResource(MappingModel mappingModel) {
-		super(mappingModel);
+	public InfoModelMappingResource(MappingModel mappingModel, List<IMapping> referenceMappings) {
+		super(mappingModel, referenceMappings);
 	}
 
-	
 	@Override
-	protected void addRuleIfContainsModelObject(EObject modelObjecct, List<MappingRule> mappingRules,
-			MappingRule rule, Source source) {
-		if(source instanceof InfoModelPropertySource){
-			FunctionblockProperty functionblockProperty = ((InfoModelPropertySource)source).getProperty();
-			FunctionblockModel functionblockModel = functionblockProperty.getType();
-			if (matchesFunctionBlockModel(functionblockModel, modelObjecct)) {
-				mappingRules.add(rule);
+	protected void addRuleIfContainsModelObject(EObject modelElement, List<MappingRule> mappingRules, MappingRule rule,
+			Source source) {
+		if (source instanceof InfoModelPropertySource) {
+			if(modelElement instanceof InformationModel){
+				InformationModel sourceModel = ((InfoModelPropertySource) source).getModel();
+				if(this.matchesInformationModel(sourceModel, modelElement)){
+					mappingRules.add(rule);
+				}
+			}else if(modelElement instanceof FunctionblockProperty){
+				FunctionblockProperty functionblockProperty = ((InfoModelPropertySource) source).getProperty();
+
+				if (functionblockProperty == null) {
+					return;
+				}
+
+				FunctionblockModel functionblockModel = functionblockProperty.getType();
+				if (matchesFunctionBlockModel(functionblockModel, modelElement)) {
+					mappingRules.add(rule);
+				}
 			}
 		}
 	}
 
+	private boolean matchesInformationModel(InformationModel informationModel, EObject modelElement) {
+		if (!(modelElement instanceof InformationModel)) {
+			return false;
+		}
+
+		InformationModel elementModel = (InformationModel) modelElement;
+		return this.matchesModel(informationModel, elementModel);
+
+	}
+	
 	private boolean matchesFunctionBlockModel(FunctionblockModel functionblockModel, EObject modelElement) {
 		if (!(modelElement instanceof FunctionblockProperty)) {
 			return false;
 		}
 
 		FunctionblockModel elementModel = ((FunctionblockProperty) modelElement).getType();
-		return StringUtils.equals(elementModel.getName(), functionblockModel.getName())
-				&& StringUtils.equals(elementModel.getNamespace(), functionblockModel.getNamespace())
-				&& StringUtils.equals(elementModel.getVersion(), functionblockModel.getVersion());
+		return this.matchesModel(functionblockModel, elementModel);
 
 	}
 
 	@Override
-	protected void addRuleIfContainsAttribute(MappingAttribute mappingAttribute, List<MappingRule> mappingRules,
+	protected void addRuleIfContainsAttribute(ModelAttribute modelAttribute, List<MappingRule> mappingRules,
 			MappingRule rule, Source source) {
-		
-		if(source instanceof InfoModelAttributeSource){
-			InfoModelAttribute attribute = ((InfoModelAttributeSource)source).getAttribute();
-			if (StringUtils.equals(attribute.toString(), mappingAttribute.name())) {
+
+		if (source instanceof InfoModelAttributeSource) {
+			ModelAttribute attribute = ((InfoModelAttributeSource) source).getAttribute();
+			if (modelAttribute ==attribute) {
 				mappingRules.add(rule);
 			}
 		}

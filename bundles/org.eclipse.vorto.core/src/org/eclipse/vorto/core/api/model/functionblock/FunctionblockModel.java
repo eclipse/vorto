@@ -15,12 +15,12 @@ import org.eclipse.vorto.core.api.model.model.Model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel#getFunctionblock <em>Functionblock</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel#getEntities <em>Entities</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel#getEnums <em>Enums</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getFunctionblockModel()
  * @model

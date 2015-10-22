@@ -17,25 +17,25 @@ package org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks;
 import org.eclipse.vorto.codegen.api.tasks.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.tasks.ITemplate;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.WebXmlTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 
 public class WebXmlGeneratorTask extends
-		AbstractTemplateGeneratorTask<FunctionblockModel> {
+		AbstractTemplateGeneratorTask<FunctionblockProperty> {
 
 	private final static String WEB_XML_PATH = "src/main/webapp/WEB-INF";
 
 	@Override
-	public String getFileName(final FunctionblockModel model) {
+	public String getFileName(final FunctionblockProperty fbProperty) {
 		return "web.xml";
 	}
 
 	@Override
-	public String getPath(final FunctionblockModel model) {
+	public String getPath(final FunctionblockProperty fbProperty) {
 		return WEB_XML_PATH;
 	}
 
 	@Override
-	public ITemplate<FunctionblockModel> getTemplate() {
+	public ITemplate<FunctionblockProperty> getTemplate() {
 		return new WebXmlTemplate();
 	}
 }

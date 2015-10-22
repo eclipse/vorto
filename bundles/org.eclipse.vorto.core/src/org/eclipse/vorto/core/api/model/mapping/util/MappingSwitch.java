@@ -75,11 +75,11 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.INFO_MODEL_MAPPING: {
-				InfoModelMapping infoModelMapping = (InfoModelMapping)theEObject;
-				T result = caseInfoModelMapping(infoModelMapping);
-				if (result == null) result = caseMappingModel(infoModelMapping);
-				if (result == null) result = caseModel(infoModelMapping);
+			case MappingPackage.INFO_MODEL_MAPPING_MODEL: {
+				InfoModelMappingModel infoModelMappingModel = (InfoModelMappingModel)theEObject;
+				T result = caseInfoModelMappingModel(infoModelMappingModel);
+				if (result == null) result = caseMappingModel(infoModelMappingModel);
+				if (result == null) result = caseModel(infoModelMappingModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -113,11 +113,11 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.FUNCTION_BLOCK_MAPPING: {
-				FunctionBlockMapping functionBlockMapping = (FunctionBlockMapping)theEObject;
-				T result = caseFunctionBlockMapping(functionBlockMapping);
-				if (result == null) result = caseMappingModel(functionBlockMapping);
-				if (result == null) result = caseModel(functionBlockMapping);
+			case MappingPackage.FUNCTION_BLOCK_MAPPING_MODEL: {
+				FunctionBlockMappingModel functionBlockMappingModel = (FunctionBlockMappingModel)theEObject;
+				T result = caseFunctionBlockMappingModel(functionBlockMappingModel);
+				if (result == null) result = caseMappingModel(functionBlockMappingModel);
+				if (result == null) result = caseModel(functionBlockMappingModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -185,12 +185,12 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENTITY_MAPPING: {
-				EntityMapping entityMapping = (EntityMapping)theEObject;
-				T result = caseEntityMapping(entityMapping);
-				if (result == null) result = caseDataTypeMapping(entityMapping);
-				if (result == null) result = caseMappingModel(entityMapping);
-				if (result == null) result = caseModel(entityMapping);
+			case MappingPackage.ENTITY_MAPPING_MODEL: {
+				EntityMappingModel entityMappingModel = (EntityMappingModel)theEObject;
+				T result = caseEntityMappingModel(entityMappingModel);
+				if (result == null) result = caseDataTypeMappingModel(entityMappingModel);
+				if (result == null) result = caseMappingModel(entityMappingModel);
+				if (result == null) result = caseModel(entityMappingModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -224,12 +224,12 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.ENUM_MAPPING: {
-				EnumMapping enumMapping = (EnumMapping)theEObject;
-				T result = caseEnumMapping(enumMapping);
-				if (result == null) result = caseDataTypeMapping(enumMapping);
-				if (result == null) result = caseMappingModel(enumMapping);
-				if (result == null) result = caseModel(enumMapping);
+			case MappingPackage.ENUM_MAPPING_MODEL: {
+				EnumMappingModel enumMappingModel = (EnumMappingModel)theEObject;
+				T result = caseEnumMappingModel(enumMappingModel);
+				if (result == null) result = caseDataTypeMappingModel(enumMappingModel);
+				if (result == null) result = caseMappingModel(enumMappingModel);
+				if (result == null) result = caseModel(enumMappingModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -263,11 +263,11 @@ public class MappingSwitch<T> extends Switch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case MappingPackage.DATA_TYPE_MAPPING: {
-				DataTypeMapping dataTypeMapping = (DataTypeMapping)theEObject;
-				T result = caseDataTypeMapping(dataTypeMapping);
-				if (result == null) result = caseMappingModel(dataTypeMapping);
-				if (result == null) result = caseModel(dataTypeMapping);
+			case MappingPackage.DATA_TYPE_MAPPING_MODEL: {
+				DataTypeMappingModel dataTypeMappingModel = (DataTypeMappingModel)theEObject;
+				T result = caseDataTypeMappingModel(dataTypeMappingModel);
+				if (result == null) result = caseMappingModel(dataTypeMappingModel);
+				if (result == null) result = caseModel(dataTypeMappingModel);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -338,17 +338,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Info Model Mapping</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Info Model Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Info Model Mapping</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Info Model Mapping Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseInfoModelMapping(InfoModelMapping object) {
+	public T caseInfoModelMappingModel(InfoModelMappingModel object) {
 		return null;
 	}
 
@@ -413,17 +413,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Function Block Mapping</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Function Block Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Function Block Mapping</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Function Block Mapping Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseFunctionBlockMapping(FunctionBlockMapping object) {
+	public T caseFunctionBlockMappingModel(FunctionBlockMappingModel object) {
 		return null;
 	}
 
@@ -548,17 +548,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Entity Mapping</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Entity Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Entity Mapping</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Entity Mapping Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEntityMapping(EntityMapping object) {
+	public T caseEntityMappingModel(EntityMappingModel object) {
 		return null;
 	}
 
@@ -623,17 +623,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Enum Mapping</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Enum Mapping</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Mapping Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseEnumMapping(EnumMapping object) {
+	public T caseEnumMappingModel(EnumMappingModel object) {
 		return null;
 	}
 
@@ -698,17 +698,17 @@ public class MappingSwitch<T> extends Switch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Data Type Mapping</em>'.
+	 * Returns the result of interpreting the object as an instance of '<em>Data Type Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
 	 * returning a non-null result will terminate the switch.
 	 * <!-- end-user-doc -->
 	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Data Type Mapping</em>'.
+	 * @return the result of interpreting the object as an instance of '<em>Data Type Mapping Model</em>'.
 	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
 	 * @generated
 	 */
-	public T caseDataTypeMapping(DataTypeMapping object) {
+	public T caseDataTypeMappingModel(DataTypeMappingModel object) {
 		return null;
 	}
 

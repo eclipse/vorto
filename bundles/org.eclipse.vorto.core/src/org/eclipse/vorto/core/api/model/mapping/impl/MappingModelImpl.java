@@ -36,7 +36,11 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getDisplayname <em>Displayname</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getRules <em>Rules</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getTargetPlatform <em>Target Platform</em>}</li>
  * </ul>
  *
  * @generated
@@ -113,6 +117,66 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	protected EList<ModelReference> references;
 
 	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DISPLAYNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected String displayname = DISPLAYNAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CATEGORY_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected String category = CATEGORY_EDEFAULT;
+
+	/**
 	 * The cached value of the '{@link #getRules() <em>Rules</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -121,6 +185,26 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * @ordered
 	 */
 	protected EList<MappingRule> rules;
+
+	/**
+	 * The default value of the '{@link #getTargetPlatform() <em>Target Platform</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTargetPlatform()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String TARGET_PLATFORM_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getTargetPlatform() <em>Target Platform</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getTargetPlatform()
+	 * @generated
+	 * @ordered
+	 */
+	protected String targetPlatform = TARGET_PLATFORM_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -221,11 +305,95 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDescription(String newDescription) {
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__DESCRIPTION, oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getDisplayname() {
+		return displayname;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDisplayname(String newDisplayname) {
+		String oldDisplayname = displayname;
+		displayname = newDisplayname;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__DISPLAYNAME, oldDisplayname, displayname));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCategory(String newCategory) {
+		String oldCategory = category;
+		category = newCategory;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__CATEGORY, oldCategory, category));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EList<MappingRule> getRules() {
 		if (rules == null) {
 			rules = new EObjectContainmentEList<MappingRule>(MappingRule.class, this, MappingPackage.MAPPING_MODEL__RULES);
 		}
 		return rules;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getTargetPlatform() {
+		return targetPlatform;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setTargetPlatform(String newTargetPlatform) {
+		String oldTargetPlatform = targetPlatform;
+		targetPlatform = newTargetPlatform;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MappingPackage.MAPPING_MODEL__TARGET_PLATFORM, oldTargetPlatform, targetPlatform));
 	}
 
 	/**
@@ -260,8 +428,16 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return getVersion();
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return getReferences();
+			case MappingPackage.MAPPING_MODEL__DESCRIPTION:
+				return getDescription();
+			case MappingPackage.MAPPING_MODEL__DISPLAYNAME:
+				return getDisplayname();
+			case MappingPackage.MAPPING_MODEL__CATEGORY:
+				return getCategory();
 			case MappingPackage.MAPPING_MODEL__RULES:
 				return getRules();
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				return getTargetPlatform();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -288,9 +464,21 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
+			case MappingPackage.MAPPING_MODEL__DESCRIPTION:
+				setDescription((String)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__DISPLAYNAME:
+				setDisplayname((String)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__CATEGORY:
+				setCategory((String)newValue);
+				return;
 			case MappingPackage.MAPPING_MODEL__RULES:
 				getRules().clear();
 				getRules().addAll((Collection<? extends MappingRule>)newValue);
+				return;
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				setTargetPlatform((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -316,8 +504,20 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
+			case MappingPackage.MAPPING_MODEL__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
+			case MappingPackage.MAPPING_MODEL__DISPLAYNAME:
+				setDisplayname(DISPLAYNAME_EDEFAULT);
+				return;
+			case MappingPackage.MAPPING_MODEL__CATEGORY:
+				setCategory(CATEGORY_EDEFAULT);
+				return;
 			case MappingPackage.MAPPING_MODEL__RULES:
 				getRules().clear();
+				return;
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				setTargetPlatform(TARGET_PLATFORM_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -339,8 +539,16 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case MappingPackage.MAPPING_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
+			case MappingPackage.MAPPING_MODEL__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case MappingPackage.MAPPING_MODEL__DISPLAYNAME:
+				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
+			case MappingPackage.MAPPING_MODEL__CATEGORY:
+				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
 			case MappingPackage.MAPPING_MODEL__RULES:
 				return rules != null && !rules.isEmpty();
+			case MappingPackage.MAPPING_MODEL__TARGET_PLATFORM:
+				return TARGET_PLATFORM_EDEFAULT == null ? targetPlatform != null : !TARGET_PLATFORM_EDEFAULT.equals(targetPlatform);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -361,6 +569,14 @@ public class MappingModelImpl extends MinimalEObjectImpl.Container implements Ma
 		result.append(namespace);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", description: ");
+		result.append(description);
+		result.append(", displayname: ");
+		result.append(displayname);
+		result.append(", category: ");
+		result.append(category);
+		result.append(", targetPlatform: ");
+		result.append(targetPlatform);
 		result.append(')');
 		return result.toString();
 	}

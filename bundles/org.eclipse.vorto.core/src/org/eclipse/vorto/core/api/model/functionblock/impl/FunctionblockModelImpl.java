@@ -32,16 +32,19 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getReferences <em>References</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getDisplayname <em>Displayname</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getFunctionblock <em>Functionblock</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getEntities <em>Entities</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getEnums <em>Enums</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -115,6 +118,66 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 	 * @ordered
 	 */
 	protected EList<ModelReference> references;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DISPLAYNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected String displayname = DISPLAYNAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String CATEGORY_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getCategory() <em>Category</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCategory()
+	 * @generated
+	 * @ordered
+	 */
+	protected String category = CATEGORY_EDEFAULT;
 
 	/**
 	 * The cached value of the '{@link #getFunctionblock() <em>Functionblock</em>}' containment reference.
@@ -245,6 +308,69 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDescription(String newDescription) {
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTIONBLOCK_MODEL__DESCRIPTION, oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getDisplayname() {
+		return displayname;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDisplayname(String newDisplayname) {
+		String oldDisplayname = displayname;
+		displayname = newDisplayname;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTIONBLOCK_MODEL__DISPLAYNAME, oldDisplayname, displayname));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String getCategory() {
+		return category;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCategory(String newCategory) {
+		String oldCategory = category;
+		category = newCategory;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTIONBLOCK_MODEL__CATEGORY, oldCategory, category));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public FunctionBlock getFunctionblock() {
 		return functionblock;
 	}
@@ -343,6 +469,12 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 				return getVersion();
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__REFERENCES:
 				return getReferences();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DESCRIPTION:
+				return getDescription();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DISPLAYNAME:
+				return getDisplayname();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__CATEGORY:
+				return getCategory();
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__FUNCTIONBLOCK:
 				return getFunctionblock();
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__ENTITIES:
@@ -374,6 +506,15 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__REFERENCES:
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
+				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DESCRIPTION:
+				setDescription((String)newValue);
+				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DISPLAYNAME:
+				setDisplayname((String)newValue);
+				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__CATEGORY:
+				setCategory((String)newValue);
 				return;
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__FUNCTIONBLOCK:
 				setFunctionblock((FunctionBlock)newValue);
@@ -410,6 +551,15 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DISPLAYNAME:
+				setDisplayname(DISPLAYNAME_EDEFAULT);
+				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__CATEGORY:
+				setCategory(CATEGORY_EDEFAULT);
+				return;
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__FUNCTIONBLOCK:
 				setFunctionblock((FunctionBlock)null);
 				return;
@@ -439,6 +589,12 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__DISPLAYNAME:
+				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__CATEGORY:
+				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__FUNCTIONBLOCK:
 				return functionblock != null;
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__ENTITIES:
@@ -465,6 +621,12 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 		result.append(namespace);
 		result.append(", version: ");
 		result.append(version);
+		result.append(", description: ");
+		result.append(description);
+		result.append(", displayname: ");
+		result.append(displayname);
+		result.append(", category: ");
+		result.append(category);
 		result.append(')');
 		return result.toString();
 	}

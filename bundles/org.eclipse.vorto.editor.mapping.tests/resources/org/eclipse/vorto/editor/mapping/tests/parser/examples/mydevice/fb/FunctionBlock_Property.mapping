@@ -1,10 +1,13 @@
 namespace com.mycompany.mydevice.fb
 version 1.0.0
+displayname "FunctionBlock_Property"
+description "..."
+category demo
 using com.mycompany.mydevice.fb.NewFunctionBlock ; 1.0.0
 
 functionblockmapping FunctionBlock_Property {
 
-
+	targetplatform mym2m
 	from NewFunctionBlock.status.isOn
 	to TargetStatus
 

@@ -40,29 +40,7 @@ public class ModelProjectFactory {
 
 	private static ModelProjectFactory singleton = null;
 
-	private IModelParser modelParser;
-
 	private ModelProjectFactory() {
-		this.modelParser = getModelParser();
-	}
-
-	private IModelParser getModelParser() {
-		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
-				.getExtensionPoint(IModelParser.EXTENSIONPOINT_ID);
-		IExtension[] modelParserExtensions = extensionPoint.getExtensions();
-		if (modelParserExtensions.length == 0) {
-			throw new RuntimeException("No Vorto Model Parser found!");
-		} else if (modelParserExtensions.length > 1) {
-			throw new RuntimeException(
-					"More than 1 Vorto Model Parser found. Cannot decide which one to bind. ");
-		}
-		try {
-			return (IModelParser) modelParserExtensions[0]
-					.getConfigurationElements()[0]
-					.createExecutableExtension("class");
-		} catch (Exception e) {
-			throw new RuntimeException("Problem binding Vorto Model Parser", e);
-		}
 	}
 
 	public static ModelProjectFactory getInstance() {
@@ -80,25 +58,22 @@ public class ModelProjectFactory {
 	 * @return
 	 */
 	public IModelProject getProject(IProject project) {
+		IModelParser modelParser = ModelParserFactory.getInstance().getModelParser();
 		if (DatatypeModelProject.isDatatypeModelProject(project)) {
-			return new DatatypeModelProject(project, this.modelParser);
-		} else if (FunctionblockModelProject
-				.isFunctionBlockModelProject(project)) {
-			return new FunctionblockModelProject(project, this.modelParser);
+			return new DatatypeModelProject(project, modelParser);
+		} else if (FunctionblockModelProject.isFunctionBlockModelProject(project)) {
+			return new FunctionblockModelProject(project, modelParser);
 		} else if (InformationModelProject.isInformationModelProject(project)) {
-			return new InformationModelProject(project, this.modelParser);
+			return new InformationModelProject(project, modelParser);
 		} else {
-			throw new IllegalArgumentException(
-					"Project is not a valid Vorto Model Project");
+			throw new IllegalArgumentException("Project is not a valid Vorto Model Project");
 		}
 	}
 
 	public IModelProject getProjectByName(String projectName) {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot()
-				.getProject(projectName);
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		if (project == null) {
-			throw new IllegalArgumentException("Project with name "
-					+ projectName + " is closed or does not exist");
+			throw new IllegalArgumentException("Project with name " + projectName + " is closed or does not exist");
 		}
 		return getProject(project);
 	}
@@ -107,10 +82,8 @@ public class ModelProjectFactory {
 		if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
 
 			IWorkbench workbench = PlatformUI.getWorkbench();
-			IWorkbenchWindow activeWorkbenchWindow = workbench
-					.getActiveWorkbenchWindow();
-			ISelectionService selectionService = activeWorkbenchWindow
-					.getSelectionService();
+			IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
+			ISelectionService selectionService = activeWorkbenchWindow.getSelectionService();
 			IStructuredSelection selection = null;
 			selection = (IStructuredSelection) selectionService.getSelection();
 
@@ -137,8 +110,7 @@ public class ModelProjectFactory {
 		} else if (firstElement instanceof IProject) {
 			return getProject((IProject) firstElement);
 		} else {
-			throw new IllegalStateException(
-					"Could not retrieve Model Project from selection");
+			throw new IllegalStateException("Could not retrieve Model Project from selection");
 		}
 	}
 }

@@ -41,9 +41,9 @@ class MappingModelFormatterTest extends AbstractXtextTests {
 	}
 
 	@Test
-	def void testFormattingForBasicBlock() {
-		val expectedText = getformatted
-		val rawText = getUnformatted
+	def void testFormatFunctionBlockMapping() {
+		val expectedText = getFunctionBlockMappingFormatted
+		val rawText = getFunctionBlockMappingUnformatted
 		rawText.assertFormattedAs(expectedText)
 	}
 
@@ -54,12 +54,15 @@ class MappingModelFormatterTest extends AbstractXtextTests {
 		assertEquals(expectedText, formattedText)
 	}
 	
-	def private getUnformatted() {
+	def private getFunctionBlockMappingUnformatted() {
 		return '''namespace com.mycompany.map
 version 1.0.0
+displayname "Color Mapping "
+description "Mapping for Color"
+category demo
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
-functionblockmapping FunctionBlock_Property {
+functionblockmapping FunctionBlock_Property { 	targetplatform mym2m
 
 	from NewFunctionBlock.status.isOn
 				to TargetStatus
@@ -81,12 +84,16 @@ NewFunctionBlock.operation.off
 }'''
 	}
 	
-	def private getformatted() {
+	def private getFunctionBlockMappingFormatted() {
 		return '''namespace com.mycompany.map
 version 1.0.0
+displayname "Color Mapping "
+description "Mapping for Color"
+category demo
 using com.mycompany.fb.NewFunctionBlock ; 1.0.0
 
 functionblockmapping FunctionBlock_Property {
+	targetplatform mym2m
 
 	from NewFunctionBlock.status.isOn
 	to TargetStatus

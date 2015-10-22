@@ -1,0 +1,7 @@
+namespace examples.datatypes.measurement.units
+version 1.0.0
+
+enum TemperatureUnit {
+	Celsius,
+	Fahrenheit
+}

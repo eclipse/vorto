@@ -1,0 +1,20 @@
+<div class="box">
+  <h2 class="box-headline" id="header10">Community</h2>
+{% for main in site.pages reversed %}
+{% if main.series == 'homepagebottom' %}
+<div class="{{main.style}}">
+<div class="row">
+     <div class="col-md-1">
+            <i class="{{main.imagename}}"></i>
+          </div>
+    <div class="col-md-2">
+     <h4>{{main.title}}</h4>
+     </div>
+     <div class="col-md-7">
+    <section>{{ main.content }}</section>
+ </div>
+</div>
+</div>
+{% endif %}
+{% endfor %}
+</div>
