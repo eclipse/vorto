@@ -1,0 +1,35 @@
+---
+layout: default
+---
+{% include base.html %}
+
+<div class="container content">
+	<div class="row">
+		<div class="span12">
+		<div class="page-header">
+				<h2>
+				Downloads
+			</h2>
+		</div>
+		</div>
+	</div>
+
+    {% for download in site.pages   %}
+  	  {% if download.section == 'downloads' %}
+  			
+  			<div class="box box-dl">
+  			<div class="col-md-1"><i class="{{download.imagename}}"></i></div>
+  					<div href="#" class="col-md-11">
+  						<h3>
+  							<b>{{download.title}}</b>
+  						</h3>
+  						{{download.content}}
+  					</div>
+  				
+  			</div>
+  			<hr class="separator">
+  	  {% endif %}
+    {% endfor %}
+
+
+</div>
