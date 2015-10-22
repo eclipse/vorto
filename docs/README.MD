@@ -1,3 +1,0 @@
-Vorto is an open source tool that allows for creating and managing technology agnostic, abstract device descriptions, so called information models. 
-Information models describe the attributes and the capabilities of real world devices. These information models can be managed and shared within the Vorto repository. 
-In addition Vorto provides a code generator extension point where code generators can be plugged in.
