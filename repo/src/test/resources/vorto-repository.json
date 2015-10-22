@@ -18,7 +18,7 @@
         "sequencers" : {
             "XML Sequencer" : {
                 "classname" : "org.eclipse.vorto.repository.internal.service.sequencer.ModelSequencer",
-                "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel)/jcr:content[@jcr:data]" ]
+                "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
             }
         }
     }

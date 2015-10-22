@@ -244,6 +244,11 @@
 			<version>${vorto.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
+			<version>${vorto.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext</artifactId>
 			<version>${xtext.version}</version>
