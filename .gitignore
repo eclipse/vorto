@@ -9,6 +9,6 @@ bin/
 
 /.ssh
 *.checkstyle
-.settings
-repo/remoterepository/.classpath
-repo/remoterepository/.project
+.settings/
+.classpath
+.project
