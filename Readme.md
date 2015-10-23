@@ -47,3 +47,13 @@ Vorto Discussions/Community - http://www.eclipse.org/vorto/community.html
 [Xtext Antlr]: http://download.itemis.com/updates/
 [Apache Maven]: https://maven.apache.org/download.cgi  
   
+Contributing to Vorto
+---------------------
+
+When you create a Pull Request to Vorto, make sure 
+
+1. all your commits are signed off (git commit -s)
+2. you have a valid CLA signed with Eclipse
+3. you reference an existing vorto bugzilla issue that your Pull Request fixes
+4. targets to be merged with our development branch
+
