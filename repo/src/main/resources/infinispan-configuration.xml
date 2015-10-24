@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:infinispan:config:7.0 http://www.infinispan.org/schemas/infinispan-config-7.0.xsd"
+            xmlns="urn:infinispan:config:7.0">
+
+    <cache-container default-cache="persisted-repository" statistics="false">
+        <jmx duplicate-domains="true"/>
+        <local-cache name="persisted-repository">
+            <transaction
+                    transaction-manager-lookup="org.infinispan.transaction.lookup.DummyTransactionManagerLookup"
+                    mode="NON_XA"
+                    locking="PESSIMISTIC"/>
+            <persistence>
+                <file-store fetch-state="false"
+                            shared="false"
+                            preload="false"
+                            purge="false"
+                            path="${user.home}/.vorto/repo/cache/content"/>
+            </persistence>
+        </local-cache>
+    </cache-container>
+</infinispan>
