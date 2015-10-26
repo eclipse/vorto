@@ -11,7 +11,7 @@ layout: default
       </h3>
     </div>
     <div class="page-header pull-right">
-        <a href="https://github.com/eclipse/vorto/tree/development/docs" target="_blank"><h4>Add a new blog post!</h4></a>
+        <a href="https://github.com/eclipse/vorto/tree/development/docs/blog" target="_blank"><h4>Add a new blog post!</h4></a>
     </div>
        </div>
   </div>
@@ -20,11 +20,18 @@ layout: default
     <h2>{{page.title}}</h2>
     <div class="postmetadata">
       <ul>
-        {% if page.authorid %}
+        {% if page.eclipseid %}
+        
           <li>
             <i class="icon-user"></i>
-            <a href="http://projects.eclipse.org/users/{{page.authorid}}">{{ page.author }}</a>
+            <a href="http://projects.eclipse.org/users/{{page.eclipseid}}">{{ page.author }}</a>
           </li>
+          {% elsif page.githubid %}
+           <li>
+            <i class="icon-user"></i>
+            <a href="https://github.com/{{page.githubid}}">{{ page.author }}</a>
+          </li>
+
            {% else %}
           <li>
             <i class="icon-user"></i>{{ page.author }}
@@ -41,7 +48,7 @@ layout: default
      {% if page.videourl %}
           <div class="{{ page.style }}">
              <a title="{{page.imgtitle}}" data-rel="prettyPhoto" href="{{page.videourl}}" rel="prettyPhoto" >
-              <img src="{{ $base}}/img/blogpics/{{page.imagename}}"  class="box-img img-responsive">
+              <img src="{{ $base}}/img/blogpics/{{page.imagename}}"  class="box-img img-responsive zoom1">
                <i class="fa fa-play-circle fa-5 play-icon"></i>
              </a>
           </div>

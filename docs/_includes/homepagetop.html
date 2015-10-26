@@ -4,7 +4,7 @@
   {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
   <div class="box">
     {% if thecycle == 'odd' %}
-    <img class="box-img img-responsive pull-right wow {{ main.animatestyle}}" src="{{ base }}/img/{{ main.imagename}}">
+    <img class="box-img img-responsive pull-right wow {{ main.animatestyle}} zoom1" src="{{ base }}/img/{{ main.imagename}}">
        {% if main.videourl %}
        <div class="{{ main.style }}">
       <a title="{{main.videotitle}}" data-rel="prettyPhoto" href="{{main.videourl}}" rel="prettyPhoto" > 
@@ -15,7 +15,7 @@
         {% endif %}
 
     {% else %}
-      <img class="box-img img-responsive pull-left wow fadeInLeft" src="{{ base }}/img/{{ main.imagename}}">
+      <img class="box-img img-responsive pull-left wow fadeInLeft zoom1" src="{{ base }}/img/{{ main.imagename}}">
         {% if main.videourl %}
         <div class="{{ main.style }}">
           <a title="{{main.videotitle}}" data-rel="prettyPhoto" href="{{main.videourl}}" rel="prettyPhoto" >
