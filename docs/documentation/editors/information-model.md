@@ -48,62 +48,70 @@ Edit the information model by extending the generated source file in the informa
 
 1. Create a new function block model named `Switchable` and update it according the following:
 
-        namespace com.mycompany.fb
-        version 1.0.0
-        functionblock Switchable {
-            displayname "Switch"
-            description "Function block model for Switch"
-            category demo
+		namespace com.mycompany.fb
+		version 1.0.0
+		displayname "Switch"
+		description "Function block model for Switch"
+		category demo
+		
+		functionblock Switchable {
+			status {
+				optional on as boolean
+			}
+		
+			operations {
+				on()
+				off()
+				toggle()
+			}	
 
-            status {
-                optional on as boolean
-            }
+		}
 
-            operations {
-                on()
-                off()
-                toggle()
-            }
-        }
 
-2. Create a new function block model named `ColorLight` and update it according the following:
+2. Create a new function block model named `ColorLight`, drag and drop the entity model **Color** from **Data Types** into this funciton block model,  and update it according the following:
 
-        namespace com.mycompany.fb
-        version 1.0.0
-        functionblock ColorLight {
-            displayname "ColorLight"
-            description "A light makes the environment bright and colorful"
-            category hue
+	
+		namespace com.mycompany.fb
+		version 1.0.0
+		displayname "ColorLight"
+		description "A light makes the environment bright and colorful"
+		category hue
+		using com.mycompany.type.Color ; 1.0.0
+		
+		functionblock ColorLight {
+			configuration {
+				optional brightnessLevel as int
+				optional defaultColor as Color
+			}
+		
+			fault {
+				mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
+			}
+		
+			operations {
+				setR(r as int)
+				setG(g as int)
+				setB(b as int)
+			}
+		
+		}
 
-            configuration {
-                optional brightnessLevel as int
-            }
-
-            fault {
-                mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
-            }
-
-            operations {
-                setR(r as int)
-                setG(g as int)
-                setB(b as int)
-            }
-        }
-
-3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **PhilipsHue** in the **Information Models** tab to create the reference.  
+3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **MyLightingDevice** in the **Information Models** tab to create the reference.  
    ![Drag and drop from Function Block to Information Model]({{base}}/img/documentation/m2m_tc_drag_drop_function_block_to_information_model.png)
 4. Update the information model according the following:
 
-        namespace com.philips
-        version 1.0.0
-        using com.mycompany.fb.Switchable ; 1.0.0
-        using com.mycompany.fb.ColorLight ; 1.0.0
-        infomodel PhilipsHue {
-                displayname "PhilipsHue"
-                description "Information model for PhilipsHue"
-                category demo
-
-                functionblocks {
-                        switchable as Switchable colorlight as ColorLight
-                }
-        }
+		namespace com.mycompany
+		version 1.0.0
+		displayname "PhilipsHue"
+		description "Information model for PhilipsHue"
+		category demo
+		using com.mycompany.fb.Switchable ; 1.0.0
+		using com.mycompany.fb.ColorLight ; 1.0.0
+		
+		infomodel MyLightingDevice {
+		
+			functionblocks {
+				switchable as Switchable
+				colorlight as ColorLight
+			}
+		}
