@@ -1,0 +1,13 @@
+namespace org.eclipse.vorto.examples.fb
+version 1.0.0
+displayname "ColorLight"
+description "Function block model for ColorLight"
+category demo
+using org.eclipse.vorto.examples.type.Color ; 1.0.0
+functionblock ColorLight {
+	
+	operations {
+		setColor(color as Color)
+	}
+
+}
