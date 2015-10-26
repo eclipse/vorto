@@ -1,0 +1,29 @@
+<div class="row">
+        <div class="col-sm-12 main">
+          <div class="row">
+
+	<form name="fileUploadForm" class="fileUploadForm">
+		<div class="col-md-6"> 
+			<input type="file" ng-model="modelFile" name="file" id="file" accept=".type,.fbmodel,.infomodel" class="form-control"></div>
+			<div class="col-md-6"><button ng-click="upload()" class="btn btn-primary">Upload</button></div>
+		</form>
+		<div class="col-md-12">
+		<div class="fileUploadDetails">
+		<table>
+		<tr><td><label>Namespace:</label></td><td> {{uploadResult.modelResource.id.namespace}} </td></tr>
+        <tr><td><label>Name:</label></td><td>  {{uploadResult.modelResource.id.name}} </td></tr>
+        <tr><td><label>Version:</label></td><td>  {{uploadResult.modelResource.id.version}} </td></tr>
+        <tr><td><label>Model Type:</label> </td><td> {{uploadResult.modelResource.modelType}}</td></tr>
+        <tr><td><label>Description:</label> </td><td> {{uploadResult.modelResource.description}}</td></tr>
+        <tr><td><label>References: </label></td><td><table><tr ng-repeat="reference in uploadResult.modelResource.references"><td>{{reference.namespace}}.{{reference.name}}.{{reference.version}}</td></tr></table></td></tr>
+        <tr ng-show="uploadResult.valid === false"><td colspan="2">
+				<label class="error"><i class="fa fa-fw fa-close"></i> Error - {{uploadResult.errorMessage}}</label> </td></tr>
+         <tr ng-show="uploadResult.valid === true"> <td colspan="2">
+				<label class="valid"><i class="fa fa-fw fa-check"></i> OK - Uploaded model is valid and ready to be checked in.</label> <button ng-click="checkin(uploadResult.handleId)" class="btn btn-primary pull-right">Checkin</button></td></tr>
+         <!--tr ng-show="checkinSuccess === true"> <td colspan="2">Model was successfully checked in. <button href="./#/">Back</button></td></tr-->
+	</table>
+</div>
+	</div>
+</div>
+</div>
+</div>

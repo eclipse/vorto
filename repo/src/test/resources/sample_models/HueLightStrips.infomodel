@@ -1,0 +1,13 @@
+namespace com.mycompany
+version 1.0.0
+displayname "HueLightStrips"
+description "Information model for HueLightStrips"
+category demo
+using com.mycompany.fb.Switcher ; 1.0.0
+
+infomodel HueLightStrips {
+	
+	functionblocks {
+		switcher as Switcher
+	}
+}
