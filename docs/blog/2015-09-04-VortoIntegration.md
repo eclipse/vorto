@@ -5,6 +5,7 @@ date:  "2015-09-04"
 sequence: 2
 section: blog
 author: Mantos Erle Czar
+githubid: erlemantos
 videourl: "https://www.youtube.com/watch?v=aKnW2udh9m8&width=1500&height=1000"
 imagename: "VortoRepoVideoImage.jpg"
 imgtitle: Share & reuse models with the Vorto Repository

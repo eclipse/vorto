@@ -11,7 +11,7 @@ layout: default
       </h2>
     </div>
      <div class="page-header pull-right">
-      <a href="https://github.com/eclipse/vorto/tree/development/docs" target="_blank"><h4>Add a new blog post!</h4></a>                          
+      <a href="https://github.com/eclipse/vorto/tree/development/docs/blog" target="_blank"><h4>Add a new blog post!</h4></a>                          
     </div>
        </div>
   </div>
@@ -23,10 +23,15 @@ layout: default
     <h2><a href="{{base}}{{ blog.url}}">{{blog.title}}</a></h2>
     <div class="postmetadata">
       <ul>
-        {% if blog.authorid %}
+        {% if blog.eclipseid %}
           <li>
             <i class="icon-user"></i>
-            <a href="http://projects.eclipse.org/users/{{blog.authorid}}">{{ blog.author }}</a>
+            <a href="http://projects.eclipse.org/users/{{blog.eclipseid}}">{{ blog.author }}</a>
+          </li>
+          {% elsif blog.githubid %}
+           <li>
+            <i class="icon-user"></i>
+            <a href="https://github.com/{{blog.githubid}}">{{ blog.author }}</a>
           </li>
             {% else %}
           <li>

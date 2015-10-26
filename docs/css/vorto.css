@@ -297,6 +297,17 @@ footer {
 .box-dl .fa{
     color: #999;
 }
+/*Home page Image-Hover*/
+.zoom1 {
+ -webkit-transform: scale(1);
+  transform: scale(1);
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+}
+.zoom1:hover {
+ -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+}
 
 /*Home page Image-VideoOverlay*/
 .thumb1, .thumb2, .thumb3,.thumb4, .thumb5{
@@ -308,7 +319,7 @@ footer {
   position: absolute;
   z-index: 100;
 
-  opacity: 0.5;
+  opacity: 0.8;
   color:  #003151;
   font-size: 4em;
       left: 325px;
@@ -328,7 +339,7 @@ opacity: 1;
 .thumb2 .play-icon {
     color: #003151;
     font-size: 4em;
-    opacity: 0.5;
+    opacity: 0.8;
     outline: medium none;
     position: absolute;
     left: 325px;
@@ -339,7 +350,7 @@ opacity: 1;
 .thumb3 .play-icon {
     color: #003151;
     font-size: 4em;
-    opacity: 0.5;
+    opacity: 0.8;
     outline: medium none;
     position: absolute;
     left: 200px;
@@ -349,7 +360,7 @@ opacity: 1;
 .thumb4 .play-icon {
     color: #003151;
     font-size: 4em;
-    opacity: 0.5;
+    opacity: 0.8;
     outline: medium none;
     position: absolute;
     left: 250px;
@@ -359,7 +370,7 @@ opacity: 1;
 .thumb5 .play-icon {
     color: #003151;
     font-size: 4em;
-    opacity: 0.5;
+    opacity: 0.8;
     outline: medium none;
     position: absolute;
     left: 800px;
