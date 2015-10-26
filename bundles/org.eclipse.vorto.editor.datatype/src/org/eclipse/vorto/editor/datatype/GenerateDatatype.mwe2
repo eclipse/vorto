@@ -50,6 +50,8 @@ Workflow {
             to = "platform:/plugin/org.eclipse.vorto.core/model/Functionblock.ecore"
         }
         
+        projectMapping = { projectName = 'org.eclipse.vorto.editor.datatype' path = '../org.eclipse.vorto.editor.datatype' }
+        
     	registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage"
 		registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/Functionblock.genmodel"
 		

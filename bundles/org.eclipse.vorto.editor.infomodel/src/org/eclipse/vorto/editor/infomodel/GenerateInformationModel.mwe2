@@ -47,6 +47,8 @@ Workflow {
             to = "platform:/plugin/org.eclipse.vorto.core/model/Functionblock.ecore"
         }
         
+        projectMapping = { projectName = 'org.eclipse.vorto.editor.infomodel' path = '../org.eclipse.vorto.editor.infomodel' }
+        
         registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage"
     	registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/InformationModel.genmodel"
     	
