@@ -58,36 +58,32 @@ You have created a function block project (refer to [Creating a New Function Blo
 Edit the function block project by extending the generated source file in the function block DSL editor.
 
 **Example**
-
+	
 	namespace com.mycompany.fb
 	version 1.0.0
-    functionblock Lamp {
-      displayname "Lamp"
-      description "A lamp makes the environment bright"
-      category demo
-
-      configuration{
-        mandatory blinking as boolean "if the lamp is currently blinking or not"
-        mandatory on as boolean "if the lamp is currently switched on"
-        mandatory powerConsumption as int
-          "the amount of power the lamp is consuming"  
-      }
-
-      fault{
-        mandatory bulbDefect as boolean
-          "true if the light bulb of the lamp is defect"
-      }
-
-      operations{
-        blink(blinkType as int) "sets the blinking type for the lamp"
-        getPowerConsumption() returns int
-          "gets the amount of power being consumed by the lamp"
-        isOn() returns boolean "checks if the lamp is switched on"
-        off() "turns the lamp off"
-        on() "turns the lamp on"
-        stopBlinking() "stops the blinking of the lamp"
-        toggle() "switches the lamp on or off"
-        toggleWithDelay(delayInSeconds as int)
-          "switches the lamp on or off with a delay of the specified seconds"
-      }
-    }
+	displayname "Lamp"
+	description "A lamp makes the environment bright"
+	category demo
+	
+	functionblock Lamp {
+		configuration {
+			mandatory blinking as boolean "if the lamp is currently blinking or not"
+			mandatory on as boolean "if the lamp is currently switched on"
+			mandatory powerConsumption as int "the amount of power the lamp is consuming"
+		}
+	
+		fault {
+			mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
+		}
+	
+		operations {
+			blink(blinkType as int) "sets the blinking type for the lamp"
+			getPowerConsumption() returns int "gets the amount of power being consumed by the lamp"
+			isOn() returns boolean "checks if the lamp is switched on"
+			off() "turns the lamp off"
+			on() "turns the lamp on"
+			stopBlinking() "stops the blinking of the lamp"
+			toggle() "switches the lamp on or off"
+			toggleWithDelay(delayInSeconds as int) "switches the lamp on or off with a delay of the specified seconds"
+		}	
+	}

@@ -39,6 +39,10 @@ Vorto provides an Eclipse project wizard to create a function block model projec
 **Information model wizard**  
 Information models represent the capabilities of a particular type of device in its entirety. An information model contains one or more function blocks. Vorto provides an UI wizard to create an information model project and all required resources.
 
+
+**Mapping model wizard**  
+Vorto provides an Eclipse project wizard to create a mapping model from existing Datatype, Function block, or Information models.
+
 **DSL editors**  
 The new Domain-specific Language (DSL) is a simple way to define and read datatype models, function block models and information models without the need to understand XML, XSD or even Java. On-the-fly auto-completion and validation lets you create the named models even faster than ever.
 
@@ -54,13 +58,15 @@ Information model DSL editor:
 
 ![Information model DSL editor]({{base}}/img/documentation/m2m_tc_information_model_dsl_editor.png)
 
+Mapping model DSL editor:
+
+Vorto provides Mapping DSL editor for user to create customized mapping that map a vorto model to another platform model.
+
 **Vorto perspective**  
 The Vorto perspective as a new Eclipse perspective simplifies the view and, thus, the work with the more abstract models.
 
 ![Vorto Perspective]({{base}}/img/documentation/m2m_tc_vorto_perspective.png)
 
-**Information model mapping**  
-Vorto provides Mapping DSL editor for user to create customized mapping that map a vorto information model to another platform model.
 
 **Example code generators**  
 Vorto provides several code generators, so that the user can generate code based on the select information model. Vorto also provides a code generator extension point, so that the user can create his own code generator.

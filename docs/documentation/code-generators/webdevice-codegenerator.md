@@ -10,7 +10,7 @@ This section describes the use of an example code generator to generate a Web De
 
 **Prerequisites**
 
-- You have created the information model project `PhilipsHue` (refer to [Creating a new Information Model]({{base}}/documentation/editors/information-model.html#creating-a-new-information-model) and [Editing an Information Model]({{base}}/documentation/editors/information-model.html#editing-an-information-model)).
+- You have created the information model project `MyLightingDevice` (refer to [Creating a new Information Model]({{base}}/documentation/editors/information-model.html#creating-a-new-information-model) and [Editing an Information Model]({{base}}/documentation/editors/information-model.html#editing-an-information-model)).
 - You have selected the Vorto perspective.
 - Eclipse [M2E plug-in](http://download.eclipse.org/technology/m2e/releases) 1.5.\* (can already be packaged with Eclipse Luna)  
 
@@ -32,11 +32,11 @@ This section describes the use of an example code generator to generate a Web De
 
 **Proceed as follows**
 
-Select the information model project created (`PhilipsHue`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
+Select the information model project created (`MyLightingDevice`), right-click and choose **Generate Code > Web Device Application Generator** from the context menu.
 
-The Web application project `philipshue-webapp` is generated and Eclipse switches to the Java perspective.
+The Web application project `mylightingdevice-webapp` is generated and Eclipse switches to the Java perspective.
 
-![Generated Web App]({{base}}/img/documentation/m2m_vorto_philipshue_webapp_java_layout.png)
+![Generated Web App]({{base}}/img/documentation/m2m_vorto_mylightingdevice_webapp_java_layout.png)
 
 <table class="table table-bordered">
 	<tbody>
@@ -68,18 +68,18 @@ Run the generated Web device application to visualize it.
 
 **Proceed as follows**
 
-1. In the Package Explorer, select the Web device application project (`philipshue-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
+1. In the Package Explorer, select the Web device application project (`mylightingdevice-webapp` in the example). From the context menu, choose **Run As > Run Configurations...**.  
    The **Run Configurations** dialog opens.
 2. In the configuration list on the left side, expand **Maven Build** and click the sub item **New_configuration**.  
    A configuration form opens.
-3. Change the entry in the **Name** field to, e.g., `Philipshue_configuration`.
-4. In the **Base directory** input field, enter `${workspace_loc}/philipshue-webapp`.
+3. Change the entry in the **Name** field to, e.g., `mylightingdevice_configuration`.
+4. In the **Base directory** input field, enter `${workspace_loc}/mylightingdevice-webapp`.
 5. In the **Goals** input field, enter `jetty:run`.
 6. Click **Run**.  
    ![Run Jetty]({{base}}/img/documentation/m2m_vorto_jetty_run.png)  
    Wait a few seconds for jetty server to start. Upon successfully start, message `[INFO] Started Jetty Server` should be displayed in the Eclipse console.
-7. Open the URL `http://localhost:8080/philipshue-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
-   ![Philipshue Web UI]({{base}}/img/documentation/m2m_vorto_philipshue_webui.png)
+7. Open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` in your browser to see the HTML representation of your device over Web.  
+   ![Mylightingdevice Web UI]({{base}}/img/documentation/m2m_vorto_mylightingdevice_webui.png)
 
 ### Modifying the Behavior of the Generated Web Device Application
 
@@ -102,6 +102,6 @@ The default REST service class `Switchable` generated provides a service to retu
 
 2. Stop the application by clicking the red square beside the Console tab in your IDE.
 3. Start the application again by selecting the project and choosing **Run As > Run configurations** from the context menu.
-4. In your browser, open the URL `http://localhost:8080/philipshue-webapp/index.html` again.
+4. In your browser, open the URL `http://localhost:8080/mylightingdevice-webapp/index.html` again.
 5. Click the **On** button.  
 The **On** status is changed to **true**.

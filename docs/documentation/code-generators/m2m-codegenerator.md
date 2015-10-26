@@ -22,7 +22,7 @@ A function block model contains necessary artifacts (e.g., Java representation o
 
 **Proceed as follows**
 
-1. In the **Function Block Models** browser, select the function block project you want to generate code for.
+1. In the **Information Models** browser, select the function block project you want to generate code for.
 2. Right-click to open the context menu and click **Generate Code > Bosch M2M Model Generator**.  
    ![Generating code]({{base}}/img/documentation/m2m_tc_generate_code_function_block_model_1.png)  
    The following is generated and Eclipse switches to the Java perspective:
