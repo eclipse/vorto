@@ -37,6 +37,8 @@ public class ModelResource {
 	
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 	
+	protected List<String> supportedTargetPlatforms = new ArrayList<String>();
+	
 	public ModelResource(ModelId modelId,ModelType modelType) {
 		this.id = modelId;
 		this.modelType = modelType;
@@ -105,7 +107,15 @@ public class ModelResource {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+	
+	public List<String> getSupportedTargetPlatforms() {
+		return supportedTargetPlatforms;
+	}
 
+	public void setSupportedTargetPlatforms(List<String> supportedTargetPlatforms) {
+		this.supportedTargetPlatforms = supportedTargetPlatforms;
+	}
+	
 	@Override
 	public String toString() {
 		return "ModelResource [id=" + id + ", modelType=" + modelType + "]";
@@ -138,6 +148,12 @@ public class ModelResource {
 		if (modelType != other.modelType)
 			return false;
 		return true;
+	}
+
+	public void addTargetPlatform(String targetPlatform) {
+		if (targetPlatform != null && !targetPlatform.equals("")) {
+			this.supportedTargetPlatforms.add(targetPlatform);
+		}
 	}	
 	
 	

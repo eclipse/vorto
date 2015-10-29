@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.model;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
@@ -45,6 +47,8 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 	protected IProject project;
 	protected IModelParser modelParser;
 	protected ModelFileLookupHelper modelLookupHelper;
+	
+	protected static final String MAPPINGS_DIR = "src/mappings";
 
 	private Model model;
 
@@ -168,6 +172,24 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 			return modelParser.parseModel(file, InformationModel.class);
 		} else {
 			return modelParser.parseModel(file, Type.class);
+		}
+	}
+	
+	public void addMapping(ModelId mappingModelId, byte[] mappingContent) {
+		try {
+			IFolder folder = project.getFolder(MAPPINGS_DIR);
+			if (!folder.exists()) {
+				folder.create(IResource.NONE, true, null);
+			}
+
+			IFile file = folder.getFile(mappingModelId.getFileName());
+			if (file.exists()) {
+				file.delete(true, new NullProgressMonitor());
+			}
+
+			file.create(new ByteArrayInputStream(mappingContent), true, new NullProgressMonitor());
+		} catch (CoreException e) {
+			throw new RuntimeException("Problem when saving mapping content",e);
 		}
 	}
 }

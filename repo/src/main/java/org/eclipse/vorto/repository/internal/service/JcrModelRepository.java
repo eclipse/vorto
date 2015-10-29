@@ -81,27 +81,27 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired(required = false)
 	private IGovernance governance = new AlwaysApproveGovernance();
-	
+
 	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
-	
+
 	private File tmpDirectory = null;
-	
+
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
-	
+
 	@Override
 	public List<ModelResource> search(String queryExpression) {
 		if (queryExpression == null || queryExpression.isEmpty()) {
 			queryExpression = "*";
 		}
-		
+
 		try {
 			List<ModelResource> modelResources = new ArrayList<>();
 			QueryManager queryManager = session.getWorkspace().getQueryManager();
 			Query query = queryManager.createQuery(queryExpression, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
-			logger.debug("Searching repository with expression "+query.getStatement());
+			logger.debug("Searching repository with expression " + query.getStatement());
 			QueryResult result = query.execute();
 			RowIterator rowIterator = result.getRows();
-			
+
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
@@ -109,17 +109,18 @@ public class JcrModelRepository implements IModelRepository {
 					modelResources.add(createModelResource(currentNode));
 				}
 			}
-			
+
 			return modelResources;
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Could not create query manager", e);
 		}
 	}
-	
+
 	private boolean isMappingNode(Node node) throws RepositoryException {
-		return node.hasProperty("vorto:type") && ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
+		return node.hasProperty("vorto:type")
+				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
 	}
-	
+
 	private ModelResource createModelResource(Node node) throws RepositoryException {
 		ModelResource resource = new ModelResource(ModelId.fromPath(node.getParent().getPath()),
 				ModelType.valueOf(node.getProperty("vorto:type").getString()));
@@ -127,9 +128,9 @@ public class JcrModelRepository implements IModelRepository {
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
 		if (node.hasProperty("vorto:author")) {
-			resource.setAuthor(node.getProperty("vorto:author").getString());	
+			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
-	
+
 		if (node.hasProperty("vorto:references")) {
 			Value[] referenceValues = node.getProperty("vorto:references").getValues();
 			if (referenceValues != null) {
@@ -137,40 +138,43 @@ public class JcrModelRepository implements IModelRepository {
 				for (Value referValue : referenceValues) {
 					String nodeUuid = referValue.getString();
 					Node referencedNode = session.getNodeByIdentifier(nodeUuid);
-					referenceHelper.addModelReference(ModelId.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
+					referenceHelper.addModelReference(
+							ModelId.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
 				}
 				resource.setReferences(referenceHelper.getReferences());
-			}	
+			}
 		}
-		
+
 		PropertyIterator propIter = node.getReferences();
 		while (propIter.hasNext()) {
 			Property prop = propIter.nextProperty();
 			Node referencedByFileNode = prop.getParent();
-			resource.getReferencedBy().add(ModelId.fromPath(referencedByFileNode.getParent().getPath()));		
+			final ModelId referencedById = ModelId.fromPath(referencedByFileNode.getParent().getPath());
+			resource.getReferencedBy().add(referencedById);
 		}
-		
+
 		return resource;
 	}
 
 	@Override
-	public byte[] getModelContent(ModelId modelId,ContentType contentType) {
+	public byte[] getModelContent(ModelId modelId, ContentType contentType) {
 		try {
 			Node folderNode = session.getNode(modelId.getFullPath());
-			Node fileNode = (Node)folderNode.getNodes().next();
+			Node fileNode = (Node) folderNode.getNodes().next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-			
+
 			if (contentType == ContentType.XMI) {
-				ModelEMFResource resource = (ModelEMFResource)ModelParserFactory.getParser(fileNode.getName()).parse(is);
+				ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName())
+						.parse(is);
 				return resource.toXMI();
 			} else {
-				return IOUtils.toByteArray(is);	
+				return IOUtils.toByteArray(is);
 			}
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
-			throw new RuntimeException("Something went wrong accessing the repository", e);
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
 
@@ -178,24 +182,24 @@ public class JcrModelRepository implements IModelRepository {
 	public UploadModelResult upload(byte[] content, String fileName) {
 		try {
 			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
-			
+
 			for (IModelValidator validator : validators) {
 				validator.validate(resource);
-			}	
-			return UploadModelResult.valid(createUploadHandle(resource.getId(),content,fileName), resource);
-		} catch(ValidationException validationException) {
+			}
+			return UploadModelResult.valid(createUploadHandle(resource.getId(), content, fileName), resource);
+		} catch (ValidationException validationException) {
 			return UploadModelResult.invalid(validationException);
 		}
 	}
-	
-	private String createUploadHandle(ModelId id, byte[] content,String fileName) {
+
+	private String createUploadHandle(ModelId id, byte[] content, String fileName) {
 		try {
-			File file = File.createTempFile("vorto",fileName);
+			File file = File.createTempFile("vorto", fileName);
 			IOUtils.write(content, new FileOutputStream(file));
-			logger.debug("Created temporary file for upload : "+file.getName());
+			logger.debug("Created temporary file for upload : " + file.getName());
 			return file.getName();
 		} catch (IOException e) {
-			throw new RuntimeException("Could not create temporary file for uploaded model",e);
+			throw new RuntimeException("Could not create temporary file for uploaded model", e);
 		}
 	}
 
@@ -205,32 +209,35 @@ public class JcrModelRepository implements IModelRepository {
 		final File uploadedFile;
 		try {
 			uploadedFile = loadUploadedFile(handleId);
-			logger.debug("Found temporary file for handleId : "+uploadedFile.getName());
+			logger.debug("Found temporary file for handleId : " + uploadedFile.getName());
 			contentAsStream = new FileInputStream(uploadedFile);
 		} catch (FileNotFoundException e1) {
 			throw new ModelNotFoundException("Could not find uploaded model with the specified handle", e1);
-		} 
-		
+		}
+
 		final ModelResource resource = ModelParserFactory.getParser(uploadedFile.getName()).parse(contentAsStream);
 
 		try {
-			governance.start(new ModelUploadHandle(resource.getId(), resource.getModelType(), IOUtils.toByteArray(new FileInputStream(uploadedFile))),
-					new IGovernanceCallback() {
+			governance.start(new ModelUploadHandle(resource.getId(), resource.getModelType(),
+					IOUtils.toByteArray(new FileInputStream(uploadedFile))), new IGovernanceCallback() {
 
 						@Override
 						public void processUploadResult(GovernanceResult uploadResult) {
 							if (uploadResult.isApproved()) {
 								try {
-									logger.debug("Checkin for "+uploadResult.getHandle().getModelId().getPrettyFormat()+" was approved. Proceeding with checkin...");
+									logger.debug(
+											"Checkin for " + uploadResult.getHandle().getModelId().getPrettyFormat()
+													+ " was approved. Proceeding with checkin...");
 									Node folderNode = createNodeForModelId(uploadResult.getHandle().getModelId());
 									Node fileNode = folderNode.addNode(
-											uploadResult.getHandle().getModelId().getName() + uploadResult.getHandle().getModelType().getExtension(),
+											uploadResult.getHandle().getModelId().getName()
+													+ uploadResult.getHandle().getModelType().getExtension(),
 											"nt:file");
 									fileNode.addMixin("vorto:meta");
 									fileNode.addMixin("mix:referenceable");
 									Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-									Binary binary = session.getValueFactory()
-											.createBinary(new ByteArrayInputStream(uploadResult.getHandle().getContent()));
+									Binary binary = session.getValueFactory().createBinary(
+											new ByteArrayInputStream(uploadResult.getHandle().getContent()));
 									contentNode.setProperty("jcr:data", binary);
 									session.save();
 									logger.debug("Checkin successful.");
@@ -239,17 +246,17 @@ public class JcrModelRepository implements IModelRepository {
 									throw new RuntimeException(e);
 								}
 							} else {
-								logger.warn(resource.getId().getPrettyFormat()+" was not approved for checkin");
+								logger.warn(resource.getId().getPrettyFormat() + " was not approved for checkin");
 							}
 						}
 					});
 		} catch (IOException e) {
-			throw new RuntimeException("Something went wrong when reading the model content",e);
+			throw new RuntimeException("Something went wrong when reading the model content", e);
 		}
 	}
 
 	private File loadUploadedFile(String handleId) {
-		return new File(tmpDirectory,handleId);
+		return new File(tmpDirectory, handleId);
 	}
 
 	private Node createNodeForModelId(ModelId id) throws RepositoryException {
@@ -269,49 +276,97 @@ public class JcrModelRepository implements IModelRepository {
 
 		return rootNode.getNode(id.getFullPath().substring(1));
 	}
-	
+
 	@Override
 	public ModelResource getById(ModelId modelId) {
 		try {
 			Node foundNode = session.getNode(modelId.getFullPath());
-			Node fileNode = (Node)foundNode.getNodes().next();
-			return createModelResource(fileNode);
+			Node fileNode = (Node) foundNode.getNodes().next();
+			ModelResource modelResource =  createModelResource(fileNode);
+			if (modelResource.getModelType() == ModelType.InformationModel) {
+				for (ModelId referencedById : modelResource.getReferencedBy()) {
+					ModelEMFResource emfResource = getEMFResource(referencedById);
+					modelResource.addTargetPlatform(emfResource.getTargetPlatform());
+				}
+			}
+			return modelResource;
 		} catch (PathNotFoundException e) {
 			return null;
 		} catch (RepositoryException e) {
-			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository",e);
+			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		}
 	}
-	
+
 	@Override
 	public void removeModel(ModelId modelId) {
 		try {
 			ModelResource modelResource = getById(modelId);
 			if (!modelResource.getReferencedBy().isEmpty()) {
-				throw new ModelReferentialIntegrityException("Cannot remove model because it is referenced by other model(s)",modelResource.getReferencedBy());
+				throw new ModelReferentialIntegrityException(
+						"Cannot remove model because it is referenced by other model(s)",
+						modelResource.getReferencedBy());
 			}
 			Item item = session.getItem(modelId.getFullPath());
-	        item.remove();
-	        session.save();
+			item.remove();
+			session.save();
 		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Problem occured removing the model",e);
-		} 
+			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		}
 	}
-	
-	
+
 	@PostConstruct
 	public void createValidators() {
 		try {
-			this.tmpDirectory = File.createTempFile("vorto",null).getParentFile();
+			this.tmpDirectory = File.createTempFile("vorto", null).getParentFile();
 		} catch (IOException e) {
 			throw new RuntimeException("Could not initialize tmp directory");
 		}
 		this.validators.add(new DuplicateModelValidation(this));
 		this.validators.add(new ModelReferencesValidation(this));
 	}
-	
+
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	@Override
+	public List<ModelResource> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
+		List<ModelResource> mappingResources = new ArrayList<>();
+		ModelResource modelResource = getById(modelId);
+		if (modelResource != null) {
+			for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
+				ModelResource referenceeModelResources = getById(referenceeModelId);
+				if (referenceeModelResources.getModelType() == ModelType.Mapping
+						&& isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
+					mappingResources.add(referenceeModelResources);
+				}
+			}
+			for (ModelId referencedModelId : modelResource.getReferences()) {
+				mappingResources.addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform));
+			}
+		}
+		return mappingResources;
+	}
+
+	private boolean isTargetPlatformMapping(ModelResource model, String targetPlatform) {
+		try {
+			ModelEMFResource emfResource = getEMFResource(model.getId());
+			return emfResource.matchesTargetPlatform(targetPlatform);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
+	}
+	
+	private ModelEMFResource getEMFResource(ModelId modelId) {
+		try {
+			Node folderNode = session.getNode(modelId.getFullPath());
+			Node fileNode = (Node) folderNode.getNodes().next();
+			Node fileItem = (Node) fileNode.getPrimaryItem();
+			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
+			return (ModelEMFResource)ModelParserFactory.getParser(fileNode.getName()).parse(is);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
 	}
 
 }

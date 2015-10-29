@@ -38,7 +38,6 @@ import org.eclipse.vorto.repository.web.util.RestCallback;
 import org.eclipse.vorto.repository.web.util.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -231,6 +230,28 @@ public class ModelRepositoryController {
 			}
 
 		});
+	}
+	
+	@Path("/{namespace}/{name}/{version:.+}/mappings/{targetPlatform}")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getMappingResources(final @PathParam("namespace") String namespace,
+										final @PathParam("name") String name, 
+										final @PathParam("version") String version,
+										final @PathParam("targetPlatform") String targetPlatform) {
+		Objects.requireNonNull(namespace, "namespace must not be null");
+		Objects.requireNonNull(name, "name must not be null");
+		Objects.requireNonNull(version, "version must not be null");
+		
+		return restTemplate.execute(new RestCallback() {
 
+			@Override
+			public Response execute() {
+				final ModelId modelId = new ModelId(name,namespace,version);
+				return Response.ok(modelRepository.getMappingModelsForTargetPlatform(modelId,targetPlatform)).build();
+				
+			}
+
+		});
 	}
 }

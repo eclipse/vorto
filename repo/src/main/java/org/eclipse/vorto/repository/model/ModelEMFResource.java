@@ -64,4 +64,15 @@ public class ModelEMFResource extends ModelResource {
 		return baos.toByteArray();
 	}
 	
+	public boolean matchesTargetPlatform(String targetPlatform) {
+		return this.modelType == ModelType.Mapping && ((MappingModel)model).getTargetPlatform().equalsIgnoreCase(targetPlatform);
+	}
+	
+	public String getTargetPlatform() {
+		if (this.model instanceof MappingModel) {
+			return ((MappingModel)this.model).getTargetPlatform();
+		} else {
+			return "";
+		}
+	}
 }

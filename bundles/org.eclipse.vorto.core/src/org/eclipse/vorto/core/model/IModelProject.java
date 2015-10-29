@@ -67,4 +67,11 @@ public interface IModelProject extends IModelElement {
 	 */
 	void save();
 
+	/**
+	 * 
+	 * @param id
+	 * @param mappingContent
+	 */
+	void addMapping(ModelId id, byte[] mappingContent);
+
 }

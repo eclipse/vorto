@@ -126,4 +126,8 @@ public class ModelId implements Comparable<ModelId> {
 			return false;
 		return true;
 	}
+
+	public String getFileName() {
+		return name + getModelType().getExtension();
+	}
 }
