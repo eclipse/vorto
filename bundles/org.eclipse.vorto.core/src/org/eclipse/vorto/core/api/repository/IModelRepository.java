@@ -72,4 +72,12 @@ public interface IModelRepository {
 	 * @param String the handle of the uploaded model
 	 */
 	void commit(String handleId);
+
+	/**
+	 * Fetches a list of all mappings for the given model and target platform
+	 * @param modelId
+	 * @param targetPlatform
+	 * @return
+	 */
+	List<ModelResource> getMappingsForTargetPlatform(ModelId modelId, String targetPlatform);
 }

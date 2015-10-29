@@ -231,4 +231,13 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 		modelRepository.checkin(uploadResult.getHandleId());
 		assertEquals(1, modelRepository.search("*").size());
 	}
+	
+	@Test
+	public void testGetMappingsForEntity() throws Exception {
+		checkinModel("Color.type");
+		checkinModel("sample.mapping");
+		Thread.sleep(2000);
+		assertEquals(1,modelRepository.getMappingModelsForTargetPlatform(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios").size());
+	}
+	
 }

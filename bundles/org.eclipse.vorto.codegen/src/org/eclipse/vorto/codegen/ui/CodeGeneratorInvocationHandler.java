@@ -14,15 +14,21 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ui;
 
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.IMappingAware;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.repository.IModelRepository;
+import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
+import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
@@ -87,7 +93,17 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 	private void setMappingForMappingAwareGenerator(IModelProject selectedProject,
 			IMappingAware mappingAwareCodeGenerator) {
 			String targetPlatform = ((IMappingAware) mappingAwareCodeGenerator).getTargetPlatform();
+			downloadMappingsFromRepository(selectedProject, targetPlatform);
 			mappingAwareCodeGenerator.setMapping(selectedProject.getMapping(targetPlatform));
+	}
+	
+	private void downloadMappingsFromRepository(IModelProject selectedProject, String targetPlatform) {
+		IModelRepository modelRepository = ModelRepositoryFactory.getModelRepository();
+		List<ModelResource> mappingResourcesOfModel = modelRepository.getMappingsForTargetPlatform(selectedProject.getId(),targetPlatform);
+		for (ModelResource mappingModelResource : mappingResourcesOfModel) {
+			byte[] mappingContent = modelRepository.downloadContent(mappingModelResource.getId());
+			selectedProject.addMapping(mappingModelResource.getId(),mappingContent);
+		}
 	}
 
 	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {

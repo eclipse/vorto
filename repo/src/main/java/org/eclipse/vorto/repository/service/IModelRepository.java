@@ -74,6 +74,14 @@ public interface IModelRepository {
 	 */
 	void checkin(String handleId);
 	
+	/**
+	 * Gets all mapping model resources for the given modelId
+	 * @param modelId
+	 * @param targetPlatform
+	 * @return
+	 */
+	List<ModelResource> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform);
+	
 	public enum ContentType {
 		XMI,DSL
 	}

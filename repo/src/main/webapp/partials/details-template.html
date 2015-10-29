@@ -75,6 +75,14 @@
             </td>
          </tr>
          <tr>
+         <tr ng-show="model.modelType == 'InformationModel'">
+          <td>
+           <label>Supported Target Platforms: </label></td>
+          <td>
+           <table><tr ng-repeat="targetPlatform in model.supportedTargetPlatforms"><td>{{targetPlatform}}</td></tr></table>
+            </td>
+         </tr>
+         <tr>
           <td> </td>
           <td>
            <a href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}?output=XMI" class="pull-center"><i class="fa fa-fw fa-download"></i>XMI</a>

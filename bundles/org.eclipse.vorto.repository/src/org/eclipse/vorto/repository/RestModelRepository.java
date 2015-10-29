@@ -178,4 +178,14 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			throw new CheckInModelException("Error in committing file with upload id " + handleId + " to repository.", e);
 		}
 	}
+
+	@Override
+	public List<ModelResource> getMappingsForTargetPlatform(ModelId modelId, String targetPlatform) {
+		try {
+			List<ModelView> result = httpClient.executeGet(getUrlForModel(modelId)+"/mappings/"+targetPlatform, searchResultConverter);
+			return Lists.transform(result, modelViewToModelResource);
+		} catch(Exception ex) {
+			throw new RuntimeException("Error querying mappings for model", ex);
+		}
+	}
 }
