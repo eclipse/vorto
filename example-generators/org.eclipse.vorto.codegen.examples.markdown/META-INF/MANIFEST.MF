@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: MarkdownGenerator
+Bundle-Name: Vorto Markdown Generator (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.markdown;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.vorto.codegen.examples.markdown.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.vorto.core,
