@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.vorto.feature.codegen.examples_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature.codegen.examples" version="0.4.0.qualifier">
-      <category name="Vorto"/>
-   </feature>
-   <feature url="features/org.eclipse.vorto.feature.dependencies_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature.dependencies" version="0.4.0.qualifier">
-      <category name="Vorto"/>
-   </feature>
-   <feature url="features/org.eclipse.vorto.feature.editor.perspective_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature.editor.perspective" version="0.4.0.qualifier">
-      <category name="Vorto"/>
-   </feature>
-   <feature url="features/org.eclipse.vorto.feature.editor_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature.editor" version="0.4.0.qualifier">
-      <category name="Vorto"/>
-   </feature>
-   <feature url="features/org.eclipse.vorto.feature.repository_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature.repository" version="0.4.0.qualifier">
+   <feature url="features/org.eclipse.vorto.feature_0.4.0.qualifier.jar" id="org.eclipse.vorto.feature" version="0.4.0.qualifier">
       <category name="Vorto"/>
    </feature>
    <category-def name="Vorto" label="Vorto"/>

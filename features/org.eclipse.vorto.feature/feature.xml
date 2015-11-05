@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.eclipse.vorto.feature"
+      label="Vorto Toolset All-in-One Bundle (Incubation)"
+      version="0.4.0.qualifier"
+      provider-name="Eclipse.org/Vorto">
+
+   <description>
+      This feature defines all bundles that comprise the Vorto toolset.
+   </description>
+
+   <copyright>
+      Copyright (c) 2014 Bosch Software Innovations GmbH and others.      All rights reserved. This program and the accompanying materialsare made available under the terms of the Eclipse Public Licensev1.0 which accompanies this distribution, and is available athttp://www.eclipse.org/legal/epl-v10.html Description here.
+   </copyright>
+
+   <license url="http://www.eclipse.org/legal/epl-v10.html">
+      %license
+   </license>
+
+   <includes
+         id="org.eclipse.vorto.feature.codegen.examples"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.vorto.feature.dependencies"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.vorto.feature.editor"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.vorto.feature.editor.perspective"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.vorto.feature.repository"
+         version="0.0.0"/>
+
+</feature>
