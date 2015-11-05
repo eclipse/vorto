@@ -23,7 +23,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.vorto.editor.datatype
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.formatting,
- org.eclipse.xtext.junit.util,
+ org.eclipse.xtext.junit.util;resolution:=optional,
  org.hamcrest.core,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",

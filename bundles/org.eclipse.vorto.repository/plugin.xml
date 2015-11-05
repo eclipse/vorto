@@ -12,7 +12,7 @@
             category="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
             class="org.eclipse.vorto.repository.preferences.RemoteRepositoryPreferencePage"
             id="org.eclipse.vorto.repository.preferences.RemoteRepositoryPreferencePage"
-            name="Remote Repository">
+            name="Information Model Repository">
       </page>
    </extension>
    <extension
