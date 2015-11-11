@@ -18,19 +18,17 @@ import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.vorto.codegen.api.ICodeGenerator
 import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.examples.markdown.tasks.InformationModelGeneratorTask
-import org.eclipse.vorto.codegen.examples.markdown.templates.FunctionBlockTemplate
-import org.eclipse.vorto.codegen.examples.markdown.templates.EntityTemplate
-import org.eclipse.vorto.codegen.examples.markdown.templates.EnumTemplate
+import org.eclipse.vorto.codegen.examples.markdown.tasks.MarkdownInformationModelGeneratorTask
 
 class MarkdownGenerator implements ICodeGenerator<InformationModel> {
 
+	public static final String MARKDOWN_PROJECT_SUFFIX 	= "_Markdown";
+	public static final String MARKDOWN_FILE_EXTENSION 	= ".md";
+	public static final String MARKDOWN_TARGET_PATH 	= "markdown";
+	
 	override generate(InformationModel infomodel, IProgressMonitor monitor) {
-		val EntityTemplate entityTemplate = new EntityTemplate();
-		val EnumTemplate enumTemplate = new EnumTemplate();
-		val FunctionBlockTemplate fbTemplate = new FunctionBlockTemplate();
-		new EclipseProjectGenerator(infomodel.getName()+"Documentation")
-			.addTask(new InformationModelGeneratorTask(".md", "docs", fbTemplate, entityTemplate, enumTemplate))
+		new EclipseProjectGenerator(infomodel.getName()+MARKDOWN_PROJECT_SUFFIX)
+			.addTask(new MarkdownInformationModelGeneratorTask(MARKDOWN_FILE_EXTENSION, MARKDOWN_TARGET_PATH))
 			.javaNature().generate(infomodel,monitor);
 	}
 	

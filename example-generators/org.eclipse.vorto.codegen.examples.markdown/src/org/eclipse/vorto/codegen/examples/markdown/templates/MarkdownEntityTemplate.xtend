@@ -18,7 +18,7 @@ import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.codegen.examples.markdown.utils.Utils
 
-class EntityTemplate implements ITemplate<Entity> {
+class MarkdownEntityTemplate implements ITemplate<Entity> {
 	
 	override getContent(Entity entity) {
 		'''

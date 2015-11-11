@@ -17,31 +17,22 @@ package org.eclipse.vorto.codegen.examples.markdown.tasks;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.codegen.api.tasks.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.tasks.ITemplate;
-import org.eclipse.vorto.codegen.examples.markdown.templates.EntityTemplate;
-import org.eclipse.vorto.codegen.examples.markdown.templates.EnumTemplate;
-import org.eclipse.vorto.codegen.examples.markdown.templates.FunctionBlockTemplate;
-import org.eclipse.vorto.codegen.examples.markdown.templates.InformationModelTemplate;
+import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownEntityTemplate;
+import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownEnumTemplate;
+import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownFunctionBlockTemplate;
+import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownInformationModelTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
-public class InformationModelGeneratorTask extends
+public class MarkdownInformationModelGeneratorTask extends
 	AbstractTemplateGeneratorTask<InformationModel> {
 	
 	private String markdownFileExtension;
 	private String targetPath;
-	private FunctionBlockTemplate fbTemplate;
-	private EntityTemplate entityTemplate;
-	private EnumTemplate enumTemplate;
 	
-	public InformationModelGeneratorTask (String markdownFileExtension, 
-			String targetPath, 
-			FunctionBlockTemplate fbTemplate,
-			EntityTemplate entityTemplate,
-			EnumTemplate enumTemplate) {
+	public MarkdownInformationModelGeneratorTask (String markdownFileExtension, 
+			String targetPath) {
 		this.markdownFileExtension = markdownFileExtension;
 		this.targetPath = targetPath;
-		this.fbTemplate = fbTemplate;
-		this.entityTemplate = entityTemplate;
-		this.enumTemplate = enumTemplate;
 	}
 	
 	@Override
@@ -56,6 +47,9 @@ public class InformationModelGeneratorTask extends
 	
 	@Override
 	public ITemplate<InformationModel> getTemplate() {
-		return new InformationModelTemplate(this.fbTemplate, this.entityTemplate, this.enumTemplate);
+		MarkdownFunctionBlockTemplate fbTemplate = new MarkdownFunctionBlockTemplate();
+		MarkdownEntityTemplate entityTemplate = new MarkdownEntityTemplate();
+		MarkdownEnumTemplate enumTemplate = new MarkdownEnumTemplate();
+		return new MarkdownInformationModelTemplate(fbTemplate, entityTemplate, enumTemplate);
 	}
 }
