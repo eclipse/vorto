@@ -18,13 +18,13 @@ import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.templates.java.utils.ModelHelper
 
-class InformationModelTemplate implements ITemplate<InformationModel>{
+class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 	
-	FunctionBlockTemplate fbTemplate;
-	EntityTemplate entityTemplate;
-	EnumTemplate enumTemplate;
+	MarkdownFunctionBlockTemplate fbTemplate;
+	MarkdownEntityTemplate entityTemplate;
+	MarkdownEnumTemplate enumTemplate;
 	
-	new(FunctionBlockTemplate fbTemplate,EntityTemplate entityTemplate, EnumTemplate enumTemplate) {
+	new(MarkdownFunctionBlockTemplate fbTemplate,MarkdownEntityTemplate entityTemplate, MarkdownEnumTemplate enumTemplate) {
 		this.fbTemplate = fbTemplate;
 		this.entityTemplate = entityTemplate;
 		this.enumTemplate = enumTemplate;

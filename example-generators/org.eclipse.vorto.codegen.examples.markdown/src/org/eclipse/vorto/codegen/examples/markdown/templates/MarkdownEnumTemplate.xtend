@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.markdown.templates
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 
-class EnumTemplate implements ITemplate<Enum> {
+class MarkdownEnumTemplate implements ITemplate<Enum> {
 	
 	override getContent(Enum en) {
 		'''
