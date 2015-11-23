@@ -57,7 +57,7 @@ public class InformationModelProject extends AbstractModelProject {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/im.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/im.png";
 	}
 
 	@Override
