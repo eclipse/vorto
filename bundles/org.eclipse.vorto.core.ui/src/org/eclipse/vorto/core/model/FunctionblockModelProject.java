@@ -48,7 +48,7 @@ public class FunctionblockModelProject extends AbstractModelProject {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/fb.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/fb.png";
 	}
 
 	@Override
