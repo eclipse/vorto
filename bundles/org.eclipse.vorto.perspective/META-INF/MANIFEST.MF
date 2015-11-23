@@ -7,6 +7,7 @@ Bundle-SymbolicName: org.eclipse.vorto.perspective; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.vorto.core,
+ org.eclipse.vorto.core.ui,
  org.eclipse.swt,
  org.eclipse.ui.ide,
  org.eclipse.jface,

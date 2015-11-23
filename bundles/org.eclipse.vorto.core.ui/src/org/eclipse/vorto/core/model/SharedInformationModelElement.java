@@ -17,7 +17,7 @@ public class SharedInformationModelElement extends AbstractSharedModelElement {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/shared_im.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/shared_im.png";
 	}
 
 	public static boolean appliesTo(Model model) {
