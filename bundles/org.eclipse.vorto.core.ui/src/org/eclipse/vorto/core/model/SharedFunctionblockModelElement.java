@@ -17,7 +17,7 @@ public class SharedFunctionblockModelElement extends AbstractSharedModelElement 
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/shared_fb.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/shared_fb.png";
 	}
 
 	public static boolean appliesTo(Model model) {

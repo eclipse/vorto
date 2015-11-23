@@ -4,59 +4,6 @@
    <extension-point id="org_eclipse_vorto_modelchange_Observers" name="Model Change Observer" schema="schema/org_eclipse_vorto_modelchange_Observers.exsd"/>
    <extension-point id="org_eclipse_vorto_core_ModelParser" name="Model Parser" schema="schema/org_eclipse_vorto_core_ModelParser.exsd"/>
    <extension-point id="org.eclipse.vorto.core.IModelRepository" name="Extension point for the model repository" schema="schema/org.eclipse.vorto.core.IModelRepository.exsd"/>
-   <extension
-         id="org.eclipse.vorto.iotnature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.eclipse.vorto.core.model.nature.IoTProjectNature">
-         </run>
-      </runtime>
-   </extension>
-    <extension
-         id="org.eclipse.vorto.informationmodelnature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.eclipse.vorto.core.model.nature.InformationModelProjectNature">
-         </run>
-      </runtime>
-   </extension>
-   <extension
-         id="org.eclipse.vorto.datatypenature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.eclipse.vorto.core.model.nature.FbDatatypeProjectNature">
-         </run>
-      </runtime>
-   </extension>
-   
-   	<extension 
-			point="org.eclipse.ui.commands">	
-	    <command defaultHandler="org.eclipse.vorto.core.ui.handler.infomodel.DeleteInfomodelHandler"
-	      	id="org.eclipse.vorto.infomodeleditor.ui.command1.deleteinfomodelproject" name="DeleteInformationModelProjectCommand">
-	    </command>
-	    <command defaultHandler="org.eclipse.vorto.core.ui.handler.datatype.DeleteDataTypeProjectHandler"
-	      	id="org.eclipse.vorto.datatypeeditor.ui.command1.deletedatatypeproject" name="DeleteDataTypeProjectCommand">
-	    </command>
-	     <command defaultHandler="org.eclipse.vorto.core.ui.handler.functionblock.DeleteFunctionBlockHandler"
-	      	id="org.eclipse.vorto.editor.functionblock.ui.command.deletefbproject" name="DeleteFunctionBlockProjectCommand">
-	    </command>    
-	</extension>
-   
-   <!-- Default menu contributions -->
-   
-  <extension
-        point="org.eclipse.core.expressions.propertyTesters">
-     <propertyTester
-           class="org.eclipse.vorto.core.model.nature.ProjectNaturePropertyTester"
-           id="ProjectNaturePropertyTester"
-           namespace="org.eclipse.vorto.editor.ui.propertytester"
-           properties="checkProjectNature"
-           type="org.eclipse.core.resources.IResource">
-     </propertyTester>
-  </extension> 
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <!-- @generated InformationModel -->

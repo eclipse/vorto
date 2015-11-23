@@ -9,6 +9,7 @@ Bundle-ClassPath: .
 Require-Bundle: org.eclipse.xtext,
  org.junit,
  org.eclipse.vorto.core,
+ org.eclipse.vorto.core.ui,
  org.eclipse.xtend.lib,
  org.eclipse.vorto.codegen,
  org.eclipse.vorto.codegen.examples.tutorial

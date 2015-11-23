@@ -8,6 +8,7 @@ Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.vorto.codegen.examples.tutorial.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.vorto.core,
+ org.eclipse.vorto.core.ui,
  org.eclipse.core.runtime,
  org.eclipse.vorto.codegen,
  org.eclipse.xtend.lib,

@@ -7,7 +7,7 @@
 				locationURI="popup:org.eclipse.vorto.project.menu">	
 				<command
 			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
 			        label="Create new Entity">
 			       <parameter
 			             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
@@ -16,7 +16,7 @@
 			  	</command>
 			    <command
 			          commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-			          icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			          icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
 			          label="Create new Enum">
 			       <parameter
 			             name="org.eclipse.vorto.editor.datatype.newdatatype.project"
@@ -25,17 +25,17 @@
 			    </command>
 				<command
 			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
 			        label="Create new Function Block Model">           	            
 			  	</command>	
 				<command
 			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
 			        label="Create new Information Model">           	            
 			  	</command>			
 				<command
 			  		commandId="org.eclipse.vorto.wizard.mapping.commoand.NewMappingModelHandler"
-			  		icon="platform:/plugin/org.eclipse.vorto.core/icons/add_exc.gif"
+			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
 			        label="Create new Mapping Model"> 
 	               <visibleWhen
 	                     checkEnabled="true">
@@ -82,7 +82,7 @@
             category="org.eclipse.vorto.functionblock.ui.wizards"
             class="org.eclipse.vorto.wizard.functionblock.FunctionBlockWizard"
             finalPerspective="org.eclipse.vorto.ui.perspective.VortoPerspective"
-            icon="platform:/plugin/org.eclipse.vorto.core/icons/fb.png"
+            icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/fb.png"
             id="org.eclipse.vorto.fbeditor.ui.wizards.InfomodelWizard"
             name="Function Block Model"
             project="true">
@@ -118,7 +118,7 @@
             category="org.eclipse.vorto.functionblock.ui.wizards"
             class="org.eclipse.vorto.wizard.infomodel.InfomodelWizard"
             finalPerspective="org.eclipse.vorto.ui.perspective.VortoPerspective"
-            icon="platform:/plugin/org.eclipse.vorto.core/icons/im.png"
+            icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/im.png"
             id="org.eclipse.vorto.fbeditor.ui.wizards.InfomodelWizard"
             name="Information Model"
             project="true">
@@ -145,7 +145,7 @@
             category="org.eclipse.vorto.functionblock.ui.wizards"
             class="org.eclipse.vorto.wizard.datatype.EntityWizard"
             finalPerspective="org.eclipse.vorto.ui.perspective.VortoPerspective"
-            icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
+            icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png"
             id="org.eclipse.vorto.editor.ui.internal.wizard.EntityWizard"
             name="Entity"
             project="true">
@@ -154,7 +154,7 @@
             category="org.eclipse.vorto.functionblock.ui.wizards"
             class="org.eclipse.vorto.wizard.datatype.EnumWizard"
             finalPerspective="org.eclipse.vorto.ui.perspective.VortoPerspective"
-            icon="platform:/plugin/org.eclipse.vorto.core/icons/dt.png"
+            icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png"
             id="org.eclipse.vorto.editor.ui.internal.wizard.EnumWizard"
             name="Enum"
             project="true">

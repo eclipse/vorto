@@ -221,7 +221,7 @@ public abstract class AbstractMappingResource extends AbstractModelElement imple
 	 */
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/mapping.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/mapping.png";
 	}
 
 	/*
