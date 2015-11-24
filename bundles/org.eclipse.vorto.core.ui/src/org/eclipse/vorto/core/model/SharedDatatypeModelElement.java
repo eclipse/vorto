@@ -17,7 +17,7 @@ public class SharedDatatypeModelElement extends AbstractSharedModelElement {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/shared_dt.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/shared_dt.png";
 	}
 	
 	public static boolean appliesTo(Model model) {

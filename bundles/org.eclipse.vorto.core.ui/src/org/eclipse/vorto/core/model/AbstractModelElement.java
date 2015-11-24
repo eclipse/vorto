@@ -27,6 +27,9 @@ import org.eclipse.vorto.core.service.IModelElementResolver;
 public abstract class AbstractModelElement implements IModelElement,
 		Comparable<IModelElement> {
 
+	// override the BufferedInputStream#close() method to NOT close the ZipInputStream since
+	// multiple entries will be read if available.
+	// Resource#load(InputStream) close the stream after end of file
 	@Override
 	public Image getImage() {
 		URL url = null;

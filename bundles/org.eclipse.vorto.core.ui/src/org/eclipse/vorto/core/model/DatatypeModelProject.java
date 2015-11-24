@@ -45,7 +45,7 @@ public class DatatypeModelProject extends AbstractModelProject {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core/icons/dt.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png";
 	}
 
 	@Override
