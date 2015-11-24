@@ -7,6 +7,7 @@ Bundle-ClassPath: .
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.vorto.core,
+ org.eclipse.vorto.core.ui,
  org.eclipse.vorto.codegen,
  org.eclipse.ui,
  org.eclipse.core.runtime,

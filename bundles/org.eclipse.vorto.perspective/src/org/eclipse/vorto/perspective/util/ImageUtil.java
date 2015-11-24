@@ -10,7 +10,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.model.ModelType;
 
 public class ImageUtil {
-	private static final String BUNDLE_ICON_URL = "platform:/plugin/org.eclipse.vorto.core/icons/";
+	private static final String BUNDLE_ICON_URL = "platform:/plugin/org.eclipse.vorto.core.ui/icons/";
 	private static final String SHARED_DT = "shared_dt.png";
 	private static final String SHARED_FB = "shared_fb.png";
 	private static final String SHARED_IM = "shared_im.png";

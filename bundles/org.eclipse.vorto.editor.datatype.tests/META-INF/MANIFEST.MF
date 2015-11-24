@@ -20,7 +20,6 @@ Require-Bundle: org.eclipse.vorto.editor.datatype.ui,
  org.eclipse.vorto.core,
  org.eclipse.vorto.editor.datatype
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.vorto.editor.datatype
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.formatting,
  org.eclipse.xtext.junit.util;resolution:=optional,
@@ -31,3 +30,4 @@ Import-Package: org.apache.log4j,
  org.junit.runner.notification;version="4.5.0",
  org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0"
+Export-Package: org.eclipse.vorto.editor.datatype
