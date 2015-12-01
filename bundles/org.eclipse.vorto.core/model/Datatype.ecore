@@ -17,6 +17,8 @@
         eType="#//Constraint" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//PropertyType"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyAttributes" upperBound="-1"
+        eType="#//PropertyAttribute" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PrimitivePropertyType" eSuperTypes="#//PropertyType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PrimitiveType"/>
@@ -49,6 +51,7 @@
     <eLiterals name="strlen" value="2" literal="STRLEN"/>
     <eLiterals name="regex" value="3" literal="REGEX"/>
     <eLiterals name="mimetype" value="4" literal="MIMETYPE"/>
+    <eLiterals name="scaling" value="5" literal="SCALING"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Enum" eSuperTypes="#//Type">
     <eStructuralFeatures xsi:type="ecore:EReference" name="enums" upperBound="-1"
@@ -60,4 +63,11 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Type" eSuperTypes="Model.ecore#//Model"/>
   <eClassifiers xsi:type="ecore:EClass" name="PropertyType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PropertyAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PropertyAttributeType">
+    <eLiterals name="MeasurementUnit" value="1" literal="MEASUREMENTUNIT"/>
+  </eClassifiers>
 </ecore:EPackage>

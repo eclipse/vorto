@@ -22,6 +22,8 @@ import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 
@@ -79,6 +81,7 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 			case DatatypePackage.ENUM_LITERAL: return createEnumLiteral();
 			case DatatypePackage.TYPE: return createType();
 			case DatatypePackage.PROPERTY_TYPE: return createPropertyType();
+			case DatatypePackage.PROPERTY_ATTRIBUTE: return createPropertyAttribute();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -96,6 +99,8 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 				return createPrimitiveTypeFromString(eDataType, initialValue);
 			case DatatypePackage.CONSTRAINT_INTERVAL_TYPE:
 				return createConstraintIntervalTypeFromString(eDataType, initialValue);
+			case DatatypePackage.PROPERTY_ATTRIBUTE_TYPE:
+				return createPropertyAttributeTypeFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -113,6 +118,8 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 				return convertPrimitiveTypeToString(eDataType, instanceValue);
 			case DatatypePackage.CONSTRAINT_INTERVAL_TYPE:
 				return convertConstraintIntervalTypeToString(eDataType, instanceValue);
+			case DatatypePackage.PROPERTY_ATTRIBUTE_TYPE:
+				return convertPropertyAttributeTypeToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -223,6 +230,16 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public PropertyAttribute createPropertyAttribute() {
+		PropertyAttributeImpl propertyAttribute = new PropertyAttributeImpl();
+		return propertyAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public PrimitiveType createPrimitiveTypeFromString(EDataType eDataType, String initialValue) {
 		PrimitiveType result = PrimitiveType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
@@ -255,6 +272,26 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	 * @generated
 	 */
 	public String convertConstraintIntervalTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyAttributeType createPropertyAttributeTypeFromString(EDataType eDataType, String initialValue) {
+		PropertyAttributeType result = PropertyAttributeType.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertPropertyAttributeTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

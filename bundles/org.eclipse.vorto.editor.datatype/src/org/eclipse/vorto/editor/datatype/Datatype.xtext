@@ -64,8 +64,17 @@ EnumLiteral:
 
 Property:
 	presence = Presence (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
+	('with {' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
 	('<' Constraints += Constraint ("," Constraints += Constraint)*  '>')?
 	(description=STRING)?
+;
+
+PropertyAttribute:
+	type=PropertyAttributeType ':' value=STRING
+;
+
+enum PropertyAttributeType:
+	MeasurementUnit = 'MeasurementUnit'
 ;
 
 PropertyType:
@@ -90,7 +99,7 @@ Constraint:
 	type = ConstraintIntervalType constraintValues = IntervalType
 ;
 
-enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = "MIMETYPE";
+enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = 'MIMETYPE' | scaling = 'SCALING';
 
 IntervalType:
 	INT | SIGNEDINT | FLOAT | DATETIME | STRING

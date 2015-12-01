@@ -13,7 +13,6 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#isMultiplicity <em>Multiplicity</em>}</li>
@@ -21,7 +20,9 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraints <em>Constraints</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getPropertyAttributes <em>Property Attributes</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty()
  * @model
@@ -173,5 +174,21 @@ public interface Property extends EObject {
 	 * @generated
 	 */
 	void setType(PropertyType value);
+
+	/**
+	 * Returns the value of the '<em><b>Property Attributes</b></em>' containment reference list.
+	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Property Attributes</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Property Attributes</em>' containment reference list.
+	 * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty_PropertyAttributes()
+	 * @model containment="true"
+	 * @generated
+	 */
+	EList<PropertyAttribute> getPropertyAttributes();
 
 } // Property

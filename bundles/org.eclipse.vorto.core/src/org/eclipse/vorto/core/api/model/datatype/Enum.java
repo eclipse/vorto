@@ -11,10 +11,10 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Enum#getEnums <em>Enums</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getEnum()
  * @model

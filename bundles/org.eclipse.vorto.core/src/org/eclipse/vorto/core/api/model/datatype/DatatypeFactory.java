@@ -112,6 +112,15 @@ public interface DatatypeFactory extends EFactory {
 	PropertyType createPropertyType();
 
 	/**
+	 * Returns a new object of class '<em>Property Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Property Attribute</em>'.
+	 * @generated
+	 */
+	PropertyAttribute createPropertyAttribute();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

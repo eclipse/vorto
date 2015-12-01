@@ -17,6 +17,7 @@ import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 
@@ -117,6 +118,10 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter casePropertyType(PropertyType object) {
 				return createPropertyTypeAdapter();
+			}
+			@Override
+			public Adapter casePropertyAttribute(PropertyAttribute object) {
+				return createPropertyAttributeAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -279,6 +284,20 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPropertyTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute <em>Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
+	 * @generated
+	 */
+	public Adapter createPropertyAttributeAdapter() {
 		return null;
 	}
 

@@ -305,13 +305,22 @@ public interface DatatypePackage extends EPackage {
 	int PROPERTY__TYPE = 5;
 
 	/**
+	 * The feature id for the '<em><b>Property Attributes</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY__PROPERTY_ATTRIBUTES = 6;
+
+	/**
 	 * The number of structural features of the '<em>Property</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY_FEATURE_COUNT = 6;
+	int PROPERTY_FEATURE_COUNT = 7;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyTypeImpl <em>Property Type</em>}' class.
@@ -582,6 +591,43 @@ public interface DatatypePackage extends EPackage {
 	int ENUM_LITERAL_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl <em>Property Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttribute()
+	 * @generated
+	 */
+	int PROPERTY_ATTRIBUTE = 10;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_ATTRIBUTE__TYPE = 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_ATTRIBUTE__VALUE = 1;
+
+	/**
+	 * The number of structural features of the '<em>Property Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PROPERTY_ATTRIBUTE_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -589,7 +635,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 10;
+	int PRIMITIVE_TYPE = 11;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType <em>Constraint Interval Type</em>}' enum.
@@ -599,7 +645,18 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintIntervalType()
 	 * @generated
 	 */
-	int CONSTRAINT_INTERVAL_TYPE = 11;
+	int CONSTRAINT_INTERVAL_TYPE = 12;
+
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttributeType()
+	 * @generated
+	 */
+	int PROPERTY_ATTRIBUTE_TYPE = 13;
 
 
 	/**
@@ -709,6 +766,17 @@ public interface DatatypePackage extends EPackage {
 	 * @generated
 	 */
 	EReference getProperty_Type();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.vorto.core.api.model.datatype.Property#getPropertyAttributes <em>Property Attributes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Property Attributes</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.Property#getPropertyAttributes()
+	 * @see #getProperty()
+	 * @generated
+	 */
+	EReference getProperty_PropertyAttributes();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType <em>Primitive Property Type</em>}'.
@@ -879,6 +947,38 @@ public interface DatatypePackage extends EPackage {
 	EClass getPropertyType();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute <em>Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Property Attribute</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
+	 * @generated
+	 */
+	EClass getPropertyAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getType()
+	 * @see #getPropertyAttribute()
+	 * @generated
+	 */
+	EAttribute getPropertyAttribute_Type();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Value</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getValue()
+	 * @see #getPropertyAttribute()
+	 * @generated
+	 */
+	EAttribute getPropertyAttribute_Value();
+
+	/**
 	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -897,6 +997,16 @@ public interface DatatypePackage extends EPackage {
 	 * @generated
 	 */
 	EEnum getConstraintIntervalType();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Property Attribute Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
+	 * @generated
+	 */
+	EEnum getPropertyAttributeType();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1003,6 +1113,14 @@ public interface DatatypePackage extends EPackage {
 		 * @generated
 		 */
 		EReference PROPERTY__TYPE = eINSTANCE.getProperty_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Property Attributes</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PROPERTY__PROPERTY_ATTRIBUTES = eINSTANCE.getProperty_PropertyAttributes();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PrimitivePropertyTypeImpl <em>Primitive Property Type</em>}' class.
@@ -1149,6 +1267,32 @@ public interface DatatypePackage extends EPackage {
 		EClass PROPERTY_TYPE = eINSTANCE.getPropertyType();
 
 		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl <em>Property Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttribute()
+		 * @generated
+		 */
+		EClass PROPERTY_ATTRIBUTE = eINSTANCE.getPropertyAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PROPERTY_ATTRIBUTE__TYPE = eINSTANCE.getPropertyAttribute_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PROPERTY_ATTRIBUTE__VALUE = eINSTANCE.getPropertyAttribute_Value();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1167,6 +1311,16 @@ public interface DatatypePackage extends EPackage {
 		 * @generated
 		 */
 		EEnum CONSTRAINT_INTERVAL_TYPE = eINSTANCE.getConstraintIntervalType();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttributeType()
+		 * @generated
+		 */
+		EEnum PROPERTY_ATTRIBUTE_TYPE = eINSTANCE.getPropertyAttributeType();
 
 	}
 

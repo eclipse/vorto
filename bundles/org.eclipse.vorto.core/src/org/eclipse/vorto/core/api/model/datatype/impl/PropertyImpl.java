@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 
 /**
@@ -30,7 +31,6 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#isMultiplicity <em>Multiplicity</em>}</li>
@@ -38,7 +38,9 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getDescription <em>Description</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getConstraints <em>Constraints</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getPropertyAttributes <em>Property Attributes</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
@@ -132,6 +134,16 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	 * @ordered
 	 */
 	protected PropertyType type;
+
+	/**
+	 * The cached value of the '{@link #getPropertyAttributes() <em>Property Attributes</em>}' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getPropertyAttributes()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<PropertyAttribute> propertyAttributes;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -318,6 +330,18 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EList<PropertyAttribute> getPropertyAttributes() {
+		if (propertyAttributes == null) {
+			propertyAttributes = new EObjectContainmentEList<PropertyAttribute>(PropertyAttribute.class, this, DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES);
+		}
+		return propertyAttributes;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -327,6 +351,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 				return ((InternalEList<?>)getConstraints()).basicRemove(otherEnd, msgs);
 			case DatatypePackage.PROPERTY__TYPE:
 				return basicSetType(null, msgs);
+			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
+				return ((InternalEList<?>)getPropertyAttributes()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -351,6 +377,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 				return getConstraints();
 			case DatatypePackage.PROPERTY__TYPE:
 				return getType();
+			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
+				return getPropertyAttributes();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -383,6 +411,10 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 			case DatatypePackage.PROPERTY__TYPE:
 				setType((PropertyType)newValue);
 				return;
+			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
+				getPropertyAttributes().clear();
+				getPropertyAttributes().addAll((Collection<? extends PropertyAttribute>)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -413,6 +445,9 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 			case DatatypePackage.PROPERTY__TYPE:
 				setType((PropertyType)null);
 				return;
+			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
+				getPropertyAttributes().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -437,6 +472,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 				return constraints != null && !constraints.isEmpty();
 			case DatatypePackage.PROPERTY__TYPE:
 				return type != null;
+			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
+				return propertyAttributes != null && !propertyAttributes.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

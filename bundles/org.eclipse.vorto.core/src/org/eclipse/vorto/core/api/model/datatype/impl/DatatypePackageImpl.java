@@ -21,6 +21,8 @@ import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 
@@ -110,6 +112,13 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass propertyAttributeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EEnum primitiveTypeEEnum = null;
 
 	/**
@@ -118,6 +127,13 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * @generated
 	 */
 	private EEnum constraintIntervalTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum propertyAttributeTypeEEnum = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -280,6 +296,15 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getProperty_PropertyAttributes() {
+		return (EReference)propertyEClass.getEStructuralFeatures().get(6);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getPrimitivePropertyType() {
 		return primitivePropertyTypeEClass;
 	}
@@ -424,6 +449,33 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getPropertyAttribute() {
+		return propertyAttributeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getPropertyAttribute_Type() {
+		return (EAttribute)propertyAttributeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getPropertyAttribute_Value() {
+		return (EAttribute)propertyAttributeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -435,6 +487,15 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 */
 	public EEnum getConstraintIntervalType() {
 		return constraintIntervalTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getPropertyAttributeType() {
+		return propertyAttributeTypeEEnum;
 	}
 
 	/**
@@ -476,6 +537,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		createEAttribute(propertyEClass, PROPERTY__DESCRIPTION);
 		createEReference(propertyEClass, PROPERTY__CONSTRAINTS);
 		createEReference(propertyEClass, PROPERTY__TYPE);
+		createEReference(propertyEClass, PROPERTY__PROPERTY_ATTRIBUTES);
 
 		primitivePropertyTypeEClass = createEClass(PRIMITIVE_PROPERTY_TYPE);
 		createEAttribute(primitivePropertyTypeEClass, PRIMITIVE_PROPERTY_TYPE__TYPE);
@@ -501,9 +563,14 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		propertyTypeEClass = createEClass(PROPERTY_TYPE);
 
+		propertyAttributeEClass = createEClass(PROPERTY_ATTRIBUTE);
+		createEAttribute(propertyAttributeEClass, PROPERTY_ATTRIBUTE__TYPE);
+		createEAttribute(propertyAttributeEClass, PROPERTY_ATTRIBUTE__VALUE);
+
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
 		constraintIntervalTypeEEnum = createEEnum(CONSTRAINT_INTERVAL_TYPE);
+		propertyAttributeTypeEEnum = createEEnum(PROPERTY_ATTRIBUTE_TYPE);
 	}
 
 	/**
@@ -555,6 +622,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		initEAttribute(getProperty_Description(), ecorePackage.getEString(), "description", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProperty_Constraints(), this.getConstraint(), null, "Constraints", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProperty_Type(), this.getPropertyType(), null, "type", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProperty_PropertyAttributes(), this.getPropertyAttribute(), null, "propertyAttributes", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(primitivePropertyTypeEClass, PrimitivePropertyType.class, "PrimitivePropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getPrimitivePropertyType_Type(), this.getPrimitiveType(), "type", null, 0, 1, PrimitivePropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -580,6 +648,10 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
+		initEClass(propertyAttributeEClass, PropertyAttribute.class, "PropertyAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getPropertyAttribute_Type(), this.getPropertyAttributeType(), "type", null, 0, 1, PropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getPropertyAttribute_Value(), ecorePackage.getEString(), "value", null, 0, 1, PropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");
 		addEEnumLiteral(primitiveTypeEEnum, PrimitiveType.STRING);
@@ -599,6 +671,10 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.STRLEN);
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.REGEX);
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.MIMETYPE);
+		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.SCALING);
+
+		initEEnum(propertyAttributeTypeEEnum, PropertyAttributeType.class, "PropertyAttributeType");
+		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.MEASUREMENT_UNIT);
 
 		// Create resource
 		createResource(eNS_URI);
