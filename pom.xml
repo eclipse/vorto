@@ -16,7 +16,7 @@
 		<tycho-version>0.20.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.7.2</xtext.version>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<kepler.path>/Applications/eclipse/dropins</kepler.path>
 		<luna.path>/Applications/eclipseLuna/dropins</luna.path>
 	</properties>

@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.vorto.editor.infomodel,
  org.eclipse.core.net,
  org.apache.commons.io
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org/Vorto
 Export-Package: org.eclipse.vorto.repository
