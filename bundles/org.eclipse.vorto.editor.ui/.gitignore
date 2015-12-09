@@ -1,3 +1,4 @@
 /.settings
 /bin
 /xtend-gen
+/target/

@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.xtext,
  org.eclipse.xtend.lib,
  org.eclipse.vorto.codegen,
  org.eclipse.vorto.codegen.examples.tutorial
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.infomodel,

@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexpor
  org.antlr.runtime,
  org.eclipse.xtext.common.types,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
- org.apache.commons.logging
+ org.apache.commons.logging,
+ org.eclipse.vorto.editor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.services,

@@ -19,7 +19,7 @@ Require-Bundle: org.eclipse.vorto.core,
  org.apache.commons.io,
  org.eclipse.ui.console,
  org.eclipse.text
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.codegen;uses:="org.osgi.framework,org.eclipse.ui.plugin",
  org.eclipse.vorto.codegen.api,

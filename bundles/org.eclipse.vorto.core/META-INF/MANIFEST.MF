@@ -8,7 +8,7 @@ Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.emf.ecore.xmi
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.core.api.model.datatype,
  org.eclipse.vorto.core.api.model.datatype.impl,
