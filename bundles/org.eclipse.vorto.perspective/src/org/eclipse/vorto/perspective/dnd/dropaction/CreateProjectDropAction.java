@@ -88,18 +88,13 @@ public class CreateProjectDropAction implements IDropAction {
 
 		private void generateModel(IOutputter outputter, String modelDir, ModelResource model) {
 			ModelId id = model.getId();
-			if (projectService.getProjectByModelId(id) == null) {
-				String content = new String(modelRepo.downloadContent(id), StandardCharsets.UTF_8);
-				Generated generated = new Generated(id.getName() + modelTypeToSuffix.apply(id.getModelType()), modelDir, content);
-				outputter.output(generated);
-				
-				for(ModelId referenceId : model.getReferences()) {
-					ModelResource referenceModel = modelRepo.getModel(referenceId);
-					generateModel(outputter, IModelProjectService.SHARED_MODELS_DIR, referenceModel);
-				}
-			} else {
-				MessageDisplayFactory.getMessageDisplay().displayWarning(
-						String.format("Project %s already exist in workspace. Not copying from repository.", id.toString()));
+			String content = new String(modelRepo.downloadContent(id), StandardCharsets.UTF_8);
+			Generated generated = new Generated(id.getName() + modelTypeToSuffix.apply(id.getModelType()), modelDir, content);
+			outputter.output(generated);
+			
+			for(ModelId referenceId : model.getReferences()) {
+				ModelResource referenceModel = modelRepo.getModel(referenceId);
+				generateModel(outputter, IModelProjectService.SHARED_MODELS_DIR, referenceModel);
 			}
 		}
 	}
