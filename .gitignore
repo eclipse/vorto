@@ -12,3 +12,4 @@ bin/
 .settings/
 .classpath
 .project
+generated-sources

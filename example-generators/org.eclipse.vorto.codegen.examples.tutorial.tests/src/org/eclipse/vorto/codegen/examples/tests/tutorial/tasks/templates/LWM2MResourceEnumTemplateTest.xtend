@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals
 class LWM2MResourceEnumTemplateTest extends AbstractTutorialTest {
 	@Test
 	def testResourceTypeFromEnumTemplate() {
-		var mapping = createMapping("LWM2MResourceEnum.mapping");
+		var mapping = createMapping("MyQuadcopter_LWM2MResourceEnum.mapping");
 		var template = new LWM2MResourceEnumTemplate(mapping);
 		var output = template.getContent(createInformationModel());
 		assertEquals(fetchExpected, output);

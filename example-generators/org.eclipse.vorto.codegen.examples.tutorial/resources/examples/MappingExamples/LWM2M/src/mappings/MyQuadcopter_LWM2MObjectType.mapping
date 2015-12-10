@@ -1,12 +1,12 @@
 namespace examples.mappingmodels.flying
 version 1.0.0
-displayname "LWM2MObjectType"
+displayname "MyQuadcopter_LWM2MObjectType"
 description "Information model mapping for MyQuadcopter"
 category demo
 using examples.infomationmodels.flying.MyQuadcopter ; 3.0.0-Plus
 using examples.functionblockmodels.flying.DroneMapping ; 1.0.0
 
-infomodelmapping LWM2MObjectType {
+infomodelmapping MyQuadcopter_LWM2MObjectType {
 	targetplatform LWM2MObjectType
 
 	from MyQuadcopter

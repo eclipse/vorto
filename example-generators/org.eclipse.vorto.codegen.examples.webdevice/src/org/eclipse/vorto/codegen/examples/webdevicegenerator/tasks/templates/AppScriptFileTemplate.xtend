@@ -109,6 +109,12 @@ deviceApp.config(function($routeProvider) {
      $scope.save = function(fbName) {
 		$rootScope.saveConfiguration(fbName,$scope.formData);
 	 };
+	$scope.refresh = function() {
+		   $http.get('service/«infoModel.properties.get(0).name»/instance')
+		   .success(function(data){
+		     $scope.modelinfo = data;
+		   });
+	};		 
      $scope.functionBlockName = '«infoModel.properties.get(0).name»';
      $rootScope.responseMessage = null;
  }]);
@@ -137,6 +143,12 @@ deviceApp.config(function($routeProvider) {
 	$scope.save = function(fbName) {
 		$rootScope.saveConfiguration(fbName,$scope.formData);
 	};
+	$scope.refresh = function() {
+		   $http.get('service/«fbName»/instance')
+		   .success(function(data){
+		     $scope.modelinfo = data;
+		   });
+	};		
    $scope.functionBlockName = '«fbName»';
    $rootScope.responseMessage = null;
  }]);

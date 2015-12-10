@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals
 class LWM2MResourceTemplateTest extends AbstractTutorialTest {
 	@Test
 	def testResourceTypeFromFunctionBlockTemplate() {
-		var mapping = createMapping("LWM2MResource.mapping");
+		var mapping = createMapping("MyQuadcopter_LWM2MResource.mapping");
 		var template = new LWM2MResourceTemplate(mapping);
 		var output = template.getContent(createInformationModel());
 		assertEquals(fetchExpected, output);

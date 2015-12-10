@@ -24,7 +24,7 @@ class LWM2MObjectTypeTemplateTest extends AbstractTutorialTest{
 	
 	@Test
 	def testObjectTypeTemplate(){
-		var mapping = createMapping("LWM2MObjectType.mapping");
+		var mapping = createMapping("MyQuadcopter_LWM2MObjectType.mapping");
 		var template = new LWM2MObjectTypeTemplate(mapping);
 		var output = template.getContent(createInformationModel());
 		assertEquals(fetchExpected, output);

@@ -104,6 +104,7 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	@Test
 	public void testGetDSLContentForModel() throws Exception {
 		checkinModel("Color.type");
+		Thread.sleep(1000);
 		assertEquals(1, modelRepository.search("*").size());
 		byte[] content = modelRepository.getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.DSL);
 		String actualContent = new String(content,"UTF-8");
@@ -114,6 +115,7 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	@Test
 	public void testGetXMIContentForModel() throws Exception {
 		checkinModel("Color.type");
+		Thread.sleep(1000);
 		assertEquals(1, modelRepository.search("*").size());
 		byte[] content = modelRepository.getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.XMI);
 		String actualContent = new String(content,"UTF-8");
@@ -122,9 +124,10 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	}
 	
 	@Test
-	public void testGetReferencesFromModel() {
+	public void testGetReferencesFromModel() throws Exception {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
+		Thread.sleep(1000);
 		assertEquals(2,modelRepository.search("*").size());
 		ModelResource result = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.fb.ColorLight", "1.0.0"));
 		assertEquals(1,result.getReferences().size());
@@ -132,9 +135,10 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	}
 	
 	@Test
-	public void testGetReferencedBy() {
+	public void testGetReferencedBy() throws Exception {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
+		Thread.sleep(1000);
 		assertEquals(2,modelRepository.search("*").size());
 		ModelResource result = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(1,result.getReferencedBy().size());
@@ -142,17 +146,19 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	}
 	
 	@Test
-	public void testDeleteUnUsedType() {
+	public void testDeleteUnUsedType() throws Exception {
 		checkinModel("Color.type");
+		Thread.sleep(1000);
 		assertEquals(1,modelRepository.search("*").size());
 		modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(0,modelRepository.search("*").size());
 	}
 	
 	@Test
-	public void testDeleteUsedType() {
+	public void testDeleteUsedType() throws Exception {
 		checkinModel("Color.type");
 		checkinModel("ColorLight.fbmodel");
+		Thread.sleep(1000);
 		assertEquals(2,modelRepository.search("*").size());
 		try {
 			modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
@@ -163,20 +169,22 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 	}
 	
 	@Test
-	public void testSearchAllModels() {
+	public void testSearchAllModels() throws Exception {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
 		checkinModel("Switcher.fbmodel");
 		checkinModel("HueLightStrips.infomodel");
+		Thread.sleep(1000);
 		assertEquals(4,modelRepository.search("*").size());
 	}
 	
 	@Test
-	public void testSearchModelWithCriteria1() {
+	public void testSearchModelWithCriteria1() throws Exception {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
 		checkinModel("Switcher.fbmodel");
 		checkinModel("HueLightStrips.infomodel");
+		Thread.sleep(1000);
 		assertEquals(2,modelRepository.search("color").size());
 	}
 		

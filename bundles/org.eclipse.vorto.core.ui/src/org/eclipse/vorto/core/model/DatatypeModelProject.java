@@ -17,6 +17,8 @@ package org.eclipse.vorto.core.model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.model.nature.FbDatatypeProjectNature;
@@ -45,7 +47,13 @@ public class DatatypeModelProject extends AbstractModelProject {
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png";
+		Model model = getModel();
+		if(model instanceof Entity) 
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt_entity.png";
+		else if(model instanceof Enum)
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt_enum.png";
+		else 
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png";
 	}
 
 	@Override
