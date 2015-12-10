@@ -49,8 +49,13 @@ public class DefaultTreeModelLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
 		IModelElement modelElement = (IModelElement) element;
-		String label = modelElement.getId().getName();
-		return label;
+//		StringBuilder label = new StringBuilder(modelElement.getId().getName());
+//		label.append(" ");
+//		label.append(modelElement.getId().getVersion());
+//		label.append(" (");
+//		label.append(modelElement.getId().getNamespace());
+//		label.append(")");
+		return modelElement.getId().getName();
 	}
 
 	@Override
