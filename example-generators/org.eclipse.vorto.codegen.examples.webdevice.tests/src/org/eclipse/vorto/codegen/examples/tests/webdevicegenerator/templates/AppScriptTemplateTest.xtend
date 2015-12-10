@@ -121,6 +121,12 @@ deviceApp.config(function($routeProvider) {
      $scope.save = function(fbName) {
 		$rootScope.saveConfiguration(fbName,$scope.formData);
 	 };
+	$scope.refresh = function() {
+		   $http.get('service/fbm1/instance')
+		   .success(function(data){
+		     $scope.modelinfo = data;
+		   });
+	};		 
      $scope.functionBlockName = 'fbm1';
      $rootScope.responseMessage = null;
  }]);
@@ -133,6 +139,12 @@ deviceApp.controller('fbm2Controller', ['$scope', '$http', '$rootScope', functio
 	$scope.save = function(fbName) {
 		$rootScope.saveConfiguration(fbName,$scope.formData);
 	};
+	$scope.refresh = function() {
+		   $http.get('service/fbm2/instance')
+		   .success(function(data){
+		     $scope.modelinfo = data;
+		   });
+	};		
    $scope.functionBlockName = 'fbm2';
    $rootScope.responseMessage = null;
  }]);

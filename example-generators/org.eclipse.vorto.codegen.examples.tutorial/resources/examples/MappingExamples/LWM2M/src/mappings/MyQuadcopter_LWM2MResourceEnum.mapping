@@ -1,11 +1,11 @@
 namespace examples.mappingmodels.flying
 version 1.0.0
-displayname "LWM2MResourceEnum"
+displayname "MyQuadcopter_LWM2MResourceEnum"
 description "Enum model mapping for Direction"
 category demo
 using examples.datatypes.measurement.Direction ; 1.0.0
 
-enummapping LWM2MResourceEnum {
+enummapping MyQuadcopter_LWM2MResourceEnum {
 	targetplatform LWM2MResourceEnum
 	from Direction.North
 	to Resource with { Name : "N", Label: "Moving North" }

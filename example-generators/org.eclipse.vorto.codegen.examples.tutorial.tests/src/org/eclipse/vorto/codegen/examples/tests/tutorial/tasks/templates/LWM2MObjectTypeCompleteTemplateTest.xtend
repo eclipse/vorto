@@ -33,8 +33,8 @@ class LWM2MObjectTypeCompleteTemplateTest extends AbstractTutorialTest {
 	}
 
 	def IMapping getMapping() {
-		var infomodelMappingModel = createMappingModel("LWM2MObjectTypeComplete.mapping");
-		var functionblockMapping = createMapping("LWM2MResourceComplete.mapping");
+		var infomodelMappingModel = createMappingModel("MyQuadcopter_LWM2MObjectTypeComplete.mapping");
+		var functionblockMapping = createMapping("MyQuadcopter_LWM2MResourceComplete.mapping");
 		return MappingResourceFactory.getInstance().createMapping(infomodelMappingModel,
 			Arrays.asList(functionblockMapping));
 	}

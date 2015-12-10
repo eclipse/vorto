@@ -1,6 +1,6 @@
 namespace examples.mappingmodels.flying
 version 1.0.0
-displayname "LWM2MResourceComplete"
+displayname "MyQuadcopter_LWM2MResource"
 description "Function block model mapping for Drone"
 category demo
 using examples.functionblockmodels.flying.Drone ; 1.0.0
@@ -8,9 +8,9 @@ using examples.mappingmodels.flying.AltitudeMapping ; 1.0.0
 using examples.mappingmodels.flying.LatitudeMapping ; 1.0.0
 using examples.mappingmodels.flying.LongitudeMapping ; 1.0.0
 
-functionblockmapping LWM2MResourceComplete {
+functionblockmapping MyQuadcopter_LWM2MResource {
 	
-	targetplatform LWM2MObjectTypeComplete
+	targetplatform LWM2MResource
 	
 	from Drone.status.altitude
 	to Altitude with {Units: "m", Operations : "Ascend, Descend"}

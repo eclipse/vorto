@@ -1,11 +1,11 @@
 namespace examples.mappingmodels.flying
 version 1.0.0
-displayname "LWM2MResourceEntity"
+displayname "MyQuadcopter_LWM2MResourceEntity"
 description "Entity model mapping for Location"
 category demo
 using examples.datatypes.measurement.Location ; 1.0.0
 
-entitymapping LWM2MResourceEntity {
+entitymapping MyQuadcopter_LWM2MResourceEntity {
 	targetplatform LWM2MResourceEntity
 
 	from Location
