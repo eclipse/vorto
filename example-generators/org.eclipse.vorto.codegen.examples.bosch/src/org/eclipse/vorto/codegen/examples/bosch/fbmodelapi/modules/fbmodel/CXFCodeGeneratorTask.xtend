@@ -95,7 +95,7 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 			xmlns:tns="http://www.bosch.com/ism/servicemetamodel"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			xsi:schemaLocation="http://www.bosch.com/ism/servicemetamodel http://rb-tmp-dev.de.bosch.com/iapsr/ServiceMetaModel/1/ServiceMetaModel.xsd">
-			<tns:documentation>«model.functionblock.description»</tns:documentation>
+			<tns:documentation>«model.description»</tns:documentation>
 			«FOR op : operations»
 			«IF op.returnType == null»
 			<tns:oneWayOperation name="«op.name»" empty="«paramCount(op)»">
@@ -174,9 +174,9 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 		   «ENDIF»
 		   «ENDFOR»
 		   <xs:element name="«wrappedfbm.getLowerCaseFunctionblockName()»">
-		   		«IF model.functionblock.description != null»
+		   		«IF model.description != null»
 		   		<xs:annotation>
-		   			<xs:documentation>«model.functionblock.description»</xs:documentation>
+		   			<xs:documentation>«model.description»</xs:documentation>
 		   		</xs:annotation>
 		   		«ENDIF»
 		   		<xs:complexType>
@@ -215,8 +215,8 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 		   					«ENDIF»
 		   				</xs:element>
 		   			</xs:sequence>
-		   			«IF model.functionblock.displayname != null»
-		   			<xs:attribute name="displayname" type="xs:string" use="required" fixed="«model.functionblock.displayname»"/>
+		   			«IF model.displayname != null»
+		   			<xs:attribute name="displayname" type="xs:string" use="required" fixed="«model.displayname»"/>
 		   			«ENDIF»
 		   		</xs:complexType>
 		   	</xs:element>

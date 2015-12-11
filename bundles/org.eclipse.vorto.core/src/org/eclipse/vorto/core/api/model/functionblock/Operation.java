@@ -13,13 +13,13 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getDescription <em>Description</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getOperation()
  * @model

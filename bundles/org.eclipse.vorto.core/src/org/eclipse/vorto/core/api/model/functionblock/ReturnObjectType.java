@@ -11,10 +11,10 @@ import org.eclipse.vorto.core.api.model.datatype.Type;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType#getReturnType <em>Return Type</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getReturnObjectType()
  * @model

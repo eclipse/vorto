@@ -21,15 +21,15 @@ import org.eclipse.vorto.codegen.examples.tests.TestFunctionblockModelFactory;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.StatusClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.StatusClassTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.junit.Before;
 import org.junit.Test;
 
 public class StatusClassGeneratorTaskTest {
 	StatusClassGeneratorTask statusGenerator;
 
-	FunctionblockModel model = TestFunctionblockModelFactory
-			.createFBmodelWithProperties();
+	FunctionblockProperty fbProperty = TestFunctionblockModelFactory
+			.createFBProperty();
 
 	@Before
 	public void init() {
@@ -38,14 +38,14 @@ public class StatusClassGeneratorTaskTest {
 
 	@Test
 	public void testGetFileName() {
-		String expectedFileName = model.getName() + "Status.java";
-		assertEquals(expectedFileName, statusGenerator.getFileName(model));
+		String expectedFileName = fbProperty.getName() + "Status.java";
+		assertEquals(expectedFileName, statusGenerator.getFileName(fbProperty));
 	}
 
 	@Test
 	public void testGetPath() {
-		String expectedPath = ModuleUtil.getModelPath(model);
-		assertEquals(expectedPath, statusGenerator.getPath(model));
+		String expectedPath = ModuleUtil.getModelPath(fbProperty.getType());
+		assertEquals(expectedPath, statusGenerator.getPath(fbProperty));
 	}
 
 	@Test

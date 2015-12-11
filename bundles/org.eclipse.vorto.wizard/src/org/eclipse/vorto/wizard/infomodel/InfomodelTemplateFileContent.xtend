@@ -24,10 +24,11 @@ class InfomodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 		return '''
 	namespace com.mycompany
 	version «context.modelVersion»
+	displayname "«context.modelName»"
+	description "«context.modelDescription»"
+	category demo	
 	infomodel «context.modelName» {
-		displayname "«context.modelName»"
-		description "«context.modelDescription»"
-		category demo
+
 	}	
 		'''
 	}

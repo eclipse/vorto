@@ -46,10 +46,11 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     	val model = parseHelper.parse('''
         namespace com.bosch
         version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo        
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as int <MAX 99>
         	}
@@ -109,11 +110,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_IntPropert_Min(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as int <MIN 0>
         	}
@@ -173,11 +175,11 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_StrPropert_Regex(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
         	configuration{
         		mandatory deviceName as string <REGEX "[A-Z][A-Z][A-Z]">
         	}
@@ -237,11 +239,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_StrPropert_Strlen(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory deviceName as string <STRLEN 15>
         	}
@@ -301,11 +304,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_StrPropert_Strlen_and_Regex(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory deviceName as string <STRLEN 15,REGEX '[A-Z][A-Z][A-Z]'>
         	}
@@ -366,11 +370,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_IntPropert_Min_with_Documentation(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0 
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo             	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as int <MIN 0> 'temperature reading'
         	}
@@ -433,11 +438,11 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testShort(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0  
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo            	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
         	configuration{
         		mandatory temperature as short
         	}
@@ -491,11 +496,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testShortProp_Max(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as short <MAX 1111>
         	}
@@ -555,11 +561,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testLongProp_Min(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as long <MIN 111111>
         	}
@@ -619,11 +626,11 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testDoubleProp_Min(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
         	configuration{
         		mandatory temperature as double <MIN 111.111>
         	}
@@ -683,11 +690,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testBase64Binary(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as base64Binary
         	}
@@ -741,11 +749,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testByte(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as byte
         	}
@@ -799,11 +808,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_ByteProp_Max(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as byte <MAX 111>
         	}
@@ -863,11 +873,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_ByteProp_Mimetype_NoEffect(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as byte <MIMETYPE 'sdafas'>
         	}
@@ -921,11 +932,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_ByteProp_Mimetype_Min(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as byte <MIMETYPE 'sdafas',MIN 11>
         	}
@@ -985,11 +997,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testByteProp(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as byte
         	}
@@ -1043,11 +1056,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void testMultipleByteProp(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory multiple temperature as byte
         	}
@@ -1102,11 +1116,12 @@ class FbDatatypeTest extends FbAbstractGeneratorTest{
     def void test_BinaryBase64Prop_Mimetype_NoEffect(){
     	val model = parseHelper.parse('''
         namespace com.bosch
-        version 1.0.0    	
+        version 1.0.0
+        displayname 'Refrigerator'
+        description 'comment'
+        category demo              	
         functionblock Fridge{
-        	displayname 'Refrigerator'
-        	description 'comment'
-        	category demo
+
         	configuration{
         		mandatory temperature as base64Binary <MIMETYPE 'sdafas'>
         	}

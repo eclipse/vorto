@@ -18,7 +18,7 @@ Require-Bundle: org.eclipse.vorto.editor.infomodel,
  org.eclipse.vorto.core
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.formatting,
- org.eclipse.xtext.junit.util,
+ org.eclipse.xtext.junit.util;resolution:=optional,
  org.hamcrest.core,
  org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
@@ -27,4 +27,5 @@ Import-Package: org.apache.log4j,
  org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: resources/,.
 Export-Package: org.eclipse.vorto.editor.infomodel

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="ASCII"?>
-<informationmodel:InformationModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:functionblock="http://www.eclipse.org/vorto/metamodel/Functionblock" xmlns:informationmodel="http://www.eclipse.org/vorto/metamodel/InformationModel" name="SomeInfoModel" namespace="org.eclipse.vorto" version="1.0.0" displayname="SomeInfoModel" description="Information model for SomeInfoModel" category="demo">
-  <references version="1.0.0" importedNamespace="org.eclipse.vorto.ColorLight"/>
-  <references version="1.0.0" importedNamespace="org.eclipse.vorto.Switchable"/>  
-  <functionblocks href="classpath:/ColorLight.fbmodel#/"/>
-</informationmodel:InformationModel>
-

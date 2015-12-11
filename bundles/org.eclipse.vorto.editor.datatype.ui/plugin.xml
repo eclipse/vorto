@@ -80,6 +80,7 @@
     <extension
             point="org.eclipse.ui.preferencePages">
         <page
+        	category="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
             class="org.eclipse.vorto.editor.datatype.ui.DatatypeExecutableExtensionFactory:org.eclipse.xtext.ui.editor.preferences.LanguageRootPreferencePage"
             id="org.eclipse.vorto.editor.datatype.Datatype"
             name="Datatype">
@@ -376,7 +377,7 @@
 	    </page>
 	</extension>
 
-  <extension point="org.eclipse.compare.contentViewers">
+  <extension point="org.eclipse.compare.contentViewers"> 	
     <viewer id="org.eclipse.vorto.editor.datatype.Datatype.compare.contentViewers"
             class="org.eclipse.vorto.editor.datatype.ui.DatatypeExecutableExtensionFactory:org.eclipse.xtext.ui.compare.InjectableViewerCreator"
             extensions="type">

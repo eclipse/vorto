@@ -36,4 +36,5 @@ class InformationModelValidator extends AbstractInformationModelValidator {
 			}
 		}
 	}
+
 }

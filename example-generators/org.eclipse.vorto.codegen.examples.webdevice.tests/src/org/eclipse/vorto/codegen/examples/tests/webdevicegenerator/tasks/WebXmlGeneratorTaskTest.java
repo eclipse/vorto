@@ -20,15 +20,15 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.vorto.codegen.examples.tests.TestFunctionblockModelFactory;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.WebXmlGeneratorTask;
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.templates.WebXmlTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.junit.Before;
 import org.junit.Test;
 
 public class WebXmlGeneratorTaskTest {
 	WebXmlGeneratorTask webXmlGenerator;
 
-	FunctionblockModel model = TestFunctionblockModelFactory
-			.createFBmodelWithProperties();
+	FunctionblockProperty fbProperty = TestFunctionblockModelFactory
+			.createFBProperty();
 
 	@Before
 	public void init() {
@@ -38,13 +38,13 @@ public class WebXmlGeneratorTaskTest {
 	@Test
 	public void testGetFileName() {
 		String expectedFileName = "web.xml";
-		assertEquals(expectedFileName, webXmlGenerator.getFileName(model));
+		assertEquals(expectedFileName, webXmlGenerator.getFileName(fbProperty));
 	}
 
 	@Test
 	public void testGetPath() {
 		String expectedPath = "src/main/webapp/WEB-INF";
-		assertEquals(expectedPath, webXmlGenerator.getPath(model));
+		assertEquals(expectedPath, webXmlGenerator.getPath(fbProperty));
 	}
 
 	@Test

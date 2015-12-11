@@ -19,7 +19,9 @@ import java.util.HashSet
 import java.util.List
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
 import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.model.ModelPackage
 import org.eclipse.vorto.editor.datatype.internal.ConstraintValidatorFactory
 import org.eclipse.vorto.editor.datatype.internal.validation.PropertyConstraintMappingValidation
@@ -35,7 +37,7 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 public val propertyValidator = new PropertyConstraintMappingValidation
 
 	@Check
-	def checkConstraint(org.eclipse.vorto.core.api.model.datatype.Property prop) {
+	def checkConstraint(Property prop) {
 		var list = prop.constraints
 		
 		if(list.length == 0) return;
@@ -61,7 +63,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	}
 
 	@Check
-	def checkEnumName_Literal(org.eclipse.vorto.core.api.model.datatype.Enum ent) {
+	def checkEnumName_Literal(Enum ent) {
 		val name = ent.name
 		if (isCamelCasedName(name)) {
 			error(DatatypeSystemMessage.ERROR_ENUMNAME_INVALID_CAMELCASE, ent, ModelPackage.Literals.MODEL__NAME)
@@ -72,7 +74,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	}
 	
 	@Check
-	def checkDuplicatedLiteral(org.eclipse.vorto.core.api.model.datatype.Enum enu){
+	def checkDuplicatedLiteral(Enum enu){
 		var list = enu.enums
 		var set = new HashSet<String>();
 		for (var i = 0; i < list.length; i++) {
@@ -83,7 +85,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	}
 
 	@Check
-	def checkDuplicatedConstraint(org.eclipse.vorto.core.api.model.datatype.Property feature) {
+	def checkDuplicatedConstraint(Property feature) {
 		var set = new HashSet<String>();
 		var list = feature.constraints;
 		for (var i = 0; i < list.length; i ++) {
@@ -110,7 +112,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	}
 	
 
-	def checkDuplicatedProperty(List<org.eclipse.vorto.core.api.model.datatype.Property> props){
+	def checkDuplicatedProperty(List<Property> props){
 		var set = new HashSet<String>();
 		
 		for ( pp : props){
@@ -121,7 +123,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	}
 	
 	@Check
-	def checkPropertyName(org.eclipse.vorto.core.api.model.datatype.Property property) {
+	def checkPropertyName(Property property) {
 		var name = property.name
 		if (name.endsWith('TS')) {
 			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)

@@ -172,9 +172,9 @@ class POMgeneratorModuleNoVersionTest {
 		fbmodel.setNamespace("com.bosch");
 		fbmodel.setVersion("3.2.1");
 		
-		fb.setDescription("Refrigerator");
-		fb.setCategory("demo");
-		fb.setDescription("comment");
+		fbmodel.setDescription("Refrigerator");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("comment");
 
 		fbmodel.setFunctionblock(fb);
 		

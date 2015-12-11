@@ -10,9 +10,9 @@
 	<artifactId>org.eclipse.vorto.codegen.examples.webdevice.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<name>Vorto Code Generator Examples Tests</name>
+	<name>Vorto Example Web UI Generator Tests</name>
 
-		<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>

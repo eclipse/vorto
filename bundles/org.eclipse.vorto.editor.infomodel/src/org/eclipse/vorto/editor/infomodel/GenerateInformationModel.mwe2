@@ -46,6 +46,10 @@ Workflow {
             from = "platform:/plugin/org.eclipse.vorto.core/model/Functionblock.ecore"
             to = "platform:/plugin/org.eclipse.vorto.core/model/Functionblock.ecore"
         }
+		
+		projectMapping = { projectName = '${projectName}' path = '${runtimeProject}' }
+        
+        projectMapping = { projectName = '${projectName}' path = '${runtimeProject}' }
         
         registerGeneratedEPackage = "org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage"
     	registerGenModelFile = "platform:/resource/org.eclipse.vorto.core/model/InformationModel.genmodel"

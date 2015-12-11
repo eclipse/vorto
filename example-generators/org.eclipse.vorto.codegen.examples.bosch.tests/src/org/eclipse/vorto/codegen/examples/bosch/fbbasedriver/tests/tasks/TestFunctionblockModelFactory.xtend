@@ -34,9 +34,9 @@ class TestFunctionblockModelFactory {
 		fbmodel.setVersion("1.2.3");
 		fbmodel.setName("Fridge");
 		var fb = FunctionblockFactory.eINSTANCE.createFunctionBlock();
-		fb.setDescription("Refrigerator");
-		fb.setCategory("demo");
-		fb.setDescription("comment");
+		fbmodel.setDescription("Refrigerator");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("comment");
 		fb.getOperations().add(createOnOperation());
 		fb.getOperations().add(createOffOperation());
 		fb.getOperations().add(createToggleOperation());
@@ -55,9 +55,9 @@ class TestFunctionblockModelFactory {
         fbmodel.setNamespace("www.bosch.com");
 		fbmodel.setVersion("1.2.3");
 		fbmodel.setName("Fridge");
-		fb.setDescription("Refrigerator");
-		fb.setCategory("demo");
-		fb.setDescription("comment");
+		fbmodel.setDescription("Refrigerator");
+		fbmodel.setCategory("demo");
+		fbmodel.setDescription("comment");
 		fb.getOperations().add(createOnOperation());
 		fb.getOperations().add(createOffOperation());
 		fb.getOperations().add(createToggleOperation());

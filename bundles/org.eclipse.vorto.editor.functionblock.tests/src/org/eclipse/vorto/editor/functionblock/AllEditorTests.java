@@ -14,8 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.editor.functionblock;
 
+import org.eclipse.vorto.editor.functionblock.tests.formatter.FunctionblockModelFormatterTest;
 import org.eclipse.vorto.editor.functionblock.tests.validator.FBEntityEnumCrossReferenceTest;
 import org.eclipse.vorto.editor.functionblock.tests.validator.FBOperationCrossReferenceTest;
+import org.eclipse.vorto.editor.functionblock.tests.validator.FbConstraintValidationTest;
 import org.eclipse.vorto.editor.functionblock.tests.validator.FbValidatorTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ FbValidatorTest.class, FBOperationCrossReferenceTest.class,
-		FBEntityEnumCrossReferenceTest.class })
+		FBEntityEnumCrossReferenceTest.class,FbConstraintValidationTest.class, FunctionblockModelFormatterTest.class })
 public class AllEditorTests {
 
 }

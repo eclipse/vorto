@@ -20,10 +20,10 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnObjectTypeImpl#getReturnType <em>Return Type</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
