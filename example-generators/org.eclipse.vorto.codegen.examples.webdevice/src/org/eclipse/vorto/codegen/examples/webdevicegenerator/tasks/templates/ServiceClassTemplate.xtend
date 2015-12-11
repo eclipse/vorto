@@ -18,17 +18,17 @@
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
-class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
+class ServiceClassTemplate implements ITemplate<FunctionblockProperty> {
 		
-	override getContent(FunctionblockModel model) {
-		'''
+	override getContent(FunctionblockProperty fbProperty) {
+		var FunctionblockModel model = fbProperty.getType()
+		
+		return '''
 		package «ModuleUtil.getServicePackage(model)»;
 
 		import java.lang.reflect.InvocationTargetException;
-		import java.util.HashMap;
-		import java.util.Map;
-		import java.util.Map.Entry;
 		import java.util.logging.Logger;
 		
 		import javax.ws.rs.Consumes;
@@ -38,22 +38,23 @@ class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
 		import javax.ws.rs.Path;
 		import javax.ws.rs.Produces;
 		import javax.ws.rs.core.MediaType;
+		import javax.ws.rs.core.Response;
 		
-		import org.apache.commons.beanutils.BeanUtils;
+		import org.codehaus.jackson.map.ObjectMapper;
 		
-		import com.bosch.iot.«model.name.toLowerCase».model.«model.name»;
-		import com.bosch.iot.«model.name.toLowerCase».model.«model.name»Configuration;		
+		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»;
+		import «ModuleUtil.getModelPackage(model)».«fbProperty.name.toFirstUpper»Configuration;		
 		
-		@Path("/«model.name»")
-		public class «model.name»Service {	
-			private static Logger logger = Logger.getLogger("«model.name»"); 		
-			private static «model.name» «model.name.toFirstLower»instance = new «model.name»();
+		@Path("/«fbProperty.name»")
+		public class «ModuleUtil.getCamelCase(fbProperty.name)»Service {	
+			private static Logger logger = Logger.getLogger("«fbProperty.name»"); 		
+			private static «fbProperty.name.toFirstUpper» «fbProperty.name.toFirstLower»instance = new «fbProperty.name.toFirstUpper»();
 
 			@GET
 			@Path("/instance")
 			@Produces(MediaType.APPLICATION_JSON)
-			public «model.name» getInstance(){
-				return «model.name.toFirstLower»instance ;			
+			public Response getInstance(){
+				return Response.status(200).entity(«fbProperty.name.toFirstLower»instance).header("Access-Control-Allow-Origin", "*").build();
 			}		
 										
 			«FOR operation : model.functionblock.operations»				
@@ -76,25 +77,13 @@ class ServiceClassTemplate implements ITemplate<FunctionblockModel> {
 			public void saveConfiguration(Object configurationData)
 					throws IllegalAccessException, InvocationTargetException {
 				logger.info("saveConfiguration invoked: " + configurationData);
-				Map<String, String> rawMap = (Map<String, String>) configurationData;
+				ObjectMapper mapper = new ObjectMapper();
 		
-				«model.name»Configuration configuration = «model.name.toFirstLower»instance.getConfiguration();
-				BeanUtils.populate(configuration, getMapWithoutKeyPrefix(rawMap));
+				«ModuleUtil.getCamelCase(fbProperty.name)»Configuration convertValue = mapper.convertValue(configurationData, «fbProperty.name.toFirstUpper»Configuration.class);
+				«fbProperty.name.toFirstLower»instance.setConfiguration(convertValue);
 		
 			}
-		
-			private Map<String, String> getMapWithoutKeyPrefix(
-					Map<String, String> rawMap) {
-				Map<String, String> mapWithoutKeyPrefix = new HashMap<String, String>();
-		
-				String prefix = this.getInstance().getClass().getSimpleName()
-						+ "_configuration_id_";
-				for (Entry<String, String> entry : rawMap.entrySet()) {
-					String newKey = entry.getKey().substring(prefix.length());
-					mapWithoutKeyPrefix.put(newKey, entry.getValue());
-				}
-				return mapWithoutKeyPrefix;
-			}							
 		}'''
 	}
+	
 }

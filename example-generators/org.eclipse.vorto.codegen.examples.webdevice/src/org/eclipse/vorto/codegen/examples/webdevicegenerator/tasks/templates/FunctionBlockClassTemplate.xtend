@@ -18,25 +18,30 @@
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
 import org.eclipse.vorto.codegen.examples.webdevicegenerator.tasks.ModuleUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
-class FunctionBlockClassTemplate implements ITemplate<FunctionblockModel> {		
-	override getContent(FunctionblockModel model) {
-		'''
+class FunctionBlockClassTemplate implements ITemplate<FunctionblockProperty> {		
+	override getContent(FunctionblockProperty fbProperty) {
+		var FunctionblockModel model = fbProperty.getType()
+		
+		return '''
 		package «ModuleUtil.getModelPackage(model)»;
 
-		public class «model.name» {
+		public class «fbProperty.name.toFirstUpper» {
 			
-			private String displayName = "«model.functionblock.displayname»";
-			private String description = "«model.functionblock.description»";
+			private String displayName = "«model.displayname»";
+			private String description = "«model.description»";
 			private String namespace = "«model.namespace»";
-			private String category = "«model.functionblock.category»";
+			private String category = "«model.category»";
 			private String version = "«model.version»";
 			
-			private «model.name»Configuration configuration = new «model.name»Configuration();
+			private «fbProperty.name.toFirstUpper»Configuration configuration = new «fbProperty.name.toFirstUpper»Configuration();
 			
-			private «model.name»Status status = new «model.name»Status();
+			private «fbProperty.name.toFirstUpper»Status status = new «fbProperty.name.toFirstUpper»Status();
 			
-			private «model.name»Fault fault = new «model.name»Fault();
+			private «fbProperty.name.toFirstUpper»Fault fault = new «fbProperty.name.toFirstUpper»Fault();
+			
+			private «fbProperty.name.toFirstUpper»Operation operation = new «fbProperty.name.toFirstUpper»Operation();
 			
 			public String getDisplayName() {
 				return displayName;
@@ -58,16 +63,24 @@ class FunctionBlockClassTemplate implements ITemplate<FunctionblockModel> {
 				return version;
 			}	
 					
-			public «model.name»Configuration getConfiguration() {
+			public «fbProperty.name.toFirstUpper»Configuration getConfiguration() {
 				return configuration;
 			}
 			
-			public «model.name»Status getStatus() {
+			public void setConfiguration(«fbProperty.name.toFirstUpper»Configuration configuration) {
+				this.configuration = configuration;
+			}
+			
+			public «fbProperty.name.toFirstUpper»Status getStatus() {
 				return status;
 			}
 			
-			public «model.name»Fault getFault() {
+			public «fbProperty.name.toFirstUpper»Fault getFault() {
 				return fault;
+			}
+			
+			public «fbProperty.name.toFirstUpper»Operation getOperation() {
+				return operation;
 			}
 		}'''
 	}

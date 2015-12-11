@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<plugin>
+	   <extension
+	         id="JavaGenerator"
+	         name="JavaGenerator"
+	         point="org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators">
+	      <client
+	            class="org.eclipse.vorto.codegen.examples.java.JavaGenerator"
+	            menuLabel="Example Java Code Generator">
+	      </client>
+	   </extension>
+	
+	</plugin>

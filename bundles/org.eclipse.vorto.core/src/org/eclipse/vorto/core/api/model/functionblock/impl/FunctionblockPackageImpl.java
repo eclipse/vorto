@@ -248,35 +248,8 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getFunctionBlock_Displayname() {
-		return (EAttribute)functionBlockEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getFunctionBlock_Description() {
-		return (EAttribute)functionBlockEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getFunctionBlock_Category() {
-		return (EAttribute)functionBlockEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getFunctionBlock_Configuration() {
-		return (EReference)functionBlockEClass.getEStructuralFeatures().get(3);
+		return (EReference)functionBlockEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -285,7 +258,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * @generated
 	 */
 	public EReference getFunctionBlock_Status() {
-		return (EReference)functionBlockEClass.getEStructuralFeatures().get(4);
+		return (EReference)functionBlockEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -294,7 +267,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * @generated
 	 */
 	public EReference getFunctionBlock_Fault() {
-		return (EReference)functionBlockEClass.getEStructuralFeatures().get(5);
+		return (EReference)functionBlockEClass.getEStructuralFeatures().get(2);
 	}
 
 	/**
@@ -303,7 +276,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * @generated
 	 */
 	public EReference getFunctionBlock_Events() {
-		return (EReference)functionBlockEClass.getEStructuralFeatures().get(6);
+		return (EReference)functionBlockEClass.getEStructuralFeatures().get(3);
 	}
 
 	/**
@@ -312,7 +285,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * @generated
 	 */
 	public EReference getFunctionBlock_Operations() {
-		return (EReference)functionBlockEClass.getEStructuralFeatures().get(7);
+		return (EReference)functionBlockEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -592,9 +565,6 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		createEReference(functionblockModelEClass, FUNCTIONBLOCK_MODEL__ENUMS);
 
 		functionBlockEClass = createEClass(FUNCTION_BLOCK);
-		createEAttribute(functionBlockEClass, FUNCTION_BLOCK__DISPLAYNAME);
-		createEAttribute(functionBlockEClass, FUNCTION_BLOCK__DESCRIPTION);
-		createEAttribute(functionBlockEClass, FUNCTION_BLOCK__CATEGORY);
 		createEReference(functionBlockEClass, FUNCTION_BLOCK__CONFIGURATION);
 		createEReference(functionBlockEClass, FUNCTION_BLOCK__STATUS);
 		createEReference(functionBlockEClass, FUNCTION_BLOCK__FAULT);
@@ -685,9 +655,6 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		initEReference(getFunctionblockModel_Enums(), theDatatypePackage.getEnum(), null, "enums", null, 0, -1, FunctionblockModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionBlockEClass, FunctionBlock.class, "FunctionBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getFunctionBlock_Displayname(), ecorePackage.getEString(), "displayname", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFunctionBlock_Description(), ecorePackage.getEString(), "description", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getFunctionBlock_Category(), ecorePackage.getEString(), "category", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunctionBlock_Configuration(), this.getConfiguration(), null, "configuration", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunctionBlock_Status(), this.getStatus(), null, "status", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getFunctionBlock_Fault(), this.getFault(), null, "fault", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

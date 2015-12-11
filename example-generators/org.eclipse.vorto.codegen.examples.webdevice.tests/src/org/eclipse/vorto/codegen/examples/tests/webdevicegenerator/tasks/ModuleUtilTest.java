@@ -29,24 +29,24 @@ public class ModuleUtilTest {
 	@Test
 	public void getModelPackage() {
 		String packageName = ModuleUtil.getModelPackage(model);
-		assertEquals("com.bosch.iot.fridge.model", packageName);
+		assertEquals("org.eclipse.vorto.iot.fridge.model", packageName);
 	}
 
 	@Test
 	public void getServicePackage() {
 		String packageName = ModuleUtil.getServicePackage(model);
-		assertEquals("com.bosch.iot.fridge.service", packageName);
+		assertEquals("org.eclipse.vorto.iot.fridge.service", packageName);
 	}
 
 	@Test
 	public void getModelPath() {
 		String packageName = ModuleUtil.getModelPath(model);
-		assertEquals("/src/main/java/com/bosch/iot/fridge/model", packageName);
+		assertEquals("/src/main/java/org/eclipse/vorto/iot/fridge/model", packageName);
 	}
 
 	@Test
 	public void getServicePath() {
 		String packageName = ModuleUtil.getServicePath(model);
-		assertEquals("/src/main/java/com/bosch/iot/fridge/service", packageName);
+		assertEquals("/src/main/java/org/eclipse/vorto/iot/fridge/service", packageName);
 	}
 }

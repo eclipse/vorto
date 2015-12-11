@@ -24,6 +24,9 @@ FunctionblockModel:
 	{FunctionblockModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
+    'displayname' displayname=STRING      
+    ('description' description=STRING)? 
+    'category' category=CATEGORY     
      (references += ModelReference)*	
 	'functionblock' name= ID '{'
 		functionblock = FunctionBlock
@@ -33,11 +36,7 @@ FunctionblockModel:
 ;
 
 FunctionBlock:
-	{FunctionBlock}
-	'displayname' displayname=STRING
-	('description' description=STRING)?
-	'category' category=CATEGORY
-	
+	{FunctionBlock}	
 	(configuration = Configuration)?	
 	(status = Status)?	
 	(fault = Fault)?

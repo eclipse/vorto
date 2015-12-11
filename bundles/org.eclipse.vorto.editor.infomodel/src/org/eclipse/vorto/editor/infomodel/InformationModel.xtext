@@ -23,11 +23,11 @@ InformationModel:
 	{InformationModel}
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
-     (references += ModelReference)*
+    'displayname' displayname=STRING      
+    ('description' description=STRING)? 
+    'category' category=CATEGORY 
+    (references += ModelReference)*
 	'infomodel' name=ID '{'
-	'displayname' displayname=STRING
-	('description' description=STRING)?
-	'category' category=CATEGORY
 	('functionblocks' '{'
 		(properties += FunctionblockProperty)*
 	'}')?

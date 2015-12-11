@@ -30,17 +30,17 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getVersion <em>Version</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getReferences <em>References</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getDisplayname <em>Displayname</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getDisplayname <em>Displayname</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getCategory <em>Category</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelImpl#getProperties <em>Properties</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -116,26 +116,6 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 	protected EList<ModelReference> references;
 
 	/**
-	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDisplayname()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String DISPLAYNAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getDisplayname()
-	 * @generated
-	 * @ordered
-	 */
-	protected String displayname = DISPLAYNAME_EDEFAULT;
-
-	/**
 	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -154,6 +134,26 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DISPLAYNAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDisplayname() <em>Displayname</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDisplayname()
+	 * @generated
+	 * @ordered
+	 */
+	protected String displayname = DISPLAYNAME_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getCategory() <em>Category</em>}' attribute.
@@ -386,10 +386,10 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 				return getVersion();
 			case InformationModelPackage.INFORMATION_MODEL__REFERENCES:
 				return getReferences();
-			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
-				return getDisplayname();
 			case InformationModelPackage.INFORMATION_MODEL__DESCRIPTION:
 				return getDescription();
+			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
+				return getDisplayname();
 			case InformationModelPackage.INFORMATION_MODEL__CATEGORY:
 				return getCategory();
 			case InformationModelPackage.INFORMATION_MODEL__PROPERTIES:
@@ -420,11 +420,11 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 				getReferences().clear();
 				getReferences().addAll((Collection<? extends ModelReference>)newValue);
 				return;
-			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
-				setDisplayname((String)newValue);
-				return;
 			case InformationModelPackage.INFORMATION_MODEL__DESCRIPTION:
 				setDescription((String)newValue);
+				return;
+			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
+				setDisplayname((String)newValue);
 				return;
 			case InformationModelPackage.INFORMATION_MODEL__CATEGORY:
 				setCategory((String)newValue);
@@ -457,11 +457,11 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 			case InformationModelPackage.INFORMATION_MODEL__REFERENCES:
 				getReferences().clear();
 				return;
-			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
-				setDisplayname(DISPLAYNAME_EDEFAULT);
-				return;
 			case InformationModelPackage.INFORMATION_MODEL__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
+				return;
+			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
+				setDisplayname(DISPLAYNAME_EDEFAULT);
 				return;
 			case InformationModelPackage.INFORMATION_MODEL__CATEGORY:
 				setCategory(CATEGORY_EDEFAULT);
@@ -489,10 +489,10 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 				return VERSION_EDEFAULT == null ? version != null : !VERSION_EDEFAULT.equals(version);
 			case InformationModelPackage.INFORMATION_MODEL__REFERENCES:
 				return references != null && !references.isEmpty();
-			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
-				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
 			case InformationModelPackage.INFORMATION_MODEL__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case InformationModelPackage.INFORMATION_MODEL__DISPLAYNAME:
+				return DISPLAYNAME_EDEFAULT == null ? displayname != null : !DISPLAYNAME_EDEFAULT.equals(displayname);
 			case InformationModelPackage.INFORMATION_MODEL__CATEGORY:
 				return CATEGORY_EDEFAULT == null ? category != null : !CATEGORY_EDEFAULT.equals(category);
 			case InformationModelPackage.INFORMATION_MODEL__PROPERTIES:
@@ -517,10 +517,10 @@ public class InformationModelImpl extends MinimalEObjectImpl.Container implement
 		result.append(namespace);
 		result.append(", version: ");
 		result.append(version);
-		result.append(", displayname: ");
-		result.append(displayname);
 		result.append(", description: ");
 		result.append(description);
+		result.append(", displayname: ");
+		result.append(displayname);
 		result.append(", category: ");
 		result.append(category);
 		result.append(')');

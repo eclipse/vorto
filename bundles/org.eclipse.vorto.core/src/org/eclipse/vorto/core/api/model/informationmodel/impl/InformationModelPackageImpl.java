@@ -124,35 +124,8 @@ public class InformationModelPackageImpl extends EPackageImpl implements Informa
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getInformationModel_Displayname() {
-		return (EAttribute)informationModelEClass.getEStructuralFeatures().get(0);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInformationModel_Description() {
-		return (EAttribute)informationModelEClass.getEStructuralFeatures().get(1);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getInformationModel_Category() {
-		return (EAttribute)informationModelEClass.getEStructuralFeatures().get(2);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EReference getInformationModel_Properties() {
-		return (EReference)informationModelEClass.getEStructuralFeatures().get(3);
+		return (EReference)informationModelEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -220,9 +193,6 @@ public class InformationModelPackageImpl extends EPackageImpl implements Informa
 
 		// Create classes and their features
 		informationModelEClass = createEClass(INFORMATION_MODEL);
-		createEAttribute(informationModelEClass, INFORMATION_MODEL__DISPLAYNAME);
-		createEAttribute(informationModelEClass, INFORMATION_MODEL__DESCRIPTION);
-		createEAttribute(informationModelEClass, INFORMATION_MODEL__CATEGORY);
 		createEReference(informationModelEClass, INFORMATION_MODEL__PROPERTIES);
 
 		functionblockPropertyEClass = createEClass(FUNCTIONBLOCK_PROPERTY);
@@ -267,9 +237,6 @@ public class InformationModelPackageImpl extends EPackageImpl implements Informa
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(informationModelEClass, InformationModel.class, "InformationModel", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getInformationModel_Displayname(), ecorePackage.getEString(), "displayname", null, 0, 1, InformationModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInformationModel_Description(), ecorePackage.getEString(), "description", null, 0, 1, InformationModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getInformationModel_Category(), ecorePackage.getEString(), "category", null, 0, 1, InformationModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getInformationModel_Properties(), this.getFunctionblockProperty(), null, "properties", null, 0, -1, InformationModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(functionblockPropertyEClass, FunctionblockProperty.class, "FunctionblockProperty", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

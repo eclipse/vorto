@@ -18,11 +18,11 @@ import org.eclipse.vorto.core.api.model.functionblock.Param;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl#isMultiplicity <em>Multiplicity</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl#getName <em>Name</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

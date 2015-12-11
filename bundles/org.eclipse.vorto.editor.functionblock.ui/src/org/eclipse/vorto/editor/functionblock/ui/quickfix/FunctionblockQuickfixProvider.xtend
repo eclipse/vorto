@@ -15,11 +15,12 @@
 
 package org.eclipse.vorto.editor.functionblock.ui.quickfix
 
+import org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider
+
 /**
  * Custom quickfixes.
  *
  * see http://www.eclipse.org/Xtext/documentation.html#quickfixes
  */
-class FunctionblockQuickfixProvider extends org.eclipse.xtext.ui.editor.quickfix.DefaultQuickfixProvider {
-
+class FunctionblockQuickfixProvider extends DefaultQuickfixProvider {
 }

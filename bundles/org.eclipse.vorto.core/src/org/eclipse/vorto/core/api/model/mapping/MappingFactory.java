@@ -31,94 +31,256 @@ public interface MappingFactory extends EFactory {
 	MappingModel createMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Rule</em>'.
+	 * Returns a new object of class '<em>Info Model Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Rule</em>'.
+	 * @return a new object of class '<em>Info Model Mapping Model</em>'.
 	 * @generated
 	 */
-	Rule createRule();
+	InfoModelMappingModel createInfoModelMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Information Model Element</em>'.
+	 * Returns a new object of class '<em>Info Model Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Information Model Element</em>'.
+	 * @return a new object of class '<em>Info Model Mapping Rule</em>'.
 	 * @generated
 	 */
-	InformationModelElement createInformationModelElement();
+	InfoModelMappingRule createInfoModelMappingRule();
 
 	/**
-	 * Returns a new object of class '<em>Function Block Element</em>'.
+	 * Returns a new object of class '<em>Infomodel Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Function Block Element</em>'.
+	 * @return a new object of class '<em>Infomodel Source</em>'.
 	 * @generated
 	 */
-	FunctionBlockElement createFunctionBlockElement();
+	InfomodelSource createInfomodelSource();
 
 	/**
-	 * Returns a new object of class '<em>Operation Element</em>'.
+	 * Returns a new object of class '<em>Info Model Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Operation Element</em>'.
+	 * @return a new object of class '<em>Info Model Property Source</em>'.
 	 * @generated
 	 */
-	OperationElement createOperationElement();
+	InfoModelPropertySource createInfoModelPropertySource();
 
 	/**
-	 * Returns a new object of class '<em>Configuration Element</em>'.
+	 * Returns a new object of class '<em>Info Model Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Configuration Element</em>'.
+	 * @return a new object of class '<em>Info Model Attribute Source</em>'.
 	 * @generated
 	 */
-	ConfigurationElement createConfigurationElement();
+	InfoModelAttributeSource createInfoModelAttributeSource();
 
 	/**
-	 * Returns a new object of class '<em>Status Element</em>'.
+	 * Returns a new object of class '<em>Function Block Mapping Model</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Status Element</em>'.
+	 * @return a new object of class '<em>Function Block Mapping Model</em>'.
 	 * @generated
 	 */
-	StatusElement createStatusElement();
+	FunctionBlockMappingModel createFunctionBlockMappingModel();
 
 	/**
-	 * Returns a new object of class '<em>Fault Element</em>'.
+	 * Returns a new object of class '<em>Function Block Mapping Rule</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Fault Element</em>'.
+	 * @return a new object of class '<em>Function Block Mapping Rule</em>'.
 	 * @generated
 	 */
-	FaultElement createFaultElement();
+	FunctionBlockMappingRule createFunctionBlockMappingRule();
 
 	/**
-	 * Returns a new object of class '<em>Event Element</em>'.
+	 * Returns a new object of class '<em>Function Block Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Event Element</em>'.
+	 * @return a new object of class '<em>Function Block Source</em>'.
 	 * @generated
 	 */
-	EventElement createEventElement();
+	FunctionBlockSource createFunctionBlockSource();
 
 	/**
-	 * Returns a new object of class '<em>Target Element</em>'.
+	 * Returns a new object of class '<em>Function Block Property Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Target Element</em>'.
+	 * @return a new object of class '<em>Function Block Property Source</em>'.
 	 * @generated
 	 */
-	TargetElement createTargetElement();
+	FunctionBlockPropertySource createFunctionBlockPropertySource();
 
 	/**
-	 * Returns a new object of class '<em>Stereo Type</em>'.
+	 * Returns a new object of class '<em>Function Block Attribute Source</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Stereo Type</em>'.
+	 * @return a new object of class '<em>Function Block Attribute Source</em>'.
 	 * @generated
 	 */
-	StereoType createStereoType();
+	FunctionBlockAttributeSource createFunctionBlockAttributeSource();
+
+	/**
+	 * Returns a new object of class '<em>Configuration Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Configuration Source</em>'.
+	 * @generated
+	 */
+	ConfigurationSource createConfigurationSource();
+
+	/**
+	 * Returns a new object of class '<em>Status Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Status Source</em>'.
+	 * @generated
+	 */
+	StatusSource createStatusSource();
+
+	/**
+	 * Returns a new object of class '<em>Operation Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Operation Source</em>'.
+	 * @generated
+	 */
+	OperationSource createOperationSource();
+
+	/**
+	 * Returns a new object of class '<em>Event Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Event Source</em>'.
+	 * @generated
+	 */
+	EventSource createEventSource();
+
+	/**
+	 * Returns a new object of class '<em>Entity Mapping Model</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Mapping Model</em>'.
+	 * @generated
+	 */
+	EntityMappingModel createEntityMappingModel();
+
+	/**
+	 * Returns a new object of class '<em>Entity Mapping Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Mapping Rule</em>'.
+	 * @generated
+	 */
+	EntityMappingRule createEntityMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Entity Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Source</em>'.
+	 * @generated
+	 */
+	EntitySource createEntitySource();
+
+	/**
+	 * Returns a new object of class '<em>Entity Property Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Property Source</em>'.
+	 * @generated
+	 */
+	EntityPropertySource createEntityPropertySource();
+
+	/**
+	 * Returns a new object of class '<em>Entity Attribute Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Entity Attribute Source</em>'.
+	 * @generated
+	 */
+	EntityAttributeSource createEntityAttributeSource();
+
+	/**
+	 * Returns a new object of class '<em>Enum Mapping Model</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Mapping Model</em>'.
+	 * @generated
+	 */
+	EnumMappingModel createEnumMappingModel();
+
+	/**
+	 * Returns a new object of class '<em>Enum Mapping Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Mapping Rule</em>'.
+	 * @generated
+	 */
+	EnumMappingRule createEnumMappingRule();
+
+	/**
+	 * Returns a new object of class '<em>Enum Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Source</em>'.
+	 * @generated
+	 */
+	EnumSource createEnumSource();
+
+	/**
+	 * Returns a new object of class '<em>Enum Property Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Property Source</em>'.
+	 * @generated
+	 */
+	EnumPropertySource createEnumPropertySource();
+
+	/**
+	 * Returns a new object of class '<em>Enum Attribute Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Attribute Source</em>'.
+	 * @generated
+	 */
+	EnumAttributeSource createEnumAttributeSource();
+
+	/**
+	 * Returns a new object of class '<em>Data Type Mapping Model</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Data Type Mapping Model</em>'.
+	 * @generated
+	 */
+	DataTypeMappingModel createDataTypeMappingModel();
+
+	/**
+	 * Returns a new object of class '<em>Target</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Target</em>'.
+	 * @generated
+	 */
+	Target createTarget();
+
+	/**
+	 * Returns a new object of class '<em>Reference Target</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Reference Target</em>'.
+	 * @generated
+	 */
+	ReferenceTarget createReferenceTarget();
+
+	/**
+	 * Returns a new object of class '<em>Stereo Type Target</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Stereo Type Target</em>'.
+	 * @generated
+	 */
+	StereoTypeTarget createStereoTypeTarget();
 
 	/**
 	 * Returns a new object of class '<em>Attribute</em>'.
@@ -128,6 +290,33 @@ public interface MappingFactory extends EFactory {
 	 * @generated
 	 */
 	Attribute createAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Source</em>'.
+	 * @generated
+	 */
+	Source createSource();
+
+	/**
+	 * Returns a new object of class '<em>Fault Source</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Fault Source</em>'.
+	 * @generated
+	 */
+	FaultSource createFaultSource();
+
+	/**
+	 * Returns a new object of class '<em>Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Rule</em>'.
+	 * @generated
+	 */
+	MappingRule createMappingRule();
 
 	/**
 	 * Returns the package supported by this factory.

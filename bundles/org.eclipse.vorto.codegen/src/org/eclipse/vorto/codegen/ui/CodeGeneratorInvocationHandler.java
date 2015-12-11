@@ -14,17 +14,21 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ui;
 
+import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.IMappingRulesAware;
-import org.eclipse.vorto.codegen.internal.mapping.DefaultMappingRules;
+import org.eclipse.vorto.codegen.api.mapping.IMappingAware;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.repository.IModelRepository;
+import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
+import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
@@ -46,8 +50,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		final String generatorIdentifier = event
-				.getParameter("org.eclipse.vorto.codegen.generator.commandParameter");
+		final String generatorIdentifier = event.getParameter("org.eclipse.vorto.codegen.generator.commandParameter");
 		evaluate(generatorIdentifier);
 		PlatformUtils.switchPerspective(JAVA_PERSPECTIVE);
 		return null;
@@ -57,16 +60,13 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 	private void evaluate(String generatorName) {
 
 		final IConfigurationElement[] configElements = getUserSelectedGenerators(generatorName);
-		IModelProject selectedProject = ModelProjectServiceFactory.getDefault()
-				.getProjectFromSelection();
+		IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
 
-		InformationModel informationModel = (InformationModel) selectedProject
-				.getModel();
+		InformationModel informationModel = (InformationModel) selectedProject.getModel();
 
 		for (IConfigurationElement e : configElements) {
 			try {
-				final Object codeGenerator = e
-						.createExecutableExtension("class");
+				final Object codeGenerator = e.createExecutableExtension("class");
 
 				if (!(codeGenerator instanceof ICodeGenerator)) {
 					continue; // interested only in code generators
@@ -75,44 +75,45 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 				ICodeGenerator<InformationModel> informationModelCodeGenerator = (ICodeGenerator<InformationModel>) codeGenerator;
 
 				/**
-				 * read mapping model and inject Mapping Rules into code
-				 * generator
+				 * Inject Mapping into Mapping Aware Code generator
 				 */
-				if (informationModelCodeGenerator instanceof IMappingRulesAware) {
-					IMappingRulesAware mappingRulesAwareGenerator = ((IMappingRulesAware) informationModelCodeGenerator);
-					MappingModel mappingModel = selectedProject
-							.getMapping(mappingRulesAwareGenerator
-									.getMappingRulesFileName());
-					mappingRulesAwareGenerator
-							.setMappingRules(new DefaultMappingRules(
-									mappingModel));
-
+				if (informationModelCodeGenerator instanceof IMappingAware) {
+					setMappingForMappingAwareGenerator(selectedProject, (IMappingAware)informationModelCodeGenerator);
 				}
 
-				CodeGeneratorTaskExecutor.execute(informationModel,
-						informationModelCodeGenerator);
+				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator);
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
-				throw new RuntimeException(
-						"Something went wrong during code generation", e1);
+				throw new RuntimeException("Something went wrong during code generation", e1);
 			}
 		}
 	}
 
-	private IConfigurationElement[] getUserSelectedGenerators(
-			String generatorIdentifier) {
+	private void setMappingForMappingAwareGenerator(IModelProject selectedProject,
+			IMappingAware mappingAwareCodeGenerator) {
+			String targetPlatform = ((IMappingAware) mappingAwareCodeGenerator).getTargetPlatform();
+			downloadMappingsFromRepository(selectedProject, targetPlatform);
+			mappingAwareCodeGenerator.setMapping(selectedProject.getMapping(targetPlatform));
+	}
+	
+	private void downloadMappingsFromRepository(IModelProject selectedProject, String targetPlatform) {
+		IModelRepository modelRepository = ModelRepositoryFactory.getModelRepository();
+		List<ModelResource> mappingResourcesOfModel = modelRepository.getMappingsForTargetPlatform(selectedProject.getId(),targetPlatform);
+		for (ModelResource mappingModelResource : mappingResourcesOfModel) {
+			byte[] mappingContent = modelRepository.downloadContent(mappingModelResource.getId());
+			selectedProject.addMapping(mappingModelResource.getId(),mappingContent);
+		}
+	}
+
+	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {
 
 		IConfigurationElement[] configurationElements;
-		ConfigurationElementLookup elementLookup = ConfigurationElementLookup
-				.getDefault();
+		ConfigurationElementLookup elementLookup = ConfigurationElementLookup.getDefault();
 		if (PopulateGeneratorsMenu.GENERATE_ALL.equals(generatorIdentifier)) {
-			configurationElements = elementLookup
-					.getAllConfigurationElementFor(GENERATOR_ID);
+			configurationElements = elementLookup.getAllConfigurationElementFor(GENERATOR_ID);
 		} else {
-			configurationElements = elementLookup
-					.getSelectedConfigurationElementFor(GENERATOR_ID,
-							generatorIdentifier);
+			configurationElements = elementLookup.getSelectedConfigurationElementFor(GENERATOR_ID, generatorIdentifier);
 		}
 		return configurationElements;
 	}

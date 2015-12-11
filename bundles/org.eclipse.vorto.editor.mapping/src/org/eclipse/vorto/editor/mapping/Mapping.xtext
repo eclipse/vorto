@@ -1,66 +1,220 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
- *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
- *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
- *
- *******************************************************************************/
+* Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* and Eclipse Distribution License v1.0 which accompany this distribution.
+*
+* The Eclipse Public License is available at
+* http://www.eclipse.org/legal/epl-v10.html
+* The Eclipse Distribution License is available at
+* http://www.eclipse.org/org/documents/edl-v10.php.
+*
+* Contributors:
+* Bosch Software Innovations GmbH - Please refer to git log
+*******************************************************************************/
 grammar org.eclipse.vorto.editor.mapping.Mapping with org.eclipse.xtext.common.Terminals
 
 import "http://www.eclipse.org/vorto/metamodel/Mapping"
 import "http://www.eclipse.org/vorto/metamodel/InformationModel" as infomodel
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as functionblock
 import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
+import "http://www.eclipse.org/vorto/metamodel/Model" as model
 
 MappingModel:
-	'mapping' '{'
-	'model' infomodel=[infomodel::InformationModel|QualifiedName]
-	'target' target=ID
-	(rules+=Rule)*
-	'}';
+  InfoModelMappingModel | FunctionBlockMappingModel | DataTypeMappingModel
+;
 
-Rule:
-	'from' informationModelElements+=InformationModelElement (',' informationModelElements+=InformationModelElement)*
-	'to' targetElement=TargetElement;
+DataTypeMappingModel:
+	EntityMappingModel | EnumMappingModel	
+;
 
-InformationModelElement:
-	functionblockModel=[functionblock::FunctionblockModel|QualifiedName] '.' tail=FunctionBlockElement;
+/*----------------------Start Information Model Mapping Definition---------------------------*/
+InfoModelMappingModel:
+	{InfoModelMappingModel}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+    ('displayname' displayname=STRING)?      
+    ('description' description=STRING)? 
+    ('category' category=CATEGORY)?   
+     (references += ModelReference)*		
+	'infomodelmapping' name=ID  '{'
+			'targetplatform' targetPlatform = ID
+			(rules +=InfoModelMappingRule)*
+	'}'	
+;
 
-FunctionBlockElement:
-	(OperationElement | ConfigurationElement | StatusElement | FaultElement | EventElement);
+InfoModelMappingRule:
+	'from' sources+=InfomodelSource (',' sources+=InfomodelSource)*
+	'to' target = Target
+;
+		
+InfomodelSource:
+	InfoModelAttributeSource | InfoModelPropertySource	
+;
 
-OperationElement:
-	'operation.' value=[functionblock::Operation];
+InfoModelPropertySource:
+	model=[infomodel::InformationModel]  ('.' property =[infomodel::FunctionblockProperty])?  
+;
 
-ConfigurationElement:
-	'configuration.' value=[datatype::Property];
+InfoModelAttributeSource:
+	model=[infomodel::InformationModel]  '.' attribute = ModelAttribute 
+;
 
-StatusElement:
-	'status.' value=[datatype::Property];
+/*----------------------End Information Model Mapping Definition---------------------------*/
 
-FaultElement:
-	'fault.' value=[datatype::Property];
 
-EventElement:
-	'event.' value=[functionblock::Event];
+/*----------------------Start Function Block Mapping Definition---------------------------*/
+FunctionBlockMappingModel:
+	{FunctionBlockMappingModel}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+    ('displayname' displayname=STRING)?      
+    ('description' description=STRING)? 
+    ('category' category=CATEGORY)?    
+     (references += ModelReference)*
+	'functionblockmapping' name=ID  '{'
+			'targetplatform' targetPlatform = ID	
+			(rules +=FunctionBlockMappingRule)*
+	'}'	
+;
 
-TargetElement:
-	stereoTypes+=StereoType (',' stereoTypes+=StereoType)*;
+FunctionBlockMappingRule:
+	'from' sources+=FunctionBlockSource (',' sources+=FunctionBlockSource)*
+	'to' target = Target;
 
-StereoType:
-	name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
+		
+FunctionBlockSource:
+	FunctionBlockAttributeSource | FunctionBlockPropertySource	|OperationSource |EventSource
+;
+
+FunctionBlockPropertySource:
+    ConfigurationSource | StatusSource | FaultSource 
+;
+
+FunctionBlockAttributeSource:
+	model = [functionblock::FunctionblockModel]  ('.' attribute = ModelAttribute)?
+;
+
+
+ConfigurationSource:
+	model = [functionblock::FunctionblockModel] '.'   'configuration'  '.'  property=[datatype::Property] 
+;
+
+StatusSource:
+	model = [functionblock::FunctionblockModel] '.' 'status' '.'  property=[datatype::Property] 
+;
+
+FaultSource:
+	model = [functionblock::FunctionblockModel] '.'  'fault' '.'  property=[datatype::Property] 
+;
+
+OperationSource:
+	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation]
+;
+
+EventSource:
+	 model = [functionblock::FunctionblockModel] '.' 'event' '.' event=[functionblock::Event] ('.' eventProperty=[datatype::Property] )?;
+
+
+/*----------------------End Function Block Mapping Definition---------------------------*/
+
+/*----------------------Start Entity Mapping Definition---------------------------*/
+EntityMappingModel:
+	{EntityMappingModel}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+    ('displayname' displayname=STRING)?      
+    ('description' description=STRING)? 
+    ('category' category=CATEGORY)?     
+     (references += ModelReference)*
+	'entitymapping' name=ID  '{'
+		'targetplatform' targetPlatform = ID	
+		(rules +=EntityMappingRule)*
+	'}'	
+;
+
+EntityMappingRule:
+	'from' sources+=EntitySource (',' sources+=EntitySource)*
+	'to' target=Target;	
+
+
+
+EntitySource:
+	EntityAttributeSource | EntityPropertySource	
+;
+
+EntityPropertySource:
+    model = [datatype::Entity] "."  property=[datatype::Property] 
+;
+
+EntityAttributeSource:
+	model = [datatype::Entity] ('.' attribute = ModelAttribute)?
+;
+
+/*----------------------End Entity Mapping Definition---------------------------*/
+
+/*----------------------Start Enum Mapping Definition---------------------------*/
+EnumMappingModel:
+	{EnumMappingModel}
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+    ('displayname' displayname=STRING)?      
+    ('description' description=STRING)? 
+    ('category' category=CATEGORY)?   
+     (references += ModelReference)*
+	'enummapping' name=ID  '{'
+		'targetplatform' targetPlatform = ID	
+		(rules +=EnumMappingRule)*
+	'}'	
+;
+
+EnumMappingRule:
+	'from' sources+=EnumSource (',' sources+=EnumSource)*
+	'to' target=Target
+;
+
+
+EnumSource:
+	EnumAttributeSource | EnumPropertySource	
+;
+
+EnumPropertySource:
+    model = [datatype::Enum] "."  property=[datatype::EnumLiteral] 
+;
+
+EnumAttributeSource:
+	model = [datatype::Enum] ('.' attribute = ModelAttribute)?
+;
+
+/*----------------------End Enum Mapping Definition---------------------------*/
+	
+/*----------------------Start Target Element Definition---------------------------*/
+Target:
+	StereoTypeTarget | ReferenceTarget
+;
+
+ReferenceTarget:
+	'reference' mappingModel = [MappingModel]
+;	
+
+StereoTypeTarget:
+	 name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
 
 Attribute:
 	name=ID ':' value=STRING;
+
+/*----------------------End Target Element Definition---------------------------*/
+
+enum ModelAttribute: name = 'name' | namespace = 'namespace'  |  version = 'version' | displayname = 'displayname' | category = 'category'  |  description = 'description';
 	
 QualifiedName:
 	ID ('.' ID)*
 ;
+
+terminal VERSION : ('0'..'9')* '.' ('0'..'9')* '.' ('0'..'9')*('-'ID)?;
+
+ModelReference returns model::ModelReference: 
+	'using' importedNamespace=QualifiedName';'version=VERSION
+;
+
+CATEGORY: ID ('/' ID)*;

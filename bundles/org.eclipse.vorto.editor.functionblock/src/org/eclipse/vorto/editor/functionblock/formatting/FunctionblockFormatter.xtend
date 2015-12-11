@@ -26,22 +26,22 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 
 	
 	override protected void configureFormatting(FormattingConfig c) {
-		// formatting for Comments
+		
+		//Basic information
+		c.setLinewrap(1).after(f.modelReferenceAccess.group)
+		c.setLinewrap(1).after(f.functionblockModelAccess.namespaceAssignment_2)
+		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_4)
+		c.setLinewrap(1).after(f.functionblockModelAccess.displaynameAssignment_6)
+		c.setLinewrap(1).after(f.functionblockModelAccess.descriptionAssignment_7_1)
+		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_9)
+		
+		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
 		c.setLinewrap(1, 1, 2).before(ML_COMMENTRule)
 		c.setLinewrap(1, 1, 1).after(ML_COMMENTRule)
 		c.setAutoLinewrap(120)
 
-		// Line wrap for all basic function block info, like displayname, description etc.
-		c.setLinewrap(1).after(f.modelReferenceAccess.group)
-
-		c.setLinewrap(1).after(f.functionblockModelAccess.namespaceAssignment_2)
-		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_4)
-		c.setLinewrap(1).after(f.functionBlockAccess.displaynameAssignment_2)
-		c.setLinewrap(1).after(f.functionBlockAccess.descriptionAssignment_3_1)
-		c.setLinewrap(1).after(f.functionBlockAccess.categoryAssignment_5)
-
-		//Line wrap for every property entries in all function block constructs like configuration, status etc. 
+		//Properties
 		c.setLinewrap(1).after(f.configurationAccess.propertiesAssignment_3)
 		c.setLinewrap(1).after(f.statusAccess.propertiesAssignment_3)
 		c.setLinewrap(1).after(f.faultAccess.propertiesAssignment_3)
@@ -49,7 +49,7 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).before(f.findKeywords("mandatory").get(0))
 		c.setLinewrap(1).before(f.findKeywords("optional").get(0))
 		
-		// Line wrap and indentation between function block sub elements.
+		//Block Elements
 		findKeywordPairs("{","}").forEach[
 			c.setLinewrap(1).after(first)
 			c.setLinewrap(1).before(second)
@@ -57,31 +57,30 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 			c.setIndentationIncrement().after(first)
 			c.setIndentationDecrement().before(second)
 		]
+		c.setLinewrap(2).before(f.findKeywords("functionblock").get(0))
 
-		//Formatting for operation paranthesis
+		//Operation Paranthesis
 		findKeywordPairs("(",")").forEach[
 			c.setNoSpace().before(first)
 			c.setNoSpace().after(first)
 			c.setNoSpace().before(second)
 		]
 
-		//Formatting for constraint block
+		//Constraint block
 		findKeywordPairs("<",">").forEach[
 			c.setSpace(" ").before(first)
 			c.setNoSpace().after(first)
 			c.setNoSpace().before(second)
 		]
 
-		//Line wrap for each operation.
+		//Operations
 		c.setLinewrap(1).after(f.operationAccess.group)
 	
-		
-		//Remove extra spaces between constraint parameters.
+		//Constraint parameters.
 		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_2_0)
-		
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_2_0)
 		
-		//Remove extra spaces between method parameters.
+		//Operation parameters.
 		c.setNoSpace().before(f.operationAccess.commaKeyword_2_1_0)
 		c.setNoSpace().after(f.operationAccess.commaKeyword_2_1_0)
 		
