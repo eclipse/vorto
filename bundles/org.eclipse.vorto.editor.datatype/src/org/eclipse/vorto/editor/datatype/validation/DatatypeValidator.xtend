@@ -23,10 +23,8 @@ import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.model.ModelPackage
-import org.eclipse.vorto.core.api.model.model.ModelReference
 import org.eclipse.vorto.editor.datatype.internal.ConstraintValidatorFactory
 import org.eclipse.vorto.editor.datatype.internal.validation.PropertyConstraintMappingValidation
-import org.eclipse.vorto.editor.scope.ValidatorUtils
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -37,13 +35,6 @@ import org.eclipse.xtext.validation.Check
 class DatatypeValidator extends AbstractDatatypeValidator {
 
 public val propertyValidator = new PropertyConstraintMappingValidation
-
-	@Check
-	def checkModelReference(ModelReference modelReference) {
-		if (!ValidatorUtils.modelReferenceResolvable(modelReference)) {
-			error("Could not resolve reference to model '"+modelReference.importedNamespace+"'", modelReference, ModelPackage.Literals.MODEL_REFERENCE__IMPORTED_NAMESPACE, ValidatorUtils.UNRESOLVABLE_REFERENCE)
-		}
-	}
 
 	@Check
 	def checkConstraint(Property prop) {

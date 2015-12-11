@@ -18,9 +18,6 @@ package org.eclipse.vorto.editor.infomodel.validation
 import java.util.HashSet
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
-import org.eclipse.vorto.core.api.model.model.ModelPackage
-import org.eclipse.vorto.core.api.model.model.ModelReference
-import org.eclipse.vorto.editor.scope.ValidatorUtils
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -39,11 +36,5 @@ class InformationModelValidator extends AbstractInformationModelValidator {
 			}
 		}
 	}
-	
-	@Check
-	def checkModelReference(ModelReference modelReference) {
-		if (!ValidatorUtils.modelReferenceResolvable(modelReference)) {
-			error("Could not resolve reference to model '"+modelReference.importedNamespace+"'", modelReference, ModelPackage.Literals.MODEL_REFERENCE__IMPORTED_NAMESPACE,ValidatorUtils.UNRESOLVABLE_REFERENCE)
-		}
-	}
+
 }

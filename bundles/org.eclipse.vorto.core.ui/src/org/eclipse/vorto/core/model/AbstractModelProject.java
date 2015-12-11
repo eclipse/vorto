@@ -104,7 +104,7 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 		}
 		getModel().getReferences().add(referenceToAdd);
 		getModel().eResource().getContents().add(modelElementReference.getModel());
-
+		EcoreUtil.resolveAll(getModel());
 	}
 
 	@Override
