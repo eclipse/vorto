@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tests.tasks.template
 
-import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.PomTemplate
+import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.POMTemplate
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tests.tasks.TestFunctionblockModelFactory
 import org.junit.Test
 
@@ -27,7 +27,7 @@ class PomTemplateTest {
 	def testGetContent() {
 		var model = TestFunctionblockModelFactory.populateFBmodelWithProperties();
 
-		var result = new PomTemplate().getContent(model);
+		var result = new POMTemplate().getContent(model);
 		assertEquals(fetchExpected, result);
 	}
 
