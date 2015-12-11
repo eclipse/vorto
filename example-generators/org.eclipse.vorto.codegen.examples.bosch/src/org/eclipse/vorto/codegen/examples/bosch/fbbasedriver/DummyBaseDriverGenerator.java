@@ -25,7 +25,7 @@ import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BlueprintConf
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.DummyDeviceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.EventReadTaskGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.IDummyDeviceGeneratorTask;
-import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.PomTemplate;
+import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.POMTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 
 public class DummyBaseDriverGenerator implements
@@ -36,7 +36,7 @@ public class DummyBaseDriverGenerator implements
 
 		new EclipseProjectGenerator<FunctionblockModel>(
 				BaseDriverUtil.getArtifactId(fbm))
-				.mavenNature(new PomTemplate())
+				.mavenNature(new POMTemplate())
 				.addNature(BoschM2MNature.M2M_NATURE_ID)
 				.addTask(new BaseDriverGeneratorTask())
 				.addTask(new IDummyDeviceGeneratorTask())
