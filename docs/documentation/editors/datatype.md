@@ -3,6 +3,7 @@ layout: documentation
 title: Defining a Data Type
 ---
 {% include base.html %}
+
 ## Defining a Data Type
 
 This section details the following topics:  
@@ -16,6 +17,13 @@ This section details the following topics:
 ## Data Types
 
 A data type is a reusable entity that can be shared between function blocks.
+
+<div class="thumb1">
+<a title="Defining a Data Type" data-rel="prettyPhoto" href="https://youtu.be/zZBwPKJTR-4&width=1500&height=1000" rel="prettyPhoto" >
+<img src="{{ $base}}/img/documentation/definedt.jpg"  class="box-img img-responsive zoom1">
+<i class="fa fa-play-circle fa-5 play-icon"></i>
+</a>
+</div>
 
 ## Creating a New Data Type
 
@@ -56,3 +64,5 @@ You have created a data type (refer to [Create a new Data Type](#creating-a-new-
       mandatory g as int <MIN 0, MAX 255>
       mandatory b as int <MIN 0, MAX 255>
     }
+
+## Video on Defining a new Data Type
