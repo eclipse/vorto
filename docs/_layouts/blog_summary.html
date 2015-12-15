@@ -4,18 +4,22 @@ layout: default
 {% include base.html %}
 <div class="container content">
   <div class="row">
-    <div class="span12">
-    <div class="page-header pull-left">
-        <h2>
+    <div class="col-md-9 page-header pull-left">
+      <h3>
           Blogs
-      </h2>
-    </div>
-     <div class="page-header pull-right">
-      <a href="https://github.com/eclipse/vorto/tree/development/docs/blog" target="_blank"><h4>Add a new blog post!</h4></a>                          
-    </div>
+      </h3>
+    
+  </div>
+  <div class="col-md-3 page-header pull-right">
+     
+      <a href="https://github.com/eclipse/vorto/tree/development/docs/blog" target="_blank"><h3>Add a new blog post!</h3></a>                          
+    
        </div>
   </div>
 <!--{% assign sorted_pages = (site.pages | sort: 'page.sequence') %}-->
+<div class="row">
+ 
+          <div class="col-md-9">
 
 {% for blog in site.pages reversed %}
   {% if blog.section == 'blog' %}
@@ -26,7 +30,7 @@ layout: default
         {% if blog.eclipseid %}
           <li>
             <i class="icon-user"></i>
-            <a href="http://projects.eclipse.org/users/{{blog.eclipseid}}">{{ blog.author }}</a>
+            <a href="http://projects.eclipse.org/user/{{blog.eclipseid}}">{{ blog.author }}</a>
           </li>
           {% elsif blog.githubid %}
            <li>
@@ -44,19 +48,53 @@ layout: default
     </ul>
     </div>
     <section>
-	  {% if blog.content contains '<!--more-->' %}
-        	{{ blog.content | split:'<!--more-->' | first }}
-        	<a href="{{base}}{{ blog.url}}">Read More...</a>
-       	{% else %}
-  			{{ blog.content }}
-		{% endif %}
+    {% if blog.content contains '<!--more-->' %}
+          {{ blog.content | split:'<!--more-->' | first }}
+          <a href="{{base}}{{ blog.url}}">Read More...</a>
+        {% else %}
+        {{ blog.content }}
+    {% endif %}
     </section>
     {% endif %}
-  {% endfor %}
+         {% endfor %}
+  
+
+</div>
+<div class="col-md-3 pull-right">
+   
+        <div class="well"> 
+          <center><h3>Blogs Overview</h3></center>
+                <ul class="nav nav-stacked" id="sidebar">
+                  {% for blog in site.pages reversed %}
+                  {% if blog.section == 'blog' %}
+                  <li><a href="{{base}}{{ blog.url}}">{{blog.title}}<br></a></li>
+                  
+                
+                  <ul>
+                      {% if blog.eclipseid %}
+                 <li type="square">by <a href="http://projects.eclipse.org/user/{{blog.eclipseid}}"><em>{{ blog.author }}</em></a></li>
+                {% elsif blog.githubid %}
+                 <li type="square">by <a href="https://github.com/{{blog.githubid}}"><em>{{ blog.author }}</em></a></li>
+            {% else %}
+                    <li type="square">by <em>{{ blog.author }}</em></li>
+                    {% endif %}
+                  </ul>
+                  
+                  {% endif %}
+                  {% endfor %}
+                </ul>
+          </div>
+                  
+
+          </div> 
+ 
+
+</div>
 </div>
 
 <!-- Pagination -->
 {% if paginator.total_pages > 1 %}
+
 <div class="pagination">
   <ul>
 {% if paginator.previous_page %}
@@ -68,9 +106,8 @@ layout: default
 {% endfor %}
 {% if paginator.next_page %}
     <li class="next"><a href="/blog/page{{ paginator.next_page }}">Next</a></li>
+  
 {% endif %}
   </ul>
 </div>
 {% endif %}
-
-</div>

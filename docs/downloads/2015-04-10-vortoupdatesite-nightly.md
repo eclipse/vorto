@@ -1,7 +1,7 @@
 ---
 layout: downloads
 title: Vorto Update Site (Nightly Snapshots)
-date: 2015-09-03 09:07:08
+date: 2015-04-10 09:07:08
 permalink: /downloads/
 imagename: "fa fa-caret-square-o-up fa-5x"
 section: downloads

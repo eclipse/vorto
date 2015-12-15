@@ -3,10 +3,17 @@ layout: documentation
 title: Defining a Model Mapping
 ---
 {% include base.html %}
+
 # Defining a Model Mapping
 
 Vorto allows the user to define mapping rules to map Vorto models to other target platform domain models.
 
+<div class="thumb1">
+<a title="Defining a new Mapping" data-rel="prettyPhoto" href="https://youtu.be/C5c5tTFwG0U&width=1500&height=1000" rel="prettyPhoto" >
+<img src="{{ $base}}/img/documentation/defineinfomap.jpg"  class="box-img img-responsive zoom1">
+<i class="fa fa-play-circle fa-5 play-icon"></i>
+</a>
+</div>
 
 **Prerequisites**
 
@@ -43,6 +50,7 @@ In entity mapping, you can define mapping rules for entity types.
 			from Color.r, Color.g, Color.b
 			to MyColor with { r : "Red", g : "Green", b : "Blue" }
 		}	
+
 -----
 
 ## Define a Function Block Mapping
@@ -122,6 +130,4 @@ In information model mapping, you can define mapping rules for information model
 	
 		from MyLightingDevice.colorlight
 		to reference ColorLight_MyIOTPlatform
-	}	
-
------
+	}
