@@ -18,7 +18,6 @@ Require-Bundle: org.eclipse.xtext.ui,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.datatype.ui,
  org.eclipse.vorto.editor.functionblock,
- org.eclipse.vorto.editor.functionblock.ui,
  org.eclipse.vorto.core,
  org.eclipse.xtext.xbase.lib
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
