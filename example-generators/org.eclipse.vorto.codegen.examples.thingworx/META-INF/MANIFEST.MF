@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ThingWorxCodeGenerator
+Bundle-SymbolicName: ThingWorxCodeGenerator;singleton:=true
+Bundle-Version: 0.4.0.qualifier
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.vorto.core,
+ org.eclipse.core.runtime,
+ org.eclipse.vorto.codegen,
+ org.eclipse.xtend.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Activator: org.eclipse.vorto.codegen.examples.thingworx.Activator
+Bundle-ClassPath: lib/jackson-core-2.6.0.jar,
+ target/classes/
+Export-Package: org.eclipse.vorto.codegen.examples.thingworx;uses:="org.osgi.framework,org.eclipse.ui.plugin"
