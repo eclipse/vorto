@@ -675,6 +675,9 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		initEEnum(propertyAttributeTypeEEnum, PropertyAttributeType.class, "PropertyAttributeType");
 		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.MEASUREMENT_UNIT);
+		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.READABLE);
+		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.WRITABLE);
+		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.EVENTABLE);
 
 		// Create resource
 		createResource(eNS_URI);

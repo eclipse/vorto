@@ -63,7 +63,7 @@ EnumLiteral:
 ;
 
 Property:
-	presence = Presence (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
+	(presence = Presence)? (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
 	('with {' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
 	('<' Constraints += Constraint ("," Constraints += Constraint)*  '>')?
 	(description=STRING)?
@@ -74,7 +74,10 @@ PropertyAttribute:
 ;
 
 enum PropertyAttributeType:
-	MeasurementUnit = 'MeasurementUnit'
+	MeasurementUnit = 'MeasurementUnit' |
+	Readable = 'Readable' |
+	Writable = 'Writable' |
+	Eventable = 'Eventable'
 ;
 
 PropertyType:

@@ -69,5 +69,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="PropertyAttributeType">
     <eLiterals name="MeasurementUnit" value="1" literal="MEASUREMENTUNIT"/>
+    <eLiterals name="Readable" value="2" literal="READABLE"/>
+    <eLiterals name="Writable" value="3" literal="WRITABLE"/>
+    <eLiterals name="Eventable" value="4" literal="EVENTABLE"/>
   </eClassifiers>
 </ecore:EPackage>

@@ -26,7 +26,31 @@ public enum PropertyAttributeType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	MEASUREMENT_UNIT(1, "MeasurementUnit", "MEASUREMENTUNIT");
+	MEASUREMENT_UNIT(1, "MeasurementUnit", "MEASUREMENTUNIT"), /**
+	 * The '<em><b>Readable</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #READABLE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	READABLE(2, "Readable", "READABLE"), /**
+	 * The '<em><b>Writable</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #WRITABLE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	WRITABLE(3, "Writable", "WRITABLE"), /**
+	 * The '<em><b>Eventable</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #EVENTABLE_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	EVENTABLE(4, "Eventable", "EVENTABLE");
 
 	/**
 	 * The '<em><b>Measurement Unit</b></em>' literal value.
@@ -44,6 +68,51 @@ public enum PropertyAttributeType implements Enumerator {
 	public static final int MEASUREMENT_UNIT_VALUE = 1;
 
 	/**
+	 * The '<em><b>Readable</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Readable</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #READABLE
+	 * @model name="Readable" literal="READABLE"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int READABLE_VALUE = 2;
+
+	/**
+	 * The '<em><b>Writable</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Writable</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #WRITABLE
+	 * @model name="Writable" literal="WRITABLE"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int WRITABLE_VALUE = 3;
+
+	/**
+	 * The '<em><b>Eventable</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Eventable</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #EVENTABLE
+	 * @model name="Eventable" literal="EVENTABLE"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int EVENTABLE_VALUE = 4;
+
+	/**
 	 * An array of all the '<em><b>Property Attribute Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -52,6 +121,9 @@ public enum PropertyAttributeType implements Enumerator {
 	private static final PropertyAttributeType[] VALUES_ARRAY =
 		new PropertyAttributeType[] {
 			MEASUREMENT_UNIT,
+			READABLE,
+			WRITABLE,
+			EVENTABLE,
 		};
 
 	/**
@@ -103,6 +175,9 @@ public enum PropertyAttributeType implements Enumerator {
 	public static PropertyAttributeType get(int value) {
 		switch (value) {
 			case MEASUREMENT_UNIT_VALUE: return MEASUREMENT_UNIT;
+			case READABLE_VALUE: return READABLE;
+			case WRITABLE_VALUE: return WRITABLE;
+			case EVENTABLE_VALUE: return EVENTABLE;
 		}
 		return null;
 	}

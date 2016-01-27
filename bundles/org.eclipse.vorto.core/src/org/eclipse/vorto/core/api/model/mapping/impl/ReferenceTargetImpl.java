@@ -19,10 +19,10 @@ import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.ReferenceTargetImpl#getMappingModel <em>Mapping Model</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */
