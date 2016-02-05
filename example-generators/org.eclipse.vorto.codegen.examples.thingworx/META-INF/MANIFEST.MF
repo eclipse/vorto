@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ThingWorxCodeGenerator
-Bundle-SymbolicName: ThingWorxCodeGenerator;singleton:=true
+Bundle-Name: ThingWorx Code Generator
+Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.thingworx;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.vorto.core,
@@ -13,3 +13,4 @@ Bundle-Activator: org.eclipse.vorto.codegen.examples.thingworx.Activator
 Bundle-ClassPath: target/classes/,
  lib/jackson-core-2.6.2.jar
 Export-Package: org.eclipse.vorto.codegen.examples.thingworx;uses:="org.osgi.framework,org.eclipse.ui.plugin"
+Bundle-Vendor: ThingWorx, a PTC Business

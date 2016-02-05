@@ -27,6 +27,7 @@
 		<module>org.eclipse.vorto.codegen.examples.java</module>
 		<module>org.eclipse.vorto.codegen.examples.ios</module>	
 		<module>org.eclipse.vorto.codegen.examples.markdown</module>
+		<module>org.eclipse.vorto.codegen.examples.thingworx</module>
   </modules>
   
 </project>
