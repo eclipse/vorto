@@ -6,6 +6,7 @@ series : "homepagebottom"
 sequence: "mailinglist"
 imagename : "fa fa-envelope fa-4x"
 style: "team"
+accesslink: "https://dev.eclipse.org/mailman/listinfo/vorto-dev"
 ---
 {% include base.html %}
 

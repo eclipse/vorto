@@ -6,6 +6,7 @@ series : "homepagebottom"
 sequence: "contribute"
 imagename : "fa fa-plus fa-4x"
 style: "team"
+accesslink: "mailto:vorto-dev@eclipse.org?Subject=Significant%20Contribution"
 ---
 
 The Vorto project considers the following contributions as <b>significant contribution</b>:

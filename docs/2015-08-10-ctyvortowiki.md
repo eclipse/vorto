@@ -6,6 +6,7 @@ series : "homepagebottom"
 sequence: "vortowiki"
 imagename : "fa fa-info fa-4x"
 style: "team"
+accesslink: "https://wiki.eclipse.org/Vorto"
 ---
 {% include base.html %}
 
