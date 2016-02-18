@@ -24,5 +24,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,
  org.eclipse.vorto.editor.infomodel.ui.internal,
  org.eclipse.vorto.editor.infomodel.ui.quickfix,
- org.eclipse.vorto.editor.infomodel.ui.contentassist.antlr
+ org.eclipse.vorto.editor.infomodel.ui.contentassist.antlr,
+ org.eclipse.vorto.editor.infomodel.ui.contentassist.antlr.internal
 Bundle-Activator: org.eclipse.vorto.editor.infomodel.ui.internal.InformationModelActivator

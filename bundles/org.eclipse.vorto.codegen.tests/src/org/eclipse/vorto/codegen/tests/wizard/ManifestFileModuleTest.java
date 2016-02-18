@@ -77,13 +77,13 @@ public class ManifestFileModuleTest {
 
 	@Test
 	public void testContentWithBundles() {
-		String actual = generatedFilled.getContent();
+		String actual = new String(generatedFilled.getContent());
 		assertEquals(EXPECTED_CONTENT_FILLED, actual);
 	}
 
 	@Test
 	public void testContentWithouBundles() {
-		String actual = generatedEmpty.getContent();
+		String actual = new String(generatedEmpty.getContent());
 		assertEquals(EXPECTED_CONTENT_EMPTY, actual);
 	}
 

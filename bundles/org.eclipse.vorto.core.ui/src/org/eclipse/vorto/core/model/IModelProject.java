@@ -17,6 +17,7 @@ package org.eclipse.vorto.core.model;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 
 /**
  * 

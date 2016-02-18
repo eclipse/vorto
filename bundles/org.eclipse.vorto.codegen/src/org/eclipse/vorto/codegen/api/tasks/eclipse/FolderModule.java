@@ -38,7 +38,7 @@ public class FolderModule<Context> implements ICodeGeneratorTask<Context> {
 				.setFileWritingStrategy((IFileWritingStrategy) new OverWritingStrategy());
 		if (folders != null) {
 			for (String customFolder : folders) {
-				outputter.output(new Generated(null, customFolder, null));
+				outputter.output(new Generated(null, customFolder, new byte[0]));
 			}
 		}
 	}

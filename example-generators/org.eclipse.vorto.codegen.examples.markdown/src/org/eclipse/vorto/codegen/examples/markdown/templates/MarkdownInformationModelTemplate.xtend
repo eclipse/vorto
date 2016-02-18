@@ -14,9 +14,15 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
+import org.eclipse.emf.common.util.BasicEList
+import org.eclipse.emf.common.util.EList
 import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.Type
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.templates.java.utils.ModelHelper
 
 class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 	
@@ -60,18 +66,84 @@ class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 			
 			# Entities
 			«FOR fbProperty : im.properties»
-				«FOR type : ModelHelper.getReferencedEntities(fbProperty.type.functionblock)»
+				«FOR type : getReferencedEntities(fbProperty.type.functionblock)»
 					«entityTemplate.getContent(type)»
 				«ENDFOR»
 			«ENDFOR»
 			
 			# Enums
 			«FOR fbProperty : im.properties»
-				«FOR type : ModelHelper.getReferencedEnums(fbProperty.type.functionblock)»
+				«FOR type : getReferencedEnums(fbProperty.type.functionblock)»
 					«enumTemplate.getContent(type)»
 				«ENDFOR»
 			«ENDFOR»
 			
 		'''
+	}
+	
+	def EList<Entity> getReferencedEntities(FunctionBlock fb) {
+		var entities = new BasicEList<Entity>();
+		for (Type type : getReferencedTypes(fb)) {
+			if (type instanceof Entity) {
+				entities.add(type);
+			}
+		}
+		return entities;
+	}
+	
+	def EList<Enum> getReferencedEnums(FunctionBlock fb) {
+		var enums = new BasicEList<Enum>();
+		for (Type type : getReferencedTypes(fb)) {
+			if (type instanceof Enum) {
+				enums.add(type);
+			}
+		}
+		return enums;
+	}
+	
+	def EList<Type> getReferencedTypes(Entity entity) {
+		var types = new BasicEList<Type>();
+			for (org.eclipse.vorto.core.api.model.datatype.Property property : entity.getProperties()) {
+				types.addAll(getReferencedTypes(property));
+			}
+			types.add(entity.getSuperType());
+		return types;
+	}
+	
+	def EList<Type> getReferencedTypes(org.eclipse.vorto.core.api.model.datatype.Property property) {
+		var types = new BasicEList<Type>();
+		if (property.getType() instanceof ObjectPropertyType) {
+			var objectType = property.getType() as ObjectPropertyType;
+			types.add(objectType.getType());
+			if (objectType.getType() instanceof Entity) {
+				types.addAll(getReferencedTypes(objectType.getType() as Entity));
+			}
+		}
+		return types;
+	}
+	
+	def EList<Type> getReferencedTypes(FunctionBlock fb) {
+		var types = new BasicEList<Type>();
+		if (fb != null) {
+			// Analyze the status properties...
+			if (fb.getStatus() != null) {
+				for (org.eclipse.vorto.core.api.model.datatype.Property property : fb.getStatus().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+			// Analyze the configuration properties...
+			if (fb.getConfiguration() != null) {
+				for (org.eclipse.vorto.core.api.model.datatype.Property property : fb.getConfiguration().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+			// Analyze the fault properties...
+			if (fb.getFault() != null) {
+				for (org.eclipse.vorto.core.api.model.datatype.Property property : fb.getFault().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+		}
+		return types;
 	}
 }

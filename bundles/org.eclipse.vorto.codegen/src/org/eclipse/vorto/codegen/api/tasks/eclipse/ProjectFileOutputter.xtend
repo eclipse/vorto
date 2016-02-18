@@ -56,7 +56,7 @@ class ProjectFileOutputter implements IOutputter {
 					generatedFile = project.getFile(generated.getFileName());
 				}
 				
-				getFileWritingStrategy.writeFile(new FileWriteContext(generated.getContent()),generatedFile);
+				getFileWritingStrategy.writeFile(new FileWriteContext(new String(generated.getContent())),generatedFile);
 						MessageDisplayFactory.getMessageDisplay().display("Generated file " + generatedFile.location.toFile.path);
 			}
 		} catch (Exception ioEx) {

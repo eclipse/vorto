@@ -16,9 +16,9 @@ package org.eclipse.vorto.core.internal.service;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.core.model.SharedDatatypeModelElement;
 import org.eclipse.vorto.core.model.SharedFunctionblockModelElement;
 import org.eclipse.vorto.core.model.SharedInformationModelElement;

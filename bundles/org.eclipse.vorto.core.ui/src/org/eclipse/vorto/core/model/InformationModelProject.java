@@ -27,6 +27,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.nature.InformationModelProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
 

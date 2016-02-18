@@ -21,12 +21,16 @@ class Generated {
 	
 	String fileName;
 	String folderPath;
-	String content;
+	byte[] content;
 	
-	new(String fileName, String folderPath, String content) {
+	new(String fileName, String folderPath, byte[] content) {
 		this.fileName = fileName;
 		this.folderPath = folderPath;
 		this.content = content;
+	}
+	
+	new(String fileName, String folderPath, String content) {
+		this(fileName,folderPath,content.bytes)
 	}
 	
 	def String getFileName() {
@@ -37,7 +41,7 @@ class Generated {
 		return folderPath;
 	}
 	
-	def String getContent() {
+	def byte[] getContent() {
 		return content;
 	}
 }

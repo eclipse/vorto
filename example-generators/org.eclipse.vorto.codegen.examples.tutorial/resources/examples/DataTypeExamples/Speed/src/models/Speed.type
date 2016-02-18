@@ -1,8 +1,0 @@
-namespace examples.datatypes.measurement
-version 1.0.0
-using examples.datatypes.measurement.units.SpeedUnit ; 1.0.0
-
-entity Speed {
-	mandatory value as float "The value representing the speed."
-	mandatory measurementUnit as SpeedUnit "The measurement unit for the speed."
-}

@@ -15,13 +15,17 @@
 
 package org.eclipse.vorto.codegen.api.tasks.eclipse;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.vorto.codegen.api.tasks.Generated;
 import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.tasks.IOutputter;
@@ -32,79 +36,57 @@ import org.eclipse.vorto.codegen.api.tasks.IOutputter;
  */
 public class CopyResourceTask<Context> implements ICodeGeneratorTask<Context> {
 
-	private URL resourceURL;
-	private String targetFolder;
-	private String suffix;
+	private URL basePath;
+	private String targetPath;
 
-	public CopyResourceTask(URL resourceURL, String targetFolder, String suffix) {
-		this.resourceURL = resourceURL;
-		this.targetFolder = targetFolder;
-		this.suffix = suffix;
+	public CopyResourceTask(URL basePath, String targetPath) {
+		this.basePath = basePath;
+		this.targetPath = targetPath;
 	}
 
-	public CopyResourceTask(URL resourceURL, String targetFolder) {
-		this(resourceURL, targetFolder, null);
-	}
-
-	public void generate(Context metaData, IOutputter outputter) {
+	public void generate(Context metaData, final IOutputter outputter) {
 		try {
+			Path start = Paths.get(basePath.toURI());
+			Files.walkFileTree(start, new FileVisitor<Path>() {
 
-			// Had to use toFileURL instead of Resolve for URL to work from
-			// plugin jar file
-			URL resolvedFileURL = FileLocator.toFileURL(resourceURL);
+				@Override
+				public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+					return FileVisitResult.CONTINUE;
+				}
 
-			// Use URI constructor to properly escape file system chars
-			java.net.URI resolvedURI = new java.net.URI(
-					resolvedFileURL.getProtocol(), resolvedFileURL.getPath(),
-					null);
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					outputter.output(new Generated(file.getFileName().toFile().getName(), getOutputPath(file).isEmpty()?null:getOutputPath(file), FileUtils.readFileToByteArray((file.toFile()))));
+					return FileVisitResult.CONTINUE;
+				}
 
-			File root = new File(resolvedURI);
+				@Override
+				public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+					
+					return FileVisitResult.CONTINUE;
+				}
 
-			copyFileRecursive(root, metaData, outputter, root.getPath()
-					.indexOf(root.getName()));
-
+				@Override
+				public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					
+					return FileVisitResult.CONTINUE;
+				}
+			});
+		} catch (IOException ioEx) {
+			throw new RuntimeException(ioEx);
 		} catch (URISyntaxException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-
-	}
-
-	private void copyFileRecursive(File file, Context metaData,
-			IOutputter outputter, int directoryOffset) {
-		if (file.isDirectory()) {
-			new FolderModule<>(targetFolder + "/"
-					+ file.getPath().substring(directoryOffset)).generate(
-					metaData, outputter);
-			File[] filesOfDirectory = file.listFiles();
-			for (File directoryFile : filesOfDirectory) {
-				copyFileRecursive(directoryFile, metaData, outputter,
-						directoryOffset);
-			}
-		} else {
-			try {
-				Generated generated = new Generated(
-						getFileName(file),
-						targetFolder
-								+ "/"
-								+ file.getPath().substring(directoryOffset,
-										file.getPath().indexOf(file.getName())),
-						FileUtils.readFileToString(file));
-				outputter.output(generated);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
-
-	private String getFileName(File file) {
-		if (suffix != null) {
-			return file.getName().substring(0, file.getName().indexOf(suffix));
-		} else {
-			return file.getName();
+	
+	private String getOutputPath(Path file) {
+		String parentPath = file.getParent().toString().replace("\\", "/");
+		String outputPath = parentPath.substring(parentPath.lastIndexOf(this.basePath.getPath())+this.basePath.getPath().length());
+		if (outputPath.startsWith("/")) {
+			outputPath = outputPath.substring(1);
 		}
+		return outputPath.isEmpty()? this.targetPath: this.targetPath+"/"+outputPath;
 	}
+
 }

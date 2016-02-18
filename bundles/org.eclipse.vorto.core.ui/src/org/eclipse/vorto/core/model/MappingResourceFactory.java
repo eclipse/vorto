@@ -31,6 +31,8 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelMappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.internal.model.ModelFileLookupHelper;
 import org.eclipse.vorto.core.internal.model.ModelParserFactory;

@@ -14,10 +14,17 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.view;
 
+import java.util.List;
+
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -28,12 +35,17 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
+import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
+import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
 import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
@@ -84,6 +96,48 @@ public class ModelRepositoryViewPart extends ViewPart {
 		searchField = createSearchField(parent, btnSearch);
 
 		viewer = createTableViewer(parent, btnSearch);
+		
+		initContextMenu();
+	}
+
+	/**
+	 * Create the context menu
+	 *
+	 */
+	private void initContextMenu() {
+		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+        menuMgr.addMenuListener(new IMenuListener() {
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+            	if (viewer.getSelection().isEmpty()) {
+                    return;
+                }
+            	ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
+            	if (model.getId().getModelType() == ModelType.InformationModel) {
+            		addListGeneratorsToMenu(manager, model);
+            	}
+            }
+        });
+        menuMgr.setRemoveAllWhenShown(true);
+        viewer.getControl().setMenu(menu);
+	}
+	
+	/**
+	 * Fill context menu
+	 *
+	 * @param contextMenu
+	 */
+	protected void addListGeneratorsToMenu(IMenuManager contextMenu, final ModelResource model) {
+		contextMenu.add(new Action("Generate code") {
+	        @Override
+	        public void run() {
+	        	List<GeneratorResource> codegens = modelRepo.listGenerators();
+	        	GeneratorDialog dialog = new GeneratorDialog(new Shell(), model, codegens);
+	        	dialog.create();
+	        	dialog.open();
+	        }
+	    });
 	}
 
 	private TableViewer createTableViewer(Composite parent, Button btnSearch) {

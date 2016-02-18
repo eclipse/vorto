@@ -21,12 +21,15 @@ import java.util.Observable;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.repository.Attachment;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
+import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.api.repository.UploadResult;
-import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.repository.function.ModelViewToModelResource;
+import org.eclipse.vorto.repository.function.StringToGeneratorList;
 import org.eclipse.vorto.repository.function.StringToModelResourceResult;
 import org.eclipse.vorto.repository.function.StringToSearchResult;
 import org.eclipse.vorto.repository.function.StringToUploadResult;
@@ -52,6 +55,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource, contentConverters);
 	private Function<UploadResultView, UploadResult> uploadResultConverter = new UploadResultViewToUploadResult(modelViewToModelResource);
 	private Function<String, List<ModelView>> searchResultConverter = new StringToSearchResult();
+	private Function<String, List<GeneratorResource>> searchGeneratorResultConverter = new StringToGeneratorList();
 	
 	private Function<String, byte[]> stringToByteArray = new Function<String, byte[]>() {
 		public byte[] apply(String input) {
@@ -73,7 +77,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			if (Strings.isNullOrEmpty(expression)) {
 				searchExpr = "*";
 			}
-			List<ModelView> result = httpClient.executeGet("query=" + searchExpr, searchResultConverter);
+			List<ModelView> result = httpClient.executeGet("model/query=" + searchExpr, searchResultConverter);
 
 			// Convert the searchResult in result to return type
 			return Lists.transform(result, modelViewToModelResource);
@@ -115,41 +119,17 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	}
 
 	private String getUrlForModelDownload(ModelId modelId) {
-		return String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName(),
+		return "model/" + String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName(),
 				modelId.getVersion());
 	}
 
 	private String getUrlForModel(ModelId modelId) {
-		return String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName(),
+		return "model/" + String.format(MODELID_RESOURCE_FORMAT, modelId.getNamespace(), modelId.getName(),
 				modelId.getVersion());
 	}
 
 	private String getUrlForCheckin(String handleId) {
-		return String.format(CHECKIN_FORMAT, handleId);
-	}
-
-	@Override
-	public void saveModel(String name, byte[] model) throws CheckInModelException {
-		Objects.requireNonNull(model, "Model should not be null.");
-		Objects.requireNonNull(name, "Name should not be null.");
-		try {
-			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
-			HttpEntity fileToUpload = builder.build();
-
-			UploadResultView uploadResult = httpClient.executePost(null, fileToUpload, uploadResponseConverter);
-
-			if (uploadResult.statusOk()) {
-				httpClient.executePut(getUrlForCheckin(uploadResult.getHandleId()));
-			} else {
-				throw new CheckInModelException(uploadResult.getErrorMessage());
-			}
-
-			setChanged();
-			notifyObservers(uploadResult);
-		} catch (Exception e) {
-			throw new CheckInModelException("Error in uploading file to remote repository", e);
-		}
+		return "secure/" + String.format(CHECKIN_FORMAT, handleId);
 	}
 
 	@Override
@@ -161,7 +141,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
 			HttpEntity fileToUpload = builder.build();
 
-			UploadResultView uploadResult = httpClient.executePost(null, fileToUpload, uploadResponseConverter);
+			UploadResultView uploadResult = httpClient.executePost("secure", fileToUpload, uploadResponseConverter);
 
 			return uploadResultConverter.apply(uploadResult);
 		} catch (Exception e) {
@@ -180,12 +160,24 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	}
 
 	@Override
-	public List<ModelResource> getMappingsForTargetPlatform(ModelId modelId, String targetPlatform) {
+	public List<GeneratorResource> listGenerators() {
 		try {
-			List<ModelView> result = httpClient.executeGet(getUrlForModel(modelId)+"/mappings/"+targetPlatform, searchResultConverter);
-			return Lists.transform(result, modelViewToModelResource);
-		} catch(Exception ex) {
-			throw new RuntimeException("Error querying mappings for model", ex);
+			List<GeneratorResource> result = httpClient.executeGet("generation-router/platform", searchGeneratorResultConverter);
+			return result;
+		} catch (Exception e) {
+			throw new RuntimeException("Error querying remote repository with listGenerators request.", e);
 		}
 	}
+	
+	@Override
+	public Attachment generateCode(ModelId model, String serviceKey) {
+		try {
+			String url = "generation-router/"+model.getNamespace()+"/"+model.getName()+"/"+model.getVersion()+"/"+serviceKey;
+			Attachment result = httpClient.executeGetAttachment(url);
+			return result;
+		} catch (Exception e) {
+			throw new RuntimeException("Error querying remote repository with generateCode request.", e);
+		}
+	}
+
 }

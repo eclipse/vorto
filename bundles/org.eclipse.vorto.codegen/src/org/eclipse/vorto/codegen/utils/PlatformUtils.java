@@ -26,6 +26,8 @@ public class PlatformUtils {
 	
 	public static final String ORG_ECLIPSE_M2E_CORE_PLUGINID = "org.eclipse.m2e.core";
 	
+	public static final String JAVA_PERSPECTIVE = "org.eclipse.jdt.ui.JavaPerspective";
+	
 	/**
 	 * Determine whether the plugin is installed/available in the eclipse runtime.
 	 * e.g "org.eclipse.m2e.core" to check whether maven plugins is installed. 

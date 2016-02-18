@@ -17,9 +17,9 @@ package org.eclipse.vorto.core.service;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelType;
 
 /**
  * Allows the retrieval of {@link IModelProject}s as well as saving them in case

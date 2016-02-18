@@ -33,42 +33,7 @@ http://www.eclipse.org/legal/epl-v10.html Description here.
    </requires>
 
    <plugin
-         id="org.eclipse.vorto.codegen.examples.webdevice"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.bosch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.tutorial"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.codegen.examples.markdown"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.ios"
          download-size="0"
          install-size="0"
          version="0.0.0"

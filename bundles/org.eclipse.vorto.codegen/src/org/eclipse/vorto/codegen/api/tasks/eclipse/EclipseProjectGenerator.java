@@ -238,8 +238,7 @@ public class EclipseProjectGenerator<Context> implements
 	 */
 	public EclipseProjectGenerator<Context> copy(URL resource,
 			String targetFolder, String fileSuffix) {
-		tasks.add(new CopyResourceTask<Context>(resource, targetFolder,
-				fileSuffix));
+		tasks.add(new CopyResourceTask<Context>(resource, targetFolder));
 		return this;
 	}
 
