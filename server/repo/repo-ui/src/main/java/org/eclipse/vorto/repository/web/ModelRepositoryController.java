@@ -61,7 +61,7 @@ public class ModelRepositoryController {
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
 	@ApiOperation(value = "Search in the model repository for the expression")
-	@RequestMapping(value = "/query={expression}", method = RequestMethod.GET)
+	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
 	public List<ModelResource> searchByExpression(@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 		List<ModelResource> modelResources = modelRepository.search(expression);
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
