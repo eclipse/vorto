@@ -29,6 +29,7 @@ import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
+import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
@@ -52,19 +53,24 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 
 	@InjectMocks
 	private JcrModelRepository modelRepository;
+	@InjectMocks
+	private ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 	@Mock
 	private INotificationService notificationService;
 	@Mock
 	private UserRepository userRepository;
+
 		
 	public void beforeEach() throws Exception {
 		super.beforeEach();
 		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
 		
 		modelRepository = new JcrModelRepository();
-				
+
 		modelRepository.setSession(jcrSession());
 		modelRepository.createValidators();
+		modelRepository.setModelSearchUtil(modelSearchUtil);
+		
 	}
 	
 	@Before public void initMocks() {
@@ -363,4 +369,48 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest  {
 		this.modelRepository.addModelImage(modelId, modelContent);
 	}
 	
+	@Test
+	public void testSearchModelWithFilters1() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("HueLightStrips.infomodel");
+		assertEquals(1,modelRepository.search("name:Color").size());
+		assertEquals(3,modelRepository.search("name:Color name:Switcher name:HueLightStrips").size());
+	}
+	
+	@Test
+	public void testSearchModelWithFilters2() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("HueLightStrips.infomodel");
+		assertEquals(1,modelRepository.search("name:Color version:1.0.0   ").size());
+		assertEquals(0,modelRepository.search("name:Color version:1.0.1").size());
+	}
+	
+	@Test
+	public void testSearchModelWithFilters3() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("ColorLightIM.infomodel");
+		checkinModel("HueLightStrips.infomodel");
+		assertEquals(1,modelRepository.search("namespace:org.eclipse.vorto.examples.fb").size());
+		assertEquals(1,modelRepository.search("namespace:com.mycompany.fb").size());
+		assertEquals(2,modelRepository.search("namespace:com.mycompany   version:1.0.0").size());
+		
+	}
+	
+	@Test
+	public void testSearchModelWithFilters4() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("ColorLightIM.infomodel");
+		checkinModel("HueLightStrips.infomodel");
+		assertEquals(0,modelRepository.search("name:Switcher InformationModel").size());
+		assertEquals(1,modelRepository.search("name:Switcher Functionblock").size());
+		assertEquals(2,modelRepository.search("Functionblock").size());		
+	}
 }

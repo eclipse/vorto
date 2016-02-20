@@ -53,6 +53,7 @@ import org.eclipse.vorto.repository.governance.IGovernance;
 import org.eclipse.vorto.repository.governance.IGovernanceCallback;
 import org.eclipse.vorto.repository.internal.governance.AlwaysApproveGovernance;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
+import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.model.ModelEMFResource;
@@ -89,6 +90,17 @@ public class JcrModelRepository implements IModelRepository {
 	
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private ModelSearchUtil modelSearchUtil;
+
+	public ModelSearchUtil getModelSearchUtil() {
+		return modelSearchUtil;
+	}
+
+	public void setModelSearchUtil(ModelSearchUtil modelSearchUtil) {
+		this.modelSearchUtil = modelSearchUtil;
+	}
 
 	public UserRepository getUserRepository() {
 		return userRepository;
@@ -123,11 +135,16 @@ public class JcrModelRepository implements IModelRepository {
 		if (queryExpression == null || queryExpression.isEmpty()) {
 			queryExpression = "*";
 		}
-
 		try {
 			List<ModelResource> modelResources = new ArrayList<>();
 			QueryManager queryManager = session.getWorkspace().getQueryManager();
-			Query query = queryManager.createQuery(queryExpression, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
+			Query query ;
+			String jcrStatementQuery = modelSearchUtil.getJCRStatementQuery(queryExpression);
+			if(jcrStatementQuery.equals(queryExpression)){
+				query = queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
+			}else{
+				query = queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.JCR_SQL2);
+			}
 			logger.debug("Searching repository with expression " + query.getStatement());
 			QueryResult result = query.execute();
 			RowIterator rowIterator = result.getRows();
