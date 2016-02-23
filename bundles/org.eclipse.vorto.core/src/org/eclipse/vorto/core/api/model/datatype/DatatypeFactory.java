@@ -112,13 +112,22 @@ public interface DatatypeFactory extends EFactory {
 	PropertyType createPropertyType();
 
 	/**
-	 * Returns a new object of class '<em>Property Attribute</em>'.
+	 * Returns a new object of class '<em>Boolean Property Attribute</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Property Attribute</em>'.
+	 * @return a new object of class '<em>Boolean Property Attribute</em>'.
 	 * @generated
 	 */
-	PropertyAttribute createPropertyAttribute();
+	BooleanPropertyAttribute createBooleanPropertyAttribute();
+
+	/**
+	 * Returns a new object of class '<em>Enum Literal Property Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Enum Literal Property Attribute</em>'.
+	 * @generated
+	 */
+	EnumLiteralPropertyAttribute createEnumLiteralPropertyAttribute();
 
 	/**
 	 * Returns the package supported by this factory.

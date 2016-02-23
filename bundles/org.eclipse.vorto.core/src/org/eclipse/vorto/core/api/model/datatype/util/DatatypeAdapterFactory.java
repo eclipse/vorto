@@ -9,10 +9,12 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 import org.eclipse.emf.ecore.EObject;
 
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -122,6 +124,14 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter casePropertyAttribute(PropertyAttribute object) {
 				return createPropertyAttributeAdapter();
+			}
+			@Override
+			public Adapter caseBooleanPropertyAttribute(BooleanPropertyAttribute object) {
+				return createBooleanPropertyAttributeAdapter();
+			}
+			@Override
+			public Adapter caseEnumLiteralPropertyAttribute(EnumLiteralPropertyAttribute object) {
+				return createEnumLiteralPropertyAttributeAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -298,6 +308,34 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createPropertyAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute <em>Boolean Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute
+	 * @generated
+	 */
+	public Adapter createBooleanPropertyAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute <em>Enum Literal Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute
+	 * @generated
+	 */
+	public Adapter createEnumLiteralPropertyAttributeAdapter() {
 		return null;
 	}
 

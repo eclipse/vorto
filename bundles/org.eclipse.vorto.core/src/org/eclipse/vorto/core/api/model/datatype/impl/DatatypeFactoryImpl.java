@@ -11,12 +11,16 @@ import org.eclipse.emf.ecore.impl.EFactoryImpl;
 
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -81,7 +85,8 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 			case DatatypePackage.ENUM_LITERAL: return createEnumLiteral();
 			case DatatypePackage.TYPE: return createType();
 			case DatatypePackage.PROPERTY_TYPE: return createPropertyType();
-			case DatatypePackage.PROPERTY_ATTRIBUTE: return createPropertyAttribute();
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE: return createBooleanPropertyAttribute();
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE: return createEnumLiteralPropertyAttribute();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -99,8 +104,10 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 				return createPrimitiveTypeFromString(eDataType, initialValue);
 			case DatatypePackage.CONSTRAINT_INTERVAL_TYPE:
 				return createConstraintIntervalTypeFromString(eDataType, initialValue);
-			case DatatypePackage.PROPERTY_ATTRIBUTE_TYPE:
-				return createPropertyAttributeTypeFromString(eDataType, initialValue);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE_TYPE:
+				return createBooleanPropertyAttributeTypeFromString(eDataType, initialValue);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE:
+				return createEnumLiteralPropertyAttributeTypeFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -118,8 +125,10 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 				return convertPrimitiveTypeToString(eDataType, instanceValue);
 			case DatatypePackage.CONSTRAINT_INTERVAL_TYPE:
 				return convertConstraintIntervalTypeToString(eDataType, instanceValue);
-			case DatatypePackage.PROPERTY_ATTRIBUTE_TYPE:
-				return convertPropertyAttributeTypeToString(eDataType, instanceValue);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE_TYPE:
+				return convertBooleanPropertyAttributeTypeToString(eDataType, instanceValue);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE:
+				return convertEnumLiteralPropertyAttributeTypeToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -230,9 +239,19 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PropertyAttribute createPropertyAttribute() {
-		PropertyAttributeImpl propertyAttribute = new PropertyAttributeImpl();
-		return propertyAttribute;
+	public BooleanPropertyAttribute createBooleanPropertyAttribute() {
+		BooleanPropertyAttributeImpl booleanPropertyAttribute = new BooleanPropertyAttributeImpl();
+		return booleanPropertyAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumLiteralPropertyAttribute createEnumLiteralPropertyAttribute() {
+		EnumLiteralPropertyAttributeImpl enumLiteralPropertyAttribute = new EnumLiteralPropertyAttributeImpl();
+		return enumLiteralPropertyAttribute;
 	}
 
 	/**
@@ -280,8 +299,8 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PropertyAttributeType createPropertyAttributeTypeFromString(EDataType eDataType, String initialValue) {
-		PropertyAttributeType result = PropertyAttributeType.get(initialValue);
+	public BooleanPropertyAttributeType createBooleanPropertyAttributeTypeFromString(EDataType eDataType, String initialValue) {
+		BooleanPropertyAttributeType result = BooleanPropertyAttributeType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -291,7 +310,27 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertPropertyAttributeTypeToString(EDataType eDataType, Object instanceValue) {
+	public String convertBooleanPropertyAttributeTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EnumLiteralPropertyAttributeType createEnumLiteralPropertyAttributeTypeFromString(EDataType eDataType, String initialValue) {
+		EnumLiteralPropertyAttributeType result = EnumLiteralPropertyAttributeType.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertEnumLiteralPropertyAttributeTypeToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

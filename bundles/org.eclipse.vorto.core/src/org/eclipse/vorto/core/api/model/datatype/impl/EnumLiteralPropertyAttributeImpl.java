@@ -5,29 +5,31 @@ package org.eclipse.vorto.core.api.model.datatype.impl;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
-import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
-import org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Property Attribute</b></em>'.
+ * An implementation of the model object '<em><b>Enum Literal Property Attribute</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl#getValue <em>Value</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl#getValue <em>Value</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implements PropertyAttribute {
+public class EnumLiteralPropertyAttributeImpl extends MinimalEObjectImpl.Container implements EnumLiteralPropertyAttribute {
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -36,7 +38,7 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PropertyAttributeType TYPE_EDEFAULT = PropertyAttributeType.MEASUREMENT_UNIT;
+	protected static final EnumLiteralPropertyAttributeType TYPE_EDEFAULT = EnumLiteralPropertyAttributeType.MEASUREMENT_UNIT;
 
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
@@ -46,34 +48,24 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * @generated
 	 * @ordered
 	 */
-	protected PropertyAttributeType type = TYPE_EDEFAULT;
+	protected EnumLiteralPropertyAttributeType type = TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getValue() <em>Value</em>}' attribute.
+	 * The cached value of the '{@link #getValue() <em>Value</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String VALUE_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getValue() <em>Value</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getValue()
-	 * @generated
-	 * @ordered
-	 */
-	protected String value = VALUE_EDEFAULT;
+	protected EnumLiteral value;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected PropertyAttributeImpl() {
+	protected EnumLiteralPropertyAttributeImpl() {
 		super();
 	}
 
@@ -84,7 +76,7 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return DatatypePackage.Literals.PROPERTY_ATTRIBUTE;
+		return DatatypePackage.Literals.ENUM_LITERAL_PROPERTY_ATTRIBUTE;
 	}
 
 	/**
@@ -92,7 +84,7 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PropertyAttributeType getType() {
+	public EnumLiteralPropertyAttributeType getType() {
 		return type;
 	}
 
@@ -101,11 +93,11 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(PropertyAttributeType newType) {
-		PropertyAttributeType oldType = type;
+	public void setType(EnumLiteralPropertyAttributeType newType) {
+		EnumLiteralPropertyAttributeType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.PROPERTY_ATTRIBUTE__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE, oldType, type));
 	}
 
 	/**
@@ -113,7 +105,15 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getValue() {
+	public EnumLiteral getValue() {
+		if (value != null && value.eIsProxy()) {
+			InternalEObject oldValue = (InternalEObject)value;
+			value = (EnumLiteral)eResolveProxy(oldValue);
+			if (value != oldValue) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE, oldValue, value));
+			}
+		}
 		return value;
 	}
 
@@ -122,11 +122,20 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValue(String newValue) {
-		String oldValue = value;
+	public EnumLiteral basicGetValue() {
+		return value;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setValue(EnumLiteral newValue) {
+		EnumLiteral oldValue = value;
 		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.PROPERTY_ATTRIBUTE__VALUE, oldValue, value));
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -137,10 +146,11 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case DatatypePackage.PROPERTY_ATTRIBUTE__TYPE:
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE:
 				return getType();
-			case DatatypePackage.PROPERTY_ATTRIBUTE__VALUE:
-				return getValue();
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE:
+				if (resolve) return getValue();
+				return basicGetValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -153,11 +163,11 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case DatatypePackage.PROPERTY_ATTRIBUTE__TYPE:
-				setType((PropertyAttributeType)newValue);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE:
+				setType((EnumLiteralPropertyAttributeType)newValue);
 				return;
-			case DatatypePackage.PROPERTY_ATTRIBUTE__VALUE:
-				setValue((String)newValue);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE:
+				setValue((EnumLiteral)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -171,11 +181,11 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case DatatypePackage.PROPERTY_ATTRIBUTE__TYPE:
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
-			case DatatypePackage.PROPERTY_ATTRIBUTE__VALUE:
-				setValue(VALUE_EDEFAULT);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE:
+				setValue((EnumLiteral)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -189,10 +199,10 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case DatatypePackage.PROPERTY_ATTRIBUTE__TYPE:
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE:
 				return type != TYPE_EDEFAULT;
-			case DatatypePackage.PROPERTY_ATTRIBUTE__VALUE:
-				return VALUE_EDEFAULT == null ? value != null : !VALUE_EDEFAULT.equals(value);
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE:
+				return value != null;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -209,10 +219,8 @@ public class PropertyAttributeImpl extends MinimalEObjectImpl.Container implemen
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (type: ");
 		result.append(type);
-		result.append(", value: ");
-		result.append(value);
 		result.append(')');
 		return result.toString();
 	}
 
-} //PropertyAttributeImpl
+} //EnumLiteralPropertyAttributeImpl

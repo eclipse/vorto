@@ -63,14 +63,21 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Type" eSuperTypes="Model.ecore#//Model"/>
   <eClassifiers xsi:type="ecore:EClass" name="PropertyType"/>
-  <eClassifiers xsi:type="ecore:EClass" name="PropertyAttribute">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PropertyAttributeType"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyAttribute" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanPropertyAttribute" eSuperTypes="#//PropertyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BooleanPropertyAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EEnum" name="PropertyAttributeType">
-    <eLiterals name="MeasurementUnit" value="1" literal="MEASUREMENTUNIT"/>
-    <eLiterals name="Readable" value="2" literal="READABLE"/>
-    <eLiterals name="Writable" value="3" literal="WRITABLE"/>
-    <eLiterals name="Eventable" value="4" literal="EVENTABLE"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="BooleanPropertyAttributeType">
+    <eLiterals name="readable" literal="READABLE"/>
+    <eLiterals name="writable" value="1" literal="WRITABLE"/>
+    <eLiterals name="eventable" value="2" literal="EVENTABLE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumLiteralPropertyAttribute" eSuperTypes="#//PropertyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//EnumLiteralPropertyAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//EnumLiteral"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="EnumLiteralPropertyAttributeType">
+    <eLiterals name="measurementUnit"/>
   </eClassifiers>
 </ecore:EPackage>
