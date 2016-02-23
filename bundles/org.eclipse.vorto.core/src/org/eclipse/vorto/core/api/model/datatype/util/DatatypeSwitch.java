@@ -7,10 +7,12 @@ import org.eclipse.emf.ecore.EPackage;
 
 import org.eclipse.emf.ecore.util.Switch;
 
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -148,6 +150,20 @@ public class DatatypeSwitch<T> extends Switch<T> {
 			case DatatypePackage.PROPERTY_ATTRIBUTE: {
 				PropertyAttribute propertyAttribute = (PropertyAttribute)theEObject;
 				T result = casePropertyAttribute(propertyAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE: {
+				BooleanPropertyAttribute booleanPropertyAttribute = (BooleanPropertyAttribute)theEObject;
+				T result = caseBooleanPropertyAttribute(booleanPropertyAttribute);
+				if (result == null) result = casePropertyAttribute(booleanPropertyAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE: {
+				EnumLiteralPropertyAttribute enumLiteralPropertyAttribute = (EnumLiteralPropertyAttribute)theEObject;
+				T result = caseEnumLiteralPropertyAttribute(enumLiteralPropertyAttribute);
+				if (result == null) result = casePropertyAttribute(enumLiteralPropertyAttribute);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -317,6 +333,36 @@ public class DatatypeSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T casePropertyAttribute(PropertyAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Boolean Property Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Boolean Property Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseBooleanPropertyAttribute(BooleanPropertyAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Enum Literal Property Attribute</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Enum Literal Property Attribute</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseEnumLiteralPropertyAttribute(EnumLiteralPropertyAttribute object) {
 		return null;
 	}
 

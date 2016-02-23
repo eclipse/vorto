@@ -64,20 +64,35 @@ EnumLiteral:
 
 Property:
 	(presence = Presence)? (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
-	('with {' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
+	('with' '{' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
 	('<' Constraints += Constraint ("," Constraints += Constraint)*  '>')?
 	(description=STRING)?
 ;
 
-PropertyAttribute:
-	type=PropertyAttributeType ':' value=STRING
+EnumLiteralName:
+  ID '.' ID
 ;
 
-enum PropertyAttributeType:
-	MeasurementUnit = 'MeasurementUnit' |
-	Readable = 'Readable' |
-	Writable = 'Writable' |
-	Eventable = 'Eventable'
+PropertyAttribute:
+  BooleanPropertyAttribute | EnumLiteralPropertyAttribute
+;
+
+BooleanPropertyAttribute:
+  type=BooleanPropertyAttributeType ':' (value ?= 'true' | 'false')
+;
+
+enum BooleanPropertyAttributeType:
+  readable = 'readable' |
+  writable = 'writable' |
+  eventable = 'eventable'
+;
+
+EnumLiteralPropertyAttribute:
+  type=EnumLiteralPropertyAttributeType ':' value = [EnumLiteral | EnumLiteralName]
+;
+
+enum EnumLiteralPropertyAttributeType:
+  measurementUnit = 'measurementUnit'
 ;
 
 PropertyType:

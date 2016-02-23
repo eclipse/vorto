@@ -77,8 +77,8 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(f.operationAccess.group)
 	
 		//Constraint parameters.
-		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_2_0)
-		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_2_0)
+		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_3_0)
+		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_3_0)
 		
 		//Operation parameters.
 		c.setNoSpace().before(f.operationAccess.commaKeyword_2_1_0)

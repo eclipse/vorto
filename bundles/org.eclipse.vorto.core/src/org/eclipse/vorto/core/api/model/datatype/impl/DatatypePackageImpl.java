@@ -10,12 +10,16 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -119,6 +123,20 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	private EClass booleanPropertyAttributeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass enumLiteralPropertyAttributeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	private EEnum primitiveTypeEEnum = null;
 
 	/**
@@ -133,7 +151,14 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EEnum propertyAttributeTypeEEnum = null;
+	private EEnum booleanPropertyAttributeTypeEEnum = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum enumLiteralPropertyAttributeTypeEEnum = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -458,8 +483,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPropertyAttribute_Type() {
-		return (EAttribute)propertyAttributeEClass.getEStructuralFeatures().get(0);
+	public EClass getBooleanPropertyAttribute() {
+		return booleanPropertyAttributeEClass;
 	}
 
 	/**
@@ -467,8 +492,44 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getPropertyAttribute_Value() {
-		return (EAttribute)propertyAttributeEClass.getEStructuralFeatures().get(1);
+	public EAttribute getBooleanPropertyAttribute_Type() {
+		return (EAttribute)booleanPropertyAttributeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getBooleanPropertyAttribute_Value() {
+		return (EAttribute)booleanPropertyAttributeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getEnumLiteralPropertyAttribute() {
+		return enumLiteralPropertyAttributeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEnumLiteralPropertyAttribute_Type() {
+		return (EAttribute)enumLiteralPropertyAttributeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getEnumLiteralPropertyAttribute_Value() {
+		return (EReference)enumLiteralPropertyAttributeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -494,8 +555,17 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getPropertyAttributeType() {
-		return propertyAttributeTypeEEnum;
+	public EEnum getBooleanPropertyAttributeType() {
+		return booleanPropertyAttributeTypeEEnum;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getEnumLiteralPropertyAttributeType() {
+		return enumLiteralPropertyAttributeTypeEEnum;
 	}
 
 	/**
@@ -564,13 +634,20 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		propertyTypeEClass = createEClass(PROPERTY_TYPE);
 
 		propertyAttributeEClass = createEClass(PROPERTY_ATTRIBUTE);
-		createEAttribute(propertyAttributeEClass, PROPERTY_ATTRIBUTE__TYPE);
-		createEAttribute(propertyAttributeEClass, PROPERTY_ATTRIBUTE__VALUE);
+
+		booleanPropertyAttributeEClass = createEClass(BOOLEAN_PROPERTY_ATTRIBUTE);
+		createEAttribute(booleanPropertyAttributeEClass, BOOLEAN_PROPERTY_ATTRIBUTE__TYPE);
+		createEAttribute(booleanPropertyAttributeEClass, BOOLEAN_PROPERTY_ATTRIBUTE__VALUE);
+
+		enumLiteralPropertyAttributeEClass = createEClass(ENUM_LITERAL_PROPERTY_ATTRIBUTE);
+		createEAttribute(enumLiteralPropertyAttributeEClass, ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE);
+		createEReference(enumLiteralPropertyAttributeEClass, ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
 		constraintIntervalTypeEEnum = createEEnum(CONSTRAINT_INTERVAL_TYPE);
-		propertyAttributeTypeEEnum = createEEnum(PROPERTY_ATTRIBUTE_TYPE);
+		booleanPropertyAttributeTypeEEnum = createEEnum(BOOLEAN_PROPERTY_ATTRIBUTE_TYPE);
+		enumLiteralPropertyAttributeTypeEEnum = createEEnum(ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE);
 	}
 
 	/**
@@ -609,6 +686,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		objectPropertyTypeEClass.getESuperTypes().add(this.getPropertyType());
 		enumEClass.getESuperTypes().add(this.getType());
 		typeEClass.getESuperTypes().add(theModelPackage.getModel());
+		booleanPropertyAttributeEClass.getESuperTypes().add(this.getPropertyAttribute());
+		enumLiteralPropertyAttributeEClass.getESuperTypes().add(this.getPropertyAttribute());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(entityEClass, Entity.class, "Entity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -648,9 +727,15 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		initEClass(propertyTypeEClass, PropertyType.class, "PropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
-		initEClass(propertyAttributeEClass, PropertyAttribute.class, "PropertyAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getPropertyAttribute_Type(), this.getPropertyAttributeType(), "type", null, 0, 1, PropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getPropertyAttribute_Value(), ecorePackage.getEString(), "value", null, 0, 1, PropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEClass(propertyAttributeEClass, PropertyAttribute.class, "PropertyAttribute", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(booleanPropertyAttributeEClass, BooleanPropertyAttribute.class, "BooleanPropertyAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getBooleanPropertyAttribute_Type(), this.getBooleanPropertyAttributeType(), "type", null, 0, 1, BooleanPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getBooleanPropertyAttribute_Value(), ecorePackage.getEBoolean(), "value", null, 0, 1, BooleanPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(enumLiteralPropertyAttributeEClass, EnumLiteralPropertyAttribute.class, "EnumLiteralPropertyAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getEnumLiteralPropertyAttribute_Type(), this.getEnumLiteralPropertyAttributeType(), "type", null, 0, 1, EnumLiteralPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getEnumLiteralPropertyAttribute_Value(), this.getEnumLiteral(), null, "value", null, 0, 1, EnumLiteralPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");
@@ -673,11 +758,13 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.MIMETYPE);
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.SCALING);
 
-		initEEnum(propertyAttributeTypeEEnum, PropertyAttributeType.class, "PropertyAttributeType");
-		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.MEASUREMENT_UNIT);
-		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.READABLE);
-		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.WRITABLE);
-		addEEnumLiteral(propertyAttributeTypeEEnum, PropertyAttributeType.EVENTABLE);
+		initEEnum(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.class, "BooleanPropertyAttributeType");
+		addEEnumLiteral(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.READABLE);
+		addEEnumLiteral(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.WRITABLE);
+		addEEnumLiteral(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.EVENTABLE);
+
+		initEEnum(enumLiteralPropertyAttributeTypeEEnum, EnumLiteralPropertyAttributeType.class, "EnumLiteralPropertyAttributeType");
+		addEEnumLiteral(enumLiteralPropertyAttributeTypeEEnum, EnumLiteralPropertyAttributeType.MEASUREMENT_UNIT);
 
 		// Create resource
 		createResource(eNS_URI);

@@ -591,32 +591,14 @@ public interface DatatypePackage extends EPackage {
 	int ENUM_LITERAL_FEATURE_COUNT = 2;
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl <em>Property Attribute</em>}' class.
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute <em>Property Attribute</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttribute()
 	 * @generated
 	 */
 	int PROPERTY_ATTRIBUTE = 10;
-
-	/**
-	 * The feature id for the '<em><b>Type</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROPERTY_ATTRIBUTE__TYPE = 0;
-
-	/**
-	 * The feature id for the '<em><b>Value</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PROPERTY_ATTRIBUTE__VALUE = 1;
 
 	/**
 	 * The number of structural features of the '<em>Property Attribute</em>' class.
@@ -625,7 +607,81 @@ public interface DatatypePackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY_ATTRIBUTE_FEATURE_COUNT = 2;
+	int PROPERTY_ATTRIBUTE_FEATURE_COUNT = 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl <em>Boolean Property Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttribute()
+	 * @generated
+	 */
+	int BOOLEAN_PROPERTY_ATTRIBUTE = 11;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BOOLEAN_PROPERTY_ATTRIBUTE__TYPE = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BOOLEAN_PROPERTY_ATTRIBUTE__VALUE = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Boolean Property Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BOOLEAN_PROPERTY_ATTRIBUTE_FEATURE_COUNT = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 2;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl <em>Enum Literal Property Attribute</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttribute()
+	 * @generated
+	 */
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE = 12;
+
+	/**
+	 * The feature id for the '<em><b>Type</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Value</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Enum Literal Property Attribute</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_FEATURE_COUNT = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
@@ -635,7 +691,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 11;
+	int PRIMITIVE_TYPE = 13;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType <em>Constraint Interval Type</em>}' enum.
@@ -645,19 +701,28 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintIntervalType()
 	 * @generated
 	 */
-	int CONSTRAINT_INTERVAL_TYPE = 12;
+	int CONSTRAINT_INTERVAL_TYPE = 14;
 
 
 	/**
-	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}' enum.
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType <em>Boolean Property Attribute Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
-	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttributeType()
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttributeType()
 	 * @generated
 	 */
-	int PROPERTY_ATTRIBUTE_TYPE = 13;
+	int BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = 15;
 
+	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType <em>Enum Literal Property Attribute Type</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttributeType()
+	 * @generated
+	 */
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = 16;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.Entity <em>Entity</em>}'.
@@ -957,26 +1022,68 @@ public interface DatatypePackage extends EPackage {
 	EClass getPropertyAttribute();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getType <em>Type</em>}'.
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute <em>Boolean Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Boolean Property Attribute</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute
+	 * @generated
+	 */
+	EClass getBooleanPropertyAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute#getType <em>Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Type</em>'.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getType()
-	 * @see #getPropertyAttribute()
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute#getType()
+	 * @see #getBooleanPropertyAttribute()
 	 * @generated
 	 */
-	EAttribute getPropertyAttribute_Type();
+	EAttribute getBooleanPropertyAttribute_Type();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getValue <em>Value</em>}'.
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute#isValue <em>Value</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @return the meta object for the attribute '<em>Value</em>'.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute#getValue()
-	 * @see #getPropertyAttribute()
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute#isValue()
+	 * @see #getBooleanPropertyAttribute()
 	 * @generated
 	 */
-	EAttribute getPropertyAttribute_Value();
+	EAttribute getBooleanPropertyAttribute_Value();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute <em>Enum Literal Property Attribute</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Enum Literal Property Attribute</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute
+	 * @generated
+	 */
+	EClass getEnumLiteralPropertyAttribute();
+
+	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getType <em>Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getType()
+	 * @see #getEnumLiteralPropertyAttribute()
+	 * @generated
+	 */
+	EAttribute getEnumLiteralPropertyAttribute_Type();
+
+	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getValue <em>Value</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Value</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getValue()
+	 * @see #getEnumLiteralPropertyAttribute()
+	 * @generated
+	 */
+	EReference getEnumLiteralPropertyAttribute_Value();
 
 	/**
 	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}'.
@@ -999,14 +1106,24 @@ public interface DatatypePackage extends EPackage {
 	EEnum getConstraintIntervalType();
 
 	/**
-	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}'.
+	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType <em>Boolean Property Attribute Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Property Attribute Type</em>'.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
+	 * @return the meta object for enum '<em>Boolean Property Attribute Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType
 	 * @generated
 	 */
-	EEnum getPropertyAttributeType();
+	EEnum getBooleanPropertyAttributeType();
+
+	/**
+	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType <em>Enum Literal Property Attribute Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>Enum Literal Property Attribute Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType
+	 * @generated
+	 */
+	EEnum getEnumLiteralPropertyAttributeType();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -1267,14 +1384,24 @@ public interface DatatypePackage extends EPackage {
 		EClass PROPERTY_TYPE = eINSTANCE.getPropertyType();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl <em>Property Attribute</em>}' class.
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttribute <em>Property Attribute</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.vorto.core.api.model.datatype.impl.PropertyAttributeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
 		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttribute()
 		 * @generated
 		 */
 		EClass PROPERTY_ATTRIBUTE = eINSTANCE.getPropertyAttribute();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl <em>Boolean Property Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttribute()
+		 * @generated
+		 */
+		EClass BOOLEAN_PROPERTY_ATTRIBUTE = eINSTANCE.getBooleanPropertyAttribute();
 
 		/**
 		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
@@ -1282,7 +1409,7 @@ public interface DatatypePackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PROPERTY_ATTRIBUTE__TYPE = eINSTANCE.getPropertyAttribute_Type();
+		EAttribute BOOLEAN_PROPERTY_ATTRIBUTE__TYPE = eINSTANCE.getBooleanPropertyAttribute_Type();
 
 		/**
 		 * The meta object literal for the '<em><b>Value</b></em>' attribute feature.
@@ -1290,7 +1417,33 @@ public interface DatatypePackage extends EPackage {
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PROPERTY_ATTRIBUTE__VALUE = eINSTANCE.getPropertyAttribute_Value();
+		EAttribute BOOLEAN_PROPERTY_ATTRIBUTE__VALUE = eINSTANCE.getBooleanPropertyAttribute_Value();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl <em>Enum Literal Property Attribute</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttribute()
+		 * @generated
+		 */
+		EClass ENUM_LITERAL_PROPERTY_ATTRIBUTE = eINSTANCE.getEnumLiteralPropertyAttribute();
+
+		/**
+		 * The meta object literal for the '<em><b>Type</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE = eINSTANCE.getEnumLiteralPropertyAttribute_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Value</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE = eINSTANCE.getEnumLiteralPropertyAttribute_Value();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
@@ -1313,14 +1466,24 @@ public interface DatatypePackage extends EPackage {
 		EEnum CONSTRAINT_INTERVAL_TYPE = eINSTANCE.getConstraintIntervalType();
 
 		/**
-		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType <em>Property Attribute Type</em>}' enum.
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType <em>Boolean Property Attribute Type</em>}' enum.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.eclipse.vorto.core.api.model.datatype.PropertyAttributeType
-		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPropertyAttributeType()
+		 * @see org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttributeType()
 		 * @generated
 		 */
-		EEnum PROPERTY_ATTRIBUTE_TYPE = eINSTANCE.getPropertyAttributeType();
+		EEnum BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = eINSTANCE.getBooleanPropertyAttributeType();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType <em>Enum Literal Property Attribute Type</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttributeType()
+		 * @generated
+		 */
+		EEnum ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = eINSTANCE.getEnumLiteralPropertyAttributeType();
 
 	}
 
