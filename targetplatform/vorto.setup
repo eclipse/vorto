@@ -147,7 +147,7 @@
         xsi:type="maven:MavenImportTask"
         id="import.maven.vorto.repo">
       <sourceLocator
-          rootFolder="${git.clone.vorto.location}/repo"
+          rootFolder="${git.clone.vorto.location}/server"
           locateNestedProjects="true"/>
     </setupTask>
     <setupTask
