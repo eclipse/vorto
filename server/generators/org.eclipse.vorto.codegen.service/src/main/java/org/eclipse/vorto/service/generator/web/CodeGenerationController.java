@@ -21,7 +21,6 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.service.generator.AbstractVortoGeneratorService;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
 import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
 import org.slf4j.Logger;
@@ -75,7 +74,7 @@ public class CodeGenerationController {
 	@Value("${server.port}")
 	private int serverPort;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractVortoGeneratorService.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationController.class);
 
 	@Value("${vorto.service.repositoryUrl}")
 	private String basePath;

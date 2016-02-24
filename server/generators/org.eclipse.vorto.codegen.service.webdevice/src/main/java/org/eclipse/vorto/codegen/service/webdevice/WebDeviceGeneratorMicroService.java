@@ -14,21 +14,29 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.service.webdevice;
 
-import org.eclipse.vorto.service.generator.AbstractVortoGeneratorService;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.examples.webui.WebUIGenerator;
+import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @SpringBootApplication
-public class WebDeviceGeneratorMicroService extends AbstractVortoGeneratorService {
+public class WebDeviceGeneratorMicroService extends AbstractBackendCodeGenerator {
 
-	public static void main(String[] args) {	
-		SpringApplication.run(WebDeviceGeneratorMicroService.class, args);
+	@Bean
+	public IVortoCodeGenerator webuiGenerator() {
+		return new WebUIGenerator();
 	}
 	
+	public static void main(String[] args) {
+		SpringApplication.run(WebDeviceGeneratorMicroService.class, args);
+	}
+
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(WebDeviceGeneratorMicroService.class);

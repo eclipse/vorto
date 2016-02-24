@@ -15,12 +15,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.service</artifactId>
+			<artifactId>org.eclipse.vorto.codegen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.examples.javabean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.service.api</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

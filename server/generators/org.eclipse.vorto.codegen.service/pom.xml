@@ -6,10 +6,10 @@
 		<artifactId>generators</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>org.eclipse.vorto.codegen.service</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<dependencies>
 
 		<dependency>
@@ -46,6 +46,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor</artifactId>
 		</dependency>
 		<dependency>
@@ -69,6 +73,10 @@
 			<artifactId>org.eclipse.xtext</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext.xbase</artifactId>
 			<exclusions>
@@ -79,24 +87,19 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.service.api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
-		</dependency>	
+		</dependency>
 	</dependencies>
 
-<build>
+	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

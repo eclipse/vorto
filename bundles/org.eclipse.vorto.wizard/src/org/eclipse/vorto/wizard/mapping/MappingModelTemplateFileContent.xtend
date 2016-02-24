@@ -15,8 +15,8 @@
 
 package org.eclipse.vorto.wizard.mapping
 
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel

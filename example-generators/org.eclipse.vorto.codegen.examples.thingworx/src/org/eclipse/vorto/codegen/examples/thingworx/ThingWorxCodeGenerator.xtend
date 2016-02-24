@@ -3,13 +3,14 @@ package org.eclipse.vorto.codegen.examples.thingworx
 import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonGenerator
 import java.io.StringWriter
-import org.eclipse.core.runtime.IProgressMonitor
 import org.eclipse.emf.common.util.EList
-import org.eclipse.vorto.codegen.api.ICodeGenerator
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator
+import org.eclipse.vorto.codegen.api.DefaultMappingContext
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
@@ -19,20 +20,23 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-class ThingWorxCodeGenerator implements ICodeGenerator<InformationModel> {
+class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 
 	private enum VortoPropertyType {
 		STATUS, CONFIGURATION	
 	}
 	
-	override generate(InformationModel infomodel, IProgressMonitor monitor) {
-		new EclipseProjectGenerator(infomodel.getName() + "Device").addTask(new JSONGeneratorTask()).javaNature().
-			generate(infomodel, monitor);
+	override generate(InformationModel model, IMappingContext mappingContext) {
+		var zipOutput = new GenerationResultZip(model,getServiceKey());
+		new JSONGeneratorTask().generate(model,new DefaultMappingContext(),zipOutput);
+		return zipOutput;
 	}
-
+	
 	public static class JSONGeneratorTask implements ICodeGeneratorTask<InformationModel> {
-		public override generate(InformationModel infomodel, IOutputter outputter) {
-			outputter.output(new Generated(infomodel.getName() + ".json", null, getContent(infomodel)));
+		
+		override generate(InformationModel model, IMappingContext mappingContext, IGeneratedWriter writer) {
+			
+			writer.write(new Generated(model.getName() + ".json", null, getContent(model)));
 		}
 
 		def String getContent(InformationModel model) {
@@ -238,7 +242,7 @@ class ThingWorxCodeGenerator implements ICodeGenerator<InformationModel> {
 		}
 
 		protected def String getResultBaseType(Operation operation){
-			if (operation.returnType != null){
+			if (operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType){
 				if (operation.returnType.multiplicity == false){
 					var ReturnType primitiveType = operation.returnType
 					var typeName = (primitiveType as ReturnPrimitiveType).returnType.literal
@@ -274,12 +278,13 @@ class ThingWorxCodeGenerator implements ICodeGenerator<InformationModel> {
 			}
 			return dataType
 		}
-
+		
 	}
-
-	override getName() {
-		return "ThingWorxCodeGenerator";
+		
+	override getServiceKey() {
+		return "thingworx"
 	}
+	
 }
 
 

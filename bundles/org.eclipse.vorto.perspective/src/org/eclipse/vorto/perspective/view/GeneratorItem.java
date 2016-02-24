@@ -32,11 +32,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.CopyResourceTask;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator;
-import org.eclipse.vorto.codegen.utils.PlatformUtils;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
+import org.eclipse.vorto.codegen.ui.handler.CodeGenerationHelper;
+import org.eclipse.vorto.codegen.ui.handler.CodeGeneratorTaskExecutor;
+import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
+import org.eclipse.vorto.codegen.ui.tasks.CopyResourceTask;
+import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
 import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.repository.Attachment;
 import org.eclipse.vorto.core.api.repository.GeneratorResource;
+import org.eclipse.vorto.core.api.repository.IModelRepository;
+import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 
 public class GeneratorItem extends Composite {
@@ -99,12 +107,12 @@ public class GeneratorItem extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				lblGenerated.setText("Generating...");
-				EclipseProjectGenerator<ModelId> generator = new EclipseProjectGenerator<>(model.getId().getName()+"_"+codegen.getKey()+"_generated");
-				generator.addTask(new RemoteCodeGeneratorTask(codegen.getKey()));
-				generator.generate(model.getId(), new NullProgressMonitor());
 				
-				postProcess(generator);
+				final IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
+				final Attachment attachment = modelRepo.generateCode(model.getId(),codegen.getKey());
 				
+				CodeGenerationHelper.createEclipseProject(model.getId(), codegen.getKey(), toGenerationResult(attachment));
+												
 				lblGenerated.setText("Generated.");
 				btnGenerate.setEnabled(false);
 			}
@@ -113,34 +121,26 @@ public class GeneratorItem extends Composite {
 		btnGenerate.setText("Generate");
 	}
 	
-	private void postProcess(EclipseProjectGenerator<ModelId> generator) {
-		final IProject generatedTempProject = generator.getProject();
-		try {
-			for (IResource folderResource : generatedTempProject.members(IResource.FOLDER)) {
-				if (!(folderResource instanceof IFolder)) { //it could still return eclipse project metadata files :(
-					continue;
-				}
-				EclipseProjectGenerator<IResource> projectGenerator = new EclipseProjectGenerator<>(folderResource.getName());
-				projectGenerator.addTask(new CopyResourceTask<IResource>(folderResource.getLocationURI().toURL(), ""));
-				projectGenerator.generate(folderResource, new NullProgressMonitor());
+	private IGenerationResult toGenerationResult(final Attachment attachment) {
+		return new IGenerationResult() {
+						
+			@Override
+			public String getMediatype() {
+				return attachment.getType();
 			}
-		} catch (Exception e) {
-			throw new RuntimeException("Could not postprocess downloaded generated files",e);
-		} finally {
-			deleteTemporaryDownloadedProject(generatedTempProject);
-		}
+			
+			@Override
+			public String getFileName() {
+				return attachment.getFilename();
+			}
+			
+			@Override
+			public byte[] getContent() {
+				return attachment.getContent();
+			}
+		};
 	}
-	
-	
-
-	private void deleteTemporaryDownloadedProject(IProject generatedTempProject) {
-		try {
-			generatedTempProject.delete(true, new NullProgressMonitor());
-		} catch (CoreException e) {
-			throw new RuntimeException("Problem deleting temp project",e);
-		}
-	}
-
+		
 	private String formatRating(String rating) {
 		if (rating.equalsIgnoreCase("fair")) {
 			return "*";

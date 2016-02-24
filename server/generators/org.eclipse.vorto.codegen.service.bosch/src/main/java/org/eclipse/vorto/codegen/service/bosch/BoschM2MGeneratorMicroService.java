@@ -14,10 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.service.bosch;
 
-import org.eclipse.vorto.service.generator.AbstractVortoGeneratorService;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.examples.bosch.fbservice.FbServiceGenerator;
+import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
 
 /**
  * 
@@ -25,12 +28,17 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
  *
  */
 @SpringBootApplication
-public class BoschM2MGeneratorMicroService extends AbstractVortoGeneratorService {
+public class BoschM2MGeneratorMicroService extends AbstractBackendCodeGenerator {
 
-	public static void main(String[] args) {	
-		SpringApplication.run(BoschM2MGeneratorMicroService.class, args);
+	@Bean
+	public IVortoCodeGenerator boschGenerator() {
+		return new FbServiceGenerator();
 	}
 	
+	public static void main(String[] args) {
+		SpringApplication.run(BoschM2MGeneratorMicroService.class, args);
+	}
+
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(BoschM2MGeneratorMicroService.class);

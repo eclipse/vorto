@@ -15,8 +15,8 @@
 package org.eclipse.vorto.codegen.examples.markdown.tasks;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.vorto.codegen.api.tasks.AbstractTemplateGeneratorTask;
-import org.eclipse.vorto.codegen.api.tasks.ITemplate;
+import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
+import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownEntityTemplate;
 import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownEnumTemplate;
 import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownFunctionBlockTemplate;
@@ -51,5 +51,9 @@ public class MarkdownInformationModelGeneratorTask extends
 		MarkdownEntityTemplate entityTemplate = new MarkdownEntityTemplate();
 		MarkdownEnumTemplate enumTemplate = new MarkdownEnumTemplate();
 		return new MarkdownInformationModelTemplate(fbTemplate, entityTemplate, enumTemplate);
+	}
+
+	public String getPlatform() {
+		return "markdown";
 	}
 }

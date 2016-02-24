@@ -15,8 +15,8 @@
  *******************************************************************************/
  package org.eclipse.vorto.wizard.functionblock
 
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 
 class FbmodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 		

@@ -18,11 +18,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext;
-import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.LocationWrapper;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
+import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
+import org.eclipse.vorto.codegen.ui.tasks.LocationWrapper;
 import org.eclipse.vorto.core.model.IModelProject;
 
 public abstract class ProjectCreationTask implements IProgressTask {
@@ -59,7 +60,7 @@ public abstract class ProjectCreationTask implements IProgressTask {
 				generator.addNature(nature);
 			}
 			generator.addTask(getCodeGeneratorTask());
-			generator.generate(context, monitor);
+			generator.generate(context, new DefaultMappingContext(), monitor);
 			setIproject(generator.getProject());
 			IModelProject modelProject = getIotproject(generator.getProject());
 

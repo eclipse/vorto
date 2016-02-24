@@ -14,18 +14,25 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.javabean;
 
-import org.eclipse.vorto.service.generator.AbstractVortoGeneratorService;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class JavabeanGeneratorMicroService extends AbstractVortoGeneratorService {
+public class JavabeanGeneratorMicroService extends AbstractBackendCodeGenerator {
 
-	public static void main(String[] args) {	
-		SpringApplication.run(JavabeanGeneratorMicroService.class, args);
+	@Bean
+	public IVortoCodeGenerator javabeanGenerator() {
+		return new JavabeanGenerator();
 	}
 	
+	public static void main(String[] args) {
+		SpringApplication.run(JavabeanGeneratorMicroService.class, args);
+	}
+
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(JavabeanGeneratorMicroService.class);

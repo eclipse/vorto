@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
+import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
 
 class MarkdownEnumTemplate implements ITemplate<Enum> {
 	

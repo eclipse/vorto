@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype
 
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 
 /**
  * This is template content when new entity/enum type is created typically from wizard.

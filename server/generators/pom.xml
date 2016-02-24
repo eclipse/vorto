@@ -13,14 +13,13 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>org.eclipse.vorto.codegen.service.api</module>
 		<module>org.eclipse.vorto.codegen.service</module>
-		<module>org.eclipse.vorto.codegen.service.templates.java</module>
 		<module>org.eclipse.vorto.codegen.service.javabean</module>
 		<module>org.eclipse.vorto.codegen.service.ios</module>
 		<module>org.eclipse.vorto.codegen.service.webdevice</module>
 		<module>org.eclipse.vorto.codegen.service.bosch</module>
 		<module>org.eclipse.vorto.codegen.service.mqtt</module>
+		<module>org.eclipse.vorto.codegen.service.thingworx</module>
 		<module>org.eclipse.vorto.codegen.documentation.markdown</module>
 	</modules>
 
