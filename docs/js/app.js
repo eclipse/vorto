@@ -4,9 +4,11 @@
       var scroll = getScroll();
       if ( scroll >= headerScroll ) {
         $('.navbar-lp').addClass('scroll');
+        $('.navbar-lp').addClass('scroll-bg');
         }
       else {
         $('.navbar-lp').removeClass('scroll');
+        $('.navbar-lp').removeClass('scroll-bg');
         }
 });
 

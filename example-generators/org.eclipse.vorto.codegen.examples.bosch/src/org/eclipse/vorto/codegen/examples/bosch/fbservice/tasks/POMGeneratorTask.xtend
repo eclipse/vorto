@@ -15,8 +15,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
@@ -32,9 +33,13 @@ class POMGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		}
 	}
 	
-	override generate(FunctionblockModel model, IOutputter outputter) {
+	override generate(FunctionblockModel model, IMappingContext context, IGeneratedWriter outputter) {
 		var sqn = fetchGeneratedPOMString()
-		outputter.output(new Generated("pom.xml",null,sqn))
+		outputter.write(new Generated("pom.xml",baseDirectoryFolder,sqn))
+	}
+	
+	def String getBaseDirectoryFolder() {
+		return '''com.bosch.« context.model.name.toLowerCase»-service'''
 	}
 	
     private def boolean isEmptyVersion(String version){
@@ -76,8 +81,13 @@ class POMGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		   </dependency>
 		   <dependency>
 		      <groupId>«context.getGroupName»</groupId>
-		      <artifactId>«context.getLowercaseFBName»</artifactId>
+		      <artifactId>com.bosch.«context.functionBlockName.toLowerCase »-model</artifactId>
 		      <version>«context.model.version»</version>
+		   </dependency>
+		   <dependency>
+		      	<groupId>com.bosch.functionblock</groupId>
+		      	<artifactId>«context.model.namespace».dummy-basedriver</artifactId>
+		      	<version>1.0.0</version>
 		   </dependency>
 		   <dependency>
 		      <groupId>org.slf4j</groupId>

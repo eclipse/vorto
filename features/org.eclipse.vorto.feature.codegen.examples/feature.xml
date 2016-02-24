@@ -25,15 +25,19 @@ http://www.eclipse.org/legal/epl-v10.html Description here.
    <requires>
       <import plugin="org.eclipse.vorto.core"/>
       <import plugin="org.eclipse.vorto.codegen"/>
+      <import plugin="org.apache.commons.lang3"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.xbase"/>
-      <import plugin="org.apache.commons.lang3"/>
+      <import plugin="org.eclipse.vorto.codegen.templates.java"/>
+      <import plugin="com.google.guava"/>
+      <import plugin="org.eclipse.xtext.xbase.lib"/>
+      <import plugin="org.eclipse.xtend.lib"/>
+      <import plugin="org.eclipse.xtend.lib.macro"/>
+      <import plugin="org.eclipse.vorto.editor.infomodel.tests"/>
    </requires>
 
    <plugin
-         id="org.eclipse.vorto.codegen.examples.webdevice"
+         id="org.eclipse.vorto.codegen.examples.markdown"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -47,21 +51,7 @@ http://www.eclipse.org/legal/epl-v10.html Description here.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.vorto.codegen.examples.tutorial"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.examples.markdown"
+         id="org.eclipse.vorto.codegen.examples.webui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -75,9 +65,23 @@ http://www.eclipse.org/legal/epl-v10.html Description here.
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.vorto.codegen.examples.javabean"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.vorto.codegen.examples.thingworx"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.eclipse.vorto.codegen.examples.mqtt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

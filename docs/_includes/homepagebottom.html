@@ -8,7 +8,8 @@
             <i class="{{main.imagename}}"></i>
           </div>
     <div class="col-md-2">
-     <h4>{{main.title}}</h4>
+     
+     <a href= "{{main.accesslink}}" target="_blank"><h4>{{main.title}}</h4></a>
      </div>
      <div class="col-md-7">
     <section>{{ main.content }}</section>
@@ -50,12 +51,5 @@
         <hr>    
 {% endif %}
 {% endfor %}
- <div class="row">
-  <div class="col-md-9 page-header pull-left">
-  <h2>Contributors to Vorto</h2>
-</div>
-<div class="col-md-3 page-header pull-right">
-<a href="{{base}}/documentation/overview/introduction.html#significant-contribution"><h2>Add your Logo!</h2></a>
-</div>
-</div>
+
 </div>

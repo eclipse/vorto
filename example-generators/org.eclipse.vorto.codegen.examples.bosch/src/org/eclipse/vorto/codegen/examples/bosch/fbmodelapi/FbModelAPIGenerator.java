@@ -14,45 +14,26 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator;
-import org.eclipse.vorto.codegen.examples.bosch.common.BoschM2MModelNature;
-import org.eclipse.vorto.codegen.examples.bosch.common.BoschM2MNature;
+import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.IGeneratedWriter;
+import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper;
 import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel.CXFCodeGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel.POMFbTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
-public class FbModelAPIGenerator implements ICodeGenerator<InformationModel> {
-
-	private static final String ADDITIONAL_SOURCES_FOLDER = "target/generated-sources";
-	private static final String SRC_GEN_FOLDER = "src-gen";
-
-	private static final String SUFFIX = "-model";
+public class FbModelAPIGenerator implements ICodeGeneratorTask<InformationModel> {
 
 	@Override
-	public void generate(InformationModel infomodel,
-			final IProgressMonitor monitor) {
+	public void generate(InformationModel infomodel, IMappingContext mappingContext, IGeneratedWriter outputter) {
 		FbModelWrapper wrappedfbm = new FbModelWrapper(infomodel
 				.getProperties().get(0).getType());
-		final String modelProjectName = wrappedfbm.getModel().getNamespace()
-				+ "." + wrappedfbm.getFunctionBlockName().toLowerCase()
-				+ SUFFIX;
-
-		new EclipseProjectGenerator<FunctionblockModel>(modelProjectName)
-				.addFolder(SRC_GEN_FOLDER)
-				.addFolder(ADDITIONAL_SOURCES_FOLDER)
-				.mavenNature(new POMFbTemplate(), ADDITIONAL_SOURCES_FOLDER,
-						SRC_GEN_FOLDER).addNature(BoschM2MNature.M2M_NATURE_ID)
-				.addNature(BoschM2MModelNature.M2M_MODEL_NATURE_ID)
-				.addTask(new CXFCodeGeneratorTask())
-				.generate(wrappedfbm.getModel(), monitor);
-	}
-
-	@Override
-	public String getName() {
-		return "Function Block Model API Generator";
+		ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
+		generator.addTask(new GeneratorTaskFromFileTemplate<FunctionblockModel>(new POMFbTemplate()));
+		generator.addTask(new CXFCodeGeneratorTask());
+		generator.generate(wrappedfbm.getModel(), mappingContext, outputter);
 	}
 }

@@ -6,5 +6,6 @@ series : "homepagebottom"
 sequence: "vtweets"
 imagename : "fa fa-twitter fa-4x"
 style: "team"
+accesslink: "https://twitter.com/VortoIoT"
 ---
 Follow our **latest tweets** <a href="https://twitter.com/VortoIoT" target="_blank">here.</a>

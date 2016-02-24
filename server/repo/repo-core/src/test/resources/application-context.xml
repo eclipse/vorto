@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    and Eclipse Distribution License v1.0 which accompany this distribution.
+      
+    The Eclipse Public License is available at
+    http://www.eclipse.org/legal/epl-v10.html
+    The Eclipse Distribution License is available at
+    http://www.eclipse.org/org/documents/edl-v10.php.
+      
+    Contributors:
+    Bosch Software Innovations GmbH - Please refer to git log
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="org.eclipse.vorto.repository.internal" /> 
+    
+</beans>

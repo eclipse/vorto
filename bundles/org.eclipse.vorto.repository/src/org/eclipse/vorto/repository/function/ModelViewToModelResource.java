@@ -16,10 +16,10 @@ package org.eclipse.vorto.repository.function;
 
 import java.util.List;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.ModelResource;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelIdFactory;
-import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.repository.model.ModelView;
 
 import com.google.common.base.Function;

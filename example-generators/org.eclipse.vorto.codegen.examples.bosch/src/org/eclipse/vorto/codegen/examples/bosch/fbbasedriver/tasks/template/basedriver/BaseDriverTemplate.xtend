@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.basedriver
 
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 

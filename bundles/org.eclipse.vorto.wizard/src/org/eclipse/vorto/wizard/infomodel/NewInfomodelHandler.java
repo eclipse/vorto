@@ -15,7 +15,7 @@
 package org.eclipse.vorto.wizard.infomodel;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.vorto.codegen.ui.WizardCreateProjectHandler;
+import org.eclipse.vorto.codegen.ui.handler.WizardCreateProjectHandler;
 
 public class NewInfomodelHandler extends WizardCreateProjectHandler {
 

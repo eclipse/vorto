@@ -6,6 +6,7 @@ series : "homepagebottom"
 sequence: "discussionforum"
 imagename : "fa fa-users fa-4x"
 style: "team"
+accesslink: "http://eclipse.org/forums/eclipse.vorto"
 ---
 
 A general discussion forum can be found <a href="http://eclipse.org/forums/eclipse.vorto" target="_blank">here.</a>

@@ -19,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.nature.IoTProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
 

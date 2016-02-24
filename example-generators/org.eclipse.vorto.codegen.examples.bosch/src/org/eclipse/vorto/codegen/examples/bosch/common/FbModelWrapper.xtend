@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.examples.bosch.common
 
 import java.util.LinkedHashSet
 import java.util.Set
+import org.eclipse.vorto.codegen.examples.bosch.common.FbModelUtils
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Type
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
@@ -89,11 +90,11 @@ class FbModelWrapper {
 		return capitalize(model.name);
 	}
 	
-	private def String capitalize(String line) {
+	public def String capitalize(String line) {
 	 	return Character.toUpperCase(line.charAt(0)) + line.substring(1);
 	}
 	
-	private def String lowerCase(String line) {
+	public def String lowerCase(String line) {
 	 	return Character.toLowerCase(line.charAt(0)) + line.substring(1);
 	}
 	

@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 
 public interface IModelElement {
 

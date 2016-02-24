@@ -26,7 +26,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.vorto.codegen.api.context.IProjectContext;
+import org.eclipse.vorto.codegen.ui.context.IProjectContext;
 
 import com.google.common.base.Strings;
 

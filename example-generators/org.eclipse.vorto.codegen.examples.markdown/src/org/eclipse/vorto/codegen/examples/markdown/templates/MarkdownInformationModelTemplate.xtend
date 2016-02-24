@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.templates.java.utils.ModelHelper
 
 class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 	

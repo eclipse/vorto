@@ -6,6 +6,7 @@ series : "homepagebottom"
 sequence: "contribute"
 imagename : "fa fa-link fa-4x"
 style: "team"
+accesslink: "https://wiki.eclipse.org/Development_Resources/Contributing_via_Git"
 ---
 
 An overview of the **contribution process** is <a href="https://wiki.eclipse.org/Development_Resources/Contributing_via_Git" target="_blank">here.</a>

@@ -29,7 +29,7 @@ a:hover {
 .navbar-lp{
     -webkit-transition: height 0.3s;
     -moz-transition: height 0.3s;
-    transition: height 0.3s;
+     transition: height 0.3s;
 }
 
 .navbar-lp .navbar-brand {
@@ -302,11 +302,14 @@ footer {
 .zoom1 {
  -webkit-transform: scale(1);
   transform: scale(1);
+ -ms-transform: scale(1);
   -webkit-transition: .3s ease-in-out;
+  -ms-transition: .3s ease-in-out;
   transition: .3s ease-in-out;
 }
 .zoom1:hover {
  -webkit-transform: scale(0.9);
+ -ms-transform: scale(0.9);
   transform: scale(0.9);
 }
 
@@ -319,21 +322,19 @@ footer {
   outline: medium none;
   position: absolute;
   z-index: 100;
-
   opacity: 0.8;
   color:  #003151;
   font-size: 4em;
-      left: 325px;
-    z-index: 100;
-    top: 125px;
+  left: 325px;
+  top: 125px;
 
 }
 
 .thumb1 .play-icon:hover, .thumb2 .play-icon:hover, .thumb3 .play-icon:hover, .thumb4 .play-icon:hover, .thumb5 .play-icon:hover{
 opacity: 1;
 -webkit-transform: scale(1.1);
-        -ms-transform: scale(1.1);
-        transform: scale(1.1);
+-ms-transform: scale(1.1);
+ transform: scale(1.1);
 }
 
 
@@ -406,9 +407,11 @@ opacity: 1;
 
 /*Usecases*/
 .teamuc {
+  
     background: -moz-linear-gradient(center top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     background: linear-gradient(center top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     background: -webkit-linear-gradient(top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7cfdf', endColorstr='#23538a',GradientType=0 );
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(0, 0, 0, 0.1) inset;
     height: auto;
@@ -418,7 +421,7 @@ opacity: 1;
 }
 
 p.ex {
-    color: #fff;
+color: #fff;  
 }
 h2.ex {
     color: #fff;
@@ -430,7 +433,7 @@ h2.ex {
   background-image: -moz-linear-gradient(top, #002E5C, #2980b9);
   background-image: -ms-linear-gradient(top, #002E5C, #2980b9);
   background-image: -o-linear-gradient(top, #002E5C, #2980b9);
-  background-image: linear-gradient(to bottom, #002E5C, #2980b9);
+  background-image: linear-gradient(top bottom, #002E5C, #2980b9);
   -webkit-border-radius: 28;
   -moz-border-radius: 28;
   border-radius: 28px;
@@ -467,7 +470,7 @@ h2.ex {
 
 }
 .vbtn:focus {
-    background: #3cb0fd;
+  background: #3cb0fd;
   background-image: -webkit-linear-gradient(top, #30567B, #3498db);
   background-image: -moz-linear-gradient(top, #30567B, #3498db);
   background-image: -ms-linear-gradient(top, #30567B, #3498db);

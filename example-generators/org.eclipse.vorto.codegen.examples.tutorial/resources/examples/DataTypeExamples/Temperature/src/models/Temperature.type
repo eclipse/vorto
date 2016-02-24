@@ -1,8 +1,0 @@
-namespace examples.datatypes.measurement
-version 1.0.0
-using examples.datatypes.measurement.units.TemperatureUnit ; 1.0.0
-
-entity Temperature {
-	mandatory value as float "The value representing the temperature."
-	mandatory measurementUnit as TemperatureUnit "The measurement unit for the temperature."
-}

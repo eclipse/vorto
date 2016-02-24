@@ -1,0 +1,186 @@
+<div id="settings">
+	<h3 class="modelHeader ng-binding">User Settings</h3>
+                	
+    <hr>
+    <br/>
+    <div ng-show="put">
+    	<div ng-show="update">
+		  	<p>
+		  		<div class="alert alert-success" role="alert">
+		  			<i class="glyphicon glyphicon-ok-sign"></i>
+		  			<span class="sr-only">Success:</span>
+				  	User Settings has been successfully updated.
+		  		</div>
+		  	</p>
+	  	</div>	
+		<div ng-show="!update">
+		  	<p>
+		  		<div class="alert alert-danger" role="alert">
+				  	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				  	<span class="sr-only">Error:</span>
+				  	Error during User Settings update.
+				</div>
+		  	</p>
+		</div>
+	</div>
+	
+	<br/>
+	<br/>
+
+	<form name="form">
+
+	  <div class="row">
+	  	<div class="col-xs-4">
+	  		 <label>First name</label>
+	  	</div>
+	  	
+        <div class="col-xs-6 form-group" >
+            <input 	type="text" 
+          			name="firstName"
+             		id="first_name"
+             		class="form-control" 
+             		placeholder="first name"
+             		ng-model="user.firstName" />      
+        </div>
+	  </div>
+	  
+ 	<br/>
+	  
+	  <div class="row">
+		  <div class="col-xs-4">
+		  		<label>Last name</label>
+		  </div>		  
+	
+	      <div class="col-xs-6 form-group">
+          	<input 	type="text" 
+          			name="lastName"
+             		id="last_name"
+             		class="form-control" 
+             		placeholder="last name"
+             		ng-model="user.lastName" />
+	      </div>	  	
+   	  </div>
+	
+	<br/>
+	  
+	  <div class="row">
+	  	<div class="col-xs-4">
+	  		 <label>Username</label>
+	  	</div>
+	  	<div class="col-xs-6" ng-class="{ 'has-success': 	!form.username.$error.required &&
+															!form.username.$error.minlength &&
+															!form.username.$error.maxlength &&
+															!form.username.$error.pattern &&
+															!usernameExists  }">
+             <input readonly
+             		type="text"
+             		class="form-control"
+             		name="username"
+             		id="username"
+             		placeholder="Username"
+             		ng-model="user.username"
+             		ng-pattern="/^[a-zA-Z0-9]*$/"
+            		ng-minlength="5" 
+       				ng-maxlength="30"
+             		ng-blur="usernameAlreadyExists(user)" 
+             		required>
+             		
+             <span ng-show="usernameExists" class="help-block">Username is already in use.</span>
+        	 <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+             <span ng-show="form.username.$error.pattern" class="help-block">Only characters [a-zA-Z]</span>
+             <span ng-show="form.username.$error.minlength" class="help-block">Username is too short min. 5 chars</span>
+             <span ng-show="form.username.$error.maxlength" class="help-block">Username is too long max. 30 chars</span>
+             <span ng-show="form.username.$error.usernameExists" class="help-block">Username already exists!</span>    
+	  	</div>
+	  </div>
+	  
+  	<br/>
+	  
+      <div class="row">
+	  	<div class="col-xs-4">
+	  		<label>Email</label>
+	  	</div>
+	  	<div class="col-xs-6 form-group" ng-class="{ 'has-success ': 	!form.email.$error.required &&
+																		!form.email.$error.email &&
+																		!emailAddressExists }" >
+	  		<input  type="email"
+	  				class="form-control"
+	  				name="email"
+	  				placeholder="email"
+	  				ng-model="user.email"
+	  				ng-blur="checkEmailAlreadyExists(user)" 
+	  				required >
+	  				
+		    <span ng-show="emailAddressExists" class="help-block">Email Address is already in use.</span>
+	        <span ng-show="form.email.$error.email" class="help-block">Enter a valid email!</span>
+	          
+	  	</div>
+	  </div>
+         
+   	<br/>
+         
+      <div class="row">
+	  	<div class="col-xs-4">
+	  		 <label>Watch Repository</label> 
+  		</div>
+	  	<div class="col-xs-6">
+               <div class="checkbox">
+			  <label>
+			  	<input type="checkbox" value="" ng-model="user.hasWatchOnRepository">
+			  	Notification
+			  	<p>get a Notification Email, as soon as a new Info Model is uploaded.</p>
+			  </label>
+			</div>
+	  	</div>
+	  </div>
+       
+      <div class="row">
+	  	<div class="col-xs-4">
+	    	<button class="btn btn-success" 
+	    			ng-disabled="form.$invalid || vm.dataLoading || emailAddressExists || usernameExists"
+	    			type="submit" 
+            		ng-click="updateProfil(user)"><i class="glyphicon glyphicon-ok-sign"></i> Update</button>
+  		</div>
+	  </div>
+	  
+    </form>           
+</div>
+
+
+<!-- Modal -->
+<div id="update" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header" style="background-color:#3a5a82; color:white;">
+        <button type="button" class="close" data-dismiss="modal" style="color:white;">&times;</button>
+        <h4 class="modal-title"><b>User Settings Update</b></h4>
+      </div>
+      <div class="modal-body">
+      	<div ng-show="update">
+		  	<p>
+		  		<div class="alert alert-success" role="alert">
+		  			<i class="glyphicon glyphicon-ok-sign"></i>
+		  			<span class="sr-only">Success:</span>
+				  	User Settings has been successfully updated.
+		  		</div>
+		  	</p>
+	  	</div>	
+		<div ng-show="!update">
+		  	<p>
+		  		<div class="alert alert-danger" role="alert">
+				  	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+				  	<span class="sr-only">Error:</span>
+				  	Error during User Settings update.
+				</div>
+		  	</p>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+
+  </div>
+</div>

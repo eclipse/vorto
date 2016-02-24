@@ -21,6 +21,7 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.nature.FbDatatypeProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
 

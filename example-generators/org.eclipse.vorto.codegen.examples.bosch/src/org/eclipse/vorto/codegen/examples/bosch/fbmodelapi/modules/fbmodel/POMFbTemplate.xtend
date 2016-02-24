@@ -15,11 +15,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel
 
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
-class POMFbTemplate implements ITemplate<FunctionblockModel> {
+class POMFbTemplate implements IFileTemplate<FunctionblockModel> {
 	
 	override getContent(FunctionblockModel context) {
 		var wrappedfbm= new FbModelWrapper(context)
@@ -266,6 +266,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
    </build>     
 </project>
 		'''
+	}
+	
+	override getFileName(FunctionblockModel context) {
+		return "pom.xml"
+	}
+	
+	override getPath(FunctionblockModel context) {
+		return '''com.bosch.« new FbModelWrapper(context).functionBlockName.toLowerCase »-model'''
 	}
 	
 }

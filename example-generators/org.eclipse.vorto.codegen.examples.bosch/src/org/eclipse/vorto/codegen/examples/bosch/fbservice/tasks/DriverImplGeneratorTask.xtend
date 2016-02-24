@@ -15,22 +15,24 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates.DeviceDriverTemplate
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class DriverImplGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 	
-	private String SRC_LOC = "/src/main/java/";
+	private String SRC_LOC = null;
 	
 	new(FbModelWrapper model) {
 		super(model)
+		this.SRC_LOC = '''com.bosch.« context.functionBlockName.toLowerCase»-service/src/main/java/'''
 	}
 	
-	override generate(FunctionblockModel fbm,IOutputter outputter) {
-		outputter.output(new Generated(deviceDriverFileName,location,DeviceDriverTemplate.generate(context)));
+	override generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
+		outputter.write(new Generated(deviceDriverFileName,location,DeviceDriverTemplate.generate(this.context)));
 	}
 		
 	def String getDeviceDriverFileName() {

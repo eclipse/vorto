@@ -14,9 +14,12 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.ios.templates
 
-import org.eclipse.vorto.codegen.api.tasks.IFileTemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 class EnumClassTemplate implements IFileTemplate<Enum> {
 
 	override getFileName(Enum context) {
@@ -24,7 +27,7 @@ class EnumClassTemplate implements IFileTemplate<Enum> {
 	}
 	
 	override getPath(Enum context) {
-		return "src-gen/"
+		return ""
 	}
 	
 	override getContent(Enum context) {

@@ -17,8 +17,8 @@ package org.eclipse.vorto.perspective.listener;
 import java.util.Set;
 
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.perspective.IModelContentProvider;
 import org.eclipse.vorto.perspective.util.TreeViewerCallback;
 import org.eclipse.vorto.perspective.util.TreeViewerTemplate;

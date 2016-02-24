@@ -15,19 +15,13 @@
   <packaging>pom</packaging>
 
   <modules>
-		<module>org.eclipse.vorto.codegen.examples.webdevice</module>	
-		<module>org.eclipse.vorto.codegen.examples.webdevice.tests</module>	
-		
-		<module>org.eclipse.vorto.codegen.examples.bosch</module>
-		<module>org.eclipse.vorto.codegen.examples.bosch.tests</module>
-		
-		<module>org.eclipse.vorto.codegen.examples.tutorial</module>
-		<module>org.eclipse.vorto.codegen.examples.tutorial.tests</module>	
-
-		<module>org.eclipse.vorto.codegen.examples.java</module>
-		<module>org.eclipse.vorto.codegen.examples.ios</module>	
-		<module>org.eclipse.vorto.codegen.examples.markdown</module>
 		<module>org.eclipse.vorto.codegen.examples.thingworx</module>
+		<module>org.eclipse.vorto.codegen.examples.javabean</module>
+		<module>org.eclipse.vorto.codegen.examples.mqtt</module>
+		<module>org.eclipse.vorto.codegen.examples.webui</module>
+		<module>org.eclipse.vorto.codegen.examples.markdown</module>
+		<module>org.eclipse.vorto.codegen.examples.bosch</module>
+		<module>org.eclipse.vorto.codegen.examples.ios</module>
   </modules>
   
 </project>

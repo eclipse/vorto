@@ -37,7 +37,7 @@ class EventMappingRuleTemplate {
 		import «context.javaPackageName».api.mapping.AbstractEventMapping;
 		import «context.javaPackageName».api.mapping.EventMappingContext;
 		
-		public class «event.name»Mapping extends AbstractEventMapping<«context.model.name»Properties> {
+		public class «event.name.toFirstUpper»Mapping extends AbstractEventMapping<«context.model.name»Properties> {
 		
 			@Override
 			public ICustomEvent map(Event baseDriverEvent, EventMappingContext<«context.model.name»Properties> context) {

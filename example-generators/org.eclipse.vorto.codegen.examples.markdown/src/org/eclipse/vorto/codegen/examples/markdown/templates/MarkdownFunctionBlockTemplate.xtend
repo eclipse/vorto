@@ -14,9 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.codegen.api.tasks.ITemplate
+import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.examples.markdown.utils.Utils
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class MarkdownFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 	
