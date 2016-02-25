@@ -36,5 +36,4 @@ Export-Package: org.eclipse.vorto.codegen.ui,
  org.eclipse.vorto.codegen.ui.utils,
  org.eclipse.vorto.codegen.ui.wizard,
  org.eclipse.vorto.codegen.ui.wizard.command,
- org.eclipse.vorto.codegen.ui.wizard.generation.tasks,
  org.eclipse.vorto.codegen.ui.wizard.generation.templates

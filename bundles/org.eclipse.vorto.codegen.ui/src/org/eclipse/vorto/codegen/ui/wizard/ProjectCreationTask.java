@@ -15,7 +15,6 @@
 package org.eclipse.vorto.codegen.ui.wizard;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -23,50 +22,25 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.vorto.codegen.api.DefaultMappingContext;
-import org.eclipse.vorto.codegen.api.ITemplate;
-import org.eclipse.vorto.codegen.ui.context.ExampleProjectContext;
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
 import org.eclipse.vorto.codegen.ui.tasks.LocationWrapper;
-import org.eclipse.vorto.codegen.ui.wizard.generation.tasks.ActivatorFileTask;
-import org.eclipse.vorto.codegen.ui.wizard.generation.tasks.JsonFileTask;
-import org.eclipse.vorto.codegen.ui.wizard.generation.tasks.TemplateFileTask;
-import org.eclipse.vorto.codegen.ui.wizard.generation.tasks.XMLFileTask;
+import org.eclipse.vorto.codegen.ui.tasks.natures.MavenNature;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.GeneratorTemplate;
 import org.eclipse.vorto.codegen.ui.wizard.generation.templates.ManifestFileTemplate;
 import org.eclipse.vorto.codegen.ui.wizard.generation.templates.PluginBuildFileTemplate;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.PluginXMLFileTemplate;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.PomTemplate;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.server.ApplicationProfileProperties;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.server.ApplicationPropertiesTemplate;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.server.MicroServicePomTemplate;
+import org.eclipse.vorto.codegen.ui.wizard.generation.templates.server.PlatformGeneratorMainTemplate;
 
 public class ProjectCreationTask implements IProgressTask {
 
-	private static final String META_INF_FOLDER = "META-INF";
-	private static final String XTEND_GEN_FOLDER = "xtend-gen";
-	private static final String SRC_FOLDER = "src";
-	private static final String OUTPUT_LOCATION = "bin";
 	private static final String ERROR_MESSAGE = "Problem when creating project, error: ";
-	private static final String[] XTEND_SRC = { "src/", "xtend-gen/" };
-	private static final String[] BIN_INCLUDES = { "META-INF/", "plugin.xml" };
-	private static final String[] EXTENDED_BUNDLES = { "org.eclipse.ui",
-			"org.eclipse.vorto.core", "org.eclipse.core.runtime",
-			"org.eclipse.vorto.codegen", "com.google.guava",
-			"org.eclipse.xtext.xbase.lib", "org.eclipse.xtend.lib",
-			"org.eclipse.xtend.lib.macro", "org.eclipse.emf.common",
-			"org.eclipse.emf.ecore" };
-	private static final String[] ESSENTIAL_BUNDLES = { "org.eclipse.ui",
-			"org.eclipse.vorto.core", "org.eclipse.core.runtime",
-			"org.eclipse.vorto.codegen", "com.google.guava",
-			"org.eclipse.xtext.xbase.lib", "org.eclipse.xtend.lib",
-			"org.eclipse.xtend.lib.macro", "org.eclipse.emf.ecore" };
-	private static final String[] PACKAGES = { "org.eclipse.vorto.editor.infomodel" };
-	private static final ITemplate<IGeneratorProjectContext> EXTENDED_MANIFEST_FILE_TEMPLATE = new ManifestFileTemplate()
-			.setBundles(Arrays.asList(EXTENDED_BUNDLES)).setPackages(
-					Arrays.asList(PACKAGES));
-	private static final ITemplate<IGeneratorProjectContext> ESSENTIAL_MANIFEST_FILE_TEMPLATE = new ManifestFileTemplate()
-			.setBundles(Arrays.asList(ESSENTIAL_BUNDLES)).setPackages(
-					Arrays.asList(PACKAGES));
-	private static final ITemplate<IGeneratorProjectContext> BUILD_FILE_TEMPLATE = new PluginBuildFileTemplate<IGeneratorProjectContext>()
-			.setSources(Arrays.asList(XTEND_SRC)).setBinIncludes(
-					Arrays.asList(BIN_INCLUDES));
-
+	
 	private String errorMessage = "";
 	private IGeneratorProjectContext context = null;
 	private IWorkspace workspace;
@@ -80,7 +54,10 @@ public class ProjectCreationTask implements IProgressTask {
 	public void run(IProgressMonitor monitor) throws InvocationTargetException,
 			InterruptedException {
 		try {
-			createTemplateGeneratorProject(monitor);
+			createGeneratorProject(monitor);
+			if (context.isMicroServiceSupport()) {
+				createMicroServiceProject(monitor);
+			}
 		} catch (CoreException e) {
 			this.errorMessage = e.getMessage();
 			throw new RuntimeException(ERROR_MESSAGE + e.getMessage(), e);
@@ -89,62 +66,27 @@ public class ProjectCreationTask implements IProgressTask {
 		}
 	}
 
-	private void createTemplateGeneratorProject(IProgressMonitor monitor)
+
+	private void createMicroServiceProject(IProgressMonitor monitor)
 			throws JavaModelException {
-		if (context.isGenerateTemplate()) {
-			createProjectWithTemplate(monitor);
-		} else {
-			createProjectWithoutTemplate(monitor);
-		}
-		if (context.isGenerateExampleProject()) {
-			createExampleProject(monitor);
-		}
+		EclipseProjectGenerator<IGeneratorProjectContext> generator = new EclipseProjectGenerator<>(new LocationWrapper(
+				context.getWorkspaceLocation(), context.getPackageName()+".service"));
+		generator.mavenNature(new MicroServicePomTemplate(), "src/main/java","src/main/resources","src/test/java");
+		generator.addTask(new PlatformGeneratorMainTemplate());
+		generator.addTask(new ApplicationPropertiesTemplate());
+		generator.addTask(new ApplicationProfileProperties());
+		generator.generate(context, new DefaultMappingContext(), monitor);
 	}
 
-	private void createExampleProject(IProgressMonitor monitor) {
-		ExampleProjectContext jsonContext = new ExampleProjectContext(
-				context.getWorkspaceLocation());
-		EclipseProjectGenerator<IGeneratorProjectContext> generator = createEclipseProjectGenerator(new LocationWrapper(
-				context.getWorkspaceLocation(), jsonContext.getProjectName()));
-		generator.addTask(new JsonFileTask());
-		generator.pluginNature(OUTPUT_LOCATION, BUILD_FILE_TEMPLATE,
-				EXTENDED_MANIFEST_FILE_TEMPLATE, SRC_FOLDER, XTEND_GEN_FOLDER)
-				.generate(jsonContext,new DefaultMappingContext(), monitor);
-	}
-
-	private EclipseProjectGenerator<IGeneratorProjectContext> createEclipseProjectGenerator(
-			LocationWrapper projectLocation) {
-
-		EclipseProjectGenerator<IGeneratorProjectContext> generator = new EclipseProjectGenerator<IGeneratorProjectContext>(
-				projectLocation).addTask(new ActivatorFileTask())
-				.addTask(new XMLFileTask()).addFolder(META_INF_FOLDER)
-				.addFolder(OUTPUT_LOCATION).addFolder(XTEND_GEN_FOLDER)
-				.addFolder(SRC_FOLDER);
-
-		return generator;
-	}
-
-	private void createProjectWithoutTemplate(IProgressMonitor monitor) {
-		EclipseProjectGenerator<IGeneratorProjectContext> generator = createEclipseProjectGenerator(
-				getProjectLocation()).pluginNature(OUTPUT_LOCATION,
-				BUILD_FILE_TEMPLATE, ESSENTIAL_MANIFEST_FILE_TEMPLATE,
-				SRC_FOLDER, XTEND_GEN_FOLDER);
-		generator.addTask(new TemplateFileTask());
+	private void createGeneratorProject(IProgressMonitor monitor) {
+		EclipseProjectGenerator<IGeneratorProjectContext> generator = new EclipseProjectGenerator<IGeneratorProjectContext>(new LocationWrapper(
+				context.getWorkspaceLocation(),context.getPackageName()+"."+context.getGeneratorName().toLowerCase()));
+		generator.pluginNature(new PluginBuildFileTemplate(), new ManifestFileTemplate(), "src","xtend-gen");
+		generator.addNature(MavenNature.MAVEN_NATURE_STRING);
+		generator.addTask(new GeneratorTemplate());
+		generator.addTask(new PomTemplate());
+		generator.addTask(new PluginXMLFileTemplate());
 		generator.generate(context,new DefaultMappingContext(), monitor);
-	}
-
-	private void createProjectWithTemplate(IProgressMonitor monitor) {
-		EclipseProjectGenerator<IGeneratorProjectContext> generator = createEclipseProjectGenerator(
-				getProjectLocation()).pluginNature(OUTPUT_LOCATION,
-				BUILD_FILE_TEMPLATE, EXTENDED_MANIFEST_FILE_TEMPLATE,
-				SRC_FOLDER, XTEND_GEN_FOLDER);
-		generator.addTask(new TemplateFileTask());
-		generator.generate(context,new DefaultMappingContext(), monitor);
-	}
-
-	private LocationWrapper getProjectLocation() {
-		return new LocationWrapper(context.getWorkspaceLocation(),
-				context.getProjectName());
 	}
 
 	@Override

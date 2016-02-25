@@ -14,14 +14,12 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
-import org.eclipse.vorto.core.api.model.model.Model;
-
 /**
  * 
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  *
  */
-public class GeneratorTaskFromFileTemplate<Context extends Model> extends AbstractTemplateGeneratorTask<Context> implements ICodeGeneratorTask<Context> {
+public class GeneratorTaskFromFileTemplate<Context> extends AbstractTemplateGeneratorTask<Context> implements ICodeGeneratorTask<Context> {
 
 	private IFileTemplate<Context> fileTemplate;
 

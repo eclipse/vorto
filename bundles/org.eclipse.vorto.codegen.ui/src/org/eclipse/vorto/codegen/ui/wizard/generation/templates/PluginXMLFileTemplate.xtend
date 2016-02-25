@@ -15,27 +15,35 @@
  
 package org.eclipse.vorto.codegen.ui.wizard.generation.templates
 
-import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
-class PluginXMLFileTemplate implements ITemplate<IGeneratorProjectContext>{
+class PluginXMLFileTemplate implements IFileTemplate<IGeneratorProjectContext>{
 
 	public override String getContent(IGeneratorProjectContext context) {
 		return '''
 		<?xml version="1.0" encoding="UTF-8"?>
 			<plugin>
 			   <extension
-			         id="«context.projectName»"
-			         name="«context.generatorName»"
+			         id="«context.packageName».«context.generatorName»"
+			         name="«context.packageName».«context.generatorName»"
 			         point="org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators">
 			      <client
 			            class="«context.getPackageName».«context.generatorName»"
-			            menuLabel="Invoke «context.generatorName»">
+			            menuLabel="«context.generatorName»">
 			      </client>
 			   </extension>
 			
 			</plugin>
 		'''
+	}
+	
+	override getFileName(IGeneratorProjectContext context) {
+		"plugin.xml"
+	}
+	
+	override getPath(IGeneratorProjectContext context) {
+		return null
 	}
 
 }
