@@ -11,10 +11,10 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EntitySource#getModel <em>Model</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEntitySource()
  * @model

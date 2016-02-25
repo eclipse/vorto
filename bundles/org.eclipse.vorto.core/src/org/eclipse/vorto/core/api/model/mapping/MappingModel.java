@@ -13,11 +13,11 @@ import org.eclipse.vorto.core.api.model.model.Model;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.MappingModel#getTargetPlatform <em>Target Platform</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getMappingModel()
  * @model

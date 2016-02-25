@@ -20,10 +20,10 @@ import org.eclipse.vorto.core.api.model.mapping.StatusSource;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.StatusSourceImpl#getProperty <em>Property</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */

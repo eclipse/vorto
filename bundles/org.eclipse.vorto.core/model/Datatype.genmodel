@@ -2,8 +2,9 @@
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src" editDirectory="/org.eclipse.vorto.editor.datatype.edit/src"
     editorDirectory="/org.eclipse.vorto.editor.datatype.editor/src" modelPluginID="org.eclipse.vorto.metamodel.datatype"
-    forceOverwrite="true" modelName="Datatype" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.vorto.editor.datatype.edit"
+    forceOverwrite="true" modelName="Datatype" modelPluginClass="" updateClasspath="false"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" complianceLevel="5.0"
+    copyrightFields="false" editPluginID="org.eclipse.vorto.editor.datatype.edit"
     editorPluginID="org.eclipse.vorto.editor.datatype.editor" runtimeVersion="2.10">
   <genPackages prefix="Datatype" basePackage="org.eclipse.vorto.core.api.model" disposableProviderFactory="true"
       fileExtensions="type" ecorePackage="Datatype.ecore#/">
@@ -25,6 +26,7 @@
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/strlen"/>
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/regex"/>
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/mimetype"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/scaling"/>
     </genEnums>
     <genClasses ecoreClass="Datatype.ecore#//Entity">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Datatype.ecore#//Entity/superType"/>
@@ -56,6 +58,7 @@
     </genClasses>
     <genClasses ecoreClass="Datatype.ecore#//EnumLiteral">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//EnumLiteral/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//EnumLiteral/description"/>
     </genClasses>
     <genClasses ecoreClass="Datatype.ecore#//Type"/>
     <genClasses ecoreClass="Datatype.ecore#//PropertyType"/>
@@ -66,6 +69,9 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/version"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Model.ecore#//Model/references"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/displayname"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/category"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//ModelReference">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/version"/>

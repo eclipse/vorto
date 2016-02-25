@@ -9,25 +9,25 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
-import org.eclipse.vorto.core.api.model.datatype.Constraint;
-import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Constraint</b></em>'.
+ * An implementation of the model object '<em><b>Boolean Property Attribute</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.ConstraintImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.ConstraintImpl#getConstraintValues <em>Constraint Values</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl#isValue <em>Value</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ConstraintImpl extends MinimalEObjectImpl.Container implements Constraint {
+public class BooleanPropertyAttributeImpl extends MinimalEObjectImpl.Container implements BooleanPropertyAttribute {
 	/**
 	 * The default value of the '{@link #getType() <em>Type</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -36,7 +36,7 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * @generated
 	 * @ordered
 	 */
-	protected static final ConstraintIntervalType TYPE_EDEFAULT = ConstraintIntervalType.MIN;
+	protected static final BooleanPropertyAttributeType TYPE_EDEFAULT = BooleanPropertyAttributeType.READABLE;
 
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' attribute.
@@ -46,34 +46,34 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * @generated
 	 * @ordered
 	 */
-	protected ConstraintIntervalType type = TYPE_EDEFAULT;
+	protected BooleanPropertyAttributeType type = TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getConstraintValues() <em>Constraint Values</em>}' attribute.
+	 * The default value of the '{@link #isValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getConstraintValues()
+	 * @see #isValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String CONSTRAINT_VALUES_EDEFAULT = null;
+	protected static final boolean VALUE_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #getConstraintValues() <em>Constraint Values</em>}' attribute.
+	 * The cached value of the '{@link #isValue() <em>Value</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getConstraintValues()
+	 * @see #isValue()
 	 * @generated
 	 * @ordered
 	 */
-	protected String constraintValues = CONSTRAINT_VALUES_EDEFAULT;
+	protected boolean value = VALUE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected ConstraintImpl() {
+	protected BooleanPropertyAttributeImpl() {
 		super();
 	}
 
@@ -84,7 +84,7 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 */
 	@Override
 	protected EClass eStaticClass() {
-		return DatatypePackage.Literals.CONSTRAINT;
+		return DatatypePackage.Literals.BOOLEAN_PROPERTY_ATTRIBUTE;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ConstraintIntervalType getType() {
+	public BooleanPropertyAttributeType getType() {
 		return type;
 	}
 
@@ -101,11 +101,11 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setType(ConstraintIntervalType newType) {
-		ConstraintIntervalType oldType = type;
+	public void setType(BooleanPropertyAttributeType newType) {
+		BooleanPropertyAttributeType oldType = type;
 		type = newType == null ? TYPE_EDEFAULT : newType;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.CONSTRAINT__TYPE, oldType, type));
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__TYPE, oldType, type));
 	}
 
 	/**
@@ -113,8 +113,8 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getConstraintValues() {
-		return constraintValues;
+	public boolean isValue() {
+		return value;
 	}
 
 	/**
@@ -122,11 +122,11 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setConstraintValues(String newConstraintValues) {
-		String oldConstraintValues = constraintValues;
-		constraintValues = newConstraintValues;
+	public void setValue(boolean newValue) {
+		boolean oldValue = value;
+		value = newValue;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.CONSTRAINT__CONSTRAINT_VALUES, oldConstraintValues, constraintValues));
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__VALUE, oldValue, value));
 	}
 
 	/**
@@ -137,10 +137,10 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case DatatypePackage.CONSTRAINT__TYPE:
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__TYPE:
 				return getType();
-			case DatatypePackage.CONSTRAINT__CONSTRAINT_VALUES:
-				return getConstraintValues();
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__VALUE:
+				return isValue();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -153,11 +153,11 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case DatatypePackage.CONSTRAINT__TYPE:
-				setType((ConstraintIntervalType)newValue);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__TYPE:
+				setType((BooleanPropertyAttributeType)newValue);
 				return;
-			case DatatypePackage.CONSTRAINT__CONSTRAINT_VALUES:
-				setConstraintValues((String)newValue);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__VALUE:
+				setValue((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -171,11 +171,11 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-			case DatatypePackage.CONSTRAINT__TYPE:
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
-			case DatatypePackage.CONSTRAINT__CONSTRAINT_VALUES:
-				setConstraintValues(CONSTRAINT_VALUES_EDEFAULT);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__VALUE:
+				setValue(VALUE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -189,10 +189,10 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case DatatypePackage.CONSTRAINT__TYPE:
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__TYPE:
 				return type != TYPE_EDEFAULT;
-			case DatatypePackage.CONSTRAINT__CONSTRAINT_VALUES:
-				return CONSTRAINT_VALUES_EDEFAULT == null ? constraintValues != null : !CONSTRAINT_VALUES_EDEFAULT.equals(constraintValues);
+			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE__VALUE:
+				return value != VALUE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -209,10 +209,10 @@ public class ConstraintImpl extends MinimalEObjectImpl.Container implements Cons
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (type: ");
 		result.append(type);
-		result.append(", constraintValues: ");
-		result.append(constraintValues);
+		result.append(", value: ");
+		result.append(value);
 		result.append(')');
 		return result.toString();
 	}
 
-} //ConstraintImpl
+} //BooleanPropertyAttributeImpl
