@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.service.templates.java</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
