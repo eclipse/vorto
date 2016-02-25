@@ -22,6 +22,7 @@
 		<module>org.eclipse.vorto.codegen.examples.markdown</module>
 		<module>org.eclipse.vorto.codegen.examples.bosch</module>
 		<module>org.eclipse.vorto.codegen.examples.ios</module>
+		<module>org.eclipse.vorto.codegen.examples.latex</module>
   </modules>
   
 </project>
