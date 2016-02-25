@@ -39,20 +39,28 @@ public class DatatypeValueConverter extends DefaultTerminalConverters {
 			public Map<String, String> getImportedModules(ICompositeNode rootNode) {
 				Map<String, String> importedModules = new HashMap<String, String>();
 				
-				rootNode.getAsTreeIterable().forEach(new Consumer<INode>() {
-					public void accept(INode t) {
-						String textWithoutWhitespace = Strings.removeLeadingWhitespace(t.getText());
-						if (textWithoutWhitespace != null && textWithoutWhitespace.startsWith("using")) {
-							String[] components = textWithoutWhitespace.split("\\s+");
-							if (components.length > 1) {
-								String[] namespace = components[1].split("\\.");
-								importedModules.put(namespace[namespace.length-1], String.join(".", Arrays.copyOfRange(namespace, 0, namespace.length-1)));
-							}
-						}
-					}
-				});
+				rootNode.getAsTreeIterable().forEach(new Csmr(importedModules));
 				
 				return importedModules;
+			}
+			
+			class Csmr implements Consumer<INode>{
+				private Map<String, String> importedModules = new HashMap<String, String>();
+				
+				public Csmr(Map<String, String> importedModules) {
+					this.importedModules = importedModules;
+				}
+				
+				public void accept(INode t) {
+					String textWithoutWhitespace = Strings.removeLeadingWhitespace(t.getText());
+					if (textWithoutWhitespace != null && textWithoutWhitespace.startsWith("using")) {
+						String[] components = textWithoutWhitespace.split("\\s+");
+						if (components.length > 1) {
+							String[] namespace = components[1].split("\\.");
+							importedModules.put(namespace[namespace.length-1], String.join(".", Arrays.copyOfRange(namespace, 0, namespace.length-1)));
+						}
+					}
+				}
 			}
         };
 	}
