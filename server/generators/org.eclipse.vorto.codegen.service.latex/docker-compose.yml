@@ -1,0 +1,10 @@
+# docker-compose.yml
+vorto-latex-generator-web:
+  build: .
+  container_name: vorto-latex-generator
+  ports:
+   - 9006:9006
+  environment:
+    - VORTO_SERVICE_REPOSITORYURL=http://192.168.99.100:8080/infomodelrepository/rest
+    - SERVER_CONTEXTPATH=/vorto-latex
+    - SERVER_PORT=9006

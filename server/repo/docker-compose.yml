@@ -1,0 +1,29 @@
+# docker-compose.yml
+web:
+  build: .
+  container_name: vorto-repo
+  ports:
+   - 8080:8080
+  links:
+   - db
+  environment:
+    - SPRING_DATASOURCE_URL=jdbc:mysql://192.168.99.100:3306/vorto
+    - SPRING_DATASOURCE_USERNAME=vorto
+    - SPRING_DATASOURCE_PASSWORD=root
+    - SERVER_PORT=8080
+    - SERVER_CONTEXTPATH=/infomodelrepository
+    - MAIL_SMTP_HOST=localhost
+    - MAIL_SMTP_PORT=25
+    - MAIL_FROM=vorto-dev@eclipse.org
+db:
+  image: mysql
+  container_name: vortodb
+  expose:
+    - "3306"
+  ports:
+    - "3306:3306"
+  environment:
+   MYSQL_ROOT_PASSWORD: root
+   MYSQL_USER: vorto
+   MYSQL_PASSWORD: root
+   MYSQL_DATABASE: vorto
