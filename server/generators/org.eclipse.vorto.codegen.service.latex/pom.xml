@@ -6,8 +6,8 @@
 		<artifactId>generators</artifactId>
 		<version>0.4.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>org.eclipse.vorto.codegen.documentation.markdown</artifactId>
-	<description>Generates markdown documentation for a given information model</description>
+	<artifactId>org.eclipse.vorto.codegen.service.latex</artifactId>
+	<description>Generates latex documentation for a given information model</description>
 	<packaging>war</packaging>
 
 	<dependencies>
@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.markdown</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.examples.latex</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -35,7 +35,7 @@
 
 
 	<build>
-		<finalName>vorto-markdown</finalName>
+		<finalName>vorto-latex</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>

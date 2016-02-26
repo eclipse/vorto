@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.documentation.markdown;
+package org.eclipse.vorto.codegen.service.markdown;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.examples.markdown.MarkdownGenerator;
