@@ -22,7 +22,6 @@ class PlatformGeneratorMainTemplate implements IFileTemplate<IGeneratorProjectCo
 		import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 		import org.springframework.boot.SpringApplication;
 		import org.springframework.boot.autoconfigure.SpringBootApplication;
-		import org.springframework.boot.builder.SpringApplicationBuilder;
 		import org.springframework.context.annotation.Bean;
 		
 		@SpringBootApplication
@@ -35,11 +34,6 @@ class PlatformGeneratorMainTemplate implements IFileTemplate<IGeneratorProjectCo
 			
 			public static void main(String[] args) {
 				SpringApplication.run(«context.generatorName»GeneratorMicroService.class, args);
-			}
-		
-			@Override
-			protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-				return application.sources(«context.generatorName»GeneratorMicroService.class);
 			}
 		}
 		'''

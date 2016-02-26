@@ -19,7 +19,6 @@ import org.eclipse.vorto.codegen.examples.markdown.MarkdownGenerator;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -35,10 +34,5 @@ public class MarkdownGeneratorMicroService extends AbstractBackendCodeGenerator 
 	
 	public static void main(String[] args) {
 		SpringApplication.run(MarkdownGeneratorMicroService.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(MarkdownGeneratorMicroService.class);
 	}
 }

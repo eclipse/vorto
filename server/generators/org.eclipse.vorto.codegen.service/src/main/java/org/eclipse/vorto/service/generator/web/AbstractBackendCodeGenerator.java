@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = { "org.eclipse.vorto.service.generator" })
 @EnableConfigurationProperties
-public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
+public class AbstractBackendCodeGenerator {
 
 	private RestTemplate restTemplate;
 	

@@ -26,7 +26,7 @@ class MicroServicePomTemplate implements IFileTemplate<IGeneratorProjectContext>
 			<groupId>«context.packageName»</groupId>
 			<artifactId>«context.packageName».«context.generatorName.toLowerCase».service</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
-			<packaging>war</packaging>
+			<packaging>jar</packaging>
 		
 			<properties>
 				<vorto.version>0.4.0-SNAPSHOT</vorto.version>
@@ -69,6 +69,33 @@ class MicroServicePomTemplate implements IFileTemplate<IGeneratorProjectContext>
 					<scope>provided</scope>
 				</dependency>
 			</dependencies>
+			<build>
+				<finalName>vorto-«context.generatorName.toLowerCase»</finalName>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>repackage</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jar-plugin</artifactId>
+						<configuration>
+							<archive>
+								<manifest>
+									<mainClass>«context.packageName».«context.generatorName.toLowerCase».service.«context.generatorName»GeneratorMicroService</mainClass>
+								</manifest>
+							</archive>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</project>
 		'''
 	}

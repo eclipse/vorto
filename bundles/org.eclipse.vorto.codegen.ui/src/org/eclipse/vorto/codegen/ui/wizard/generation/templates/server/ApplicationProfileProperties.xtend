@@ -17,6 +17,7 @@ class ApplicationProfileProperties implements IFileTemplate<IGeneratorProjectCon
 		'''
 		vorto.service.repositoryUrl=http://localhost:8080/infomodelrepository/rest
 		server.contextPath=/vorto-«context.generatorName.toLowerCase»
+		server.host=localhost
 		server.port=9001
 		'''
 	}
