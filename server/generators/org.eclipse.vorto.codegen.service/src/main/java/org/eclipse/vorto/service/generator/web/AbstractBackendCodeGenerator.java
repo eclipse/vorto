@@ -35,6 +35,9 @@ public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
 	@Autowired
 	private IVortoCodeGenerator platformGenerator;
 	
+	@Value("${server.host}") 
+	private String serviceUrl = "localhost";
+	
 	@Value("${server.port}") 
 	private int port;
 	
@@ -52,7 +55,7 @@ public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
 	}
 	
 	public void register(String serviceKey){
-		final String serviceUrl = "http://localhost:"+port+contextPath+"/rest/generation";
+		final String serviceUrl = "http://"+this.serviceUrl+":"+port+contextPath+"/rest/generation";
 		LOGGER.info("Registering {} with service url {}",serviceKey,serviceUrl);
 		LOGGER.info("Repository Server Url: {}",repositoryBasePath);
 		deRegister(serviceKey);
