@@ -18,10 +18,10 @@ import org.eclipse.vorto.core.api.model.datatype.Presence;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PresenceImpl#isMandatory <em>Mandatory</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */

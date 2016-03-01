@@ -113,7 +113,7 @@ public class ModelRepositoryViewPart extends ViewPart {
             	if (viewer.getSelection().isEmpty()) {
                     return;
                 }
-            	ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
+            	ModelResource model = (ModelResource) viewer.getSelection();
             	if (model.getId().getModelType() == ModelType.InformationModel) {
             		addListGeneratorsToMenu(manager, model);
             	}

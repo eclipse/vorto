@@ -76,7 +76,7 @@ public class ModelHelper {
 	public static EList<Entity> getReferencedEntities(FunctionBlock fb) {
 		EList<Entity> entities = new BasicEList<Entity>();
 		for (Type type : getReferencedTypes(fb)) {
-			if (type instanceof Entity) {
+			if ((type instanceof Entity) && (!entities.contains((Entity) type))) {
 				entities.add((Entity) type);
 			}
 		}
@@ -86,7 +86,7 @@ public class ModelHelper {
 	public static EList<Enum> getReferencedEnums(FunctionBlock fb) {
 		EList<Enum> enums = new BasicEList<Enum>();
 		for (Type type : getReferencedTypes(fb)) {
-			if (type instanceof Enum) {
+			if ((type instanceof Enum) && (!enums.contains((Enum) type))) {
 				enums.add((Enum) type);
 			}
 		}

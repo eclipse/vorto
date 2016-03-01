@@ -24,7 +24,7 @@ class PropertyConstraintMappingValidation {
 
 	var errorMsg = DatatypeSystemMessage.ERROR_CONSTRAINTTYPE_INVALID ;
 
-	val String[] intervalArr = #["MAX", "MIN"]
+	val String[] intervalArr = #["MAX", "MIN", "SCALING"]
 	val String[] strArr = #["STRLEN", "REGEX"]
 	val String[] mimeArr = #["MIMETYPE"]
 	val String[] byteArr = intervalArr + mimeArr

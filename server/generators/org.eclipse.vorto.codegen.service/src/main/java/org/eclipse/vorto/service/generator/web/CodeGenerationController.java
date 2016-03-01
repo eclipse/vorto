@@ -60,10 +60,10 @@ public class CodeGenerationController {
 	private String serviceDocumentationUrl;
 	
 	@Value("${vorto.service.image32x32}") 
-	private String serviceIconSmall;
+	private String serviceIconSmall = "img/icon32x32.png";
 	
 	@Value("${vorto.service.image144x144}") 
-	private String serviceIconBig;
+	private String serviceIconBig = "img/icon144x144.png";;
 	
 	@Value("${vorto.service.classifier}")
 	private ServiceClassifier classifier;

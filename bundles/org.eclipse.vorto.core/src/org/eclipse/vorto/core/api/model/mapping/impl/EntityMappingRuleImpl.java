@@ -11,6 +11,8 @@ import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Entity Mapping Rule</b></em>'.
  * <!-- end-user-doc -->
+ * <p>
+ * </p>
  *
  * @generated
  */

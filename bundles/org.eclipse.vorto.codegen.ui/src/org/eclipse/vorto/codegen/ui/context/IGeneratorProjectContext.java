@@ -40,16 +40,8 @@ public interface IGeneratorProjectContext extends IProjectContext {
 
 	/**
 	 * 
-	 * @return flag if template code is supposed to be generated for the target
-	 *         project
+	 * @return flag if the generator should support server-side deployment.
 	 */
-	boolean isGenerateTemplate();
-
-	/**
-	 * 
-	 * @return flat if example reference code generator project is supposed to
-	 *         be generated along with the target project.
-	 */
-	boolean isGenerateExampleProject();
+	boolean isMicroServiceSupport();
 
 }

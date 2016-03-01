@@ -15,78 +15,27 @@
  
 package org.eclipse.vorto.codegen.ui.wizard.generation.templates
 
-import java.util.ArrayList
-import java.util.List
-import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
-class PluginBuildFileTemplate<Context> implements ITemplate<Context> {
+class PluginBuildFileTemplate implements IFileTemplate<IGeneratorProjectContext> {
 	
-	val String SOURCE = "source.. = "; 
-	val String OUTPUT = "output.. = ";
-	val String BIN_INCLUDES = "bin.includes = "; 
-	val String BIN_EXCLUDES = "bin.excludes = "; 
-	val String SRC_INCLUDES = "src.includes = "; 
-	val String SRC_EXCLUDES = "src.excludes = "; 
-
-	List<String> sources = new ArrayList<String>();
-	List<String> output = new ArrayList<String>();
-	List<String> binIncludes = new ArrayList<String>();
-	List<String> binExcludes = new ArrayList<String>();
-	List<String> srcIncludes = new ArrayList<String>();
-	List<String> srcExcludes = new ArrayList<String>();
-	
-	def PluginBuildFileTemplate<Context> setSources(List<String> sources) {
-		this.sources = sources;
-		return this;
-	}
-
-	def PluginBuildFileTemplate<Context> setOutput(List<String> output) {
-		this.output = output;
-		return this;
-	}
-
-	def PluginBuildFileTemplate<Context> setBinIncludes(List<String> binIncludes) {
-		this.binIncludes = binIncludes;
-		return this;
+	override getFileName(IGeneratorProjectContext context) {
+		"build.properties"
 	}
 	
-	def PluginBuildFileTemplate<Context> setBinExcludes(List<String> binExcludes) {
-		this.binExcludes = binExcludes;
-		return this;
+	override getPath(IGeneratorProjectContext context) {
+		return null;
 	}
 	
-	def PluginBuildFileTemplate<Context> setSrcIncludes(List<String> srcIncludes) {
-		this.srcIncludes = srcIncludes;
-		return this;
-	}
-	
-		def PluginBuildFileTemplate<Context> setSrcExcludes(List<String> srcExcludes) {
-		this.srcExcludes = srcExcludes;
-		return this;
-	}
-
-	public override String getContent(Context context) {
-		return '''
-			«getList(SOURCE, sources)»
-			«getList(OUTPUT, output)»
-			«getList(BIN_INCLUDES, binIncludes)»
-			«getList(BIN_EXCLUDES, binExcludes)»
-			«getList(SRC_INCLUDES, srcIncludes)»
-			«getList(SRC_EXCLUDES, srcExcludes)»
+	override getContent(IGeneratorProjectContext context) {
+		'''
+		source.. = src/,\
+		           xtend-gen/
+		bin.includes = META-INF/,\
+					   .,\
+		               plugin.xml
 		'''
 	}
 	
-	def getList(String startString, List<String> list) 
-		'''«IF !list.isEmpty»
-		«startString»«FOR iterator : list»«iterator.toString»«IF !list.indexOf(iterator).equals(list.size - 1)»,\
-		«getSpace(startString)»«ELSE»
-		«ENDIF»«ENDFOR»«ENDIF»'''
-		
-	def String getSpace(String startString) {
-		var charArray = startString.toCharArray;
-		for (i : 0 ..< startString.length) {
-			charArray.set(i," ");
-		}
-		return new String(charArray);
-	}
 }

@@ -67,7 +67,7 @@ public class GeneratorWizard extends Wizard implements INewWizard,
 		progressTaskExecutionService.syncRun(new ProjectCreationTask(
 				generatorWizardPage));
 
-		openFileWithDefaultEditor(generatorWizardPage.getProjectName(),
+		openFileWithDefaultEditor(generatorWizardPage.getPackageName()+"."+generatorWizardPage.getGeneratorName().toLowerCase(),
 				getPath(generatorWizardPage));
 
 		BasicNewProjectResourceWizard

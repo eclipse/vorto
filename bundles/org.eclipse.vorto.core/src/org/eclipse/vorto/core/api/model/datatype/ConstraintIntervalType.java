@@ -66,7 +66,15 @@ public enum ConstraintIntervalType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	MIMETYPE(4, "mimetype", "MIMETYPE");
+	MIMETYPE(4, "mimetype", "MIMETYPE"), /**
+	 * The '<em><b>Scaling</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #SCALING_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	SCALING(5, "scaling", "SCALING");
 
 	/**
 	 * The '<em><b>Min</b></em>' literal value.
@@ -144,6 +152,21 @@ public enum ConstraintIntervalType implements Enumerator {
 	public static final int MIMETYPE_VALUE = 4;
 
 	/**
+	 * The '<em><b>Scaling</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Scaling</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #SCALING
+	 * @model name="scaling" literal="SCALING"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int SCALING_VALUE = 5;
+
+	/**
 	 * An array of all the '<em><b>Constraint Interval Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -156,6 +179,7 @@ public enum ConstraintIntervalType implements Enumerator {
 			STRLEN,
 			REGEX,
 			MIMETYPE,
+			SCALING,
 		};
 
 	/**
@@ -170,8 +194,6 @@ public enum ConstraintIntervalType implements Enumerator {
 	 * Returns the '<em><b>Constraint Interval Type</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param literal the literal.
-	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static ConstraintIntervalType get(String literal) {
@@ -188,8 +210,6 @@ public enum ConstraintIntervalType implements Enumerator {
 	 * Returns the '<em><b>Constraint Interval Type</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param name the name.
-	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static ConstraintIntervalType getByName(String name) {
@@ -206,8 +226,6 @@ public enum ConstraintIntervalType implements Enumerator {
 	 * Returns the '<em><b>Constraint Interval Type</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the integer value.
-	 * @return the matching enumerator or <code>null</code>.
 	 * @generated
 	 */
 	public static ConstraintIntervalType get(int value) {
@@ -217,6 +235,7 @@ public enum ConstraintIntervalType implements Enumerator {
 			case STRLEN_VALUE: return STRLEN;
 			case REGEX_VALUE: return REGEX;
 			case MIMETYPE_VALUE: return MIMETYPE;
+			case SCALING_VALUE: return SCALING;
 		}
 		return null;
 	}

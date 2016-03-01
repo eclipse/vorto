@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -49,14 +48,12 @@ public class GeneratorWizardPage extends WizardPage implements
 	private static final String WORKSPACE_FOLDER_SELECTION = "Workspace folder selection";
 	public static final String PROJECTNAME_REGEX = "[^a-zA-Z0-9 \\._]";
 	public static final String DEFAULT_PROJECT_NAME = "MyGenerator";
-	private static final boolean TEMPLATE_DEFAULT = true;
-	private static final boolean JSON_DEFAULT = false;
+	private static final boolean MICRO_SERVICE_SUPPORT_DEFAULT = true;
 	private Text txtProjectName;
 	private Text txtWorkspaceLocation;
 	private Text txtPackageName;
 	private String workspaceLocation;
-	private boolean isTemplateSelected;
-	private boolean isJsonSelected;
+	private boolean isMicroServiceSelected;
 
 	public GeneratorWizardPage(String pageName) {
 		super(pageName);
@@ -143,37 +140,19 @@ public class GeneratorWizardPage extends WizardPage implements
 		});
 		new Label(grpGeneratorProject, SWT.NONE);
 
-		Button btnCreateTemplate = new Button(grpGeneratorProject, SWT.CHECK);
-		btnCreateTemplate
-				.setToolTipText("This option generates template code into the code generator project.");
-		btnCreateTemplate.setSelection(TEMPLATE_DEFAULT);
-		btnCreateTemplate.addSelectionListener(new SelectionAdapter() {
+		Button btnCreateMicroService = new Button(grpGeneratorProject, SWT.CHECK);
+		btnCreateMicroService
+				.setToolTipText("This option adds support for running the generator as a server-side micro-service.");
+		btnCreateMicroService.setSelection(MICRO_SERVICE_SUPPORT_DEFAULT);
+		btnCreateMicroService.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				isTemplateSelected = !isTemplateSelected;
+				isMicroServiceSelected = !isMicroServiceSelected;
 			}
 		});
-		btnCreateTemplate.setText(" Create Template");
-		new Label(grpGeneratorProject, SWT.NONE);
+		btnCreateMicroService.setText(" Server-side Generation Support");
 		new Label(grpGeneratorProject, SWT.NONE);
 
-		Button btnCreateSeparatJson = new Button(grpGeneratorProject, SWT.CHECK);
-		btnCreateSeparatJson
-				.setToolTipText("Generates a separate code generator project which creates a JSON representation from a functionblock model");
-		btnCreateSeparatJson.setSelection(JSON_DEFAULT);
-		btnCreateSeparatJson.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				isJsonSelected = !isJsonSelected;
-			}
-		});
-		btnCreateSeparatJson.setText(" Add Example Code Generator Project");
-
-		ControlDecoration controlDecoration = new ControlDecoration(
-				btnCreateSeparatJson, SWT.RIGHT | SWT.TOP);
-		controlDecoration
-				.setDescriptionText("This option generates a separate example code generator project for reference.");
-		new Label(grpGeneratorProject, SWT.NONE);
 		initialize();
 		try {
 			dialogChanged();
@@ -188,8 +167,7 @@ public class GeneratorWizardPage extends WizardPage implements
 		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/"
 				+ DEFAULT_PROJECT_NAME);
 		txtPackageName.setText(DEFAULT_PACKAGE_NAME);
-		isTemplateSelected = TEMPLATE_DEFAULT;
-		isJsonSelected = JSON_DEFAULT;
+		isMicroServiceSelected = MICRO_SERVICE_SUPPORT_DEFAULT;
 	}
 
 	private void handleBrowse(SelectionEvent e) throws IOException {
@@ -312,12 +290,7 @@ public class GeneratorWizardPage extends WizardPage implements
 		return getPackageName().replaceAll("\\.", "/");
 	}
 
-	public boolean isGenerateTemplate() {
-		return isTemplateSelected;
+	public boolean isMicroServiceSupport() {
+		return isMicroServiceSelected;
 	}
-
-	public boolean isGenerateExampleProject() {
-		return isJsonSelected;
-	}
-
 }

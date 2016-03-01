@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = { "org.eclipse.vorto.service.generator" })
 @EnableConfigurationProperties
-public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
+public class AbstractBackendCodeGenerator {
 
 	private RestTemplate restTemplate;
 	
@@ -34,6 +33,9 @@ public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
 	
 	@Autowired
 	private IVortoCodeGenerator platformGenerator;
+	
+	@Value("${server.host}") 
+	private String serviceUrl = "localhost";
 	
 	@Value("${server.port}") 
 	private int port;
@@ -52,7 +54,7 @@ public class AbstractBackendCodeGenerator extends SpringBootServletInitializer {
 	}
 	
 	public void register(String serviceKey){
-		final String serviceUrl = "http://localhost:"+port+contextPath+"/rest/generation";
+		final String serviceUrl = "http://"+this.serviceUrl+":"+port+contextPath+"/rest/generation";
 		LOGGER.info("Registering {} with service url {}",serviceKey,serviceUrl);
 		LOGGER.info("Repository Server Url: {}",repositoryBasePath);
 		deRegister(serviceKey);

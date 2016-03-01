@@ -11,5 +11,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: target/classes/,
  lib/jackson-core-2.6.2.jar
-Export-Package: org.eclipse.vorto.codegen.examples.thingworx;uses:="org.osgi.framework,org.eclipse.ui.plugin"
 Bundle-Vendor: ThingWorx, a PTC Business

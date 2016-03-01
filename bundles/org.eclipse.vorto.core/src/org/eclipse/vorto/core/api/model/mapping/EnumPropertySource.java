@@ -11,10 +11,10 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumPropertySource#getProperty <em>Property</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumPropertySource()
  * @model

@@ -19,7 +19,6 @@ import org.eclipse.vorto.codegen.examples.mqtt.MQTTPlatformGenerator;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -36,10 +35,5 @@ public class MQTTGeneratorMicroService extends AbstractBackendCodeGenerator {
 	
 	public static void main(String[] args) {
 		SpringApplication.run(MQTTGeneratorMicroService.class, args);
-	}
-
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(MQTTGeneratorMicroService.class);
 	}
 }

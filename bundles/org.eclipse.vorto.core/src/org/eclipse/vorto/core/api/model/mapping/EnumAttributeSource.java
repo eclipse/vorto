@@ -10,10 +10,10 @@ package org.eclipse.vorto.core.api.model.mapping;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.EnumAttributeSource#getAttribute <em>Attribute</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getEnumAttributeSource()
  * @model
