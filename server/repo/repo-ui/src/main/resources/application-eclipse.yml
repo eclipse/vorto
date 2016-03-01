@@ -1,6 +1,6 @@
 server:
   port: 8080
-  contextPath: /repo
+  contextPath: /infomodelrepository
   
 mail:
   smtp:
