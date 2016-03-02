@@ -20,6 +20,9 @@ import org.eclipse.vorto.repository.internal.service.emf.InformationModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.MappingModelParser;
 import org.eclipse.vorto.repository.model.ModelType;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class ModelParserFactory {
 	
 	public static IModelParser getParser(String fileName) {

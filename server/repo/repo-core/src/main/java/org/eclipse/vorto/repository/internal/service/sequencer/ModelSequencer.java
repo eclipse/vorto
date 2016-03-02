@@ -35,8 +35,9 @@ import org.modeshape.jcr.api.sequencer.Sequencer;
 import org.springframework.core.io.ClassPathResource;
 
 /**
- * Sequencer which parses Vorto Models
- *
+ * Model Sequencer inspects the uploaded DSL model and extracts all information that is supposed to be added as specific JCR properties and thus indexed for searching.
+ * 
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelSequencer extends Sequencer {
 
@@ -55,7 +56,7 @@ public class ModelSequencer extends Sequencer {
 
 		Binary binaryValue = inputProperty.getBinary();
 		CheckArg.isNotNull(binaryValue, "binary");
-		ModelResource modelResource = ModelParserFactory.getParser(outputNode.getPath()).parse(binaryValue.getStream(),outputNode.getSession());
+		ModelResource modelResource = ModelParserFactory.getParser(outputNode.getPath()).parse(binaryValue.getStream());
 		
 		outputNode.setProperty("vorto:description", modelResource
 				.getDescription() != null ? modelResource.getDescription()

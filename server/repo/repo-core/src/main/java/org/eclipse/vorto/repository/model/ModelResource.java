@@ -19,11 +19,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-
 public class ModelResource {
 	
 	protected ModelId id;

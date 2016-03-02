@@ -28,9 +28,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Component
 public class JcrRepositoryFactory implements FactoryBean<Repository> {

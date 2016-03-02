@@ -15,9 +15,7 @@
 package org.eclipse.vorto.repository.service;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelNotFoundException extends ModelRepositoryException {
 

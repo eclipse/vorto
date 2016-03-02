@@ -16,7 +16,15 @@ package org.eclipse.vorto.repository.validation;
 
 import org.eclipse.vorto.repository.model.ModelResource;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface IModelValidator {
-
+	
+	/**
+	 * Validates an uploaded model resource
+	 * @param modelResource
+	 * @throws ValidationException
+	 */
 	void validate(ModelResource modelResource) throws ValidationException;
 }

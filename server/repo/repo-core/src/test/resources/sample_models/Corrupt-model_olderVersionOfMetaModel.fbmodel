@@ -1,0 +1,11 @@
+functionblock ColorLight {
+	version 1.0.0
+	displayname "ColorLight"
+	description "Function block model for ColorLight"
+	category demo
+	
+	operations {
+		setColor(color as Color)
+	}
+
+}

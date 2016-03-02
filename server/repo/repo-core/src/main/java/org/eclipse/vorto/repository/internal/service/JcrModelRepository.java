@@ -40,7 +40,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -48,10 +47,6 @@ import javax.jcr.query.RowIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.repository.governance.GovernanceResult;
-import org.eclipse.vorto.repository.governance.IGovernance;
-import org.eclipse.vorto.repository.governance.IGovernanceCallback;
-import org.eclipse.vorto.repository.internal.governance.AlwaysApproveGovernance;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
@@ -60,7 +55,6 @@ import org.eclipse.vorto.repository.model.ModelEMFResource;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
-import org.eclipse.vorto.repository.model.ModelUploadHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
@@ -87,10 +81,10 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private Session session;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
 
@@ -109,10 +103,10 @@ public class JcrModelRepository implements IModelRepository {
 	public void setUserRepository(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-	
+
 	@Autowired
 	private INotificationService notificationService;
-	
+
 	public INotificationService getNotificationService() {
 		return notificationService;
 	}
@@ -120,10 +114,7 @@ public class JcrModelRepository implements IModelRepository {
 	public void setNotificationService(INotificationService notificationService) {
 		this.notificationService = notificationService;
 	}
-
-	@Autowired(required = false)
-	private IGovernance governance = new AlwaysApproveGovernance();
-
+	
 	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
 
 	private File tmpDirectory = null;
@@ -137,14 +128,9 @@ public class JcrModelRepository implements IModelRepository {
 		}
 		try {
 			List<ModelResource> modelResources = new ArrayList<>();
-			QueryManager queryManager = session.getWorkspace().getQueryManager();
-			Query query ;
-			String jcrStatementQuery = modelSearchUtil.getJCRStatementQuery(queryExpression);
-			if(jcrStatementQuery.equals(queryExpression)){
-				query = queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
-			}else{
-				query = queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.JCR_SQL2);
-			}
+
+			Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
+
 			logger.debug("Searching repository with expression " + query.getStatement());
 			QueryResult result = query.execute();
 			RowIterator rowIterator = result.getRows();
@@ -153,7 +139,11 @@ public class JcrModelRepository implements IModelRepository {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
 				if (currentNode.hasProperty("vorto:type") && !isMappingNode(currentNode)) {
-					modelResources.add(createModelResource(currentNode));
+					try {
+						modelResources.add(createModelResource(currentNode));
+					} catch (Exception ex) {
+						// model is corrupt ,ignoring....
+					}
 				}
 			}
 
@@ -207,13 +197,13 @@ public class JcrModelRepository implements IModelRepository {
 	public byte[] getModelContent(ModelId modelId, ContentType contentType) {
 		try {
 			Node folderNode = session.getNode(modelId.getFullPath());
-			Node fileNode = (Node) folderNode.getNodes(modelId.getName()+"*").next();
+			Node fileNode = (Node) folderNode.getNodes(modelId.getName() + "*").next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
 			if (contentType == ContentType.XMI) {
 				ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName())
-						.parse(is, session);
+						.parse(is);
 				return resource.toXMI();
 			} else {
 				return IOUtils.toByteArray(is);
@@ -228,8 +218,11 @@ public class JcrModelRepository implements IModelRepository {
 	@Override
 	public UploadModelResult upload(byte[] content, String fileName) {
 		try {
-			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content),
-					session);
+			if (StringUtils.isEmpty(fileName)) {
+				return UploadModelResult.invalid(new ValidationException("Filename is invalid", null));
+			}
+
+			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
 
 			for (IModelValidator validator : validators) {
 				validator.validate(resource);
@@ -258,69 +251,51 @@ public class JcrModelRepository implements IModelRepository {
 		final File uploadedFile;
 		try {
 			uploadedFile = loadUploadedFile(handleId);
-			logger.debug("Found temporary file for handleId : " + uploadedFile.getName());
+			logger.info("Found temporary file for handleId : " + uploadedFile.getName());
 			contentAsStream = new FileInputStream(uploadedFile);
 		} catch (FileNotFoundException e1) {
 			throw new ModelNotFoundException("Could not find uploaded model with the specified handle", e1);
 		}
 
-		final ModelResource resource = ModelParserFactory.getParser(uploadedFile.getName()).parse(contentAsStream,
-				session);
-
 		try {
-			governance.start(new ModelUploadHandle(resource.getId(), resource.getModelType(),
-					IOUtils.toByteArray(new FileInputStream(uploadedFile))), new IGovernanceCallback() {
+			final byte[] content = IOUtils.toByteArray(new FileInputStream(uploadedFile));
+			final ModelResource resource = ModelParserFactory.getParser(uploadedFile.getName()).parse(contentAsStream);
+			
+			logger.info(
+					"Checkin for " + resource.getId().getPrettyFormat() + " was approved. Proceeding with checkin...");
+			Node folderNode = createNodeForModelId(resource.getId());
+			Node fileNode = folderNode.addNode(resource.getId().getName() + resource.getModelType().getExtension(),
+					"nt:file");
+			fileNode.addMixin("vorto:meta");
+			fileNode.addMixin("mix:referenceable");
+			fileNode.setProperty("vorto:author", author);
+			Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+			contentNode.setProperty("jcr:data", binary);
+			session.save();
+			logger.info("Checkin successful.");
+			FileUtils.deleteQuietly(uploadedFile);
 
-						@Override
-						public void processUploadResult(GovernanceResult uploadResult) {
-							if (uploadResult.isApproved()) {
-								try {
-									logger.debug(
-											"Checkin for " + uploadResult.getHandle().getModelId().getPrettyFormat()
-													+ " was approved. Proceeding with checkin...");
-									Node folderNode = createNodeForModelId(uploadResult.getHandle().getModelId());
-									Node fileNode = folderNode.addNode(
-											uploadResult.getHandle().getModelId().getName()
-													+ uploadResult.getHandle().getModelType().getExtension(),
-											"nt:file");
-									fileNode.addMixin("vorto:meta");
-									fileNode.addMixin("mix:referenceable");
-									fileNode.setProperty("vorto:author", author);
-									Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-									Binary binary = session.getValueFactory().createBinary(
-											new ByteArrayInputStream(uploadResult.getHandle().getContent()));
-									contentNode.setProperty("jcr:data", binary);
-									session.save();
-									logger.debug("Checkin successful.");
-									FileUtils.deleteQuietly(uploadedFile);
-									
-									// Email Notification 
-									notifyWatchers(resource, author);
-									
-								} catch (RepositoryException e) {
-									throw new RuntimeException(e);
-								}
-							} else {
-								logger.warn(resource.getId().getPrettyFormat() + " was not approved for checkin");
-							}
-						}
+			// Email Notification
+			notifyWatchers(resource, author);
 
-						private void notifyWatchers(ModelResource resource, String author) {
-							
-							resource.setAuthor(author);
-							
-							for (User recipient : userRepository.findAll()){
-								if (recipient.getHasWatchOnRepository()){
-									Map<String,Object> context = new HashMap<>(2);
-									context.put("user", recipient);
-									context.put("model", resource);			
-									notificationService.sendNotification(new CheckinMessage(recipient, resource));
-								}
-							}							
-						}
-					});
-		} catch (IOException e) {
-			throw new RuntimeException("Something went wrong when reading the model content", e);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Problem checking in uploaded model", e);
+		}
+
+	}
+
+	private void notifyWatchers(ModelResource resource, String author) {
+
+		resource.setAuthor(author);
+
+		for (User recipient : userRepository.findAll()) {
+			if (recipient.getHasWatchOnRepository()) {
+				Map<String, Object> context = new HashMap<>(2);
+				context.put("user", recipient);
+				context.put("model", resource);
+				notificationService.sendNotification(new CheckinMessage(recipient, resource));
+			}
 		}
 	}
 
@@ -352,7 +327,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node folderNode = session.getNode(modelId.getFullPath());
 
 			Node modelFileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode();
-			
+
 			ModelResource modelResource = createModelResource(modelFileNode);
 			if (modelResource.getModelType() == ModelType.InformationModel) {
 				NodeIterator imageNodeIterator = folderNode.getNodes("img.png*");
@@ -438,7 +413,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = (Node) folderNode.getNodes().next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-			return (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(is, session);
+			return (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
@@ -486,5 +461,4 @@ public class JcrModelRepository implements IModelRepository {
 		}
 		return null;
 	}
-
 }

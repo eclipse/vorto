@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ *******************************************************************************/
 package org.eclipse.vorto.repository.internal.service.utils;
 
 import java.util.ArrayList;
@@ -5,9 +17,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
-import org.modeshape.jcr.api.query.QueryManager;
+import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -115,11 +130,16 @@ public class ModelSearchUtil {
 	 * <li>version:
 	 * </ol>
 	 * <p>
-	 * A search query of the form <i><b>name:ColorLight</b></i> is converted to <i><b>SELECT * FROM SOURCE WHERE name = 'ColorLight'</i></b>
+	 * A search query of the form <i><b>name:ColorLight</b></i> is converted to
+	 * <i><b>SELECT * FROM SOURCE WHERE name = 'ColorLight'</i></b>
 	 * <p>
-	 * A search query of the form <i><b>name:ColorLight version:1.0.0</b></i>  is converted to <i><b>SELECT * FROM SOURCE WHERE name = 'ColorLight' AND version = '1.0.0'</i></b>
+	 * A search query of the form <i><b>name:ColorLight version:1.0.0</b></i> is
+	 * converted to <i><b>SELECT * FROM SOURCE WHERE name = 'ColorLight' AND
+	 * version = '1.0.0'</i></b>
 	 * <p>
-	 * A search query of the form <i><b>name:ColorLight name:Color</b></i>  is converted to <i><b>SELECT * FROM SOURCE WHERE name IN ('ColorLight', 'Color')</i></b>
+	 * A search query of the form <i><b>name:ColorLight name:Color</b></i> is
+	 * converted to <i><b>SELECT * FROM SOURCE WHERE name IN ('ColorLight',
+	 * 'Color')</i></b>
 	 * 
 	 * @param queryExpression
 	 * @return
@@ -249,6 +269,21 @@ public class ModelSearchUtil {
 
 		SearchStrategy(String strategy) {
 			this.strategy = strategy;
+		}
+	}
+
+	public Query createQueryFromExpression(Session session, String queryExpression) {
+		try {
+			QueryManager queryManager = session.getWorkspace().getQueryManager();
+			String jcrStatementQuery = this.getJCRStatementQuery(queryExpression);
+
+			if (jcrStatementQuery.equals(queryExpression)) {
+				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
+			} else {
+				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.JCR_SQL2);
+			}
+		} catch (RepositoryException repoException) {
+			throw new FatalModelRepositoryException("Could not create query from expression", repoException);
 		}
 	}
 }

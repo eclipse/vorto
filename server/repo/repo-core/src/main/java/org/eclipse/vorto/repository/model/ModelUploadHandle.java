@@ -15,9 +15,7 @@
 package org.eclipse.vorto.repository.model;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelUploadHandle {
 	private ModelId modelId;

@@ -19,6 +19,9 @@ import java.util.List;
 import org.eclipse.vorto.repository.model.Comment;
 import org.eclipse.vorto.repository.model.ModelId;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface ICommentService {
 		
     public void createComment(Comment comment) throws Exception;

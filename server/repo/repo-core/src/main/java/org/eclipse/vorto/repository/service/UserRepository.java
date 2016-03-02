@@ -17,7 +17,21 @@ package org.eclipse.vorto.repository.service;
 import org.eclipse.vorto.repository.model.User;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface UserRepository extends CrudRepository<User, Long> {
-    User findByEmail(String email);
+    /**
+     * finds the user by the specified email address
+     * @param email
+     * @return
+     */
+	User findByEmail(String email);
+	
+	/**
+	 * Finds the user by the specified username
+	 * @param username
+	 * @return
+	 */
     User findByUsername(String username);
 }

@@ -1,0 +1,4 @@
+namespace org.eclipse.vorto.examples.type
+entity Color {
+	mandatory color as string
+}

@@ -27,6 +27,9 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class ModelEMFResource extends ModelResource {
 
 	private Model model;
@@ -88,5 +91,9 @@ public class ModelEMFResource extends ModelResource {
 		} else {
 			return "";
 		}
+	}
+	
+	public Model getModel() {
+		return this.model;
 	}
 }

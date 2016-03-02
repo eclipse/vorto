@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.examples.latex.utils
+package org.eclipse.vorto.codegen.utils
 
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
@@ -30,7 +30,7 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeTyp
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral
 
-class Utils {
+public class Utils {
 	def static String getReturnType(ReturnType type) {
 		if (type instanceof ReturnPrimitiveType) {
 			return (type as ReturnPrimitiveType).returnType.getName();

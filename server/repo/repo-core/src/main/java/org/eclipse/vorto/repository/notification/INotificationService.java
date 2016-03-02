@@ -14,7 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.notification;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface INotificationService {
-
+	/**
+	 * Sends the given message using a notification channel, e.g. Email
+	 * @param message
+	 */
 	void sendNotification(IMessage message);
 }

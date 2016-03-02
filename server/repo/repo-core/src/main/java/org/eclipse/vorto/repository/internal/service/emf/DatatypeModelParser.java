@@ -14,47 +14,24 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.internal.service.emf;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.jcr.Session;
-
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
-import org.eclipse.xtext.resource.XtextResource;
-import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class DatatypeModelParser extends AbstractModelParser {
 	
-	private String fileName;
-
 	public DatatypeModelParser(String fileName) {
-		init();
-		this.fileName = fileName;
-	}
-	
-	protected Model doParse(InputStream is,Session session) {
-		Injector injector = new DatatypeStandaloneSetup().createInjectorAndDoEMFRegistration();
-		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-		Resource resource = resourceSet.createResource(URI.createURI("dummy:/"+fileName));
-		try {
-			resource.load(is, resourceSet.getLoadOptions());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-         		
-		return (Model)resource.getContents().get(0);
-	}
-		
-	
-	private void init() {
+		super(fileName);
 		DatatypePackage.eINSTANCE.eClass();
+	}		
+
+	@Override
+	protected Injector getInjector() {
+		return new DatatypeStandaloneSetup().createInjectorAndDoEMFRegistration();
 	}
 	
 }

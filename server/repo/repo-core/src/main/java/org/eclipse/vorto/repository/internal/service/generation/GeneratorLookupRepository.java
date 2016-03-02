@@ -19,9 +19,22 @@ import java.util.List;
 import org.eclipse.vorto.repository.model.Generator;
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface GeneratorLookupRepository extends CrudRepository<Generator, Long> {
-
+	
+	/**
+	 * finds all generators by the specific generator service key
+	 * @param generatorKey
+	 * @return
+	 */
 	List<Generator> findByGeneratorKey(String generatorKey);
 	
+	/**
+	 * Finds all generators by either platform or documentation classifier
+	 * @param classifier
+	 * @return
+	 */
 	List<Generator> findByClassifier(String classifier);
 }

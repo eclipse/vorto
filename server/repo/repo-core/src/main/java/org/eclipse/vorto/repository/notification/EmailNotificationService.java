@@ -29,6 +29,9 @@ import org.springframework.stereotype.Service;
 
 import com.sun.mail.smtp.SMTPMessage;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 @Service
 public class EmailNotificationService implements INotificationService {
 

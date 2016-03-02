@@ -26,6 +26,9 @@ import org.eclipse.vorto.repository.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 @Service
 public class CommentService implements ICommentService{
 

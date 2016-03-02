@@ -16,7 +16,7 @@ package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.examples.latex.utils.Utils
+import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{

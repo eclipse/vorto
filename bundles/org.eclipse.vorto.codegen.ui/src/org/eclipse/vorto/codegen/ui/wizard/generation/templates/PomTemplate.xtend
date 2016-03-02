@@ -20,7 +20,7 @@ class PomTemplate implements IFileTemplate<IGeneratorProjectContext> {
 			<groupId>«context.packageName»</groupId>
 			<artifactId>«context.packageName».«context.generatorName.toLowerCase»</artifactId>
 		    <version>1.0.0-SNAPSHOT</version>
-			<packaging>jar</packaging>
+			<packaging>eclipse-plugin</packaging>
 			
 			<properties>
 				<tycho-version>0.20.0</tycho-version>
@@ -55,6 +55,11 @@ class PomTemplate implements IFileTemplate<IGeneratorProjectContext> {
 					<id>Xtext Update Site</id>
 					<layout>p2</layout>
 					<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
+				</repository>
+				<repository>
+					<id>Vorto Update Site</id>
+					<layout>p2</layout>
+					<url>http://download.eclipse.org/vorto/update/nightly-snapshots/</url>
 				</repository>
 			</repositories>
 		
