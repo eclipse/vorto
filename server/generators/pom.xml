@@ -22,6 +22,7 @@
 		<module>org.eclipse.vorto.codegen.service.thingworx</module>
 		<module>org.eclipse.vorto.codegen.service.markdown</module>
 		<module>org.eclipse.vorto.codegen.service.latex</module>
+		<module>org.eclipse.vorto.codegen.service.jsonschema</module>
 	</modules>
 
 	<dependencies>
