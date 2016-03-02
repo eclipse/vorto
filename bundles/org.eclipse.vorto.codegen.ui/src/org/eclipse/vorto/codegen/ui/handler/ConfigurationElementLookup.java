@@ -46,6 +46,16 @@ public class ConfigurationElementLookup {
 				id);
 		return extension.getConfigurationElements();
 	}
+	
+	public String getExtensionSimpleIdentifier(String extensionPtId, String id) {
+		IExtension extension = EXTENSION_REGISTRY.getExtension(extensionPtId,
+				id);
+		if (extension != null) {
+			return extension.getSimpleIdentifier();
+		}
+		
+		return null;
+	}
 
 	public void setExtensionRegistry(IExtensionRegistry reg) {
 		this.EXTENSION_REGISTRY = reg;
