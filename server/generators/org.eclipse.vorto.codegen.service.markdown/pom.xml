@@ -8,8 +8,8 @@
 	</parent>
 	<artifactId>org.eclipse.vorto.codegen.service.markdown</artifactId>
 	<description>Generates markdown documentation for a given information model</description>
-	<packaging>war</packaging>
-
+	<packaging>jar</packaging>
+	
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
