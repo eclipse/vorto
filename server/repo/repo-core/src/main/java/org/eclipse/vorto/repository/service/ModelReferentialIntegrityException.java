@@ -19,6 +19,9 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.model.ModelId;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class ModelReferentialIntegrityException extends
 		ModelRepositoryException {
 	

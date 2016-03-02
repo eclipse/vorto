@@ -19,6 +19,9 @@ import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.validation.IModelValidator;
 import org.eclipse.vorto.repository.validation.ValidationException;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class DuplicateModelValidation implements IModelValidator {
 
 	private IModelRepository modelRepository;

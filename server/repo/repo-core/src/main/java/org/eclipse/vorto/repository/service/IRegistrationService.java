@@ -16,8 +16,14 @@ package org.eclipse.vorto.repository.service;
 
 import org.eclipse.vorto.repository.model.UserDto;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface IRegistrationService {
-
-	public void registerUser(UserDto userDto);
+	/**
+	 * registers the given user in the Vorto repository
+	 * @param userDto
+	 */
+	void registerUser(UserDto userDto);
 	
 }

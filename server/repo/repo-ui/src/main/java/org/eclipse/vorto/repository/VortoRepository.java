@@ -137,7 +137,6 @@ public class VortoRepository {
 			http.httpBasic().and().authorizeRequests()
 					.antMatchers(HttpMethod.GET, "/rest/**").permitAll()
 					.antMatchers("/user/**").permitAll()
-					.antMatchers("/rest/secure/**").authenticated()
 					.antMatchers(HttpMethod.PUT, "/rest/**").permitAll()
 					.antMatchers(HttpMethod.DELETE, "/rest/**").authenticated()
 					.and()

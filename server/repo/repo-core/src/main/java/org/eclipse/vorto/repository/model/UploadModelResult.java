@@ -16,7 +16,9 @@ package org.eclipse.vorto.repository.model;
 
 import org.eclipse.vorto.repository.validation.ValidationException;
 
-
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class UploadModelResult {
 	private String handleId = null;
 	private ModelResource modelResource = null;

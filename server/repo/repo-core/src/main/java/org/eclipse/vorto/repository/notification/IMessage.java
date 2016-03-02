@@ -16,6 +16,9 @@ package org.eclipse.vorto.repository.notification;
 
 import org.eclipse.vorto.repository.model.User;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public interface IMessage {
 
 	User getRecipient();

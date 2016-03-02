@@ -18,9 +18,7 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelId {
 	private String name;
@@ -173,7 +171,5 @@ public class ModelId {
 	public String getPrettyFormat() {	
 		return namespace + "." + name + ":" +version;
 	}
-	
-	
 	
 }

@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.service;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public class FatalModelRepositoryException extends ModelRepositoryException {
 
 	public FatalModelRepositoryException(String msg, Throwable cause) {

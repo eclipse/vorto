@@ -14,7 +14,17 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.model;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public enum ServiceClassifier {
+	/**
+	 * Classifier for Documentation generators
+	 */
 	documentation,
+	
+	/**
+	 * Classifier for Platform Generators 
+	 */
 	platform
 }

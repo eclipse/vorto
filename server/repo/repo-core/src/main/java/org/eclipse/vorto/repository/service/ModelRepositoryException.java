@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.service;
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 public abstract class ModelRepositoryException extends RuntimeException {
 
 	public ModelRepositoryException(String msg) {

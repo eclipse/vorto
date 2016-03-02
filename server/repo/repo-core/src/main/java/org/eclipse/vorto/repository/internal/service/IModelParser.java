@@ -16,14 +16,10 @@ package org.eclipse.vorto.repository.internal.service;
 
 import java.io.InputStream;
 
-import javax.jcr.Session;
-
 import org.eclipse.vorto.repository.model.ModelResource;
 
 /**
- * 
- * @author Alexander Edelmann
- *
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public interface IModelParser {
 	
@@ -32,5 +28,5 @@ public interface IModelParser {
 	 * @param is the actual content containing model related meta data
 	 * @return
 	 */
-	ModelResource parse(InputStream is, Session session);
+	ModelResource parse(InputStream is);
 }
