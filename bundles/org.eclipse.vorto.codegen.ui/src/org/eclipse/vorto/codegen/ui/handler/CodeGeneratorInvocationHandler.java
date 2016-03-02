@@ -24,6 +24,7 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
@@ -51,12 +52,13 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 	}
 
 	private void evaluate(String generatorName) {
+		final IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
 
+		final InformationModel informationModel = (InformationModel) selectedProject.getModel();
+		
+		final String targetPlatform = ConfigurationElementLookup.getDefault().getExtensionSimpleIdentifier(GENERATOR_ID, generatorName);
+		
 		final IConfigurationElement[] configElements = getUserSelectedGenerators(generatorName);
-		IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
-
-		InformationModel informationModel = (InformationModel) selectedProject.getModel();
-
 		for (IConfigurationElement e : configElements) {
 			try {
 				final Object codeGenerator = e.createExecutableExtension("class");
@@ -67,7 +69,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
-				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext());
+				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext(selectedProject, targetPlatform));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
@@ -76,8 +78,14 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		}
 	}
 
-	private IMappingContext createMappingContext() {
-		return new DefaultMappingContext();
+	private IMappingContext createMappingContext(IModelProject project, String targetPlatform) {
+		DefaultMappingContext mappingContext = new DefaultMappingContext();
+		
+		for(MappingModel mappingModel : project.getMapping(targetPlatform)) {
+			mappingContext.addMappingModel(mappingModel);
+		}
+		
+		return mappingContext;
 	}
 	
 	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {
@@ -85,6 +93,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		IConfigurationElement[] configurationElements;
 		ConfigurationElementLookup elementLookup = ConfigurationElementLookup.getDefault();
 		configurationElements = elementLookup.getSelectedConfigurationElementFor(GENERATOR_ID, generatorIdentifier);
+		
 		return configurationElements;
 	}
 
