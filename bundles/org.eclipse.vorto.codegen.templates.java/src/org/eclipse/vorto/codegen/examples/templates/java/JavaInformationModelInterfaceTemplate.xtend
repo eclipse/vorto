@@ -18,30 +18,24 @@ import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-class JavaInformationModelTemplate implements ITemplate<InformationModel>{
+class JavaInformationModelInterfaceTemplate implements ITemplate<InformationModel>{
 	
 	var String classPackage
 	var String[] imports
 	var String interfacePrefix
-	var String implSuffix
-	var ITemplate<FunctionblockProperty> propertyTemplate
-	var ITemplate<FunctionblockProperty> getterTemplate
-	var ITemplate<FunctionblockProperty> setterTemplate
+	var ITemplate<FunctionblockProperty> getterDeclarationTemplate
+	var ITemplate<FunctionblockProperty> setterDeclarationTemplate
 	
 	new(String classPackage, 
 		String interfacePrefix,
-		String implSuffix,
 		String[] imports,
-		ITemplate<FunctionblockProperty> propertyTemplate, 
 		ITemplate<FunctionblockProperty> getterTemplate, 
 		ITemplate<FunctionblockProperty> setterTemplate) {
 			this.classPackage=classPackage
 			this.interfacePrefix = interfacePrefix
-			this.implSuffix=implSuffix
 			this.imports = imports
-			this.propertyTemplate = propertyTemplate
-			this.getterTemplate = getterTemplate
-			this.setterTemplate = setterTemplate
+			this.getterDeclarationTemplate = getterTemplate
+			this.setterDeclarationTemplate = setterTemplate
 	}
 	
 	override getContent(InformationModel im) {
@@ -66,26 +60,12 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 			/**
 			* «im.description»
 			*/
-			public class «im.name.toFirstUpper» implements «interfacePrefix»«im.name.toFirstUpper» {
-				«FOR fbProperty : im.properties»
-					«propertyTemplate.getContent(fbProperty)»
-					
-				«ENDFOR»
+			public interface «interfacePrefix»«im.name.toFirstUpper» {
 
-				/**
-				* The default constructor for «im.name.toFirstUpper».
-				*/
-				public «im.name.toFirstUpper»() {
-					«FOR fbProperty : im.properties»
-						// Use the standard implementation to initialize the «fbProperty.type.name».
-						«fbProperty.name» = new «fbProperty.type.name»«implSuffix»();
-						
-				«ENDFOR»
-				}
 				«FOR fbProperty : im.properties»
-					«getterTemplate.getContent(fbProperty)»
+					«getterDeclarationTemplate.getContent(fbProperty)»
 					
-					«setterTemplate.getContent(fbProperty)»
+					«setterDeclarationTemplate.getContent(fbProperty)»
 										
 				«ENDFOR»
 			}
