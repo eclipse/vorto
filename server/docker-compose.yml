@@ -1,0 +1,132 @@
+# docker-compose.yml
+version: '2'
+
+services:
+  vorto-repo-web:
+    build:
+      context: ./repo
+    container_name: vorto-repo
+    ports:
+      - 8080:8080
+    expose:
+      - "8080"
+
+  vorto-bosch-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.bosch
+    container_name: vorto-bosch-generator
+    ports:
+      - 9000:9000
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-bosch
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9000"
+
+  vorto-coap-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.coap
+    container_name: vorto-coap-generator
+    ports:
+      - 9001:9001
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-coap
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9001"
+
+  vorto-ios-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.ios
+    container_name: vorto-ios-generator
+    ports:
+      - 9002:9002
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-ios
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9002"
+
+  vorto-javabean-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.javabean
+    container_name: vorto-javabean-generator
+    ports:
+      - 9003:9003
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-javabean
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9003"
+
+  vorto-jsonschema-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.jsonschema
+    container_name: vorto-jsonschema-generator
+    ports:
+      - 9004:9004
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-jsonschema
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9004"
+
+  vorto-latex-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.latex
+    container_name: vorto-latex-generator
+    ports:
+      - 9005:9005
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-latex
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9005"
+
+  vorto-markdown-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.markdown
+    container_name: vorto-markdown-generator
+    ports:
+      - 9006:9006
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-markdown
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9006"
+
+  vorto-mqtt-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.mqtt
+    container_name: vorto-mqtt-generator
+    ports:
+      - 9007:9007
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-mqtt
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9007"
+
+  vorto-thingworx-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.thingworx
+    container_name: vorto-thingworx-generator
+    ports:
+      - 9008:9008
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-thingworx
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9008"
+
+  vorto-webdevice-generator-web:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.webdevice
+    container_name: vorto-webdevice-generator
+    ports:
+      - 9009:9009
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://192.168.1.21:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-webdevice
+      SERVER_HOST: 192.168.1.21
+      SERVER_PORT: "9009"

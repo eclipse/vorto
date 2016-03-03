@@ -1,5 +1,5 @@
-FROM java:8
+FROM java
 VOLUME /tmp/generator/javabean
 ADD target/vorto-javabean.jar vorto-javabean.jar
 RUN bash -c 'touch vorto-javabean.jar'
-ENTRYPOINT ["java","-jar","vorto-javabean.jar"]
+ENTRYPOINT /bin/bash -c "sleep 30; java -jar vorto-javabean.jar --spring.profiles.active=eclipse"
