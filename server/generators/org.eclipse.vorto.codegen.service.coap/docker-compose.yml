@@ -1,0 +1,10 @@
+# docker-compose.yml
+vorto-coap-generator-web:
+  build: .
+  container_name: vorto-coap-generator
+  ports:
+   - 9003:9003
+  environment:
+    - VORTO_SERVICE_REPOSITORYURL=http://192.168.99.100:8080/infomodelrepository/rest
+    - SERVER_CONTEXTPATH=/vorto-coap
+    - SERVER_PORT=9003

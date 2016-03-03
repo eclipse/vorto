@@ -12,13 +12,13 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.examples.templates.java
+package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-class JavaInformationModelTemplate implements ITemplate<InformationModel>{
+class CoAPClientInformationModelTemplate implements ITemplate<InformationModel>{
 	
 	var String classPackage
 	var String[] imports
@@ -67,9 +67,12 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 			* «im.description»
 			*/
 			public class «im.name.toFirstUpper» implements «interfacePrefix»«im.name.toFirstUpper» {
+				
+				String BASE_URI = "coap://localhost:5683";
+				
 				«FOR fbProperty : im.properties»
 					«propertyTemplate.getContent(fbProperty)»
-					
+
 				«ENDFOR»
 
 				/**
@@ -78,15 +81,15 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 				public «im.name.toFirstUpper»() {
 					«FOR fbProperty : im.properties»
 						// Use the standard implementation to initialize the «fbProperty.type.name».
-						«fbProperty.name» = new «fbProperty.type.name»«implSuffix»();
-						
+						«fbProperty.name» = new «fbProperty.type.name»«implSuffix»(BASE_URI + "/" + "«fbProperty.type.name.toFirstLower»/«fbProperty.name.toFirstLower»");
+
 				«ENDFOR»
 				}
 				«FOR fbProperty : im.properties»
 					«getterTemplate.getContent(fbProperty)»
-					
+
 					«setterTemplate.getContent(fbProperty)»
-										
+
 				«ENDFOR»
 			}
 		'''
