@@ -17,8 +17,8 @@ package org.eclipse.vorto.repository.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelType;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 
 public class ModelView {
 	private ModelId id = null;

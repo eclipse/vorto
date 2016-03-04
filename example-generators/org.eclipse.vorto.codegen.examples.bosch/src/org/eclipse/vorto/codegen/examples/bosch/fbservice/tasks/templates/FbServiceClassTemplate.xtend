@@ -40,7 +40,7 @@ class FbServiceClassTemplate {
 		«ENDFOR»
 		import «getPackage(context)»«context.model.name»Properties;
 		«FOR event : context.model.functionblock.events»
-			import «context.javaPackageName + ".internal.mapping." + event.name»Mapping;
+			import «context.javaPackageName + ".internal.mapping." + event.name.toFirstUpper»Mapping;
 		«ENDFOR»
 		import com.bosch.functionblock.dummy.api.device.IDummyDevice;
 		
@@ -84,7 +84,7 @@ class FbServiceClassTemplate {
 			@Override
 			protected void registerMappingRules(EventMappingsConfiguration configuration) {
 				«FOR event : context.model.functionblock.events»
-				configuration.registerMapping(getDriverEventTopic("«event.name»"),new «event.name»Mapping());
+				configuration.registerMapping(getDriverEventTopic("«event.name»"),new «event.name.toFirstUpper»Mapping());
 				«ENDFOR»
 			}
 		

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks;
 
-import org.eclipse.vorto.codegen.api.tasks.AbstractTemplateGeneratorTask;
-import org.eclipse.vorto.codegen.api.tasks.ITemplate;
+import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
+import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.basedriver.BaseDriverTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 
@@ -30,7 +30,7 @@ public class BaseDriverGeneratorTask extends
 
 	@Override
 	public String getPath(FunctionblockModel model) {
-		return BaseDriverUtil.getDriverPath();
+		return new BaseDriverUtil(model).getDriverPath();
 	}
 
 	@Override

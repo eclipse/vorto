@@ -17,9 +17,20 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.7.2</xtext.version>
 		<jdk.version>1.7</jdk.version>
-		<kepler.path>/Applications/eclipse/dropins</kepler.path>
-		<luna.path>/Applications/eclipseLuna/dropins</luna.path>
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>repo.eclipse.org</id>
+			<name>Project Repository - Releases</name>
+			<url>https://repo.eclipse.org/content/repositories/vorto-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>repo.eclipse.org</id>
+			<name>Project Repository - Snapshots</name>
+			<url>https://repo.eclipse.org/content/repositories/vorto-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -41,7 +52,7 @@
 		<repository>
 			<id>kepler</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/luna</url>
+			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
 		<repository>
 			<id>Xtext Update Site</id>
@@ -133,12 +144,6 @@
 							</configuration>
 						</execution>
 					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

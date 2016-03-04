@@ -14,13 +14,16 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.ios.templates
 
-import org.eclipse.vorto.codegen.api.tasks.IFileTemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.datatype.Entity
-import org.eclipse.vorto.core.api.model.datatype.PropertyType
-import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 class EntityClassTemplate implements IFileTemplate<Entity> {
 
 	override getFileName(Entity context) {
@@ -28,7 +31,7 @@ class EntityClassTemplate implements IFileTemplate<Entity> {
 	}
 	
 	override getPath(Entity context) {
-		return "src-gen/"
+		return ""
 	}
 	
 	override getContent(Entity context) {

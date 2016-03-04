@@ -29,11 +29,11 @@ import org.eclipse.vorto.core.api.model.mapping.Target;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingRuleImpl#getTarget <em>Target</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingRuleImpl#getSources <em>Sources</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */

@@ -22,10 +22,10 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.DatatypeModelProject;
 import org.eclipse.vorto.core.model.FunctionblockModelProject;
 import org.eclipse.vorto.core.model.InformationModelProject;
-import org.eclipse.vorto.core.model.ModelType;
 
 public class ModelFileLookupHelper {
 

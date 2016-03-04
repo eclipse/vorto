@@ -30,7 +30,6 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getNamespace <em>Namespace</em>}</li>
@@ -42,6 +41,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getRules <em>Rules</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.impl.MappingModelImpl#getTargetPlatform <em>Target Platform</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */

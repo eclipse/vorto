@@ -14,42 +14,32 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.vorto.codegen.api.ICodeGenerator;
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator;
-import org.eclipse.vorto.codegen.examples.bosch.common.BoschM2MNature;
+import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.IGeneratedWriter;
+import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.AbstractDummyDeviceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverGeneratorTask;
-import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverUtil;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BlueprintConfigGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.DummyDeviceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.EventReadTaskGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.IDummyDeviceGeneratorTask;
-import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.POMTemplate;
+import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.PomTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 
-public class DummyBaseDriverGenerator implements
-		ICodeGenerator<FunctionblockModel> {
+public class DummyBaseDriverGenerator implements ICodeGeneratorTask<FunctionblockModel> {
 
 	@Override
-	public void generate(FunctionblockModel fbm, final IProgressMonitor monitor) {
-
-		new EclipseProjectGenerator<FunctionblockModel>(
-				BaseDriverUtil.getArtifactId(fbm))
-				.mavenNature(new POMTemplate())
-				.addNature(BoschM2MNature.M2M_NATURE_ID)
-				.addTask(new BaseDriverGeneratorTask())
-				.addTask(new IDummyDeviceGeneratorTask())
-				.addTask(new AbstractDummyDeviceGeneratorTask())
-				.addTask(new DummyDeviceGeneratorTask())
-				.addTask(new EventReadTaskGeneratorTask())
-				.addTask(new BlueprintConfigGeneratorTask())
-				.generate(fbm, monitor);
-		;
-	}
-
-	@Override
-	public String getName() {
-		return "Dummy Base Driver Generator";
+	public void generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
+		generator.addTask(new GeneratorTaskFromFileTemplate<FunctionblockModel>(new PomTemplate()));
+		generator.addTask(new BaseDriverGeneratorTask());
+		generator.addTask(new IDummyDeviceGeneratorTask());
+		generator.addTask(new AbstractDummyDeviceGeneratorTask());
+		generator.addTask(new DummyDeviceGeneratorTask());
+		generator.addTask(new EventReadTaskGeneratorTask());
+		generator.addTask(new BlueprintConfigGeneratorTask());
+		generator.generate(fbm, mappingContext, outputter);
 	}
 }

@@ -13,6 +13,8 @@ import org.eclipse.vorto.core.api.model.mapping.Target;
  * <!-- begin-user-doc -->
  * An implementation of the model object '<em><b>Target</b></em>'.
  * <!-- end-user-doc -->
+ * <p>
+ * </p>
  *
  * @generated
  */

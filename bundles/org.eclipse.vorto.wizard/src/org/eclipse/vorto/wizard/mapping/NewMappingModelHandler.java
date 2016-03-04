@@ -15,7 +15,7 @@
 package org.eclipse.vorto.wizard.mapping;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.vorto.codegen.ui.WizardCreateProjectHandler;
+import org.eclipse.vorto.codegen.ui.handler.WizardCreateProjectHandler;
 
 public class NewMappingModelHandler extends WizardCreateProjectHandler {
 

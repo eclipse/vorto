@@ -15,13 +15,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel
 
-import org.eclipse.vorto.codegen.api.filewrite.FileWritingStrategyFactory
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
-import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel.helper.PropertyElementBuilder
 import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
@@ -33,7 +33,6 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 
 class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 	
-	private static final String SRC_GEN_FOLDER = "src-gen";
 	private static final String JAXB_XML_FILENAME= "jaxb-bindings.xjb";
 	private String cxfXmlFileName;
 	private String cxfXsdFileName;
@@ -42,16 +41,18 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 	
 	FbModelWrapper wrappedfbm;
 
-	override generate(FunctionblockModel model, IOutputter outputter) {
+	override generate(FunctionblockModel model, IMappingContext context, IGeneratedWriter outputter) {
 		wrappedfbm = new FbModelWrapper(model);
 		cxfXmlFileName = wrappedfbm.getUpperCaseFunctionblockName()+".xml";
 		cxfXsdFileName = wrappedfbm.getUpperCaseFunctionblockName()+".xsd";
-		
-		outputter.fileWritingStrategy = FileWritingStrategyFactory.getInstance().overwriteStrategy;
-			
-		outputter.output(new Generated( cxfXmlFileName , SRC_GEN_FOLDER, getXMLContent().toString()));
-		outputter.output(new Generated( cxfXsdFileName , SRC_GEN_FOLDER, getXSDContent().toString()));
-		outputter.output(new Generated( JAXB_XML_FILENAME, SRC_GEN_FOLDER, getBindXMLContent().toString()));
+					
+		outputter.write(new Generated( cxfXmlFileName , getSrcGenFolder, getXMLContent().toString()));
+		outputter.write(new Generated( cxfXsdFileName , getSrcGenFolder, getXSDContent().toString()));
+		outputter.write(new Generated( JAXB_XML_FILENAME, getSrcGenFolder, getBindXMLContent().toString()));
+	}
+
+	def String getSrcGenFolder() {
+		return '''com.bosch.« wrappedfbm.functionBlockName.toLowerCase »-model/src-gen'''
 	}
 
 	def getXSDContent() {
@@ -140,10 +141,10 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 		      «ENDIF»
 		   </xs:complexType>
 		   «ENDIF»
-		   «IF reference instanceof org.eclipse.vorto.core.api.model.datatype.Enum»
+		   «IF reference instanceof Enum»
 		   <xs:simpleType name="«reference.name»">
 		      <xs:restriction base="xs:string">
-		   	     «FOR l : (reference as org.eclipse.vorto.core.api.model.datatype.Enum).enums»
+		   	     «FOR l : (reference as Enum).enums»
 		   	     <xs:enumeration value="«l.name»"/>
 		   	     «ENDFOR»
 		      </xs:restriction>

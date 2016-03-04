@@ -62,3 +62,4 @@ class DeviceDriverTemplate {
 		return "com.bosch.functionblock.dummy.internal.device." + context.functionBlockName.toLowerCase + ".Dummy" + context.functionBlockName + "Device";
 	}	
 }
+	

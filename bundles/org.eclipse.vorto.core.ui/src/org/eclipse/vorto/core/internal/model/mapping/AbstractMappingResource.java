@@ -28,9 +28,9 @@ import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.AbstractModelElement;
 import org.eclipse.vorto.core.model.IMapping;
-import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.service.IModelElementResolver;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 

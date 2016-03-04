@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.service;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.model.IModelElement;
-import org.eclipse.vorto.core.model.ModelId;
 
 /**
  * An interface for a class that can resolve an IModelElement based on the

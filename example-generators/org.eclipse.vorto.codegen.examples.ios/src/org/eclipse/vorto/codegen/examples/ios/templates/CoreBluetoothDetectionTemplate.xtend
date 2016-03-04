@@ -14,9 +14,12 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.ios.templates
 
-import org.eclipse.vorto.codegen.api.tasks.IFileTemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 class CoreBluetoothDetectionTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
@@ -24,7 +27,7 @@ class CoreBluetoothDetectionTemplate implements IFileTemplate<InformationModel> 
 	}
 	
 	override getPath(InformationModel context) {
-		return "src-gen/"
+		return ""
 	}
 	
 	override getContent(InformationModel context) {

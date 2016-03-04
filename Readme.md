@@ -1,10 +1,17 @@
-Getting started with Vorto
-==================================
+# Getting started with Vorto
 
 Great, that you are interested in the Eclipse Vorto project!
 
-Prerequisites
--------------
+## Automated Setup
+
+Start developing Vorto in a couple of minutes by downloading the [Vorto Developer IDE](https://marketplace.yatta.de/profiles/qTKP)
+
+
+## Manual Setup
+
+Users with an existing Eclipse IDE, follow these steps:
+
+### Prerequisites
 
  - [Java] 8
  - [Eclipse] Luna SR2 (4.4.2) 
@@ -13,8 +20,8 @@ Prerequisites
  - [Apache Maven] 3 (only needed if you would like to build from the command line)
 
  
-Steps:
-------
+### Steps:
+
   1. git clone [https://github.com/eclipse/vorto.git](https://github.com/eclipse/vorto.git)
   2. Import the project into eclipse 
   3. Generate Xtext Artifacts for all editors files ( Right click -> Run As - Generate Xtext Artifacts), such as
@@ -26,19 +33,19 @@ Steps:
   "-Xms40m -Xmx512m -XX:MaxPermSize=256m"
 
 
-Troubleshooting:
-----------------
+### Troubleshooting:
+
   1. If compile errors exists, check vorto.target is checked as active the target platform (Windows -> Preferences - > Plugin Development -> Target Platform - > target definitions - vorto.target)
   2. If network error, check for proxy settings. (Preferences - > General -> Network Connections)  
 
-Support
+# Support
 -------
 For more details and documentation, 
 visit 
 
-Vorto Home - http://www.eclipse.org/vorto
+[Vorto Homepage](http://www.eclipse.org/vorto)
 
-Vorto Discussions/Community - http://www.eclipse.org/vorto/community.html 
+[Vorto Discussions/Community](http://www.eclipse.org/vorto/community.html) 
 
 
 [Java]:  http://www.oracle.com/technetwork/java/javase/downloads/index.html

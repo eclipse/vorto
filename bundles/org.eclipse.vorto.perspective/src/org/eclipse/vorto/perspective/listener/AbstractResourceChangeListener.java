@@ -39,7 +39,7 @@ public abstract class AbstractResourceChangeListener implements IResourceChangeL
 		IModelProject modelProject = null;
 		if (event.getResource() != null && event.getResource() instanceof IProject) {
 			modelProject = getModelProjectOrNull(event.getResource());
-		} else if (event.getDelta() != null && event.getDelta().getAffectedChildren()[0].getResource() instanceof IProject) {
+		} else if (event.getDelta() != null && event.getDelta().getAffectedChildren().length > 0 && event.getDelta().getAffectedChildren()[0].getResource() instanceof IProject) {
 			modelProject = getModelProjectOrNull(event.getDelta().getAffectedChildren()[0].getResource());
 		}
 		

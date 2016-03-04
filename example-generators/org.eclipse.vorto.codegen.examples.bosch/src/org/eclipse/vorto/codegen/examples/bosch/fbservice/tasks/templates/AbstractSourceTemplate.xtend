@@ -15,15 +15,14 @@
 
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates
 
-import org.eclipse.vorto.codegen.api.tasks.IFileTemplate
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 abstract class AbstractSourceTemplate implements IFileTemplate<FunctionblockModel> {
 
-	private String SRC_LOC = "/src/main/java/";
-
 	override getPath(FunctionblockModel ctx) {
+		var SRC_LOC = '''com.bosch.« ctx.name.toLowerCase»-service/src/main/java''';
 		return SRC_LOC + "/" + new FbModelWrapper(ctx).javaPackageName.toString().replaceAll("\\.", "/") + "/"+subPath;
 	}
 	

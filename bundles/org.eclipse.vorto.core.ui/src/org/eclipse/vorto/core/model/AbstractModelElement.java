@@ -21,7 +21,10 @@ import java.util.TreeSet;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.service.IModelElementResolver;
 
 public abstract class AbstractModelElement implements IModelElement,

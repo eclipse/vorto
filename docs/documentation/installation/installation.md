@@ -17,6 +17,7 @@ This section details the following topics:
 
 The Vorto plug-ins are available on the Eclipse update site server. The URL to the server is [http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/](http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/ "http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/"). You must add this repository to your IDE or, alternatively, import the Vorto plug-in zip archive to get the Vorto plug-ins.
 
+
 **Proceed as follows**
 
 1. Start your IDE (Eclipse Luna or later).  

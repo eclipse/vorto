@@ -23,10 +23,10 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumImpl#getEnums <em>Enums</em>}</li>
  * </ul>
+ * </p>
  *
  * @generated
  */

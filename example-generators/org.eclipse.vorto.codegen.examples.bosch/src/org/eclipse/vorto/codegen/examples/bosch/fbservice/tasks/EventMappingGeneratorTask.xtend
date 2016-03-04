@@ -15,8 +15,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates.EventMappingRuleTemplate
 import org.eclipse.vorto.core.api.model.functionblock.Event
@@ -24,20 +25,21 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class EventMappingGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 	
-	private String SRC_LOC = "/src/main/java/";
+	private String SRC_LOC = null;
 	
 	new(FbModelWrapper model) {
 		super(model)
+		this.SRC_LOC = '''com.bosch.« context.functionBlockName.toLowerCase»-service/src/main/java/'''
 	}
 	
-	override generate(FunctionblockModel fbm,IOutputter outputter) {
+	override generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
 		for (Event event : fbm.functionblock.events) {
-			outputter.output(new Generated(getEventMappingFileName(event),location,EventMappingRuleTemplate.generate(context,event)));	
+			outputter.write(new Generated(getEventMappingFileName(event),location,EventMappingRuleTemplate.generate(context,event)));	
 		}
 	}
 		
 	def String getEventMappingFileName(Event event) {
-		'''«event.name»Mapping.java'''
+		'''«this.context.capitalize(event.name)»Mapping.java'''
 	}
 	
 	def getLocation() {
@@ -48,3 +50,4 @@ class EventMappingGeneratorTask extends AbstractGeneratorTask<FunctionblockModel
 		return context.javaPackageName.toString().replaceAll("\\.", "/") + "/internal/mapping";
 	}
 }
+	

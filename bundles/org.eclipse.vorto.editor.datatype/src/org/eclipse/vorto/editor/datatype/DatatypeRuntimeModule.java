@@ -17,7 +17,9 @@
  */
 package org.eclipse.vorto.editor.datatype;
 
+import org.eclipse.vorto.editor.datatype.converter.DatatypeValueConverter;
 import org.eclipse.vorto.editor.datatype.scoping.DatatypeScopeProvider;
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
 
@@ -36,5 +38,10 @@ public class DatatypeRuntimeModule extends
 	@Override
 	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
 		return QualifiedNameWithVersionProvider.class;
+	}
+	
+	@Override
+	public Class<? extends IValueConverterService> bindIValueConverterService() {
+		return DatatypeValueConverter.class;
 	}
 }

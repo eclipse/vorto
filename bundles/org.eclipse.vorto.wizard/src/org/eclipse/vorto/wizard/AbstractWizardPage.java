@@ -22,7 +22,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.wizard.WizardPage;
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 
 import com.google.common.base.Strings;
 

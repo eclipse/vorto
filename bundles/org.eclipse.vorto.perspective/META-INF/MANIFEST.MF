@@ -16,16 +16,13 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.ui,
  com.google.inject,
  com.google.guava;bundle-version="15.0.0",
- org.eclipse.vorto.wizard
+ org.eclipse.vorto.wizard,
+ org.eclipse.vorto.codegen,
+ org.apache.commons.codec,
+ org.eclipse.vorto.codegen.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.perspective
 Import-Package: org.eclipse.emf.ecore.xmi.impl,
- org.eclipse.vorto.codegen.api.context,
- org.eclipse.vorto.codegen.api.tasks,
- org.eclipse.vorto.codegen.internal.ui.wizard,
- org.eclipse.vorto.codegen.ui,
- org.eclipse.vorto.codegen.ui.display,
- org.eclipse.vorto.codegen.ui.progresstask,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.infomodel,

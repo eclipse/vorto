@@ -13,6 +13,8 @@ This section details the following topics:
 
 [Features](#features)
 
+[Significant Contribution](#significant-contribution)
+
 [System Requirements](#system-requirements)
 
 ## Overview
@@ -73,7 +75,19 @@ Vorto provides several code generators, so that the user can generate code based
 
 ![Generating function block model]({{base}}/img/documentation/m2m_vorto_code_generator_menu.png)
 
-##System Requirements
+## Significant Contribution
+
+The Vorto project considers the following contributions as significant contribution:
+
+- Giving technical input to the Vorto Meta Information Model that leads to an update of the current ecore model.
+- Giving input to the project that leads to a high prioritized bug in Bugzilla.
+- Implementing and contributing a new Vorto code generator to the project.
+- Fixing a bug that is considered as critical.
+- Implementing a complex feature.
+
+ If you satisfy our requirements for significant contribution, email your logo to <strong><mailto:vorto-dev@eclipse.org></strong> to get added to our homepage.
+
+## System Requirements
 
 For the use of the Vorto plug-ins the following software requirements must be met:
 

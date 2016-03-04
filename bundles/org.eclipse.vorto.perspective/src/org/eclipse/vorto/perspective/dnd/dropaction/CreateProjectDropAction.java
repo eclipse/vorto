@@ -1,3 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd.dropaction;
 
 import java.nio.charset.StandardCharsets;
@@ -6,19 +20,19 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.vorto.codegen.api.context.IModelProjectContext;
-import org.eclipse.vorto.codegen.api.tasks.Generated;
-import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.tasks.IOutputter;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
+import org.eclipse.vorto.codegen.api.Generated;
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.IGeneratedWriter;
+import org.eclipse.vorto.codegen.api.IMappingContext;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.ModelId;
-import org.eclipse.vorto.core.model.ModelType;
 import org.eclipse.vorto.core.model.nature.FbDatatypeProjectNature;
 import org.eclipse.vorto.core.model.nature.InformationModelProjectNature;
 import org.eclipse.vorto.core.model.nature.IoTProjectNature;
@@ -63,7 +77,7 @@ public class CreateProjectDropAction implements IDropAction {
 			}
 
 			@Override
-			protected ICodeGeneratorTask< IModelProjectContext> getCodeGeneratorTask() {
+			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
 				return new SharedModelCodeGenerationTask(model);
 			}
 
@@ -82,15 +96,15 @@ public class CreateProjectDropAction implements IDropAction {
 			this.modelResource = modelResource;
 		}
 
-		public void generate(IModelProjectContext ctx, IOutputter outputter) {
+		public void generate(IModelProjectContext ctx, IMappingContext mappingContext, IGeneratedWriter outputter) {
 			generateModel(outputter, IModelProjectService.MODELS_DIR, modelResource);
 		}
 
-		private void generateModel(IOutputter outputter, String modelDir, ModelResource model) {
+		private void generateModel(IGeneratedWriter outputter, String modelDir, ModelResource model) {
 			ModelId id = model.getId();
 			String content = new String(modelRepo.downloadContent(id), StandardCharsets.UTF_8);
 			Generated generated = new Generated(id.getName() + modelTypeToSuffix.apply(id.getModelType()), modelDir, content);
-			outputter.output(generated);
+			outputter.write(generated);
 			
 			for(ModelId referenceId : model.getReferences()) {
 				ModelResource referenceModel = modelRepo.getModel(referenceId);

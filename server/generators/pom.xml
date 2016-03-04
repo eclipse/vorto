@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="MACROMAN"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>server</artifactId>
+		<version>0.4.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>generators</artifactId>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>org.eclipse.vorto.codegen.service</module>
+		<module>org.eclipse.vorto.codegen.service.javabean</module>
+		<module>org.eclipse.vorto.codegen.service.ios</module>
+		<module>org.eclipse.vorto.codegen.service.webdevice</module>
+		<module>org.eclipse.vorto.codegen.service.bosch</module>
+		<module>org.eclipse.vorto.codegen.service.mqtt</module>
+		<module>org.eclipse.vorto.codegen.service.thingworx</module>
+		<module>org.eclipse.vorto.codegen.service.markdown</module>
+		<module>org.eclipse.vorto.codegen.service.latex</module>
+		<module>org.eclipse.vorto.codegen.service.jsonschema</module>
+		<module>org.eclipse.vorto.codegen.service.coap</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>log4j-over-slf4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+
+</project>

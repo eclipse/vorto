@@ -15,7 +15,7 @@
 package org.eclipse.vorto.wizard.functionblock;
 
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.vorto.codegen.ui.WizardCreateProjectHandler;
+import org.eclipse.vorto.codegen.ui.handler.WizardCreateProjectHandler;
 
 public class NewFunctionBlockProjectHandler extends WizardCreateProjectHandler {
 

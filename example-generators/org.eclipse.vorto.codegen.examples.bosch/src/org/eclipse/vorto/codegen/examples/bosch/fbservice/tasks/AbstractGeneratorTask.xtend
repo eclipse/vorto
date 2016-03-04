@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
-import org.eclipse.vorto.codegen.api.tasks.ICodeGeneratorTask
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 
 abstract class AbstractGeneratorTask<Context> implements ICodeGeneratorTask<Context> { 

@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.core.api.repository.UploadResult;
-import org.eclipse.vorto.core.model.ModelId;
 import org.eclipse.vorto.perspective.util.ImageUtil;
 
 import com.google.common.base.Strings;

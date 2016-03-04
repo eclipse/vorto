@@ -32,6 +32,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
+import org.eclipse.vorto.core.api.repository.Attachment;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -42,7 +43,7 @@ public class RestClient {
 
 	private ConnectionInfo connectionInfo;
 
-	private static final String RESOURCE_URL = "/rest/model/";
+	private static final String RESOURCE_URL = "/rest/";
 
 	public RestClient(ConnectionInfo connectionInfo) {
 		this.connectionInfo = connectionInfo;
@@ -60,6 +61,26 @@ public class RestClient {
 			@Override
 			public Result handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
 				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
+			}
+		});
+	}
+	
+	@SuppressWarnings("restriction")
+	public Attachment executeGetAttachment(String query) throws ClientProtocolException, IOException {
+
+		CloseableHttpClient client = HttpClients.custom().build();
+
+		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
+		return client.execute(request, new ResponseHandler<Attachment>() {
+
+			@Override
+			public Attachment handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+				String content_disposition = response.getFirstHeader("Content-Disposition").getValue();
+				String filename = content_disposition.substring(content_disposition.indexOf("filename = ") + "filename = ".length());
+				long length = response.getEntity().getContentLength();
+				String type = response.getEntity().getContentType().toString();
+				byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
+				return new Attachment(filename, length, type, content);
 			}
 		});
 	}

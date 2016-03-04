@@ -3,6 +3,7 @@ package org.eclipse.vorto.core.model;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 
 public class SharedInformationModelElement extends AbstractSharedModelElement {
 

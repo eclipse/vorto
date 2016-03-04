@@ -78,8 +78,8 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		]
 				
 		//Constraint Parameters
-		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_2_0)
-		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_2_0)	
+		c.setNoSpace().before(f.propertyAccess.commaKeyword_5_3_0)
+		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_3_0)	
 		
 		c.setNoSpace().before(f.enumAccess.commaKeyword_11_1_0)
 	}

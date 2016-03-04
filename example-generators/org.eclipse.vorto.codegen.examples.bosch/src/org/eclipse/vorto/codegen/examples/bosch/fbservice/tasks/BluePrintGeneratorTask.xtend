@@ -15,8 +15,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
-import org.eclipse.vorto.codegen.api.tasks.Generated
-import org.eclipse.vorto.codegen.api.tasks.IOutputter
+import org.eclipse.vorto.codegen.api.Generated
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
@@ -27,9 +28,13 @@ class BluePrintGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		super(context)
 	}
 	
-	override generate(FunctionblockModel fbm,IOutputter outputter) {
+	override generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
 		var template = constructBlueprintFromTemplate()
-		outputter.output(new Generated("config.xml","src/main/resources/OSGI-INF/blueprint",template))	
+		outputter.write(new Generated("config.xml",baseDirectoryFolder,template))	
+	}
+	
+	def String getBaseDirectoryFolder() {
+		return '''com.bosch.« context.model.name.toLowerCase»-service/src/main/resources/OSGI-INF/blueprint'''
 	}
 	
 	def String constructBlueprintFromTemplate() {
@@ -55,3 +60,4 @@ class BluePrintGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 	}
 		
 }
+	

@@ -14,10 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.ios.templates
 
-import org.eclipse.vorto.codegen.api.tasks.IFileTemplate
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
+import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
 class DeviceServiceTemplate implements IFileTemplate<InformationModel> {
 
 	override getFileName(InformationModel context) {
@@ -25,7 +29,7 @@ class DeviceServiceTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		return "src-gen/"
+		return ""
 	}
 	
 	override getContent(InformationModel context) {
@@ -88,9 +92,15 @@ class «context.name»Device {
     
     «FOR fbProperty : context.properties»
     	«FOR operation : fbProperty.type.functionblock.operations»
-    	«IF operation.returnType != null»
+    	«IF operation.returnType != null && operation.returnType instanceof ReturnObjectType»
     	class func «operation.name»(value : NSData) -> «(operation.returnType as ReturnObjectType).returnType.name» {
     		var result = «(operation.returnType as ReturnObjectType).returnType.name»()
+    		//TODO convert and map value to response type
+    		return result
+    	}
+    	«ENDIF»
+    	«IF operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType»
+    	class func «operation.name»(value : NSData) -> «MappingUtils.mapSimpleDatatype((operation.returnType as ReturnPrimitiveType).returnType)» {
     		//TODO convert and map value to response type
     		return result
     	}

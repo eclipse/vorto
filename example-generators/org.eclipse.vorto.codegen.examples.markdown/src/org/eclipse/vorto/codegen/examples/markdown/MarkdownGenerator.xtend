@@ -14,25 +14,29 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.markdown
 
-import org.eclipse.core.runtime.IProgressMonitor
-import org.eclipse.vorto.codegen.api.ICodeGenerator
-import org.eclipse.vorto.codegen.api.tasks.eclipse.EclipseProjectGenerator
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
+import org.eclipse.vorto.codegen.api.IGenerationResult
+import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
+import org.eclipse.vorto.codegen.api.SingleGenerationResult
 import org.eclipse.vorto.codegen.examples.markdown.tasks.MarkdownInformationModelGeneratorTask
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-class MarkdownGenerator implements ICodeGenerator<InformationModel> {
+class MarkdownGenerator implements IVortoCodeGenerator {
 
-	public static final String MARKDOWN_PROJECT_SUFFIX 	= "_Markdown";
-	public static final String MARKDOWN_FILE_EXTENSION 	= ".md";
-	public static final String MARKDOWN_TARGET_PATH 	= "markdown";
+	private static final String MARKDOWN_FILE_EXTENSION 	= ".md";
+	private static final String MARKDOWN_TARGET_PATH 	= "markdown";
 	
-	override generate(InformationModel infomodel, IProgressMonitor monitor) {
-		new EclipseProjectGenerator(infomodel.getName()+MARKDOWN_PROJECT_SUFFIX)
-			.addTask(new MarkdownInformationModelGeneratorTask(MARKDOWN_FILE_EXTENSION, MARKDOWN_TARGET_PATH))
-			.javaNature().generate(infomodel,monitor);
+	private static final ICodeGeneratorTask<InformationModel> TASK = new MarkdownInformationModelGeneratorTask(MARKDOWN_FILE_EXTENSION, MARKDOWN_TARGET_PATH);
+	
+	override IGenerationResult generate(InformationModel infomodel, IMappingContext mappingContext) {
+		var output = new SingleGenerationResult("text/x-markdown");
+		TASK.generate(infomodel, mappingContext, output);
+		return output;
 	}
 	
-	override getName() {
-		return "MarkdownGenerator";
+	override getServiceKey() {
+		return "markdown"
 	}
+	
 }

@@ -11,11 +11,11 @@ import org.eclipse.emf.common.util.EList;
  *
  * <p>
  * The following features are supported:
- * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget#getAttributes <em>Attributes</em>}</li>
  * </ul>
+ * </p>
  *
  * @see org.eclipse.vorto.core.api.model.mapping.MappingPackage#getStereoTypeTarget()
  * @model

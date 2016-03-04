@@ -13,8 +13,8 @@ layout: default
     </div>
     </div>
   </div>
-  
-
+<div class="row">  
+<div class="col-md-9">
   {% for news in site.pages reversed   %}
   {% if news.section == 'news' %}
 
@@ -29,12 +29,37 @@ layout: default
     
     <section>
      {% if news.content contains '<!--more-->' %}
-     	{{ news.content | split:'<!--more-->' | first }}
-     	<a href="{{base}}{{ news.url }}">Read More...</a>
+      {{ news.content | split:'<!--more-->' | first }}
+      <a href="{{base}}{{ news.url }}">Read More...</a>
      {% else %}
-		{{ news.content }}
-	{% endif %}	    
+    {{ news.content }}
+  {% endif %}     
     </section>
   {% endif %}
   {% endfor %}
+</div>
+  <div class="col-md-3 pull-right">
+            <div class="well"> 
+              <center><h3>News Overview</h3></center>
+                <ul class="nav nav-stacked" id="sidebar">
+
+                  {% for news in site.pages reversed %}
+                  {% if news.section == 'news' %}
+                  <li><a href="{{base}}{{ news.url}}">{{news.title}}</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="{{base}}{{ news.url}}"><em>{{ news.date | date: "%b %-d, %Y" }}</em></a></li>
+    
+
+                  </ul>
+                           {% endif %}
+         {% endfor %}
+                </ul>
+          </div>
+     
+           
+
+          </div> 
+        </div>
+
 </div>
