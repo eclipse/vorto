@@ -17,8 +17,10 @@
  */
 package org.eclipse.vorto.editor.infomodel;
 
+import org.eclipse.vorto.editor.datatype.converter.DatatypeValueConverter;
 import org.eclipse.vorto.editor.infomodel.generator.InformationModelOutputConfigurationProvider;
 import org.eclipse.vorto.editor.infomodel.scoping.InformationModelScopeProvider;
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.generator.IOutputConfigurationProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
@@ -50,5 +52,10 @@ public class InformationModelRuntimeModule
 	@Override
 	public Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
 		return QualifiedNameWithVersionProvider.class;
+	}
+	
+	@Override
+	public Class<? extends IValueConverterService> bindIValueConverterService() {
+		return DatatypeValueConverter.class;
 	}
 }

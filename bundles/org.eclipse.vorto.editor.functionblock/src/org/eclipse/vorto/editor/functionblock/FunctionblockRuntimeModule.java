@@ -18,10 +18,12 @@
 package org.eclipse.vorto.editor.functionblock;
 
 import org.eclipse.vorto.editor.datatype.QualifiedNameWithVersionProvider;
+import org.eclipse.vorto.editor.datatype.converter.DatatypeValueConverter;
 import org.eclipse.vorto.editor.functionblock.generator.FbOutputConfigurationProvider;
 import org.eclipse.vorto.editor.functionblock.scoping.FunctionblockScopeProvider;
 import org.eclipse.vorto.editor.functionblock.validation.TypeFileAccessingHelper;
 import org.eclipse.vorto.editor.functionblock.validation.TypeHelper;
+import org.eclipse.xtext.conversion.IValueConverterService;
 import org.eclipse.xtext.generator.IOutputConfigurationProvider;
 import org.eclipse.xtext.naming.IQualifiedNameProvider;
 import org.eclipse.xtext.scoping.IScopeProvider;
@@ -67,5 +69,10 @@ public class FunctionblockRuntimeModule
 				.annotatedWith(
 						org.eclipse.xtext.serializer.tokens.SerializerScopeProviderBinding.class)
 				.to(FunctionblockScopeProvider.class);
+	}
+	
+	@Override
+	public Class<? extends IValueConverterService> bindIValueConverterService() {
+		return DatatypeValueConverter.class;
 	}
 }

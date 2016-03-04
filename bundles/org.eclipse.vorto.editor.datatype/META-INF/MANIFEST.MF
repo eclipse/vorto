@@ -23,13 +23,16 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.datatype,org.eclipse.vorto.ed
- itor.datatype.formatting,org.eclipse.vorto.editor.datatype.generator,
- org.eclipse.vorto.editor.datatype.internal,org.eclipse.vorto.editor.d
- atatype.internal.validation;x-friends:="org.eclipse.vorto.editor.func
- tionblock.tests",org.eclipse.vorto.editor.datatype.parser.antlr,org.e
- clipse.vorto.editor.datatype.parser.antlr.internal,org.eclipse.vorto.
- editor.datatype.scoping,org.eclipse.vorto.editor.datatype.serializer,
- org.eclipse.vorto.editor.datatype.services,org.eclipse.vorto.editor.d
- atatype.validation
+Export-Package: org.eclipse.vorto.editor.datatype,
+ org.eclipse.vorto.editor.datatype.converter,
+ org.eclipse.vorto.editor.datatype.formatting,
+ org.eclipse.vorto.editor.datatype.generator,
+ org.eclipse.vorto.editor.datatype.internal,
+ org.eclipse.vorto.editor.datatype.internal.validation;x-friends:="org.eclipse.vorto.editor.functionblock.tests",
+ org.eclipse.vorto.editor.datatype.parser.antlr,
+ org.eclipse.vorto.editor.datatype.parser.antlr.internal,
+ org.eclipse.vorto.editor.datatype.scoping,
+ org.eclipse.vorto.editor.datatype.serializer,
+ org.eclipse.vorto.editor.datatype.services,
+ org.eclipse.vorto.editor.datatype.validation
 
