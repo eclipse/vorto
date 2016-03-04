@@ -9,7 +9,7 @@
 	<artifactId>org.eclipse.vorto.codegen.service.markdown</artifactId>
 	<description>Generates markdown documentation for a given information model</description>
 	<packaging>jar</packaging>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -22,10 +22,19 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.codegen.service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
