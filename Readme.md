@@ -1,5 +1,7 @@
 # Getting started with Vorto
 
+[![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/eclipse/vorto.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Great, that you are interested in the Eclipse Vorto project!
 
 ## Automated Setup
