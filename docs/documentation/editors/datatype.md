@@ -64,5 +64,3 @@ You have created a data type (refer to [Create a new Data Type](#creating-a-new-
       mandatory g as int <MIN 0, MAX 255>
       mandatory b as int <MIN 0, MAX 255>
     }
-
-## Video on Defining a new Data Type

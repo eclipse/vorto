@@ -43,6 +43,20 @@
   sub:
     - title: "Implementing a Code Generator"
       href: "/documentation/developer-api/codegenerator-implementation.html"
+- title: "Vorto Repository"
+  href: ""
+  sub:
+    - title: "Overview"
+      href: "/documentation/vorto-repository/share-web.html"
+    - title: "Search models"
+      href: "/documentation/vorto-repository/share-web.html#search-models-in-the-repository"
+    - title: "Share models to the repository"
+      href: "/documentation/vorto-repository/share-web.html#share-models-to-the-repository"
+- title: "CLI Tool"
+  href: ""
+  sub:
+    - title: "Vorto CLI Tool"
+      href: "/documentation/cli-tool/cli-tool.html"
 - title: "Appendix"
   href: ""
   sub:

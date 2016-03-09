@@ -12,6 +12,10 @@ animatestyle: "slideInRight"
 style: "thumb5"
 ---
 
+{% include base.html %}
+
 With the Information Model Repository,  **Platform vendors** are able to manage, share and reuse existing Information Models directly from the Tool set or via the Web.
 
 <a href="http://vorto.eclipse.org/repo" target="_blank">Information Model Repository</a>
+
+<a href ="{{base}}/documentation/vorto-repository/share-web.html"> Find out more on how to Share Information Models

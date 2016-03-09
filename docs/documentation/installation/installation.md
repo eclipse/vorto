@@ -15,7 +15,7 @@ This section details the following topics:
 
 ## Getting the Vorto Plug-ins
 
-The Vorto plug-ins are available on the Eclipse update site server. The URL to the server is [http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/](http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/ "http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/"). You must add this repository to your IDE or, alternatively, import the Vorto plug-in zip archive to get the Vorto plug-ins.
+The Vorto plug-ins are available on the Eclipse update site server. The URL to the server is [http://download.eclipse.org/vorto/update/milestones](http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/ "http://download.eclipse.org/vorto/update/milestones"). You must add this repository to your IDE or, alternatively, import the Vorto plug-in zip archive to get the Vorto plug-ins.
 
 
 **Proceed as follows**
@@ -30,7 +30,7 @@ The Vorto plug-ins are available on the Eclipse update site server. The URL to t
 4. Add the *Vorto plug-ins repository* URL:  
    a. Click the **Add...** button beside the **Work with** field. The **Add Repository** dialog opens.  
    b. Enter a Name (optionally, e.g., *Vorto*).  
-   c. Enter the *Vorto plug-ins repository* URL [http://download.eclipse.org/vorto/update/milestones/0.4.0_M2](http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/ "http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/") into the **Location** field.  
+   c. Enter the *Vorto plug-ins repository* URL [http://download.eclipse.org/vorto/update/milestones](http://download.eclipse.org/vorto/update/milestones/0.4.0_M2/ "http://download.eclipse.org/vorto/update/milestones") into the **Location** field.  
    d. Click **OK**.
 
 In the **Install** dialog, the available software list is updated and now contains the software found in the added repository and in the installed archive, respectively.
@@ -77,7 +77,7 @@ In the **Install** dialog, the available software list is updated and now contai
 
    ![New function block model project]({{base}}/img/documentation/m2m_tc_new_vorto_function_block_model_wizard.png)  
 
-   <table class="table table-bordered">
+<table class="table table-bordered">
    	<tbody>
    		<tr>
    			<td><i class="fa fa-info-circle info-note"></i></td>
