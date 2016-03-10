@@ -68,5 +68,6 @@ public class AbstractBackendCodeGenerator {
 	public void deRegister(String serviceKey){
 		restTemplate.put(repositoryBasePath + "/generation-router/deregister/{serviceKey}", String.class, serviceKey);
 	}
+
 }
 
