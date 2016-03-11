@@ -1,8 +1,10 @@
-# docker-compose.yml
+# docker-compose-build.yml
 version: '2'
 
 services:
   vorto-repo-host:
+    build:
+      context: ./repo
     image: helloysd/vorto-repo
     container_name: vorto-repo
     ports:
@@ -11,6 +13,8 @@ services:
       - "8080"
 
   vorto-markdown-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.markdown
     image: helloysd/vorto-markdown-generator
     container_name: vorto-markdown-generator
     ports:
@@ -24,6 +28,8 @@ services:
       SERVER_PORT: "9005"
 
   vorto-bosch-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.bosch
     image: helloysd/vorto-bosch-generator
     container_name: vorto-bosch-generator
     ports:
@@ -37,6 +43,8 @@ services:
       SERVER_PORT: "9006"
 
   vorto-ios-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.ios
     image: helloysd/vorto-ios-generator
     container_name: vorto-ios-generator
     ports:
@@ -50,6 +58,8 @@ services:
       SERVER_PORT: "9007"
 
   vorto-javabean-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.javabean
     image: helloysd/vorto-javabean-generator
     container_name: vorto-javabean-generator
     ports:
@@ -63,6 +73,8 @@ services:
       SERVER_PORT: "9008"
 
   vorto-mqtt-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.mqtt
     image: helloysd/vorto-mqtt-generator
     container_name: vorto-mqtt-generator
     ports:
@@ -76,6 +88,8 @@ services:
       SERVER_PORT: "9009"
 
   vorto-thingworx-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.thingworx
     image: helloysd/vorto-thingworx-generator
     container_name: vorto-thingworx-generator
     ports:
@@ -89,6 +103,8 @@ services:
       SERVER_PORT: "9010"
 
   vorto-webdevice-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.webdevice
     image: helloysd/vorto-webdevice-generator
     container_name: vorto-webdevice-generator
     ports:
@@ -102,6 +118,8 @@ services:
       SERVER_PORT: "9011"
 
   vorto-latex-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.latex
     image: helloysd/vorto-latex-generator
     container_name: vorto-latex-generator
     ports:
@@ -115,6 +133,8 @@ services:
       SERVER_PORT: "9012"
 
   vorto-coap-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.coap
     image: helloysd/vorto-coap-generator
     container_name: vorto-coap-generator
     ports:
@@ -128,6 +148,8 @@ services:
       SERVER_PORT: "9013"
 
   vorto-jsonschema-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.jsonschema
     image: helloysd/vorto-jsonschema-generator
     container_name: vorto-jsonschema-generator
     ports:
