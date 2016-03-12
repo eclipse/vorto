@@ -15,7 +15,7 @@ Users with an existing Eclipse IDE, follow these steps:
 ### Prerequisites
 
  - [Java] 8
- - [Eclipse] Luna SR2 (4.4.2) 
+ - [Eclipse] Mars
  - [Xtext] 2.7.x or above
  - [Xtext Antlr] 2.1.x or above 
  - [Apache Maven] 3 (only needed if you would like to build from the command line)
