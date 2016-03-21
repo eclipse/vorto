@@ -17,6 +17,7 @@ package org.eclipse.vorto.core.model;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -34,6 +35,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
@@ -138,8 +140,8 @@ public abstract class AbstractModelProject extends AbstractModelElement implemen
 	}
 
 	@Override
-	public IMapping getMapping(String targetPlatform){
-		return MappingResourceFactory.getInstance().createMapping(this, targetPlatform);		
+	public Collection<MappingModel> getMapping(String targetPlatform){
+		return MappingResourceFactory.getInstance().getMappingModels(this, targetPlatform);		
 	}
 	
 	protected IModelElementResolver[] getResolvers() {

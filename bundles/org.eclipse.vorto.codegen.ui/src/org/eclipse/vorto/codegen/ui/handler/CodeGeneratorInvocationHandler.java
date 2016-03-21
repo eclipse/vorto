@@ -24,6 +24,7 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 
@@ -35,6 +36,7 @@ import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
  */
 public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
+	private static final String CLASS = "class";
 	private static final String GENERATOR_ID = IVortoCodeGenerator.GENERATOR_ID;
 	
 	@Override
@@ -56,10 +58,12 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
 
 		InformationModel informationModel = (InformationModel) selectedProject.getModel();
-
+		
+		final String targetPlatform = ConfigurationElementLookup.getDefault().getExtensionSimpleIdentifier(GENERATOR_ID, generatorName);
+		
 		for (IConfigurationElement e : configElements) {
 			try {
-				final Object codeGenerator = e.createExecutableExtension("class");
+				final Object codeGenerator = e.createExecutableExtension(CLASS);
 
 				if (!(codeGenerator instanceof IVortoCodeGenerator)) {
 					continue; // interested only in code generators
@@ -67,7 +71,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
-				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext());
+				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext(selectedProject, targetPlatform));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
@@ -76,8 +80,14 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		}
 	}
 
-	private IMappingContext createMappingContext() {
-		return new DefaultMappingContext();
+	private IMappingContext createMappingContext(IModelProject project, String targetPlatform) {
+		DefaultMappingContext mappingContext = new DefaultMappingContext();
+		
+		for(MappingModel mappingModel : project.getMapping(targetPlatform)) {
+			mappingContext.addMappingModel(mappingModel);
+		}
+		
+		return mappingContext;
 	}
 	
 	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {
