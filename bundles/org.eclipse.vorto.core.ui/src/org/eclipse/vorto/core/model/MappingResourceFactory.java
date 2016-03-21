@@ -81,6 +81,19 @@ public class MappingResourceFactory {
 		List<IMapping> referenceMappings = this.getReferenceMappings(ownerModelElement, targetPlatform);
 		return createMapping(mappingModel, referenceMappings);
 	}
+	
+	/**
+	 * Returns all the mapping models of a particular project
+	 * @param ownerModelElement
+	 * @param targetPlatform
+	 * @return
+	 */
+	public List<MappingModel> getMappingModels(IModelElement ownerModelElement, String targetPlatform) {
+		List<MappingModel> mappingModels = new ArrayList<MappingModel>();
+		mappingModels.add(getMappingModel(ownerModelElement, targetPlatform));
+		mappingModels.addAll(getReferenceMappingModels(ownerModelElement, targetPlatform));
+		return mappingModels;
+	}
 
 	/**
 	 * Create IMapping instance based on given Mapping Model and child IMapping 
@@ -146,6 +159,14 @@ public class MappingResourceFactory {
 		}
 		
 		return mappingModel;
+	}
+	
+	private List<MappingModel> getReferenceMappingModels(IModelElement ownerModelElement, String targetPlatform) {
+		List<MappingModel> referenceMappings = new ArrayList<MappingModel>();
+		for (IModelElement referenceModelElement : ownerModelElement.getReferences()) {
+			referenceMappings.add(getMappingModel(referenceModelElement, targetPlatform));
+		}
+		return referenceMappings;
 	}
 
 	private List<IMapping> getReferenceMappings(IModelElement ownerModelElement, String targetPlatform) {

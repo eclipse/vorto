@@ -18,9 +18,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
+import org.osgi.framework.Bundle;
 
 public class ConfigurationElementLookup {
 
+	private static final String BUNDLE_NAME = "Bundle-Name";
 	private IExtensionRegistry EXTENSION_REGISTRY = Platform
 			.getExtensionRegistry();
 	private static ConfigurationElementLookup instance;
@@ -45,6 +47,19 @@ public class ConfigurationElementLookup {
 		IExtension extension = EXTENSION_REGISTRY.getExtension(extensionPtId,
 				id);
 		return extension.getConfigurationElements();
+	}
+	
+	public String getExtensionSimpleIdentifier(String extensionPtId, String id) {
+		IExtension extension = EXTENSION_REGISTRY.getExtension(extensionPtId,
+				id);
+		if (extension != null && extension.getContributor() != null) {
+			
+			Bundle bundle = Platform.getBundle(extension.getContributor().getName());
+
+			return bundle.getHeaders().get(BUNDLE_NAME);
+		}
+		
+		return null;
 	}
 
 	public void setExtensionRegistry(IExtensionRegistry reg) {
