@@ -75,11 +75,6 @@
 			<artifactId>swagger-models</artifactId>
 			<version>1.5.6</version>
 		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>swagger-ui</artifactId>
-			<version>2.1.4</version>
-		</dependency>
 
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -96,6 +91,26 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-swagger-ui</artifactId>
+			<version>0.2.7</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>jquery</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>bootstrap-less-only</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>angular</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>		
 
 		<!-- Database -->
 

@@ -1,11 +1,10 @@
-
-<div>
-   
-     <iframe style="width: 100%; border: 0px; height:1000px;" src="partials/rest-api-template-iframe.html" scrolling="no"></iframe>
-     <script>
-            iFrameResize({
-                   log : false,
-                   checkOrigin : false
-            })
-     </script>
+<link href='css/swagger_custom.css' media='screen' rel='stylesheet' type='text/css'/>
+<div class="swagger-section">
+<div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;</div>
+	<div id="swagger-ui-container" class="swagger-ui-wrap">
+	    <h3 ng-show="isLoading">Loading... Please wait...</h3>
+	    <div swagger-ui url="swaggerUrl" loading="isLoading" parser="json" api-explorer="true" trusted-sources="true"
+	         error-handler="defaultErrorHandler">
+	    </div>
+	</div>
 </div>

@@ -3,12 +3,12 @@
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
@@ -60,7 +60,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableJpaRepositories
 public class VortoRepository {
-	
+
 	public static void main(String[] args) {
 		SpringApplication.run(VortoRepository.class, args);
 	}
@@ -90,9 +90,9 @@ public class VortoRepository {
 						+ "These information models can be managed and shared within the Vorto Information Model Repository. <br/>"
 						+ " Code Generators for Information Models let you integrate devices into different platforms."
 						+ "<br/>",
-				"1.0.0", "", "", "", "");
+				"1.0.0", "", "", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}
-	
+
 	@Autowired
 	private UserRepository userRepository;
 
@@ -100,19 +100,19 @@ public class VortoRepository {
 	public static PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(11);
 	}
-	
+
 	@PostConstruct
 	public void createAdminIfNotExists() throws Exception {
 		if (userRepository.findByUsername("admin") == null){
-			
+
 			User user = new User();
-			
+
 			user.setUsername("admin".toLowerCase());
 			user.setPassword( encoder().encode("!v0rt0admin"));
 			user.setHasWatchOnRepository(false);
 			user.setEmail("alexander.edelmann@bosch-si.com");
 			user.setRoles(Role.ADMIN);
-				
+
 			userRepository.save(user);
 		}
 	}
@@ -127,10 +127,10 @@ public class VortoRepository {
 
 		@Autowired
 		private RESTAuthenticationEntryPoint authenticationEntryPoint;
-		
+
 		@Autowired
 		private PasswordEncoder passwordEncoder;
-		
+
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 
