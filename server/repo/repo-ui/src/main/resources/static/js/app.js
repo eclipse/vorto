@@ -1,7 +1,7 @@
-var repository = angular.module('repository', ['ngRoute','repositoryControllers', 'repositoryDirectives', 'smart-table']);
+var repository = angular.module('repository', ['ngRoute', 'repositoryControllers', 'repositoryDirectives', 'swaggerUi', 'smart-table']);
 
 repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
-    
+
 	$routeProvider
         .when('/', {
             templateUrl: "partials/search-template.html",
@@ -30,29 +30,29 @@ repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, 
         .when('/login', {
             templateUrl: "partials/login-template.html",
             controller: 'AuthenticateController'
-        }) 
+        })
         .when('/signup', {
             templateUrl: "partials/signup-template.html",
             controller: 'SignUpController'
         })
         .otherwise({redirectTo: '/'});
-        
-        $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';  
-	    
+
+        $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';
+
 }]).run(function($location, $http, $rootScope) {
-		
+
 		// register listener to watch route changes
 	 	$rootScope.$on("$locationChangeStart", function(event, next, current) {
 
-	 		if($location.path() === "/upload" && $rootScope.authenticated === false) {	
-	 			$location.path('/login');	
+	 		if($location.path() === "/upload" && $rootScope.authenticated === false) {
+	 			$location.path('/login');
 	 		}
-	 		
-	 		if($location.path() === "/settings" && $rootScope.authenticated === false) {	
+
+	 		if($location.path() === "/settings" && $rootScope.authenticated === false) {
 	 			$location.path('/login');
 	 		}
 	    });
-	
+
 		$rootScope.user = [];
 		$rootScope.getUser = function() {
 			$http.get('./user').success(
@@ -64,11 +64,11 @@ repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, 
                     }
 	      		}).error(function(data, status, headers, config) {
 					$rootScope.authenticated = false;
-	    		}); 	
+	    		});
 		};
-			
+
 		$rootScope.getUser();
-			
+
 		$rootScope.logout = function() {
 			$http.post('logout', {}).success(function() {
 				$rootScope.authenticated = false;
