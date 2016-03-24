@@ -31,6 +31,7 @@ import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
 import com.google.inject.Injector;
+import org.springframework.util.StringUtils;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -56,7 +57,7 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		Resource infoModelResource = null;
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
-				if (entry.getName().contains(modelId.getName())) {
+				if (StringUtils.stripFilenameExtension(entry.getName()).equals(modelId.getName())) {
 					infoModelResource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
 					infoModelResource.load(new ByteArrayInputStream(copyStream(zis, entry)),
 							resourceSet.getLoadOptions());
