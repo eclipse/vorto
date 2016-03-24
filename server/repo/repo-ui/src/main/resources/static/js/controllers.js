@@ -1,4 +1,4 @@
-var repositoryControllers = angular.module('repositoryControllers', []);
+var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
 repositoryControllers.controller('SearchController', [ '$scope','$http', '$location', function ($scope,$http,$location) {
 
@@ -6,18 +6,18 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
   	$scope.modelType = 'all';
   	$scope.queryFilter = "";
   	$scope.fileToUpload = null;
-  	
+
   	$scope.clearInput = function() {
   		$scope.queryFilter = "";
   	};
-  	  	
+
   	$scope.searchOnEnter = function(keyEvent) {
   		if (keyEvent.keyCode === 13) {
   			$scope.search();
-  		}    		
+  		}
   	};
-  	  	
-  	$scope.search = function() {	
+
+  	$scope.search = function() {
   		var filter = null;
   		if ($scope.modelType === 'all') {
   			filter = $scope.queryFilter;
@@ -29,30 +29,30 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
 					$scope.models = data;
 	      }).error(function(data, status, headers, config) {
 					$scope.models = [];
-	    	}); 	
+	    	});
 		};
-  	
-  	$scope.search();  	
-  	
+
+  	$scope.search();
+
     $scope.displayedModels = [].concat($scope.models);
     $scope.itemsByPage 		= 15;
   	$scope.displayedPages 	= ($scope.models.length / 2);
-  	
+
   	$scope.getters= {
 		modelType: function (value) {
 			return value.id.modelType.sort();
-        }, 
+        },
         namespace: function (value) {
 	        return value.id.namespace.sort();
-        }, 
+        },
         name: function (value) {
 	        return value.id.name.sort();
-        }, 
+        },
         version: function (value) {
 	        return value.id.version.sort();
-        }        
-  	 } 	
-  	
+        }
+  	 }
+
   	$scope.go = function(model){
   		$location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
   	};
@@ -60,7 +60,7 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
 
 
 repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
-	
+
     $scope.modelFile = null;
     $scope.uploadResult = {};
 
@@ -87,7 +87,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 	    	}
 	    });
     };
-    
+
     $scope.checkin = function (handleId) {
         $http.put('./rest/secure/'+handleId)
         .success(function(result){
@@ -106,7 +106,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 	    	}
 	    });;
     };
-    
+
 }]);
 
 repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route',function ($rootScope,$scope, $http,$routeParams,$location,$route) {
@@ -114,7 +114,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	$scope.platformGeneratorMatrix = null;
 	$scope.documentationGenerators = null;
 	$scope.chosenFile = false;
-	
+
 	 $scope.uploadImage = function () {
     	var fd = new FormData();
         fd.append('file', document.getElementById('imageFile').files[0]);
@@ -141,7 +141,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	    	}
 	    });
     };
-    
+
     $scope.hasImage = function() {
     	if (model.hasImage) {
     		return "image"
@@ -149,45 +149,45 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     		return "placeHolder"
     	}
     };
-	
+
 	$scope.chooseImageFile = function() {
 		document.getElementById("imageFile").click();
 	};
-	
+
     $scope.getDetails = function (namespace,name,version) {
         $http.get('./rest/model/'+namespace+'/'+name+'/'+version)
         .success(function(result){
         	$scope.model = result;
         });
     };
-    
+
     $scope.getContent = function (namespace,name,version) {
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
         	$scope.content = result;
         });
     };
-    
+
     $scope.getPlatformGenerators = function () {
         $http.get('./rest/generation-router/platform')
         .success(function(result){
         	$scope.platformGeneratorMatrix = $scope.listToMatrix(result, 2);
         });
     };
-    
+
     $scope.getDocumentationGenerators = function () {
         $http.get('./rest/generation-router/documentation')
         .success(function(result){
         	$scope.documentationGenerators = result;
         });
     };
-    
+
   	$scope.isFilled = function(rating, value) {
   		if (rating === value) {
   			return "filled"
   		}
   	};
-    
+
     $scope.listToMatrix = function(list, n) {
 	    var grid = [], i = 0, x = list.length, col, row = -1;
 	    for (var i = 0; i < x; i++) {
@@ -199,20 +199,20 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	    }
     	return grid;
 	}
-    
-    
+
+
     $scope.getDetails($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getContent($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getPlatformGenerators();
     $scope.getDocumentationGenerators();
-	
+
 	$scope.remove = function(){
 		$http.delete('./rest/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
 		.success(function(result){
         	$location.path('/');
         }).error(function(data, status, headers, config) {
 	    	$location.path('/');
-	    });		
+	    });
 	}
 
 	/*
@@ -220,15 +220,15 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	*/
 	$scope.comments = null;
 	$authority		= $rootScope.authority;
-	
+
 	$scope.getCommentsForModelId = function(){
-     
+
 		$http.get('./rest/comments/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
 				.success(function(result){
 					$scope.comments = result;
 					$scope.comments.reverse();
 				}).error(function(data, status, headers, config) {
-				
+
 				if(status == 403){
 					$rootScope.error = "Operation is Forbidden";
 				}else if(status == 401){
@@ -242,26 +242,26 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				}
 			});
 	}
-		
-	$scope.getCommentsForModelId();	
-			
+
+	$scope.getCommentsForModelId();
+
 	$scope.createComment = function(commentContent){
-		
+
 		$scope.date = new Date();
-				
+
 		var comment = {
 			"modelId"	: '/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version,
 			"author"	: $scope.user,
 			"date"		: $scope.date,
 			"content"	: commentContent
 		}
-				
+
 		$http.post('./rest/comments', comment)
 			.success(function(result){
 				$scope.comments.reverse();
 				$scope.comments.push(comment);
 				$scope.comments.reverse();
-				
+
 			}).error(function(data, status, headers, config) {
 				if(status == 403){
 					$rootScope.error = "Operation is Forbidden";
@@ -275,52 +275,52 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$rootScope.error = "Failed Request with response status "+status;
 				}
 			});
-			
+
 		$scope.commentContent = "";
-		$scope.getCommentsForModelId();	
+		$scope.getCommentsForModelId();
 	}
-	
+
 	/*
 		Stop - Handling Comments
 	*/
-	
-	
+
+
 }]);
 
 repositoryControllers.controller('GeneratorController', [ '$scope','$http', function ($scope,$http) {
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
-      	
-  	$scope.listGenerators = function() {	
+
+  	$scope.listGenerators = function() {
   		$http.get('./rest/generation-router/platform').success(
 	      function(data, status, headers, config) {
 					$scope.generators = data;
-	      }); 	
+	      });
 	};
-	
-	$scope.listTopUsed = function() {	
+
+	$scope.listTopUsed = function() {
   		$http.get('./rest/generation-router/topused/3').success(
 	      function(data, status, headers, config) {
 					$scope.mostUsedGenerators = data;
-	      }); 	
+	      });
 	};
-	
+
 	$scope.isFilled = function(rating, value) {
   		if (rating === value) {
   			return "filled"
   		}
   	};
-  	
+
   	$scope.listGenerators();
   	$scope.listTopUsed();
 
 } ]);
 
-repositoryControllers.controller('AuthenticateController', ['$scope', '$rootScope', '$location', '$http', 
-    
+repositoryControllers.controller('AuthenticateController', ['$scope', '$rootScope', '$location', '$http',
+
     function($scope, $rootScope, $location, $http) {
-	
+
     var authenticate = function(credentials, callback) {
 
         var headers = credentials ? {authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
@@ -357,15 +357,15 @@ repositoryControllers.controller('AuthenticateController', ['$scope', '$rootScop
 }]);
 
 /*
- * TODO -     
+ * TODO -
  */
 repositoryControllers.controller('SignUpController', [ '$location', '$scope','$http', function ($location,$scope,$http) {
-    
+
 	$scope.emailAddressExists = false;
 	$scope.usernameExists = false;
-	
+
 	$scope.go = function (path, user) {
-		
+
 		user.firstName = "";
         user.lastName = "";
         user.email = "";
@@ -373,12 +373,12 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
         user.username = "";
         user.password = "";
         user.passwordCon = "";
-		
+
         $location.path("/login");
     };
-    
+
     $scope.clear = function (user) {
-		
+
     	user.firstName = "";
         user.lastName = "";
         user.email = "";
@@ -387,11 +387,11 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
         user.password = "";
         user.passwordCon = "";
     };
-    
-    
+
+
     /*
      * checking uniqueness of username and email
-     */    
+     */
 	$scope.checkEmailAlreadyExists = function(user){
 
 		$http.post('./rest/users/unique/email', user.email , {
@@ -402,9 +402,9 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
   		      }).error(function(data, status, headers, config) {
   		      	 });
 	}
-	
+
 	$scope.usernameAlreadyExists = function(user){
-				
+
 		$http.post('./rest/users/unique/username', user.username , {
             headers: {'Content-Type': "application/json"}
         }).success(
@@ -413,41 +413,41 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
   		      }).error(function(data, status, headers, config) {
   		      	 });
 	}
-	
+
 	/*
-     * create new user 
-     */    	
-	$scope.register = function(user) {    
-        
+     * create new user
+     */
+	$scope.register = function(user) {
+
 		var userData = {
                 "firstName":user.firstName,
                 "lastName":user.lastName,
                 "email":user.email,
                 "username":user.username,
                 "password":user.password
-            };    
-            
+            };
+
             $http.post('./rest/users', userData, {
                 headers: {'Content-Type': "application/json"}
             })
             .success( function(data, status, headers, config) {
-			                   
+
             }).error(function(data, status, headers, config) {
-    	    	
-    	    });		
+
+    	    });
     }
 }]);
 
 /*
- * TODO -     
+ * TODO -
  */
 repositoryControllers.controller('SettingsController', [ '$scope','$http','$rootScope', '$location', function ($scope,$http,$rootScope,$location) {
 
 	var currentEmailAddress = "";
-	
+
 	$http.get('./rest/users/'+$rootScope.user).success(
       function(data, status, headers, config) {
-			
+
 			if(data === ""){
 				$scope.userExists = false;
 			} else {
@@ -458,14 +458,14 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
 
 				$scope.userExists = true;
 			}
-			
+
       }).error(function(data, status, headers, config) {
-      	 }); 		
-	
-	$scope.updateProfil = function(user){		
+      	 });
+
+	$scope.updateProfil = function(user){
 
 		$scope.put = null;
-			
+
 		$http.put('./rest/users/'+$rootScope.user, user)
 			.then(function(response) {
 				$scope.user = response.data;
@@ -475,9 +475,9 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
 					$scope.update = false;
 				}
 				$scope.put=true;
-	      }); 
+	      });
 	}
-	
+
 	$scope.checkEmailAlreadyExists = function(user){
 
 		if (currentEmailAddress === user.email) {
@@ -491,13 +491,13 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
 	  		      	 });
 		}
 	}
-	
+
 }]);
 
 repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$http', function ($location,$scope,$http) {
-	   		
-	$http.get('./rest/context').success(function(response) {
-    	window.passingObj = { "key" : "/"+response };
-    })
-
+	$scope.isLoading = true;
+	$scope.url = $scope.swaggerUrl = 'v2/api-docs';
+	$scope.defaultErrorHandler = function(data, status) {
+		alert('Error Loading Swagger API!');
+	};
 }]);
