@@ -23,6 +23,7 @@ import org.eclipse.vorto.core.model.InformationModelProject;
 import org.eclipse.vorto.perspective.dnd.dropaction.CreateProjectDropAction;
 import org.eclipse.vorto.perspective.dnd.dropaction.ModelProjectDropAction;
 import org.eclipse.vorto.perspective.dnd.dropaction.RepositoryResourceDropAction;
+import org.eclipse.vorto.perspective.dnd.dropvalidator.DatatypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.ModelTypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassModelTypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassSourceClassValidator;
@@ -32,7 +33,7 @@ public class ModelDropListenerFactory {
 	public static DropTargetListener datatypeViewPartDropListener(Viewer viewer) {
 		return new ModelDropListener(viewer)
 				.addDropAction(
-						new TargetClassSourceClassValidator(
+						new DatatypeValidator(
 								DatatypeModelProject.class,
 								DatatypeModelProject.class),
 						new ModelProjectDropAction(DatatypeModelProject.class))
