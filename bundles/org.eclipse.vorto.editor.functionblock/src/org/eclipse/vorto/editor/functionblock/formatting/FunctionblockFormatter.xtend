@@ -64,6 +64,8 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 			c.setNoSpace().before(first)
 			c.setNoSpace().after(first)
 			c.setNoSpace().before(second)
+			c.setIndentationIncrement().after(first)
+			c.setIndentationDecrement().before(second)
 		]
 
 		//Constraint block
@@ -82,7 +84,7 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		
 		//Operation parameters.
 		c.setNoSpace().before(f.operationAccess.commaKeyword_2_1_0)
-		c.setNoSpace().after(f.operationAccess.commaKeyword_2_1_0)
+		c.setLinewrap(1).after(f.operationAccess.commaKeyword_2_1_0)
 		
 	}
 }
