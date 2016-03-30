@@ -615,17 +615,17 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
+		result.append(" (name: "); //$NON-NLS-1$
 		result.append(name);
-		result.append(", namespace: ");
+		result.append(", namespace: "); //$NON-NLS-1$
 		result.append(namespace);
-		result.append(", version: ");
+		result.append(", version: "); //$NON-NLS-1$
 		result.append(version);
-		result.append(", description: ");
+		result.append(", description: "); //$NON-NLS-1$
 		result.append(description);
-		result.append(", displayname: ");
+		result.append(", displayname: "); //$NON-NLS-1$
 		result.append(displayname);
-		result.append(", category: ");
+		result.append(", category: "); //$NON-NLS-1$
 		result.append(category);
 		result.append(')');
 		return result.toString();

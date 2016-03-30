@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Param;
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl#isMultiplicity <em>Multiplicity</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl#getDescription <em>Description</em>}</li>
  * </ul>
  *
  * @generated
@@ -66,6 +67,26 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 	 * @ordered
 	 */
 	protected String name = NAME_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String DESCRIPTION_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getDescription() <em>Description</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getDescription()
+	 * @generated
+	 * @ordered
+	 */
+	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -133,6 +154,27 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setDescription(String newDescription) {
+		String oldDescription = description;
+		description = newDescription;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.PARAM__DESCRIPTION, oldDescription, description));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -140,6 +182,8 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 				return isMultiplicity();
 			case FunctionblockPackage.PARAM__NAME:
 				return getName();
+			case FunctionblockPackage.PARAM__DESCRIPTION:
+				return getDescription();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -157,6 +201,9 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 				return;
 			case FunctionblockPackage.PARAM__NAME:
 				setName((String)newValue);
+				return;
+			case FunctionblockPackage.PARAM__DESCRIPTION:
+				setDescription((String)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -176,6 +223,9 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 			case FunctionblockPackage.PARAM__NAME:
 				setName(NAME_EDEFAULT);
 				return;
+			case FunctionblockPackage.PARAM__DESCRIPTION:
+				setDescription(DESCRIPTION_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -192,6 +242,8 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 				return multiplicity != MULTIPLICITY_EDEFAULT;
 			case FunctionblockPackage.PARAM__NAME:
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case FunctionblockPackage.PARAM__DESCRIPTION:
+				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -206,10 +258,12 @@ public class ParamImpl extends MinimalEObjectImpl.Container implements Param {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (multiplicity: ");
+		result.append(" (multiplicity: "); //$NON-NLS-1$
 		result.append(multiplicity);
-		result.append(", name: ");
+		result.append(", name: "); //$NON-NLS-1$
 		result.append(name);
+		result.append(", description: "); //$NON-NLS-1$
+		result.append(description);
 		result.append(')');
 		return result.toString();
 	}

@@ -155,7 +155,7 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (returnType: ");
+		result.append(" (returnType: "); //$NON-NLS-1$
 		result.append(returnType);
 		result.append(')');
 		return result.toString();

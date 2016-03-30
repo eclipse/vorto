@@ -500,13 +500,22 @@ public interface FunctionblockPackage extends EPackage {
 	int PARAM__NAME = 1;
 
 	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARAM__DESCRIPTION = 2;
+
+	/**
 	 * The number of structural features of the '<em>Param</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAM_FEATURE_COUNT = 2;
+	int PARAM_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.PrimitiveParamImpl <em>Primitive Param</em>}' class.
@@ -535,6 +544,15 @@ public interface FunctionblockPackage extends EPackage {
 	 * @ordered
 	 */
 	int PRIMITIVE_PARAM__NAME = PARAM__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PRIMITIVE_PARAM__DESCRIPTION = PARAM__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' attribute.
@@ -581,6 +599,15 @@ public interface FunctionblockPackage extends EPackage {
 	 * @ordered
 	 */
 	int REF_PARAM__NAME = PARAM__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Description</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REF_PARAM__DESCRIPTION = PARAM__DESCRIPTION;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' reference.
@@ -1001,6 +1028,17 @@ public interface FunctionblockPackage extends EPackage {
 	EAttribute getParam_Name();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.functionblock.Param#getDescription <em>Description</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Description</em>'.
+	 * @see org.eclipse.vorto.core.api.model.functionblock.Param#getDescription()
+	 * @see #getParam()
+	 * @generated
+	 */
+	EAttribute getParam_Description();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.functionblock.Event <em>Event</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1349,6 +1387,14 @@ public interface FunctionblockPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PARAM__NAME = eINSTANCE.getParam_Name();
+
+		/**
+		 * The meta object literal for the '<em><b>Description</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PARAM__DESCRIPTION = eINSTANCE.getParam_Description();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.EventImpl <em>Event</em>}' class.
