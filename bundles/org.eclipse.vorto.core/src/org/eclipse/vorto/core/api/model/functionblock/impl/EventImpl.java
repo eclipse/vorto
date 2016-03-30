@@ -214,7 +214,7 @@ public class EventImpl extends MinimalEObjectImpl.Container implements Event {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
+		result.append(" (name: "); //$NON-NLS-1$
 		result.append(name);
 		result.append(')');
 		return result.toString();

@@ -88,11 +88,11 @@ ReturnPrimitiveType :
 ;
 
 PrimitiveParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType
+	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType (description=STRING)?
 ;
 
 RefParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = [datatype::Type|QualifiedName]
+	(multiplicity ?= 'multiple')? name = ID 'as' type = [datatype::Type|QualifiedName] (description=STRING)?
 ;
 
 Param:
