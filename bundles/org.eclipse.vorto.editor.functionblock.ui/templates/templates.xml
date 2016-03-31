@@ -2,96 +2,29 @@
 <templates>
 	<template autoinsert="true"
 		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Datetime property" enabled="true" name="mandatory - dateTime"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_1">mandatory ${name} as dateTime "description"</template>
+		description="Mandatory property" enabled="true" name="mandatory property"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_1">mandatory ${name} as ${type} "description"</template>
 	<template autoinsert="true"
 		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Base64 Binary Property" enabled="true"
-		name="mandatory - base64 binary" id="org.eclipse.vorto.editor.datatype.Datatype.Property_2">mandatory ${name} as base64Binary "description"</template>
+		description="Optional property" enabled="true" name="optional property"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_10">optional ${name} as ${type} "description"</template>
 	<template autoinsert="true"
 		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Boolean property" enabled="true" name="mandatory - boolean"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_3">mandatory ${name} as boolean "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Byte property" enabled="true" name="mandatory - byte"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_20">mandatory ${name} as byte "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Double property" enabled="true" name="mandatory - double"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_4">mandatory ${name} as double "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Float Property" enabled="true" name="mandatory - float"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_5">mandatory ${name} as float "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Integer property type" enabled="true" name="mandatory - int"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_6">mandatory ${name} as int "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Long property" enabled="true" name="mandatory - long"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_7">mandatory ${name} as long "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Short property" enabled="true" name="mandatory - short"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_8">mandatory ${name} as short "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="String property" enabled="true" name="mandatory - string"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_9">mandatory ${name} as string "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Datetime property" enabled="true" name="optional - dateTime"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_10">optional ${name} as dateTime "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Base64 Binary Property" enabled="true"
-		name="optional - base64 binary" id="org.eclipse.vorto.editor.datatype.Datatype.Property_11">optional ${name} as base64Binary "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Boolean property" enabled="true" name="optional - boolean"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_12">optional ${name} as boolean "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Byte property" enabled="true" name="optional - byte"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_13">optional ${name} as byte "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Double property" enabled="true" name="optional - double"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_14">optional ${name} as double "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Float Property" enabled="true" name="optional - float"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_15">optional ${name} as float "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Integer property type" enabled="true" name="optional - int"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_16">optional ${name} as int "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Long property" enabled="true" name="optional - long"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_17">optional ${name} as long "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Short property" enabled="true" name="optional - short"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_18">optional ${name} as short "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="String property" enabled="true" name="optional - string"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_19">optional ${name} as string "description"</template>
-	<template autoinsert="true"
-		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
-		description="Property enhancement" enabled="true" name="with"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_21">with { measurementUnit: [enum], readable: true, writable: true, eventable: true }</template>
+		description="measurementUnit, readable, writable and eventable flags." enabled="true" name="with"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_21">with { measurementUnit: ${enumValue}, readable: true, writable: true, eventable: true }</template>
 	<template autoinsert="true"
 		context="org.eclipse.vorto.editor.functionblock.Functionblock.Operation"
-		deleted="false" description="Template for Operations" enabled="true"
+		deleted="false" description="with return type" enabled="true"
 		name="operation"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_22">${name}() returns ${type} "description"</template>
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_4">${name}() returns ${type} "description"</template>
+	<template autoinsert="true"
+		context="org.eclipse.vorto.editor.functionblock.Functionblock.Operation"
+		deleted="false" description="with no return type" enabled="true"
+		name="operation"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_5">${name}() "description"</template>
 	<template autoinsert="true"
 		context="org.eclipse.vorto.editor.functionblock.Functionblock.Param"
 		deleted="false" description="Parameters for operation" enabled="true"
-		name="parameters"
-		id="org.eclipse.vorto.editor.datatype.Datatype.Property_23">${ parameterName } as ${type} "description"</template>
+		name="parameter"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_6">${parameterName} as ${type} "description"</template>
 </templates>
