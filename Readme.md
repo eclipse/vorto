@@ -1,5 +1,6 @@
 [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/eclipse/vorto)
+[![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=Issues%20In%20Progress)](http://waffle.io/eclipse/vorto)
+[![Throughput Graph](https://graphs.waffle.io/eclipse/vorto/throughput.svg)](https://waffle.io/eclipse/vorto/metrics)
 # Getting started with Vorto
 
 Great, that you are interested in the Eclipse Vorto project!
