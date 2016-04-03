@@ -1,4 +1,5 @@
 [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=In%20Progress)](http://waffle.io/eclipse/vorto)
 # Getting started with Vorto
 
 Great, that you are interested in the Eclipse Vorto project!
