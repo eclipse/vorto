@@ -93,6 +93,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	public GeneratorServiceInfo getGeneratorServiceInfo(String serviceKey) {
 		Generator generatorEntity = getGenerator(serviceKey);
 		GeneratorServiceInfo generatorInfo = restTemplate.getForObject(generatorEntity.getGenerationInfoUrl(), GeneratorServiceInfo.class);
+		generatorInfo.setGeneratorInfoUrl(generatorEntity.getGenerationInfoUrl());
 		generatorInfo.performRating(generatorEntity.getInvocationCount());		
 		return generatorInfo;
 	}

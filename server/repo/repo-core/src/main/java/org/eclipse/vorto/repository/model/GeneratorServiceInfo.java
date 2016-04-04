@@ -24,6 +24,7 @@ public class GeneratorServiceInfo {
 	private String image144x144;
 	private ServiceClassifier classifier;
 	private GeneratorRating rating;
+	private String generatorInfoUrl;
 		
 	public String getKey() {
 		return key;
@@ -84,6 +85,11 @@ public class GeneratorServiceInfo {
 	public void performRating(int invocationCount) {
 		this.rating = GeneratorRating.performRating(invocationCount);
 	}
-	
+	public String getGeneratorInfoUrl() {
+		return generatorInfoUrl;
+	}
+	public void setGeneratorInfoUrl(String generatorInfoUrl) {
+		this.generatorInfoUrl = generatorInfoUrl;
+	}
 	
 }
