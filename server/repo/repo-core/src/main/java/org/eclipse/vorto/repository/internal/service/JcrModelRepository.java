@@ -51,6 +51,7 @@ import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
+import org.eclipse.vorto.repository.internal.service.validation.exception.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.model.ModelEMFResource;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
@@ -228,6 +229,8 @@ public class JcrModelRepository implements IModelRepository {
 				validator.validate(resource);
 			}
 			return UploadModelResult.valid(createUploadHandle(resource.getId(), content, fileName), resource);
+		} catch (CouldNotResolveReferenceException validationException) {
+			return UploadModelResult.invalid(validationException);
 		} catch (ValidationException validationException) {
 			return UploadModelResult.invalid(validationException);
 		}

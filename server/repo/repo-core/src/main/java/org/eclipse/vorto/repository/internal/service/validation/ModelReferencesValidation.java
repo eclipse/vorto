@@ -14,6 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.internal.service.validation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.vorto.repository.internal.service.validation.exception.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
@@ -34,31 +38,24 @@ public class ModelReferencesValidation implements IModelValidator {
 	@Override
 	public void validate(ModelResource modelResource)
 			throws ValidationException {
+		List<ModelId> missingReferences = new ArrayList<ModelId>();
 		if (!modelResource.getReferences().isEmpty()) {
-			checkReferencesRecursive(modelResource);
+			checkReferencesRecursive(modelResource, missingReferences);
+		}
+		
+		if (!missingReferences.isEmpty()) {
+			throw new CouldNotResolveReferenceException(modelResource, missingReferences);
 		}
 	}
 	
-	private void checkReferencesRecursive(ModelResource modelResource) {
+	private void checkReferencesRecursive(ModelResource modelResource, List<ModelId> accumulator) {
 		for (ModelId modelId : modelResource.getReferences()) {
 			ModelResource reference = modelRepository.getById(modelId);
 			if (reference == null) {
-				throw new CouldNotResolveReferenceException(modelResource, modelId);
+				accumulator.add(modelId);
+			} else {
+				checkReferencesRecursive(reference, accumulator);
 			}
-			checkReferencesRecursive(reference);
 		}
 	}
-	
-	protected static class CouldNotResolveReferenceException extends ValidationException {
-
-		public CouldNotResolveReferenceException(ModelResource resource, ModelId faultyReference) {
-			super(createErrorMessage(resource, faultyReference), resource);
-		}	
-	}
-
-	private static String createErrorMessage(ModelResource resource,
-			ModelId faultyReference) {	
-		return String.format("Cannot resolve reference %s", faultyReference.getPrettyFormat());
-	}
-
 }
