@@ -8,4 +8,4 @@ imagename : "fa fa-bug fa-4x"
 style: "team"
 accesslink: "https://bugs.eclipse.org/bugs/buglist.cgi?product=vorto&component=Core"
 ---
-Issues and bugs related to Vorto are tracked with the **Eclipse Bugzilla** tracking system.  If you find any issues, please report them  <a href="https://bugs.eclipse.org/bugs/buglist.cgi?product=vorto&component=Core" target="_blank">here.</a>
+Issues and bugs related to Vorto are tracked with the **Eclipse Bugzilla** tracking system.  If you find any issues, please report them  <a href="https://github.com/eclipse/vorto/issues" target="_blank">here.</a>
