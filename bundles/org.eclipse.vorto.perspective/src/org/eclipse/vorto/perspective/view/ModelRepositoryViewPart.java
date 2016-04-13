@@ -173,7 +173,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 			try {
 				return IDE.openEditorOnFileStore(page, EFS.getStore(file.toURI()));
 			} catch (CoreException e) {
-				e.printStackTrace();
 				throw new RuntimeException(e);
 			}
 		} else {
