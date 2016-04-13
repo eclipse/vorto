@@ -14,17 +14,24 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.view;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -39,6 +46,12 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
@@ -49,6 +62,9 @@ import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
 import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
+import org.eclipse.vorto.perspective.util.ViewPartUtil;
+
+import com.google.common.io.Files;
 
 public class ModelRepositoryViewPart extends ViewPart {
 
@@ -65,8 +81,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 	 */
 	public static final String ID = "org.eclipse.vorto.perspective.views.ModelRepositoryViewPart";
 
-	private IModelRepository modelRepo = ModelRepositoryFactory
-			.getModelRepository();
+	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
 
 	private TableViewer viewer;
 
@@ -96,8 +111,86 @@ public class ModelRepositoryViewPart extends ViewPart {
 		searchField = createSearchField(parent, btnSearch);
 
 		viewer = createTableViewer(parent, btnSearch);
-		
+
+		addOpenSharedModelInEditorListener(viewer);
+
 		initContextMenu();
+	}
+
+	private void addOpenSharedModelInEditorListener(TableViewer viewer) {
+		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		if (page == null) {
+			MessageDisplayFactory.getMessageDisplay().displayError("Cannot get active workbench page. Opening shared model in Editor not possible.");
+			return;
+		}
+		
+		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			public void selectionChanged(SelectionChangedEvent event) {
+				
+				ModelResource resource = (ModelResource) ViewPartUtil.getFirstSelectedObject(ModelResource.class, event);
+				
+				if (resource != null) {
+					try {
+						// Create temporary file
+						File file = File.createTempFile("temp_model_",
+								getExtension(resource.getId().getModelType()));
+						
+						// Download shared model and put in temporary file
+						Files.write(modelRepo.downloadContent(resource.getId()), file);
+						
+						// Open temporary file in editor
+						IEditorPart editor = openFileInEditor(page, file);
+						
+						// Add listener to editor close event, so we can delete the file when editor is closed
+						if (editor != null) {
+							page.addPartListener(onEditorCloseListener(page, editor, file));
+						}
+					} catch (IOException | RuntimeException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+	
+	private IPartListener onEditorCloseListener(final IWorkbenchPage page, final IWorkbenchPart editor, final File file) {
+		return new IPartListener() {
+			public void partActivated(IWorkbenchPart part) {}
+			public void partBroughtToTop(IWorkbenchPart part) {}
+			public void partDeactivated(IWorkbenchPart part) {}
+			public void partOpened(IWorkbenchPart part) {}
+			
+			public void partClosed(IWorkbenchPart part) {
+				if (part == editor) {
+					if (file.delete()) {
+						page.removePartListener(this);
+					}
+				}
+			}
+		};
+	}
+
+	private IEditorPart openFileInEditor(IWorkbenchPage page, File file) {
+		if (file.exists()) {
+			try {
+				return IDE.openEditorOnFileStore(page, EFS.getStore(file.toURI()));
+			} catch (CoreException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		} else {
+			return null;
+		}
+	}
+
+	private String getExtension(ModelType modelType) {
+		if (modelType == ModelType.Datatype) {
+			return ".type";
+		} else if (modelType == ModelType.Functionblock) {
+			return ".fbmodel";
+		} else {
+			return ".infomodel";
+		}
 	}
 
 	/**
@@ -107,22 +200,22 @@ public class ModelRepositoryViewPart extends ViewPart {
 	private void initContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-        menuMgr.addMenuListener(new IMenuListener() {
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-            	if (viewer.getSelection().isEmpty()) {
-                    return;
-                }
-            	ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
-            	if (model.getId().getModelType() == ModelType.InformationModel) {
-            		addListGeneratorsToMenu(manager, model);
-            	}
-            }
-        });
-        menuMgr.setRemoveAllWhenShown(true);
-        viewer.getControl().setMenu(menu);
+		menuMgr.addMenuListener(new IMenuListener() {
+			@Override
+			public void menuAboutToShow(IMenuManager manager) {
+				if (viewer.getSelection().isEmpty()) {
+					return;
+				}
+				ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
+				if (model.getId().getModelType() == ModelType.InformationModel) {
+					addListGeneratorsToMenu(manager, model);
+				}
+			}
+		});
+		menuMgr.setRemoveAllWhenShown(true);
+		viewer.getControl().setMenu(menu);
 	}
-	
+
 	/**
 	 * Fill context menu
 	 *
@@ -130,19 +223,19 @@ public class ModelRepositoryViewPart extends ViewPart {
 	 */
 	protected void addListGeneratorsToMenu(IMenuManager contextMenu, final ModelResource model) {
 		contextMenu.add(new Action("Generate code") {
-	        @Override
-	        public void run() {
-	        	List<GeneratorResource> codegens = modelRepo.listGenerators();
-	        	GeneratorDialog dialog = new GeneratorDialog(new Shell(), model, codegens);
-	        	dialog.create();
-	        	dialog.open();
-	        }
-	    });
+			@Override
+			public void run() {
+				List<GeneratorResource> codegens = modelRepo.listGenerators();
+				GeneratorDialog dialog = new GeneratorDialog(new Shell(), model, codegens);
+				dialog.create();
+				dialog.open();
+			}
+		});
 	}
 
 	private TableViewer createTableViewer(Composite parent, Button btnSearch) {
-		TableViewer viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		TableViewer viewer = new TableViewer(parent,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		FormData fd_table = new FormData();
 		fd_table.top = new FormAttachment(btnSearch, 2);
@@ -163,17 +256,14 @@ public class ModelRepositoryViewPart extends ViewPart {
 		viewer.setLabelProvider(new ModelRepositoryLabelProvider());
 		viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
-		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE,
-				new Transfer[] { LocalSelectionTransfer.getTransfer() },
+		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new ModelDragListener(viewer));
 
 		return viewer;
 	}
 
-	private TableViewerColumn createTableViewerColumn(TableViewer viewer,
-			String title, int bound) {
-		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer,
-				SWT.NONE);
+	private TableViewerColumn createTableViewerColumn(TableViewer viewer, String title, int bound) {
+		final TableViewerColumn viewerColumn = new TableViewerColumn(viewer, SWT.NONE);
 		final TableColumn column = viewerColumn.getColumn();
 		column.setText(title);
 		column.setWidth(bound);
@@ -211,6 +301,5 @@ public class ModelRepositoryViewPart extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
-	
-	
+
 }
