@@ -143,8 +143,8 @@ public class ModelRepositoryViewPart extends ViewPart {
 						if (editor != null) {
 							page.addPartListener(onEditorCloseListener(page, editor, file));
 						}
-					} catch (IOException | RuntimeException e) {
-						e.printStackTrace();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
 					}
 				}
 			}
