@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.service;
 
 import java.util.List;
 
+import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
@@ -67,6 +68,15 @@ public interface IModelRepository {
 	UploadModelResult upload(byte[] content, String fileName);
 	
 	/**
+	 * Uploads multiple model files in zip and validates it.
+	 * If all the models are valid then the models are checked in using array of {@code} ModelHandle 
+	 * {@link IModelRepository#checkinMultiple(ModelHandle)}}
+	 * @param fileName
+	 * @return result about information of the uploaded content and the upload handle. 
+	 */
+	List<UploadModelResult> uploadMultipleModels(String fileName);
+	
+	/**
 	 * @pre {@link UploadModelResult#isValid() == true}}
 	 * 
 	 * @post model was stored in persistence layer. Notifications were sent out to watchers. 
@@ -76,6 +86,17 @@ public interface IModelRepository {
 	 * @param author
 	 */
 	void checkin(String handleId, String author);
+	
+	/**
+	 * @pre All Models are validated for integrated checks. 
+	 * 
+	 * @post Models are stored into repository and sends notifications to watchers. 
+	 * 
+	 * Checks in multiple models into the repository.
+	 * @param uploadHandle
+	 * @param author
+	 */
+	void checkinMultiple(ModelHandle[] modelHandles, String author);	
 	
 	/**
 	 * Adds a model image for the given model id
