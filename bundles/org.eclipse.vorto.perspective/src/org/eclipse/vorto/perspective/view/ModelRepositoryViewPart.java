@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -61,10 +61,25 @@ import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvi
 import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
 import org.eclipse.vorto.perspective.util.ViewPartUtil;
+import org.eclipse.xtext.ui.editor.XtextReadonlyEditorInput;
 
 import com.google.common.io.Files;
 
 public class ModelRepositoryViewPart extends ViewPart {
+
+	private static final String TEMP_MODEL_PREFIX = "temp_model_";
+
+	private static final String INFOMODEL_EXT = ".infomodel";
+
+	private static final String FBMODEL_EXT = ".fbmodel";
+
+	private static final String DATATYPE_EXT = ".type";
+
+	private static final String INFOMODEL_EDITOR_ID = "org.eclipse.vorto.editor.infomodel.InformationModel";
+
+	private static final String FUNCTIONBLOCK_EDITOR_ID = "org.eclipse.vorto.editor.functionblock.Functionblock";
+
+	private static final String DATATYPE_EDITOR_ID = "org.eclipse.vorto.editor.datatype.Datatype";
 
 	private static final String VERSION = "Version";
 
@@ -130,14 +145,14 @@ public class ModelRepositoryViewPart extends ViewPart {
 				if (resource != null) {
 					try {
 						// Create temporary file
-						File file = File.createTempFile("temp_model_",
+						File file = File.createTempFile(TEMP_MODEL_PREFIX,
 								getExtension(resource.getId().getModelType()));
 						
 						// Download shared model and put in temporary file
 						Files.write(modelRepo.downloadContent(resource.getId()), file);
 						
 						// Open temporary file in editor
-						IEditorPart editor = openFileInEditor(page, file);
+						IEditorPart editor = openFileInEditor(page, file, resource.getId().getModelType());
 						
 						// Add listener to editor close event, so we can delete the file when editor is closed
 						if (editor != null) {
@@ -168,10 +183,10 @@ public class ModelRepositoryViewPart extends ViewPart {
 		};
 	}
 
-	private IEditorPart openFileInEditor(IWorkbenchPage page, File file) {
+	private IEditorPart openFileInEditor(IWorkbenchPage page, File file, ModelType modelType) {
 		if (file.exists()) {
 			try {
-				return IDE.openEditorOnFileStore(page, EFS.getStore(file.toURI()));
+				return IDE.openEditor(page, new XtextReadonlyEditorInput(new LocalFileStorage(file)), getEditorId(modelType), true);
 			} catch (CoreException e) {
 				throw new RuntimeException(e);
 			}
@@ -180,13 +195,23 @@ public class ModelRepositoryViewPart extends ViewPart {
 		}
 	}
 
+	private String getEditorId(ModelType modelType) {
+		if (modelType == ModelType.Datatype) {
+			return DATATYPE_EDITOR_ID;
+		} else if (modelType == ModelType.Functionblock) {
+			return FUNCTIONBLOCK_EDITOR_ID;
+		} else {
+			return INFOMODEL_EDITOR_ID;
+		}
+	}
+
 	private String getExtension(ModelType modelType) {
 		if (modelType == ModelType.Datatype) {
-			return ".type";
+			return DATATYPE_EXT;
 		} else if (modelType == ModelType.Functionblock) {
-			return ".fbmodel";
+			return FBMODEL_EXT;
 		} else {
-			return ".infomodel";
+			return INFOMODEL_EXT;
 		}
 	}
 
