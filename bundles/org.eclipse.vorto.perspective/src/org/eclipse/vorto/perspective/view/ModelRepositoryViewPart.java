@@ -17,6 +17,7 @@ package org.eclipse.vorto.perspective.view;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.sourcelookup.containers.LocalFileStorage;
@@ -25,10 +26,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -60,14 +60,11 @@ import org.eclipse.vorto.core.api.repository.ModelResource;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
 import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
-import org.eclipse.vorto.perspective.util.ViewPartUtil;
 import org.eclipse.xtext.ui.editor.XtextReadonlyEditorInput;
 
 import com.google.common.io.Files;
 
 public class ModelRepositoryViewPart extends ViewPart {
-
-	private static final String TEMP_MODEL_PREFIX = "temp_model_";
 
 	private static final String INFOMODEL_EXT = ".infomodel";
 
@@ -125,94 +122,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 
 		viewer = createTableViewer(parent, btnSearch);
 
-		addOpenSharedModelInEditorListener(viewer);
-
 		initContextMenu();
-	}
-
-	private void addOpenSharedModelInEditorListener(TableViewer viewer) {
-		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		if (page == null) {
-			MessageDisplayFactory.getMessageDisplay().displayError("Cannot get active workbench page. Opening shared model in Editor not possible.");
-			return;
-		}
-		
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				
-				ModelResource resource = (ModelResource) ViewPartUtil.getFirstSelectedObject(ModelResource.class, event);
-				
-				if (resource != null) {
-					try {
-						// Create temporary file
-						File file = File.createTempFile(TEMP_MODEL_PREFIX,
-								getExtension(resource.getId().getModelType()));
-						
-						// Download shared model and put in temporary file
-						Files.write(modelRepo.downloadContent(resource.getId()), file);
-						
-						// Open temporary file in editor
-						IEditorPart editor = openFileInEditor(page, file, resource.getId().getModelType());
-						
-						// Add listener to editor close event, so we can delete the file when editor is closed
-						if (editor != null) {
-							page.addPartListener(onEditorCloseListener(page, editor, file));
-						}
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			}
-		});
-	}
-	
-	private IPartListener onEditorCloseListener(final IWorkbenchPage page, final IWorkbenchPart editor, final File file) {
-		return new IPartListener() {
-			public void partActivated(IWorkbenchPart part) {}
-			public void partBroughtToTop(IWorkbenchPart part) {}
-			public void partDeactivated(IWorkbenchPart part) {}
-			public void partOpened(IWorkbenchPart part) {}
-			
-			public void partClosed(IWorkbenchPart part) {
-				if (part == editor) {
-					if (file.delete()) {
-						page.removePartListener(this);
-					}
-				}
-			}
-		};
-	}
-
-	private IEditorPart openFileInEditor(IWorkbenchPage page, File file, ModelType modelType) {
-		if (file.exists()) {
-			try {
-				return IDE.openEditor(page, new XtextReadonlyEditorInput(new LocalFileStorage(file)), getEditorId(modelType), true);
-			} catch (CoreException e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			return null;
-		}
-	}
-
-	private String getEditorId(ModelType modelType) {
-		if (modelType == ModelType.Datatype) {
-			return DATATYPE_EDITOR_ID;
-		} else if (modelType == ModelType.Functionblock) {
-			return FUNCTIONBLOCK_EDITOR_ID;
-		} else {
-			return INFOMODEL_EDITOR_ID;
-		}
-	}
-
-	private String getExtension(ModelType modelType) {
-		if (modelType == ModelType.Datatype) {
-			return DATATYPE_EXT;
-		} else if (modelType == ModelType.Functionblock) {
-			return FBMODEL_EXT;
-		} else {
-			return INFOMODEL_EXT;
-		}
 	}
 
 	/**
@@ -221,21 +131,107 @@ public class ModelRepositoryViewPart extends ViewPart {
 	 */
 	private void initContextMenu() {
 		MenuManager menuMgr = new MenuManager("#PopupMenu");
+		
 		Menu menu = menuMgr.createContextMenu(viewer.getControl());
+		
 		menuMgr.addMenuListener(new IMenuListener() {
-			@Override
 			public void menuAboutToShow(IMenuManager manager) {
-				if (viewer.getSelection().isEmpty()) {
+				if (viewer.getStructuredSelection().isEmpty()) {
 					return;
 				}
 				ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
+				
 				if (model.getId().getModelType() == ModelType.InformationModel) {
 					addListGeneratorsToMenu(manager, model);
 				}
+				
+				menuMgr.add(new PreviewSharedModelAction(model));
 			}
 		});
 		menuMgr.setRemoveAllWhenShown(true);
 		viewer.getControl().setMenu(menu);
+	}
+
+	private class PreviewSharedModelAction extends Action {
+		private IWorkbenchPage page;
+		private ModelResource model;
+
+		PreviewSharedModelAction(ModelResource model) {
+			super("Preview model");
+			this.page = Objects.requireNonNull(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage());
+			this.model = Objects.requireNonNull(model);
+		}
+
+		public void run() {
+			try {
+				// Create temporary file
+				File file = File.createTempFile(model.getDisplayName(), getExtension(model.getId().getModelType()));
+
+				// Download shared model and put in temporary file
+				Files.write(modelRepo.downloadContent(model.getId()), file);
+
+				// Open temporary file in editor
+				IEditorPart editor = openFileInEditor(page, file, model.getId().getModelType());
+
+				// Add listener to editor close event, so we can delete the file
+				// when editor is closed
+				if (editor != null) {
+					page.addPartListener(onEditorCloseListener(page, editor, file));
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		private IPartListener onEditorCloseListener(final IWorkbenchPage page, final IWorkbenchPart editor,
+				final File file) {
+			return new IPartListener() {
+				public void partActivated(IWorkbenchPart part) {}
+				public void partBroughtToTop(IWorkbenchPart part) {}
+				public void partDeactivated(IWorkbenchPart part) {}
+				public void partOpened(IWorkbenchPart part) {}
+				public void partClosed(IWorkbenchPart part) {
+					if (part == editor) {
+						if (file.delete()) {
+							page.removePartListener(this);
+						}
+					}
+				}
+			};
+		}
+
+		private IEditorPart openFileInEditor(IWorkbenchPage page, File file, ModelType modelType) {
+			if (file.exists()) {
+				try {
+					return IDE.openEditor(page, new XtextReadonlyEditorInput(new LocalFileStorage(file)),
+							getEditorId(modelType), true);
+				} catch (CoreException e) {
+					throw new RuntimeException(e);
+				}
+			} else {
+				return null;
+			}
+		}
+
+		private String getEditorId(ModelType modelType) {
+			if (modelType == ModelType.Datatype) {
+				return DATATYPE_EDITOR_ID;
+			} else if (modelType == ModelType.Functionblock) {  
+				return FUNCTIONBLOCK_EDITOR_ID;
+			} else {
+				return INFOMODEL_EDITOR_ID;
+			}
+		}
+
+		private String getExtension(ModelType modelType) {
+			if (modelType == ModelType.Datatype) {
+				return DATATYPE_EXT;
+			} else if (modelType == ModelType.Functionblock) {
+				return FBMODEL_EXT;
+			} else {
+				return INFOMODEL_EXT;
+			}
+		}
 	}
 
 	/**
