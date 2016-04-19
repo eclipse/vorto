@@ -218,21 +218,29 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public UploadModelResult upload(byte[] content, String fileName) {
+		if (StringUtils.isEmpty(fileName)) {
+			return UploadModelResult.invalid(new ValidationException("Filename is invalid", null));
+		}
+		
 		try {
-			if (StringUtils.isEmpty(fileName)) {
-				return UploadModelResult.invalid(new ValidationException("Filename is invalid", null));
-			}
-
 			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
-
+			
+			List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
 			for (IModelValidator validator : validators) {
-				validator.validate(resource);
+				try {
+					validator.validate(resource);
+				} catch(ValidationException validationException) {
+					validationExceptions.add(validationException);
+				}
 			}
-			return UploadModelResult.valid(createUploadHandle(resource.getId(), content, fileName), resource);
-		} catch (CouldNotResolveReferenceException validationException) {
-			return UploadModelResult.invalid(validationException);
-		} catch (ValidationException validationException) {
-			return UploadModelResult.invalid(validationException);
+			
+			if (validationExceptions.size() <= 0) {
+				return UploadModelResult.valid(createUploadHandle(resource.getId(), content, fileName), resource);
+			} else {
+				return UploadModelResult.invalid(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
+			}
+		} catch(ValidationException e) {
+			return UploadModelResult.invalid(e);
 		}
 	}
 
