@@ -22,9 +22,12 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.vorto.codegen.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.perspective
-Import-Package: org.eclipse.emf.ecore.xmi.impl,
+Import-Package: org.eclipse.core.filesystem,
+ org.eclipse.debug.core.sourcelookup.containers,
+ org.eclipse.emf.ecore.xmi.impl,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.infomodel,
- org.eclipse.xtext.resource
+ org.eclipse.xtext.resource,
+ org.eclipse.xtext.ui.editor
 
