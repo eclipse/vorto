@@ -1,4 +1,4 @@
-var repository = angular.module('repository', ['ngRoute', 'repositoryControllers', 'repositoryDirectives', 'swaggerUi', 'smart-table']);
+var repository = angular.module('repository', ['ngRoute', 'repositoryControllers', 'repositoryDirectives', 'swaggerUi', 'smart-table', 'ngAnimate']);
 
 repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
 

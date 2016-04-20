@@ -61,19 +61,133 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
 
 repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
 
-    $scope.modelFile = null;
+    $scope.uploadModel = function () {
     $scope.uploadResult = {};
+  	     $scope.resultMessage = "";
+  	     $scope.showResultBox = false;
 
-    $scope.upload = function () {
+		 var fileToUpload = document.getElementById('file').files[0];
+		 if(fileToUpload != undefined) {
+		 	var filename = document.getElementById('file').files[0].name;
+		 	var extn = filename.split(".").pop();
+		 	var modelFiles = ['type', 'fbmodel', 'infomodel', 'mapping'];
+		 	if(modelFiles.indexOf(extn) !== -1)
+		 		upload('./rest/secure/', fileToUpload);
+		 	else
+		 		upload('./rest/secure/multiple', fileToUpload);
+		 } else {
+		 	$rootScope.error = "Choose model file(s) and click Upload.";
+		 }
+	};
+
+    upload = function(url, fileToUpload) {
+      $scope.isLoading = true;
+      $scope.loadMessage = "Uploading... Please wait!!!";
+      $scope.modelStats = {};
+      var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
     	var fd = new FormData();
-        fd.append('file', document.getElementById('file').files[0]);
-        $http.post('./rest/secure/',fd, {
+        fd.append('file', fileToUpload);
+        $http.post(url,fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         })
         .success(function(result){
+            $scope.stateArr = [];
         	$scope.uploadResult = result;
+        	$scope.showCheckin = true;
+
+			if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0) {
+        	angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {        	
+  	      		var item =  (idx == 0) ? {active: false} : {active: true} ;
+				var modelType = resultObject.modelResource.modelType;
+				switch (modelType) {
+				    case "Functionblock":
+				        fbcount++;
+				        break;
+				    case "InformationModel":
+				        infocount++;
+				        break;
+				    case "Datatype":
+				        typecount++;
+				        break;
+				    case "Mapping":
+				        mappingcount++;
+				        break;				    
+				}
+		      	 $scope.stateArr.push(item);
+		      	 $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
+		 	});
+			} else {
+				$scope.showCheckin = false;
+			}
+        	
+		 	 $scope.modelStats = {infocount:infocount, fbcount:fbcount, typecount:typecount, mappingcount:mappingcount };
+		 	 $scope.isLoading = false;
+		 	 $scope.showResultBox = true;
+		 	 $scope.resultMessage = result.message;
         }).error(function(data, status, headers, config) {
+        	$scope.isLoading = false;
+	    	if(status == 403){
+	    		$rootScope.error = "Operation is Forbidden";
+	    	}else if(status == 401){
+	    		$rootScope.error = "Unauthorized Operation";
+	    	}else if(status == 400){
+	    		$rootScope.error = "Bad Request. Server Down";
+	    	}else if(status == 500){
+	    		$rootScope.error = "Internal Server Error";
+	    	}else{
+	    		$rootScope.error = "Failed Request with response status "+status;
+	    	}
+	    });
+    };
+    
+    $scope.isMissing = function(reference, missingReferences) {
+	 	var index;
+	    for (index = 0; missingReferences != null && index < missingReferences.length; index++) {
+	        if (missingReferences[index].namespace == reference.namespace 
+	        	&& missingReferences[index].name == reference.name
+	        	&& missingReferences[index].version == reference.version) {
+	            	return true;
+	        }
+	    }
+	    return false;    	
+    };
+    
+
+    $scope.checkin = function (uploadResults) {
+    	if(uploadResults.length == 1) {
+    		checkinSingle(uploadResults[0].handleId);
+    	} else {
+    		checkInMultipleModels(uploadResults);
+    	}
+    };
+
+    checkInMultipleModels = function(uploadResults) {
+    	var validUploadHandles = [];
+      	$scope.isLoading = true;
+      	$scope.loadMessage = "Checking in... Please wait!!!";
+      	$scope.showResultBox = false;
+		angular.forEach(uploadResults, function (uploadResult, idx) {
+			if(uploadResult.valid) {
+		        var handle = {
+		          handleId : uploadResult.handleId,
+		          id : {
+		          	name : uploadResult.modelResource.id.name,
+		          	namespace : uploadResult.modelResource.id.namespace,
+		          	version : uploadResult.modelResource.id.version
+		          }
+		        }
+				validUploadHandles.push(handle);
+			}
+	 	});
+
+	 	$http.put('./rest/secure/checkInMultiple', validUploadHandles)
+	        .success(function(result) {
+	        	$scope.isLoading = false;
+	        	$scope.showResultBox = true;
+	        	$scope.resultMessage = result.message;
+        }).error(function(data, status, headers, config) {
+       		$scope.isLoading = false;
 	    	if(status == 403){
 	    		$rootScope.error = "Operation is Forbidden";
 	    	}else if(status == 401){
@@ -88,10 +202,12 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 	    });
     };
 
-    $scope.checkin = function (handleId) {
+   checkinSingle = function (handleId) {
         $http.put('./rest/secure/'+handleId)
         .success(function(result){
-          $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
+          //$location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
+          $scope.showResultBox = true;
+	      $scope.resultMessage = result.message;
         }).error(function(data, status, headers, config) {
 	    	if(status == 403){
 	    		$rootScope.error = "Operation is Forbidden";
