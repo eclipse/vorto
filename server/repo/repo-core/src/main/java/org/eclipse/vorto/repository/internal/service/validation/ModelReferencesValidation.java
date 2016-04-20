@@ -35,6 +35,10 @@ public class ModelReferencesValidation implements IModelValidator {
 		this.modelRepository = modelRepository;
 	}
 	
+	public IModelRepository getModelRepository() {
+		return modelRepository;
+	}
+	
 	@Override
 	public void validate(ModelResource modelResource)
 			throws ValidationException {

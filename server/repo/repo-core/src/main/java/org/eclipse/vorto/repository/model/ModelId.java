@@ -27,6 +27,9 @@ public class ModelId {
 	
 	private static final String PATH_DELIMITER = "/";
 
+	public ModelId() {
+	}
+	
 	public ModelId(String name, String namespace, String version) {
 		super();
 		this.name = name;
