@@ -59,8 +59,6 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 		InformationModel informationModel = (InformationModel) selectedProject.getModel();
 		
-		final String targetPlatform = ConfigurationElementLookup.getDefault().getExtensionSimpleIdentifier(GENERATOR_ID, generatorName);
-		
 		for (IConfigurationElement e : configElements) {
 			try {
 				final Object codeGenerator = e.createExecutableExtension(CLASS);
@@ -71,7 +69,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
-				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext(selectedProject, targetPlatform));
+				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext(selectedProject, informationModelCodeGenerator.getServiceKey()));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
