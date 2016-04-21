@@ -63,8 +63,9 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 			try {
 				final Object codeGenerator = e.createExecutableExtension(CLASS);
 
+				// interested only in code generators
 				if (!(codeGenerator instanceof IVortoCodeGenerator)) {
-					continue; // interested only in code generators
+					continue; 
 				}
 
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
