@@ -38,7 +38,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 	private static final String CLASS = "class";
 	private static final String GENERATOR_ID = IVortoCodeGenerator.GENERATOR_ID;
-	
+
 	@Override
 	public boolean isEnabled() {
 		return true;
@@ -58,7 +58,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
 
 		InformationModel informationModel = (InformationModel) selectedProject.getModel();
-		
+
 		for (IConfigurationElement e : configElements) {
 			try {
 				final Object codeGenerator = e.createExecutableExtension(CLASS);
@@ -69,7 +69,8 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
-				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator, createMappingContext(selectedProject, informationModelCodeGenerator.getServiceKey()));
+				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator,
+						createMappingContext(selectedProject, informationModelCodeGenerator.getServiceKey()));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
@@ -80,14 +81,14 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 	private IMappingContext createMappingContext(IModelProject project, String targetPlatform) {
 		DefaultMappingContext mappingContext = new DefaultMappingContext();
-		
-		for(MappingModel mappingModel : project.getMapping(targetPlatform)) {
+
+		for (MappingModel mappingModel : project.getMapping(targetPlatform)) {
 			mappingContext.addMappingModel(mappingModel);
 		}
-		
+
 		return mappingContext;
 	}
-	
+
 	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {
 
 		IConfigurationElement[] configurationElements;
