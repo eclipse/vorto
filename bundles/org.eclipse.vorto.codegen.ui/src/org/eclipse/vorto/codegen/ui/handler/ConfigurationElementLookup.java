@@ -49,19 +49,6 @@ public class ConfigurationElementLookup {
 		return extension.getConfigurationElements();
 	}
 	
-	public String getExtensionSimpleIdentifier(String extensionPtId, String id) {
-		IExtension extension = EXTENSION_REGISTRY.getExtension(extensionPtId,
-				id);
-		if (extension != null && extension.getContributor() != null) {
-			
-			Bundle bundle = Platform.getBundle(extension.getContributor().getName());
-
-			return bundle.getHeaders().get(BUNDLE_NAME);
-		}
-		
-		return null;
-	}
-
 	public void setExtensionRegistry(IExtensionRegistry reg) {
 		this.EXTENSION_REGISTRY = reg;
 	}
