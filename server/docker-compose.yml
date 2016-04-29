@@ -3,7 +3,7 @@ version: '2'
 
 services:
   vorto-repo-host:
-    image: helloysd/vorto-repo
+    image: vorto/infomodelrepository
     container_name: vorto-repo
     ports:
       - 8080:8080
@@ -11,7 +11,7 @@ services:
       - "8080"
 
   vorto-markdown-generator-host:
-    image: helloysd/vorto-markdown-generator
+    image: vorto/markdown-generator
     container_name: vorto-markdown-generator
     ports:
       - 9005:9005
@@ -24,7 +24,7 @@ services:
       SERVER_PORT: "9005"
 
   vorto-bosch-generator-host:
-    image: helloysd/vorto-bosch-generator
+    image: vorto/bosch-generator
     container_name: vorto-bosch-generator
     ports:
       - 9006:9006
@@ -37,7 +37,7 @@ services:
       SERVER_PORT: "9006"
 
   vorto-ios-generator-host:
-    image: helloysd/vorto-ios-generator
+    image: vorto/ios-generator
     container_name: vorto-ios-generator
     ports:
       - 9007:9007
@@ -50,7 +50,7 @@ services:
       SERVER_PORT: "9007"
 
   vorto-javabean-generator-host:
-    image: helloysd/vorto-javabean-generator
+    image: vorto/javabean-generator
     container_name: vorto-javabean-generator
     ports:
       - 9008:9008
@@ -63,7 +63,7 @@ services:
       SERVER_PORT: "9008"
 
   vorto-mqtt-generator-host:
-    image: helloysd/vorto-mqtt-generator
+    image: vorto/mqtt-generator
     container_name: vorto-mqtt-generator
     ports:
       - 9009:9009
@@ -76,7 +76,7 @@ services:
       SERVER_PORT: "9009"
 
   vorto-thingworx-generator-host:
-    image: helloysd/vorto-thingworx-generator
+    image: vorto/thingworx-generator
     container_name: vorto-thingworx-generator
     ports:
       - 9010:9010
@@ -89,7 +89,7 @@ services:
       SERVER_PORT: "9010"
 
   vorto-webdevice-generator-host:
-    image: helloysd/vorto-webdevice-generator
+    image: vorto/webdevice-generator
     container_name: vorto-webdevice-generator
     ports:
       - 9011:9011
@@ -102,7 +102,7 @@ services:
       SERVER_PORT: "9011"
 
   vorto-latex-generator-host:
-    image: helloysd/vorto-latex-generator
+    image: vorto/latex-generator
     container_name: vorto-latex-generator
     ports:
       - 9012:9012
@@ -115,7 +115,7 @@ services:
       SERVER_PORT: "9012"
 
   vorto-coap-generator-host:
-    image: helloysd/vorto-coap-generator
+    image: vorto/coap-generator
     container_name: vorto-coap-generator
     ports:
       - 9013:9013
@@ -128,7 +128,7 @@ services:
       SERVER_PORT: "9013"
 
   vorto-jsonschema-generator-host:
-    image: helloysd/vorto-jsonschema-generator
+    image: vorto/jsonschema-generator
     container_name: vorto-jsonschema-generator
     ports:
       - 9014:9014
