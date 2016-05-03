@@ -1,4 +1,4 @@
-var repository = angular.module('repository', ['ngRoute', 'repositoryControllers', 'repositoryDirectives', 'swaggerUi', 'smart-table']);
+var repository = angular.module('repository', ['ngRoute', 'repositoryControllers', 'repositoryDirectives', 'swaggerUi', 'smart-table', 'ngAnimate']);
 
 repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, $httpProvider) {
 
@@ -43,7 +43,7 @@ repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, 
 
 		// register listener to watch route changes
 	 	$rootScope.$on("$locationChangeStart", function(event, next, current) {
-
+			$rootScope.error = false;
 	 		if($location.path() === "/upload" && $rootScope.authenticated === false) {
 	 			$location.path('/login');
 	 		}
