@@ -1,5 +1,4 @@
 FROM java:8
 VOLUME /tmp/generator/coap
-ADD target/vorto-coap.jar vorto-coap.jar
-RUN bash -c 'touch vorto-coap.jar'
-ENTRYPOINT ["java","-jar","vorto-coap.jar"]
+ADD target/vorto-coap.jar .
+ENTRYPOINT /bin/bash -c "sleep 260; java -jar vorto-coap.jar --spring.profiles.active=docker"
