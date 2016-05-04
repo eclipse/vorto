@@ -33,7 +33,7 @@ a:hover {
 }
 
 .navbar-lp .navbar-brand {
-    font-size:100px;
+    font-size:65px;
     font-weight: bold;
     padding-top:40px;
     color: #fff;
@@ -111,7 +111,7 @@ a:hover {
 }
 
 .tagline h1 {
-    font-size: 70px;
+    font-size: 60px;
     color: rgba(255,255,255,0.9);
 }
 
@@ -407,7 +407,7 @@ opacity: 1;
 
 /*Usecases*/
 .teamuc {
-  
+
     background: -moz-linear-gradient(center top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     background: linear-gradient(center top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     background: -webkit-linear-gradient(top , rgba(0, 51, 102, 1) 0%, rgba(177, 189, 205, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
@@ -421,7 +421,7 @@ opacity: 1;
 }
 
 p.ex {
-color: #fff;  
+color: #fff;
 }
 h2.ex {
     color: #fff;
@@ -586,7 +586,7 @@ table {
     border-radius: 4px;
     margin: 20px;
     width: 100%;
-  
+
 }
 table th {
     background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #B0C4DE, #B0C4DE) repeat scroll 0 0;
