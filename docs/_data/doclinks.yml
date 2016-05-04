@@ -65,6 +65,11 @@
   sub:
     - title: "Vorto CLI Tool"
       href: "/documentation/cli-tool/cli-tool.html"
+- title: "Tutorial"
+  href: ""
+  sub:
+    - title: "End user tutorial"
+      href: "/documentation/tutorial/endusertutorial.html"
 - title: "Appendix"
   href: ""
   sub:
