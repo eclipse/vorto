@@ -68,8 +68,8 @@
 - title: "Tutorial"
   href: ""
   sub:
-    - title: "End user tutorial"
-      href: "/documentation/tutorial/endusertutorial.html"
+    - title: "Establish communication between Web app and Mqtt client "
+      href: "/documentation/tutorial/mqttwithwebapp.html"
 - title: "Appendix"
   href: ""
   sub:

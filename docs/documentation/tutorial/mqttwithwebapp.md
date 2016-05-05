@@ -22,9 +22,13 @@ title: End user Tutorial
 
 ## Overview
 
-In this tutorial, you are going to implement a web application for the information model through a series of excercises.
+In this tutorial, you are going to implement a web application for the information model through a series of steps.
+The webapplication that is going to communicate with mqtt client will appear as shown below:
+![Web UIIntro]({{base}}/img/documentation/tut_tisensorwebui.jpg)
 
-## Exercise 1: Implement MQTT client for functionblocks ##
+### Let's begin!
+
+## Step 1: Implement MQTT client for functionblocks ##
 
 1. From eclipse, switch to Vorto perspective.
 2. Select Model Repository tab, Search for the info model **TI_Sensor**
@@ -39,7 +43,7 @@ In this tutorial, you are going to implement a web application for the informati
 
 	![mqttTick]({{base}}/img/documentation/tut_tickmark.jpg) Congratulations! You have just generated a MQTT client for the functionblocks, offered as functionality by the TI SensorTag.
 
-## Exercise 2:  Implement a Web Application for the information model   ##
+## Step 2:  Implement a Web Application for the information model   ##
 
 In this exercise we are making our IoT app a little more sophisticated and display the MQTT sensor data in web UI Elements.
 
@@ -56,12 +60,12 @@ In this exercise we are making our IoT app a little more sophisticated and displ
 
 	![Tick]({{base}}/img/documentation/tut_tickmark.jpg) Congratulations! You just implemented a small AngularJS web application with the help of Vorto. However the Accelerometer UI fields are not yet populated with the sensor data. Let's do that in the next exercise.
 
-## Exercise 3: Sign up for a PubNub account ##
+## Step 3: Sign up for a PubNub account ##
 
 1. You’ll need to [sign up for a PubNub account](https://www.pubnub.com/get-started/#).Once you sign up, you can get your unique PubNub keys in the [PubNub Developer Portal](https://admin.pubnub.com/#/user). You will use those same keys when you want to leverage our MQTT gateway.
 2. Take note of the Publish and Subscribe keys generated under Demo Keyset screen of PubNub.
 
-## Exercise 4:  Receive MQTT status events and bind it to the Web UI Elements ##
+## Step 4:  Receive MQTT status events and bind it to the Web UI Elements ##
 
 In this exercise we are going to glue the Web application together with the MQTT client, that Vorto had so nicely generated for us.
 
