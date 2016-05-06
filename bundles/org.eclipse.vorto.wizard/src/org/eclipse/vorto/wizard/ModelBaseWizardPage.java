@@ -15,24 +15,25 @@
 
 package org.eclipse.vorto.wizard;
 
-import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
-public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
+public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 
 	protected ModelBaseWizardPage(String pageName) {
 		super(pageName);
@@ -41,13 +42,12 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
 	
 	private Text txtModelName;
 	private Text txtVersion;
-	private Text txtProjectName;
-	private Text txtWorkspaceLocation;
 	private Text txtDescription;
 	private String workspaceLocation;
+	protected Composite topContainer;
 
 	public void createControl(Composite parent) {
-		Composite topContainer = new Composite(parent, SWT.NULL);
+		topContainer = new Composite(parent, SWT.NULL);
 
 		setControl(topContainer);
 		topContainer.setLayout(new GridLayout(1, false));
@@ -108,57 +108,6 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
 		gridTxtDescription.heightHint = 53;
 		txtDescription.setLayoutData(gridTxtDescription);
 
-		Group grpProjectDetails = new Group(topContainer, SWT.NONE);
-		grpProjectDetails.setLayout(new GridLayout(3, false));
-		GridData gridGrpProjectDetails = new GridData(SWT.CENTER, SWT.CENTER,
-				false, false, 1, 1);
-		gridGrpProjectDetails.heightHint = 97;
-		gridGrpProjectDetails.widthHint = 575;
-		grpProjectDetails.setLayoutData(gridGrpProjectDetails);
-		grpProjectDetails.setText("Project Details");
-
-		Label lblProjectName = new Label(grpProjectDetails, SWT.NONE);
-		GridData gridLblProjectName = new GridData(SWT.RIGHT, SWT.CENTER,
-				false, false, 1, 1);
-		gridLblProjectName.widthHint = 78;
-		lblProjectName.setLayoutData(gridLblProjectName);
-		lblProjectName.setText("Project Name:");
-
-		txtProjectName = new Text(grpProjectDetails, SWT.BORDER);
-		GridData gridTxtProjectName = new GridData(SWT.FILL, SWT.CENTER, false,
-				false, 1, 1);
-		gridTxtProjectName.widthHint = 370;
-		txtProjectName.setLayoutData(gridTxtProjectName);
-		txtProjectName.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				projectNameChanged();
-				dialogChanged();
-			}
-		});
-		new Label(grpProjectDetails, SWT.NONE);
-
-		Label lblLocation = new Label(grpProjectDetails, SWT.NONE);
-		GridData gridLblLocation = new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1);
-		gridLblLocation.widthHint = 48;
-		lblLocation.setLayoutData(gridLblLocation);
-		lblLocation.setText("Location:");
-
-		txtWorkspaceLocation = new Text(grpProjectDetails, SWT.BORDER);
-		txtWorkspaceLocation.setEditable(false);
-		GridData gridTxtLocation = new GridData(SWT.LEFT, SWT.CENTER, false,
-				false, 1, 1);
-		gridTxtLocation.widthHint = 385;
-		txtWorkspaceLocation.setLayoutData(gridTxtLocation);
-
-		Button btnBrowse = new Button(grpProjectDetails, SWT.NONE);
-		btnBrowse.setText("Browse...");
-		btnBrowse.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				handleBrowse(e);
-			}
-
-		});
 		initialize();
 		dialogChanged();
 		setControl(topContainer);
@@ -167,33 +116,14 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
 	private void initialize() {
 		txtModelName.setText(getDefaultModelName());
 		txtVersion.setText(getDefaultVersion());
-		txtProjectName.setText(getDefaultModelName());
+		/*txtProjectName.setText(getDefaultModelName());
 		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/"
-				+ getDefaultModelName());
+				+ getDefaultModelName());*/
 		txtDescription.setText(getDefaultDescription() + getDefaultModelName());
 
 	}
 
-	protected void handleBrowse(SelectionEvent e) {
-		DirectoryDialog directoryDialog = new DirectoryDialog(getShell());
-		directoryDialog.setFilterPath(workspaceLocation);
-		directoryDialog.setText("Workspace folder selection");
-		directoryDialog.setMessage("Select a directory for this project");
-
-		String selectedDirectory = directoryDialog.open();
-		selectedDirectory = StringUtils.replace(selectedDirectory, "\\", "/");
-
-		if (selectedDirectory != null) {
-			workspaceLocation = selectedDirectory;
-			updateWorkspaceLocationField(workspaceLocation);
-			dialogChanged();
-		}
-	}
-
-	private void projectNameChanged() {
-		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/"
-				+ getProjectName());
-	}
+	
 
 	public void dialogChanged() {
 		if (this.validateProject()) {
@@ -205,34 +135,24 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
 
 	}
 
+	public Composite getTopContainer() {
+		return topContainer;
+	}
+
 	protected boolean validateProject() {
 		boolean result = true;
-		String projectName = getProjectName();
 		String modelName = getModelName();
 		String fbVersion = getModelVersion();
-
-		result &= validateStrExist(projectName,
-				"Project name must be specified");
 		result &= validateStrExist(modelName,
 				"Functionblock name must be specified");
-		result &= validateExistingSameProjectName(projectName);
-
-		result &= checkProjectName(projectName);
-		
 		result &= checkModelName(modelName);
 		result &= checkFBVersion(fbVersion);
 
 		return result;
 	}
 
-	public void updateWorkspaceLocationField(String directory) {
-		txtWorkspaceLocation.setText(directory + "/" + getProjectName());
-	}
-
 	private void modelNameChanged() {
 		String modelName = getModelName();
-		txtProjectName.setText(modelName);
-		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/" + modelName);
 		txtDescription.setText(getDefaultDescription() + modelName);
 	}
 
@@ -247,7 +167,26 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  {
 
 	@Override
 	public String getProjectName() {
-		return txtProjectName.getText();
+		IProject project = getProject();
+		
+		return (project != null) ? project.getName() : null;
+	}
+	
+	public IProject getProject() {
+		IProject project = null;
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+	    if (window != null) {
+	        IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
+	        Object firstElement = selection.getFirstElement();
+	        if (firstElement instanceof IAdaptable)
+	        {
+	            project = (IProject)((IAdaptable)firstElement).getAdapter(IProject.class);
+	            IPath path = project.getFullPath();
+	            System.out.println(path);
+	        }
+	    }
+	    return project;		
+		
 	}
 
 	@Override

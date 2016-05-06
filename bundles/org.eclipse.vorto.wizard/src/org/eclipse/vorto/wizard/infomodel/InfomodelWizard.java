@@ -27,21 +27,17 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
-import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.nature.InformationModelProjectNature;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
-import org.eclipse.vorto.wizard.ProjectCreationTask;
 
 public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 	private static final String SUFFIX = ".infomodel";
 
 	private InfomodelWizardPage iotWizardPage;
+
+	private String modelFolder = "informationmodels/";
 
 	public InfomodelWizard() {
 		super();
@@ -57,33 +53,11 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 	}
 
 	public boolean performFinish() {
-		ProgressTaskExecutionService progressTaskExecutionService = ProgressTaskExecutionService
-				.getProgressTaskExecutionService();
-
-		progressTaskExecutionService.syncRun(new ProjectCreationTask(
-				iotWizardPage) {
-			@Override
-			public IModelProject getIotproject(IProject project) {
-				return ModelProjectServiceFactory.getDefault()
-						.getProjectFromEclipseProject(project);
-			}
-
-			@Override
-			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
-				return new ModelGenerationTask(SUFFIX,
-						new InfomodelTemplateFileContent());
-			}
-
-			@Override
-			protected String[] getProjectNature() {
-				return new String[] { InformationModelProjectNature.NATURE_ID };
-			}
-		});
+		
+		new ModelGenerationTask(SUFFIX, new InfomodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
+				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
 
 		openFBModelWithDefaultEditor();
-
-		BasicNewProjectResourceWizard
-				.updatePerspective(getConfigurationElement());
 		return true;
 	}
 
@@ -93,7 +67,7 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 				iotWizardPage.getProjectName());
 
 		String modelName = iotWizardPage.getModelName();
-		final IFile modelfile = project.getFile(ModelGenerationTask.SRC_MODELS
+		final IFile modelfile = project.getFile(modelFolder
 				+ modelName + SUFFIX);
 
 		Display.getDefault().asyncExec(new Runnable() {
@@ -114,6 +88,14 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 			}
 		});
 
+	}
+
+	public InfomodelWizardPage getIotWizardPage() {
+		return iotWizardPage;
+	}
+
+	public void setIotWizardPage(InfomodelWizardPage iotWizardPage) {
+		this.iotWizardPage = iotWizardPage;
 	}
 
 	@Override

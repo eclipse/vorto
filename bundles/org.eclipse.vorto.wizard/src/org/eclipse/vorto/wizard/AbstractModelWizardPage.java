@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -21,27 +21,19 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 
 import com.google.common.base.Strings;
 
-public abstract class AbstractWizardPage extends WizardPage {
+public abstract class AbstractModelWizardPage extends AbstractWizardPage implements
+		IModelProjectContext {
 
 	public static final String PROJECTNAME_REGEX = "[^a-zA-Z0-9 \\._]";
 	public static final String FUNCTIONBLOCK_REGEX = "[A-Z][a-zA-Z0-9_]*$";
 	public static final String VERSION_REGEX = "^\\d+\\.\\d+\\.\\d+(-\\w+)*$";
 
-	protected AbstractWizardPage(String pageName) {
+	protected AbstractModelWizardPage(String pageName) {
 		super(pageName);
-	}
-	
-	protected AbstractWizardPage(String pageName, String title, ImageDescriptor descriptor) {
-		super(pageName, title, descriptor);
-	}
-
-	protected String getWindowTitle() {
-		return "";
 	}
 
 	protected boolean checkProjectName(String projectName) {
@@ -110,7 +102,5 @@ public abstract class AbstractWizardPage extends WizardPage {
 
 		return true;
 	}
-
-	protected abstract String getProjectName();
 
 }
