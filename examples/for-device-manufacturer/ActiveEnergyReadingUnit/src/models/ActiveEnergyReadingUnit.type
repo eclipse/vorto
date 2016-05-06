@@ -1,0 +1,10 @@
+namespace com.mycompany.type
+version 1.0.0
+displayname "ActiveEnergyReadingUnit"
+description "Type for ActiveEnergyReadingUnit"
+category demo		
+enum ActiveEnergyReadingUnit {
+	Wh "Active Energy Reading Unit: Wh", 
+	kWh "Active Energy Reading Unit: kWh", 
+	MWh "Active Energy Reading Unit: MWh"
+}

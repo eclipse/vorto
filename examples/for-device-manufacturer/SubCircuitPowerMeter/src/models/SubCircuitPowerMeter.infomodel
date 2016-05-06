@@ -1,0 +1,19 @@
+namespace com.mycompany
+version 1.0.0
+displayname "SubCircuitPowerMeter"
+description "Information model for SubCircuitPowerMeter"
+category demo
+using com.mycompany.fb.Frequency ; 1.0.0
+using com.mycompany.fb.Voltage ; 1.0.0
+using com.mycompany.fb.ActiveEnergyReading ; 1.0.0
+using com.mycompany.fb.ReactiveEnergyReading ; 1.0.0
+
+infomodel SubCircuitPowerMeter {
+
+	functionblocks {
+		frequency as Frequency
+		voltage as Voltage
+		activeenergyreading as ActiveEnergyReading
+		reactiveenergyreading as ReactiveEnergyReading
+	}
+}
