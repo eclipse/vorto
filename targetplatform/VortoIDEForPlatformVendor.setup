@@ -64,11 +64,8 @@
   <setupTask
       xsi:type="projects:ProjectsImportTask">
     <sourceLocator
-        rootFolder="${git.clone.vorto.location}">
-      <predicate
-          xsi:type="predicates:LocationPredicate"
-          pattern=".*/examples/for-platform-vendor/.*"/>
-    </sourceLocator>
+        rootFolder="${git.clone.vorto.location}/examples/for-platform-vendor/"
+        locateNestedProjects="true"/>
   </setupTask>
   <setupTask
       xsi:type="setup.workingsets:WorkingSetTask">
