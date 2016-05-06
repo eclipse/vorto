@@ -25,21 +25,17 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
-import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.nature.IoTProjectNature;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
-import org.eclipse.vorto.wizard.ProjectCreationTask;
 
 public class FunctionBlockWizard extends AbstractVortoWizard implements
 		INewWizard {
 	private static final String SUFFIX = ".fbmodel";
 	private FunctionBlockWizardPage iotWizardPage;
+	
+	private String modelFolder = "functionblocks/";
 
 	@Override
 	public void addPages() {
@@ -52,34 +48,9 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 
 	@Override
 	public boolean performFinish() {
-		ProgressTaskExecutionService progressTaskExecutionService = ProgressTaskExecutionService
-				.getProgressTaskExecutionService();
-		progressTaskExecutionService.syncRun(new ProjectCreationTask(
-				iotWizardPage) {
-			@Override
-			protected IModelProject getIotproject(IProject project) {
-				return ModelProjectServiceFactory.getDefault()
-						.getProjectFromEclipseProject(project);
-			}
-
-			@Override
-			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
-				return new ModelGenerationTask(SUFFIX,
-						new FbmodelTemplateFileContent());
-			}
-
-			@Override
-			protected String[] getProjectNature() {
-				return new String[] { IoTProjectNature.NATURE_ID };
-			}
-
-		});
-
+		new ModelGenerationTask(SUFFIX, new FbmodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
+				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
 		openFBModelWithDefaultEditor();
-
-		BasicNewProjectResourceWizard
-				.updatePerspective(getConfigurationElement());
-
 		return true;
 	}
 
@@ -89,7 +60,7 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 				iotWizardPage.getProjectName());
 
 		String fbName = iotWizardPage.getModelName();
-		final IFile fbfile = project.getFile(ModelGenerationTask.SRC_MODELS
+		final IFile fbfile = project.getFile(modelFolder
 				+ fbName + SUFFIX);
 
 		Display.getDefault().asyncExec(new Runnable() {

@@ -14,27 +14,32 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.ide.IDE;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
-import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.model.nature.FbDatatypeProjectNature;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
-import org.eclipse.vorto.wizard.ProjectCreationTask;
 
 public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 		implements INewWizard {
 
 	private DatatypeWizardPage iotWizardPage;
 
-	private final String fileExt = ".type";
+	private final String SUFFIX = ".type";
+	
+	private String modelFolder = "datatypes/";
 
 	private Datatype datatype;
 
@@ -47,32 +52,39 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 	}
 
 	public boolean performFinish() {
-		ProgressTaskExecutionService progressTaskExecutionService = ProgressTaskExecutionService
-				.getProgressTaskExecutionService();
+		new ModelGenerationTask(SUFFIX, new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
+				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
+		openDatatypeWithDefaultEditor();
+		return true;
+	}
 
-		progressTaskExecutionService.syncRun(new ProjectCreationTask(
-				iotWizardPage) {
-			@Override
-			public IModelProject getIotproject(IProject project) {
-				return ModelProjectServiceFactory.getDefault()
-						.getProjectFromEclipseProject(project);
-			}
+	private void openDatatypeWithDefaultEditor() {
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject project = workspace.getRoot().getProject(
+				iotWizardPage.getProjectName());
 
-			@Override
-			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
-				return new ModelGenerationTask(fileExt,
-						new DataTypeFileTemplate(datatype.name().toLowerCase()));
-			}
+		String fbName = iotWizardPage.getModelName();
+		final IFile fbfile = project.getFile(modelFolder
+				+ fbName + SUFFIX);
 
+		Display.getDefault().asyncExec(new Runnable() {
 			@Override
-			protected String[] getProjectNature() {
-				return new String[] { FbDatatypeProjectNature.NATURE_ID };
+			public void run() {
+				IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
+						.getActiveWorkbenchWindow();
+				if (activeWindow != null) {
+					IWorkbenchPage page = activeWindow.getActivePage();
+					if (page != null) {
+						try {
+							IDE.openEditor(page, fbfile);
+						} catch (PartInitException e) {
+							throw new RuntimeException(e);
+						}
+					}
+				}
 			}
 		});
-
-		BasicNewProjectResourceWizard
-				.updatePerspective(getConfigurationElement());
-		return true;
+		
 	}
 
 	@Override

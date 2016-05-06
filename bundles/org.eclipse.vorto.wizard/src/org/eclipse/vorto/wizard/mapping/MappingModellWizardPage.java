@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.mapping;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -23,14 +24,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 import org.eclipse.vorto.wizard.AbstractWizardPage;
 
-public class MappingModellWizardPage extends AbstractWizardPage  {
+public class MappingModellWizardPage extends AbstractWizardPage implements IModelProjectContext  {
 
 	public static final String TARGETPLATFORM_REGEX = "[^a-zA-Z0-9\\._]";
-	private static final String DEFAULT_VERSION = "1.0.0";
 	private IModelProject selectedModelProject = null;
 	
 	protected MappingModellWizardPage(String pageName) {
@@ -194,12 +195,10 @@ public class MappingModellWizardPage extends AbstractWizardPage  {
 		return this.selectedModelProject;
 	}
 
-	@Override
 	public String getModelVersion() {
 		return txtVersion.getText();
 	}
 
-	@Override
 	public String getModelName() {
 		return txtModelName.getText();
 	}
@@ -208,7 +207,6 @@ public class MappingModellWizardPage extends AbstractWizardPage  {
 		return this.txtTargetPlatform.getText();
 	}
 	
-	@Override
 	public String getModelDescription() {
 		return txtDescription.getText();
 	}
@@ -231,6 +229,10 @@ public class MappingModellWizardPage extends AbstractWizardPage  {
 
 	protected String getModelLabel() {
 		return "Mapping Name:";
+	}
+
+	public IProject getProject() {
+		return null;
 	}
 }
 
