@@ -157,10 +157,6 @@
       <description>Manually maintained target platform</description>
     </setupTask>
     <setupTask
-        xsi:type="projects:ProjectsBuildTask"
-        id="build_after_set_targetplatform"
-        refresh="true"/>
-    <setupTask
         xsi:type="setup:CompoundTask"
         name="Mwe2 Generation">
       <setupTask
@@ -179,11 +175,11 @@
           xsi:type="launching:LaunchTask"
           id="launch.generate.mapping"
           launcher="4_Generate_Mapping"/>
-      <setupTask
-          xsi:type="projects:ProjectsBuildTask"
-          id="build_after_code_generation"
-          refresh="true"/>
     </setupTask>
+    <setupTask
+        xsi:type="projects:ProjectsBuildTask"
+        id="build_project"
+        refresh="true"/>
     <stream
         name="development">
       <setupTask
