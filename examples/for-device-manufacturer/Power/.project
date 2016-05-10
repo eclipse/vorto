@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>ActiveEnergyReadingUnit</name>
+	<name>Power</name>
 	<comment></comment>
 	<projects>
+		<project>PowerUnit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -13,6 +14,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.eclipse.vorto.datatypenature</nature>
+		<nature>org.eclipse.vorto.iotnature</nature>
 	</natures>
 </projectDescription>

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>SubCircuitPowerMeter</name>
+	<name>PowerUnit</name>
 	<comment></comment>
 	<projects>
-		<project>ActiveEnergyReading</project>
-		<project>Frequency</project>
-		<project>ReactiveEnergyReading</project>
-		<project>Voltage</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -17,6 +13,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.eclipse.vorto.informationmodelnature</nature>
+		<nature>org.eclipse.vorto.datatypenature</nature>
 	</natures>
 </projectDescription>

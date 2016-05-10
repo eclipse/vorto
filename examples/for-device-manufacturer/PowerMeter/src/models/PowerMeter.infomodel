@@ -1,0 +1,17 @@
+namespace com.mycompany
+version 1.0.0
+displayname "PowerMeter"
+description "Information model for PowerMeter"
+category demo
+using com.mycompany.fb.Frequency ; 1.0.0
+using com.mycompany.fb.Voltage ; 1.0.0
+using com.mycompany.fb.Power ; 1.0.0
+
+infomodel PowerMeter {
+
+	functionblocks {
+		frequency as Frequency
+		voltage as Voltage
+		power as Power
+	}
+}
