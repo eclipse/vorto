@@ -51,7 +51,7 @@
       xsi:type="git:GitCloneTask"
       id="git.clone.vorto"
       remoteURI="https://github.com/eclipse/vorto.git"
-      checkoutBranch="examples">
+      checkoutBranch="development">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
