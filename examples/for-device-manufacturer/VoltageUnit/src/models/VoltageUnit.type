@@ -1,0 +1,9 @@
+namespace com.mycompany.type
+version 1.0.0
+displayname "VoltageUnit"
+description "Type for VoltageUnit"
+category demo		
+enum VoltageUnit {
+	V "Voltage Unit: V",
+	kV "Voltage Unit: kV"
+}
