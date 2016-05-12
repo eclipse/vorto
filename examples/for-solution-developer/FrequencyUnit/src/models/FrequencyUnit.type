@@ -1,0 +1,8 @@
+namespace com.mycompany.type
+version 1.0.0
+displayname "FrequencyUnit"
+description "Type for FrequencyUnit"
+category demo		
+enum FrequencyUnit {
+	Hz "Frequency Unit: Hz"
+}
