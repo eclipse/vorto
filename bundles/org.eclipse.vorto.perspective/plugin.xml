@@ -62,6 +62,12 @@
               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
               name="Model Repository">
         </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
+              id="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
+              name="Vorto Projects Selection">
+        </view>
    </extension> 
      
    <extension point="org.eclipse.ui.perspectiveExtensions">
@@ -261,6 +267,15 @@
                id="org.eclipse.vorto.perspective.preferences.VortoPreferencePage"
                name="Vorto">
          </page>
+      </extension>
+      <extension
+            id="id2"
+            point="org.eclipse.core.resources.natures">
+         <runtime>
+            <run
+                  class="org.eclipse.vorto.core.model.nature.VortoProjectNature">
+            </run>
+         </runtime>
       </extension>  
      
 </plugin>

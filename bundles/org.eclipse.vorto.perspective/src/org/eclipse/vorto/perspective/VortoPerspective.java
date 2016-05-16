@@ -20,6 +20,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.vorto.perspective.view.DTTreeViewPart;
 import org.eclipse.vorto.perspective.view.FBTreeViewPart;
 import org.eclipse.vorto.perspective.view.InfoModelTreeViewPart;
+import org.eclipse.vorto.perspective.view.ProjectSelectionViewPart;
 
 public class VortoPerspective implements IPerspectiveFactory {
 
@@ -35,11 +36,13 @@ public class VortoPerspective implements IPerspectiveFactory {
 		layout.createFolder("top", IPageLayout.TOP, 0.6f,
 				IPageLayout.ID_EDITOR_AREA);
 
-		layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.LEFT, 0.35f,
+		layout.addView(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.10f,
 				layout.getEditorArea());
+		/*layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.LEFT, 0.20f,
+				ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID);
 		layout.addView(FBTreeViewPart.FB_TREE_VIEW_ID, IPageLayout.BOTTOM,
 				0.25f, DTTreeViewPart.DT_TREE_VIEW_ID);
 		layout.addView(InfoModelTreeViewPart.IM_TREE_VIEW_ID,
-				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);
+				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);*/
 	}
 }

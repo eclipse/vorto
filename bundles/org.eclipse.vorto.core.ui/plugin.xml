@@ -54,5 +54,14 @@
 	      	id="org.eclipse.vorto.editor.functionblock.ui.command.deletefbproject" name="DeleteFunctionBlockProjectCommand">
 	    </command>    
 	</extension>
+    <extension
+          id="id1"
+          point="org.eclipse.core.resources.natures">
+       <runtime>
+          <run
+                class="org.eclipse.vorto.core.model.nature.VortoProjectNature">
+          </run>
+       </runtime>
+    </extension>
 
 </plugin>
