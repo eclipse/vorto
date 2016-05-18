@@ -31,14 +31,14 @@ import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
+import org.eclipse.vorto.wizard.ProjectCreationTask;
 import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
-import org.eclipse.vorto.wizard.ProjectCreationTask;
 
 public class MappingModelWizard extends AbstractVortoWizard implements INewWizard {
 	private static final String SUFFIX = ".mapping";
-	private static final String MAPPING_PATH = "src/mappings/";
+	private String modelFolder = "mappings/";
 
 	private MappingModellWizardPage iotWizardPage;
 
@@ -56,6 +56,7 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 	}
 
 	public boolean performFinish() {
+		
 		ProgressTaskExecutionService progressTaskExecutionService = ProgressTaskExecutionService
 				.getProgressTaskExecutionService();
 
@@ -69,13 +70,7 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 
 			@Override
 			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
-				return new ModelGenerationTask(SUFFIX,
-						new MappingModelTemplateFileContent()) {
-					@Override
-					public String getPath(IModelProjectContext ctx) {
-						return MAPPING_PATH;
-					}
-				};
+				return new ModelGenerationTask(SUFFIX, new MappingModelTemplateFileContent(), modelFolder);
 			}
 
 			@Override
@@ -95,7 +90,7 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 				iotWizardPage.getProjectName());
 
 		String modelName = iotWizardPage.getModelName();
-		final IFile modelfile = project.getFile(MAPPING_PATH
+		final IFile modelfile = project.getFile(modelFolder
 				+ modelName + SUFFIX);
 
 		Display.getDefault().asyncExec(new Runnable() {

@@ -29,6 +29,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.nature.InformationModelProjectNature;
+import org.eclipse.vorto.core.model.nature.VortoProjectNature;
 import org.eclipse.vorto.core.parser.IModelParser;
 
 public class InformationModelProject extends AbstractModelProject {
@@ -45,7 +46,7 @@ public class InformationModelProject extends AbstractModelProject {
 
 	public static boolean isInformationModelProject(IProject project) {
 		try {
-			return project.getNature(InformationModelProjectNature.NATURE_ID) != null;
+			return (project.getNature(InformationModelProjectNature.NATURE_ID) != null || project.getNature(VortoProjectNature.VORTO_NATURE) != null);
 		} catch (CoreException e) {
 			return false;
 		}

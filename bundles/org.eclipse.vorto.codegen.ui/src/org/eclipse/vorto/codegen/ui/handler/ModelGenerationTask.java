@@ -21,15 +21,16 @@ import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 public class ModelGenerationTask extends
 		AbstractTemplateGeneratorTask<IModelProjectContext> {
 
-	public static final String SRC_MODELS = "src/models/";
 	private final String suffix;
 	private final ITemplate<IModelProjectContext> fileTemplate;
+	private final String modelFolder;
 
 	public ModelGenerationTask(String fileSuffix,
-			ITemplate<IModelProjectContext> template) {
+			ITemplate<IModelProjectContext> template, String modelFolder) {
 		suffix = fileSuffix.startsWith(".") ? fileSuffix : "."
 				.concat(fileSuffix);
 		fileTemplate = template;
+		this.modelFolder = modelFolder;
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class ModelGenerationTask extends
 
 	@Override
 	public String getPath(IModelProjectContext ctx) {
-		return SRC_MODELS;
+		return modelFolder;
 	}
 
 	@Override

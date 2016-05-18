@@ -17,8 +17,13 @@ package org.eclipse.vorto.wizard;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 public abstract class WizardCreateProjectHandler extends AbstractHandler {
@@ -30,6 +35,23 @@ public abstract class WizardCreateProjectHandler extends AbstractHandler {
 		dialog.create();
 		dialog.open();
 		return null;
+	}
+	
+	public IProject getCurrentProject() {
+		IProject project = null;
+		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+	    if (window != null)
+	    {
+	        IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
+	        Object firstElement = selection.getFirstElement();
+	        if (firstElement instanceof IAdaptable)
+	        {
+	            project = (IProject)((IAdaptable)firstElement).getAdapter(IProject.class);
+	            IPath path = project.getFullPath();
+	            System.out.println(path);
+	        }
+	    }
+	    return project;
 	}
 
 	public abstract Wizard getWizard();
