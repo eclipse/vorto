@@ -17,9 +17,12 @@ package org.eclipse.vorto.perspective.view;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.util.LocalSelectionTransfer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
@@ -42,10 +45,17 @@ public class DTTreeViewPart extends AbstractTreeViewPart {
 		treeViewer.addDropSupport(operations, transferTypes,
 				ModelDropListenerFactory
 						.datatypeViewPartDropListener(treeViewer));
+		//treeViewer.add
 	}
 
 	@Override
 	public Set<IModelElement> getContent() {
+		//PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().fin
+		
+		IProject project = getSelectedProject();
+		if(project != null)
+			System.out.println("dt project::::: " + project.getName());
+		
 		return new TreeSet<IModelElement>(ModelProjectServiceFactory
 				.getDefault().getProjectsInWorkspace(ModelType.Datatype));
 	}

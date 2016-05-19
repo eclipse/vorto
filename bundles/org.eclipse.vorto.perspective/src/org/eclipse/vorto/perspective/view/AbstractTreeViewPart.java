@@ -15,6 +15,7 @@
 package org.eclipse.vorto.perspective.view;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
@@ -23,6 +24,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -30,6 +32,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
@@ -38,7 +42,9 @@ import org.eclipse.vorto.perspective.IModelContentProvider;
 import org.eclipse.vorto.perspective.contentprovider.DefaultTreeModelContentProvider;
 import org.eclipse.vorto.perspective.labelprovider.DefaultTreeModelLabelProvider;
 import org.eclipse.vorto.perspective.listener.ChangeModelProjectListener;
+import org.eclipse.vorto.perspective.listener.ProjectSelectionListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelProjectListener;
+import org.eclipse.vorto.perspective.util.TreeViewerCallback;
 import org.eclipse.vorto.perspective.util.TreeViewerTemplate;
 
 public abstract class AbstractTreeViewPart extends ViewPart implements
@@ -53,6 +59,8 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 
 	private IResourceChangeListener removeChangeListener = null;
 	private IResourceChangeListener refreshAndExpandListener = null;
+
+	private IProject selectedProject = null;
 
 	public void createPartControl(Composite parent) {
 		init();
@@ -102,6 +110,42 @@ public abstract class AbstractTreeViewPart extends ViewPart implements
 	protected void hookListeners() {
 		addSelectionChangedEventListener(treeViewer);
 		addWorkspaceChangeEventListenr();
+		addProjectChangeListener();
+	}
+
+	private void addProjectChangeListener() {
+		getSite().getWorkbenchWindow().getSelectionService().addSelectionListener(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, new ISelectionListener() {
+			
+			@Override
+			public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+				if(selection instanceof IStructuredSelection) {
+					IStructuredSelection iSelection = (IStructuredSelection) selection;
+					Object firstElement = iSelection.getFirstElement();
+					if(firstElement instanceof IProject) {
+						System.out.println("Its Project....");
+						IProject project = (IProject) firstElement;
+						System.out.println("Project>>>> " + project.getName());
+						selectedProject = project;
+						
+						treeViewerUpdateTemplate.update(new TreeViewerCallback() {
+
+							@Override
+							public void doUpdate(TreeViewer treeViewer) {
+								treeViewer.setInput(getContent());
+							}
+						} );
+					}
+						
+					if(firstElement != null)
+						System.out.println("ISElection Selected:::::" + firstElement.toString());
+				}
+			}
+		});
+		
+	}
+	
+	public IProject getSelectedProject() {
+		return selectedProject;
 	}
 
 	protected void addWorkspaceChangeEventListenr() {

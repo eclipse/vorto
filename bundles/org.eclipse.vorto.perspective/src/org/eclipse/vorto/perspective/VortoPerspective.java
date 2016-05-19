@@ -21,12 +21,30 @@ import org.eclipse.vorto.perspective.view.DTTreeViewPart;
 import org.eclipse.vorto.perspective.view.FBTreeViewPart;
 import org.eclipse.vorto.perspective.view.InfoModelTreeViewPart;
 import org.eclipse.vorto.perspective.view.ProjectSelectionViewPart;
+import org.eclipse.ui.IFolderLayout;
 
 public class VortoPerspective implements IPerspectiveFactory {
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
 
+		/*layout.createFolder("left", IPageLayout.LEFT, 0.2f,
+				IPageLayout.ID_EDITOR_AREA);
+		layout.createFolder("right", IPageLayout.RIGHT, 0.6f,
+				IPageLayout.ID_EDITOR_AREA);
+		layout.createFolder("bottom", IPageLayout.BOTTOM, 0.8f,
+				IPageLayout.ID_EDITOR_AREA);
+		layout.createFolder("top", IPageLayout.TOP, 0.6f,
+				IPageLayout.ID_EDITOR_AREA);
+		layout.addView(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.10f,
+				layout.getEditorArea());
+		layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.LEFT, 0.20f,
+				ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID);
+		layout.addView(FBTreeViewPart.FB_TREE_VIEW_ID, IPageLayout.BOTTOM,
+				0.25f, DTTreeViewPart.DT_TREE_VIEW_ID);
+		layout.addView(InfoModelTreeViewPart.IM_TREE_VIEW_ID,
+				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);*/
+		
 		layout.createFolder("left", IPageLayout.LEFT, 0.2f,
 				IPageLayout.ID_EDITOR_AREA);
 		layout.createFolder("right", IPageLayout.RIGHT, 0.6f,
@@ -35,14 +53,14 @@ public class VortoPerspective implements IPerspectiveFactory {
 				IPageLayout.ID_EDITOR_AREA);
 		layout.createFolder("top", IPageLayout.TOP, 0.6f,
 				IPageLayout.ID_EDITOR_AREA);
-
-		layout.addView(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.10f,
+		
+		layout.addView(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.26f,
 				layout.getEditorArea());
-		/*layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.LEFT, 0.20f,
+		layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.BOTTOM, 0.1f,
 				ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID);
 		layout.addView(FBTreeViewPart.FB_TREE_VIEW_ID, IPageLayout.BOTTOM,
 				0.25f, DTTreeViewPart.DT_TREE_VIEW_ID);
 		layout.addView(InfoModelTreeViewPart.IM_TREE_VIEW_ID,
-				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);*/
+				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);
 	}
 }

@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.model.IModelElement;
 import org.eclipse.vorto.core.model.IModelProject;
 
 /**
@@ -92,6 +93,16 @@ public interface IModelProjectService {
 	 * @return
 	 */
 	Set<IModelProject> getProjectsInWorkspace(ModelType modelType);
+
+	/**
+	 * Gets all models of modeltype in a given project
+	 * 
+	 * 
+	 * @param modelType
+	 * @param project
+	 * @return all model
+	 */
+	Set<IModelProject> getModelsInProject(ModelType modelType, IProject project);
 
 	/**
 	 * Saves a model project, if it was changed, e.g. references were added.

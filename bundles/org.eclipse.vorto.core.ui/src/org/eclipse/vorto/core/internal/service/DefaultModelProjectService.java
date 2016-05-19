@@ -94,6 +94,14 @@ public class DefaultModelProjectService implements IModelProjectService {
 	}
 
 	@Override
+	public Set<IModelProject> getModelsInProject(ModelType modelType, IProject project) {
+		
+		Set<IModelProject> modelElements = new TreeSet<IModelProject>();
+		modelElements.add(ModelProjectFactory.getInstance().getProject(project));
+		return modelElements;
+	}
+
+	@Override
 	public IModelProject getProjectFromSelection() {
 		return ModelProjectFactory.getInstance().getProjectFromSelection();
 	}
@@ -107,4 +115,5 @@ public class DefaultModelProjectService implements IModelProjectService {
 		}
 		return null;
 	}
+
 }

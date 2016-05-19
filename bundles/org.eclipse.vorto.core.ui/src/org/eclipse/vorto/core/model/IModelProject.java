@@ -15,12 +15,14 @@
 package org.eclipse.vorto.core.model;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 
 /**
  * 
@@ -28,7 +30,7 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
  * metadata
  *
  */
-public interface IModelProject extends IModelElement {
+public interface IModelProject {
 
 	/**
 	 * retrieve the wrapping Eclipse {@link IProject}
@@ -78,4 +80,7 @@ public interface IModelProject extends IModelElement {
 	 */
 	void addMapping(ModelId id, byte[] mappingContent);
 
+	List<IModelElement> getModelElements();
+	
+	List<IModelElement> getModelElementsByType(ModelType modelType);
 }
