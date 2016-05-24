@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype;
 
+import org.eclipse.vorto.core.ui.model.IModelProject;
 
 /**
  * Wizard for creating Entity type project.
@@ -21,7 +22,8 @@ package org.eclipse.vorto.wizard.datatype;
  */
 public class EnumWizard extends AbstractDatatypeWizard {
 
-	public EnumWizard() {
+	public EnumWizard(IModelProject project) {
+		super(project);
 		setDatatypeName(Datatype.Enum);
 	}
 

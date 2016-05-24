@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.infomodel;
 
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
 public class InfomodelWizardPage extends ModelBaseWizardPage {
@@ -22,8 +23,8 @@ public class InfomodelWizardPage extends ModelBaseWizardPage {
 	private static final String DEFAULT_DESCRIPTION = "Information model for ";
 	private static final String DEFAULT_INFORMATIONMODEL_NAME = "NewInfomodel";
 
-	protected InfomodelWizardPage(String pageName) {
-		super(pageName);
+	protected InfomodelWizardPage(String pageName,IModelProject modelProject) {
+		super(pageName,modelProject);
 	}
 
 	@Override

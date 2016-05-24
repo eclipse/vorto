@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype;
 
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
 public class DatatypeWizardPage extends ModelBaseWizardPage {
@@ -21,8 +22,8 @@ public class DatatypeWizardPage extends ModelBaseWizardPage {
 	private static final String DEFAULT_VERSION = "1.0.0";
 	private Datatype datatype;
 
-	protected DatatypeWizardPage(Datatype type, String pageName) {
-		super(pageName);
+	protected DatatypeWizardPage(Datatype type, String pageName, IModelProject modelProject) {
+		super(pageName,modelProject);
 		this.datatype = type;
 	}
 

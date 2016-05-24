@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,11 +17,6 @@ package org.eclipse.vorto.perspective.view;
 import java.io.ByteArrayInputStream;
 
 import org.apache.commons.codec.binary.Base64InputStream;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -32,15 +27,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
 import org.eclipse.vorto.codegen.ui.handler.CodeGenerationHelper;
-import org.eclipse.vorto.codegen.ui.handler.CodeGeneratorTaskExecutor;
-import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
-import org.eclipse.vorto.codegen.ui.tasks.CopyResourceTask;
-import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
-import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.Attachment;
 import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;

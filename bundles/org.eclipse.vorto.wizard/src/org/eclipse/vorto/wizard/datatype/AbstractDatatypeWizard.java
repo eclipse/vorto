@@ -30,21 +30,27 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
+import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 		implements INewWizard {
 
-	private DatatypeWizardPage iotWizardPage;
+	private IModelProject modelProject;
 
-	private final String SUFFIX = ".type";
+	public AbstractDatatypeWizard(IModelProject modelProject) {
+		this.modelProject = modelProject;
+	}
+
+	private DatatypeWizardPage iotWizardPage;
 	
 	private String modelFolder = "datatypes/";
 
 	private Datatype datatype;
 
 	public void addPages() {
-		iotWizardPage = new DatatypeWizardPage(datatype, "New Datatype");
+		iotWizardPage = new DatatypeWizardPage(datatype, "New Datatype",modelProject);
 		setTitle("Create " + datatype.name().toLowerCase() + " type ");
 		setDescription("Please enter the details for creating a "
 				+ datatype.name().toLowerCase() + " model.");
@@ -52,8 +58,8 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 	}
 
 	public boolean performFinish() {
-		new ModelGenerationTask(SUFFIX, new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
+		new ModelGenerationTask(ModelType.Datatype.getExtension(), new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
+				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 		openDatatypeWithDefaultEditor();
 		return true;
 	}
@@ -65,7 +71,7 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 
 		String fbName = iotWizardPage.getModelName();
 		final IFile fbfile = project.getFile(modelFolder
-				+ fbName + SUFFIX);
+				+ fbName + ModelType.Datatype.getExtension());
 
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override

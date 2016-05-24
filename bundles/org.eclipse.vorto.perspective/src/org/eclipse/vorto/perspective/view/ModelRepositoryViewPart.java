@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -64,12 +64,6 @@ import org.eclipse.xtext.ui.editor.XtextReadonlyEditorInput;
 import com.google.common.io.Files;
 
 public class ModelRepositoryViewPart extends ViewPart {
-
-	private static final String INFOMODEL_EXT = ".infomodel";
-
-	private static final String FBMODEL_EXT = ".fbmodel";
-
-	private static final String DATATYPE_EXT = ".type";
 
 	private static final String INFOMODEL_EDITOR_ID = "org.eclipse.vorto.editor.infomodel.InformationModel";
 
@@ -164,7 +158,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 		public void run() {
 			try {
 				// Create temporary file
-				File file = File.createTempFile(model.getDisplayName(), getExtension(model.getId().getModelType()));
+				File file = File.createTempFile(model.getDisplayName(), model.getId().getModelType().getExtension());
 
 				// Download shared model and put in temporary file
 				Files.write(modelRepo.downloadContent(model.getId()), file);
@@ -219,16 +213,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 				return FUNCTIONBLOCK_EDITOR_ID;
 			} else {
 				return INFOMODEL_EDITOR_ID;
-			}
-		}
-
-		private String getExtension(ModelType modelType) {
-			if (modelType == ModelType.Datatype) {
-				return DATATYPE_EXT;
-			} else if (modelType == ModelType.Functionblock) {
-				return FBMODEL_EXT;
-			} else {
-				return INFOMODEL_EXT;
 			}
 		}
 	}
