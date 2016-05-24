@@ -16,7 +16,6 @@ package org.eclipse.vorto.perspective.dnd.dropvalidator;
 
 import java.util.Objects;
 
-import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.perspective.dnd.IDropValidator;
 
 /**
@@ -35,8 +34,8 @@ public class TargetClassSourceClassValidator implements IDropValidator {
 		this.sourceClass = Objects.requireNonNull(sourceClass);
 	}
 
-	public boolean allow(IModelProject receivingProject, Object droppedObject) {
-		return targetClass.isInstance(receivingProject) && sourceClass.isInstance(droppedObject);
+	public boolean allow(Object receivingModelElement, Object droppedObject) {
+		return targetClass.isInstance(receivingModelElement) && sourceClass.isInstance(droppedObject);
 	}
 
 }

@@ -28,10 +28,18 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public class FunctionBlockWizard extends AbstractVortoWizard implements
 		INewWizard {
+	
+	private IModelProject modelProject;
+
+	public FunctionBlockWizard(IModelProject modelProject) {
+		this.modelProject = modelProject;
+	}
+
 	private static final String SUFFIX = ".fbmodel";
 	private FunctionBlockWizardPage iotWizardPage;
 	
@@ -39,7 +47,7 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 
 	@Override
 	public void addPages() {
-		iotWizardPage = new FunctionBlockWizardPage("Function Block Wizard");
+		iotWizardPage = new FunctionBlockWizardPage("Function Block Wizard",modelProject);
 		iotWizardPage.setTitle("Create Function Block Model");
 		iotWizardPage
 				.setDescription("Please enter the details for creating function block model project.");
@@ -49,7 +57,7 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 	@Override
 	public boolean performFinish() {
 		new ModelGenerationTask(SUFFIX, new FbmodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
+				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 		openFBModelWithDefaultEditor();
 		return true;
 	}

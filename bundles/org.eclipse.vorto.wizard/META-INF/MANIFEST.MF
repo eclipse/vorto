@@ -18,5 +18,10 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.vorto.codegen.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.vorto.wizard
+Export-Package: org.eclipse.vorto.wizard,
+ org.eclipse.vorto.wizard.datatype,
+ org.eclipse.vorto.wizard.functionblock,
+ org.eclipse.vorto.wizard.infomodel,
+ org.eclipse.vorto.wizard.mapping,
+ org.eclipse.vorto.wizard.vorto
 

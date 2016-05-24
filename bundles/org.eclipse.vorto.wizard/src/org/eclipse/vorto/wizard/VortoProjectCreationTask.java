@@ -25,7 +25,7 @@ import org.eclipse.vorto.codegen.ui.context.IProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
 import org.eclipse.vorto.codegen.ui.tasks.LocationWrapper;
-import org.eclipse.vorto.core.model.nature.VortoProjectNature;
+import org.eclipse.vorto.core.ui.model.nature.VortoProjectNature;
 
 public class VortoProjectCreationTask implements IProgressTask {
 
@@ -38,7 +38,7 @@ public class VortoProjectCreationTask implements IProgressTask {
 	private String workspaceLocation;
 
 	public static final String XTEXT_NATURE = "org.eclipse.xtext.ui.shared.xtextNature";
-	public static final String[] ALL_MODEL_FOLDERS = {"datatypes", "functionblocks", "informationmodels","mappings"};
+	public static final String[] ALL_MODEL_FOLDERS = {"datatypes", "functionblocks", "infomodels","mappings"};
 
 	private IProjectContext context = null;
 

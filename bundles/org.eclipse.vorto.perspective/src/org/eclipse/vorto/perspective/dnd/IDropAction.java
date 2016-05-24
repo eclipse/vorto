@@ -14,19 +14,19 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
-import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.IModelElement;
 
 /**
  * Action to be done when a resource is dropped on a target
  *
  */
-public interface IDropAction {
+public interface IDropAction<Target,Source> {
 	
 	/**
 	 * Actual action to be executed upon drop
 	 * @param receivingProject The project receiving the dropped resource
 	 * @param droppedObject The dropped resource
-	 * @return
+	 * @return the updated element
 	 */
-	boolean performDrop(IModelProject receivingProject, Object droppedObject);
+	IModelElement performDrop(Target receivingModelElement, Source droppedObject);
 }

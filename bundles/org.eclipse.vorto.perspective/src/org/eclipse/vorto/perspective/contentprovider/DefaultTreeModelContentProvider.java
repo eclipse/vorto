@@ -16,14 +16,15 @@ package org.eclipse.vorto.perspective.contentprovider;
 
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.core.ui.model.IModelElement;
 
 public class DefaultTreeModelContentProvider implements ITreeContentProvider{
 
-	private TreeViewer treeViewer = null;
+	private Viewer treeViewer = null;
 	
 
 	public void dispose() {
@@ -31,7 +32,7 @@ public class DefaultTreeModelContentProvider implements ITreeContentProvider{
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.treeViewer = (TreeViewer) viewer;
+		this.treeViewer =  viewer;
 	}
 
 	/*

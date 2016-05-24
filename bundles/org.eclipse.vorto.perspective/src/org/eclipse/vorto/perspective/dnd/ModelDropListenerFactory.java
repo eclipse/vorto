@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,11 +17,13 @@ package org.eclipse.vorto.perspective.dnd;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.core.model.DatatypeModelProject;
-import org.eclipse.vorto.core.model.FunctionblockModelProject;
-import org.eclipse.vorto.core.model.InformationModelProject;
-import org.eclipse.vorto.perspective.dnd.dropaction.CreateProjectDropAction;
-import org.eclipse.vorto.perspective.dnd.dropaction.ModelProjectDropAction;
+import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.ui.model.DatatypeModelElement;
+import org.eclipse.vorto.core.ui.model.FunctionblockModelElement;
+import org.eclipse.vorto.core.ui.model.InformationModelElement;
+import org.eclipse.vorto.core.ui.model.VortoModelProject;
+import org.eclipse.vorto.perspective.dnd.dropaction.AddLocalReferenceDropAction;
+import org.eclipse.vorto.perspective.dnd.dropaction.AddSharedReferenceDropAction;
 import org.eclipse.vorto.perspective.dnd.dropaction.RepositoryResourceDropAction;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.DatatypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.ModelTypeValidator;
@@ -34,47 +36,53 @@ public class ModelDropListenerFactory {
 		return new ModelDropListener(viewer)
 				.addDropAction(
 						new DatatypeValidator(
-								DatatypeModelProject.class,
-								DatatypeModelProject.class),
-						new ModelProjectDropAction(DatatypeModelProject.class))
+								DatatypeModelElement.class,
+								DatatypeModelElement.class),
+						new AddLocalReferenceDropAction(DatatypeModelElement.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								DatatypeModelProject.class, ModelType.Datatype),
+								VortoModelProject.class, ModelType.Datatype),
 						new RepositoryResourceDropAction())
 				.addDropAction(
-						new ModelTypeValidator(ModelType.Datatype),
-						new CreateProjectDropAction());
+						new TargetClassSourceClassValidator(
+								DatatypeModelElement.class,
+								ModelResource.class),
+						new AddSharedReferenceDropAction(ModelResource.class));
 	}
 	
 	public static DropTargetListener functionblockViewPartDropListener(Viewer viewer) {
 		return new ModelDropListener(viewer)
 				.addDropAction(
 						new TargetClassSourceClassValidator(
-								FunctionblockModelProject.class,
-								DatatypeModelProject.class),
-						new ModelProjectDropAction(DatatypeModelProject.class))
+								FunctionblockModelElement.class,
+								DatatypeModelElement.class),
+						new AddLocalReferenceDropAction(DatatypeModelElement.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								FunctionblockModelProject.class, ModelType.Datatype),
+								VortoModelProject.class, ModelType.Functionblock),
 						new RepositoryResourceDropAction())
 				.addDropAction(
-						new ModelTypeValidator(ModelType.Functionblock),
-						new CreateProjectDropAction());
+						new TargetClassSourceClassValidator(
+								FunctionblockModelElement.class,
+								ModelResource.class),
+						new AddSharedReferenceDropAction(ModelResource.class));
 	}
 	
 	public static DropTargetListener infomodelViewPartDropListener(Viewer viewer) {
 		return new ModelDropListener(viewer)
 				.addDropAction(
 						new TargetClassSourceClassValidator(
-								InformationModelProject.class,
-								FunctionblockModelProject.class),
-						new ModelProjectDropAction(FunctionblockModelProject.class))
+								InformationModelElement.class,
+								FunctionblockModelElement.class),
+						new AddLocalReferenceDropAction(FunctionblockModelElement.class))
 				.addDropAction(
 						new TargetClassModelTypeValidator(
-								InformationModelProject.class, ModelType.Functionblock),
+								VortoModelProject.class, ModelType.InformationModel),
 						new RepositoryResourceDropAction())
 				.addDropAction(
-						new ModelTypeValidator(ModelType.InformationModel),
-						new CreateProjectDropAction());
+						new TargetClassSourceClassValidator(
+								InformationModelElement.class,
+								ModelResource.class),
+						new AddSharedReferenceDropAction(ModelResource.class));
 	}
 }

@@ -43,4 +43,19 @@ public enum ModelType {
 	public <M extends Model> Class<M> getModelClass() {
 		return (Class<M>)modelClass;
 	}
+	
+	public static ModelType create(String fileName) {
+		String fileEnding = fileName.substring(fileName.indexOf("."));
+		if (ModelType.Functionblock.extension.equalsIgnoreCase(fileEnding)) {
+			return ModelType.Functionblock;
+		} else if (ModelType.InformationModel.extension.equalsIgnoreCase(fileEnding)) {
+			return ModelType.InformationModel;
+		} else if (ModelType.Datatype.extension.equalsIgnoreCase(fileEnding)) {
+			return ModelType.Datatype;
+		} else if (ModelType.Mapping.extension.equalsIgnoreCase(fileEnding)) {
+			return ModelType.Mapping;
+		} else {
+			throw new UnsupportedOperationException("Given filename is unknown");
+		}
+	}
 }
