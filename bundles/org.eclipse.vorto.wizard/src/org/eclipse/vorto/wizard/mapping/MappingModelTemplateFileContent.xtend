@@ -17,12 +17,6 @@ package org.eclipse.vorto.wizard.mapping
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
-import org.eclipse.vorto.core.api.model.datatype.Entity
-import org.eclipse.vorto.core.api.model.datatype.Enum
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.core.model.IModelProject
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory
 
 class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext> {
     
@@ -33,34 +27,33 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 	version «context.modelVersion»
 	displayname "«context.modelName»"
 	description "«context.modelDescription»"
-	using «getImportStr»
-	«getMappingType» «context.modelName» {
-		targetplatform «mappingWizardPage.targetPlatform»
+	infomodelmapping «context.modelName» {
+		targetplatform myplatform
 	}	
 		'''
 	}
 	
-	def String getImportStr(){
-		var model = getProjectFromSelection().model;
-		return model.namespace + "." + model.name + ";" + model.version;
-	}
+//	def String getImportStr(){
+//		var model = getProjectFromSelection().model;
+//		return model.namespace + "." + model.name + ";" + model.version;
+//	}
 	
-	def String getMappingType(){
-		var model = getProjectFromSelection().model;
-		if(model instanceof InformationModel){
-			return "infomodelmapping";
-		}else if(model instanceof FunctionblockModel){
-			return "functionblockmapping";
-		}else if(model instanceof Entity){
-			return "entitymapping";
-		}else if(model instanceof Enum){
-			return "enummapping";
-		}
-		
-		throw new UnsupportedOperationException("Not support type :" + model.class);
-	}
-	
-	def private IModelProject getProjectFromSelection(){
-		return ModelProjectServiceFactory.getDefault().getProjectFromSelection();
-	} 
+//	def String getMappingType(){
+//		var model = getProjectFromSelection().model;
+//		if(model instanceof InformationModel){
+//			return "infomodelmapping";
+//		}else if(model instanceof FunctionblockModel){
+//			return "functionblockmapping";
+//		}else if(model instanceof Entity){
+//			return "entitymapping";
+//		}else if(model instanceof Enum){
+//			return "enummapping";
+//		}
+//		
+//		throw new UnsupportedOperationException("Not support type :" + model.class);
+//	}
+//	
+//	def private IModelProject getProjectFromSelection(){
+//		return ModelProjectServiceFactory.getDefault().getProjectFromSelection();
+//	} 
 }

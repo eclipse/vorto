@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.dnd;
 
-import org.eclipse.vorto.core.model.IModelProject;
-
 /**
  * The validator that determines whether a particular drop is allowed or not
  *
@@ -28,5 +26,5 @@ public interface IDropValidator {
 	 * @param droppedObject
 	 * @return
 	 */
-	boolean allow(IModelProject receivingProject, Object droppedObject);
+	boolean allow(Object receivingElement, Object droppedObject);
 }

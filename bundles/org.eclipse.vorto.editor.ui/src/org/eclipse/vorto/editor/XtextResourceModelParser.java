@@ -20,7 +20,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.parser.IModelParser;
+import org.eclipse.vorto.core.ui.parser.IModelParser;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
 /**

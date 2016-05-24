@@ -23,7 +23,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 	public void initializeDefaultPreferences() {
 		MutableConnectionInfo info = ConnectionInfoFactory.getConnectionInfoForEdit();
-		info.setUrl("http://vorto.eclipse.org/repo");
+		info.setUrl("http://vorto.eclipse.org");
 	}
 
 }

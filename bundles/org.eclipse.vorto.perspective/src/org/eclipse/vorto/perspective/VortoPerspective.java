@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,15 +17,13 @@ package org.eclipse.vorto.perspective;
 
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.vorto.perspective.view.DTTreeViewPart;
-import org.eclipse.vorto.perspective.view.FBTreeViewPart;
-import org.eclipse.vorto.perspective.view.InfoModelTreeViewPart;
+import org.eclipse.vorto.perspective.view.ProjectSelectionViewPart;
 
 public class VortoPerspective implements IPerspectiveFactory {
 
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
-
+				
 		layout.createFolder("left", IPageLayout.LEFT, 0.2f,
 				IPageLayout.ID_EDITOR_AREA);
 		layout.createFolder("right", IPageLayout.RIGHT, 0.6f,
@@ -35,11 +33,7 @@ public class VortoPerspective implements IPerspectiveFactory {
 		layout.createFolder("top", IPageLayout.TOP, 0.6f,
 				IPageLayout.ID_EDITOR_AREA);
 
-		layout.addView(DTTreeViewPart.DT_TREE_VIEW_ID, IPageLayout.LEFT, 0.35f,
+		layout.addView(ProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.20f,
 				layout.getEditorArea());
-		layout.addView(FBTreeViewPart.FB_TREE_VIEW_ID, IPageLayout.BOTTOM,
-				0.25f, DTTreeViewPart.DT_TREE_VIEW_ID);
-		layout.addView(InfoModelTreeViewPart.IM_TREE_VIEW_ID,
-				IPageLayout.BOTTOM, 0.50f, FBTreeViewPart.FB_TREE_VIEW_ID);
 	}
 }

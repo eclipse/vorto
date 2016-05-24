@@ -17,7 +17,7 @@ package org.eclipse.vorto.perspective.labelprovider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.vorto.core.model.IModelElement;
+import org.eclipse.vorto.core.ui.model.IModelElement;
 
 public class DefaultTreeModelLabelProvider extends ColumnLabelProvider {
 
@@ -49,12 +49,6 @@ public class DefaultTreeModelLabelProvider extends ColumnLabelProvider {
 	@Override
 	public String getText(Object element) {
 		IModelElement modelElement = (IModelElement) element;
-//		StringBuilder label = new StringBuilder(modelElement.getId().getName());
-//		label.append(" ");
-//		label.append(modelElement.getId().getVersion());
-//		label.append(" (");
-//		label.append(modelElement.getId().getNamespace());
-//		label.append(")");
 		return modelElement.getId().getName();
 	}
 

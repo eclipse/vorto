@@ -30,6 +30,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
@@ -37,15 +38,17 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 
 	private InfomodelWizardPage iotWizardPage;
 
-	private String modelFolder = "informationmodels/";
+	private String modelFolder = "infomodels/";
+	
+	private IModelProject modelProject;
 
-	public InfomodelWizard() {
-		super();
+	public InfomodelWizard(IModelProject modelProject) {
+		this.modelProject = modelProject;
 		setNeedsProgressMonitor(true);
 	}
 
 	public void addPages() {
-		iotWizardPage = new InfomodelWizardPage("Information Model Wizard");
+		iotWizardPage = new InfomodelWizardPage("Information Model Wizard",this.modelProject);
 		iotWizardPage.setTitle("Create Information Model");
 		iotWizardPage
 				.setDescription("Please enter the details for creating information model project.");
@@ -55,7 +58,7 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 	public boolean performFinish() {
 		
 		new ModelGenerationTask(SUFFIX, new InfomodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(iotWizardPage.getProject()));
+				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 
 		openFBModelWithDefaultEditor();
 		return true;

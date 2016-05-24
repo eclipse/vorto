@@ -32,11 +32,15 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 
 public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 
-	protected ModelBaseWizardPage(String pageName) {
+	private IModelProject modelProject;
+	
+	protected ModelBaseWizardPage(String pageName, IModelProject modelProject) {
 		super(pageName);
+		this.modelProject = modelProject;
 	}
 
 	
@@ -167,28 +171,9 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 
 	@Override
 	public String getProjectName() {
-		IProject project = getProject();
-		
-		return (project != null) ? project.getName() : null;
+		return modelProject.getProject().getName();
 	}
 	
-	public IProject getProject() {
-		IProject project = null;
-		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	    if (window != null) {
-	        IStructuredSelection selection = (IStructuredSelection) window.getSelectionService().getSelection();
-	        Object firstElement = selection.getFirstElement();
-	        if (firstElement instanceof IAdaptable)
-	        {
-	            project = (IProject)((IAdaptable)firstElement).getAdapter(IProject.class);
-	            IPath path = project.getFullPath();
-	            System.out.println(path);
-	        }
-	    }
-	    return project;		
-		
-	}
-
 	@Override
 	public String getModelVersion() {
 		return txtVersion.getText();

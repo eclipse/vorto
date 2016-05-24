@@ -37,6 +37,9 @@ public class VortoProjectWizardPage extends AbstractWizardPage implements IProje
 	
 	
 	private Text txtProjectName;
+	
+	private String projectName;
+	
 	private Text txtWorkspaceLocation;
 	private String workspaceLocation;
 
@@ -136,6 +139,7 @@ public class VortoProjectWizardPage extends AbstractWizardPage implements IProje
 	private void projectNameChanged() {
 		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/"
 				+ getProjectName());
+		this.projectName = getProjectName();
 	}
 	public void dialogChanged() {
 		if (this.validateProject()) {
@@ -166,6 +170,10 @@ public class VortoProjectWizardPage extends AbstractWizardPage implements IProje
 	@Override
 	public String getProjectName() {
 		return txtProjectName.getText();
+	}
+	
+	public String getProjName() {
+		return this.projectName;
 	}
 
 	@Override

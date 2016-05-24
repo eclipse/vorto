@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype;
 
+import org.eclipse.vorto.core.ui.model.IModelProject;
 
 /**
  * Wizard for creating Entity type project.
@@ -21,7 +22,8 @@ package org.eclipse.vorto.wizard.datatype;
  */
 public class EntityWizard extends AbstractDatatypeWizard {
 
-	public EntityWizard() {
+	public EntityWizard(IModelProject project) {
+		super(project);
 		this.setDatatypeName(Datatype.Entity);
 	}
 
