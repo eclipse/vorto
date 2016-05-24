@@ -41,6 +41,7 @@ public class PopulateGeneratorsMenu extends CompoundContributionItem {
 	private static final String CLASS = "class";
 	private static final String MENU_LABEL = "menuLabel";
 
+	
 	public PopulateGeneratorsMenu() {
 	}
 

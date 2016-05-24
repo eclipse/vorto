@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,7 +16,6 @@ package org.eclipse.vorto.perspective.dnd.dropvalidator;
 
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.ModelResource;
-import org.eclipse.vorto.core.model.IModelProject;
 import org.eclipse.vorto.perspective.dnd.IDropValidator;
 
 /**
@@ -34,8 +33,8 @@ public class TargetClassModelTypeValidator implements IDropValidator {
 		this.modelType = modelType;
 	}
 
-	public boolean allow(IModelProject receivingProject, Object droppedObject) {
-		if (droppedObject instanceof ModelResource && targetClass.isInstance(receivingProject)) {
+	public boolean allow(Object receivingModelElement, Object droppedObject) {
+		if (droppedObject instanceof ModelResource && targetClass.isInstance(receivingModelElement)) {
 			ModelResource model = (ModelResource) droppedObject;
 			return model.getId().getModelType() == modelType;
 		}

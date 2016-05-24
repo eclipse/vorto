@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.functionblock;
 
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
 public class FunctionBlockWizardPage extends ModelBaseWizardPage {
@@ -22,8 +23,8 @@ public class FunctionBlockWizardPage extends ModelBaseWizardPage {
 	private static final String DEFAULT_DESCRIPTION = "Function block model for ";
 	private static final String DEFAULT_FUNCTIONBLOCK_NAME = "NewFunctionBlock";
 
-	public FunctionBlockWizardPage(String pageName) {
-		super(pageName);
+	public FunctionBlockWizardPage(String pageName,IModelProject modelProject) {
+		super(pageName,modelProject);
 	}
 
 	@Override

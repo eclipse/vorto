@@ -27,28 +27,29 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
+import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
-import org.eclipse.vorto.codegen.ui.progresstask.ProgressTaskExecutionService;
-import org.eclipse.vorto.wizard.ProjectCreationTask;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
+import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
+import org.eclipse.vorto.wizard.infomodel.InfomodelTemplateFileContent;
 
 public class MappingModelWizard extends AbstractVortoWizard implements INewWizard {
-	private static final String SUFFIX = ".mapping";
-	private String modelFolder = "mappings/";
-
+	
 	private MappingModellWizardPage iotWizardPage;
 
-	public MappingModelWizard() {
-		super();
+	private String modelFolder = "informationmodels/";
+
+	private IModelProject modelProject;
+	
+	public MappingModelWizard(IModelProject modelProject) {
+		this.modelProject = modelProject;
 		setNeedsProgressMonitor(true);
 	}
 
 	public void addPages() {
-		iotWizardPage = new MappingModellWizardPage("Mapping Model Wizard");
+		iotWizardPage = new MappingModellWizardPage("Mapping Model Wizard",modelProject);
 		iotWizardPage.setTitle("Create Mapping Model");
 		iotWizardPage
 				.setDescription("Please enter the details for creating mapping model.");
@@ -57,41 +58,21 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 
 	public boolean performFinish() {
 		
-		ProgressTaskExecutionService progressTaskExecutionService = ProgressTaskExecutionService
-				.getProgressTaskExecutionService();
+		new ModelGenerationTask(ModelType.Mapping.getExtension(), new InfomodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
+				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 
-		progressTaskExecutionService.syncRun(new ProjectCreationTask(
-				iotWizardPage) {
-			@Override
-			public IModelProject getIotproject(IProject project) {
-				return ModelProjectServiceFactory.getDefault()
-						.getProjectFromEclipseProject(project);
-			}
-
-			@Override
-			protected ICodeGeneratorTask<IModelProjectContext> getCodeGeneratorTask() {
-				return new ModelGenerationTask(SUFFIX, new MappingModelTemplateFileContent(), modelFolder);
-			}
-
-			@Override
-			protected String[] getProjectNature() {
-				return new String[] { };
-			}
-		});
-
-		openModelWithDefaultEditor();
-
+		openFBModelWithDefaultEditor();
 		return true;
 	}
 
-	private void openModelWithDefaultEditor() {
+	private void openFBModelWithDefaultEditor() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());
 
 		String modelName = iotWizardPage.getModelName();
 		final IFile modelfile = project.getFile(modelFolder
-				+ modelName + SUFFIX);
+				+ modelName + ModelType.Mapping.getExtension());
 
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
@@ -111,6 +92,14 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 			}
 		});
 
+	}
+
+	public MappingModellWizardPage getIotWizardPage() {
+		return iotWizardPage;
+	}
+
+	public void setIotWizardPage(MappingModellWizardPage iotWizardPage) {
+		this.iotWizardPage = iotWizardPage;
 	}
 
 	@Override

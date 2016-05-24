@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 
 <!--
-    Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+    Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License v1.0
     and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -20,57 +20,13 @@
      <extension point="org.eclipse.ui.perspectives">
         <perspective
               class="org.eclipse.vorto.perspective.VortoPerspective"
+              icon="icons/vorto-icon.png"
               id="org.eclipse.vorto.ui.perspective.VortoPerspective"
               name="Vorto">
         </perspective>
      </extension>
      
-       <extension
-           point="org.eclipse.ui.views">
-          <category
-                id="org.eclipse.vorto.perspective"
-                name="Vorto">
-          </category>
-          <view
-                category="org.eclipse.vorto.perspective"
-                class="org.eclipse.vorto.perspective.view.DTTreeViewPart"
-                icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png"
-                id="org.eclipse.vorto.ui.perspective.dttreeview"
-                name="Datatype Models"
-                restorable="true">
-          </view>
-        <view
-              category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.view.FBTreeViewPart"
-              icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/fb_large.png"
-              id="org.eclipse.vorto.ui.perspective.fbtreeview"
-              name="Function Block Models"
-              restorable="true">
-        </view>
-        <view
-              category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.view.InfoModelTreeViewPart"
-              icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/im.png"
-              id="org.eclipse.vorto.ui.perspective.imtreeview"
-              name="Information Models"
-              restorable="true">
-        </view>
-        <view
-              category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.view.ModelRepositoryViewPart"
-              icon="icons/sample.gif"
-              id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
-              name="Model Repository">
-        </view>
-        <view
-              category="org.eclipse.vorto.perspective"
-              class="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
-              id="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
-              name="Vorto Projects Selection">
-        </view>
-   </extension> 
-     
-   <extension point="org.eclipse.ui.perspectiveExtensions">
+     <extension point="org.eclipse.ui.perspectiveExtensions">
         <perspectiveExtension targetID="org.eclipse.vorto.ui.perspective.VortoPerspective">
   	         <view
 	               id="org.eclipse.ui.console.ConsoleView"
@@ -83,183 +39,37 @@
 	               relative="org.eclipse.ui.console.ConsoleView"/>  
         </perspectiveExtension>      
    </extension>
-          
-     <!-- datatype wizard and perspective -->
      
-   
-   <extension
-	       point="org.eclipse.ui.menus">
-     <menuContribution
-           allPopups="false"
-           locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
-        <command
-              commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-              icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
-              id="id.package.menu.newentity"
-              label="Create new Entity">
-           <parameter
-                 name="org.eclipse.vorto.editor.datatype.newdatatype.project"
-                 value="entity">
-           </parameter>
-        </command>
-     </menuContribution>
-     <menuContribution
-           allPopups="false"
-           locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
-        <command
-              commandId="org.eclipse.vorto.datatypeeditor.ui.command1.newdatatypeproject"
-              icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
-              id="id.package.menu.newenum"
-              label="Create new Enum">
-           <parameter
-                 name="org.eclipse.vorto.editor.datatype.newdatatype.project"
-                 value="enum">
-           </parameter>
-        </command>
-        <separator
-              name="additions1"
-              visible="true">
-        </separator>
-     </menuContribution>
-     <menuContribution
-           allPopups="false"
-           locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
-        <command
-              commandId="org.eclipse.vorto.perspective.checkin"
-              icon="icons/sample.gif"
-              label="Share">
-              <adapt type="org.eclipse.vorto.core.model.DatatypeModelProject">
-              </adapt>
-        </command>
-        <separator
-              name="additions1"
-              visible="true">
-        </separator>
-     </menuContribution>
-	    <menuContribution
-	          allPopups="false"
-	          locationURI="popup:org.eclipse.vorto.ui.perspective.dttreeview">
-				<command
-			  		commandId="org.eclipse.vorto.datatypeeditor.ui.command1.deletedatatypeproject"
-			  		id="id.package.menu.deletedatatype"
-			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/delete.gif"
-			        label="Delete Data Type">
-			        <adapt type="org.eclipse.vorto.core.model.DatatypeModelProject">
-		          	</adapt>   
-			  	</command>
-				<separator name="additions1" visible="true"/>
-	    </menuContribution>
-	 </extension>
-	 
-	 <!-- Functionblock wizard and menu contribution -->
-	 
-	 <extension
-	       point="org.eclipse.ui.menus">
-	    <menuContribution
-	          allPopups="false"
-	          locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
-				<command
-			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command1.newfbproject"
-			  		id="id.package.menu.newfb"
-			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
-			        label="Create new Function Block">           	            
-			  	</command>
-				<separator name="additions1" visible="true"/>
-	    </menuContribution>
-     <menuContribution
-           allPopups="false"
-           locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
-        <command
-              commandId="org.eclipse.vorto.perspective.checkin"
-              icon="icons/sample.gif"
-              label="Share">
-               <adapt type="org.eclipse.vorto.core.model.FunctionblockModelProject">
-		          </adapt>
-        </command>
-        <separator
-              name="additions1"
-              visible="true">
-        </separator>
-     </menuContribution>
-	    <menuContribution
-	          allPopups="false"
-	          locationURI="popup:org.eclipse.vorto.ui.perspective.fbtreeview">
-				<command
-			  		commandId="org.eclipse.vorto.editor.functionblock.ui.command.deletefbproject"
-			  		id="id.package.menu.deletefb"
-			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/delete.gif"
-			        label="Delete Function Block">   
-			        <adapt type="org.eclipse.vorto.core.model.FunctionblockModelProject">
-		          </adapt>
-			  	</command>
-				<separator name="additions1" visible="true"/>
-	    </menuContribution>	   	     
-	 </extension>
-	 
-	 <!-- Infomodel -->
-	 
+       <extension
+           point="org.eclipse.ui.views">
+          <category
+                id="org.eclipse.vorto.perspective"
+                name="Vorto">
+          </category>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
+              icon="icons/vorto-icon.png"
+              id="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
+              name="Vorto Model Project Browser">
+        </view>
+        <view
+              category="org.eclipse.vorto.perspective"
+              class="org.eclipse.vorto.perspective.view.ModelRepositoryViewPart"
+              icon="icons/share.gif"
+              id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+              name="Model Repository">
+        </view>
+   </extension> 
      
-     	<extension
-	       point="org.eclipse.ui.menus">
-	    <menuContribution
-	          allPopups="false"
-	          locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
-				<command
-			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.newimproject"
-			  		id="id.package.menu.newim"
-			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/add_exc.gif"
-			        label="Create new Information Model">           	            
-			  	</command>
-				<separator name="additions1" visible="true"/>
-	    </menuContribution>
-	     <menuContribution
-	           allPopups="false"
-	           locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
-	        <menu
-	              icon="platform:/plugin/org.eclipse.ui.browser/icons/elcl16/nav_go.gif"
-	              id="generate.code.submenu"
-	              label="Generate Code">
-					<adapt type="org.eclipse.vorto.core.model.InformationModelProject">
-		          </adapt>	              
-	        </menu>
-	     </menuContribution>
-         <menuContribution
-               allPopups="false"
-               locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
-            <command
-                  commandId="org.eclipse.vorto.perspective.checkin"
-                  icon="icons/sample.gif"
-                  label="Share">
-                  <adapt type="org.eclipse.vorto.core.model.InformationModelProject">
-		          </adapt>
-            </command>
-            <separator
-                  name="additions1"
-                  visible="true">
-            </separator>
-         </menuContribution>
-	    <menuContribution
-	          allPopups="false"
-	          locationURI="popup:org.eclipse.vorto.ui.perspective.imtreeview">
-				<command
-			  		commandId="org.eclipse.vorto.infomodeleditor.ui.command1.deleteinfomodelproject"
-			  		id="id.package.menu.deleteinfomodel"
-			  		icon="platform:/plugin/org.eclipse.vorto.core.ui/icons/delete.gif"
-			        label="Delete Information Model">   
-			      	<adapt type="org.eclipse.vorto.core.model.InformationModelProject">
-		          </adapt>
-			  	</command>
-				<separator name="additions1" visible="true"/>
-	    </menuContribution>		 	     	     
-	 </extension>
-      <extension
-            point="org.eclipse.ui.commands">
-         <command
-               defaultHandler="org.eclipse.vorto.perspective.command.CheckinModelHandler"
-               id="org.eclipse.vorto.perspective.checkin"
-               name="CheckIn">
-         </command>
-      </extension>
+   <extension point="org.eclipse.ui.perspectiveExtensions">
+        <perspectiveExtension targetID="org.eclipse.vorto.ui.perspective.VortoPerspective">
+	         <view
+	               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+	               relationship="bottom" />  
+        </perspectiveExtension>      
+   </extension>
+          	 
       <extension
             point="org.eclipse.ui.preferencePages">
          <page

@@ -14,35 +14,36 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.listener;
 
-import java.util.Set;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelParserFactory;
+import org.eclipse.vorto.core.ui.model.VortoModelProject;
+import org.eclipse.vorto.perspective.view.ILocalModelWorkspace;
 
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.vorto.core.model.IModelElement;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.perspective.IModelContentProvider;
-import org.eclipse.vorto.perspective.util.TreeViewerCallback;
-import org.eclipse.vorto.perspective.util.TreeViewerTemplate;
+public class RemoveModelProjectListener implements IResourceChangeListener {
 
-public class RemoveModelProjectListener extends AbstractResourceChangeListener{
-
-	public RemoveModelProjectListener(IModelContentProvider contentProvider, TreeViewerTemplate template) {
-		super(contentProvider, template);
+	private ILocalModelWorkspace localModelBrowser;
+	
+	public RemoveModelProjectListener(ILocalModelWorkspace localModelBrowser) {
+		this.localModelBrowser = localModelBrowser;
 	}
-
+	
 	@Override
-	protected void processChange(IModelProject project) {
-		if (project.getProject().isOpen()) {
-			final Set<IModelElement> input = contentProvider.getContent();
-			input.remove(project);
-			template.update(new TreeViewerCallback() {
-
-				@Override
-				public void doUpdate(TreeViewer treeViewer) {
-					treeViewer.setInput(input);
-				}
-			});
+	public void resourceChanged(IResourceChangeEvent event) {
+		if (isVortoModelProjectChangeEvent(event)) {
+			IModelProject deletedModelProject = getModelProjectFromEvent(event);
+			localModelBrowser.getProjectBrowser().removeProject(deletedModelProject);
 		}
 	}
-
-
+	
+	private IModelProject getModelProjectFromEvent(IResourceChangeEvent event) {
+		IProject project = (IProject)event.getResource();
+		return new VortoModelProject(project, ModelParserFactory.getInstance().getModelParser());
+	}
+	
+	private boolean isVortoModelProjectChangeEvent(IResourceChangeEvent event) {
+		return event.getResource() != null && event.getResource() instanceof IProject && VortoModelProject.isVortoModelProject((IProject)event.getResource());
+	}
 }

@@ -24,7 +24,7 @@ import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
 import org.eclipse.vorto.codegen.ui.tasks.LocationWrapper;
-import org.eclipse.vorto.core.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.IModelProject;
 
 public abstract class ProjectCreationTask implements IProgressTask {
 

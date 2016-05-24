@@ -14,226 +14,44 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.mapping;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
-import org.eclipse.vorto.wizard.AbstractWizardPage;
+import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
-public class MappingModellWizardPage extends AbstractWizardPage implements IModelProjectContext  {
+public class MappingModellWizardPage extends ModelBaseWizardPage {
 
-	public static final String TARGETPLATFORM_REGEX = "[^a-zA-Z0-9\\._]";
-	private IModelProject selectedModelProject = null;
-	
-	protected MappingModellWizardPage(String pageName) {
-		super(pageName);
-	}
-	
-	private Text txtModelName;
-	private Text txtTargetPlatform;
-	private Text txtVersion;
-	private Text txtDescription;
+	private static final String DEFAULT_VERSION = "1.0.0";
+	private static final String DEFAULT_DESCRIPTION = "Mapping model for ";
+	private static final String DEFAULT_MAPPINGMODEL_NAME = "NewMapping";
 
-	public void createControl(Composite parent) {
-		Composite topContainer = new Composite(parent, SWT.NULL);
-
-		setControl(topContainer);
-		topContainer.setLayout(new GridLayout(1, false));
-
-		Group grp = new Group(topContainer, SWT.NONE);
-		grp.setText(getGroupTitle());
-		grp.setLayout(new GridLayout(2, false));
-		GridData gridGroup = new GridData(SWT.LEFT, SWT.CENTER,
-				false, false, 1, 1);
-		gridGroup.heightHint = 164;
-		gridGroup.widthHint = 570;
-		grp.setLayoutData(gridGroup);
-
-		Label lblModelName = new Label(grp, SWT.NONE);
-		lblModelName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-				false, false, 1, 1));
-		lblModelName.setText(getModelLabel());
-
-		txtModelName = new Text(grp, SWT.BORDER);
-		GridData gridTxtFunctionBlockName = new GridData(SWT.FILL, SWT.CENTER,
-				false, false, 1, 1);
-		gridTxtFunctionBlockName.widthHint = 400;
-		txtModelName.setLayoutData(gridTxtFunctionBlockName);
-		
-
-		Label lblTargetPlatform = new Label(grp, SWT.NONE);
-		lblTargetPlatform.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-				false, false, 1, 1));
-		lblTargetPlatform.setText("Target Platform:");
-		
-		txtTargetPlatform = new Text(grp, SWT.BORDER);
-		GridData gridTxtTargetPlatform = new GridData(SWT.FILL, SWT.CENTER,
-				false, false, 1, 1);
-		gridTxtTargetPlatform.widthHint = 400;
-		txtTargetPlatform.setLayoutData(gridTxtTargetPlatform);
-
-		txtTargetPlatform.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				targetPlatformChanged();
-				dialogChanged();
-			}
-		});
-		
-		Label lblVersion = new Label(grp, SWT.NONE);
-		lblVersion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1));
-		lblVersion.setText("Version:");
-
-		txtVersion = new Text(grp, SWT.BORDER);
-		GridData gridTxtVersion = new GridData(SWT.FILL, SWT.CENTER, false,
-				false, 1, 1);
-		gridTxtVersion.widthHint = 411;
-		txtVersion.setLayoutData(gridTxtVersion);
-
-		Label lblDescription = new Label(grp, SWT.NONE);
-		lblDescription.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1));
-		lblDescription.setText("Description:");
-
-		txtDescription = new Text(grp, SWT.BORDER | SWT.V_SCROLL
-				| SWT.MULTI);
-		GridData gridTxtDescription = new GridData(SWT.FILL, SWT.TOP, true,
-				false, 1, 1);
-		gridTxtDescription.heightHint = 53;
-		txtDescription.setLayoutData(gridTxtDescription);
-		initialize();
-		setControl(topContainer);
-		
-		dialogChanged();
-	}
-
-	protected void initialize() {
-		this.selectedModelProject= ModelProjectServiceFactory.getDefault().getProjectFromSelection();		
-		txtModelName.setText(getDefaultModelName());
-		txtVersion.setText(getDefaultVersion());
-		txtDescription.setText(getDefaultDescription());
-	}
-
-	public void dialogChanged() {
-		if (this.validateProject()) {
-			this.setErrorMessage(null);
-			setPageComplete(true);
-		} else {
-			setPageComplete(false);
-		}
-
-	}
-	
-	protected boolean validateProject() {
-		boolean result = true;
-
-		String modelName = getModelName();
-		String modelVersion = getModelVersion();
-		String targetPlatform = this.getTargetPlatform();
-
-		result &= validateStrExist(modelName,
-				"Model name must be specified");
-
-		result &= validateStrExist(targetPlatform,
-				"Target platform must be specified");
-		
-		result &= checkModelName(modelName);
-		result &= checkMappingModelNotExist();
-		result &= checkFBVersion(modelVersion);
-
-		return result;
-	}
-
-	protected boolean checkMappingModelNotExist(){
-		String mappingFile = this.txtModelName.getText() + ".mapping";
-		if(this.getSelectedModelProject().getProject().getFile("src/mappings/" + mappingFile).exists()){
-			setErrorMessage("Mapping " + mappingFile + " already exist!");
-			return false;
-		}else {
-			return true;
-		}
-	}
-	
-	protected boolean checktTargetPlatform(String TargetPlatform) {
-		if (checkForRegexPattern(TargetPlatform, true, TARGETPLATFORM_REGEX)) {
-			setErrorMessage("Target Platform should not contain special characters.");
-			return false;
-		}
-		return true;
-	}
-	
-	protected void targetPlatformChanged() {
-		String targetPlatform = this.getTargetPlatform();
-		this.txtDescription.setText(getDefaultDescription());
-		this.txtModelName.setText(this.getDefaultModelName() + "_" + targetPlatform);
-	}
-
-	protected void setModelDescription(String desc){
-		txtDescription.setText(desc);
-	}
-	
-	@Override
-	public String getWorkspaceLocation() {
-		return getSelectedModelProject().getProject().getWorkspace().toString();
+	protected MappingModellWizardPage(String pageName,IModelProject modelProject) {
+		super(pageName,modelProject);
 	}
 
 	@Override
-	public String getProjectName() {		
-		return getSelectedModelProject().getProject().getName();
-	}
-	
-	public IModelProject getSelectedModelProject(){
-		return this.selectedModelProject;
-	}
-
-	public String getModelVersion() {
-		return txtVersion.getText();
-	}
-
-	public String getModelName() {
-		return txtModelName.getText();
-	}
-
-	public String getTargetPlatform() {
-		return this.txtTargetPlatform.getText();
-	}
-	
-	public String getModelDescription() {
-		return txtDescription.getText();
-	}
-
 	protected String getDefaultVersion() {
-		return this.selectedModelProject.getModel().getVersion();
+		return DEFAULT_VERSION;
 	}
 
+	@Override
 	protected String getDefaultDescription() {
-		return this.selectedModelProject.getModel().getName() + " to " + this.getTargetPlatform() + " mapping";
+		return DEFAULT_DESCRIPTION;
 	}
 
+	@Override
 	protected String getDefaultModelName() {
-		return  this.selectedModelProject.getModel().getName();
+		return DEFAULT_MAPPINGMODEL_NAME;
 	}
 
+	@Override
 	protected String getGroupTitle() {
-		return "Mapping Details";
+		return "Mapping Model Details";
 	}
 
+	@Override
 	protected String getModelLabel() {
-		return "Mapping Name:";
+		return "Mapping Model Name:";
 	}
 
-	public IProject getProject() {
-		return null;
-	}
 }
 
 

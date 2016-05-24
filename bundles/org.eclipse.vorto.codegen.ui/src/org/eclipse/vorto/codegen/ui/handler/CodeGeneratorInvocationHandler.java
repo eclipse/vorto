@@ -25,8 +25,9 @@ import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.model.IModelProject;
-import org.eclipse.vorto.core.service.ModelProjectServiceFactory;
+import org.eclipse.vorto.core.ui.model.IModelElement;
+import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 
 /**
  * 
@@ -55,9 +56,11 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 	private void evaluate(String generatorName) {
 
 		final IConfigurationElement[] configElements = getUserSelectedGenerators(generatorName);
-		IModelProject selectedProject = ModelProjectServiceFactory.getDefault().getProjectFromSelection();
+		
+		
+		IModelElement selectedElement = ModelProjectFactory.getInstance().getModelElementFromSelection();
 
-		InformationModel informationModel = (InformationModel) selectedProject.getModel();
+		InformationModel informationModel = (InformationModel) selectedElement.getModel();
 
 		for (IConfigurationElement e : configElements) {
 			try {
@@ -71,7 +74,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
 				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator,
-						createMappingContext(selectedProject, informationModelCodeGenerator.getServiceKey()));
+						createMappingContext(selectedElement.getProject(), informationModelCodeGenerator.getServiceKey()));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);

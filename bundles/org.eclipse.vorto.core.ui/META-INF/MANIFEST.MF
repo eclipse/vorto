@@ -12,11 +12,6 @@ Require-Bundle: org.eclipse.core.resources,
  org.apache.commons.lang3,
  org.apache.commons.collections,
  org.eclipse.vorto.core
-Export-Package: org.eclipse.vorto.core.model,
- org.eclipse.vorto.core.model.nature,
- org.eclipse.vorto.core.parser;uses:="org.eclipse.core.resources",
- org.eclipse.vorto.core.service,
- org.eclipse.vorto.core.ui.handler,
- org.eclipse.vorto.core.ui.handler.datatype,
- org.eclipse.vorto.core.ui.handler.functionblock,
- org.eclipse.vorto.core.ui.handler.infomodel
+Export-Package: org.eclipse.vorto.core.ui.model,
+ org.eclipse.vorto.core.ui.model.nature,
+ org.eclipse.vorto.core.ui.parser;uses:="org.eclipse.core.resources"
