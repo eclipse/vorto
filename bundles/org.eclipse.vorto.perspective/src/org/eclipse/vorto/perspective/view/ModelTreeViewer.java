@@ -15,6 +15,7 @@
 package org.eclipse.vorto.perspective.view;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
@@ -93,19 +94,22 @@ public abstract class ModelTreeViewer {
 	
 	public void populate(Collection<IModelElement> modelElements) {
 		if (!Display.getDefault().isDisposed()) {
-			Display.getDefault().syncExec(new Runnable() {
-
-				public void run() {
-					try {
-						treeViewer.setInput(modelElements);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+			Display.getDefault().syncExec(newViewUpdateRunnable(treeViewer, modelElements));
 		}
 	}
-
+	
+	private Runnable newViewUpdateRunnable(final ModelProjectTreeViewer treeViewer, final Collection<IModelElement> modelElements) {
+		return new Runnable() {
+			public void run() {
+				try {
+					treeViewer.setInput(modelElements);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+	
 	protected void init() {
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
