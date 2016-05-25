@@ -163,7 +163,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		}
 	}
 
-	private ComboViewer createProjectSelectionViewer(Composite container, String labelStr) {
+	private ComboViewer createProjectSelectionViewer(final Composite container, String labelStr) {
 		
 		Label label = new Label(container, SWT.NONE);
 		label.setText(labelStr);
@@ -243,7 +243,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	}
 	
 	public void removeProject(IModelProject modelProject) {
-		Collection<IModelProject> projects = this.getModelProjects();
+		final Collection<IModelProject> projects = this.getModelProjects();
 		projects.remove(modelProject);
 		
 		if (!Display.getDefault().isDisposed()) {
