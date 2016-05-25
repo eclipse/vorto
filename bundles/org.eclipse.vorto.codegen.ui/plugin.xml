@@ -7,7 +7,7 @@
      <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            category="org.eclipse.vorto.functionblock.ui.wizards"
+            category="org.eclipse.vorto.model.ui.wizards"
             class="org.eclipse.vorto.codegen.ui.wizard.GeneratorWizard"
             finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
             icon="icons/generator.gif"
