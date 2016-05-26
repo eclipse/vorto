@@ -8,7 +8,7 @@
             <i class="{{main.imagename}}"></i>
           </div>
     <div class="col-md-2">
-     
+
      <a href= "{{main.accesslink}}" target="_blank"><h4>{{main.title}}</h4></a>
      </div>
      <div class="col-md-7">
@@ -19,20 +19,20 @@
 {% endif %}
 
 {% if main.series == 'homepageAddProjects' %}
-    <div id = "zoo" class="box"> 
+    <div id = "zoo" class="box">
         <div class="row">
-          
+
            <div class="col-md-12 page-header pull-left">
       <h2>Projects/Products using Vorto</h2>
 </div>
 <!--div class="col-md-3 page-header pull-right">
           <a href="https://github.com/eclipse/vorto/edit/development/docs/ctyprojects.md"><h2>Add your project!</h2></a>
         </div-->
-      
-        
-        
+
+
+
         <div class="container-fluid">
-           
+
         <!--table class="table table-striped table-condensed">
             <thead>
             <tr>
@@ -42,15 +42,15 @@
               <th>Author(s)</th>
             </tr></thead>
             <tbody>
-                      
+
              {{ main.content }}
           </tbody><tfoot></tfoot></table-->
           <br>
-          <p align = "center"><img src="{{ base }}/img/companies_logo.jpg"></p>
-        
+          <p align = "center"><img src="{{ base }}/img/companies_logo.jpg" class="box-img img-responsive zoom1"></p>
+
         </div>
         </div>
-        <hr>    
+        <hr>
 {% endif %}
 {% endfor %}
 
