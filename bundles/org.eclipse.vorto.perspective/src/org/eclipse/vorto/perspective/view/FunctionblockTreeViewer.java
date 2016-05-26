@@ -91,11 +91,13 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 					}
 				}
 
-				manager.add(new ProjectAction("New Functionblock",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+				manager.add(new ProjectAction("New Functionblock", ImageUtil.getImage("add_exc.gif"),
+						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
 						WizardDialog wizardDialog = new WizardDialog(treeViewer.getControl().getShell(),
-								new FunctionBlockWizard(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
+								new FunctionBlockWizard(
+										treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
 						if (wizardDialog.open() == Window.OK) {
 							populate(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()
 									.getModelElementsByType(ModelType.Functionblock));
