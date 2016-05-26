@@ -61,7 +61,7 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 			public void menuAboutToShow(IMenuManager manager) {
 
 				if (!treeViewer.getStructuredSelection().isEmpty()) {
-					IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
+					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Functionblock) {
 						menuMgr.add(new ShareModelAction() {
