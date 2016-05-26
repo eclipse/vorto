@@ -66,7 +66,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				if (!treeViewer.getStructuredSelection().isEmpty()) {
-					IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
+					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Datatype) {
 						menuMgr.add(new ShareModelAction() {
@@ -82,12 +82,12 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 							}
 						});
 						menuMgr.add(new DeleteModelAction(localModelWorkspace) {
-							
+
 							@Override
 							protected TreeViewer getViewer() {
 								return treeViewer;
 							}
-							
+
 							@Override
 							protected IModelElement getSelectedElement() {
 								return model;
@@ -96,11 +96,13 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					}
 				}
 
-				manager.add(new ProjectAction("New Entity",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+				manager.add(new ProjectAction("New Entity", ImageUtil.getImage("add_exc.gif"),
+						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
 						WizardDialog wizardDialog = new WizardDialog(treeViewer.getControl().getShell(),
-								new EntityWizard(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
+								new EntityWizard(
+										treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
 						if (wizardDialog.open() == Window.OK) {
 							populate(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()
 									.getModelElementsByType(ModelType.Datatype));
@@ -108,11 +110,12 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					}
 				});
 
-				manager.add(new ProjectAction("New Enum",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+				manager.add(new ProjectAction("New Enum", ImageUtil.getImage("add_exc.gif"),
+						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
-						WizardDialog wizardDialog = new WizardDialog(treeViewer.getControl().getShell(),
-								new EnumWizard(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
+						WizardDialog wizardDialog = new WizardDialog(treeViewer.getControl().getShell(), new EnumWizard(
+								treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()));
 						if (wizardDialog.open() == Window.OK) {
 							populate(treeViewer.getLocalModelWorkspace().getProjectBrowser().getSelectedProject()
 									.getModelElementsByType(ModelType.Datatype));

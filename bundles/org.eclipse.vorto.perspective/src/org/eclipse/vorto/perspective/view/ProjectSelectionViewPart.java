@@ -23,6 +23,12 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.WorkspaceJob;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -69,7 +75,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	protected DatatypeTreeViewer datatypeTreeViewer;
 	protected FunctionblockTreeViewer functionBlockTreeViewer;
 	protected InfomodelTreeViewer infoModelTreeViewer;
-	
+
 	private IResourceChangeListener removeModelProjectListener = null;
 
 	public ProjectSelectionViewPart() {
@@ -82,7 +88,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	 */
 	@Override
 	public void createPartControl(Composite parent) {
-		
+
 		Composite container = new Composite(parent, SWT.NONE);
 
 		FormLayout layout = new FormLayout();
@@ -93,8 +99,6 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 
 		projectSelectionViewer = createProjectSelectionViewer(container, "Select Vorto Project");
 
-		Composite modelPanel = createViewerComposite(container, projectSelectionViewer.getCombo());
-		
 		projectSelectionViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -115,104 +119,156 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 
 				if (event.getSelection() instanceof IStructuredSelection) {
 					IStructuredSelection iSelection = (IStructuredSelection) event.getSelection();
-					IModelProject project = (IModelProject)iSelection.getFirstElement();
+					IModelProject project = (IModelProject) iSelection.getFirstElement();
 					selectedProject = project;
-					
+
 					populate(selectedProject);
 				}
 			}
 		});
-		
+
 		hookListeners();
-		
-		datatypeTreeViewer = new DatatypeTreeViewer(modelPanel,this);
-		functionBlockTreeViewer = new FunctionblockTreeViewer(modelPanel,this);
-		infoModelTreeViewer = new InfomodelTreeViewer(modelPanel,this);
-		
+
+		Composite modelPanel = createViewerComposite(container, projectSelectionViewer.getCombo());
+
+		datatypeTreeViewer = new DatatypeTreeViewer(modelPanel, this);
+		functionBlockTreeViewer = new FunctionblockTreeViewer(modelPanel, this);
+		infoModelTreeViewer = new InfomodelTreeViewer(modelPanel, this);
+
 		getSite().setSelectionProvider(infoModelTreeViewer.treeViewer);
-		
+
 		if (!getModelProjects().isEmpty()) {
 			setSelectedProject(getModelProjects().iterator().next());
 		}
-		
+
 	}
-	
+
 	protected void hookListeners() {
 		addWorkspaceChangeEventListenr();
 	}
-	
+
 	protected void addWorkspaceChangeEventListenr() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		this.removeModelProjectListener = new RemoveModelProjectListener(this);
-		workspace.addResourceChangeListener(removeModelProjectListener,IResourceChangeEvent.PRE_DELETE);
+		workspace.addResourceChangeListener(removeModelProjectListener, IResourceChangeEvent.PRE_DELETE);
 	}
-	
+
 	private void setSelectedProject(final IModelProject project) {
-		projectSelectionViewer.setSelection(new StructuredSelection(project),true);
+		projectSelectionViewer.setSelection(new StructuredSelection(project), true);
 	}
-	
+
 	public void populate(IModelProject modelProject) {
 		datatypeTreeViewer.populate(modelProject.getModelElementsByType(ModelType.Datatype));
 		functionBlockTreeViewer.populate(modelProject.getModelElementsByType(ModelType.Functionblock));
 		infoModelTreeViewer.populate(modelProject.getModelElementsByType(ModelType.InformationModel));
 	}
-	
+
 	public void refresh() {
 		for (IModelProject project : getModelProjects()) {
 			populate(project);
 		}
 	}
 
-	private ComboViewer createProjectSelectionViewer(Composite container, String labelStr) {
-		
+	private ComboViewer createProjectSelectionViewer(final Composite container, String labelStr) {
+		Button newProjectButton = new Button(container, SWT.NONE);
+		newProjectButton.setImage(ImageUtil.getImage("add_exc.gif"));
+		newProjectButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Selection:
+					WizardDialog wizardDialog = new WizardDialog(container.getShell(), new VortoProjectWizard());
+					if (wizardDialog.open() == Window.OK) {
+						projectSelectionViewer.setInput(getModelProjects());
+						VortoProjectWizardPage page = (VortoProjectWizardPage) wizardDialog.getCurrentPage();
+						IModelProject project = getModelProjectFromName(page.getProjName());
+						selectedProject = project;
+						projectSelectionViewer.setSelection(new StructuredSelection(project), true);
+					}
+					break;
+				}
+			}
+		});
+
+		FormData buttonFormdata = new FormData();
+		buttonFormdata.top = new FormAttachment(0, 0);
+		buttonFormdata.right = new FormAttachment(100, 0);
+		newProjectButton.setLayoutData(buttonFormdata);
+
+		Button deleteButton = new Button(container, SWT.NONE);
+		deleteButton.setImage(ImageUtil.getImage("delete_resource.gif"));
+		deleteButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				switch (e.type) {
+				case SWT.Selection:
+					if (selectedProject != null) {
+						if (!Display.getDefault().isDisposed()) {
+							Display.getDefault().syncExec(newDeleteProjectRunnable(selectedProject));
+						}
+					}
+					break;
+				}
+			}
+		});
+
+		FormData deleteButtonFormdata = new FormData();
+		deleteButtonFormdata.top = new FormAttachment(0, 0);
+		deleteButtonFormdata.right = new FormAttachment(newProjectButton, -10);
+		deleteButton.setLayoutData(deleteButtonFormdata);
+
+		ComboViewer comboViewer = new ComboViewer(container, SWT.READ_ONLY);
+
+		Combo combo = comboViewer.getCombo();
+
+		FormData viewerFormData = new FormData();
+		viewerFormData.top = new FormAttachment(newProjectButton, 10);
+		viewerFormData.left = new FormAttachment(0, 0);
+		viewerFormData.right = new FormAttachment(100, 0);
+		combo.setLayoutData(viewerFormData);
+
 		Label label = new Label(container, SWT.NONE);
 		label.setText(labelStr);
 
 		FormData labelFormData = new FormData();
-		labelFormData.top = new FormAttachment(0, 0);
+		labelFormData.bottom = new FormAttachment(comboViewer.getCombo(), -10);
 		labelFormData.left = new FormAttachment(0, 0);
 
 		label.setLayoutData(labelFormData);
 
-		ComboViewer comboViewer = new ComboViewer(container, SWT.READ_ONLY);
-		
-		Combo combo = comboViewer.getCombo();
-
-		FormData viewerFormData = new FormData();
-		viewerFormData.top = new FormAttachment(0, 0);
-		viewerFormData.left = new FormAttachment(label, 10);
-		viewerFormData.right = new FormAttachment(70,10);
-		combo.setLayoutData(viewerFormData);
-		
-		Button button = new Button(container, SWT.NONE);
-		button.setImage(ImageUtil.getImage("add_exc.gif"));
-		button.addListener(SWT.Selection, new Listener() {
-		      public void handleEvent(Event e) {
-		        switch (e.type) {
-		        case SWT.Selection:
-		        	WizardDialog wizardDialog = new WizardDialog(container.getShell(),new VortoProjectWizard());
-		        	if (wizardDialog.open() == Window.OK) {
-		        		projectSelectionViewer.setInput(getModelProjects());
-		        		VortoProjectWizardPage page = (VortoProjectWizardPage)wizardDialog.getCurrentPage();
-		        		IModelProject project = getModelProjectFromName(page.getProjName());
-		        		selectedProject = project;
-		        		projectSelectionViewer.setSelection(new StructuredSelection(project),true);
-		        	}
-		          break;
-		        }
-		      }
-		    });
-		
-		FormData buttonFormdata = new FormData();
-		buttonFormdata.top = new FormAttachment(0, 0);
-		buttonFormdata.left = new FormAttachment(combo, 10);
-		buttonFormdata.right = new FormAttachment(100, 0);
-
-		button.setLayoutData(buttonFormdata);
-				
 		return comboViewer;
 	}
-	
+
+	private Runnable newDeleteProjectRunnable(final IModelProject modelProject) {
+		return new Runnable() {
+			public void run() {
+				try {
+					MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(getShell(),
+							"Delete Project Confirmation",
+							"Are you sure you want to delete the Vorto project '" + modelProject.getProject().getName()
+									+ "' from the Workspace?",
+							"Delete project contents on disk (Cannot be undone)", false, null, null);
+
+					if (dialog.getReturnCode() == MessageDialogWithToggle.OK) {
+						boolean deleteContents = dialog.getToggleState();
+						WorkspaceJob job = newDeleteProjectJob(modelProject, deleteContents);
+						job.setRule(modelProject.getProject());
+						job.schedule();
+					}
+				} catch (Exception ex1) {
+					throw new RuntimeException(ex1);
+				}
+			}
+		};
+	}
+
+	private WorkspaceJob newDeleteProjectJob(final IModelProject modelProject, final boolean deleteContents) {
+		return new WorkspaceJob("Delete Vorto Project") {
+			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+				modelProject.getProject().delete(deleteContents, true, monitor);
+				return Status.OK_STATUS;
+			}
+		};
+	}
+
 	private IModelProject getModelProjectFromName(String projectName) {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		return new VortoModelProject(project, ModelParserFactory.getInstance().getModelParser());
@@ -241,38 +297,42 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	public void setFocus() {
 		// Set the focus
 	}
-	
-	public void removeProject(IModelProject modelProject) {
-		Collection<IModelProject> projects = this.getModelProjects();
-		projects.remove(modelProject);
-		
-		if (!Display.getDefault().isDisposed()) {
-			Display.getDefault().syncExec(new Runnable() {
 
-				public void run() {
-					try {
-						projectSelectionViewer.setInput(projects);
-						if (!projects.isEmpty()) {
-							setSelectedProject(projects.iterator().next());
-						} else {
-							populate(new NullModelProject());
-							selectedProject = null;
-						}
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+	public void removeProject(final IModelProject modelProject) {
+		final Collection<IModelProject> projects = this.getModelProjects();
+		projects.remove(modelProject);
+
+		if (!Display.getDefault().isDisposed()) {
+			Display.getDefault().syncExec(newUpdateControlsAfterRemoveRunnable(projectSelectionViewer, projects));
 		}
 	}
-	
+
+	private Runnable newUpdateControlsAfterRemoveRunnable(final ComboViewer projectSelectionViewer,
+			final Collection<IModelProject> projects) {
+		return new Runnable() {
+			public void run() {
+				try {
+					projectSelectionViewer.setInput(projects);
+					if (!projects.isEmpty()) {
+						setSelectedProject(projects.iterator().next());
+					} else {
+						populate(new NullModelProject());
+						selectedProject = null;
+					}
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
+	}
+
 	@Override
 	public void dispose() {
 		super.dispose();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(removeModelProjectListener);
 	}
-	
+
 	public IModelProject getSelectedProject() {
 		return this.selectedProject;
 	}
@@ -287,7 +347,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 						new VortoModelProject(projectInWorkspace, ModelParserFactory.getInstance().getModelParser()));
 			}
 		}
-		
+
 		return vortoModelProjects;
 	}
 
