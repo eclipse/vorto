@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.function;
 
+import java.util.List;
+
+import org.eclipse.vorto.repository.model.ServerResponseView;
 import org.eclipse.vorto.repository.model.UploadResultView;
 
 import com.google.common.base.Function;
@@ -26,7 +29,8 @@ public class StringToUploadResult implements Function<String, UploadResultView> 
 
 	@Override
 	public UploadResultView apply(String input) {
-		return gson.fromJson(input, UploadResultView.class);
+		List<UploadResultView> result = gson.fromJson(input, ServerResponseView.class).getObj();
+		return result.get(0);
 	}
 
 }

@@ -28,6 +28,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
 /**
  * 
@@ -62,7 +63,7 @@ public class DefaultMappingContext implements IMappingContext {
 				FunctionBlockMappingModel fbMappingModel = (FunctionBlockMappingModel)mappingModel;
 				for (MappingRule mappingRule : fbMappingModel.getRules()) {
 					for (Source ruleSource : mappingRule.getSources()) {
-						if (ruleSource instanceof OperationSource && ((OperationSource)ruleSource).getOperation().equals(operation)) {
+						if (ruleSource instanceof OperationSource && EcoreUtil.equals(((OperationSource)ruleSource).getOperation(),operation)) {
 							mappingRules.add(mappingRule);
 						}
 					}
@@ -99,6 +100,35 @@ public class DefaultMappingContext implements IMappingContext {
 	@Override
 	public List<MappingRule> getRulesByStereoType(String stereoTypeName) {
 		List<MappingRule> mappingRules = new ArrayList<>();
+		for (MappingModel mappingModel : allMappingModels) {
+			for (MappingRule rule : mappingModel.getRules()) {
+				if (rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equalsIgnoreCase(stereoTypeName)) {
+					mappingRules.add(rule);
+				}
+			}
+		}
 		return mappingRules;
+	}
+
+	@Override
+	public MappingRule getMappingRuleByOperationAndStereoType(Operation operation, String stereoTypeName) {
+		List<MappingRule> operationRules = this.getMappingRulesByOperation(operation);
+		for (MappingRule rule : operationRules) {
+			if (rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equalsIgnoreCase(stereoTypeName)) {
+				return rule;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public MappingRule getMappingRuleByPropertyAndStereoType(Property property, String stereoTypeName) {
+		List<MappingRule> propertyRules = this.getMappingRulesByProperty(property);
+		for (MappingRule rule : propertyRules) {
+			if (rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equalsIgnoreCase(stereoTypeName)) {
+				return rule;
+			}
+		}
+		return null;
 	}
 }

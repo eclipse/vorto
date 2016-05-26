@@ -139,3 +139,16 @@ services:
       SERVER_CONTEXTPATH: /vorto-jsonschema
       SERVER_HOST: vorto-jsonschema-generator-host
       SERVER_PORT: "9014"
+
+  vorto-aws-generator-host:
+    image: vorto/aws-generator
+    container_name: vorto-aws-generator
+    ports:
+      - 9015:9015
+    depends_on:
+      - vorto-repo-host
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-aws
+      SERVER_HOST: vorto-aws-generator-host
+      SERVER_PORT: "9015"

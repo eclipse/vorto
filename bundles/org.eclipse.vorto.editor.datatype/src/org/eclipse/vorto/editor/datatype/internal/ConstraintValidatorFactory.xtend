@@ -36,7 +36,9 @@ class ConstraintValidatorFactory {
 				case 'STRLEN' :
 					new ScalarValueValidator
 				case 'MIMETYPE' :
-					new RegexValueValidator 
+					new RegexValueValidator
+				case 'SCALING' :
+					new ScalarValueValidator 
 				default:
 					throw new IllegalArgumentException('Not supported constraint type')
 			}

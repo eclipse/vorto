@@ -24,6 +24,7 @@
 		<module>org.eclipse.vorto.codegen.service.latex</module>
 		<module>org.eclipse.vorto.codegen.service.jsonschema</module>
 		<module>org.eclipse.vorto.codegen.service.coap</module>
+		<module>org.eclipse.vorto.codegen.service.aws</module>
 	</modules>
 
 	<dependencies>

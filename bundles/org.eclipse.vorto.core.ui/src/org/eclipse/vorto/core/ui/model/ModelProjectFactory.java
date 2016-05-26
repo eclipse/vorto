@@ -16,6 +16,7 @@ package org.eclipse.vorto.core.ui.model;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.IWorkbench;
@@ -69,14 +70,14 @@ public class ModelProjectFactory {
 			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
 			ISelectionService selectionService = activeWorkbenchWindow.getSelectionService();
-			IStructuredSelection selection = null;
-			selection = (IStructuredSelection) selectionService.getSelection();
+			ISelection selection = null;
+			selection = selectionService.getSelection();
 
-			if (selection.isEmpty()) {
+			if (selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
 				return null;
 			}
 
-			return getModelElementSelection(selection);
+			return getModelElementSelection((IStructuredSelection)selection);
 		}
 
 		return null;

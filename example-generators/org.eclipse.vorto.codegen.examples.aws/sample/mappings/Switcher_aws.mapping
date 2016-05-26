@@ -1,0 +1,12 @@
+namespace examples.mappings.aws
+version 1.0.0
+displayname "Switcher AWS Mapping"
+description "Maps Switcher functionblock to AWS services"
+using com.mycompany.fb.Switcher;1.0.0
+functionblockmapping Switcher_aws {
+	targetplatform aws
+	from Switcher.operation.on to alexa with {command: "turn on ; power on ; switch on"}
+	from Switcher.operation.on to thingshadow with {updatable: "true"}
+	from Switcher.operation.off to alexa with {command: "turn off ; power off ; switch off"}
+	from Switcher.operation.off to thingshadow with {updatable: "true"}
+}	

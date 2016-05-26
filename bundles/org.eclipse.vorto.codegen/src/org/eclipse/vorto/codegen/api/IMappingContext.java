@@ -31,6 +31,10 @@ public interface IMappingContext {
 	
 	List<MappingRule> getMappingRulesByOperation(Operation operation);
 	
+	MappingRule getMappingRuleByOperationAndStereoType(Operation operation, String stereoTypeName);
+	
+	MappingRule getMappingRuleByPropertyAndStereoType(Property property, String stereoTypeName);
+	
 	List<MappingRule> getMappingRulesByProperty(Property property);
 	
 	/**

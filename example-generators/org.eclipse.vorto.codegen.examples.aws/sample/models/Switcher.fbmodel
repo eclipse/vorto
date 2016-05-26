@@ -1,0 +1,17 @@
+namespace com.mycompany.fb
+version 1.0.0
+displayname "Switcher"
+description "Function block model for Switcher"
+category demo	
+functionblock Switcher {
+	
+	status {
+		mandatory isOn as boolean
+	}
+
+	operations{
+		on()
+		off()
+		
+	}
+}	
