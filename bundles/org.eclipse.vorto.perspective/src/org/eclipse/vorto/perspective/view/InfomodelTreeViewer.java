@@ -94,7 +94,8 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 					}
 				}
 
-				manager.add(new ProjectAction("New Information Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+				manager.add(new ProjectAction("New Information Model", ImageUtil.getImage("add_exc.gif"),
+						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
 						WizardDialog wizardDialog = new WizardDialog(treeViewer.getControl().getShell(),
