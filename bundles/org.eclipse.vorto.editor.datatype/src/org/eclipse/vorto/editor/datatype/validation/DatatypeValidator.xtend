@@ -68,9 +68,6 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 		if (isCamelCasedName(name)) {
 			error(DatatypeSystemMessage.ERROR_ENUMNAME_INVALID_CAMELCASE, ent, ModelPackage.Literals.MODEL__NAME)
 		}
-		if(ent.getEnums().empty){
-			error(DatatypeSystemMessage.ERROR_ENUM_CANNOT_BE_EMPTY, ent, DatatypePackage.Literals.ENUM__ENUMS)
-		}
 	}
 	
 	@Check
