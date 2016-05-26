@@ -66,7 +66,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 		menuMgr.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
 				if (!treeViewer.getStructuredSelection().isEmpty()) {
-					IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
+					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Datatype) {
 						menuMgr.add(new ShareModelAction() {

@@ -61,7 +61,7 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 			public void menuAboutToShow(IMenuManager manager) {
 
 				if (!treeViewer.getStructuredSelection().isEmpty()) {
-					IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
+					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.InformationModel) {
 						MenuManager generatorMenuMgr = new MenuManager("Generate Code");

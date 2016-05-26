@@ -37,21 +37,21 @@ import org.eclipse.vorto.perspective.labelprovider.DefaultTreeModelLabelProvider
 public abstract class ModelTreeViewer {
 
 	protected ModelProjectTreeViewer treeViewer;
-	
+
 	protected ILocalModelWorkspace localModelWorkspace;
-	
+
 	public ModelTreeViewer(Composite parent, ILocalModelWorkspace localModelWorkspace) {
-		this.treeViewer = createTreeViewer(parent,localModelWorkspace);
+		this.treeViewer = createTreeViewer(parent, localModelWorkspace);
 		this.localModelWorkspace = localModelWorkspace;
 		init();
 		initContextMenu();
 	}
 
 	protected abstract String getLabel();
-	
+
 	protected abstract void initContextMenu();
 
-	private ModelProjectTreeViewer createTreeViewer(Composite parent,ILocalModelWorkspace localModelBrowser) {
+	private ModelProjectTreeViewer createTreeViewer(Composite parent, ILocalModelWorkspace localModelBrowser) {
 		Composite composite = new Composite(parent, SWT.BORDER);
 
 		FormLayout layout = new FormLayout();
@@ -61,7 +61,7 @@ public abstract class ModelTreeViewer {
 		composite.setLayout(layout);
 
 		Label label = new Label(composite, SWT.NONE);
-		label.setBackground(new org.eclipse.swt.graphics.Color(Display.getCurrent(),58,90,130));
+		label.setBackground(new org.eclipse.swt.graphics.Color(Display.getCurrent(), 58, 90, 130));
 		label.setForeground(new org.eclipse.swt.graphics.Color(Display.getCurrent(), 255, 255, 255));
 		label.setText(getLabel());
 
@@ -72,7 +72,8 @@ public abstract class ModelTreeViewer {
 
 		label.setLayoutData(lblFormData);
 
-		ModelProjectTreeViewer treeViewer = new ModelProjectTreeViewer(composite, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL,localModelBrowser);
+		ModelProjectTreeViewer treeViewer = new ModelProjectTreeViewer(composite,
+				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL, localModelBrowser);
 		FormData viewerFormData = new FormData();
 		viewerFormData.top = new FormAttachment(label, 10);
 		viewerFormData.left = new FormAttachment(0, 0);
@@ -90,20 +91,24 @@ public abstract class ModelTreeViewer {
 
 		return treeViewer;
 	}
-	
+
 	public void populate(Collection<IModelElement> modelElements) {
 		if (!Display.getDefault().isDisposed()) {
-			Display.getDefault().syncExec(new Runnable() {
-
-				public void run() {
-					try {
-						treeViewer.setInput(modelElements);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+			 Display.getDefault().syncExec(newViewUpdateRunnable(treeViewer, modelElements));
 		}
+	}
+
+	private Runnable newViewUpdateRunnable(final ModelProjectTreeViewer treeViewer,
+			final Collection<IModelElement> modelElements) {
+		return new Runnable() {
+			public void run() {
+				try {
+					treeViewer.setInput(modelElements);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		};
 	}
 
 	protected void init() {
