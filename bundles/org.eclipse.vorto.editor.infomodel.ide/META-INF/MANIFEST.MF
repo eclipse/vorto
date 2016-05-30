@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.eclipse.vorto.editor.infomodel.ide
+Bundle-Vendor: My Company
+Bundle-Version: 0.4.0.qualifier
+Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.vorto.editor.infomodel,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.vorto.editor.infomodel.ide.contentassist.antlr.internal,
+ org.eclipse.vorto.editor.infomodel.ide.contentassist.antlr
+Import-Package: org.eclipse.vorto.editor.infomodel.services

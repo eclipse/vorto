@@ -16,16 +16,18 @@
 package org.eclipse.vorto.editor.infomodel.generator
 
 import org.eclipse.emf.ecore.resource.Resource
-import org.eclipse.xtext.generator.IFileSystemAccess
-import org.eclipse.xtext.generator.IGenerator
+import org.eclipse.xtext.generator.AbstractGenerator
+import org.eclipse.xtext.generator.IFileSystemAccess2
+import org.eclipse.xtext.generator.IGeneratorContext
 
 /**
  * Generates code from your model files on save.
  * 
  * see http://www.eclipse.org/Xtext/documentation.html#TutorialCodeGeneration
  */
-class InformationModelGenerator implements IGenerator {
-
-	override void doGenerate(Resource resource, IFileSystemAccess fsa) {
+class InformationModelGenerator extends AbstractGenerator {
+	
+	override doGenerate(Resource input, IFileSystemAccess2 fsa, IGeneratorContext context) {
+//		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
 }
