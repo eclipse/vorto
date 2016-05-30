@@ -164,7 +164,7 @@ class FbValidatorTest extends AbstractXtextTests {
 		enum1.setName("Abc");
 		
 		tester.validator().checkEnumName_Literal(enum1);
-		tester.diagnose().assertErrorContains(DatatypeSystemMessage.ERROR_ENUM_CANNOT_BE_EMPTY);
+		tester.diagnose().assertOK;
 		
 		var lit = getDTFactoryInstance().createEnumLiteral;
 		lit.name = "test"
