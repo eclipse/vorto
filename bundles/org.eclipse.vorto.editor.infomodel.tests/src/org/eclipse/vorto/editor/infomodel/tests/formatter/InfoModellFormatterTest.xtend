@@ -28,6 +28,7 @@ import org.eclipse.xtext.resource.XtextResource
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.junit.Ignore
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(InformationModelInjectorProvider))
@@ -40,7 +41,8 @@ class InfoModellFormatterTest extends AbstractXtextTests {
 	def static void initializeModel() {
 		InformationModelPackageImpl.init();
 	}
-		
+	
+	@Ignore
 	@Test
 	def void testFormattingForBasicBlock() {
 		val expectedText = getFormattedColorLamp
