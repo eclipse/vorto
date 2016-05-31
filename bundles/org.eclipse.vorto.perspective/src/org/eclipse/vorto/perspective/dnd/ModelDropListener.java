@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -26,22 +27,22 @@ import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.view.ModelProjectTreeViewer;
 
 /**
- * A drop listener that can be configured with :
- * - An allowed target : the target class allowed for this drop listener
- * - Drop actions that consist of a validator and the actual action to be performed if 
- * the validator allows the drop.
+ * A drop listener that can be configured with : - An allowed target : the
+ * target class allowed for this drop listener - Drop actions that consist of a
+ * validator and the actual action to be performed if the validator allows the
+ * drop.
  *
  */
 public class ModelDropListener extends ViewerDropAdapter {
 
 	private Class<?> allowedTarget;
-	
+
 	private Collection<DropSourceValidatorAndAction> dropActors = new ArrayList<DropSourceValidatorAndAction>();
-	
+
 	public ModelDropListener(Viewer viewer) {
 		super(viewer);
 	}
-	
+
 	public ModelDropListener setAllowedTarget(Class<?> allowedTarget) {
 		this.allowedTarget = allowedTarget;
 		return this;
@@ -54,31 +55,43 @@ public class ModelDropListener extends ViewerDropAdapter {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public boolean performDrop(Object data) {
 		Object target = getTarget();
 
 		if (data instanceof IStructuredSelection) {
-			Object droppedResource = ((IStructuredSelection) data)
-					.getFirstElement();
+			Object droppedResource = ((IStructuredSelection) data).getFirstElement();
 			IModelElement result = null;
-			for(DropSourceValidatorAndAction dropActor : dropActors) {
+			for (DropSourceValidatorAndAction dropActor : dropActors) {
 				if (dropActor.validator.allow(target, droppedResource)) {
 					result = dropActor.action.performDrop(target, droppedResource);
 					break;
 				}
 			}
-			
+
 			if (result != null) {
-				ModelProjectTreeViewer viewer = (ModelProjectTreeViewer)this.getViewer();
-				viewer.getLocalModelWorkspace().refresh();
-				viewer.expandToLevel(result, 2);
-			
-			return true;
+				ModelProjectTreeViewer viewer = (ModelProjectTreeViewer) this.getViewer();
+
+				viewer.getLocalModelWorkspace().refreshCurrent();
+
+				IModelElement targetModelElement = findTarget((IModelElement) target,
+						(Collection<IModelElement>) viewer.getInput());
+				if (targetModelElement != null) {
+					viewer.expandToLevel(targetModelElement, 1);
+				}
+
+				return true;
 			}
-			
+
 		}
-		
+
 		return false;
+	}
+
+	private IModelElement findTarget(IModelElement target, Collection<IModelElement> inputModelElements) {
+		return inputModelElements.stream().filter((IModelElement e) -> {
+			return e.getId().equals(target.getId());
+		}).findFirst().orElse(null);
 	}
 
 	private Object getTarget() {
@@ -86,23 +99,23 @@ public class ModelDropListener extends ViewerDropAdapter {
 		if (target == null) {
 			Viewer viewer = this.getViewer();
 			if (viewer instanceof ModelProjectTreeViewer) {
-				target = ((ModelProjectTreeViewer)viewer).getLocalModelWorkspace().getProjectBrowser().getSelectedProject();
+				target = ((ModelProjectTreeViewer) viewer).getLocalModelWorkspace().getProjectBrowser()
+						.getSelectedProject();
 			}
 		}
-		
+
 		return target;
 	}
 
-	public boolean validateDrop(Object target, int operation,
-			TransferData transferType) {
+	public boolean validateDrop(Object target, int operation, TransferData transferType) {
 		return allowedTarget == null || allowedTarget.isInstance(target);
 	}
 
 	private class DropSourceValidatorAndAction {
 		IDropValidator validator;
 		IDropAction action;
-		public DropSourceValidatorAndAction(IDropValidator validator,
-				IDropAction action) {
+
+		public DropSourceValidatorAndAction(IDropValidator validator, IDropAction action) {
 			this.validator = validator;
 			this.action = action;
 		}
