@@ -71,9 +71,7 @@ public class ModelDropListener extends ViewerDropAdapter {
 
 			if (result != null) {
 				ModelProjectTreeViewer viewer = (ModelProjectTreeViewer) this.getViewer();
-
 				viewer.getLocalModelWorkspace().refreshCurrent();
-
 				IModelElement targetModelElement = findTarget((IModelElement) target,
 						(Collection<IModelElement>) viewer.getInput());
 				if (targetModelElement != null) {
