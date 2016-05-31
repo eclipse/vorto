@@ -87,9 +87,12 @@ public class ModelDropListener extends ViewerDropAdapter {
 	}
 
 	private IModelElement findTarget(IModelElement target, Collection<IModelElement> inputModelElements) {
-		return inputModelElements.stream().filter((IModelElement e) -> {
-			return e.getId().equals(target.getId());
-		}).findFirst().orElse(null);
+		for(IModelElement e : inputModelElements) {
+			if (e.getId().equals(target.getId())) {
+				return e;
+			}
+		}
+		return null;
 	}
 
 	private Object getTarget() {
