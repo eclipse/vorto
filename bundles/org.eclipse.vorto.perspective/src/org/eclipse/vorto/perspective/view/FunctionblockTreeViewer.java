@@ -88,6 +88,12 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 								return model;
 							}
 						});
+						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+							@Override
+							public void doAction() {
+								openMappingWizard();
+							}
+						});
 					}
 				}
 

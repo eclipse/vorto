@@ -156,8 +156,6 @@ public class VortoProjectWizardPage extends AbstractWizardPage implements IProje
 		String projectName = getProjectName();
 		result &= validateStrExist(projectName,
 				"Project name must be specified");
-		result &= validateStrExist(txtProjectName.getText(),
-				"Project name must be specified");
 		result &= validateExistingSameProjectName(projectName);
 		result &= checkProjectName(projectName);
 		return result;

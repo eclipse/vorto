@@ -15,12 +15,8 @@
 
 package org.eclipse.vorto.wizard;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -30,11 +26,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 
-public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
+public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements IModelProjectContext {
 
 	private IModelProject modelProject;
 	
@@ -44,11 +39,14 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 	}
 
 	
-	private Text txtModelName;
-	private Text txtVersion;
-	private Text txtDescription;
-	private String workspaceLocation;
+	protected Text txtModelName;
+	protected Text txtVersion;
+	protected Text txtDescription;
+	protected String workspaceLocation;
 	protected Composite topContainer;
+	protected Group grp;
+	
+	protected Text txtPlatform;
 
 	public void createControl(Composite parent) {
 		topContainer = new Composite(parent, SWT.NULL);
@@ -56,12 +54,12 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 		setControl(topContainer);
 		topContainer.setLayout(new GridLayout(1, false));
 
-		Group grp = new Group(topContainer, SWT.NONE);
+		grp = new Group(topContainer, SWT.NONE);
 		grp.setText(getGroupTitle());
 		grp.setLayout(new GridLayout(2, false));
 		GridData gridGroup = new GridData(SWT.LEFT, SWT.CENTER,
 				false, false, 1, 1);
-		gridGroup.heightHint = 134;
+		gridGroup.heightHint = 145;
 		gridGroup.widthHint = 570;
 		grp.setLayoutData(gridGroup);
 
@@ -82,6 +80,30 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 
 			}
 		});
+
+		Label labelPlatform = new Label(grp, SWT.NONE);
+		GridData labelLayoutData = new GridData(SWT.RIGHT, SWT.CENTER,
+				false, false, 1, 1);
+		labelPlatform.setLayoutData(labelLayoutData);
+		labelPlatform.setText("Platform");
+		labelPlatform.setVisible(isMappingModelWizard());
+		labelLayoutData.exclude = !isMappingModelWizard();
+		
+		txtPlatform = new Text(grp, SWT.BORDER);
+		GridData gridTxtPlatform = new GridData(SWT.FILL, SWT.CENTER,
+				false, false, 1, 1);
+		gridTxtPlatform.widthHint = 400;
+		txtPlatform.setLayoutData(gridTxtPlatform);
+		txtPlatform.setVisible(isMappingModelWizard());
+		gridTxtPlatform.exclude = !isMappingModelWizard();
+		txtPlatform.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				modelNameChanged();
+				dialogChanged();
+				
+			}
+		});
+		
 
 		Label lblVersion = new Label(grp, SWT.NONE);
 		lblVersion.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
@@ -117,14 +139,10 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 		setControl(topContainer);
 	}
 
-	private void initialize() {
+	protected void initialize() {
 		txtModelName.setText(getDefaultModelName());
 		txtVersion.setText(getDefaultVersion());
-		/*txtProjectName.setText(getDefaultModelName());
-		txtWorkspaceLocation.setText(getWorkspaceLocation() + "/"
-				+ getDefaultModelName());*/
 		txtDescription.setText(getDefaultDescription() + getDefaultModelName());
-
 	}
 
 	
@@ -155,18 +173,29 @@ public abstract class ModelBaseWizardPage extends AbstractModelWizardPage  {
 		return result;
 	}
 
-	private void modelNameChanged() {
+	protected void modelNameChanged() {
 		String modelName = getModelName();
 		txtDescription.setText(getDefaultDescription() + modelName);
 	}
 
-	@Override
 	public String getWorkspaceLocation() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		if (workspaceLocation == null) {
 			workspaceLocation = workspace.getRoot().getLocation().toString();
 		}
 		return workspaceLocation;
+	}
+
+	protected boolean isMappingModelWizard() {
+		return false;
+	}
+
+	public IModelProject getModelProject() {
+		return modelProject;
+	}
+
+	public void setModelProject(IModelProject modelProject) {
+		this.modelProject = modelProject;
 	}
 
 	@Override

@@ -16,9 +16,7 @@ package org.eclipse.vorto.perspective.contentprovider;
 
 import java.util.Collection;
 
-import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 
