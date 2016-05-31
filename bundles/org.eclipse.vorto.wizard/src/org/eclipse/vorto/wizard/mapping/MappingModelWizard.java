@@ -30,21 +30,24 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
-import org.eclipse.vorto.wizard.infomodel.InfomodelTemplateFileContent;
 
 public class MappingModelWizard extends AbstractVortoWizard implements INewWizard {
 	
 	private MappingModellWizardPage iotWizardPage;
 
-	private String modelFolder = "informationmodels/";
+	private String modelFolder = "mappings/";
 
 	private IModelProject modelProject;
 	
-	public MappingModelWizard(IModelProject modelProject) {
+	private ModelId modelId;
+	
+	public MappingModelWizard(IModelProject modelProject, ModelId modelId) {
 		this.modelProject = modelProject;
+		this.modelId = modelId;
 		setNeedsProgressMonitor(true);
 	}
 
@@ -57,15 +60,14 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 	}
 
 	public boolean performFinish() {
-		
-		new ModelGenerationTask(ModelType.Mapping.getExtension(), new InfomodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
+		new ModelGenerationTask(ModelType.Mapping.getExtension(), new MappingModelTemplateFileContent(modelId), modelFolder).generate(iotWizardPage,
 				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 
-		openFBModelWithDefaultEditor();
+		openModelWithDefaultEditor();
 		return true;
 	}
 
-	private void openFBModelWithDefaultEditor() {
+	private void openModelWithDefaultEditor() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());

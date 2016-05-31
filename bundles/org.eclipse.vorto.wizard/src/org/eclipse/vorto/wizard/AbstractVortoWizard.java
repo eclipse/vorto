@@ -24,7 +24,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.vorto.codegen.ui.display.IMessageDisplay;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.WizardUtil;
-import org.eclipse.vorto.core.ui.model.IModelProject;
 
 public abstract class AbstractVortoWizard extends Wizard implements INewWizard,
 		IExecutableExtension {

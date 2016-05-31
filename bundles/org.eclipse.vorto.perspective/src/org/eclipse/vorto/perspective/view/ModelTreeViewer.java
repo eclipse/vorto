@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -30,9 +31,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.contentprovider.DefaultTreeModelContentProvider;
 import org.eclipse.vorto.perspective.labelprovider.DefaultTreeModelLabelProvider;
+import org.eclipse.vorto.wizard.mapping.MappingModelWizard;
 
 public abstract class ModelTreeViewer {
 
@@ -104,6 +107,15 @@ public abstract class ModelTreeViewer {
 				}
 			});
 		}
+	}
+
+	protected void openMappingWizard() {
+		IModelElement firstElement = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
+		ModelId modelId = firstElement.getId();
+		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getShell(), new MappingModelWizard(localModelWorkspace.getProjectBrowser().getSelectedProject(), modelId));
+		dialog.create();
+		dialog.open();
 	}
 
 	protected void init() {
