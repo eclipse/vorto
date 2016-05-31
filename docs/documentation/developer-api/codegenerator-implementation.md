@@ -28,10 +28,7 @@ You have started your IDE.
 2. In the field **Project name**, enter a project name.  
    ![new Code Generator plug-in project]({{base}}/img/documentation/vorto_new_codegen_project.png)
 3. Click **Finish**.  
-   The next sb dialog opens.
-4. Enter relevant data into the fields accrording to your needs and click **Finish**.
-5. If the **Open Assiciated Perspective?** dialog opens click **YES** to open the **Plug-in Development** perspective.  
-   The new plug-in project is now generated. All dependencies required by the new project, as well as default classes and configuration files are generated.  
+4. The new plug-in projects **org.eclipse.vorto.example.mygenerator** and **org.eclipse.vorto.example.service** are now generated. All dependencies required by the new project, as well as default classes and configuration files are generated.  
 
    ![Default Code Generator plug-in project]({{base}}/img/documentation/vorto_codegen_default.png)
 
