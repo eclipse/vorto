@@ -83,6 +83,16 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
 			<version>${project.version}</version>
 		</dependency>

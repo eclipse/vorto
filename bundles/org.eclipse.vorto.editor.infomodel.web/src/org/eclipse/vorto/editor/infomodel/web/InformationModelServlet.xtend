@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.servlet.annotation.WebServlet
 import org.eclipse.xtext.web.servlet.XtextServlet
+import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl
+import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup
 
 /**
  * Deploy this class into a servlet container to enable DSL-specific services.
@@ -36,7 +38,9 @@ class InformationModelServlet extends XtextServlet {
 	override init() {
 		super.init()
 		val Provider<ExecutorService> executorServiceProvider = [Executors.newCachedThreadPool => [executorServices += it]]
-		new InformationModelWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration()
+		InformationModelPackageImpl.init
+		FunctionblockStandaloneSetup.doSetup
+		new InformationModelWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration()		
 	}
 	
 	override destroy() {
