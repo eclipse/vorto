@@ -16,7 +16,6 @@
 
 	<properties>
 		<test.project>org.eclipse.vorto.editor.infomodel.tests</test.project>
-		<xtextVersion>2.9.0</xtextVersion>
 	</properties>
 
 	<build>
@@ -57,12 +56,12 @@
 					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>org.eclipse.xtext.xtext.generator</artifactId>
-						<version>${xtextVersion}</version>
+						<version>${xtext.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>org.eclipse.xtext.xbase</artifactId>
-						<version>${xtextVersion}</version>
+						<version>${xtext.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.vorto</groupId>
