@@ -26,7 +26,6 @@ import org.eclipse.vorto.perspective.dnd.dropaction.AddLocalReferenceDropAction;
 import org.eclipse.vorto.perspective.dnd.dropaction.AddSharedReferenceDropAction;
 import org.eclipse.vorto.perspective.dnd.dropaction.RepositoryResourceDropAction;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.DatatypeValidator;
-import org.eclipse.vorto.perspective.dnd.dropvalidator.ModelTypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassModelTypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassSourceClassValidator;
 

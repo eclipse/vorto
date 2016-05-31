@@ -29,6 +29,11 @@ public interface ILocalModelWorkspace {
 	 * refreshes the model browser by reloading all models for the selected project
 	 */
 	void refresh();
+	
+	/**
+	 * Only refreshes the current selected project
+	 */
+	void refreshCurrent();
 			
 	public interface IModelProjectBrowser {
 				
