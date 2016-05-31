@@ -29,7 +29,7 @@ import com.google.common.base.Strings;
 public abstract class AbstractWizardPage extends WizardPage {
 
 	public static final String PROJECTNAME_REGEX = "[^a-zA-Z0-9 \\._]";
-	public static final String FUNCTIONBLOCK_REGEX = "[A-Z][a-zA-Z0-9_]*$";
+	public static final String MODEL_NAME_REGEX = "[A-Z][a-zA-Z0-9_]*$";
 	public static final String VERSION_REGEX = "^\\d+\\.\\d+\\.\\d+(-\\w+)*$";
 
 	protected AbstractWizardPage(String pageName) {
@@ -53,7 +53,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	}
 
 	protected boolean checkModelName(String modelName) {
-		if (checkForRegexPattern(modelName, false, FUNCTIONBLOCK_REGEX)) {
+		if (checkForRegexPattern(modelName, false, MODEL_NAME_REGEX)) {
 			setErrorMessage("Model name should start with a capital letter and must not contain any special characters.");
 			return false;
 		}
