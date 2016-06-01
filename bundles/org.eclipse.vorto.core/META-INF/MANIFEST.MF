@@ -26,5 +26,6 @@ Export-Package: org.eclipse.vorto.core.api.model.datatype,
  org.eclipse.vorto.core.api.model.model.impl,
  org.eclipse.vorto.core.api.model.model.util,
  org.eclipse.vorto.core.api.repository
-Import-Package: org.eclipse.core.runtime
+Import-Package: org.apache.commons.lang3,
+ org.eclipse.core.runtime
 
