@@ -1,6 +1,5 @@
 /*******************************************************************************
-/*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ *  Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,8 +15,11 @@
 
 package org.eclipse.vorto.core.api.model.model;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class ModelId implements Comparable<ModelId> {
 
+	private static final String UNDERSCORE = "_";
 	private ModelType modelType;
 	private String name;
 	private String namespace;
@@ -125,6 +127,10 @@ public class ModelId implements Comparable<ModelId> {
 	}
 
 	public String getFileName() {
-		return namespace + "_"+name + getModelType().getExtension();
+		return namespace + UNDERSCORE + name + UNDERSCORE + delimitVersion(version) +  getModelType().getExtension();
+	}
+
+	private String delimitVersion(String version) {
+		return StringUtils.replace(version, ".", UNDERSCORE);
 	}
 }
