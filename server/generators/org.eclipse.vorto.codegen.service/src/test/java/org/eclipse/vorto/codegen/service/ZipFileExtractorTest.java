@@ -14,13 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
@@ -47,12 +44,4 @@ public class ZipFileExtractorTest {
 		assertNotNull(mappingFileExtractor.extract());
 	}
 	
-	@Test
-	public void testCreateMappingContextFromZipFileResolvedReferences() throws Exception {	
-		MappingZipFileExtractor mappingFileExtractor = new MappingZipFileExtractor(IOUtils.toByteArray(new ClassPathResource("mappings.zip").getInputStream()));
-		IMappingContext mappingContext = mappingFileExtractor.extract();
-		StatusSource statusSource = (StatusSource)mappingContext.getAllRules().get(1).getSources().get(0);
-		assertNotNull(statusSource.getProperty());
-		assertEquals("acceleration",statusSource.getProperty().getName());
-	}
 }

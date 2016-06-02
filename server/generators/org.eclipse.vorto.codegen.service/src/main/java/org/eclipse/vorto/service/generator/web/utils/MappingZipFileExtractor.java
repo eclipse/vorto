@@ -15,13 +15,14 @@
 package org.eclipse.vorto.service.generator.web.utils;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
-import org.eclipse.vorto.codegen.api.IMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -44,7 +45,7 @@ public class MappingZipFileExtractor extends AbstractZipFileExtractor {
 		super(zipFile);
 	}
 	
-	public IMappingContext extract() {
+	public InvocationContext extract() {
 		FunctionblockPackage.eINSTANCE.eClass();
 		InformationModelPackage.eINSTANCE.eClass();
 		MappingPackage.eINSTANCE.eClass();
@@ -58,7 +59,8 @@ public class MappingZipFileExtractor extends AbstractZipFileExtractor {
 		XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 		
-		DefaultMappingContext mappingContext = new DefaultMappingContext();
+		List<MappingModel> mappingModels = new ArrayList<MappingModel>();
+		
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
 				if (entry.getName().endsWith(".mapping")) {
@@ -76,9 +78,9 @@ public class MappingZipFileExtractor extends AbstractZipFileExtractor {
 		EcoreUtil2.resolveAll(resourceSet);
 		for (Resource resource : resourceSet.getResources()) {
 			if (resource.getContents().get(0) instanceof MappingModel) {
-				mappingContext.addMappingModel((MappingModel)resource.getContents().get(0));
+				mappingModels.add((MappingModel)resource.getContents().get(0));
 			}
 		}
-		return mappingContext;
+		return new InvocationContext(mappingModels);
 	}
 }
