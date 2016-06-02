@@ -16,12 +16,13 @@
 package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class POMFbTemplate implements IFileTemplate<FunctionblockModel> {
 	
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context, InvocationContext invocationContext) {
 		var wrappedfbm= new FbModelWrapper(context)
 		'''
 <project xmlns="http://maven.apache.org/POM/4.0.0" 

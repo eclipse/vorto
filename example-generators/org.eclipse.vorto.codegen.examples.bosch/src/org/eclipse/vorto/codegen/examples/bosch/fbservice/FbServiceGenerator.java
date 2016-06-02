@@ -19,8 +19,8 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.DummyBaseDriverGenerator;
 import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.FbModelAPIGenerator;
@@ -43,28 +43,28 @@ public class FbServiceGenerator implements IVortoCodeGenerator {
 	private static final String LATEST_M2M_PLATFORM_VERSION = null;
 	
 	@Override
-	public IGenerationResult generate(InformationModel infomodel, IMappingContext mappingContext) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) {
 
 		GenerationResultZip zipOutput = new GenerationResultZip(infomodel,getServiceKey());
 		
 		FunctionblockModel fbm = infomodel.getProperties().get(0).getType();
 
 		try {
-			new FbModelAPIGenerator().generate(infomodel, mappingContext, zipOutput);
+			new FbModelAPIGenerator().generate(infomodel, invocationContext, zipOutput);
 		} catch (Exception ex) {
 			// do not stop generation
 			ex.printStackTrace();
 		}
 
 		try {
-			new DummyBaseDriverGenerator().generate(fbm, mappingContext, zipOutput);
+			new DummyBaseDriverGenerator().generate(fbm, invocationContext, zipOutput);
 		} catch (Exception ex) {
 			// do not stop generation
 			ex.printStackTrace();
 		}
 
 		try {
-			generateFunctionBlockImplementationProject(fbm, mappingContext, zipOutput);
+			generateFunctionBlockImplementationProject(fbm, invocationContext, zipOutput);
 		} catch (Exception ex) {
 			// do not stop generation
 			ex.printStackTrace();
@@ -74,7 +74,7 @@ public class FbServiceGenerator implements IVortoCodeGenerator {
 	}
 
 	private void generateFunctionBlockImplementationProject(
-			FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter zipOutput) {
+			FunctionblockModel fbm, InvocationContext mappingContext, IGeneratedWriter zipOutput) {
 
 		/**
 		 * GENERATOR INVOCATION OF IMPL PROJECT

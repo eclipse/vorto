@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.examples.webui.tasks.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -30,7 +31,7 @@ class ControllersScriptFileTemplate implements IFileTemplate<InformationModel> {
 		return "webdevice.example/src/main/resources/static/script";
 	}
 
-	override getContent(InformationModel infoModel) {
+	override getContent(InformationModel infoModel,InvocationContext invocationContext) {
 		return '''
 		var deviceAppControllers = angular.module('deviceAppControllers', []);
 		

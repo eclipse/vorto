@@ -32,8 +32,8 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IFileTemplate;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
 
 /**
@@ -89,7 +89,7 @@ public class EclipseProjectGenerator<Context> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void generate(Context context, IMappingContext mappingContext, IProgressMonitor monitor) {
+	public void generate(Context context, InvocationContext invocationContext, IProgressMonitor monitor) {
 		project = getWorkspace().getProject(locationW.getProjectName());
 
 		this.tasks
@@ -102,7 +102,7 @@ public class EclipseProjectGenerator<Context> {
 				project.open(monitor);
 
 				for (ICodeGeneratorTask<Context> task : tasks) {
-					task.generate(context,mappingContext, new ProjectFileOutputter(project));
+					task.generate(context,invocationContext, new ProjectFileOutputter(project));
 				}
 
 				configuration.configure(project);
@@ -112,7 +112,7 @@ public class EclipseProjectGenerator<Context> {
 			}
 		} else {
 			for (ICodeGeneratorTask<Context> task : tasks) {
-				task.generate(context,mappingContext, new ProjectFileOutputter(project));
+				task.generate(context,invocationContext, new ProjectFileOutputter(project));
 			}
 		}
 

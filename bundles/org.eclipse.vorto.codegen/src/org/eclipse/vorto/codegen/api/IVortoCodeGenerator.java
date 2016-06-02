@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
@@ -26,12 +27,12 @@ public interface IVortoCodeGenerator {
 	static final String GENERATOR_ID = "org.eclipse.vorto.codegen.org_eclipse_vorto_codegen_Generators";
 	
 	/**
-	 * 
-	 * @param model
-	 * @param mappingContext
+	 * Converts the given information models into platform specific code
+	 * @param model information model containing functionblocks and datatype metadata of a specific device
+	 * @param context generation invocation context, e.g. mapping rules or invocation parameters
 	 * @return
 	 */
-	IGenerationResult generate(InformationModel model, IMappingContext mappingContext);
+	IGenerationResult generate(InformationModel model, InvocationContext context);
 	
 	/**
 	 * 

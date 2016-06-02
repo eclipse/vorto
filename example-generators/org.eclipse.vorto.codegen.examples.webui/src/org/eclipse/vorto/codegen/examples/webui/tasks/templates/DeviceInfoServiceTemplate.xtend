@@ -16,13 +16,14 @@ package org.eclipse.vorto.codegen.examples.webui.tasks.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 class DeviceInfoServiceTemplate implements IFileTemplate<InformationModel> {
 	
-	override getContent(InformationModel model) {
+	override getContent(InformationModel model,InvocationContext invocationContext) {
 		'''
 		package webdevice.example.web;
 		

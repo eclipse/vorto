@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -32,7 +33,7 @@ class ReviewInformationModelTemplate implements ITemplate<InformationModel>{
 		this.fbPropertyTemplate = fbPropertyTemplate;
 	}
 	
-	override getContent(InformationModel im) {
+	override getContent(InformationModel im,InvocationContext invocationContext) {
 		'''
 			\documentclass[10pt]{article}
 			
@@ -53,18 +54,18 @@ class ReviewInformationModelTemplate implements ITemplate<InformationModel>{
 				\section{Information Model Specification}
 				«im.description»\\\\
 				«FOR fbProperty : im.properties»
-					«fbPropertyTemplate.getContent(fbProperty)»
+					«fbPropertyTemplate.getContent(fbProperty,invocationContext)»
 				«ENDFOR»
 				
 				\section{Functionblock Specification}
 				«FOR fbProperty : im.properties»
-					«fbTemplate.getContent(fbProperty.type)»
+					«fbTemplate.getContent(fbProperty.type,invocationContext)»
 				«ENDFOR»
 				
 				\section{Datatype Specification}
 				«FOR fbProperty : im.properties»
 					«FOR type : ModelHelper.getReferencedEntities(fbProperty.type.functionblock)»
-						«entityTemplate.getContent(type)»
+						«entityTemplate.getContent(type,invocationContext)»
 					«ENDFOR»
 				«ENDFOR»
 			\end{document}

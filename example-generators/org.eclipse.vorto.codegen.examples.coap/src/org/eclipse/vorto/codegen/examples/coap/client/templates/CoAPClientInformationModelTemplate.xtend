@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -44,7 +45,7 @@ class CoAPClientInformationModelTemplate implements ITemplate<InformationModel>{
 			this.setterTemplate = setterTemplate
 	}
 	
-	override getContent(InformationModel im) {
+	override getContent(InformationModel im,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************
@@ -71,7 +72,7 @@ class CoAPClientInformationModelTemplate implements ITemplate<InformationModel>{
 				String BASE_URI = "coap://localhost:5683";
 				
 				«FOR fbProperty : im.properties»
-					«propertyTemplate.getContent(fbProperty)»
+					«propertyTemplate.getContent(fbProperty,invocationContext)»
 
 				«ENDFOR»
 
@@ -86,9 +87,9 @@ class CoAPClientInformationModelTemplate implements ITemplate<InformationModel>{
 				«ENDFOR»
 				}
 				«FOR fbProperty : im.properties»
-					«getterTemplate.getContent(fbProperty)»
+					«getterTemplate.getContent(fbProperty,invocationContext)»
 
-					«setterTemplate.getContent(fbProperty)»
+					«setterTemplate.getContent(fbProperty,invocationContext)»
 
 				«ENDFOR»
 			}

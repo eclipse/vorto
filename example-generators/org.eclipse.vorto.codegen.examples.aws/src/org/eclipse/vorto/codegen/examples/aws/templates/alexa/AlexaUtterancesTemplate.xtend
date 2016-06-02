@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.aws.templates.alexa
 
-import org.eclipse.vorto.codegen.api.IMappingContext
-import org.eclipse.vorto.codegen.api.utils.MappingRuleUtils
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -23,41 +23,29 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
-		
-	new (IMappingContext mappingContext) {
-		super(mappingContext)
-	}
-	
+			
 	override getFileName(InformationModel context) {
 		'''«context.name.toLowerCase»Utterances.txt'''
 	}
 	
-	override getContent(InformationModel context) {
+	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		«FOR fbProperty : context.properties»
+		«FOR fbProperty : element.properties»
 			«FOR operation : fbProperty.type.functionblock.operations»
-			«var mappingRule = this.mappingContext.getMappingRuleByOperationAndStereoType(operation,STEREOTYPE_ALEXA)»
-			«IF (mappingRule != null)»
-					« var commands = split(MappingRuleUtils.getAttributeValue(mappingRule.target,"command",getDefaultCommand(operation).toString))»
-					«FOR singleCmd : commands»
-						«operation.name» «singleCmd»
-					«ENDFOR»
-			«ELSE»
-				«operation.name» «operation.name» «getDefaultCommand(operation)»
-			«ENDIF»
+				«var mappedElement = context.getMappedElement(operation,STEREOTYPE_ALEXA)»
+				«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(operation).toString))»
+				«FOR singleCmd : commands»
+					«operation.name» «singleCmd»
+				«ENDFOR»
 			«ENDFOR»
 			
 			«IF fbProperty.type.functionblock.status != null»
 				«FOR statusProperty : fbProperty.type.functionblock.status.properties»
-					«var mappingRule = this.mappingContext.getMappingRuleByPropertyAndStereoType(statusProperty,STEREOTYPE_ALEXA)»
-					«IF (mappingRule != null)»
-						« var commands = split(MappingRuleUtils.getAttributeValue(mappingRule.target,"command",getDefaultCommand(statusProperty).toString))»
-						«FOR singleCmd : commands»
-							«statusProperty.name» «singleCmd»
-						«ENDFOR»
-					«ELSE»
-						«statusProperty.name»Status get «statusProperty.name» status
-					«ENDIF»
+					«var mappedElement = context.getMappedElement(statusProperty,STEREOTYPE_ALEXA)»
+					«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(statusProperty).toString))»
+					«FOR singleCmd : commands»
+					«statusProperty.name» «singleCmd»
+					«ENDFOR»
 				«ENDFOR»
 			«ENDIF»
 			
@@ -73,8 +61,8 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 		'''«FOR param : operation.params BEFORE '{' SEPARATOR ' ' AFTER '}'»«IF isAlexaSupportedParamType(param)»«param.name»«ENDIF»«ENDFOR»'''
 	}
 	
-	protected def getDefaultCommand(org.eclipse.vorto.core.api.model.datatype.Property property) {
-		'''«property.name»'''
+	protected def getDefaultCommand(Property property) {
+		'''get «property.name» status'''
 	}
 	
 }

@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.examples.templates.java
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaEnumTemplate implements ITemplate<Enum>{
 	
@@ -25,7 +26,7 @@ class JavaEnumTemplate implements ITemplate<Enum>{
 		this.enumPackage = enumPackage;
 	}
 	
-	override getContent(Enum en) {
+	override getContent(Enum en,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************

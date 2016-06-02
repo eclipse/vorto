@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper;
 import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel.CXFCodeGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel.POMFbTemplate;
@@ -28,7 +28,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class FbModelAPIGenerator implements ICodeGeneratorTask<InformationModel> {
 
 	@Override
-	public void generate(InformationModel infomodel, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(InformationModel infomodel, InvocationContext mappingContext, IGeneratedWriter outputter) {
 		FbModelWrapper wrappedfbm = new FbModelWrapper(infomodel
 				.getProperties().get(0).getType());
 		ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();

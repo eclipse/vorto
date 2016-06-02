@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.coap.CoAPUtils
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -45,7 +46,7 @@ class CoAPClientFunctionblockInterfaceTemplate implements ITemplate<Functionbloc
 		this.parameterTemplate = parameterTemplate
 	}
 	
-	override getContent(FunctionblockModel fbm) {
+	override getContent(FunctionblockModel fbm,InvocationContext invocationContext) {
 		'''
 		/*
 		*****************************************************************************************
@@ -92,9 +93,9 @@ class CoAPClientFunctionblockInterfaceTemplate implements ITemplate<Functionbloc
 				* «op.description»
 				*/
 				«IF (op.returnType instanceof ReturnObjectType || op.returnType == null)»
-					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op)»);
+					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)»);
 				«ELSE»
-					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op)») throws Exception;
+					«CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») throws Exception;
 				«ENDIF»
 
 			«ENDFOR»
@@ -102,10 +103,10 @@ class CoAPClientFunctionblockInterfaceTemplate implements ITemplate<Functionbloc
 		'''
 	}
 	
-	def String getParameterString(Operation op) {
+	def String getParameterString(Operation op,InvocationContext invocationContext) {
 		var String result="";
 		for (param : op.params) {
-			result =  result + ", " + parameterTemplate.getContent(param);
+			result =  result + ", " + parameterTemplate.getContent(param,invocationContext);
 		}
 		if (result.isNullOrEmpty) {
 			return "";

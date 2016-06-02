@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class ClientDemoAppTemplate implements IFileTemplate<InformationModel> {
@@ -37,7 +38,7 @@ class ClientDemoAppTemplate implements IFileTemplate<InformationModel> {
 		return targetPath;
 	}
 	
-	override getContent(InformationModel context) {
+	override getContent(InformationModel context,InvocationContext invocationContext) {
 		'''
 			package «classPackage»;
 

@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.examples.templates.java
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 	
@@ -44,7 +45,7 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 			this.setterTemplate = setterTemplate
 	}
 	
-	override getContent(InformationModel im) {
+	override getContent(InformationModel im,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************
@@ -68,7 +69,7 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 			*/
 			public class «im.name.toFirstUpper» implements «interfacePrefix»«im.name.toFirstUpper» {
 				«FOR fbProperty : im.properties»
-					«propertyTemplate.getContent(fbProperty)»
+					«propertyTemplate.getContent(fbProperty,invocationContext)»
 					
 				«ENDFOR»
 
@@ -83,9 +84,9 @@ class JavaInformationModelTemplate implements ITemplate<InformationModel>{
 				«ENDFOR»
 				}
 				«FOR fbProperty : im.properties»
-					«getterTemplate.getContent(fbProperty)»
+					«getterTemplate.getContent(fbProperty,invocationContext)»
 					
-					«setterTemplate.getContent(fbProperty)»
+					«setterTemplate.getContent(fbProperty,invocationContext)»
 										
 				«ENDFOR»
 			}

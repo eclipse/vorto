@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.markdown.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
@@ -22,7 +23,7 @@ class MarkdownFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 	
 
 	
-	override getContent(FunctionblockModel fb) {
+	override getContent(FunctionblockModel fb,InvocationContext invocationContext) {
 		'''
 			## Functionblock *«fb.name»*
 			### Unique Identification

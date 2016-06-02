@@ -18,8 +18,8 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.EventValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationParametersValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationReturnTypeValidationTask;
@@ -35,7 +35,7 @@ public class JsonschemaGenerator implements IVortoCodeGenerator {
 	public static final String TARGET_PATH 					= "json";
 
 	public IGenerationResult generate(InformationModel infomodel,
-			IMappingContext mappingContext) {
+			InvocationContext invocationContext) {
 
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,
 				getServiceKey());

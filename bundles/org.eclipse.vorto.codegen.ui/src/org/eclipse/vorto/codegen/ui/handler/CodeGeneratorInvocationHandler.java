@@ -18,9 +18,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -59,7 +58,10 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		
 		
 		IModelElement selectedElement = ModelProjectFactory.getInstance().getModelElementFromSelection();
-
+		if (selectedElement == null) {
+			MessageDisplayFactory.getMessageDisplay().displayWarning("Model was not properly selected. Please try again.");
+		}
+		
 		InformationModel informationModel = (InformationModel) selectedElement.getModel();
 
 		for (IConfigurationElement e : configElements) {
@@ -74,7 +76,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
 
 				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator,
-						createMappingContext(selectedElement.getProject(), informationModelCodeGenerator.getServiceKey()));
+						createInvocationContext(selectedElement.getProject(), informationModelCodeGenerator.getServiceKey()));
 
 			} catch (Exception e1) {
 				MessageDisplayFactory.getMessageDisplay().displayError(e1);
@@ -83,14 +85,8 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		}
 	}
 
-	private IMappingContext createMappingContext(IModelProject project, String targetPlatform) {
-		DefaultMappingContext mappingContext = new DefaultMappingContext();
-
-		for (MappingModel mappingModel : project.getMapping(targetPlatform)) {
-			mappingContext.addMappingModel(mappingModel);
-		}
-
-		return mappingContext;
+	private InvocationContext createInvocationContext(IModelProject project, String targetPlatform) {
+		return new InvocationContext(project.getMapping(targetPlatform));
 	}
 
 	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {

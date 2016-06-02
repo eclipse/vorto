@@ -16,12 +16,13 @@
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.basedriver
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class DummyEventReadTaskTemplate implements ITemplate<FunctionblockModel> {
 	
-	override getContent(FunctionblockModel model) {
+	override getContent(FunctionblockModel model,InvocationContext context) {
 		'''package «BaseDriverUtil.getDriverPackage»;
 
 import java.io.File;

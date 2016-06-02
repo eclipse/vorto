@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.AbstractDummyDeviceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverGeneratorTask;
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BlueprintConfigGeneratorTask;
@@ -31,7 +31,7 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 public class DummyBaseDriverGenerator implements ICodeGeneratorTask<FunctionblockModel> {
 
 	@Override
-	public void generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(FunctionblockModel fbm, InvocationContext mappingContext, IGeneratedWriter outputter) {
 		ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
 		generator.addTask(new GeneratorTaskFromFileTemplate<FunctionblockModel>(new PomTemplate()));
 		generator.addTask(new BaseDriverGeneratorTask());

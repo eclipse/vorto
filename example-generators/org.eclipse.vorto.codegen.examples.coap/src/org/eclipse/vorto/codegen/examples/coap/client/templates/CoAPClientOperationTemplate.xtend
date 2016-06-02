@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.coap.CoAPUtils
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
@@ -36,15 +37,15 @@ class CoAPClientOperationTemplate implements ITemplate<Operation>{
 		this.parameterTemplate = parameterTemplate;
 	}
 	
-	override getContent(Operation op) {
+	override getContent(Operation op,InvocationContext invocationContext) {
 		'''
 			/**
 			* «op.description»
 			*/
 			«IF (op.returnType instanceof ReturnObjectType || op.returnType == null)»
-			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op)») {
+			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») {
 			«ELSE»
-			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op)») throws Exception {
+			public «CoAPUtils.getReturnTypeAsString(op)» «op.name»(«getParameterString(op,invocationContext)») throws Exception {
 			«ENDIF»
 			
 				«IF (!op.params.empty)»
@@ -97,10 +98,10 @@ class CoAPClientOperationTemplate implements ITemplate<Operation>{
 		'''
 	}
 	
-	def String getParameterString(Operation op) {
+	def String getParameterString(Operation op,InvocationContext invocationContext) {
 		var String result="";
 		for (param : op.params) {
-			result =  result + ", " + parameterTemplate.getContent(param);
+			result =  result + ", " + parameterTemplate.getContent(param,invocationContext);
 		}
 		if (result.isNullOrEmpty) {
 			return "";

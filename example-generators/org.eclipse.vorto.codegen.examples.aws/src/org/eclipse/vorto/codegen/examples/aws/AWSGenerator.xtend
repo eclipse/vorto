@@ -14,23 +14,23 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.aws
 
-import org.eclipse.vorto.codegen.api.GenerationResultZip
-import org.eclipse.vorto.codegen.api.IMappingContext
-import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
-import org.eclipse.vorto.codegen.examples.aws.templates.shadow.ThingShadowForOperationsTask
+import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaIndentSchemaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaSkillLambdaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaUtterancesTemplate
+import org.eclipse.vorto.codegen.examples.aws.templates.shadow.ThingShadowForOperationsTask
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 class AWSGenerator implements IVortoCodeGenerator {
 
-	override generate(InformationModel infomodel, IMappingContext mappingContext) {
+	override generate(InformationModel infomodel, InvocationContext context) {
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		var chainedGenerators = new ChainedCodeGeneratorTask<InformationModel>();
 		
@@ -38,11 +38,11 @@ class AWSGenerator implements IVortoCodeGenerator {
 		
 		// Adds Generators for Speech to Command using Alexa Skill Service.
 		// That way it is possible to update a thing shadow by various speech command variations defined as mapping rules
-		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaIndentSchemaTemplate(mappingContext)));
-		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaSkillLambdaTemplate(mappingContext)));
-		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaUtterancesTemplate(mappingContext)));
+		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaIndentSchemaTemplate()));
+		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaSkillLambdaTemplate()));
+		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaUtterancesTemplate()));
 		
-		chainedGenerators.generate(infomodel,mappingContext,output);
+		chainedGenerators.generate(infomodel,context,output);
 		
 		return output
 	}

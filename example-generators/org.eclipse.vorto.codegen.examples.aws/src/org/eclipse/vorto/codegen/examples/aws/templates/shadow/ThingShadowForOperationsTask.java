@@ -17,14 +17,12 @@ package org.eclipse.vorto.codegen.examples.aws.templates.shadow;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
-import org.eclipse.vorto.codegen.api.utils.MappingRuleUtils;
+import org.eclipse.vorto.codegen.api.mapping.IMapped;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingRule;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
 /**
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd.)
@@ -37,39 +35,31 @@ public class ThingShadowForOperationsTask implements ICodeGeneratorTask<Informat
 	private static final String STEREOTYPE_AWS_THINGSHADOW = "thingshadow";
 	
 	@Override
-	public void generate(InformationModel model, IMappingContext mappingContext, IGeneratedWriter writer) {
+	public void generate(InformationModel model, InvocationContext context, IGeneratedWriter writer) {
 		for (FunctionblockProperty fbProperty : model.getProperties()) {
 			for (Operation operation : fbProperty.getType().getFunctionblock().getOperations()) {
-				if (hasMappingRuleForOperation(operation, mappingContext)) {
-					MappingRule mappingRule = mappingContext.getMappingRuleByOperationAndStereoType(operation,STEREOTYPE_AWS_THINGSHADOW);
-					if (isUpdateableOperation(mappingRule)) {
-						ICodeGeneratorTask<Operation> generator = new GeneratorTaskFromFileTemplate<>(new UpdateThingShadowLambdaTemplate(mappingRule.getTarget()));
-						generator.generate(operation,mappingContext,writer);
-					}
-				} else if (!operation.getParams().isEmpty() && !operation.getName().startsWith("get")) {
-					ICodeGeneratorTask<Operation> generator = new GeneratorTaskFromFileTemplate<>(new UpdateThingShadowLambdaTemplate(null));
-					generator.generate(operation,mappingContext,writer);
+				IMapped<Operation> mappedElement = context.getMappedElement(operation,STEREOTYPE_AWS_THINGSHADOW);
+				if (isUpdateableOperation(mappedElement)) {
+					ICodeGeneratorTask<Operation> generator = new GeneratorTaskFromFileTemplate<>(new UpdateThingShadowLambdaTemplate(mappedElement));
+					generator.generate(operation,context,writer);
+				}
+				else if (!operation.getParams().isEmpty() && !operation.getName().startsWith("get")) {
+					ICodeGeneratorTask<Operation> generator = new GeneratorTaskFromFileTemplate<>(new UpdateThingShadowLambdaTemplate(mappedElement));
+					generator.generate(operation,context,writer);
 				}
 			}
 			
 			if (fbProperty.getType().getFunctionblock().getStatus() != null) {
 				for (Property statusProperty : fbProperty.getType().getFunctionblock().getStatus().getProperties()) {
 					ICodeGeneratorTask<Property> generator = new GeneratorTaskFromFileTemplate<>(new GetThingShadowLambdaTemplate());
-					generator.generate(statusProperty,mappingContext,writer);
+					generator.generate(statusProperty,context,writer);
 				}
 			}
 		}
 		
 	}
 	
-	private boolean hasMappingRuleForOperation(Operation operation, IMappingContext mappingContext) {
-		return mappingContext.getMappingRuleByOperationAndStereoType(operation,STEREOTYPE_AWS_THINGSHADOW) != null;
-	}
-
-	private boolean isUpdateableOperation(MappingRule rule) {
-		if (rule.getTarget() instanceof StereoTypeTarget) {
-			return MappingRuleUtils.getAttributeBoolValue((StereoTypeTarget)rule.getTarget(),"updatable",false);
-		}
-		return false;
+	private boolean isUpdateableOperation(IMapped<Operation> mapped) {
+		return Boolean.getBoolean(mapped.getAttributeValue("updatable", "false"));
 	}
 }

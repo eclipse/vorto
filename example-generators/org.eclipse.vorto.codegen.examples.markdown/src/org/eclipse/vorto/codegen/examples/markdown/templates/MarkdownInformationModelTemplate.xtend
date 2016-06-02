@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -30,7 +31,7 @@ class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 		this.enumTemplate = enumTemplate;
 	}
 	
-	override getContent(InformationModel im) {
+	override getContent(InformationModel im,InvocationContext invocationContext) {
 		'''
 			# Information Model *«im.name»*
 			
@@ -54,21 +55,21 @@ class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 			
 			# Functionblocks
 			«FOR fbProperty : im.properties»
-				«fbTemplate.getContent(fbProperty.type)»
+				«fbTemplate.getContent(fbProperty.type,invocationContext)»
 				
 			«ENDFOR»
 			
 			# Entities
 			«FOR fbProperty : im.properties»
 				«FOR type : ModelHelper.getReferencedEntities(fbProperty.type.functionblock)»
-					«entityTemplate.getContent(type)»
+					«entityTemplate.getContent(type,invocationContext)»
 				«ENDFOR»
 			«ENDFOR»
 			
 			# Enums
 			«FOR fbProperty : im.properties»
 				«FOR type : ModelHelper.getReferencedEnums(fbProperty.type.functionblock)»
-					«enumTemplate.getContent(type)»
+					«enumTemplate.getContent(type,invocationContext)»
 				«ENDFOR»
 			«ENDFOR»
 			

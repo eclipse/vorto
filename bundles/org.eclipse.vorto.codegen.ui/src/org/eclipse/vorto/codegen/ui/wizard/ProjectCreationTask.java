@@ -21,7 +21,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
@@ -75,7 +75,7 @@ public class ProjectCreationTask implements IProgressTask {
 		generator.addTask(new PlatformGeneratorMainTemplate());
 		generator.addTask(new ApplicationPropertiesTemplate());
 		generator.addTask(new ApplicationProfileProperties());
-		generator.generate(context, new DefaultMappingContext(), monitor);
+		generator.generate(context, InvocationContext.simpleInvocationContext(), monitor);
 	}
 
 	private void createGeneratorProject(IProgressMonitor monitor) {
@@ -86,7 +86,7 @@ public class ProjectCreationTask implements IProgressTask {
 		generator.addTask(new GeneratorTemplate());
 		generator.addTask(new PomTemplate());
 		generator.addTask(new PluginXMLFileTemplate());
-		generator.generate(context,new DefaultMappingContext(), monitor);
+		generator.generate(context,InvocationContext.simpleInvocationContext(), monitor);
 	}
 
 	@Override

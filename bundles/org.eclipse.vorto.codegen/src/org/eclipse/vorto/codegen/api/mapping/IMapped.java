@@ -12,24 +12,36 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.api;
+package org.eclipse.vorto.codegen.api.mapping;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
-import org.eclipse.vorto.core.api.model.model.ModelId;
+public interface IMapped<T> {
 
-public class SingleFileContentCodeGeneratorTask implements ICodeGeneratorTask<ModelId> {
-
-	private String fileName;
-	private byte[] content;
-
-	public SingleFileContentCodeGeneratorTask(String fileName, byte[] content) {
-		this.fileName = fileName;
-		this.content = content;
-	}
-
-	@Override
-	public void generate(ModelId infoModelId,InvocationContext context, IGeneratedWriter outputter) {
-		outputter.write(new Generated(fileName,null,content));
-	}
-		
+	/**
+	 * source element which is mapped
+	 * 
+	 * @return
+	 */
+	T getSource();
+	
+	/**
+	 * Returns the generator specific stereotype that the generator understands to generate additional source code for the mapped element.
+	 * @return
+	 */
+	String getStereoType();
+	
+	/**
+	 * Checks if the mapping exposes the given attribute
+	 * @param attributeName
+	 * @return
+	 */
+	boolean hasAttribute(String attributeName);
+	
+	/**
+	 * Returns the actual value of the attribute name
+	 * @param attributeName
+	 * @param defaultValue
+	 * @return
+	 */
+	String getAttributeValue(String attributeName, String defaultValue);
+	
 }

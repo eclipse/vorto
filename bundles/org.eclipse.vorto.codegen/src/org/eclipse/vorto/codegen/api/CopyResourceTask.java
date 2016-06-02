@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * This generator task copies generator plugin resources to the target generated
@@ -41,7 +42,7 @@ public class CopyResourceTask<Context> implements ICodeGeneratorTask<Context> {
 		this.targetPath = targetPath;
 	}
 
-	public void generate(Context metaData, IMappingContext mappingContext, final IGeneratedWriter outputter) {
+	public void generate(Context metaData, InvocationContext context, final IGeneratedWriter outputter) {
 		try {
 			Path start = Paths.get(basePath.toURI());
 			Files.walkFileTree(start, new FileVisitor<Path>() {

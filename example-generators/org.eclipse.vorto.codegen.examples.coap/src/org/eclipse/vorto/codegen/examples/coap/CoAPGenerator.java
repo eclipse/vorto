@@ -20,8 +20,8 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientFunctionblockImplGeneratorTask;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientFunctionblockInterfaceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientInformationModelGeneratorTask;
@@ -113,7 +113,7 @@ public class CoAPGenerator implements IVortoCodeGenerator {
 	private Boolean opParamSetRequired = false;
 	private Boolean primTypeWrapperRequired = false;
 	
-	public IGenerationResult generate(InformationModel infomodel, IMappingContext mappingContext) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext mappingContext) {
 		
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,getServiceKey());
 		

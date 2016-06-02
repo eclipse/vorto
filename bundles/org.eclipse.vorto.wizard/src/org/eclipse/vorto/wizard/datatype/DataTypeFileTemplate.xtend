@@ -15,6 +15,7 @@
 package org.eclipse.vorto.wizard.datatype
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 
 /**
@@ -29,7 +30,7 @@ class DataTypeFileTemplate implements ITemplate<IModelProjectContext> {
 		this.typeName = typeName;
 	}
 	
-	override getContent(IModelProjectContext context) {
+	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		//Namespace and version needs to be added..
 		return '''
 		namespace com.mycompany.type

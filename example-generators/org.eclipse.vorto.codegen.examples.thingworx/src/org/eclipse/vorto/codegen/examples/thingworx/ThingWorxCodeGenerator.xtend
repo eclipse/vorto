@@ -4,13 +4,12 @@ import com.fasterxml.jackson.core.JsonFactory
 import com.fasterxml.jackson.core.JsonGenerator
 import java.io.StringWriter
 import org.eclipse.emf.common.util.EList
-import org.eclipse.vorto.codegen.api.DefaultMappingContext
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
@@ -26,15 +25,15 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 		STATUS, CONFIGURATION	
 	}
 	
-	override generate(InformationModel model, IMappingContext mappingContext) {
+	override generate(InformationModel model, InvocationContext invocationContext) {
 		var zipOutput = new GenerationResultZip(model,getServiceKey());
-		new JSONGeneratorTask().generate(model,new DefaultMappingContext(),zipOutput);
+		new JSONGeneratorTask().generate(model,invocationContext,zipOutput);
 		return zipOutput;
 	}
 	
 	public static class JSONGeneratorTask implements ICodeGeneratorTask<InformationModel> {
 		
-		override generate(InformationModel model, IMappingContext mappingContext, IGeneratedWriter writer) {
+		override generate(InformationModel model, InvocationContext invocationContext, IGeneratedWriter writer) {
 			
 			writer.write(new Generated(model.getName() + ".json", null, getContent(model)));
 		}

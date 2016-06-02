@@ -6,6 +6,7 @@ import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -20,7 +21,7 @@ class PageTemplate implements IFileTemplate<FunctionblockModel> {
 		return "webdevice.example/src/main/resources/static/pages";
 	}
 
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context,InvocationContext invocationContext) {
 		'''
 			<fieldset class="scheduler-border">
 				<div class="col-md-12" style="text-align:center;">

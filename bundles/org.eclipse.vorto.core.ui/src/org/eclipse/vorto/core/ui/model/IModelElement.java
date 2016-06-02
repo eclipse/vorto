@@ -75,13 +75,16 @@ public interface IModelElement {
 	void addModelReference(IModelElement reference);
 	
 	/**
-	 * 
+	 * Adds a model reference to the model. When done, make sure to invoke {@link IModelElement#save()}} to save the model.
 	 * @param modelId
 	 * @throws ModelNotFoundException if no model can be found in the project with the given modelId
 	 * @return the model element that has been added as a reference
 	 */
 	IModelElement addModelReference(ModelId modelId);
 	
+	/**
+	 * Saves the model element it it has been modified before
+	 */
 	void save();
 
 }

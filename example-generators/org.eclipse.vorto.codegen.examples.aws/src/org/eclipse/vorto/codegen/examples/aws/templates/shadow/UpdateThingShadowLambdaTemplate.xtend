@@ -16,20 +16,20 @@ package org.eclipse.vorto.codegen.examples.aws.templates.shadow
 
 import org.eclipse.emf.common.util.EList
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.utils.MappingRuleUtils
+import org.eclipse.vorto.codegen.api.mapping.IMapped
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.mapping.Target
 
 /**
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 class UpdateThingShadowLambdaTemplate implements IFileTemplate<Operation> {
 		
-	private Target target;
+	private IMapped<Operation> mappedElement;
 	
-	new (Target target) {
-		this.target = target;
+	new (IMapped<Operation> mappedElement) {
+		this.mappedElement = mappedElement;
 	}
 		
 	override getFileName(Operation context) {
@@ -40,7 +40,7 @@ class UpdateThingShadowLambdaTemplate implements IFileTemplate<Operation> {
 		return "aws/shadow";
 	}
 	
-	override getContent(Operation context) {
+	override getContent(Operation element, InvocationContext context) {
 		'''
 		var config = {
 		    "thingName": "<PUT THING NAME HERE>",
@@ -54,10 +54,10 @@ class UpdateThingShadowLambdaTemplate implements IFileTemplate<Operation> {
 		    var update = {
 		            "state": {
 		                "desired" : {
-		                	«IF context.params.isEmpty»
-		                	"«MappingRuleUtils.getAttributeValue(target,"field",context.name)»" : "true"
+		                	«IF element.params.isEmpty»
+		                	"«mappedElement.getAttributeValue("field",element.name)»" : "true"
 		                	«ELSE»
-		                	"«MappingRuleUtils.getAttributeValue(target,"field",context.name)»" : «operationParamsToJSON(context.params)»
+		                	"«mappedElement.getAttributeValue("field",element.name)»" : «operationParamsToJSON(element.params)»
 		                	«ENDIF»
 		                }
 		            }

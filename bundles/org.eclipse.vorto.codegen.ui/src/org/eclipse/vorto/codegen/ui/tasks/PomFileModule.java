@@ -17,8 +17,8 @@ package org.eclipse.vorto.codegen.ui.tasks;
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * Generates a pom.xml for a maven project
@@ -33,9 +33,9 @@ public class PomFileModule<Context> implements ICodeGeneratorTask<Context> {
 		this.template = template;
 	}
 
-	public void generate(Context model, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(Context model, InvocationContext invocationContext, IGeneratedWriter outputter) {
 		Generated generatedPom = new Generated(FILE_NAME, null,
-				template.getContent(model));
+				template.getContent(model,invocationContext));
 
 		outputter.write(generatedPom);
 	}

@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.api.model.model.ModelId;
@@ -61,7 +61,7 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 
 	public boolean performFinish() {
 		new ModelGenerationTask(ModelType.Mapping.getExtension(), new MappingModelTemplateFileContent(modelId), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
+				InvocationContext.simpleInvocationContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 
 		openModelWithDefaultEditor();
 		return true;

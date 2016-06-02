@@ -19,8 +19,8 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockConfigurationGeneratorTask;
@@ -59,7 +59,7 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 	public static final String STATUS_SUFFIX = "Status";
 	public static final String FAULT_SUFFIX = "Fault";
 
-	public IGenerationResult generate(InformationModel infomodel, IMappingContext mappingContext) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) {
 		
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,getServiceKey());
 		
@@ -75,7 +75,7 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 			}
 		}
 		
-		new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()).generate(infomodel, mappingContext,zipOutputter);
+		new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()).generate(infomodel, invocationContext,zipOutputter);
 		
 		return zipOutputter;
 	}

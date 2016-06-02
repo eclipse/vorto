@@ -16,12 +16,13 @@
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template.device
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class AbstractDummyDeviceTemplate implements ITemplate<FunctionblockModel> {
 	
-	override getContent(FunctionblockModel model) {
+	override getContent(FunctionblockModel model,InvocationContext context) {
 		'''package «BaseDriverUtil.getDevicePackage»;
 
 import java.util.Map;

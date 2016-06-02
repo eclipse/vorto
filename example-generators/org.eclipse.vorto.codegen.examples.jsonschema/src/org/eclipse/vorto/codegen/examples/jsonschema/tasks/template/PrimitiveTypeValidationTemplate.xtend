@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 
 class PrimitiveTypeValidationTemplate implements ITemplate<PrimitiveType>{
@@ -22,7 +23,7 @@ class PrimitiveTypeValidationTemplate implements ITemplate<PrimitiveType>{
 	new() {
 	}
 	
-	override getContent(PrimitiveType primitiveType) {
+	override getContent(PrimitiveType primitiveType,InvocationContext invocationContext) {
 		'''
 			«IF primitiveType == PrimitiveType.BASE64_BINARY»
 					"type": "string"

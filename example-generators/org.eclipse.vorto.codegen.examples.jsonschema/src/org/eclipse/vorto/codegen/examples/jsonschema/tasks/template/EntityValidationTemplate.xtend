@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -31,7 +32,7 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 		this.primitiveTypeValidationTemplate = primitiveTypeValidationTemplate;
 	}
 	
-	override getContent(Entity entity) {
+	override getContent(Entity entity,InvocationContext invocationContext) {
 		'''
 			«FOR property : entity.properties SEPARATOR ','»
 				«var propertyType = property.type»
@@ -41,12 +42,12 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 						"«property.name»": {
 							"type": "array",
 							"items": {
-								«primitiveTypeValidationTemplate.getContent(primitiveType.type)»
+								«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
 							}
 						}
 					«ELSE» 
 						"«property.name»": {
-							«primitiveTypeValidationTemplate.getContent(primitiveType.type)»
+							«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
 						}
 					«ENDIF»
 				«ELSEIF propertyType instanceof ObjectPropertyType»
@@ -58,7 +59,7 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 								"items": {
 									"type": "object",
 									"properties": {
-										«getContent(objectType.type as Entity)»
+										«getContent(objectType.type as Entity,invocationContext)»
 									}
 								}
 							}
@@ -66,7 +67,7 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 							"«property.name»": {
 								"type": "object",
 								"properties": {
-									«getContent(objectType.type as Entity)»
+									«getContent(objectType.type as Entity,invocationContext)»
 								}
 							}
 						«ENDIF»
@@ -75,12 +76,12 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 							"«property.name»": {
 								"type": "array",
 								"items": {
-									«enumValidationTemplate.getContent(objectType.type as Enum)»
+									«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
 								}
 							}
 						«ELSE»
 							"«property.name»": {
-								«enumValidationTemplate.getContent(objectType.type as Enum)»
+								«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
 							}
 						«ENDIF»
 					«ENDIF»

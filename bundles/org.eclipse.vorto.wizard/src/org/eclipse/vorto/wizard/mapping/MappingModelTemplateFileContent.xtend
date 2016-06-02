@@ -16,11 +16,13 @@
 package org.eclipse.vorto.wizard.mapping
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
-import org.eclipse.vorto.core.api.model.model.ModelId
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelId
 
 class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext> {
     
@@ -30,7 +32,7 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 		this.modelId = modelId
 	}
 
-	override getContent(IModelProjectContext context) {
+	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		var mappingWizardPage = context as MappingModellWizardPage;
 		return '''
 	namespace com.mycompany
@@ -52,7 +54,7 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 			return "functionblockmapping";
 		} else if (model instanceof Entity) {
 			return "entitymapping";
-		} else if (model instanceof org.eclipse.vorto.core.api.model.datatype.Enum) {
+		} else if (model instanceof Enum) {
 			return "enummapping";
 		}
 	}

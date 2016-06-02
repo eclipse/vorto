@@ -1,6 +1,7 @@
 package org.eclipse.vorto.codegen.ui.wizard.generation.templates.server
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
 class ApplicationPropertiesTemplate implements IFileTemplate<IGeneratorProjectContext> {
@@ -13,7 +14,7 @@ class ApplicationPropertiesTemplate implements IFileTemplate<IGeneratorProjectCo
 		return "src/main/resources"
 	}
 	
-	override getContent(IGeneratorProjectContext context) {
+	override getContent(IGeneratorProjectContext context,InvocationContext invocationContext) {
 		'''
 		vorto.service.name=«context.generatorName»
 		vorto.service.description=Here goes some short description about the generator

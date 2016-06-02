@@ -2,6 +2,7 @@ package org.eclipse.vorto.codegen.examples.mqtt.templates
 
 import java.util.UUID
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 /**
@@ -17,7 +18,7 @@ class MqttConfigurationTemplate implements IFileTemplate<FunctionblockModel> {
 		return "mqtt.example.client/src/main/java/mqtt/example/config"
 	}
 	
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context,InvocationContext invocationContext) {
 		'''
 		package mqtt.example.config;
 		

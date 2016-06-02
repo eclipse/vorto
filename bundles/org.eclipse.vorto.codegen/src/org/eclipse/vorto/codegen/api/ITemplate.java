@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+
 /**
  * A {@link ICodeGeneratorTask} use generation templates which contain the
  * context specific outcome logic
@@ -21,14 +23,15 @@ package org.eclipse.vorto.codegen.api;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  * 
  */
-public interface ITemplate<Context> {
+public interface ITemplate<Element> {
 
 	/**
 	 * gets the generation template for the specified context
 	 * 
+	 * @param element
 	 * @param context
 	 * @return generated content for the specified context
 	 */
-	String getContent(Context context);
+	String getContent(Element element, InvocationContext context);
 
 }

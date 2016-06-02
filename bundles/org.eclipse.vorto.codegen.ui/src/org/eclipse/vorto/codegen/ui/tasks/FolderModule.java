@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.ui.tasks;
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * Code Generator which creates specific folder (structure)
@@ -32,7 +32,7 @@ public class FolderModule<Context> implements ICodeGeneratorTask<Context> {
 	}
 
 	@Override
-	public void generate(Context ctx, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(Context ctx, InvocationContext invocationContext, IGeneratedWriter outputter) {
 		if (folders != null) {
 			for (String customFolder : folders) {
 				outputter.write(new Generated(null, customFolder, new byte[0]));

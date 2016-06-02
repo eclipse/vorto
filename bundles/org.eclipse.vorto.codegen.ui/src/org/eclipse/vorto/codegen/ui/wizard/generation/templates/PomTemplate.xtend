@@ -1,6 +1,7 @@
 package org.eclipse.vorto.codegen.ui.wizard.generation.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
 class PomTemplate implements IFileTemplate<IGeneratorProjectContext> {
@@ -13,7 +14,7 @@ class PomTemplate implements IFileTemplate<IGeneratorProjectContext> {
 		return null;
 	}
 	
-	override getContent(IGeneratorProjectContext context) {
+	override getContent(IGeneratorProjectContext context,InvocationContext invocationContext) {
 		'''
 		<project>
 			<modelVersion>4.0.0</modelVersion>

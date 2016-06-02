@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaClassMethodTemplate implements ITemplate<Operation>{
 	
@@ -31,7 +32,7 @@ class JavaClassMethodTemplate implements ITemplate<Operation>{
 		this.parameter = parameter;
 	}
 	
-	override getContent(Operation op) {
+	override getContent(Operation op,InvocationContext invocationContext) {
 		'''
 			/**
 			* «op.description»
@@ -39,7 +40,7 @@ class JavaClassMethodTemplate implements ITemplate<Operation>{
 			
 			«IF op.returnType instanceof ReturnObjectType»
 				«var objectType = op.returnType as ReturnObjectType»
-				public «objectType.returnType.name» «op.name»(«getParameterString(op)») {
+				public «objectType.returnType.name» «op.name»(«getParameterString(op,invocationContext)») {
 					«IF objectType.returnType instanceof Entity»
 						«objectType.returnType.name» result = new «objectType.returnType.name»();
 						// Add your code here.
@@ -53,7 +54,7 @@ class JavaClassMethodTemplate implements ITemplate<Operation>{
 				}
 			«ELSEIF op.returnType instanceof ReturnPrimitiveType»
 				«var primitiveType = op.returnType as ReturnPrimitiveType»
-				public «primitiveType.returnType.getName» «op.name»(«getParameterString(op)») {
+				public «primitiveType.returnType.getName» «op.name»(«getParameterString(op,invocationContext)») {
 					«IF ValueMapper.getInitialValue(primitiveType.returnType).equalsIgnoreCase("")» 
 						«primitiveType.returnType.getName» result;
 					«ELSE»
@@ -64,17 +65,17 @@ class JavaClassMethodTemplate implements ITemplate<Operation>{
 					return result;
 				}
 			«ELSE»
-				public void «op.name»(«getParameterString(op)») {
+				public void «op.name»(«getParameterString(op,invocationContext)») {
 					// Add your code here.
 				}
 			«ENDIF»
 		'''
 	}
 	
-	public def String getParameterString(Operation op) {
+	public def String getParameterString(Operation op,InvocationContext invocationContext) {
 		var String result="";
 		for (param : op.params) {
-			result =  result + ", " + parameter.getContent(param);
+			result =  result + ", " + parameter.getContent(param,invocationContext);
 		}
 		if (result.isNullOrEmpty) {
 			return "";

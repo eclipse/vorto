@@ -14,27 +14,23 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.aws.templates.alexa
 
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 class AlexaIndentSchemaTemplate extends AbstractAlexaTemplate {
-	
-	new(IMappingContext ctx) {
-		super(ctx)
-	}
-	
+		
 	override getFileName(InformationModel context) {
 		return "IntendSchema.json";
 	}
 	
-	override getContent(InformationModel context) {
+	override getContent(InformationModel element, InvocationContext context) {
 	'''
 		{
 		  "intents": [
-				«FOR fbProperty : context.properties»
+				«FOR fbProperty : element.properties»
 				«FOR operation : fbProperty.type.functionblock.operations SEPARATOR ','»
 					{
 					"intent": "«operation.name»",

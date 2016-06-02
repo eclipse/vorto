@@ -1,6 +1,7 @@
 package org.eclipse.vorto.codegen.examples.javabean.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldGetterTemplate
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldSetterTemplate
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldTemplate
@@ -25,7 +26,7 @@ class FunctionblockFaultTemplate implements ITemplate<FunctionblockModel> {
 		this.propertyGetterTemplate = new JavaClassFieldGetterTemplate("get");
 	}
 	
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context,InvocationContext invocationContext) {
 		'''
 		package «packageName»;
 		
@@ -37,12 +38,12 @@ class FunctionblockFaultTemplate implements ITemplate<FunctionblockModel> {
 			
 			«IF context.functionblock.fault != null»
 			«FOR property : context.functionblock.fault.properties»
-				«propertyTemplate.getContent(property)»
+				«propertyTemplate.getContent(property,invocationContext)»
 			«ENDFOR»
 			
 			«FOR property : context.functionblock.fault.properties»
-				«propertySetterTemplate.getContent(property)»
-				«propertyGetterTemplate.getContent(property)»
+				«propertySetterTemplate.getContent(property,invocationContext)»
+				«propertyGetterTemplate.getContent(property,invocationContext)»
 			«ENDFOR»
 			«ENDIF»
 			

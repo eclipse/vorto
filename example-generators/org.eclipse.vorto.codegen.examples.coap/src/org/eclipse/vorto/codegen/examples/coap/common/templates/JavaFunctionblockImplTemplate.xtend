@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.common.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
@@ -43,7 +44,7 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 		this.operationTemplate = operationTemplate
 	}
 	
-	override getContent(FunctionblockModel fbm) {
+	override getContent(FunctionblockModel fbm,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************
@@ -69,24 +70,24 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 				«var fb = fbm.functionblock»	
 				«IF fb.status != null»
 					«FOR property : fb.status.properties»
-						«propertyTemplate.getContent(property)»
+						«propertyTemplate.getContent(property,invocationContext)»
 						
 					«ENDFOR»
 				«ENDIF»
 				«IF fb.configuration != null» 
 					«FOR property : fb.configuration.properties»
-						«propertyTemplate.getContent(property)»
+						«propertyTemplate.getContent(property,invocationContext)»
 						
 					«ENDFOR»
 				«ENDIF»
 				«IF fb.fault != null»
 					«FOR property : fb.fault.properties»
-						«propertyTemplate.getContent(property)»
+						«propertyTemplate.getContent(property,invocationContext)»
 						
 					«ENDFOR»
 				«ENDIF»
 				«FOR operation : fb.operations»
-						«operationTemplate.getContent(operation)»
+						«operationTemplate.getContent(operation,invocationContext)»
 						
 				«ENDFOR»
 				

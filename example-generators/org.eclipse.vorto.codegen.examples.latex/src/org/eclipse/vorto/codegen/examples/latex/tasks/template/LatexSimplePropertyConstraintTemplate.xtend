@@ -14,13 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
-import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.utils.Utils
+import org.eclipse.vorto.core.api.model.datatype.Property
 
 class LatexSimplePropertyConstraintTemplate implements ITemplate<Property> {
 	
-	override getContent(Property property) {
+	override getContent(Property property,InvocationContext invocationContext) {
 		'''
 			\begin{tabular}{|p{4.5cm}|p{4cm}|p{2.05cm}|p{2.05cm}|p{2.05cm}|}
 			\hline

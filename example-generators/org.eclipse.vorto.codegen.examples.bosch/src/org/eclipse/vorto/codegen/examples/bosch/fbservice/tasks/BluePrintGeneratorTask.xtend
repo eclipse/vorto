@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
@@ -28,7 +28,7 @@ class BluePrintGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		super(context)
 	}
 	
-	override generate(FunctionblockModel fbm, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	override generate(FunctionblockModel fbm, InvocationContext mappingContext, IGeneratedWriter outputter) {
 		var template = constructBlueprintFromTemplate()
 		outputter.write(new Generated("config.xml",baseDirectoryFolder,template))	
 	}

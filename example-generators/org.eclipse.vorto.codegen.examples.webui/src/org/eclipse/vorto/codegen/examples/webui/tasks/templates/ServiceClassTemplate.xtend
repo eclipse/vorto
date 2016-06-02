@@ -17,6 +17,7 @@
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -31,7 +32,7 @@ class ServiceClassTemplate implements IFileTemplate<FunctionblockModel> {
 		return "webdevice.example/src/main/java/webdevice/example/web"
 	}
 	
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context,InvocationContext invocationContext) {
 		'''
 		package webdevice.example.web;
 		
