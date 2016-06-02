@@ -25,6 +25,7 @@ import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IScopeProvider
 import com.google.inject.Binder
 import com.google.inject.Singleton
+import org.eclipse.vorto.editor.infomodel.formatting.InformationModelFormatter
 
 /** 
  * Use this class to register components to be used at runtime / without the
@@ -46,5 +47,9 @@ class InformationModelRuntimeModule extends org.eclipse.vorto.editor.infomodel.A
 
 	override Class<? extends IValueConverterService> bindIValueConverterService() {
 		return DatatypeValueConverter
+	}
+	
+	override bindIFormatter(){
+		InformationModelFormatter
 	}
 }
