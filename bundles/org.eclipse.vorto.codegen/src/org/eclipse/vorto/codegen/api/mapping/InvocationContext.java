@@ -15,7 +15,6 @@
 package org.eclipse.vorto.codegen.api.mapping;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -54,7 +53,7 @@ public class InvocationContext {
 	}
 
 	public static InvocationContext simpleInvocationContext() {
-		return new InvocationContext(Collections.emptyList());
+		return new InvocationContext(new ArrayList<MappingModel>());
 	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
