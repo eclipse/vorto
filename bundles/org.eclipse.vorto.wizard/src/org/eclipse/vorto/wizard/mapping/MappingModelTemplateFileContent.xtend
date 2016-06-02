@@ -37,9 +37,11 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 	version «context.modelVersion»
 	displayname "«context.modelName»"
 	description "«context.modelDescription»"
-		«getMappingType(mappingWizardPage)» «context.modelName» {
-			targetplatform «mappingWizardPage.targetPlatform»
-		}'''
+	using «modelId.asModelReference.importedNamespace»;«modelId.asModelReference.version»
+	
+	«getMappingType(mappingWizardPage)» «context.modelName» {
+		targetplatform «mappingWizardPage.targetPlatform»
+	}'''
 	}
 	
 	def String getMappingType(MappingModellWizardPage mappingWizardPage) {
@@ -50,7 +52,7 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 			return "functionblockmapping";
 		} else if (model instanceof Entity) {
 			return "entitymapping";
-		} else if (model instanceof Enum) {
+		} else if (model instanceof org.eclipse.vorto.core.api.model.datatype.Enum) {
 			return "enummapping";
 		}
 	}
