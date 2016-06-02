@@ -15,10 +15,8 @@ Require-Bundle: org.eclipse.vorto.editor.infomodel,
  org.eclipse.xtext.xbase,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.ui,
- org.eclipse.vorto.core,
- org.eclipse.vorto.editor.infomodel.tests
+ org.eclipse.vorto.core
 Import-Package: org.apache.log4j,
- org.eclipse.vorto.editor.infomodel,
  org.eclipse.xtext.formatting,
  org.eclipse.xtext.junit.util;resolution:=optional,
  org.hamcrest.core,
