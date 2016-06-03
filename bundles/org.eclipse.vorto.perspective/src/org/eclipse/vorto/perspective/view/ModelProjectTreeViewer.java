@@ -27,8 +27,6 @@ public class ModelProjectTreeViewer extends TreeViewer {
 
 	}
 	
-	
-	
 	public ILocalModelWorkspace getLocalModelWorkspace() {
 		return this.localModelBrowser;
 	}

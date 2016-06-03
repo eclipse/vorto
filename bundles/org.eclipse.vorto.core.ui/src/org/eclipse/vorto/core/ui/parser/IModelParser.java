@@ -43,6 +43,17 @@ public interface IModelParser {
 	<M extends Model> M parseModel(IFile modelFile, Class<M> modelClass);
 
 	/**
+	 * Parses a given model file and returns a model and errors if any
+	 * 
+	 * @param modelFile
+	 *            file to parse
+	 * @param modelClass
+	 *            expected model type @see {@link InformationModel},
+	 *            {@link FunctionblockModel} {@link Type}
+	 * @return modelWithError object
+	 */
+	<M extends Model> ParseModelResult<M> parseModelWithError(IFile modelFile, Class<M> modelClass);
+	/**
 	 * Parses a given model file
 	 * 
 	 * @param modelFile

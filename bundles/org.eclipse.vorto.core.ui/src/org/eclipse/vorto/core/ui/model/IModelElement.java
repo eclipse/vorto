@@ -14,10 +14,12 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.ui.model;
 
+import java.util.Collection;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
@@ -49,6 +51,12 @@ public interface IModelElement {
 	 * @return model instance
 	 */
 	Model getModel();
+	
+	/**
+	 * 
+	 * @return a collection of errors on this model
+	 */
+	Collection<Resource.Diagnostic> getDiagnostics();
 
 	/**
 	 * 
@@ -61,6 +69,12 @@ public interface IModelElement {
 	 * @return image of the model
 	 */
 	Image getImage();
+	
+	/**
+	 * 
+	 * @return image of the model in error state
+	 */
+	Image getErrorImage();
 
 	/**
 	 * 

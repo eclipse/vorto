@@ -18,10 +18,16 @@ import java.io.File;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
+import org.eclipse.vorto.core.ui.parser.ParseModelResult;
+import org.eclipse.xtext.linking.impl.XtextLinkingDiagnostic;
 import org.eclipse.xtext.resource.XtextResourceSet;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  * 
@@ -30,10 +36,14 @@ import org.eclipse.xtext.resource.XtextResourceSet;
  */
 public class XtextResourceModelParser implements IModelParser {
 
-	@Override
-	public <M extends Model> M parseModel(IFile modelFile, Class<M> modelClass) {
+	private static Predicate<Resource.Diagnostic> notXtextLinkingDiagnostics = new Predicate<Resource.Diagnostic>() {
+		public boolean apply(Resource.Diagnostic diagnostic) {
+			return !(diagnostic instanceof XtextLinkingDiagnostic);
+		}
+	};
+	
+	public <M extends Model> ParseModelResult<M> parseModelWithError(IFile modelFile, Class<M> modelClass) {
 		try {
-
 			URI uri = URI.createPlatformResourceURI(modelFile.getFullPath()
 					.toString(), true);
 			return parseModel(uri, modelClass);
@@ -41,12 +51,26 @@ public class XtextResourceModelParser implements IModelParser {
 			throw new RuntimeException(e);
 		}
 	}
-
+	
+	@Override
+	public <M extends Model> M parseModel(IFile modelFile, Class<M> modelClass) {
+		try {
+			URI uri = URI.createPlatformResourceURI(modelFile.getFullPath()
+					.toString(), true);
+			ParseModelResult<M> result = parseModel(uri, modelClass); 
+			return result.getModel();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
-	private <M> M parseModel(URI uri, Class<M> modelClass) {
+	private <M> ParseModelResult<M> parseModel(URI uri, Class<M> modelClass) {
 		ResourceSet rs = new XtextResourceSet();
 		if (!rs.getResource(uri, true).getContents().isEmpty()) {
-			return (M) rs.getResource(uri, true).getContents().get(0);
+			Resource resource = rs.getResource(uri, true);
+			return ParseModelResult.newResult(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics), 
+					(M) resource.getContents().get(0));
 		} else {
 			return null;
 		}
@@ -56,7 +80,8 @@ public class XtextResourceModelParser implements IModelParser {
 	public <M extends Model> M parseModel(File modelFile, Class<M> modelClass) {
 		try {
 			URI uri = URI.createFileURI(modelFile.getAbsolutePath());
-			return parseModel(uri, modelClass);
+			ParseModelResult<M> result = parseModel(uri, modelClass); 
+			return result.getModel();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

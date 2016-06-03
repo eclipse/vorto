@@ -14,25 +14,34 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.ui.model;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
+import org.eclipse.vorto.core.ui.parser.ParseModelResult;
 
 public class DatatypeModelElement extends AbstractModelElement {
 	
 	private IFile modelFile;
 	
 	private Type model;
+	
+	private Collection<Resource.Diagnostic> diagnostics; 
 
 	public DatatypeModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
-		this.model = modelParser.parseModel(modelFile, Type.class);
+		ParseModelResult<Type> parseResult = modelParser.parseModelWithError(modelFile, Type.class);
+		//this.model = modelParser.parseModel(modelFile, Type.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
-
+	
 	@Override
 	public IFile getModelFile() {
 		return modelFile;
@@ -42,16 +51,28 @@ public class DatatypeModelElement extends AbstractModelElement {
 	public Model getModel() {
 		return model;
 	}
+	
+	@Override
+	public Collection<Resource.Diagnostic> getDiagnostics() { 
+		return diagnostics; 
+	}
 
 	@Override
 	protected String getImageURLAsString() {
 		Model model = getModel();
 		if(model instanceof Entity) 
-			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt_entity.png";
-		else if(model instanceof Enum)
-			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt_enum.png";
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/ent-20x20.png";
 		else 
-			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/dt.png";
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/enu-20x20.png";
+	}
+	
+	@Override
+	protected String getErrorImageURLAsString() {
+		Model model = getModel();
+		if(model instanceof Entity) 
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/ent-error.png";
+		else 
+			return "platform:/plugin/org.eclipse.vorto.core.ui/icons/enu-error.png";
 	}
 
 	@Override
