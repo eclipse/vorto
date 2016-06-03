@@ -43,7 +43,12 @@ public class DefaultTreeModelLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public Image getImage(Object element) {
-		return ((IModelElement) element).getImage();
+		IModelElement e = (IModelElement) element;
+		if (e.getDiagnostics() != null && e.getDiagnostics().size() > 0) {
+			return e.getErrorImage();
+		}
+		
+		return e.getImage();
 	}
 
 	@Override

@@ -57,6 +57,7 @@ import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.core.ui.model.ModelParserFactory;
 import org.eclipse.vorto.core.ui.model.VortoModelProject;
+import org.eclipse.vorto.perspective.listener.ErrorDiagnosticListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelProjectListener;
 import org.eclipse.vorto.perspective.util.ImageUtil;
 import org.eclipse.vorto.perspective.util.NullModelProject;
@@ -77,6 +78,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	protected InfomodelTreeViewer infoModelTreeViewer;
 
 	private IResourceChangeListener removeModelProjectListener = null;
+	private IResourceChangeListener errorDiagnosticsListener = null;
 
 	public ProjectSelectionViewPart() {
 	}
@@ -111,7 +113,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		});
 
 		projectSelectionViewer.setContentProvider(ArrayContentProvider.getInstance());
-		Collection<IModelProject> modelProjects = getModelProjects(); 
+		Collection<IModelProject> modelProjects = getModelProjects();
 		projectSelectionViewer.setInput(modelProjects);
 
 		projectSelectionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -136,7 +138,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		infoModelTreeViewer = new InfomodelTreeViewer(modelPanel, this);
 
 		getSite().setSelectionProvider(infoModelTreeViewer.treeViewer);
-		
+
 		if (!modelProjects.isEmpty()) {
 			setSelectedProject(modelProjects.iterator().next());
 		}
@@ -149,8 +151,18 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 
 	protected void addWorkspaceChangeEventListenr() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		this.removeModelProjectListener = new RemoveModelProjectListener(this);
+		removeModelProjectListener = new RemoveModelProjectListener(this);
+		errorDiagnosticsListener = new ErrorDiagnosticListener(newRefreshCurrentProjectRunnable());
 		workspace.addResourceChangeListener(removeModelProjectListener, IResourceChangeEvent.PRE_DELETE);
+		workspace.addResourceChangeListener(errorDiagnosticsListener, IResourceChangeEvent.POST_CHANGE);
+	}
+	
+	private Runnable newRefreshCurrentProjectRunnable() {
+		return new Runnable() {
+			public void run() {
+				setSelectedProject(selectedProject);
+			}
+		};
 	}
 
 	private void setSelectedProject(final IModelProject project) {
@@ -168,9 +180,10 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 			populate(project);
 		}
 	}
-	
+
 	public void refreshCurrent() {
-		// setting the selected project will call populate on that project which in turn
+		// setting the selected project will call populate on that project which
+		// in turn
 		// will refresh it
 		setSelectedProject(selectedProject);
 	}
@@ -337,6 +350,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		super.dispose();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(removeModelProjectListener);
+		workspace.removeResourceChangeListener(errorDiagnosticsListener);
 	}
 
 	public IModelProject getSelectedProject() {

@@ -14,22 +14,32 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.ui.model;
 
+import java.util.Collection;
+
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
+import org.eclipse.vorto.core.ui.parser.ParseModelResult;
 
 public class FunctionblockModelElement extends AbstractModelElement {
 	
 	private IFile modelFile;
 	
 	private FunctionblockModel model;
+	
+	private Collection<Resource.Diagnostic> diagnostics;
 
 	public FunctionblockModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
-		this.model = modelParser.parseModel(modelFile, FunctionblockModel.class);
+		//this.model = modelParser.parseModel(modelFile, FunctionblockModel.class);
+		ParseModelResult<FunctionblockModel> parseResult = modelParser.parseModelWithError(modelFile, FunctionblockModel.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
 
 	@Override
@@ -41,10 +51,20 @@ public class FunctionblockModelElement extends AbstractModelElement {
 	public Model getModel() {
 		return model;
 	}
+	
+	@Override
+	public Collection<Resource.Diagnostic> getDiagnostics() { 
+		return diagnostics; 
+	}
 
 	@Override
 	protected String getImageURLAsString() {
 		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/fb.png";
+	}
+	
+	@Override
+	protected String getErrorImageURLAsString() {
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/fb-error.png";
 	}
 
 	@Override

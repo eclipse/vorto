@@ -44,9 +44,17 @@ public abstract class AbstractModelElement implements IModelElement,
 	// Resource#load(InputStream) close the stream after end of file
 	@Override
 	public Image getImage() {
+		return getImage(getImageURLAsString());
+	}
+	
+	public Image getErrorImage() {
+		return getImage(getErrorImageURLAsString());
+	}
+	
+	private Image getImage(String urlStr) {
 		URL url = null;
 		try {
-			url = new URL(getImageURLAsString());
+			url = new URL(urlStr);
 		} catch (MalformedURLException e) {
 			throw new RuntimeException("URL to datatype model image is not correct!", e);
 		}
@@ -54,6 +62,8 @@ public abstract class AbstractModelElement implements IModelElement,
 	}
 	
 	protected abstract String getImageURLAsString();
+	
+	protected abstract String getErrorImageURLAsString();
 	
 	@Override
 	public ModelId getId() {

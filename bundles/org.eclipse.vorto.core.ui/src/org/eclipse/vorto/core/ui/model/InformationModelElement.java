@@ -14,11 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.ui.model;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -27,17 +30,23 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
+import org.eclipse.vorto.core.ui.parser.ParseModelResult;
 
 public class InformationModelElement extends AbstractModelElement {
 	
 	private IFile modelFile;
 	
 	private InformationModel model;
+	
+	private Collection<Resource.Diagnostic> diagnostics; 
 
 	public InformationModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
-		this.model = modelParser.parseModel(modelFile, InformationModel.class);
+		// this.model = modelParser.parseModel(modelFile, InformationModel.class);
+		ParseModelResult<InformationModel> parseResult = modelParser.parseModelWithError(modelFile, InformationModel.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
 
 	@Override
@@ -49,10 +58,20 @@ public class InformationModelElement extends AbstractModelElement {
 	public Model getModel() {
 		return model;
 	}
+	
+	@Override
+	public Collection<Resource.Diagnostic> getDiagnostics() { 
+		return diagnostics; 
+	}
 
 	@Override
 	protected String getImageURLAsString() {
-		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/im.png";
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/im-20x20.png";
+	}
+	
+	@Override
+	protected String getErrorImageURLAsString() {
+		return "platform:/plugin/org.eclipse.vorto.core.ui/icons/im-error.png";
 	}
 
 	@Override
