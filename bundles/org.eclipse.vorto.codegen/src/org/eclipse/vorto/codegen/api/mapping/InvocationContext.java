@@ -75,7 +75,7 @@ public class InvocationContext {
 		for (MappingRule rule : mappingRules) {
 			for (Source ruleSource : rule.getSources()) {
 				if (ruleSource instanceof FunctionBlockSource
-						&& EcoreUtil.equals(((InfomodelSource) ruleSource).getModel(), functionblockModel)
+						&& EcoreUtil.equals(((FunctionBlockSource) ruleSource).getModel(), functionblockModel)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<FunctionblockModel>(functionblockModel,
 							(StereoTypeTarget) rule.getTarget());
