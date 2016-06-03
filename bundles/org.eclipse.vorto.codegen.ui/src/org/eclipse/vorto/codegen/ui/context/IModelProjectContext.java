@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ui.context;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
+
 /**
  * Context for the generation of model projects
  * 
@@ -22,16 +24,10 @@ public interface IModelProjectContext extends IProjectContext {
 
 	/**
 	 * 
-	 * @return the name of the model for the project
+	 * @return
 	 */
-	String getModelName();
-
-	/**
-	 * 
-	 * @return the model version for the project
-	 */
-	String getModelVersion();
-
+	ModelId getModelId();
+	
 	/**
 	 * 
 	 * @return the model description for the project

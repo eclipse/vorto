@@ -23,12 +23,12 @@ class FbmodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 		
 	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		return '''
-	namespace com.mycompany.fb
-	version «context.modelVersion»
-	displayname "«context.modelName»"
+	namespace «context.modelId.namespace»
+	version «context.modelId.version»
+	displayname "«context.modelId.name»"
 	description "«context.modelDescription»"
 	category demo	
-	functionblock «context.modelName» {
+	functionblock «context.modelId.name» {
 
 		configuration{ 
 			//Please enter functionblock configuration details.

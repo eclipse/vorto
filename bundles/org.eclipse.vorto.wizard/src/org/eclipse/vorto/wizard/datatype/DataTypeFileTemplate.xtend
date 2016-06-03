@@ -33,12 +33,12 @@ class DataTypeFileTemplate implements ITemplate<IModelProjectContext> {
 	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		//Namespace and version needs to be added..
 		return '''
-		namespace com.mycompany.type
-		version 1.0.0
-		displayname "«context.modelName»"
+		namespace «context.modelId.namespace»
+		version «context.modelId.version»
+		displayname "«context.modelId.name»"
 		description "«context.modelDescription»"
 		category demo		
-		«typeName» «context.modelName» {
+		«typeName» «context.modelId.name» {
 			//Enter «typeName» details
 		}
 		'''

@@ -32,6 +32,7 @@ import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
@@ -68,11 +69,11 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());
+		
+		final IModelProject modelProject = ModelProjectFactory.getInstance().getProject(project);
 
-		String fbName = iotWizardPage.getModelName();
-		final IFile fbfile = project.getFile(modelFolder
-				+ fbName + ModelType.Datatype.getExtension());
-
+		final IFile modelFile = modelProject.getModelElementById(iotWizardPage.getModelId()).getModelFile();
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -82,7 +83,7 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 					IWorkbenchPage page = activeWindow.getActivePage();
 					if (page != null) {
 						try {
-							IDE.openEditor(page, fbfile);
+							IDE.openEditor(page, modelFile);
 						} catch (PartInitException e) {
 							throw new RuntimeException(e);
 						}

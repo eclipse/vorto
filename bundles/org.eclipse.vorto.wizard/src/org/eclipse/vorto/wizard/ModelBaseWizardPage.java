@@ -163,8 +163,8 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 
 	protected boolean validateProject() {
 		boolean result = true;
-		String modelName = getModelName();
-		String fbVersion = getModelVersion();
+		String modelName = txtModelName.getText();
+		String fbVersion = txtVersion.getText();
 		result &= validateStrExist(modelName,
 				"Functionblock name must be specified");
 		result &= checkModelName(modelName);
@@ -174,7 +174,7 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	}
 
 	protected void modelNameChanged() {
-		String modelName = getModelName();
+		String modelName = txtModelName.getText();
 		txtDescription.setText(getDefaultDescription() + modelName);
 	}
 
@@ -201,16 +201,6 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	@Override
 	public String getProjectName() {
 		return modelProject.getProject().getName();
-	}
-	
-	@Override
-	public String getModelVersion() {
-		return txtVersion.getText();
-	}
-
-	@Override
-	public String getModelName() {
-		return txtModelName.getText();
 	}
 
 	@Override

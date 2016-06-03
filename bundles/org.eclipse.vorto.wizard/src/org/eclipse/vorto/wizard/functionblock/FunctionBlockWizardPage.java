@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.functionblock;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
@@ -50,5 +53,10 @@ public class FunctionBlockWizardPage extends ModelBaseWizardPage {
 	@Override
 	protected String getModelLabel() {
 		return "Function Block Name:";
+	}
+	
+	@Override
+	public ModelId getModelId() {
+		return ModelIdFactory.newInstance(ModelType.Functionblock, "com.mycompany.fb",txtVersion.getText(),txtModelName.getText());
 	}
 }

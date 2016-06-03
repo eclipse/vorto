@@ -29,6 +29,7 @@ import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public class FunctionBlockWizard extends AbstractVortoWizard implements
@@ -67,10 +68,10 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());
 
-		String fbName = iotWizardPage.getModelName();
-		final IFile fbfile = project.getFile(modelFolder
-				+ fbName + SUFFIX);
+		final IModelProject modelProject = ModelProjectFactory.getInstance().getProject(project);
 
+		final IFile modelFile = modelProject.getModelElementById(iotWizardPage.getModelId()).getModelFile();
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -80,7 +81,7 @@ public class FunctionBlockWizard extends AbstractVortoWizard implements
 					IWorkbenchPage page = activeWindow.getActivePage();
 					if (page != null) {
 						try {
-							IDE.openEditor(page, fbfile);
+							IDE.openEditor(page, modelFile);
 						} catch (PartInitException e) {
 							throw new RuntimeException(e);
 						}

@@ -31,6 +31,7 @@ import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
@@ -69,10 +70,10 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());
 
-		String modelName = iotWizardPage.getModelName();
-		final IFile modelfile = project.getFile(modelFolder
-				+ modelName + SUFFIX);
+		final IModelProject modelProject = ModelProjectFactory.getInstance().getProject(project);
 
+		final IFile modelFile = modelProject.getModelElementById(iotWizardPage.getModelId()).getModelFile();
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -82,7 +83,7 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 					IWorkbenchPage page = activeWindow.getActivePage();
 					if (page != null) {
 						try {
-							IDE.openEditor(page, modelfile);
+							IDE.openEditor(page, modelFile);
 						} catch (PartInitException e) {
 							throw new RuntimeException(e);
 						}

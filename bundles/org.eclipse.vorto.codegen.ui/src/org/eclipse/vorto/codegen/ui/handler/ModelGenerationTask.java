@@ -21,21 +21,18 @@ import org.eclipse.vorto.codegen.ui.context.IModelProjectContext;
 public class ModelGenerationTask extends
 		AbstractTemplateGeneratorTask<IModelProjectContext> {
 
-	private final String suffix;
 	private final ITemplate<IModelProjectContext> fileTemplate;
 	private final String modelFolder;
 
 	public ModelGenerationTask(String fileSuffix,
 			ITemplate<IModelProjectContext> template, String modelFolder) {
-		suffix = fileSuffix.startsWith(".") ? fileSuffix : "."
-				.concat(fileSuffix);
 		fileTemplate = template;
 		this.modelFolder = modelFolder;
 	}
 
 	@Override
 	public String getFileName(IModelProjectContext ctx) {
-		return ctx.getModelName() + suffix;
+		return ctx.getModelId().getFileName();
 	}
 
 	@Override

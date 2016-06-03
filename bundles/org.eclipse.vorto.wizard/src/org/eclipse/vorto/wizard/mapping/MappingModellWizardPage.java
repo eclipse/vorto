@@ -16,6 +16,8 @@ package org.eclipse.vorto.wizard.mapping;
 
 import java.util.List;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
@@ -48,27 +50,13 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 	protected boolean validateProject() {
 		boolean result = super.validateProject();
 		String platform = txtPlatform.getText();
-		result &= checkMappingModelExists(getModelName(), "Mapping model already exists");
+		result &= checkMappingModelExists(getModelId(), "Mapping model already exists");
 		result &= validateStrExist(platform, "Target Platform must be provided.");
 		return result;
 	}
 	
-	private boolean checkMappingModelExists(String modelName, String errorMessage) {
-		List<IModelElement> modelElements = getModelProject().getModelElementsByType(ModelType.Mapping);
-		
-		List<String> modelNames = Lists.transform(modelElements, new com.google.common.base.Function<IModelElement, String>() {
-			@Override
-			public String apply(IModelElement element) {
-				return element.getId().getName();
-			}
-			
-		});
-		
-		if(modelNames.contains(modelName)){
-			setErrorMessage(errorMessage);
-			return false;
-		}
-		return true;
+	private boolean checkMappingModelExists(ModelId modelId, String errorMessage) {
+		return getModelProject().exists(modelId);
 	}
 
 	protected String getTargetPlatform() {
@@ -102,6 +90,11 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 
 	protected String getDefaultTargetPlatform() {
 		return "myplatform";
+	}
+	
+	@Override
+	public ModelId getModelId() {
+		return ModelIdFactory.newInstance(ModelType.Mapping, "com.mycompany.mapping",txtVersion.getText(),txtModelName.getText());
 	}
 
 }

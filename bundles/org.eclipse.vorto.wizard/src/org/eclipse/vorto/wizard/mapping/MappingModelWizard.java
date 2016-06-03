@@ -33,6 +33,7 @@ import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
 public class MappingModelWizard extends AbstractVortoWizard implements INewWizard {
@@ -72,10 +73,10 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 		IProject project = workspace.getRoot().getProject(
 				iotWizardPage.getProjectName());
 
-		String modelName = iotWizardPage.getModelName();
-		final IFile modelfile = project.getFile(modelFolder
-				+ modelName + ModelType.Mapping.getExtension());
+		final IModelProject modelProject = ModelProjectFactory.getInstance().getProject(project);
 
+		final IFile modelFile = modelProject.getModelElementById(iotWizardPage.getModelId()).getModelFile();
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -85,7 +86,7 @@ public class MappingModelWizard extends AbstractVortoWizard implements INewWizar
 					IWorkbenchPage page = activeWindow.getActivePage();
 					if (page != null) {
 						try {
-							IDE.openEditor(page, modelfile);
+							IDE.openEditor(page, modelFile);
 						} catch (PartInitException e) {
 							throw new RuntimeException(e);
 						}

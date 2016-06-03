@@ -23,12 +23,12 @@ class InfomodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 
 	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		return '''
-	namespace com.mycompany
-	version «context.modelVersion»
-	displayname "«context.modelName»"
+	namespace «context.modelId.namespace»
+	version «context.modelId.version»
+	displayname "«context.modelId.name»"
 	description "«context.modelDescription»"
 	category demo	
-	infomodel «context.modelName» {
+	infomodel «context.modelId.name» {
 
 	}	
 		'''

@@ -14,6 +14,9 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.datatype;
 
+import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
 
@@ -50,6 +53,11 @@ public class DatatypeWizardPage extends ModelBaseWizardPage {
 	@Override
 	protected String getDefaultModelName() {
 		return "New" + this.datatype;
+	}
+
+	@Override
+	public ModelId getModelId() {
+		return ModelIdFactory.newInstance(ModelType.Datatype, "com.mycompany.type",txtVersion.getText(),txtModelName.getText());
 	}
 
 }

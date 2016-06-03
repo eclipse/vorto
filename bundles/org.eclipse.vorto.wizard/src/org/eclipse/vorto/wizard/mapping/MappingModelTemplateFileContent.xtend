@@ -35,13 +35,13 @@ class MappingModelTemplateFileContent implements ITemplate<IModelProjectContext>
 	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		var mappingWizardPage = context as MappingModellWizardPage;
 		return '''
-	namespace com.mycompany
-	version «context.modelVersion»
-	displayname "«context.modelName»"
+	namespace «context.modelId.namespace»
+	version «context.modelId.version»
+	displayname "«context.modelId.name»"
 	description "«context.modelDescription»"
 	using «modelId.asModelReference.importedNamespace»;«modelId.asModelReference.version»
 	
-	«getMappingType(mappingWizardPage)» «context.modelName» {
+	«getMappingType(mappingWizardPage)» «context.modelId.name» {
 		targetplatform «mappingWizardPage.targetPlatform»
 	}'''
 	}
