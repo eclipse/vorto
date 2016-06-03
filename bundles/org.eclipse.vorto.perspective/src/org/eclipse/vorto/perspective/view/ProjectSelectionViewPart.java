@@ -78,6 +78,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	protected InfomodelTreeViewer infoModelTreeViewer;
 
 	private IResourceChangeListener removeModelProjectListener = null;
+	private IResourceChangeListener errorDiagnosticsListener = null;
 
 	public ProjectSelectionViewPart() {
 	}
@@ -150,8 +151,10 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 
 	protected void addWorkspaceChangeEventListenr() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		workspace.addResourceChangeListener(new RemoveModelProjectListener(this), IResourceChangeEvent.PRE_DELETE);
-		workspace.addResourceChangeListener(new ErrorDiagnosticListener(newRefreshCurrentProjectRunnable()));
+		removeModelProjectListener = new RemoveModelProjectListener(this);
+		errorDiagnosticsListener = new ErrorDiagnosticListener(newRefreshCurrentProjectRunnable());
+		workspace.addResourceChangeListener(removeModelProjectListener, IResourceChangeEvent.PRE_DELETE);
+		workspace.addResourceChangeListener(errorDiagnosticsListener, IResourceChangeEvent.POST_CHANGE);
 	}
 	
 	private Runnable newRefreshCurrentProjectRunnable() {
@@ -347,6 +350,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		super.dispose();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(removeModelProjectListener);
+		workspace.removeResourceChangeListener(errorDiagnosticsListener);
 	}
 
 	public IModelProject getSelectedProject() {
