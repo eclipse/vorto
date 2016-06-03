@@ -16,6 +16,8 @@
  
 package org.eclipse.vorto.codegen.api
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+
 /*
  * A specific generation task during the entire Code generation process
  * 
@@ -26,5 +28,5 @@ interface ICodeGeneratorTask<InformationModelFragment> {
 	/**
 	 * Generates code from the specified context and sends it to the specified outputter
 	 */
-	def void generate(InformationModelFragment model, IMappingContext mappingContext, IGeneratedWriter writer);
+	def void generate(InformationModelFragment element, InvocationContext context, IGeneratedWriter writer);
 }

@@ -17,6 +17,7 @@
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -31,7 +32,7 @@ class IndexHtmlFileTemplate implements IFileTemplate<InformationModel> {
 		return "webdevice.example/src/main/resources/static";
 	}
 			
-	override getContent(InformationModel informationModel) {
+	override getContent(InformationModel informationModel,InvocationContext invocationContext) {
 		return '''
 		<html ng-app="deviceApp">
 		<head>

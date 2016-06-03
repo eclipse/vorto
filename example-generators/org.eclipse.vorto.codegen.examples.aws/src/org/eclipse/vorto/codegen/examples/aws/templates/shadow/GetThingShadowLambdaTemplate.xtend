@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.aws.templates.shadow
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Property
 
 /**
@@ -30,7 +31,7 @@ class GetThingShadowLambdaTemplate implements IFileTemplate<Property> {
 		return "aws/shadow";
 	}
 	
-	override getContent(Property context) {
+	override getContent(Property element,InvocationContext context) {
 		'''
 		var config = {
 		    "thingName": "<PUT THING NAME HERE>",
@@ -48,8 +49,8 @@ class GetThingShadowLambdaTemplate implements IFileTemplate<Property> {
 		            callback(err);
 		        } else {          
 		            var jsonPayload = JSON.parse(data.payload);
-		            var «context.name» = jsonPayload.state.reported["«context.name»"];
-		            callback(null,«context.name»);
+		            var «element.name» = jsonPayload.state.reported["«element.name»"];
+		            callback(null,«element.name»);
 		        }
 		    });
 		};

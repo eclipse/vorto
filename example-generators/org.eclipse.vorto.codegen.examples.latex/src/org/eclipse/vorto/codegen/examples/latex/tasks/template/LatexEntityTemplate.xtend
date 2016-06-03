@@ -14,9 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
-import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.utils.Utils
+import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 
 class LatexEntityTemplate implements ITemplate<Entity> {
@@ -32,19 +33,19 @@ class LatexEntityTemplate implements ITemplate<Entity> {
 		this.complexTemplate = complexTemplate;
 	}
 	
-	override getContent(Entity entity) {
+	override getContent(Entity entity,InvocationContext invocationContext) {
 		'''
 		\subsection{«entity.displayname»}
 			«entity.description»
 			The properties of the data type «entity.displayname»\footnote{Name: «entity.name», Namespace: «entity.namespace», Version: «entity.version».} are described below:\\\\
 			«FOR property:entity.properties»
 				«IF (Utils.isSimpleNumeric(property))»
-					«constraintTemplate.getContent(property)»
+					«constraintTemplate.getContent(property,invocationContext)»
 				«ELSE»
 					«IF (property.type instanceof PrimitivePropertyType)»
-						«simpleTemplate.getContent(property)»
+						«simpleTemplate.getContent(property,invocationContext)»
 					«ELSE»
-						«complexTemplate.getContent(property)»
+						«complexTemplate.getContent(property,invocationContext)»
 					«ENDIF»
 				«ENDIF»
 			«ENDFOR»

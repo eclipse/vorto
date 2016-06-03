@@ -22,10 +22,11 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaClassMethodParameterTemplate implements ITemplate<Param>{
 	
-	override getContent(Param property) {
+	override getContent(Param property,InvocationContext invocationContext) {
 		'''
 		«IF property instanceof PrimitiveParam»
 			«ValueMapper.mapSimpleDatatype((property as PrimitiveParam).type as PrimitiveType)» «property.name»

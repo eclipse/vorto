@@ -14,14 +14,16 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public abstract class AbstractTemplateGeneratorTask<InformationModelFragment> implements ICodeGeneratorTask<InformationModelFragment> {
 
-	public void generate(final InformationModelFragment fragmentModel, final IMappingContext mappingContext, final IGeneratedWriter writer) {
+	public void generate(final InformationModelFragment fragmentModel, final InvocationContext context, final IGeneratedWriter writer) {
 
-		Generated generated = new Generated(getFileName(fragmentModel), getPath(fragmentModel), getTemplate().getContent(fragmentModel));
+		Generated generated = new Generated(getFileName(fragmentModel), getPath(fragmentModel), getTemplate().getContent(fragmentModel,context));
 		writer.write(generated);
 	}
 

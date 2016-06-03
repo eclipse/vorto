@@ -15,12 +15,13 @@
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 
 class LatexOperationTemplate implements ITemplate<Operation> {
 	
-	override getContent(Operation operation) {
+	override getContent(Operation operation,InvocationContext invocationContext) {
 		'''
 			\begin{tabular}{|p{4.5cm}|p{4cm}|p{7cm}|}
 			\hline

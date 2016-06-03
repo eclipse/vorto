@@ -18,8 +18,8 @@ package org.eclipse.vorto.codegen.ui.tasks;
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * Generates a MANIFEST.MF file in the META-INF folder
@@ -37,9 +37,9 @@ public class ManifestFileModule<ProjectMetaData> implements
 		this.template = template;
 	}
 
-	public void generate(ProjectMetaData metaData, IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(ProjectMetaData metaData, InvocationContext invocationContext, IGeneratedWriter outputter) {
 		Generated generatedPom = new Generated(FILE_NAME, FOLDER_NAME,
-				template.getContent(metaData));
+				template.getContent(metaData,invocationContext));
 		outputter.write(generatedPom);
 	}
 }

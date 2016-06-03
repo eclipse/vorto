@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
 
@@ -26,7 +27,7 @@ class OperationParametersValidationTemplate implements ITemplate<Operation>{
 		this.operationSingleParameterValidationTemplate = operationSingleParameterValidationTemplate;
 	}
 	
-	override getContent(Operation operation) {
+	override getContent(Operation operation,InvocationContext invocationContext) {
 		'''
 			{
 				"$schema": "http://json-schema.org/draft-04/schema#",
@@ -35,7 +36,7 @@ class OperationParametersValidationTemplate implements ITemplate<Operation>{
 				"type": "object",
 				"properties": {
 					«FOR Param param : operation.params SEPARATOR ', '»
-						«operationSingleParameterValidationTemplate.getContent(param)»
+						«operationSingleParameterValidationTemplate.getContent(param,invocationContext)»
 					«ENDFOR»
 				}
 			}

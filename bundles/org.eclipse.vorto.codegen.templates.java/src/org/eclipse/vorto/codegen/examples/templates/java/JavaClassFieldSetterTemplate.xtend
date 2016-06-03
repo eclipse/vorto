@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 	
@@ -31,7 +32,7 @@ class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 		this.setterPrefix = setterPrefix;
 	}
 	
-	override getContent(Property property) {
+	override getContent(Property property,InvocationContext invocationContext) {
 		'''
 		/**
 		* Setter for «property.name».

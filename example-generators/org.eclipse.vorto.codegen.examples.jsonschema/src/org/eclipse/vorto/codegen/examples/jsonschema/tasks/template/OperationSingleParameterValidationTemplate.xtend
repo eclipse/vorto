@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Param
@@ -36,7 +37,7 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 		this.primitiveTypeValidationTemplate = primitiveTypeValidationTemplate;
 	}
 	
-	override getContent(Param param) {
+	override getContent(Param param,InvocationContext invocationContext) {
 		'''
 			«IF param instanceof PrimitiveParam»
 				«var primitiveParam = param as PrimitiveParam»
@@ -44,12 +45,12 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 					"«param.name»": {
 						"type": "array",
 						"items" : {
-							«primitiveTypeValidationTemplate.getContent(primitiveParam.type)»
+							«primitiveTypeValidationTemplate.getContent(primitiveParam.type,invocationContext)»
 						}
 					}
 				«ELSE»
 					"«param.name»": {
-						«primitiveTypeValidationTemplate.getContent(primitiveParam.type)»
+						«primitiveTypeValidationTemplate.getContent(primitiveParam.type,invocationContext)»
 					}
 				«ENDIF»
 			«ELSEIF param instanceof RefParam»
@@ -61,7 +62,7 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 							"items" : {
 								"type": "object",
 								"properties": {
-									«entityValidationTemplate.getContent(refParam.type as Entity)»
+									«entityValidationTemplate.getContent(refParam.type as Entity,invocationContext)»
 								}
 							}
 						}
@@ -69,7 +70,7 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 						"«param.name»": {
 							"type": "object",
 							"properties": {
-								«entityValidationTemplate.getContent(refParam.type as Entity)»
+								«entityValidationTemplate.getContent(refParam.type as Entity,invocationContext)»
 							}
 						}
 					«ENDIF»
@@ -78,12 +79,12 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 						"«param.name»": {
 							"type": "array",
 							"items" : {
-								«enumValidationTemplate.getContent(refParam.type as Enum)»
+								«enumValidationTemplate.getContent(refParam.type as Enum,invocationContext)»
 							}
 						}
 					«ELSE»
 						"«param.name»": {
-							«enumValidationTemplate.getContent(refParam.type as Enum)»
+							«enumValidationTemplate.getContent(refParam.type as Enum,invocationContext)»
 						}
 					«ENDIF»
 				«ENDIF»

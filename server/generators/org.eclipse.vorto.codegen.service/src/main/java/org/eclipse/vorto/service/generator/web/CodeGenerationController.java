@@ -12,9 +12,9 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -101,7 +101,7 @@ public class CodeGenerationController {
 	}
 	
 	
-	private IMappingContext resolveMappingContext(InformationModel model, String targetPlatform) {
+	private InvocationContext resolveMappingContext(InformationModel model, String targetPlatform) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
 		return new MappingZipFileExtractor(mappingResources).extract();
 	}

@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.common.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.coap.CoAPUtils
 import org.eclipse.vorto.core.api.model.datatype.Property
 
@@ -31,7 +32,7 @@ class JavaFBPropertyPrimitiveParamWrapperTemplate implements ITemplate<Property>
 		this.classPackage = classPackage;
 	}
 	
-	override getContent(Property property) {
+	override getContent(Property property,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************

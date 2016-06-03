@@ -14,12 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
-import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.Enum
 
 class LatexEnumTemplate implements ITemplate<Enum> {
 	
-	override getContent(Enum en) {
+	override getContent(Enum en,InvocationContext invocationContext) {
 		'''
 			## Enum *«en.name»*
 			### Unique Identification

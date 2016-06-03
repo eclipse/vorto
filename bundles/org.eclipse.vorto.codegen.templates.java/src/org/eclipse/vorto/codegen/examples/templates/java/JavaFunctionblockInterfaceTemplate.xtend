@@ -21,6 +21,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -43,7 +44,7 @@ class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel
 		this.parameterTemplate = parameterTemplate
 	}
 	
-	override getContent(FunctionblockModel fbm) {
+	override getContent(FunctionblockModel fbm,InvocationContext invocationContext) {
 		'''
 		/*
 		*****************************************************************************************
@@ -86,12 +87,12 @@ class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel
 				*/
 				«IF op.returnType instanceof ReturnObjectType»
 					«var objectType = op.returnType as ReturnObjectType»
-					public «objectType.returnType.name» «op.name»(«getParameterString(op)»);
+					public «objectType.returnType.name» «op.name»(«getParameterString(op,invocationContext)»);
 				«ELSEIF op.returnType instanceof ReturnPrimitiveType»
 					«var primitiveType = op.returnType as ReturnPrimitiveType»
-					public «primitiveType.returnType.getName» «op.name»(«getParameterString(op)»);
+					public «primitiveType.returnType.getName» «op.name»(«getParameterString(op,invocationContext)»);
 				«ELSE»
-					public void «op.name»(«getParameterString(op)»); 
+					public void «op.name»(«getParameterString(op,invocationContext)»); 
 				«ENDIF»
 
 			«ENDFOR»
@@ -99,10 +100,10 @@ class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel
 		'''
 	}
 	
-	 def String getParameterString(Operation op) {
+	 def String getParameterString(Operation op,InvocationContext invocationContext) {
 		var String result="";
 		for (param : op.params) {
-			result =  result + ", " + parameterTemplate.getContent(param);
+			result =  result + ", " + parameterTemplate.getContent(param,invocationContext);
 		}
 		if (result.isNullOrEmpty) {
 			return "";

@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.ui.model.IModelProject;
@@ -58,7 +58,7 @@ public class InfomodelWizard extends AbstractVortoWizard implements INewWizard {
 	public boolean performFinish() {
 		
 		new ModelGenerationTask(SUFFIX, new InfomodelTemplateFileContent(), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
+				InvocationContext.simpleInvocationContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 
 		openFBModelWithDefaultEditor();
 		return true;

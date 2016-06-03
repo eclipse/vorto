@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -35,7 +36,7 @@ class EventValidationTemplate implements ITemplate<Event>{
 		this.entityValidationTemplate = entityValidationTemplate;
 	}
 	
-	override getContent(Event event) {
+	override getContent(Event event,InvocationContext invocationContext) {
 		'''
 			{
 				"$schema": "http://json-schema.org/draft-04/schema#",
@@ -51,12 +52,12 @@ class EventValidationTemplate implements ITemplate<Event>{
 								"«property.name»": {
 									"type": "array",
 									"items": {
-										«primitiveTypeValidationTemplate.getContent(primitiveType.type)»
+										«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
 									}
 								}
 							«ELSE»
 								"«property.name»": {
-									«primitiveTypeValidationTemplate.getContent(primitiveType.type)»
+									«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
 								}
 							«ENDIF»
 						«ELSEIF propertyType instanceof ObjectPropertyType»
@@ -68,7 +69,7 @@ class EventValidationTemplate implements ITemplate<Event>{
 										"items": {
 											"type": "object",
 											"properties": {
-												«entityValidationTemplate.getContent(objectType.type as Entity)»
+												«entityValidationTemplate.getContent(objectType.type as Entity,invocationContext)»
 											}
 										}
 									}
@@ -76,7 +77,7 @@ class EventValidationTemplate implements ITemplate<Event>{
 									"«property.name»": {
 										"type": "object",
 										"properties": {
-											«entityValidationTemplate.getContent(objectType.type as Entity)»
+											«entityValidationTemplate.getContent(objectType.type as Entity,invocationContext)»
 										}
 									}
 								«ENDIF»
@@ -85,12 +86,12 @@ class EventValidationTemplate implements ITemplate<Event>{
 									"«property.name»": {
 										"type": "array",
 										"items": {
-											«enumValidationTemplate.getContent(objectType.type as Enum)»
+											«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
 										}
 									}
 								«ELSE»
 									"«property.name»": {
-										«enumValidationTemplate.getContent(objectType.type as Enum)»
+										«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
 									}
 								«ENDIF»
 							«ENDIF»

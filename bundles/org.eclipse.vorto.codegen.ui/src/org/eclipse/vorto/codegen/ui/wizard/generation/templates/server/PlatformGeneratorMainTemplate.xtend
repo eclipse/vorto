@@ -1,6 +1,7 @@
 package org.eclipse.vorto.codegen.ui.wizard.generation.templates.server
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
 class PlatformGeneratorMainTemplate implements IFileTemplate<IGeneratorProjectContext> {
@@ -13,7 +14,7 @@ class PlatformGeneratorMainTemplate implements IFileTemplate<IGeneratorProjectCo
 		return "src/main/java/"+context.packageFolders+"/"+context.generatorName.toLowerCase+"/service"
 	}
 	
-	override getContent(IGeneratorProjectContext context) {
+	override getContent(IGeneratorProjectContext context,InvocationContext invocationContext) {
 		'''
 		package «context.packageName».«context.generatorName.toLowerCase».service;
 		

@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
 public class SingleFileContentCodeGeneratorTask implements ICodeGeneratorTask<ModelId> {
@@ -27,7 +28,7 @@ public class SingleFileContentCodeGeneratorTask implements ICodeGeneratorTask<Mo
 	}
 
 	@Override
-	public void generate(ModelId infoModelId,IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(ModelId infoModelId,InvocationContext context, IGeneratedWriter outputter) {
 		outputter.write(new Generated(fileName,null,content));
 	}
 		

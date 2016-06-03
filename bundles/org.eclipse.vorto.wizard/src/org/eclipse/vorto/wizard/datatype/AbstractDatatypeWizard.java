@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.api.model.model.ModelType;
@@ -59,7 +59,7 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 
 	public boolean performFinish() {
 		new ModelGenerationTask(ModelType.Datatype.getExtension(), new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
-				new DefaultMappingContext(), new ProjectFileOutputter(this.modelProject.getProject()));
+				InvocationContext.simpleInvocationContext(), new ProjectFileOutputter(this.modelProject.getProject()));
 		openDatatypeWithDefaultEditor();
 		return true;
 	}

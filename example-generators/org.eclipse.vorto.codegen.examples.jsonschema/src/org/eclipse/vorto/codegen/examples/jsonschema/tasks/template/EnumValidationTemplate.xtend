@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class EnumValidationTemplate implements ITemplate<Enum>{
 	
@@ -23,7 +24,7 @@ class EnumValidationTemplate implements ITemplate<Enum>{
 		
 	}
 	
-	override getContent(Enum en) {
+	override getContent(Enum en,InvocationContext invocationContext) {
 		'''
 			"enum": [ «FOR literal: en.enums SEPARATOR ', '»"«literal.name»"«ENDFOR» ]
 		'''

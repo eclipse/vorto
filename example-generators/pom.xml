@@ -26,6 +26,7 @@
 		<module>org.eclipse.vorto.codegen.examples.jsonschema</module>
 		<module>org.eclipse.vorto.codegen.examples.coap</module>
 		<module>org.eclipse.vorto.codegen.examples.aws</module>
+		<module>org.eclipse.vorto.codegen.examples.lwm2m</module>
   </modules>
   
 </project>

@@ -19,14 +19,14 @@ import org.eclipse.vorto.codegen.api.DatatypeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.IMapped;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.ios.templates.CoreBluetoothDetectionTemplate;
 import org.eclipse.vorto.codegen.examples.ios.templates.DeviceServiceTemplate;
 import org.eclipse.vorto.codegen.examples.ios.templates.EntityClassTemplate;
 import org.eclipse.vorto.codegen.examples.ios.templates.EnumClassTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 
 /**
  * 
@@ -36,21 +36,19 @@ import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 public class IOSPlatformGenerator implements IVortoCodeGenerator {
 	
 	@Override
-	public IGenerationResult generate(InformationModel context, IMappingContext mappingContext) {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
 		generator.addTask(new DatatypeGeneratorTask(new EntityClassTemplate(), new EnumClassTemplate()));
 		
-		if (!mappingContext.getAllRules().isEmpty()) {
-			StereoTypeTarget target = (StereoTypeTarget)mappingContext.getAllRules().get(0).getTarget();
-			
-			if ("ble".equalsIgnoreCase(target.getName())) {
-				generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CoreBluetoothDetectionTemplate()));
-				generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DeviceServiceTemplate()));
-			} 	
-		}
+		IMapped<InformationModel> mappedElement = invocationContext.getMappedElement(context, "binding");
 		
-		generator.generate(context,mappingContext, outputter);
+		if (mappedElement.hasAttribute("ble")) {
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CoreBluetoothDetectionTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DeviceServiceTemplate()));
+		}
+				
+		generator.generate(context,invocationContext, outputter);
 		
 		return outputter;
 	}

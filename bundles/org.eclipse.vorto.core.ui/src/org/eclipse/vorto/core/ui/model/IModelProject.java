@@ -55,7 +55,7 @@ public interface IModelProject {
 	IModelElement getModelElementById(ModelId modelId);
 	
 	List<MappingModel> getMapping(String targetPlatform);
-
+	
 	IModelElement addModelElement(ModelId modelId, InputStream inputStream);
 
 	boolean exists(ModelId modelId);

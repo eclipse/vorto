@@ -18,6 +18,7 @@ import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -43,7 +44,7 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 		this.operationTemplate = operationTemplate
 	}
 	
-	override getContent(FunctionblockModel fbm) {
+	override getContent(FunctionblockModel fbm,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************
@@ -105,7 +106,7 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 				«ENDIF»
 				
 				«FOR operation : fb.operations»
-						«operationTemplate.getContent(operation)»	
+						«operationTemplate.getContent(operation,invocationContext)»	
 				«ENDFOR»
 				
 			}

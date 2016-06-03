@@ -15,12 +15,13 @@
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.markdown.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 
 class MarkdownEntityTemplate implements ITemplate<Entity> {
 	
-	override getContent(Entity entity) {
+	override getContent(Entity entity,InvocationContext invocationContext) {
 		'''
 			## Entity *«entity.name»*
 			### Unique Identification

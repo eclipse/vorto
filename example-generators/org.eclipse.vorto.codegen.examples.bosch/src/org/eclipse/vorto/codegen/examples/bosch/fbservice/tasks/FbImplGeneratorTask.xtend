@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates.FbServiceClassTemplate
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
@@ -36,7 +36,7 @@ class FbImplGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		return context.functionBlockName + CLASS_POST_FIX + ".java";
 	}
 	
-	override generate(FunctionblockModel fbm,IMappingContext mappingContext, IGeneratedWriter outputter) {
+	override generate(FunctionblockModel fbm,InvocationContext mappingContext, IGeneratedWriter outputter) {
 		var template = FbServiceClassTemplate.generate(context);
 		outputter.write(new Generated(fileName,getLocation(),template));
 	}

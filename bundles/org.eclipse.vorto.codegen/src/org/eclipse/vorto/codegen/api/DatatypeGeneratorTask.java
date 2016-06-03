@@ -20,6 +20,7 @@ import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
@@ -47,7 +48,7 @@ public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationMode
 	}
 	
 	@Override
-	public void generate(InformationModel ctx, IMappingContext mappingContext, IGeneratedWriter writer) {
+	public void generate(InformationModel ctx, InvocationContext context, IGeneratedWriter writer) {
 	    Set<Type> allTypesUsedInModel = new HashSet<>();
 	    for (FunctionblockProperty prop : ctx.getProperties()) {
 	    	allTypesUsedInModel.addAll(getTypes(prop.getType()));
@@ -55,9 +56,9 @@ public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationMode
 	    
 		for (Type type : allTypesUsedInModel) {
 			if (type instanceof Entity) {
-				writer.write(new Generated(entityTemplate.getFileName((Entity)type),entityTemplate.getPath((Entity)type),entityTemplate.getContent((Entity)type)));
+				writer.write(new Generated(entityTemplate.getFileName((Entity)type),entityTemplate.getPath((Entity)type),entityTemplate.getContent((Entity)type,context)));
 			} else if (type instanceof Enum) {
-				writer.write(new Generated(enumTemplate.getFileName((Enum)type),enumTemplate.getPath((Enum)type),enumTemplate.getContent((Enum)type)));
+				writer.write(new Generated(enumTemplate.getFileName((Enum)type),enumTemplate.getPath((Enum)type),enumTemplate.getContent((Enum)type,context)));
 			}
 		}
 	}

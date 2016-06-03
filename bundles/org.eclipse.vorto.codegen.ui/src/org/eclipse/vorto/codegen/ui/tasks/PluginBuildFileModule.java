@@ -18,8 +18,8 @@ package org.eclipse.vorto.codegen.ui.tasks;
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * Generates a build.properties for a plug-in development project
@@ -36,9 +36,9 @@ public class PluginBuildFileModule<Context> implements
 		this.template = template;
 	}
 
-	public void generate(Context metaData, IMappingContext context, IGeneratedWriter outputter) {
+	public void generate(Context metaData, InvocationContext invocationContext, IGeneratedWriter outputter) {
 		Generated generatedBuildFile = new Generated(FILE_NAME, null,
-				template.getContent(metaData));
+				template.getContent(metaData,invocationContext));
 		outputter.write(generatedBuildFile);
 	}
 }

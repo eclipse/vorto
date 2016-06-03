@@ -19,10 +19,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.SingleFileContentCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.tasks.CopyResourceTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
 import org.eclipse.vorto.codegen.ui.tasks.natures.MavenNature;
@@ -38,7 +38,7 @@ public class CodeGenerationHelper {
 		} else {
 			generator.addTask(new SingleFileContentCodeGeneratorTask(generatedResult.getFileName(),generatedResult.getContent()));
 		}
-		generator.generate(modelId,new DefaultMappingContext(), new NullProgressMonitor());
+		generator.generate(modelId,InvocationContext.simpleInvocationContext(), new NullProgressMonitor());
 		
 		if (zipContentTask.isMavenContent()) {
 			createMavenProjectFromGeneratedCode(generator);
@@ -55,7 +55,7 @@ public class CodeGenerationHelper {
 				EclipseProjectGenerator<IResource> projectGenerator = new EclipseProjectGenerator<>(folderResource.getName());
 				projectGenerator.addNature(MavenNature.MAVEN_NATURE_STRING);
 				projectGenerator.addTask(new CopyResourceTask<IResource>(folderResource.getLocationURI().toURL(), ""));
-				projectGenerator.generate(folderResource,new DefaultMappingContext(), new NullProgressMonitor());
+				projectGenerator.generate(folderResource,InvocationContext.simpleInvocationContext(), new NullProgressMonitor());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException("Could not postprocess downloaded generated files",e);

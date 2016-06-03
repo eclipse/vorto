@@ -17,20 +17,22 @@ package org.eclipse.vorto.codegen.api;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ChainedCodeGeneratorTask<Context> implements ICodeGeneratorTask<Context> {
+public class ChainedCodeGeneratorTask<Element> implements ICodeGeneratorTask<Element> {
 
-	private List<ICodeGeneratorTask<Context>> tasks = new ArrayList<ICodeGeneratorTask<Context>>();
+	private List<ICodeGeneratorTask<Element>> tasks = new ArrayList<ICodeGeneratorTask<Element>>();
 		
-	public void addTask(ICodeGeneratorTask<Context> task) {
+	public void addTask(ICodeGeneratorTask<Element> task) {
 		this.tasks.add(task);
 	}
 
-	public void generate(Context ctx, IMappingContext mappingContext, IGeneratedWriter outputter) {
-		for (ICodeGeneratorTask<Context> task : tasks) {
-			task.generate(ctx, mappingContext, outputter);
+	public void generate(Element element, InvocationContext context, IGeneratedWriter outputter) {
+		for (ICodeGeneratorTask<Element> task : tasks) {
+			task.generate(element, context, outputter);
 		}
 	}
 }

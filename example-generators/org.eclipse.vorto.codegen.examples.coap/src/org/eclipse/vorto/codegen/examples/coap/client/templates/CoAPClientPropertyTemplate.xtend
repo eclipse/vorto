@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.coap.client.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.coap.CoAPUtils
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -34,7 +35,7 @@ class CoAPClientPropertyTemplate implements ITemplate<Property> {
 
 	}
 	
-	override getContent(Property property) {
+	override getContent(Property property,InvocationContext invocationContext) {
 		'''
 		/**
 		* «property.description»

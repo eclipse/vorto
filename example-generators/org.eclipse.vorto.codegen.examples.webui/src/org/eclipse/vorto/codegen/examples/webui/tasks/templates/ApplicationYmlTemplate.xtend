@@ -1,6 +1,7 @@
 package org.eclipse.vorto.codegen.examples.webui.tasks.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
@@ -16,7 +17,7 @@ class ApplicationYmlTemplate implements IFileTemplate<InformationModel> {
 		return "webdevice.example/src/main/resources"
 	}
 	
-	override getContent(InformationModel context) {
+	override getContent(InformationModel context,InvocationContext invocationContext) {
 		'''
 		server:
 		  port: 8080

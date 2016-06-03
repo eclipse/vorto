@@ -12,34 +12,29 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.api;
+package org.eclipse.vorto.codegen.service.lwm2m;
 
-import org.eclipse.vorto.core.api.model.mapping.Attribute;
-import org.eclipse.vorto.core.api.model.mapping.MappingRule;
-import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.examples.lwm2m.LWM2MGenerator;
+import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
 /**
+ * 
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  *
  */
-public class MappingRuleHelper {
+@SpringBootApplication
+public class LWM2MGeneratorMicroService extends AbstractBackendCodeGenerator {
 
-	private MappingRule mappingRule;
-	
-	public MappingRuleHelper(MappingRule mappingRule) {
-		this.mappingRule = mappingRule;
+	@Bean
+	public IVortoCodeGenerator awsGenerator() {
+		return new LWM2MGenerator();
 	}
 	
-	public Attribute getStereoTypeAttribute(final String stereoTypeName, String attributeName) {
-		if (mappingRule.getTarget() instanceof StereoTypeTarget) {
-			StereoTypeTarget stereoType = (StereoTypeTarget)mappingRule.getTarget();
-			for (Attribute attribute : stereoType.getAttributes()) {
-				if (attribute.getName().equalsIgnoreCase(attributeName)) {
-					return attribute;
-				}
-			}
-		}
-		
-		return null;
+	public static void main(String[] args) {
+		SpringApplication.run(LWM2MGeneratorMicroService.class, args);
 	}
 }

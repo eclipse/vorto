@@ -18,8 +18,8 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.api.IMappingContext;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.AppScriptFileTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationMainTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationYmlTemplate;
@@ -43,14 +43,14 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class WebUIGenerator implements IVortoCodeGenerator {
 			
 	@Override
-	public IGenerationResult generate(InformationModel context, IMappingContext mappingContext) {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
 		
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		for (FunctionblockProperty property : context.getProperties()) {			
 			ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ServiceClassTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PageTemplate()));
-			generator.generate(property.getType(),mappingContext, outputter);
+			generator.generate(property.getType(),invocationContext, outputter);
 		}
 		
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
@@ -65,7 +65,7 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new CssTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ApplicationYmlTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ReadmeTemplate()));
-		generator.generate(context, mappingContext, outputter);
+		generator.generate(context, invocationContext, outputter);
 		
 		return outputter;
 	}

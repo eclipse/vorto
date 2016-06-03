@@ -15,7 +15,6 @@
 package org.eclipse.vorto.codegen.examples.aws.templates.alexa
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.IMappingContext
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Param
@@ -27,14 +26,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> {
-	
-	protected IMappingContext mappingContext;
-	
+		
 	protected static final String STEREOTYPE_ALEXA = "alexa";
-	
-	new (IMappingContext ctx) {
-		this.mappingContext = ctx;
-	}
 	
 	override getPath(InformationModel context) {
 		return "aws/alexa";

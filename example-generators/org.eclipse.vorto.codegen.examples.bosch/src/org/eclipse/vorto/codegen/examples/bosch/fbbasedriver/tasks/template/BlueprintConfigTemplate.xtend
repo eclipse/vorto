@@ -16,12 +16,13 @@
 package org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.fbbasedriver.tasks.BaseDriverUtil
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class BlueprintConfigTemplate implements ITemplate<FunctionblockModel> {
 	
-	override getContent(FunctionblockModel model) {
+	override getContent(FunctionblockModel model,InvocationContext invocationContext) {
 		'''<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0" xmlns:ext="http://aries.apache.org/blueprint/xmlns/blueprint-ext/v1.0.0" default-activation="eager">
  	<service id="serviceReg" ref="baseDriverService" interface="org.osgi.service.cm.ManagedServiceFactory">

@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
@@ -33,7 +33,7 @@ class POMGeneratorTask extends AbstractGeneratorTask<FunctionblockModel> {
 		}
 	}
 	
-	override generate(FunctionblockModel model, IMappingContext context, IGeneratedWriter outputter) {
+	override generate(FunctionblockModel model, InvocationContext context, IGeneratedWriter outputter) {
 		var sqn = fetchGeneratedPOMString()
 		outputter.write(new Generated("pom.xml",baseDirectoryFolder,sqn))
 	}

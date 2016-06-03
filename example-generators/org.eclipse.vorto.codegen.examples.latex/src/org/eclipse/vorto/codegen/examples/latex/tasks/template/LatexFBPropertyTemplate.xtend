@@ -15,11 +15,12 @@
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
 class LatexFBPropertyTemplate implements ITemplate<FunctionblockProperty> {
 	
-	override getContent(FunctionblockProperty property) {
+	override getContent(FunctionblockProperty property,InvocationContext invocationContext) {
 		'''
 			\begin{tabular}{|p{4.5cm}|p{4cm}|p{7cm}|}
 			\hline

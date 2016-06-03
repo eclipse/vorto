@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.examples.templates.java
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaEntityTemplate implements ITemplate<Entity>{
 	
@@ -35,7 +36,7 @@ class JavaEntityTemplate implements ITemplate<Entity>{
 			this.setterTemplate = setterTemplate;
 	}
 	
-	override getContent(Entity entity) {
+	override getContent(Entity entity,InvocationContext invocationContext) {
 		'''
 			/*
 			*****************************************************************************************
@@ -60,13 +61,13 @@ class JavaEntityTemplate implements ITemplate<Entity>{
 			«ENDIF»
 			
 				«FOR property : entity.properties»
-					«fieldTemplate.getContent(property)»
+					«fieldTemplate.getContent(property,invocationContext)»
 					
 				«ENDFOR»
 				«FOR property : entity.properties»
-					«getterTemplate.getContent(property)»
+					«getterTemplate.getContent(property,invocationContext)»
 					
-					«setterTemplate.getContent(property)»
+					«setterTemplate.getContent(property,invocationContext)»
 					
 				«ENDFOR»
 			}

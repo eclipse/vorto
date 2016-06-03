@@ -17,6 +17,7 @@
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class GeneratorTemplate implements IFileTemplate<IGeneratorProjectContext> {
 
@@ -29,7 +30,7 @@ class GeneratorTemplate implements IFileTemplate<IGeneratorProjectContext> {
 	}
 
 
-	public override String getContent(IGeneratorProjectContext context) {
+	public override String getContent(IGeneratorProjectContext context,InvocationContext invocationContext) {
 		return '''
 			package «context.getPackageName»
 			

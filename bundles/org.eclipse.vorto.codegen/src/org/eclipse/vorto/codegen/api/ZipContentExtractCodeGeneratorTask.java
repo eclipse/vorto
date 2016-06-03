@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
 /**
@@ -39,7 +40,7 @@ public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<Mo
 	}
 
 	@Override
-	public void generate(ModelId infoModelId,IMappingContext mappingContext, IGeneratedWriter outputter) {
+	public void generate(ModelId infoModelId,InvocationContext context, IGeneratedWriter outputter) {
 		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipContent));
 		
 		try {

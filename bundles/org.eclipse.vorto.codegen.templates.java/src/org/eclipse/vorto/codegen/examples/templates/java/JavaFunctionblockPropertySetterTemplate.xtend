@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.examples.templates.java
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class JavaFunctionblockPropertySetterTemplate implements ITemplate<FunctionblockProperty>{
 
@@ -27,7 +28,7 @@ class JavaFunctionblockPropertySetterTemplate implements ITemplate<Functionblock
 		this.interfacePrefix = interfacePrefix;
 	}
 	
-	override getContent(FunctionblockProperty fbProperty) {
+	override getContent(FunctionblockProperty fbProperty,InvocationContext invocationContext) {
 		'''
 				/**
 				* Setter for «fbProperty.name».

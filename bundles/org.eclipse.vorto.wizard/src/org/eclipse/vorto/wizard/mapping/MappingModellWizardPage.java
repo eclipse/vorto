@@ -14,8 +14,14 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.mapping;
 
+import java.util.List;
+
+import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
+
+import com.google.common.collect.Lists;
 
 public class MappingModellWizardPage extends ModelBaseWizardPage {
 
@@ -25,6 +31,48 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 
 	protected MappingModellWizardPage(String pageName,IModelProject modelProject) {
 		super(pageName,modelProject);
+	}
+
+	@Override
+	protected boolean isMappingModelWizard() {
+		return true;
+	}
+	
+	@Override
+	protected void initialize() {
+		super.initialize();
+		txtPlatform.setText(getDefaultTargetPlatform());
+	}
+	
+	@Override
+	protected boolean validateProject() {
+		boolean result = super.validateProject();
+		String platform = txtPlatform.getText();
+		result &= checkMappingModelExists(getModelName(), "Mapping model already exists");
+		result &= validateStrExist(platform, "Target Platform must be provided.");
+		return result;
+	}
+	
+	private boolean checkMappingModelExists(String modelName, String errorMessage) {
+		List<IModelElement> modelElements = getModelProject().getModelElementsByType(ModelType.Mapping);
+		
+		List<String> modelNames = Lists.transform(modelElements, new com.google.common.base.Function<IModelElement, String>() {
+			@Override
+			public String apply(IModelElement element) {
+				return element.getId().getName();
+			}
+			
+		});
+		
+		if(modelNames.contains(modelName)){
+			setErrorMessage(errorMessage);
+			return false;
+		}
+		return true;
+	}
+
+	protected String getTargetPlatform() {
+		return txtPlatform.getText();
 	}
 
 	@Override
@@ -50,6 +98,10 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 	@Override
 	protected String getModelLabel() {
 		return "Mapping Model Name:";
+	}
+
+	protected String getDefaultTargetPlatform() {
+		return "myplatform";
 	}
 
 }

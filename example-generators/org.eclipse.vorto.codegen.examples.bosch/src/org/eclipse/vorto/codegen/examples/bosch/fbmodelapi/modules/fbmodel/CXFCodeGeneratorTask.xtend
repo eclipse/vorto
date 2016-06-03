@@ -18,7 +18,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
@@ -41,7 +41,7 @@ class CXFCodeGeneratorTask implements ICodeGeneratorTask<FunctionblockModel> {
 	
 	FbModelWrapper wrappedfbm;
 
-	override generate(FunctionblockModel model, IMappingContext context, IGeneratedWriter outputter) {
+	override generate(FunctionblockModel model, InvocationContext context, IGeneratedWriter outputter) {
 		wrappedfbm = new FbModelWrapper(model);
 		cxfXmlFileName = wrappedfbm.getUpperCaseFunctionblockName()+".xml";
 		cxfXsdFileName = wrappedfbm.getUpperCaseFunctionblockName()+".xsd";

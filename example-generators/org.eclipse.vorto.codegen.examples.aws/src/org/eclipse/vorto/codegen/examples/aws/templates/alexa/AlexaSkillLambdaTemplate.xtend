@@ -14,26 +14,22 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.aws.templates.alexa
 
-import org.eclipse.vorto.codegen.api.IMappingContext
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
  * @author Alexander Edelmann (Robert Bosch (SEA) Pte. Ltd)
  */
 class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
-	
-	new(IMappingContext ctx) {
-		super(ctx)
-	}
-	
+		
 	override getFileName(InformationModel context) {
 		return "index.js"
 	}
-	override getContent(InformationModel context) {
+	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		«context.name».prototype.intentHandlers = {
+		«element.name».prototype.intentHandlers = {
 		    // register custom intent handlers
-		    «FOR fbProperty : context.properties»
+		    «FOR fbProperty : element.properties»
 		    	«FOR operation : fbProperty.type.functionblock.operations SEPARATOR ','»
 		    		"«operation.name»": function (intent, session, response) {
 		    			 var params = {
@@ -48,7 +44,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		    			 	if (err) console.log(err, err.stack); // an error occurred
 		    			 	else {
 		    			 		console.log(data); // successful response
-		    			 		response.tell("Okay I invoked «operation.name» on «context.name» for you.");
+		    			 		response.tell("Okay I invoked «operation.name» on «element.name» for you.");
 		    			 	}
 		    			 });
 		    			 
@@ -68,7 +64,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		    			  	if (err) console.log(err, err.stack); // an error occurred
 		    			    else {
 		    			    	console.log(data); // successful response
-		    			    	response.tell("The current «statusProperty.name» status of the «context.name» is "+data.«statusProperty.name»+".");
+		    			    	response.tell("The current «statusProperty.name» status of the «element.name» is "+data.«statusProperty.name»+".");
 		    			    }
 		    			 });
 		    			 

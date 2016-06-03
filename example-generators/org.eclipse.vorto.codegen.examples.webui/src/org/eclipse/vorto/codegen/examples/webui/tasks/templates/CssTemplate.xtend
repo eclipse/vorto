@@ -2,6 +2,7 @@ package org.eclipse.vorto.codegen.examples.webui.tasks.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 
 class CssTemplate implements IFileTemplate<InformationModel> {
 	
@@ -13,7 +14,7 @@ class CssTemplate implements IFileTemplate<InformationModel> {
 		"webdevice.example/src/main/resources/static/css";
 	}
 	
-	override getContent(InformationModel context) {
+	override getContent(InformationModel context,InvocationContext invocationContext) {
 		'''
 		/*Button Customization*
 		=========================*/

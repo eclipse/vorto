@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Operation
@@ -36,7 +37,7 @@ class OperationReturnTypeValidation implements ITemplate<Operation>{
 		this.primitiveTypeValidationTemplate = primitiveTypeValidationTemplate;
 	}
 	
-	override getContent(Operation operation) {
+	override getContent(Operation operation,InvocationContext invocationContext) {
 		'''
 			{
 				"$schema": "http://json-schema.org/draft-04/schema#",
@@ -51,12 +52,12 @@ class OperationReturnTypeValidation implements ITemplate<Operation>{
 							"result": {
 								"type": "array",
 								"items" : {
-									«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType)»
+									«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType,invocationContext)»
 								}
 							}
 						«ELSE»
 							"result": {
-								«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType)»
+								«primitiveTypeValidationTemplate.getContent(primitiveReturnType.returnType,invocationContext)»
 							}
 						«ENDIF»
 					«ELSEIF returnType instanceof ReturnObjectType»
@@ -68,7 +69,7 @@ class OperationReturnTypeValidation implements ITemplate<Operation>{
 								"items": {
 									"type": "object",
 									"properties": {
-										«entityValidationTemplate.getContent(returnObjectType.returnType as Entity)»
+										«entityValidationTemplate.getContent(returnObjectType.returnType as Entity,invocationContext)»
 									}
 								}
 							}
@@ -76,7 +77,7 @@ class OperationReturnTypeValidation implements ITemplate<Operation>{
 							"result": {
 								"type": "object",
 								"properties": {
-									«entityValidationTemplate.getContent(returnObjectType.returnType as Entity)»
+									«entityValidationTemplate.getContent(returnObjectType.returnType as Entity,invocationContext)»
 								}
 							}
 						«ENDIF»
@@ -85,12 +86,12 @@ class OperationReturnTypeValidation implements ITemplate<Operation>{
 							"result": {
 								"type": "array",
 								"items" : {
-									«enumValidationTemplate.getContent(returnObjectType.returnType as Enum)»
+									«enumValidationTemplate.getContent(returnObjectType.returnType as Enum,invocationContext)»
 								}
 							}
 						«ELSE»
 							"result": {
-								«enumValidationTemplate.getContent(returnObjectType.returnType as Enum)»
+								«enumValidationTemplate.getContent(returnObjectType.returnType as Enum,invocationContext)»
 							}
 						«ENDIF»
 					«ENDIF»

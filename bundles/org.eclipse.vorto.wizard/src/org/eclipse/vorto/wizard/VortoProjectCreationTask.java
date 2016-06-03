@@ -20,7 +20,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.vorto.codegen.api.DefaultMappingContext;
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.context.IProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;
@@ -59,7 +59,7 @@ public class VortoProjectCreationTask implements IProgressTask {
 			for (String folder : ALL_MODEL_FOLDERS) {
 				generator.addFolder(folder);
 			}
-			generator.generate(context, new DefaultMappingContext(), monitor);
+			generator.generate(context, InvocationContext.simpleInvocationContext(), monitor);
 			
 			IProject iProject = generator.getProject();
 			iProject.refreshLocal(IResource.DEPTH_ONE, monitor);

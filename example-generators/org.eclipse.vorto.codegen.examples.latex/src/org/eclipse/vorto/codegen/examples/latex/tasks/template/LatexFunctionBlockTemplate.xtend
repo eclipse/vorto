@@ -14,10 +14,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 	
@@ -36,7 +37,7 @@ class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 		this.operationTemplate = operationTemplate;
 	}
 	
-	override getContent(FunctionblockModel fb) {
+	override getContent(FunctionblockModel fb,InvocationContext invocationContext) {
 		'''
 			\subsection{«fb.displayname»}
 			«fb.description» The details of the Functionblock «fb.displayname»
@@ -46,12 +47,12 @@ class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 				\subsubsection{Status Properties}
 				«FOR property : fb.functionblock.status.properties»
 					«IF (Utils.isSimpleNumeric(property))»
-						«constraintTemplate.getContent(property)»
+						«constraintTemplate.getContent(property,invocationContext)»
 					«ELSE»
 						«IF (property.type instanceof PrimitivePropertyType)»
-							«simpleTemplate.getContent(property)»
+							«simpleTemplate.getContent(property,invocationContext)»
 						«ELSE»
-							«complexTemplate.getContent(property)»
+							«complexTemplate.getContent(property,invocationContext)»
 						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
@@ -61,12 +62,12 @@ class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 				\subsubsection{Configuration Properties}
 				«FOR property : fb.functionblock.configuration.properties»
 					«IF (Utils.isSimpleNumeric(property))»
-						«constraintTemplate.getContent(property)»
+						«constraintTemplate.getContent(property,invocationContext)»
 					«ELSE»
 						«IF (property.type instanceof PrimitivePropertyType)»
-							«simpleTemplate.getContent(property)»
+							«simpleTemplate.getContent(property,invocationContext)»
 						«ELSE»
-							«complexTemplate.getContent(property)»
+							«complexTemplate.getContent(property,invocationContext)»
 						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
@@ -76,12 +77,12 @@ class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 				\subsubsection{Fault Properties}
 				«FOR property : fb.functionblock.fault.properties»
 					«IF (Utils.isSimpleNumeric(property))»
-						«constraintTemplate.getContent(property)»
+						«constraintTemplate.getContent(property,invocationContext)»
 					«ELSE»
 						«IF (property.type instanceof PrimitivePropertyType)»
-							«simpleTemplate.getContent(property)»
+							«simpleTemplate.getContent(property,invocationContext)»
 						«ELSE»
-							«complexTemplate.getContent(property)»
+							«complexTemplate.getContent(property,invocationContext)»
 						«ENDIF»
 					«ENDIF»
 				«ENDFOR»
@@ -90,7 +91,7 @@ class LatexFunctionBlockTemplate implements ITemplate<FunctionblockModel>{
 			«IF (fb.functionblock.operations != null)&&(fb.functionblock.operations.size>0)»
 				\subsubsection{Operations}
 				«FOR operation : fb.functionblock.operations»
-					«operationTemplate.getContent(operation)»
+					«operationTemplate.getContent(operation,invocationContext)»
 				«ENDFOR»
 			«ENDIF»
 		'''

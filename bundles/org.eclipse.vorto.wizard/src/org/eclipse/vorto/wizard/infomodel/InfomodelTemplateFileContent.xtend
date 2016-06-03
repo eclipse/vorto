@@ -16,11 +16,12 @@
 package org.eclipse.vorto.wizard.infomodel
 
 import org.eclipse.vorto.codegen.api.ITemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 
 class InfomodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 
-	override getContent(IModelProjectContext context) {
+	override getContent(IModelProjectContext context,InvocationContext invocationContext) {
 		return '''
 	namespace com.mycompany
 	version «context.modelVersion»
