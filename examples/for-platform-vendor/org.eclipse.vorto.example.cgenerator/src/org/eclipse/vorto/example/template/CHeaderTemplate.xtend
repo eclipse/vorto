@@ -1,7 +1,7 @@
 package org.eclipse.vorto.example.template
 
-import java.util.UUID
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.mapping.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 /**
@@ -17,7 +17,7 @@ class CHeaderTemplate implements IFileTemplate<FunctionblockModel> {
 		return "output"
 	}
 	
-	override getContent(FunctionblockModel context) {
+	override getContent(FunctionblockModel context, InvocationContext invoContext) {
 		'''
 		#ifndef «context.name.toUpperCase»_H_
 		#define «context.name.toUpperCase»_H_
@@ -28,4 +28,5 @@ class CHeaderTemplate implements IFileTemplate<FunctionblockModel> {
 
 		'''
 	}
+	
 }
