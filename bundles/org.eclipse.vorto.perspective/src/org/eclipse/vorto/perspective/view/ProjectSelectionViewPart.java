@@ -113,7 +113,11 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		});
 
 		projectSelectionViewer.setContentProvider(ArrayContentProvider.getInstance());
+<<<<<<< HEAD
 		Collection<IModelProject> modelProjects = getModelProjects();
+=======
+		Collection<IModelProject> modelProjects = getModelProjects(); 
+>>>>>>> dda2cbd0c67628eddcb2fc479471d3625ae64811
 		projectSelectionViewer.setInput(modelProjects);
 
 		projectSelectionViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -138,7 +142,11 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		infoModelTreeViewer = new InfomodelTreeViewer(modelPanel, this);
 
 		getSite().setSelectionProvider(infoModelTreeViewer.treeViewer);
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> dda2cbd0c67628eddcb2fc479471d3625ae64811
 		if (!modelProjects.isEmpty()) {
 			setSelectedProject(modelProjects.iterator().next());
 		}
@@ -179,6 +187,12 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		for (IModelProject project : getModelProjects()) {
 			populate(project);
 		}
+	}
+	
+	public void refreshCurrent() {
+		// setting the selected project will call populate on that project which in turn
+		// will refresh it
+		setSelectedProject(selectedProject);
 	}
 
 	public void refreshCurrent() {
