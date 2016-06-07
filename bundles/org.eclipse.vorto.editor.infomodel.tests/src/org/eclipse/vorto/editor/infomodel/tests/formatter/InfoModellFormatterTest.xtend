@@ -29,8 +29,8 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@RunWith(typeof(XtextRunner))
-@InjectWith(typeof(InformationModelInjectorProvider))
+@RunWith(XtextRunner)
+@InjectWith(InformationModelInjectorProvider)
 class InfoModellFormatterTest extends AbstractXtextTests {
 
 	@Inject extension ParseHelper<InformationModel> parserHelper;

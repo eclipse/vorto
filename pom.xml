@@ -15,8 +15,9 @@
 	<properties>
 		<tycho-version>0.20.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.7.2</xtext.version>
+		<xtext.version>2.9.2</xtext.version>
 		<jdk.version>1.7</jdk.version>
+		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 	</properties>
 	
 	<distributionManagement>
@@ -286,6 +287,10 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
 					<version>1.2.1</version>
+				</plugin>
+				<plugin>
+				    <artifactId>maven-compiler-plugin</artifactId>
+				    <version>${maven-compiler-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
