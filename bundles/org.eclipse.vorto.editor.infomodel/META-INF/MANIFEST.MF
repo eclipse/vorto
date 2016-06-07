@@ -20,14 +20,18 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
  org.eclipse.vorto.core,
  org.eclipse.xtext.xbase.lib,
- org.eclipse.vorto.editor
+ org.eclipse.vorto.editor,
+ org.eclipse.xtend.lib,
+ org.eclipse.vorto.editor.functionblock
 Import-Package: org.apache.log4j,
  org.eclipse.vorto.editor.datatype.converter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.infomodel,org.eclipse.vorto.e
- ditor.infomodel.formatting,org.eclipse.vorto.editor.infomodel.generat
- or,org.eclipse.vorto.editor.infomodel.scoping,org.eclipse.vorto.edito
- r.infomodel.validation,org.eclipse.vorto.editor.infomodel.services,or
- g.eclipse.vorto.editor.infomodel.serializer,org.eclipse.vorto.editor.
- infomodel.parser.antlr,org.eclipse.vorto.editor.infomodel.parser.antl
- r.internal
+Export-Package: org.eclipse.vorto.editor.infomodel,
+ org.eclipse.vorto.editor.infomodel.formatting,
+ org.eclipse.vorto.editor.infomodel.generator,
+ org.eclipse.vorto.editor.infomodel.scoping,
+ org.eclipse.vorto.editor.infomodel.validation,
+ org.eclipse.vorto.editor.infomodel.services,
+ org.eclipse.vorto.editor.infomodel.serializer,
+ org.eclipse.vorto.editor.infomodel.parser.antlr,
+ org.eclipse.vorto.editor.infomodel.parser.antlr.internal

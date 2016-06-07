@@ -31,6 +31,8 @@
 		<module>org.eclipse.vorto.editor.infomodel</module>
 		<module>org.eclipse.vorto.editor.infomodel.ui</module>	
 		<module>org.eclipse.vorto.editor.infomodel.tests</module>
+		<module>org.eclipse.vorto.editor.infomodel.ide</module>
+		<module>org.eclipse.vorto.editor.infomodel.web</module>			
 
 		<module>org.eclipse.vorto.editor.mapping</module>
 		<module>org.eclipse.vorto.editor.mapping.ui</module>	
