@@ -104,6 +104,12 @@
 							</includes>
 						</fileset>
 						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.informationmodel.tests/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>						
+						<fileset>
 							<directory>${basedir}/model/generated/</directory>
 						</fileset>
 					</filesets>

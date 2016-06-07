@@ -18,7 +18,6 @@ package org.eclipse.vorto.editor.infomodel.tests.formatter
 import com.google.inject.Inject
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl
-import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 import org.eclipse.xtext.formatting.INodeModelFormatter
 import org.eclipse.xtext.junit4.util.ParseHelper
 import org.eclipse.xtext.junit4.AbstractXtextTests
@@ -28,6 +27,7 @@ import org.eclipse.xtext.resource.XtextResource
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.eclipse.vorto.editor.infomodel.tests.InformationModelInjectorProvider
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(InformationModelInjectorProvider))
