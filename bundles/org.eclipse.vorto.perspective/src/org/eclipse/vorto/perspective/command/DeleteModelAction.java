@@ -47,7 +47,7 @@ public abstract class DeleteModelAction extends Action {
 
 		if (isOKOrYes) {
 			deleteResource(getViewer().getControl().getShell(), modelElement.getModelFile());
-			workspace.refresh();
+			workspace.refreshCurrent();
 		}
 	}
 	
