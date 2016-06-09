@@ -55,7 +55,7 @@ public class BulkCheckInTest extends SingleUseAbstractTest  {
 	}
 	
 	@Test
-	public void tesCheckinValidModels() throws IOException {
+	public void tesCheckinValidModels() throws Exception {
 		String fileName = "sample_models/valid-models1.zip";
 		List<UploadModelResult> uploadResults = modelRepository.uploadMultipleModels(fromClasspath(fileName));
 		assertEquals(2, uploadResults.size());
@@ -64,11 +64,12 @@ public class BulkCheckInTest extends SingleUseAbstractTest  {
 		when(userRepository.findAll()).thenReturn(testUsers());
 		modelRepository.checkinMultiple(modelHandles , "Vijay");
 		verify(notificationService, Mockito.atLeastOnce()).sendNotification(Mockito.any(IMessage.class));
+		Thread.sleep(1000);
 		assertEquals(2, modelRepository.search("*").size());
 	}
 	
 	@Test
-	public void tesCheckinInvalidModels() throws IOException {
+	public void tesCheckinInvalidModels() throws Exception {
 		String fileName = "sample_models/invalid-models.zip";
 		List<UploadModelResult> uploadResults = new ArrayList<UploadModelResult>();
 		try {
@@ -81,6 +82,7 @@ public class BulkCheckInTest extends SingleUseAbstractTest  {
 		when(userRepository.findAll()).thenReturn(testUsers());
 		modelRepository.checkinMultiple(modelHandles , "Vijay");
 		verify(notificationService, Mockito.times(0)).sendNotification(Mockito.any(IMessage.class));
+		Thread.sleep(1000);
 		assertEquals(0, modelRepository.search("*").size());
 	}
 

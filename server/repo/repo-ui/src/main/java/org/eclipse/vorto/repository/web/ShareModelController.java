@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.web;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.eclipse.vorto.repository.model.ModelHandle;
@@ -37,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.collect.Lists;
-import com.ibm.icu.text.MessageFormat;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
