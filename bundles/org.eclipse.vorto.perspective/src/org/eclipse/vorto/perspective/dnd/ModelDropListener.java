@@ -33,6 +33,8 @@ import org.eclipse.vorto.perspective.view.ModelProjectTreeViewer;
  * drop.
  *
  */
+
+// -erle- : This needs to be refactored.
 public class ModelDropListener extends ViewerDropAdapter {
 
 	private Class<?> allowedTarget;
