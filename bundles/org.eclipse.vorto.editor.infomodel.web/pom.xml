@@ -9,7 +9,6 @@
 	</parent>
 
 	<artifactId>org.eclipse.vorto.editor.infomodel.web</artifactId>
-	<packaging>jar</packaging>
 
 	<name>Information Model Editor Plugin Web</name>
 
