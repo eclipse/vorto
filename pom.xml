@@ -1,8 +1,9 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>org.eclipse.vorto.parent</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+	<version>0.4.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<modules>
 		<module>bundles</module>
@@ -17,9 +18,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<xtext.version>2.9.2</xtext.version>
 		<jdk.version>1.7</jdk.version>
-		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 	</properties>
-	
+
 	<distributionManagement>
 		<repository>
 			<id>repo.eclipse.org</id>
@@ -47,7 +48,7 @@
 	<repositories>
 		<repository>
 			<id>orbit</id>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20160221192158/repository</url>
 			<layout>p2</layout>
 		</repository>
 		<repository>
@@ -143,33 +144,6 @@
 									<source>src-gen</source>
 								</sources>
 							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.5</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.10.1</version>
-					<configuration>
-						<bottom>
-					 	<![CDATA[Copyright &#169; 2010&#x2013;{currentYear} <a href="http://www.bosch-si.com">Bosch Software Innovations GmbH.</a> All rights reserved.]]>
-						</bottom>
-					</configuration>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<phase>package</phase>
-						    <configuration>
-							   <additionalparam>${javadoc.opts}</additionalparam>
-						    </configuration>							
-							<goals>
-								<goal>jar</goal>
-							</goals>
 						</execution>
 					</executions>
 				</plugin>
@@ -289,8 +263,25 @@
 					<version>1.2.1</version>
 				</plugin>
 				<plugin>
-				    <artifactId>maven-compiler-plugin</artifactId>
-				    <version>${maven-compiler-plugin.version}</version>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${maven-compiler-plugin.version}</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>3.0.1</version>
+					<extensions>true</extensions>
+					<configuration>
+						<supportedProjectTypes>
+							<supportedProjectType>jar</supportedProjectType>
+							<supportedProjectType>bundle</supportedProjectType>
+							<supportedProjectType>eclipse-plugin</supportedProjectType>
+						</supportedProjectTypes>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -332,18 +323,66 @@
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-source-plugin</artifactId>
 			</plugin>
-		</plugins>		
+		</plugins>
 	</build>
-	
+
 	<profiles>
-	  <profile>
-		<id>doclint-java8-disable</id>
-		<activation>
-		  <jdk>[1.8,)</jdk>
-		</activation>
-		<properties>
-		  <javadoc.opts>-Xdoclint:none</javadoc.opts>
-		</properties>
-	  </profile>
-	</profiles>			
+		<profile>
+			<id>doclint-java8-disable</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
+			<properties>
+				<javadoc.opts>-Xdoclint:none</javadoc.opts>
+			</properties>
+		</profile>
+		<profile>
+      <id>javadoc</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.10.3</version>
+            <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate-jar</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!-- 'javadoc.opts' project property is set by the 'doclint-java8-disable' profile. It is important to keep 'javadoc' profile declaration after the declaration of 'doclint-java8-disable' profile. -->
+              <additionalparam>${javadoc.opts}</additionalparam>
+              <excludePackageNames>*.internal.*,nl.*</excludePackageNames>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build.helper.maven.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-artifacts</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>attach-artifact</goal>
+                </goals>
+                <configuration>
+                  <artifacts>
+                    <artifact>
+                      <file>${project.build.outputDirectory}/${project.artifactId}-${project.version}.jar</file>
+                      <type>jar</type>
+                      <classifier>javadoc</classifier>
+                    </artifact>
+                  </artifacts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+	</profiles>
 </project>
