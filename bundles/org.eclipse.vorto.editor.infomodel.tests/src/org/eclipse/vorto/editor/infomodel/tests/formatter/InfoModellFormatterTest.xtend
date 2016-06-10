@@ -27,7 +27,7 @@ import org.eclipse.xtext.resource.XtextResource
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.eclipse.vorto.editor.infomodel.tests.InformationModelInjectorProvider
+import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 
 @RunWith(typeof(XtextRunner))
 @InjectWith(typeof(InformationModelInjectorProvider))

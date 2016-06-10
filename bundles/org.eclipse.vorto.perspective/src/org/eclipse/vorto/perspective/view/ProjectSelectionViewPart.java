@@ -58,6 +58,7 @@ import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.core.ui.model.ModelParserFactory;
 import org.eclipse.vorto.core.ui.model.VortoModelProject;
 import org.eclipse.vorto.perspective.listener.ErrorDiagnosticListener;
+import org.eclipse.vorto.perspective.listener.RemoveModelListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelProjectListener;
 import org.eclipse.vorto.perspective.util.ImageUtil;
 import org.eclipse.vorto.perspective.util.NullModelProject;
@@ -77,6 +78,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	protected FunctionblockTreeViewer functionBlockTreeViewer;
 	protected InfomodelTreeViewer infoModelTreeViewer;
 
+	private IResourceChangeListener removeModelListener = null;
 	private IResourceChangeListener removeModelProjectListener = null;
 	private IResourceChangeListener errorDiagnosticsListener = null;
 
@@ -153,8 +155,10 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		removeModelProjectListener = new RemoveModelProjectListener(this);
 		errorDiagnosticsListener = new ErrorDiagnosticListener(newRefreshCurrentProjectRunnable());
+		removeModelListener = new RemoveModelListener(newRefreshCurrentProjectRunnable());
 		workspace.addResourceChangeListener(removeModelProjectListener, IResourceChangeEvent.PRE_DELETE);
 		workspace.addResourceChangeListener(errorDiagnosticsListener, IResourceChangeEvent.POST_CHANGE);
+		workspace.addResourceChangeListener(removeModelListener, IResourceChangeEvent.POST_CHANGE);
 	}
 	
 	private Runnable newRefreshCurrentProjectRunnable() {
@@ -351,6 +355,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.removeResourceChangeListener(removeModelProjectListener);
 		workspace.removeResourceChangeListener(errorDiagnosticsListener);
+		workspace.removeResourceChangeListener(removeModelListener);
 	}
 
 	public IModelProject getSelectedProject() {

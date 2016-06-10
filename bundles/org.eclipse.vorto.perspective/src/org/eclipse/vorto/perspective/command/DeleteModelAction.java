@@ -32,25 +32,25 @@ import org.eclipse.vorto.perspective.view.ILocalModelWorkspace;
 public abstract class DeleteModelAction extends Action {
 
 	private ILocalModelWorkspace workspace;
-	
+
 	public DeleteModelAction(ILocalModelWorkspace workspace) {
-		super("Delete",ImageDescriptor.createFromImage(ImageUtil.getImage("delete.gif")));
+		super("Delete", ImageDescriptor.createFromImage(ImageUtil.getImage("delete.gif")));
 		this.workspace = workspace;
 	}
-	
+
 	@Override
 	public void run() {
 		IModelElement modelElement = getSelectedElement();
 
-		final boolean isOKOrYes = MessageDialog.open(MessageDialog.QUESTION,
-				getViewer().getControl().getShell(), "Delete Model", "Are you sure you want to delete the model "+modelElement.getId().getName()+" ?", SWT.NONE);
+		final boolean isOKOrYes = MessageDialog.open(MessageDialog.QUESTION, getViewer().getControl().getShell(),
+				"Delete Model", "Are you sure you want to delete the model " + modelElement.getId().getName() + " ?",
+				SWT.NONE);
 
 		if (isOKOrYes) {
 			deleteResource(getViewer().getControl().getShell(), modelElement.getModelFile());
-			workspace.refreshCurrent();
 		}
 	}
-	
+
 	private void deleteResource(Shell shell, final IResource selectedResource) {
 
 		ProgressMonitorDialog progressDialog = new ProgressMonitorDialog(shell);
@@ -77,8 +77,7 @@ public abstract class DeleteModelAction extends Action {
 		}
 	}
 
-	
 	protected abstract IModelElement getSelectedElement();
-	
+
 	protected abstract TreeViewer getViewer();
 }

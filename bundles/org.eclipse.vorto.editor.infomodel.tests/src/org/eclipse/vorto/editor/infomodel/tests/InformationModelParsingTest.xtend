@@ -20,6 +20,7 @@ package org.eclipse.vorto.editor.infomodel.tests
 
 import com.google.inject.Inject
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.editor.infomodel.InformationModelInjectorProvider
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner
 import org.eclipse.xtext.junit4.util.ParseHelper
