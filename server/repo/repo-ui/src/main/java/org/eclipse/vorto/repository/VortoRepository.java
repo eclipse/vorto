@@ -16,10 +16,6 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
-import javax.annotation.PostConstruct;
-
-import org.eclipse.vorto.repository.model.Role;
-import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.service.UserRepository;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.RESTAuthenticationEntryPoint;
@@ -99,22 +95,6 @@ public class VortoRepository {
 	@Bean
 	public static PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(11);
-	}
-
-	@PostConstruct
-	public void createAdminIfNotExists() throws Exception {
-		if (userRepository.findByUsername("admin") == null){
-
-			User user = new User();
-
-			user.setUsername("admin".toLowerCase());
-			user.setPassword( encoder().encode("!v0rt0admin"));
-			user.setHasWatchOnRepository(false);
-			user.setEmail("alexander.edelmann@bosch-si.com");
-			user.setRoles(Role.ADMIN);
-
-			userRepository.save(user);
-		}
 	}
 
 	@Configuration

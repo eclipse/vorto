@@ -51,9 +51,6 @@ public class DefaultRegistrationService implements IRegistrationService{
 	
 	public void registerUser(UserDto userDto){
 		
-		if (userRepository.findByUsername("admin") == null)
-			createAdminUser();
-			
 		User user = new User();
 		
 		user.setFirstName(userDto.getFirstName());
@@ -73,17 +70,4 @@ public class DefaultRegistrationService implements IRegistrationService{
 		context.put("user", user);
 		notificationService.sendNotification(new RegistrationMessage(user));
 	}
-	
-	private void createAdminUser(){
-    	  
-    	User user = new User();
-		
-		user.setUsername("admin".toLowerCase());
-		user.setPassword(passwordEncoder.encode("vortoadmin"));
-		user.setHasWatchOnRepository(false);
-		user.setEmail("no@email");
-		user.setRoles(Role.ADMIN);
-		
-		userRepository.save(user);
-    }
 }
