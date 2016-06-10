@@ -1,5 +1,6 @@
 package org.eclipse.vorto.perspective.listener;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IMarkerDelta;
@@ -17,8 +18,8 @@ public class ErrorDiagnosticListener extends DisplayRunnableExecutioner implemen
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
-		Collection<IMarkerDelta> markerWithErrors = 
-			Collections2.filter(Lists.newArrayList(event.findMarkerDeltas(null, true)), Predicates.isVortoModelWithMarkerError);
+		Collection<IMarkerDelta> markerWithErrors = Collections2
+				.filter(Arrays.asList(event.findMarkerDeltas(null, true)), Predicates.isVortoModelWithMarkerError);
 		if (!markerWithErrors.isEmpty()) {
 			executeRunnableOnDisplayThread();
 		}
