@@ -1,0 +1,21 @@
+<div class="row">
+	<div class="col-md-12">
+		<div class="box box-primary">
+			<div class="box-header">
+				<i class="fa fa-edit"></i>
+				<h3 class="box-title">Describe your Information Model</h3>
+			</div>
+			<!-- /.box-header -->
+			<p>
+			<i>Hint: Press Ctrl + Space for Content Assist</i>
+			</p>
+			<p><font color="red">{{error}}</font></p>
+			<p> <span ng-show="validationError"> <font color="red">{{errorMessage}}</font> </span> </p>
+			<div>
+					<div id="xtext-editor" data-editor-xtext-lang="infomodel"></div>
+					<div class="status-wrapper" style="block">
+						<button type="submit" ng-click="share()" class="btn btn-primary btn-block btn-flat" id="share-button">Share</button>
+			</div>
+		</div>
+	</div>
+</div>
