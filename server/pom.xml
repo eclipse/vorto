@@ -33,6 +33,13 @@
 			<url>https://repo.eclipse.org/content/repositories/vorto-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<id>eclipse</id>
+			<url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
 
 	<modules>
 		<module>generators</module>

@@ -366,6 +366,10 @@ public class JcrModelRepository implements IModelRepository {
 
 	private String createUploadHandle(ModelId id, byte[] content, String fileName) {
 		try {
+			File tmpDirectory = new File(UploadHelper.getDefaultExtractDirectory());
+			if (!tmpDirectory.exists()) {
+				tmpDirectory.mkdirs();
+			}
 			File file = new File(FilenameUtils.normalize(UploadHelper.getDefaultExtractDirectory() + "/" + fileName));
 			IOUtils.write(content, new FileOutputStream(file));
 			logger.debug("Created temporary file for upload : " + file.getName());

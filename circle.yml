@@ -1,0 +1,7 @@
+machine:
+  java:
+    version: oraclejdk8
+  environment:
+    _JAVA_OPTIONS: "-Xms512m -Xmx1024m"
+general:
+  build_dir: server
