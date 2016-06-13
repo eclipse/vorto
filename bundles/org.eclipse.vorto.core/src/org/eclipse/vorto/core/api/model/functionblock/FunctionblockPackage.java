@@ -158,13 +158,22 @@ public interface FunctionblockPackage extends EPackage {
 	int FUNCTIONBLOCK_MODEL__ENUMS = ModelPackage.MODEL_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Super Type</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUNCTIONBLOCK_MODEL__SUPER_TYPE = ModelPackage.MODEL_FEATURE_COUNT + 3;
+
+	/**
 	 * The number of structural features of the '<em>Model</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FUNCTIONBLOCK_MODEL_FEATURE_COUNT = ModelPackage.MODEL_FEATURE_COUNT + 3;
+	int FUNCTIONBLOCK_MODEL_FEATURE_COUNT = ModelPackage.MODEL_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl <em>Function Block</em>}' class.
@@ -709,6 +718,17 @@ public interface FunctionblockPackage extends EPackage {
 	EReference getFunctionblockModel_Enums();
 
 	/**
+	 * Returns the meta object for the reference '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel#getSuperType <em>Super Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Super Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel#getSuperType()
+	 * @see #getFunctionblockModel()
+	 * @generated
+	 */
+	EReference getFunctionblockModel_SuperType();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.functionblock.FunctionBlock <em>Function Block</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1125,6 +1145,14 @@ public interface FunctionblockPackage extends EPackage {
 		 * @generated
 		 */
 		EReference FUNCTIONBLOCK_MODEL__ENUMS = eINSTANCE.getFunctionblockModel_Enums();
+
+		/**
+		 * The meta object literal for the '<em><b>Super Type</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FUNCTIONBLOCK_MODEL__SUPER_TYPE = eINSTANCE.getFunctionblockModel_SuperType();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionBlockImpl <em>Function Block</em>}' class.

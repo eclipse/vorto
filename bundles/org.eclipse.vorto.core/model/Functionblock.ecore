@@ -9,6 +9,7 @@
         eType="ecore:EClass Datatype.ecore#//Entity" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enums" upperBound="-1"
         eType="ecore:EClass Datatype.ecore#//Enum" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superType" eType="#//FunctionblockModel"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="FunctionBlock">
     <eStructuralFeatures xsi:type="ecore:EReference" name="configuration" eType="#//Configuration"

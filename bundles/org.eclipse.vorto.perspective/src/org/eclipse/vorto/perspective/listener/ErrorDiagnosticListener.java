@@ -9,7 +9,6 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.vorto.perspective.util.Predicates;
 
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
 public class ErrorDiagnosticListener extends DisplayRunnableExecutioner implements IResourceChangeListener {
 

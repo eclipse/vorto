@@ -44,6 +44,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getFunctionblock <em>Functionblock</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getEntities <em>Entities</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getEnums <em>Enums</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl#getSuperType <em>Super Type</em>}</li>
  * </ul>
  *
  * @generated
@@ -208,6 +209,16 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 	 * @ordered
 	 */
 	protected EList<org.eclipse.vorto.core.api.model.datatype.Enum> enums;
+
+	/**
+	 * The cached value of the '{@link #getSuperType() <em>Super Type</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSuperType()
+	 * @generated
+	 * @ordered
+	 */
+	protected FunctionblockModel superType;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -438,6 +449,44 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public FunctionblockModel getSuperType() {
+		if (superType != null && superType.eIsProxy()) {
+			InternalEObject oldSuperType = (InternalEObject)superType;
+			superType = (FunctionblockModel)eResolveProxy(oldSuperType);
+			if (superType != oldSuperType) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE, oldSuperType, superType));
+			}
+		}
+		return superType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public FunctionblockModel basicGetSuperType() {
+		return superType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSuperType(FunctionblockModel newSuperType) {
+		FunctionblockModel oldSuperType = superType;
+		superType = newSuperType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE, oldSuperType, superType));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -481,6 +530,9 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 				return getEntities();
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__ENUMS:
 				return getEnums();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE:
+				if (resolve) return getSuperType();
+				return basicGetSuperType();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -527,6 +579,9 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 				getEnums().clear();
 				getEnums().addAll((Collection<? extends org.eclipse.vorto.core.api.model.datatype.Enum>)newValue);
 				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE:
+				setSuperType((FunctionblockModel)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -569,6 +624,9 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__ENUMS:
 				getEnums().clear();
 				return;
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE:
+				setSuperType((FunctionblockModel)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -601,6 +659,8 @@ public class FunctionblockModelImpl extends MinimalEObjectImpl.Container impleme
 				return entities != null && !entities.isEmpty();
 			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__ENUMS:
 				return enums != null && !enums.isEmpty();
+			case FunctionblockPackage.FUNCTIONBLOCK_MODEL__SUPER_TYPE:
+				return superType != null;
 		}
 		return super.eIsSet(featureID);
 	}

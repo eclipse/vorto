@@ -28,7 +28,7 @@ FunctionblockModel:
     ('description' description=STRING)? 
     'category' category=CATEGORY     
      (references += ModelReference)*	
-	'functionblock' name= ID '{'
+	'functionblock' name= ID ('extends' superType = [FunctionblockModel | QualifiedName])? '{'
 		functionblock = FunctionBlock
 	'}'	
 	(entities += Entity)*
