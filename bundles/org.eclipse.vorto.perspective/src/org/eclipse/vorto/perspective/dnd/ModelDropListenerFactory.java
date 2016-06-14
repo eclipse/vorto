@@ -57,6 +57,11 @@ public class ModelDropListenerFactory {
 								DatatypeModelElement.class),
 						new AddLocalReferenceDropAction(DatatypeModelElement.class))
 				.addDropAction(
+						new TargetClassSourceClassValidator(
+								FunctionblockModelElement.class,
+								FunctionblockModelElement.class),
+						new AddLocalReferenceDropAction(FunctionblockModelElement.class))
+				.addDropAction(
 						new TargetClassModelTypeValidator(
 								VortoModelProject.class, ModelType.Functionblock),
 						new RepositoryResourceDropAction())
