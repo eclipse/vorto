@@ -31,7 +31,9 @@ public class DatatypeModelElement extends AbstractModelElement {
 	
 	private Type model;
 	
-	private Collection<Resource.Diagnostic> diagnostics; 
+	private Collection<Resource.Diagnostic> diagnostics;
+	
+	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Datatype };
 
 	public DatatypeModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
@@ -76,8 +78,8 @@ public class DatatypeModelElement extends AbstractModelElement {
 	}
 
 	@Override
-	protected ModelType getPossibleReferenceType() {
-		return ModelType.Datatype;
+	protected ModelType[] getPossibleReferenceTypes() {
+		return possibleReferenceTypes;
 	}
 
 	@Override

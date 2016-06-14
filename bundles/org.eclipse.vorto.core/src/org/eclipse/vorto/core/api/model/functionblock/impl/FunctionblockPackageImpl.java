@@ -239,6 +239,15 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getFunctionblockModel_SuperType() {
+		return (EReference)functionblockModelEClass.getEStructuralFeatures().get(3);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getFunctionBlock() {
 		return functionBlockEClass;
 	}
@@ -572,6 +581,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		createEReference(functionblockModelEClass, FUNCTIONBLOCK_MODEL__FUNCTIONBLOCK);
 		createEReference(functionblockModelEClass, FUNCTIONBLOCK_MODEL__ENTITIES);
 		createEReference(functionblockModelEClass, FUNCTIONBLOCK_MODEL__ENUMS);
+		createEReference(functionblockModelEClass, FUNCTIONBLOCK_MODEL__SUPER_TYPE);
 
 		functionBlockEClass = createEClass(FUNCTION_BLOCK);
 		createEReference(functionBlockEClass, FUNCTION_BLOCK__CONFIGURATION);
@@ -663,6 +673,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		initEReference(getFunctionblockModel_Functionblock(), this.getFunctionBlock(), null, "functionblock", null, 0, 1, FunctionblockModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getFunctionblockModel_Entities(), theDatatypePackage.getEntity(), null, "entities", null, 0, -1, FunctionblockModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getFunctionblockModel_Enums(), theDatatypePackage.getEnum(), null, "enums", null, 0, -1, FunctionblockModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getFunctionblockModel_SuperType(), this.getFunctionblockModel(), null, "superType", null, 0, 1, FunctionblockModel.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(functionBlockEClass, FunctionBlock.class, "FunctionBlock", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 		initEReference(getFunctionBlock_Configuration(), this.getConfiguration(), null, "configuration", null, 0, 1, FunctionBlock.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$

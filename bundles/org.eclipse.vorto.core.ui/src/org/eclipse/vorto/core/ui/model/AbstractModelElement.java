@@ -78,10 +78,13 @@ public abstract class AbstractModelElement implements IModelElement,
 	public Set<IModelElement> getReferences() {
 		Set<IModelElement> references = new TreeSet<>();
 		for (ModelReference modelReference : getModel().getReferences()) {
-			ModelId modelId = ModelIdFactory.newInstance(getPossibleReferenceType(), modelReference);
-			IModelElement modelElementReference = this.modelProject.getModelElementById(modelId);
-			if (modelElementReference != null) {
-				references.add(modelElementReference);
+			for(ModelType possibleType : getPossibleReferenceTypes()) {
+				ModelId modelId = ModelIdFactory.newInstance(possibleType, modelReference);
+				IModelElement modelElementReference = this.modelProject.getModelElementById(modelId);
+				if (modelElementReference != null) {
+					references.add(modelElementReference);
+					break;
+				}
 			}
 		}
 		return references;
@@ -123,7 +126,7 @@ public abstract class AbstractModelElement implements IModelElement,
 	}
 
 	
-	protected abstract ModelType getPossibleReferenceType();
+	protected abstract ModelType[] getPossibleReferenceTypes();
 		
 	public IModelProject getProject() {
 		return this.modelProject;

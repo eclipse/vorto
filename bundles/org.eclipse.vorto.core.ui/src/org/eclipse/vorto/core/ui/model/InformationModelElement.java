@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.vorto.core.api.model.datatype.Type;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -38,7 +37,9 @@ public class InformationModelElement extends AbstractModelElement {
 	
 	private InformationModel model;
 	
-	private Collection<Resource.Diagnostic> diagnostics; 
+	private Collection<Resource.Diagnostic> diagnostics;
+	
+	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Functionblock };
 
 	public InformationModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
@@ -75,8 +76,8 @@ public class InformationModelElement extends AbstractModelElement {
 	}
 
 	@Override
-	protected ModelType getPossibleReferenceType() {
-		return ModelType.Functionblock;
+	protected ModelType[] getPossibleReferenceTypes() {
+		return possibleReferenceTypes;
 	}
 	
 	@Override
@@ -165,9 +166,4 @@ public class InformationModelElement extends AbstractModelElement {
 			return false;
 		return true;
 	}
-	
-	
-
-
-
 }
