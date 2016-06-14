@@ -29,10 +29,10 @@ import org.eclipse.vorto.perspective.dnd.IDropAction;
  * A drop action for dropping an IModelProject to another IModelProject
  *
  */
-public class AddSharedReferenceDropAction implements IDropAction<IModelElement,ModelResource> {
+public class AddSharedReferenceDropAction implements IDropAction<IModelElement, ModelResource> {
 
 	private Class<?> droppedObjectClass = null;
-	
+
 	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
 
 	public AddSharedReferenceDropAction(Class<?> droppedObjectClass) {
@@ -40,37 +40,37 @@ public class AddSharedReferenceDropAction implements IDropAction<IModelElement,M
 	}
 
 	@Override
-	public IModelElement performDrop(IModelElement receivingModelElement,
-			ModelResource modelElementToBeDropped) {
+	public IModelElement performDrop(IModelElement receivingModelElement, ModelResource modelElementToBeDropped) {
 
 		if (droppedObjectClass.isInstance(modelElementToBeDropped)
 				&& !receivingModelElement.equals(modelElementToBeDropped)) {
-			ModelResource modelToAddAsReference = downloadAndSaveModel(receivingModelElement.getProject(), modelElementToBeDropped.getId());
-			
-		    receivingModelElement.addModelReference(modelToAddAsReference.getId());
+			ModelResource modelToAddAsReference = downloadAndSaveModel(receivingModelElement.getProject(),
+					modelElementToBeDropped.getId());
+
+			receivingModelElement.addModelReference(modelToAddAsReference.getId());
 			receivingModelElement.save();
 			return receivingModelElement;
 		}
-		
+
 		return null;
 	}
-	
-	// Download and save model from repository to local project.
-		// It also recursively do the same for the model references.
-		private ModelResource downloadAndSaveModel(IModelProject project, ModelId modelId) {
-			ModelResource model = modelRepo.getModel(modelId);
-			if (model != null) {
-				for (ModelId reference : model.getReferences()) {
-					downloadAndSaveModel(project, reference);
-				}
-				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
-				byte[] modelContent = modelRepo.downloadContent(model.getId());
-				project.addModelElement(model.getId(),new ByteArrayInputStream(modelContent));
-			} else {
-				MessageDisplayFactory.getMessageDisplay().displayError(
-						"Model " + modelId.toString() + " not found in repository.");
-			}
 
-			return model;
+	// Download and save model from repository to local project.
+	// It also recursively do the same for the model references.
+	private ModelResource downloadAndSaveModel(IModelProject project, ModelId modelId) {
+		ModelResource model = modelRepo.getModel(modelId);
+		if (model != null) {
+			for (ModelId reference : model.getReferences()) {
+				downloadAndSaveModel(project, reference);
+			}
+			MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+			byte[] modelContent = modelRepo.downloadContent(model.getId());
+			project.addModelElement(model.getId(), new ByteArrayInputStream(modelContent));
+		} else {
+			MessageDisplayFactory.getMessageDisplay()
+					.displayError("Model " + modelId.toString() + " not found in repository.");
 		}
+
+		return model;
+	}
 }
