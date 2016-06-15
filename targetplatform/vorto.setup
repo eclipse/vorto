@@ -93,8 +93,9 @@
       <requirement
           name="org.sonatype.tycho.m2e.feature.feature.group"/>
       <requirement
-          name="org.eclipse.xtext.sdk.feature.group"
-          versionRange="[2.8.0,2.9.0)"/>
+          name="org.eclipse.xtext.sdk.feature.group"/>
+      <requirement
+          name="de.itemis.xtext.antlr.sdk.feature.group"/>
       <requirement
           name="org.eclipse.mylyn.java_feature.feature.group"/>
       <requirement
@@ -110,17 +111,13 @@
       <repository
           url="http://repo1.maven.org/maven2/.m2e/connectors/m2eclipse-tycho/0.8.0/N/0.8.0.201409231215/"/>
       <repository
-          url="http://download.itemis.com/updates/"/>
-      <repository
-          url="http://download.itemis.de/updates/"/>
-      <repository
-          url="http://download.itemis.de/updates/releases"/>
-      <repository
           url="http://download.eclipse.org/egit/updates"/>
+      <repository
+          url="${mwe2.site}"/>
       <repository
           url="${xtext.site}"/>
       <repository
-          url="${mwe2.site}"/>
+          url="${antlr.site}"/>
     </setupTask>
     <setupTask
         xsi:type="git:GitCloneTask"
@@ -157,6 +154,10 @@
       <description>Manually maintained target platform</description>
     </setupTask>
     <setupTask
+        xsi:type="projects:ProjectsBuildTask"
+        id="build_project"
+        refresh="true"/>
+    <setupTask
         xsi:type="setup:CompoundTask"
         name="Mwe2 Generation">
       <setupTask
@@ -175,11 +176,11 @@
           xsi:type="launching:LaunchTask"
           id="launch.generate.mapping"
           launcher="4_Generate_Mapping"/>
-    </setupTask>
-    <setupTask
+      <setupTask
         xsi:type="projects:ProjectsBuildTask"
-        id="build_project"
+        id="build_after_mwe2_generation"
         refresh="true"/>
+    </setupTask>
     <stream
         name="development">
       <setupTask
@@ -190,6 +191,10 @@
           xsi:type="setup:VariableTask"
           name="xtext.site"
           value="http://download.eclipse.org/modeling/tmf/xtext/updates/releases/2.9.2/"/>
+      <setupTask
+          xsi:type="setup:VariableTask"
+          name="antlr.site"
+          value="http://download.itemis.com/updates/releases/2.1.1/"/>
     </stream>
   </project>
   <logicalProjectContainer
