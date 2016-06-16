@@ -173,6 +173,5 @@ public class ModelId {
 
 	public String getPrettyFormat() {	
 		return namespace + "." + name + ":" +version;
-	}
-	
+	}	
 }

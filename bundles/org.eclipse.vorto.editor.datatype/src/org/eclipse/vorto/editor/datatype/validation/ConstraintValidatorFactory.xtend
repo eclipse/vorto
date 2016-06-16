@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2014,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,7 +14,7 @@
  *
  *******************************************************************************/
  
- package org.eclipse.vorto.editor.datatype.internal
+ package org.eclipse.vorto.editor.datatype.validation
 
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
 import org.eclipse.vorto.editor.datatype.internal.validation.AccordinglyValueValidator

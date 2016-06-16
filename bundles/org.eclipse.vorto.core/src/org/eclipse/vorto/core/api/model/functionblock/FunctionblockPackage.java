@@ -472,13 +472,22 @@ public interface FunctionblockPackage extends EPackage {
 	int RETURN_PRIMITIVE_TYPE__RETURN_TYPE = RETURN_TYPE_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Constraint Rule</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE = RETURN_TYPE_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Return Primitive Type</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int RETURN_PRIMITIVE_TYPE_FEATURE_COUNT = RETURN_TYPE_FEATURE_COUNT + 1;
+	int RETURN_PRIMITIVE_TYPE_FEATURE_COUNT = RETURN_TYPE_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.ParamImpl <em>Param</em>}' class.
@@ -573,13 +582,22 @@ public interface FunctionblockPackage extends EPackage {
 	int PRIMITIVE_PARAM__TYPE = PARAM_FEATURE_COUNT + 0;
 
 	/**
+	 * The feature id for the '<em><b>Constraint Rule</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PRIMITIVE_PARAM__CONSTRAINT_RULE = PARAM_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Primitive Param</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PRIMITIVE_PARAM_FEATURE_COUNT = PARAM_FEATURE_COUNT + 1;
+	int PRIMITIVE_PARAM_FEATURE_COUNT = PARAM_FEATURE_COUNT + 2;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.RefParamImpl <em>Ref Param</em>}' class.
@@ -974,6 +992,17 @@ public interface FunctionblockPackage extends EPackage {
 	EAttribute getReturnPrimitiveType_ReturnType();
 
 	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType#getConstraintRule <em>Constraint Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Constraint Rule</em>'.
+	 * @see org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType#getConstraintRule()
+	 * @see #getReturnPrimitiveType()
+	 * @generated
+	 */
+	EReference getReturnPrimitiveType_ConstraintRule();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam <em>Primitive Param</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -993,6 +1022,17 @@ public interface FunctionblockPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getPrimitiveParam_Type();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam#getConstraintRule <em>Constraint Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Constraint Rule</em>'.
+	 * @see org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam#getConstraintRule()
+	 * @see #getPrimitiveParam()
+	 * @generated
+	 */
+	EReference getPrimitiveParam_ConstraintRule();
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.functionblock.RefParam <em>Ref Param</em>}'.
@@ -1355,6 +1395,14 @@ public interface FunctionblockPackage extends EPackage {
 		EAttribute RETURN_PRIMITIVE_TYPE__RETURN_TYPE = eINSTANCE.getReturnPrimitiveType_ReturnType();
 
 		/**
+		 * The meta object literal for the '<em><b>Constraint Rule</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE = eINSTANCE.getReturnPrimitiveType_ConstraintRule();
+
+		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.PrimitiveParamImpl <em>Primitive Param</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1371,6 +1419,14 @@ public interface FunctionblockPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PRIMITIVE_PARAM__TYPE = eINSTANCE.getPrimitiveParam_Type();
+
+		/**
+		 * The meta object literal for the '<em><b>Constraint Rule</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference PRIMITIVE_PARAM__CONSTRAINT_RULE = eINSTANCE.getPrimitiveParam_ConstraintRule();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.RefParamImpl <em>Ref Param</em>}' class.

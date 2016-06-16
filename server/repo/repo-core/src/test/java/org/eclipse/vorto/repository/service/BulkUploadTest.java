@@ -1,16 +1,17 @@
 package org.eclipse.vorto.repository.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
+import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.validation.ValidationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -30,6 +31,8 @@ public class BulkUploadTest extends SingleUseAbstractTest  {
 	@InjectMocks
 	private ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
 	
+	private BulkUploadHelper bulkUploadHelper;
+	
 	@Before
 	public void beforeEach() throws Exception {
 		super.beforeEach();
@@ -38,6 +41,8 @@ public class BulkUploadTest extends SingleUseAbstractTest  {
 		modelRepository = new JcrModelRepository();
 		modelRepository.setModelSearchUtil(modelSearchUtil);
 		modelRepository.setSession(session());
+		
+		bulkUploadHelper = new BulkUploadHelper(this.modelRepository);
 	}
 	
 	@Before
@@ -46,26 +51,48 @@ public class BulkUploadTest extends SingleUseAbstractTest  {
 	}
 	
 	@Test
-	public void tesUploadValidModels() throws IOException {
+	public void testUploadValidModels() throws IOException {
 		String fileName = "sample_models/valid-models.zip";
-		List<UploadModelResult> uploadResults = modelRepository.uploadMultipleModels(fromClasspath(fileName));
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
 		assertEquals(3, uploadResults.size());
 		verifyAllModelsAreValid(uploadResults);
 	}
 
 	@Test
-	public void tesUploadOneMissingModels() throws IOException {
+	public void testUploadOneMissingModels() throws IOException {
 		String fileName = "sample_models/missing-models.zip";
-		List<UploadModelResult> uploadResults = modelRepository.uploadMultipleModels(fromClasspath(fileName));
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
 		assertEquals(2, uploadResults.size());
 		verifyOneModelAreMissing(uploadResults);
 	}
 	
-	@Test(expected=ValidationException.class)
+	@Test
 	public void testUploadInvalidModels() throws IOException {
 		String fileName = "sample_models/invalid-models.zip";
-		modelRepository.uploadMultipleModels(fromClasspath(fileName));
-		assertEquals(0, modelRepository.search("*").size());
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		assertEquals(2,result.size());
+		assertFalse(result.get(0).isValid());
+		assertFalse(result.get(1).isValid()); 
+	}
+	
+	@Test
+	public void testUploadDifferentModelTypesWithSameId() throws Exception {
+		String fileName = "sample_models/modelsWithSameId.zip";
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		assertEquals(2,result.size());
+		assertFalse(result.get(1).isValid()); 	
+	}
+	
+	@Test
+	public void testUploadModelWithInvalidGrammar() throws Exception {
+		String fileName = "sample_models/modelsWithWrongGrammar.zip";
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		assertEquals(2,result.size());
+		assertFalse(result.get(0).isValid());
+		assertFalse(result.get(1).isValid()); 
+		assertEquals("org.eclipse.vorto.examples",result.get(0).getModelResource().getId().getNamespace());
+		assertEquals("Accelerometer",result.get(0).getModelResource().getId().getName());
+		assertEquals("0.0.1",result.get(0).getModelResource().getId().getVersion());
 	}
 	
 	private void verifyOneModelAreMissing(List<UploadModelResult> uploadResults) {

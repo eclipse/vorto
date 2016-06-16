@@ -13,16 +13,16 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#isMultiplicity <em>Multiplicity</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraints <em>Constraints</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraintRule <em>Constraint Rule</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.Property#getPropertyAttributes <em>Property Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty()
  * @model
@@ -134,20 +134,30 @@ public interface Property extends EObject {
 	void setDescription(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Constraints</b></em>' containment reference list.
-	 * The list contents are of type {@link org.eclipse.vorto.core.api.model.datatype.Constraint}.
+	 * Returns the value of the '<em><b>Constraint Rule</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Constraints</em>' containment reference list isn't clear,
+	 * If the meaning of the '<em>Constraint Rule</em>' containment reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Constraints</em>' containment reference list.
-	 * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty_Constraints()
+	 * @return the value of the '<em>Constraint Rule</em>' containment reference.
+	 * @see #setConstraintRule(ConstraintRule)
+	 * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getProperty_ConstraintRule()
 	 * @model containment="true"
 	 * @generated
 	 */
-	EList<Constraint> getConstraints();
+	ConstraintRule getConstraintRule();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraintRule <em>Constraint Rule</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Constraint Rule</em>' containment reference.
+	 * @see #getConstraintRule()
+	 * @generated
+	 */
+	void setConstraintRule(ConstraintRule value);
 
 	/**
 	 * Returns the value of the '<em><b>Type</b></em>' containment reference.

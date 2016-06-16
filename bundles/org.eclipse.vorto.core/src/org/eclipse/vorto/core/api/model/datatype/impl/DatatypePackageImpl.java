@@ -14,6 +14,7 @@ import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
@@ -131,6 +132,13 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * @generated
 	 */
 	private EClass enumLiteralPropertyAttributeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass constraintRuleEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -303,7 +311,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getProperty_Constraints() {
+	public EReference getProperty_ConstraintRule() {
 		return (EReference)propertyEClass.getEStructuralFeatures().get(4);
 	}
 
@@ -537,6 +545,24 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getConstraintRule() {
+		return constraintRuleEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getConstraintRule_Constraints() {
+		return (EReference)constraintRuleEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -605,7 +631,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		createEAttribute(propertyEClass, PROPERTY__MULTIPLICITY);
 		createEAttribute(propertyEClass, PROPERTY__NAME);
 		createEAttribute(propertyEClass, PROPERTY__DESCRIPTION);
-		createEReference(propertyEClass, PROPERTY__CONSTRAINTS);
+		createEReference(propertyEClass, PROPERTY__CONSTRAINT_RULE);
 		createEReference(propertyEClass, PROPERTY__TYPE);
 		createEReference(propertyEClass, PROPERTY__PROPERTY_ATTRIBUTES);
 
@@ -642,6 +668,9 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		enumLiteralPropertyAttributeEClass = createEClass(ENUM_LITERAL_PROPERTY_ATTRIBUTE);
 		createEAttribute(enumLiteralPropertyAttributeEClass, ENUM_LITERAL_PROPERTY_ATTRIBUTE__TYPE);
 		createEReference(enumLiteralPropertyAttributeEClass, ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE);
+
+		constraintRuleEClass = createEClass(CONSTRAINT_RULE);
+		createEReference(constraintRuleEClass, CONSTRAINT_RULE__CONSTRAINTS);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
@@ -699,7 +728,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		initEAttribute(getProperty_Multiplicity(), ecorePackage.getEBoolean(), "multiplicity", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProperty_Name(), ecorePackage.getEString(), "name", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getProperty_Description(), ecorePackage.getEString(), "description", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getProperty_Constraints(), this.getConstraint(), null, "Constraints", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getProperty_ConstraintRule(), this.getConstraintRule(), null, "constraintRule", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProperty_Type(), this.getPropertyType(), null, "type", null, 0, 1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getProperty_PropertyAttributes(), this.getPropertyAttribute(), null, "propertyAttributes", null, 0, -1, Property.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -736,6 +765,9 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		initEClass(enumLiteralPropertyAttributeEClass, EnumLiteralPropertyAttribute.class, "EnumLiteralPropertyAttribute", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getEnumLiteralPropertyAttribute_Type(), this.getEnumLiteralPropertyAttributeType(), "type", null, 0, 1, EnumLiteralPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getEnumLiteralPropertyAttribute_Value(), this.getEnumLiteral(), null, "value", null, 0, 1, EnumLiteralPropertyAttribute.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(constraintRuleEClass, ConstraintRule.class, "ConstraintRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getConstraintRule_Constraints(), this.getConstraint(), null, "Constraints", null, 0, -1, ConstraintRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");

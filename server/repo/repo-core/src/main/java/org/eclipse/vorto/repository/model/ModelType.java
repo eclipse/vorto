@@ -32,4 +32,19 @@ public enum ModelType {
 	public String getExtension() {
 		return extension;
 	}
+	
+	public static ModelType fromFileName(String fileName) {
+		String type = fileName.substring(fileName.lastIndexOf("."));
+		if (type.equals(ModelType.Functionblock.getExtension())) {
+			return ModelType.Functionblock;
+		} else if (type.equals(ModelType.InformationModel.getExtension())) {
+			return ModelType.InformationModel;
+		} else if (type.equals(ModelType.Datatype.getExtension())) {
+			return ModelType.Datatype;
+		} else if (type.equals(ModelType.Mapping.getExtension())) {
+			return ModelType.Mapping;
+		} else {
+			throw new IllegalArgumentException(fileName);
+		}
+	}
 }

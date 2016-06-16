@@ -51,9 +51,13 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReturnPrimitiveType" eSuperTypes="#//ReturnType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnType" eType="ecore:EEnum Datatype.ecore#//PrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="ecore:EClass Datatype.ecore#//ConstraintRule"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="PrimitiveParam" eSuperTypes="#//Param">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EEnum Datatype.ecore#//PrimitiveType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="ecore:EClass Datatype.ecore#//ConstraintRule"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RefParam" eSuperTypes="#//Param">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Datatype.ecore#//Type"/>
