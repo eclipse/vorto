@@ -29,6 +29,7 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getNamespace <em>Namespace</em>}</li>
@@ -38,7 +39,6 @@ import org.eclipse.vorto.core.api.model.model.ModelReference;
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getDisplayname <em>Displayname</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.TypeImpl#getCategory <em>Category</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

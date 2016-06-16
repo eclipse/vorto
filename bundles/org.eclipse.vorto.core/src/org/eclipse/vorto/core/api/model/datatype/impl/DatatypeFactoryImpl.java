@@ -15,6 +15,7 @@ import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
@@ -87,6 +88,7 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 			case DatatypePackage.PROPERTY_TYPE: return createPropertyType();
 			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE: return createBooleanPropertyAttribute();
 			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE: return createEnumLiteralPropertyAttribute();
+			case DatatypePackage.CONSTRAINT_RULE: return createConstraintRule();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -252,6 +254,16 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	public EnumLiteralPropertyAttribute createEnumLiteralPropertyAttribute() {
 		EnumLiteralPropertyAttributeImpl enumLiteralPropertyAttribute = new EnumLiteralPropertyAttributeImpl();
 		return enumLiteralPropertyAttribute;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ConstraintRule createConstraintRule() {
+		ConstraintRuleImpl constraintRule = new ConstraintRuleImpl();
+		return constraintRule;
 	}
 
 	/**

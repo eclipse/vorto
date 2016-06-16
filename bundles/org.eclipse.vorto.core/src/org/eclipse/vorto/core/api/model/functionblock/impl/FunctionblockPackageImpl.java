@@ -455,6 +455,15 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getReturnPrimitiveType_ConstraintRule() {
+		return (EReference)returnPrimitiveTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getPrimitiveParam() {
 		return primitiveParamEClass;
 	}
@@ -466,6 +475,15 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 */
 	public EAttribute getPrimitiveParam_Type() {
 		return (EAttribute)primitiveParamEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getPrimitiveParam_ConstraintRule() {
+		return (EReference)primitiveParamEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -613,9 +631,11 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 
 		returnPrimitiveTypeEClass = createEClass(RETURN_PRIMITIVE_TYPE);
 		createEAttribute(returnPrimitiveTypeEClass, RETURN_PRIMITIVE_TYPE__RETURN_TYPE);
+		createEReference(returnPrimitiveTypeEClass, RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE);
 
 		primitiveParamEClass = createEClass(PRIMITIVE_PARAM);
 		createEAttribute(primitiveParamEClass, PRIMITIVE_PARAM__TYPE);
+		createEReference(primitiveParamEClass, PRIMITIVE_PARAM__CONSTRAINT_RULE);
 
 		refParamEClass = createEClass(REF_PARAM);
 		createEReference(refParamEClass, REF_PARAM__TYPE);
@@ -705,9 +725,11 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 
 		initEClass(returnPrimitiveTypeEClass, ReturnPrimitiveType.class, "ReturnPrimitiveType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 		initEAttribute(getReturnPrimitiveType_ReturnType(), theDatatypePackage.getPrimitiveType(), "returnType", null, 0, 1, ReturnPrimitiveType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getReturnPrimitiveType_ConstraintRule(), theDatatypePackage.getConstraintRule(), null, "constraintRule", null, 0, 1, ReturnPrimitiveType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(primitiveParamEClass, PrimitiveParam.class, "PrimitiveParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 		initEAttribute(getPrimitiveParam_Type(), theDatatypePackage.getPrimitiveType(), "type", null, 0, 1, PrimitiveParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEReference(getPrimitiveParam_ConstraintRule(), theDatatypePackage.getConstraintRule(), null, "constraintRule", null, 0, 1, PrimitiveParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(refParamEClass, RefParam.class, "RefParam", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 		initEReference(getRefParam_Type(), theDatatypePackage.getType(), null, "type", null, 0, 1, RefParam.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$

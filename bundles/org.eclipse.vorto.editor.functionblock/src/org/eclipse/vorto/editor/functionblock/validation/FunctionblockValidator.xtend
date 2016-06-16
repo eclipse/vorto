@@ -19,7 +19,10 @@ import com.google.inject.Inject
 import java.util.HashSet
 import java.util.List
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EStructuralFeature
+import org.eclipse.vorto.core.api.model.datatype.Constraint
 import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Type
 import org.eclipse.vorto.core.api.model.functionblock.Configuration
 import org.eclipse.vorto.core.api.model.functionblock.Event
@@ -28,9 +31,14 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage
 import org.eclipse.vorto.core.api.model.functionblock.Operation
+import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
+import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Status
 import org.eclipse.vorto.core.api.model.model.ModelPackage
+import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
 import org.eclipse.xtext.validation.Check
+import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
+import org.eclipse.vorto.editor.datatype.validation.ConstraintValidatorFactory
 
 /**
  * Custom validation rules. 
@@ -38,6 +46,9 @@ import org.eclipse.xtext.validation.Check
  * see http://www.eclipse.org/Xtext/documentation.html#validation
  */
 class FunctionblockValidator extends AbstractFunctionblockValidator {
+	
+	public val propertyValidator = new PropertyConstraintMappingValidation
+	
 	@Inject
 	private TypeHelper helper;
 	
@@ -140,6 +151,51 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 				ModelPackage.Literals.MODEL__VERSION)
 		}
 	}
+	
+	@Check
+	def checkParametersConstraint(Operation op) {
+		var parameters = op.params;
+		if(parameters.length == 0) return;
+		for (parameter : parameters) {
+			if (parameter instanceof PrimitiveParam) {
+				var primitiveParam = parameter as PrimitiveParam
+				val primitiveType = primitiveParam.type
+				var constraintsList = primitiveParam.constraintRule.constraints
+				for (constraint : constraintsList) {
+					checkForConstraint(primitiveType, constraint, parameter, primitiveParam.type.getName, parameter.multiplicity, FunctionblockPackage.Literals.PRIMITIVE_PARAM__CONSTRAINT_RULE)
+				}
+			}
+		}
+	}
+	
+	@Check
+	def checkReturnTypeConstraint(Operation op) {
+		var returnType = op.returnType
+		if (returnType instanceof ReturnPrimitiveType) {
+			var returnPrimitiveType = returnType as ReturnPrimitiveType
+			val parameterName = returnPrimitiveType.returnType.getName
+			var constraintsList = returnPrimitiveType.constraintRule.constraints
+			for (constraint : constraintsList) {
+				checkForConstraint(returnPrimitiveType.returnType, constraint, returnPrimitiveType, parameterName, returnPrimitiveType.multiplicity, FunctionblockPackage.Literals.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE)
+			}
+		}
+	}		
+
+	def checkForConstraint(PrimitiveType primitiveType, Constraint constraint, EObject source, String parameterName, boolean isMultiplcity, EStructuralFeature feature) {
+		if (!isValidConstraintType(primitiveType, constraint)) {
+			error(propertyValidator.errorMessage, source, feature)
+		} else {
+			var validator = ConstraintValidatorFactory.getValueValidator(constraint.type)
+			if (!isValidConstraintValue(validator, primitiveType, constraint)) {
+				error(validator.errorMessage, source, feature)
+			}
+		}
+		if(isMimeConstraint(parameterName, constraint)) {
+			if(!isMultiplcity) {
+				error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, source,feature )
+			}
+		}
+	}		
 	
 	@Check
 	def checkPropsIn(Configuration c) {

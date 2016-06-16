@@ -85,7 +85,7 @@ class PropertyElementBuilder {
 	}
 	
 	private def isWithConstraints(Property property) {
-		property.constraints != null 
+		property.constraintRule.constraints != null 
 			&& ConstraintExceptionAdapter.returnValidConstraintLength(property) > 0
 	}
 	

@@ -19,11 +19,11 @@ import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.BooleanPropertyAttributeImpl#isValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

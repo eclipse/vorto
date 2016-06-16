@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.Property;
@@ -31,16 +32,16 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getPresence <em>Presence</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#isMultiplicity <em>Multiplicity</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getDescription <em>Description</em>}</li>
- *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getConstraints <em>Constraints</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getConstraintRule <em>Constraint Rule</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.PropertyImpl#getPropertyAttributes <em>Property Attributes</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -116,14 +117,14 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	protected String description = DESCRIPTION_EDEFAULT;
 
 	/**
-	 * The cached value of the '{@link #getConstraints() <em>Constraints</em>}' containment reference list.
+	 * The cached value of the '{@link #getConstraintRule() <em>Constraint Rule</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getConstraints()
+	 * @see #getConstraintRule()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Constraint> constraints;
+	protected ConstraintRule constraintRule;
 
 	/**
 	 * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
@@ -275,11 +276,42 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Constraint> getConstraints() {
-		if (constraints == null) {
-			constraints = new EObjectContainmentEList<Constraint>(Constraint.class, this, DatatypePackage.PROPERTY__CONSTRAINTS);
+	public ConstraintRule getConstraintRule() {
+		return constraintRule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConstraintRule(ConstraintRule newConstraintRule, NotificationChain msgs) {
+		ConstraintRule oldConstraintRule = constraintRule;
+		constraintRule = newConstraintRule;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DatatypePackage.PROPERTY__CONSTRAINT_RULE, oldConstraintRule, newConstraintRule);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
-		return constraints;
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConstraintRule(ConstraintRule newConstraintRule) {
+		if (newConstraintRule != constraintRule) {
+			NotificationChain msgs = null;
+			if (constraintRule != null)
+				msgs = ((InternalEObject)constraintRule).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.PROPERTY__CONSTRAINT_RULE, null, msgs);
+			if (newConstraintRule != null)
+				msgs = ((InternalEObject)newConstraintRule).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.PROPERTY__CONSTRAINT_RULE, null, msgs);
+			msgs = basicSetConstraintRule(newConstraintRule, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.PROPERTY__CONSTRAINT_RULE, newConstraintRule, newConstraintRule));
 	}
 
 	/**
@@ -347,8 +379,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 		switch (featureID) {
 			case DatatypePackage.PROPERTY__PRESENCE:
 				return basicSetPresence(null, msgs);
-			case DatatypePackage.PROPERTY__CONSTRAINTS:
-				return ((InternalEList<?>)getConstraints()).basicRemove(otherEnd, msgs);
+			case DatatypePackage.PROPERTY__CONSTRAINT_RULE:
+				return basicSetConstraintRule(null, msgs);
 			case DatatypePackage.PROPERTY__TYPE:
 				return basicSetType(null, msgs);
 			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
@@ -373,8 +405,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 				return getName();
 			case DatatypePackage.PROPERTY__DESCRIPTION:
 				return getDescription();
-			case DatatypePackage.PROPERTY__CONSTRAINTS:
-				return getConstraints();
+			case DatatypePackage.PROPERTY__CONSTRAINT_RULE:
+				return getConstraintRule();
 			case DatatypePackage.PROPERTY__TYPE:
 				return getType();
 			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
@@ -404,9 +436,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 			case DatatypePackage.PROPERTY__DESCRIPTION:
 				setDescription((String)newValue);
 				return;
-			case DatatypePackage.PROPERTY__CONSTRAINTS:
-				getConstraints().clear();
-				getConstraints().addAll((Collection<? extends Constraint>)newValue);
+			case DatatypePackage.PROPERTY__CONSTRAINT_RULE:
+				setConstraintRule((ConstraintRule)newValue);
 				return;
 			case DatatypePackage.PROPERTY__TYPE:
 				setType((PropertyType)newValue);
@@ -439,8 +470,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 			case DatatypePackage.PROPERTY__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
 				return;
-			case DatatypePackage.PROPERTY__CONSTRAINTS:
-				getConstraints().clear();
+			case DatatypePackage.PROPERTY__CONSTRAINT_RULE:
+				setConstraintRule((ConstraintRule)null);
 				return;
 			case DatatypePackage.PROPERTY__TYPE:
 				setType((PropertyType)null);
@@ -468,8 +499,8 @@ public class PropertyImpl extends MinimalEObjectImpl.Container implements Proper
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case DatatypePackage.PROPERTY__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
-			case DatatypePackage.PROPERTY__CONSTRAINTS:
-				return constraints != null && !constraints.isEmpty();
+			case DatatypePackage.PROPERTY__CONSTRAINT_RULE:
+				return constraintRule != null;
 			case DatatypePackage.PROPERTY__TYPE:
 				return type != null;
 			case DatatypePackage.PROPERTY__PROPERTY_ATTRIBUTES:
