@@ -18,11 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 import org.eclipse.core.resources.ResourceAttributes;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.api.repository.RepositoryException;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
+import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.perspective.dnd.IDropAction;
@@ -55,21 +57,25 @@ public class RepositoryResourceDropAction implements IDropAction<IModelProject,M
 	// It also recursively do the same for the model references.
 	private IModelElement downloadAndSaveModel(IModelProject modelProject, ModelId modelId) {
 		IModelElement modelElement = null;
-		ModelResource model = modelRepo.getModel(modelId);
-		if (model != null) {
-			if (!modelProject.exists(modelId)) {
-				for (ModelId reference : model.getReferences()) {
-					downloadAndSaveModel(modelProject, reference);
+		try {
+			ModelResource model = modelRepo.getModel(modelId);
+			if (model != null) {
+				if (!modelProject.exists(modelId)) {
+					for (ModelId reference : model.getReferences()) {
+						downloadAndSaveModel(modelProject, reference);
+					}
+					MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+					byte[] modelContent = modelRepo.downloadContent(model.getId());
+					modelElement = saveToProject(modelProject, modelContent, modelId);
+				} else {
+					modelElement = modelProject.getModelElementById(modelId);
 				}
-				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
-				byte[] modelContent = modelRepo.downloadContent(model.getId());
-				modelElement = saveToProject(modelProject, modelContent, modelId);
 			} else {
-				modelElement = modelProject.getModelElementById(modelId);
+				MessageDisplayFactory.getMessageDisplay().displayError(
+						"Model " + modelId.toString() + " not found in repository.");
 			}
-		} else {
-			MessageDisplayFactory.getMessageDisplay().displayError(
-					"Model " + modelId.toString() + " not found in repository.");
+		} catch (RepositoryException e) {
+			ExceptionHandlerFactory.getHandler().handle(e);
 		}
 
 		return modelElement;

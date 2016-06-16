@@ -21,9 +21,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.vorto.codegen.ui.display.IMessageDisplay;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.codegen.ui.utils.WizardUtil;
+import org.eclipse.vorto.core.ui.IMessageDisplay;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 
 public abstract class AbstractVortoWizard extends Wizard implements INewWizard,
 		IExecutableExtension {

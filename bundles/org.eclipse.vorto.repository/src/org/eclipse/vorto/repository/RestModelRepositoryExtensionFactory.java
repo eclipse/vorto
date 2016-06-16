@@ -19,7 +19,7 @@ import java.util.Observer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExecutableExtensionFactory;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.repository.preferences.ConnectionInfoFactory;
 
 public class RestModelRepositoryExtensionFactory implements

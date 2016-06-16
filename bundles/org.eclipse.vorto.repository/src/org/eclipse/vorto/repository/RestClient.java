@@ -33,6 +33,10 @@ import org.apache.http.message.BasicHeader;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.vorto.core.api.repository.Attachment;
+import org.eclipse.vorto.core.api.repository.AuthenticationException;
+import org.eclipse.vorto.core.api.repository.CheckInModelException;
+import org.eclipse.vorto.core.api.repository.ConfigurationException;
+import org.eclipse.vorto.core.api.repository.RepositoryException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -56,10 +60,10 @@ public class RestClient {
 		CloseableHttpClient client = HttpClients.custom().build();
 
 		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
-		return client.execute(request, new ResponseHandler<Result>() {
-
+		return client.execute(request, new DefaultResponseHandler<Result>() {
+			
 			@Override
-			public Result handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+			public Result handleSuccess(HttpResponse response) throws ClientProtocolException, IOException {
 				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
 			}
 		});
@@ -71,10 +75,11 @@ public class RestClient {
 		CloseableHttpClient client = HttpClients.custom().build();
 
 		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
-		return client.execute(request, new ResponseHandler<Attachment>() {
-
+		
+		return client.execute(request, new DefaultResponseHandler<Attachment>() {
+	
 			@Override
-			public Attachment handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+			public Attachment handleSuccess(HttpResponse response) throws ClientProtocolException, IOException {
 				String content_disposition = response.getFirstHeader("Content-Disposition").getValue();
 				String filename = content_disposition.substring(content_disposition.indexOf("filename = ") + "filename = ".length());
 				long length = response.getEntity().getContentLength();
@@ -94,11 +99,16 @@ public class RestClient {
 		HttpUriRequest request = RequestBuilder.post().setConfig(createProxyConfiguration()).setUri(createQuery(query))
 				.addHeader(createSecurityHeader()).setEntity(content).build();
 		
-		return client.execute(request, new ResponseHandler<Result>() {
+		return client.execute(request, new DefaultResponseHandler<Result>() {
+			
+			@Override
+			public Result handleSuccess(HttpResponse response) throws ClientProtocolException, IOException {
+				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
+			}
 
 			@Override
-			public Result handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
-				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
+			protected Result handleFailure(HttpResponse response) throws ClientProtocolException, IOException {
+				throw new CheckInModelException("Error in uploading file to remote repository");
 			}
 		});
 	}
@@ -156,5 +166,29 @@ public class RestClient {
 	private String createAuth() {
 		return new String(Base64.encodeBase64((connectionInfo.getUserName() + ":" + connectionInfo.getPassword())
 				.getBytes()));
+	}
+	
+	private abstract class DefaultResponseHandler<T> implements ResponseHandler<T> {
+		public T handleResponse(HttpResponse response) throws ClientProtocolException, IOException {
+			int statusCode = response.getStatusLine().getStatusCode(); 
+			if (statusCode >= 200 && statusCode < 300) {
+				return handleSuccess(response);
+			} else if (statusCode == 401) {
+				throw new AuthenticationException();
+			} else if (statusCode == 400) {
+				throw new ConfigurationException(); 
+			} else if (statusCode == 404) {
+				throw new ConfigurationException(); 
+			} else {
+				return handleFailure(response);
+			}
+		}
+		
+		protected T handleFailure(HttpResponse response) throws ClientProtocolException, IOException {
+			HttpStatus status = HttpStatus.statusFor(response.getStatusLine().getStatusCode());
+			throw new RepositoryException("Error : request returned the status code: " + status.getCode() + " - " + status.getMessage());
+		}
+		
+		protected abstract T handleSuccess(HttpResponse response) throws ClientProtocolException, IOException;
 	}
 }

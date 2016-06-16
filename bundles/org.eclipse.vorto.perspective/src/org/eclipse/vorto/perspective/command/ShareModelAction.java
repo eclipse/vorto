@@ -21,11 +21,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.UploadResult;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
+import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.util.ImageUtil;
 import org.eclipse.vorto.perspective.view.ModelUploadDialog;
@@ -55,9 +56,8 @@ public abstract class ShareModelAction extends Action {
 				MessageDisplayFactory.getMessageDisplay().display(
 						"Model " + modelElement.getModelFile().getName() + " saved to repository.");
 			}
-		} catch (CheckInModelException | IOException | CoreException e) {
-			MessageDisplayFactory.getMessageDisplay().displayError("Error uploading file to repository");
-			MessageDisplayFactory.getMessageDisplay().displayError(e);
+		} catch (Exception e) {
+			ExceptionHandlerFactory.getHandler().handle(e);
 		}
 	}
 	
