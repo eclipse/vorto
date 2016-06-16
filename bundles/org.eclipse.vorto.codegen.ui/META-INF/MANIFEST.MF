@@ -27,7 +27,6 @@ Bundle-ClassPath: icons/,
 Import-Package: org.eclipse.emf.common.util
 Export-Package: org.eclipse.vorto.codegen.ui,
  org.eclipse.vorto.codegen.ui.context,
- org.eclipse.vorto.codegen.ui.display,
  org.eclipse.vorto.codegen.ui.filewrite,
  org.eclipse.vorto.codegen.ui.handler,
  org.eclipse.vorto.codegen.ui.progresstask,

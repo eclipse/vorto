@@ -29,7 +29,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 
 /**
  * Configures the classpath and source folders for a Java Project

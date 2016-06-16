@@ -25,4 +25,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org/Vorto
 Export-Package: org.eclipse.vorto.repository
-Import-Package: org.eclipse.vorto.codegen.ui.display
+

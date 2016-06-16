@@ -12,20 +12,31 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
+
 package org.eclipse.vorto.core.api.repository;
 
-public class CheckInModelException extends RepositoryException {
+public class ConfigurationException extends RepositoryException {
 
 	/**
-	 * 
+	 * Used to throw ConfigurationExceptions (e.g. when the URL to the
+	 * repository is wrong)
 	 */
-	private static final long serialVersionUID = -6552743519658536939L;
+	private static final long serialVersionUID = 12L;
 
-	public CheckInModelException(String errorMessage) {
-		super(errorMessage);
+	public ConfigurationException() {
+		super("Please make sure that the URL to the repository is entered correctly "
+				+ "in your Eclipse Settings (Window -> Preferences -> Vorto -> Information Model Repository).");
 	}
 
-	public CheckInModelException(String errorMessage, Throwable cause) {
-		super(errorMessage, cause);
+	public ConfigurationException(String message) {
+		super(message);
+	}
+
+	public ConfigurationException(Throwable cause) {
+		super(cause);
+	}
+
+	public ConfigurationException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

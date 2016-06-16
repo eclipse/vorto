@@ -21,9 +21,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 
 /**
  * 

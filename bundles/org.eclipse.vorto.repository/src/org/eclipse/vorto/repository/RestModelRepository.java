@@ -23,10 +23,13 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.Attachment;
+import org.eclipse.vorto.core.api.repository.AuthenticationException;
 import org.eclipse.vorto.core.api.repository.CheckInModelException;
+import org.eclipse.vorto.core.api.repository.ConfigurationException;
 import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.api.repository.RepositoryException;
 import org.eclipse.vorto.core.api.repository.UploadResult;
 import org.eclipse.vorto.repository.function.ModelViewToModelResource;
 import org.eclipse.vorto.repository.function.StringToGeneratorList;
@@ -52,17 +55,19 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	private Function<String, UploadResultView> uploadResponseConverter = new StringToUploadResult();
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
-	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource, contentConverters);
-	private Function<UploadResultView, UploadResult> uploadResultConverter = new UploadResultViewToUploadResult(modelViewToModelResource);
+	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource,
+			contentConverters);
+	private Function<UploadResultView, UploadResult> uploadResultConverter = new UploadResultViewToUploadResult(
+			modelViewToModelResource);
 	private Function<String, List<ModelView>> searchResultConverter = new StringToSearchResult();
 	private Function<String, List<GeneratorResource>> searchGeneratorResultConverter = new StringToGeneratorList();
-	
+
 	private Function<String, byte[]> stringToByteArray = new Function<String, byte[]>() {
 		public byte[] apply(String input) {
 			return input.getBytes();
 		}
 	};
-	
+
 	private RestClient httpClient;
 
 	public RestModelRepository(ConnectionInfo connectionUrlSupplier) {
@@ -81,8 +86,10 @@ public class RestModelRepository extends Observable implements IModelRepository 
 
 			// Convert the searchResult in result to return type
 			return Lists.transform(result, modelViewToModelResource);
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new RuntimeException("Error querying remote repository with queryString = " + expression, e);
+			throw new RuntimeException("Error querying remote repository with queryString = '" + expression + "'", e);
 		}
 	}
 
@@ -93,10 +100,12 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getName(), "name should not be null");
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
-		
+
 		String url = getUrlForModelDownload(modelId);
 		try {
 			return httpClient.executeGet(url, stringToByteArray);
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException("Error downloading modelContent for resource", e);
 		}
@@ -109,18 +118,20 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		Objects.requireNonNull(modelId.getName(), "name should not be null");
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
-		
+
 		String url = getUrlForModel(modelId);
 		try {
 			return httpClient.executeGet(url, stringToModelResource);
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException("Error getting model info for resource", e);
 		}
 	}
 
 	private String getUrlForModelDownload(ModelId modelId) {
-		return "model/" + String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName(),
-				modelId.getVersion());
+		return "model/"
+				+ String.format(FILE_DOWNLOAD_FORMAT, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 	}
 
 	private String getUrlForModel(ModelId modelId) {
@@ -144,8 +155,10 @@ public class RestModelRepository extends Observable implements IModelRepository 
 			UploadResultView uploadResult = httpClient.executePost("secure", fileToUpload, uploadResponseConverter);
 
 			return uploadResultConverter.apply(uploadResult);
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new CheckInModelException("Error in uploading file to remote repository", e);
+			throw new RuntimeException("Error getting model info for resource", e);
 		}
 	}
 
@@ -155,26 +168,33 @@ public class RestModelRepository extends Observable implements IModelRepository 
 		try {
 			httpClient.executePut(getUrlForCheckin(handleId));
 		} catch (Exception e) {
-			throw new CheckInModelException("Error in committing file with upload id " + handleId + " to repository.", e);
+			throw new CheckInModelException("Error in committing file with upload id " + handleId + " to repository.",
+					e);
 		}
 	}
 
 	@Override
 	public List<GeneratorResource> listGenerators() {
 		try {
-			List<GeneratorResource> result = httpClient.executeGet("generation-router/platform", searchGeneratorResultConverter);
+			List<GeneratorResource> result = httpClient.executeGet("generation-router/platform",
+					searchGeneratorResultConverter);
 			return result;
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException("Error querying remote repository with listGenerators request.", e);
 		}
 	}
-	
+
 	@Override
 	public Attachment generateCode(ModelId model, String serviceKey) {
 		try {
-			String url = "generation-router/"+model.getNamespace()+"/"+model.getName()+"/"+model.getVersion()+"/"+serviceKey;
+			String url = "generation-router/" + model.getNamespace() + "/" + model.getName() + "/" + model.getVersion()
+					+ "/" + serviceKey;
 			Attachment result = httpClient.executeGetAttachment(url);
 			return result;
+		} catch (RepositoryException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException("Error querying remote repository with generateCode request.", e);
 		}

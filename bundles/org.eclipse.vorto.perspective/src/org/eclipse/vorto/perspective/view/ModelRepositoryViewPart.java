@@ -50,12 +50,13 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.api.repository.RepositoryException;
+import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 import org.eclipse.vorto.perspective.contentprovider.ModelRepositoryContentProvider;
 import org.eclipse.vorto.perspective.dnd.ModelDragListener;
 import org.eclipse.vorto.perspective.labelprovider.ModelRepositoryLabelProvider;
@@ -84,8 +85,6 @@ public class ModelRepositoryViewPart extends ViewPart {
 	 */
 	public static final String ID = "org.eclipse.vorto.perspective.views.ModelRepositoryViewPart";
 
-	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
-
 	private TableViewer viewer;
 
 	private Text searchField;
@@ -104,9 +103,9 @@ public class ModelRepositoryViewPart extends ViewPart {
 			public void widgetSelected(SelectionEvent e) {
 				String filter = searchField.getText();
 				try {
-					viewer.setInput(modelRepo.search(filter));
+					viewer.setInput(getModelRepo().search(filter));
 				} catch (Exception ex) {
-					MessageDisplayFactory.getMessageDisplay().displayError(ex.getCause());
+					ExceptionHandlerFactory.getHandler().handle(ex);
 				}
 			}
 		});
@@ -161,7 +160,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 				File file = File.createTempFile(model.getDisplayName(), model.getId().getModelType().getExtension());
 
 				// Download shared model and put in temporary file
-				Files.write(modelRepo.downloadContent(model.getId()), file);
+				Files.write(getModelRepo().downloadContent(model.getId()), file);
 
 				// Open temporary file in editor
 				IEditorPart editor = openFileInEditor(page, file, model.getId().getModelType());
@@ -171,8 +170,10 @@ public class ModelRepositoryViewPart extends ViewPart {
 				if (editor != null) {
 					page.addPartListener(onEditorCloseListener(page, editor, file));
 				}
+			} catch (RepositoryException e) {
+				ExceptionHandlerFactory.getHandler().handle(e);
 			} catch (IOException e) {
-				throw new RuntimeException(e);
+				ExceptionHandlerFactory.getHandler().handle(new RuntimeException("Error downloading content from repository.", e));
 			}
 		}
 
@@ -226,10 +227,14 @@ public class ModelRepositoryViewPart extends ViewPart {
 		contextMenu.add(new Action("Generate code") {
 			@Override
 			public void run() {
-				List<GeneratorResource> codegens = modelRepo.listGenerators();
-				GeneratorDialog dialog = new GeneratorDialog(new Shell(), model, codegens);
-				dialog.create();
-				dialog.open();
+				try {
+					List<GeneratorResource> codegens = getModelRepo().listGenerators();
+					GeneratorDialog dialog = new GeneratorDialog(new Shell(), model, codegens);
+					dialog.create();
+					dialog.open();
+				} catch (Exception e) {
+					ExceptionHandlerFactory.getHandler().handle(e);
+				}
 			}
 		});
 	}
@@ -294,6 +299,10 @@ public class ModelRepositoryViewPart extends ViewPart {
 		button.setText("Search");
 
 		return button;
+	}
+	
+	private IModelRepository getModelRepo() {
+		return ModelRepositoryFactory.getModelRepository();
 	}
 
 	/**

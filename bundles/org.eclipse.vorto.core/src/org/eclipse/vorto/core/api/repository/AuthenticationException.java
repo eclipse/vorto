@@ -12,20 +12,30 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
+
 package org.eclipse.vorto.core.api.repository;
 
-public class CheckInModelException extends RepositoryException {
+/**
+ * Used to throw an exception if the user is not logged in to the repository
+ * appropriately (Window -> Preferences -> Vorto -> Information Model
+ * Repository)
+ */
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -6552743519658536939L;
+public class AuthenticationException extends RepositoryException {
 
-	public CheckInModelException(String errorMessage) {
-		super(errorMessage);
+	private static final long serialVersionUID = 1L;
+
+	public AuthenticationException() {
+		super("Please make sure that you have signed-up for the repository and entered your login credentials "
+				+ "correctly in your Eclipse Settings (Window -> Preferences -> Vorto -> Information Model Repository).");
 	}
 
-	public CheckInModelException(String errorMessage, Throwable cause) {
-		super(errorMessage, cause);
+	public AuthenticationException(String message) {
+		super(message);
 	}
+
+	public AuthenticationException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

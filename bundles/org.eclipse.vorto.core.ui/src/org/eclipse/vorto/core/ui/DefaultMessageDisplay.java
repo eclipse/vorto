@@ -12,7 +12,7 @@
  *  Contributors:
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.ui.display;
+package org.eclipse.vorto.core.ui;
 
 import java.io.IOException;
 import java.io.PrintWriter;
