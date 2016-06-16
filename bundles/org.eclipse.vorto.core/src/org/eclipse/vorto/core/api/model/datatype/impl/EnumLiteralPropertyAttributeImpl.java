@@ -21,11 +21,11 @@ import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeTyp
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.impl.EnumLiteralPropertyAttributeImpl#getValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */

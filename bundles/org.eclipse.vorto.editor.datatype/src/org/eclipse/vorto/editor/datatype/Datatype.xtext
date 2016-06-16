@@ -65,8 +65,12 @@ EnumLiteral:
 Property:
 	(presence = Presence)? (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
 	('with' '{' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
-	('<' Constraints += Constraint ("," Constraints += Constraint)*  '>')?
+	('<' constraintRule = ConstraintRule '>')?
 	(description=STRING)?
+;
+
+ConstraintRule:
+	{ConstraintRule} (Constraints += Constraint ("," Constraints += Constraint)*)?	
 ;
 
 EnumLiteralName:

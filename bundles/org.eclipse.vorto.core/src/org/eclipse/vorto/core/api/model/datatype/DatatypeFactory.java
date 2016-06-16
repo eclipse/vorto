@@ -130,6 +130,15 @@ public interface DatatypeFactory extends EFactory {
 	EnumLiteralPropertyAttribute createEnumLiteralPropertyAttribute();
 
 	/**
+	 * Returns a new object of class '<em>Constraint Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Constraint Rule</em>'.
+	 * @generated
+	 */
+	ConstraintRule createConstraintRule();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

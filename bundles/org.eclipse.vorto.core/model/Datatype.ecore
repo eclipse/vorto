@@ -13,8 +13,8 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="Constraints" upperBound="-1"
-        eType="#//Constraint" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="#//ConstraintRule"
+        containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//PropertyType"
         containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="propertyAttributes" upperBound="-1"
@@ -79,5 +79,9 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="EnumLiteralPropertyAttributeType">
     <eLiterals name="measurementUnit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConstraintRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Constraints" upperBound="-1"
+        eType="#//Constraint" containment="true"/>
   </eClassifiers>
 </ecore:EPackage>

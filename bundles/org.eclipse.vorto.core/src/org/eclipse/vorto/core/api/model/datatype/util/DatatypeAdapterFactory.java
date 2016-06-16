@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
@@ -132,6 +133,10 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseEnumLiteralPropertyAttribute(EnumLiteralPropertyAttribute object) {
 				return createEnumLiteralPropertyAttributeAdapter();
+			}
+			@Override
+			public Adapter caseConstraintRule(ConstraintRule object) {
+				return createConstraintRuleAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -336,6 +341,20 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createEnumLiteralPropertyAttributeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintRule <em>Constraint Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.ConstraintRule
+	 * @generated
+	 */
+	public Adapter createConstraintRuleAdapter() {
 		return null;
 	}
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,14 +17,15 @@ package org.eclipse.vorto.editor.datatype.validation
 
 import java.util.HashSet
 import java.util.List
+import org.eclipse.vorto.core.api.model.datatype.Constraint
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.model.ModelPackage
-import org.eclipse.vorto.editor.datatype.internal.ConstraintValidatorFactory
-import org.eclipse.vorto.editor.datatype.internal.validation.PropertyConstraintMappingValidation
+import org.eclipse.vorto.editor.datatype.internal.validation.ConstraintValueValidator
 import org.eclipse.xtext.validation.Check
 
 /**
@@ -38,28 +39,43 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 
 	@Check
 	def checkConstraint(Property prop) {
-		var list = prop.constraints
+		var constraints = prop.constraintRule.constraints
 		
-		if(list.length == 0) return;
-		
-		
+		if(constraints.length == 0) return;
 			var primi = prop.type as PrimitivePropertyType
-			for (i : list.size >.. 0) {
-				var constraint = list.get(i)
-				if (!propertyValidator.checkPropertyConstraints(primi.getType, constraint)) {
+		var isMultiplcity = prop.multiplicity;
+		for (constraint : constraints) {
+			verifyConstraintForType(primi, constraint, isMultiplcity)
+		}
+	}
+		
+	def verifyConstraintForType(PrimitivePropertyType primitivePropertyType, Constraint constraint, boolean isMultiplcity) {
+		if (!isValidConstraintType(primitivePropertyType.type, constraint)) {
 					error(propertyValidator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__TYPE)
 				}else{
 					var validator = ConstraintValidatorFactory.getValueValidator(constraint.type)
-					if (!validator.evaluateValueType(primi.getType, constraint)) {
+			if (!isValidConstraintValue(validator, primitivePropertyType.type, constraint)) {
 						error(validator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__CONSTRAINT_VALUES)
 					}
 				}
 				
-				if("MIMETYPE" == constraint.type.literal && "byte" == primi.getType.getName() ){
-					if(!prop.multiplicity)
+		if(isMimeConstraint(primitivePropertyType.type.getName(), constraint)){
+			if(!isMultiplcity)
 						error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, constraint, DatatypePackage.Literals.CONSTRAINT__TYPE)
 				}
 			}
+	
+	
+	def isValidConstraintType(PrimitiveType primitiveType, Constraint constraint) {
+		return propertyValidator.checkPropertyConstraints(primitiveType, constraint)
+	}
+
+	def isValidConstraintValue(ConstraintValueValidator validator, PrimitiveType primitiveType, Constraint constraint) {
+		return validator.evaluateValueType(primitiveType, constraint)
+	}
+	
+	def isMimeConstraint(String primitiveTypeName, Constraint constraint) {
+		return "MIMETYPE" == constraint.type.literal && "byte" == primitiveTypeName
 	}
 
 	@Check
@@ -84,7 +100,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	@Check
 	def checkDuplicatedConstraint(Property feature) {
 		var set = new HashSet<String>();
-		var list = feature.constraints;
+		var list = feature.constraintRule.constraints;
 		for (var i = 0; i < list.length; i ++) {
 			var con = list.get(i);
 			if (!set.add(con.type.literal)) {
