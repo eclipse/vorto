@@ -89,9 +89,6 @@ public class VortoRepository {
 				"1.0.0", "", "", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}
 
-	@Autowired
-	private UserRepository userRepository;
-
 	@Bean
 	public static PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(11);

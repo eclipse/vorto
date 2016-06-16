@@ -88,6 +88,11 @@ public class UploadModelResult {
 	public static UploadModelResult valid(String uploadHandle, ModelResource modelResource) {
 		return new UploadModelResult(uploadHandle, modelResource, true, null);
 	}
+	
+
+	public static UploadModelResult valid(ModelResource modelResource) {
+		return new UploadModelResult(null, modelResource, true, null);
+	}
 
 	public ModelResource getModelResource() {
 		return modelResource;
@@ -108,4 +113,37 @@ public class UploadModelResult {
 	public Collection<ModelId> getUnresolvedReferences() {
 		return unresolvedReferences;
 	}
+
+	@Override
+	public String toString() {
+		return "UploadModelResult [handleId=" + handleId + ", modelResource=" + modelResource + ", valid=" + valid
+				+ "]";
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((modelResource == null) ? 0 : modelResource.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UploadModelResult other = (UploadModelResult) obj;
+		if (modelResource == null) {
+			if (other.modelResource != null)
+				return false;
+		} else if (!modelResource.equals(other.modelResource))
+			return false;
+		return true;
+	}
+	
+	
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.IModelRepository;
@@ -87,7 +88,9 @@ public class ShareModelController {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
 			FileHelper.copyFileToTempLocation(file);
-			List<UploadModelResult> uploadModelResults = modelRepository.uploadMultipleModels(FileHelper.getDefaultExtractDirectory() + "/" + file.getOriginalFilename());
+			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository);
+			
+			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(FileHelper.getDefaultExtractDirectory() + "/" + file.getOriginalFilename());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
 			FileHelper.deleteUploadedFile(file);
 			ServerResponse serverResponse = (uploadModelResults.size() == 0)
@@ -95,7 +98,7 @@ public class ShareModelController {
 					: new ServerResponse(constructUserResponseMessage(uploadModelResults), true, uploadModelResults);
 			return validResponse(serverResponse);
 		} catch (Exception e) {
-			LOGGER.error("Error bulk upload models." + e.getStackTrace());
+			LOGGER.error("Error bulk upload models.",e);
 			FileHelper.deleteUploadedFile(file);
 			return erroredResponse("Error during upload. Try again. " + e.getMessage());
 		}
@@ -123,7 +126,9 @@ public class ShareModelController {
 	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "File Handle ids.", required=true) final @RequestBody ModelHandle[] modelHandles) {
 		LOGGER.info("Bulk check in Models.");
 		try {
-			modelRepository.checkinMultiple(modelHandles, SecurityContextHolder.getContext().getAuthentication().getName());
+			for (ModelHandle handle : modelHandles) {
+				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());
+			}
 			ServerResponse successModelResponse = new ServerResponse("All the models has been checked in Successfully.",true, null);
 			FileHelper.deleteTempExtractFolder();
 			return validResponse(successModelResponse);
