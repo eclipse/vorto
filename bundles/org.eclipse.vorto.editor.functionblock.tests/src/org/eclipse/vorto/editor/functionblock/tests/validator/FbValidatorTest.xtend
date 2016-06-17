@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2014,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -290,11 +290,12 @@ class FbValidatorTest extends AbstractXtextTests {
 				
 		var constraint1 = getDTFactoryInstance().createConstraint();
 		constraint1.type = ConstraintIntervalType.STRLEN
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var constraint2 = getDTFactoryInstance().createConstraint();
 		constraint2.type = ConstraintIntervalType.STRLEN
-		prop.constraints.add(constraint2)
+		prop.constraintRule.constraints.add(constraint2)
 		
 		tester.validator().checkDuplicatedConstraint(prop);
 		tester.diagnose().assertErrorContains(DatatypeSystemMessage.ERROR_DUPLICATED_CONSTRAINT);

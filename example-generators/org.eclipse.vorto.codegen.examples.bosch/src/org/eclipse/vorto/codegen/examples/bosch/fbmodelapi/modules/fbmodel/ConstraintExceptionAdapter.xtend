@@ -23,7 +23,7 @@ class ConstraintExceptionAdapter {
 	private static val String[] exemptedConstraints = #['MIMETYPE']
 	
 	public static def returnValidConstraintLength(Property property){
-		var constraints = property.constraints
+		var constraints = property.constraintRule.constraints
 		var length = constraints.length
 		for(constraint : constraints){
 			
@@ -36,7 +36,7 @@ class ConstraintExceptionAdapter {
 	
 	public static def getValidConstraints(Property property) {
 		 var constraints = new LinkedList
-		 for( constraint : property.constraints ){
+		 for( constraint : property.constraintRule.constraints ){
 		 	if(exemptedConstraints.indexOf(constraint.type.literal) == -1)
 		 		constraints.add(constraint)
 		 }

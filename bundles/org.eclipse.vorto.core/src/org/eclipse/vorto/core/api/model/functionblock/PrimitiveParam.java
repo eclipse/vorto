@@ -2,6 +2,7 @@
  */
 package org.eclipse.vorto.core.api.model.functionblock;
 
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 
 /**
@@ -14,6 +15,7 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam#getType <em>Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam#getConstraintRule <em>Constraint Rule</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getPrimitiveParam()
@@ -49,5 +51,31 @@ public interface PrimitiveParam extends Param {
 	 * @generated
 	 */
 	void setType(PrimitiveType value);
+
+	/**
+	 * Returns the value of the '<em><b>Constraint Rule</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Constraint Rule</em>' containment reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Constraint Rule</em>' containment reference.
+	 * @see #setConstraintRule(ConstraintRule)
+	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getPrimitiveParam_ConstraintRule()
+	 * @model containment="true"
+	 * @generated
+	 */
+	ConstraintRule getConstraintRule();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam#getConstraintRule <em>Constraint Rule</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Constraint Rule</em>' containment reference.
+	 * @see #getConstraintRule()
+	 * @generated
+	 */
+	void setConstraintRule(ConstraintRule value);
 
 } // PrimitiveParam

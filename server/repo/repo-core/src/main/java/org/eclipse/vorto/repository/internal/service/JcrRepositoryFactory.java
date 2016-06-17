@@ -20,9 +20,10 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.jcr.Repository;
 
-import org.apache.log4j.Logger;
 import org.modeshape.jcr.ModeShapeEngine;
 import org.modeshape.jcr.RepositoryConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -33,13 +34,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class JcrRepositoryFactory implements FactoryBean<Repository> {
 
-    private static final Logger LOG = Logger.getLogger(JcrRepositoryFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JcrRepositoryFactory.class);
     private static final ModeShapeEngine ENGINE = new ModeShapeEngine();
 
     private Repository repository;
 
     @PostConstruct
     public void start() throws Exception {
+    	LOG.debug("Starting Vorto Modeshape Repository");
         ENGINE.start();
         RepositoryConfiguration repositoryConfiguration = RepositoryConfiguration.read(new ClassPathResource("vorto-repository-config.json").getURL());
         repository = ENGINE.deploy(repositoryConfiguration);

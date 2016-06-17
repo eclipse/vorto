@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2014,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -19,14 +19,14 @@ import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-import org.eclipse.vorto.editor.datatype.internal.ConstraintValidatorFactory
-import org.eclipse.vorto.editor.datatype.internal.validation.PropertyConstraintMappingValidation
 import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup
 import org.eclipse.vorto.editor.functionblock.validation.FunctionblockValidator
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.validation.ValidatorTester
 import org.junit.Test
+import org.eclipse.vorto.editor.datatype.validation.ConstraintValidatorFactory
+import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
 
 class FbConstraintValidationTest extends AbstractXtextTests {
 		
@@ -53,14 +53,15 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('22')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var constraint2 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint2.setType(ConstraintIntervalType.MIN)
 		constraint2.setConstraintValues('1')
 		
-		prop.constraints.add(constraint2)
+		prop.constraintRule.constraints.add(constraint2)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -89,15 +90,15 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('2.2')
-		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var constraint2 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint2.setType(ConstraintIntervalType.MIN)
 		constraint2.setConstraintValues('1')
 		
-		prop.constraints.add(constraint2)
+		prop.constraintRule.constraints.add(constraint2)
 		
 		var validator1 = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -127,14 +128,15 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.REGEX)
 		constraint1.setConstraintValues('[A..B]')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var constraint2 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint2.setType(ConstraintIntervalType.STRLEN)
 		constraint2.setConstraintValues('11')
 		
-		prop.constraints.add(constraint2)
+		prop.constraintRule.constraints.add(constraint2)
 		
 		var validator1 = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -163,15 +165,15 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('2002-05-30T09:30:10+06:00')
-		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var constraint2 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint2.setType(ConstraintIntervalType.MIN)
 		constraint2.setConstraintValues('2002-04-30T01:30:10+06:00')
 		
-		prop.constraints.add(constraint2)
+		prop.constraintRule.constraints.add(constraint2)
 		
 		var validator1 = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -201,7 +203,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('2002-05-30T09:30:10')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator1 = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -221,6 +224,7 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 
 		prop.type = primi
 		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		tester.validator().checkConstraint(prop);
 		tester.diagnose().assertOK
 	}
@@ -239,8 +243,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('abc')
-		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -265,7 +269,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('abc')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -290,7 +295,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIN)
 		constraint1.setConstraintValues('211')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -313,9 +319,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint1.setType(ConstraintIntervalType.STRLEN)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setConstraintValues('21.1')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -339,9 +347,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint1.setType(ConstraintIntervalType.MAX)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setConstraintValues('sadfasfa')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -367,7 +377,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.MIN)
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertFalse(validator.checkPropertyConstraints(PrimitiveType.STRING,constraint1))	
@@ -388,7 +399,9 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.REGEX)
-		prop.constraints.add(constraint1)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertFalse(validator.checkPropertyConstraints(PrimitiveType.INT,constraint1))	
@@ -410,7 +423,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.constraintValues = '-1111'
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertTrue(validator.checkPropertyConstraints(PrimitiveType.INT,constraint1))	
@@ -430,7 +444,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 				
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.MIN)
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertFalse(validator.checkPropertyConstraints(PrimitiveType.BOOLEAN,constraint1))	
@@ -454,7 +469,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('abc')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -478,8 +494,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		constraint1.setType(ConstraintIntervalType.MIN)
 		constraint1.setConstraintValues('32800')
-		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -501,10 +517,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 				
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('-32800')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -529,7 +546,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIN)
 		constraint1.setConstraintValues('-111')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -551,7 +569,9 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 				
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.REGEX)
-		prop.constraints.add(constraint1)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertFalse(validator.checkPropertyConstraints(PrimitiveType.LONG,constraint1))	
@@ -569,7 +589,7 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		primi.setType(PrimitiveType.BASE64_BINARY);		
 
 		prop.type = primi	 
-		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		tester.validator().checkConstraint(prop);
 		tester.diagnose().assertOK
 	}
@@ -585,7 +605,9 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.MIN)
-		prop.constraints.add(constraint1)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		
@@ -607,7 +629,9 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.STRLEN)
-		prop.constraints.add(constraint1)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertFalse(validator.checkPropertyConstraints(PrimitiveType.DOUBLE,constraint1))	
@@ -629,7 +653,9 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.constraintValues = '-11.11'
-		prop.constraints.add(constraint1)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = new PropertyConstraintMappingValidation(); 
 		assertTrue(validator.checkPropertyConstraints(PrimitiveType.DOUBLE,constraint1))	
@@ -650,10 +676,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 				
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setType(ConstraintIntervalType.MAX)
 		constraint1.setConstraintValues('abc')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -678,7 +705,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIN)
 		constraint1.setConstraintValues('128')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -700,10 +728,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 				
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setType(ConstraintIntervalType.MIN)
 		constraint1.setConstraintValues('-128')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -729,7 +758,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIMETYPE)
 		constraint1.setConstraintValues('testing')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -753,7 +783,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIMETYPE)
 		constraint1.setConstraintValues('testing')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -775,9 +806,11 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		var constraint1 = DatatypeFactory.eINSTANCE.createConstraint();
 		
 		constraint1.setType(ConstraintIntervalType.MIMETYPE)
+		
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
 		constraint1.setConstraintValues('testing')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		
@@ -801,7 +834,8 @@ class FbConstraintValidationTest extends AbstractXtextTests {
 		constraint1.setType(ConstraintIntervalType.MIMETYPE)
 		constraint1.setConstraintValues('testing')
 		
-		prop.constraints.add(constraint1)
+		prop.constraintRule = DatatypeFactory.eINSTANCE.createConstraintRule
+		prop.constraintRule.constraints.add(constraint1)
 		
 		var validator = ConstraintValidatorFactory.getValueValidator(constraint1.type);
 		

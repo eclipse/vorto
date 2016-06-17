@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.util.Switch;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
@@ -61,7 +62,7 @@ public class DatatypeSwitch<T> extends Switch<T> {
 	 * Checks whether this is a switch for the given package.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @parameter ePackage the package in question.
+	 * @param ePackage the package in question.
 	 * @return whether this is a switch for the given package.
 	 * @generated
 	 */
@@ -164,6 +165,12 @@ public class DatatypeSwitch<T> extends Switch<T> {
 				EnumLiteralPropertyAttribute enumLiteralPropertyAttribute = (EnumLiteralPropertyAttribute)theEObject;
 				T result = caseEnumLiteralPropertyAttribute(enumLiteralPropertyAttribute);
 				if (result == null) result = casePropertyAttribute(enumLiteralPropertyAttribute);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DatatypePackage.CONSTRAINT_RULE: {
+				ConstraintRule constraintRule = (ConstraintRule)theEObject;
+				T result = caseConstraintRule(constraintRule);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -363,6 +370,21 @@ public class DatatypeSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseEnumLiteralPropertyAttribute(EnumLiteralPropertyAttribute object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Constraint Rule</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Constraint Rule</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseConstraintRule(ConstraintRule object) {
 		return null;
 	}
 

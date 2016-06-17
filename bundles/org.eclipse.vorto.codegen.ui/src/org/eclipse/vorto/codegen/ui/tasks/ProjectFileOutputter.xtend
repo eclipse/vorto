@@ -21,10 +21,10 @@ import org.eclipse.core.resources.IFolder
 import org.eclipse.core.resources.IProject
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory
 import org.eclipse.vorto.codegen.ui.filewrite.FileWriteContext
 import org.eclipse.vorto.codegen.ui.filewrite.FileWritingStrategyFactory
 import org.eclipse.vorto.codegen.ui.filewrite.IFileWritingStrategy
+import org.eclipse.vorto.core.ui.MessageDisplayFactory
 
 /**
  * Eclipse Project Outtputter strategy, which writes {@link Generated} content as part of an Eclipse Project

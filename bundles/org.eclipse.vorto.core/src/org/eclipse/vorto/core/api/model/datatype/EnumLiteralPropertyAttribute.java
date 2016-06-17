@@ -10,11 +10,11 @@ package org.eclipse.vorto.core.api.model.datatype;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getType <em>Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute#getValue <em>Value</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getEnumLiteralPropertyAttribute()
  * @model

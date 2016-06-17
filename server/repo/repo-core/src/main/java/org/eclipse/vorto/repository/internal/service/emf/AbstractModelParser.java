@@ -25,7 +25,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.repository.internal.service.IModelParser;
 import org.eclipse.vorto.repository.model.ModelEMFResource;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.validation.ValidationException;
 import org.eclipse.xtext.linking.impl.XtextLinkingDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
@@ -39,34 +41,62 @@ import com.google.inject.Injector;
 public abstract class AbstractModelParser implements IModelParser {
 
 	private String fileName;
-	
+
 	public AbstractModelParser(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	@Override
 	public ModelResource parse(InputStream is) {
 		XtextResourceSet resourceSet = getInjector().getInstance(XtextResourceSet.class);
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-		Resource resource = resourceSet.createResource(URI.createURI("dummy:/"+fileName));
+		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + fileName));
 		try {
 			resource.load(is, resourceSet.getLoadOptions());
 		} catch (IOException e) {
 			throw new ValidationException(e.getMessage(), null);
 		}
-		
+
 		List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> grammarErrors = getGrammarErrors(resource.getErrors());
 		if (!grammarErrors.isEmpty()) {
-			throw new ValidationException(grammarErrors.get(0).getMessage(), null);
+			ModelResource invalidModelResource = new ModelResource(parseModelIdFromFileName(),
+					ModelType.fromFileName(fileName));
+			throw new ValidationException(grammarErrors.get(0).getMessage(), invalidModelResource);
 		}
-		
-		return new ModelEMFResource((Model)resource.getContents().get(0));
+
+		return new ModelEMFResource((Model) resource.getContents().get(0));
 	}
-	
-	private List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getGrammarErrors(EList<org.eclipse.emf.ecore.resource.Resource.Diagnostic> errors) {
-		List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> grammarErrors = new ArrayList<>(); 
+
+	private ModelId parseModelIdFromFileName() {
+		String pureFileName = fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf("."));
+		ModelId modelId = new ModelId();
+		try {
+			modelId.setNamespace(pureFileName.substring(0, pureFileName.lastIndexOf(".")));
+			modelId.setName(pureFileName.substring(pureFileName.lastIndexOf(".") + 1, pureFileName.indexOf("_")));
+
+			String version = pureFileName.substring(pureFileName.indexOf("_") + 1);
+			version = version.replaceAll("_", ".");
+			modelId.setVersion(version.substring(0, 5));
+		} catch (Throwable t) {
+			return new ModelId(pureFileName, "", "0.0.0");
+		}
+		return modelId;
+	}
+
+	private List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> getGrammarErrors(
+			EList<org.eclipse.emf.ecore.resource.Resource.Diagnostic> errors) {
+		List<org.eclipse.emf.ecore.resource.Resource.Diagnostic> grammarErrors = new ArrayList<>();
 		for (org.eclipse.emf.ecore.resource.Resource.Diagnostic diagnostic : errors) {
-			if (!(diagnostic instanceof XtextLinkingDiagnostic)) { // ignoring references to other models, as we still allow them to be uploaded 
+			if (!(diagnostic instanceof XtextLinkingDiagnostic)) { // ignoring
+																	// references
+																	// to other
+																	// models,
+																	// as we
+																	// still
+																	// allow
+																	// them to
+																	// be
+																	// uploaded
 				grammarErrors.add(diagnostic);
 			}
 		}
@@ -74,5 +104,5 @@ public abstract class AbstractModelParser implements IModelParser {
 	}
 
 	protected abstract Injector getInjector();
-	
+
 }

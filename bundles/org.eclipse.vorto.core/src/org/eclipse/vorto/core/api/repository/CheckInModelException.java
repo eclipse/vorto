@@ -14,8 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.core.api.repository;
 
-public class CheckInModelException extends RuntimeException {
-	
+public class CheckInModelException extends RepositoryException {
+
 	/**
 	 * 
 	 */
@@ -24,8 +24,8 @@ public class CheckInModelException extends RuntimeException {
 	public CheckInModelException(String errorMessage) {
 		super(errorMessage);
 	}
-	
+
 	public CheckInModelException(String errorMessage, Throwable cause) {
-		super(errorMessage,cause);
+		super(errorMessage, cause);
 	}
 }

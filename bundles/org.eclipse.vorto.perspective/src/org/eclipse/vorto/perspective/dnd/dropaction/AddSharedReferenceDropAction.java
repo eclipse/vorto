@@ -16,11 +16,13 @@ package org.eclipse.vorto.perspective.dnd.dropaction;
 
 import java.io.ByteArrayInputStream;
 
-import org.eclipse.vorto.codegen.ui.display.MessageDisplayFactory;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.api.repository.RepositoryException;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
+import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.perspective.dnd.IDropAction;
@@ -58,19 +60,24 @@ public class AddSharedReferenceDropAction implements IDropAction<IModelElement, 
 	// Download and save model from repository to local project.
 	// It also recursively do the same for the model references.
 	private ModelResource downloadAndSaveModel(IModelProject project, ModelId modelId) {
-		ModelResource model = modelRepo.getModel(modelId);
-		if (model != null) {
-			for (ModelId reference : model.getReferences()) {
-				downloadAndSaveModel(project, reference);
+		ModelResource model = null;
+		try {
+			model = modelRepo.getModel(modelId);
+			if (model != null) {
+				for (ModelId reference : model.getReferences()) {
+					downloadAndSaveModel(project, reference);
+				}
+				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+				byte[] modelContent = modelRepo.downloadContent(model.getId());
+				project.addModelElement(model.getId(), new ByteArrayInputStream(modelContent));
+			} else {
+				MessageDisplayFactory.getMessageDisplay()
+						.displayError("Model " + modelId.toString() + " not found in repository.");
 			}
-			MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
-			byte[] modelContent = modelRepo.downloadContent(model.getId());
-			project.addModelElement(model.getId(), new ByteArrayInputStream(modelContent));
-		} else {
-			MessageDisplayFactory.getMessageDisplay()
-					.displayError("Model " + modelId.toString() + " not found in repository.");
+		} catch (RepositoryException e) {
+			ExceptionHandlerFactory.getHandler().handle(e);
 		}
-
+		
 		return model;
 	}
 }

@@ -13,7 +13,7 @@
  *  Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
 
-package org.eclipse.vorto.codegen.ui.display;
+package org.eclipse.vorto.core.ui;
 
 /**
  * Display message in customized format to user

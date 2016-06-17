@@ -4,10 +4,13 @@ package org.eclipse.vorto.core.api.model.functionblock.impl;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
@@ -22,6 +25,7 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
  * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnPrimitiveTypeImpl#getReturnType <em>Return Type</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnPrimitiveTypeImpl#getConstraintRule <em>Constraint Rule</em>}</li>
  * </ul>
  *
  * @generated
@@ -46,6 +50,16 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 	 * @ordered
 	 */
 	protected PrimitiveType returnType = RETURN_TYPE_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getConstraintRule() <em>Constraint Rule</em>}' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getConstraintRule()
+	 * @generated
+	 * @ordered
+	 */
+	protected ConstraintRule constraintRule;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -92,11 +106,70 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public ConstraintRule getConstraintRule() {
+		return constraintRule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetConstraintRule(ConstraintRule newConstraintRule, NotificationChain msgs) {
+		ConstraintRule oldConstraintRule = constraintRule;
+		constraintRule = newConstraintRule;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE, oldConstraintRule, newConstraintRule);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setConstraintRule(ConstraintRule newConstraintRule) {
+		if (newConstraintRule != constraintRule) {
+			NotificationChain msgs = null;
+			if (constraintRule != null)
+				msgs = ((InternalEObject)constraintRule).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE, null, msgs);
+			if (newConstraintRule != null)
+				msgs = ((InternalEObject)newConstraintRule).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE, null, msgs);
+			msgs = basicSetConstraintRule(newConstraintRule, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE, newConstraintRule, newConstraintRule));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE:
+				return basicSetConstraintRule(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__RETURN_TYPE:
 				return getReturnType();
+			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE:
+				return getConstraintRule();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -111,6 +184,9 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 		switch (featureID) {
 			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__RETURN_TYPE:
 				setReturnType((PrimitiveType)newValue);
+				return;
+			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE:
+				setConstraintRule((ConstraintRule)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -127,6 +203,9 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__RETURN_TYPE:
 				setReturnType(RETURN_TYPE_EDEFAULT);
 				return;
+			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE:
+				setConstraintRule((ConstraintRule)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -141,6 +220,8 @@ public class ReturnPrimitiveTypeImpl extends ReturnTypeImpl implements ReturnPri
 		switch (featureID) {
 			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__RETURN_TYPE:
 				return returnType != RETURN_TYPE_EDEFAULT;
+			case FunctionblockPackage.RETURN_PRIMITIVE_TYPE__CONSTRAINT_RULE:
+				return constraintRule != null;
 		}
 		return super.eIsSet(featureID);
 	}

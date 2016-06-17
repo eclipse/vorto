@@ -287,13 +287,13 @@ public interface DatatypePackage extends EPackage {
 	int PROPERTY__DESCRIPTION = 3;
 
 	/**
-	 * The feature id for the '<em><b>Constraints</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Constraint Rule</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PROPERTY__CONSTRAINTS = 4;
+	int PROPERTY__CONSTRAINT_RULE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Type</b></em>' containment reference.
@@ -684,6 +684,34 @@ public interface DatatypePackage extends EPackage {
 	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_FEATURE_COUNT = PROPERTY_ATTRIBUTE_FEATURE_COUNT + 2;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.ConstraintRuleImpl <em>Constraint Rule</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.ConstraintRuleImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintRule()
+	 * @generated
+	 */
+	int CONSTRAINT_RULE = 13;
+
+	/**
+	 * The feature id for the '<em><b>Constraints</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONSTRAINT_RULE__CONSTRAINTS = 0;
+
+	/**
+	 * The number of structural features of the '<em>Constraint Rule</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONSTRAINT_RULE_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -691,7 +719,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 13;
+	int PRIMITIVE_TYPE = 14;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType <em>Constraint Interval Type</em>}' enum.
@@ -701,7 +729,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintIntervalType()
 	 * @generated
 	 */
-	int CONSTRAINT_INTERVAL_TYPE = 14;
+	int CONSTRAINT_INTERVAL_TYPE = 15;
 
 
 	/**
@@ -712,7 +740,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttributeType()
 	 * @generated
 	 */
-	int BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = 15;
+	int BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = 16;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType <em>Enum Literal Property Attribute Type</em>}' enum.
@@ -722,7 +750,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttributeType()
 	 * @generated
 	 */
-	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = 16;
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = 17;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.Entity <em>Entity</em>}'.
@@ -811,15 +839,15 @@ public interface DatatypePackage extends EPackage {
 	EAttribute getProperty_Description();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraints <em>Constraints</em>}'.
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.datatype.Property#getConstraintRule <em>Constraint Rule</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Constraints</em>'.
-	 * @see org.eclipse.vorto.core.api.model.datatype.Property#getConstraints()
+	 * @return the meta object for the containment reference '<em>Constraint Rule</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.Property#getConstraintRule()
 	 * @see #getProperty()
 	 * @generated
 	 */
-	EReference getProperty_Constraints();
+	EReference getProperty_ConstraintRule();
 
 	/**
 	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.datatype.Property#getType <em>Type</em>}'.
@@ -1086,6 +1114,27 @@ public interface DatatypePackage extends EPackage {
 	EReference getEnumLiteralPropertyAttribute_Value();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintRule <em>Constraint Rule</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Constraint Rule</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.ConstraintRule
+	 * @generated
+	 */
+	EClass getConstraintRule();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintRule#getConstraints <em>Constraints</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Constraints</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.ConstraintRule#getConstraints()
+	 * @see #getConstraintRule()
+	 * @generated
+	 */
+	EReference getConstraintRule_Constraints();
+
+	/**
 	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1216,12 +1265,12 @@ public interface DatatypePackage extends EPackage {
 		EAttribute PROPERTY__DESCRIPTION = eINSTANCE.getProperty_Description();
 
 		/**
-		 * The meta object literal for the '<em><b>Constraints</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Constraint Rule</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference PROPERTY__CONSTRAINTS = eINSTANCE.getProperty_Constraints();
+		EReference PROPERTY__CONSTRAINT_RULE = eINSTANCE.getProperty_ConstraintRule();
 
 		/**
 		 * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
@@ -1444,6 +1493,24 @@ public interface DatatypePackage extends EPackage {
 		 * @generated
 		 */
 		EReference ENUM_LITERAL_PROPERTY_ATTRIBUTE__VALUE = eINSTANCE.getEnumLiteralPropertyAttribute_Value();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.ConstraintRuleImpl <em>Constraint Rule</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.ConstraintRuleImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintRule()
+		 * @generated
+		 */
+		EClass CONSTRAINT_RULE = eINSTANCE.getConstraintRule();
+
+		/**
+		 * The meta object literal for the '<em><b>Constraints</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CONSTRAINT_RULE__CONSTRAINTS = eINSTANCE.getConstraintRule_Constraints();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.

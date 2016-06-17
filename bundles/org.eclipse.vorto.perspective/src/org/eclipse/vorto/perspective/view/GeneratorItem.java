@@ -34,6 +34,7 @@ import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 
 public class GeneratorItem extends Composite {
 	
@@ -96,13 +97,17 @@ public class GeneratorItem extends Composite {
 			public void widgetSelected(SelectionEvent e) {
 				lblGenerated.setText("Generating...");
 				
-				final IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
-				final Attachment attachment = modelRepo.generateCode(model.getId(),codegen.getKey());
-				
-				CodeGenerationHelper.createEclipseProject(model.getId(), codegen.getKey(), toGenerationResult(attachment));
-												
-				lblGenerated.setText("Generated.");
-				btnGenerate.setEnabled(false);
+				try {
+					final IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
+					final Attachment attachment = modelRepo.generateCode(model.getId(),codegen.getKey());
+					
+					CodeGenerationHelper.createEclipseProject(model.getId(), codegen.getKey(), toGenerationResult(attachment));
+													
+					lblGenerated.setText("Generated.");
+					btnGenerate.setEnabled(false);
+				} catch (Exception e1) {
+					ExceptionHandlerFactory.getHandler().handle(e1);
+				}
 			}
 		});
 		btnGenerate.setBounds(411, 86, 75, 25);

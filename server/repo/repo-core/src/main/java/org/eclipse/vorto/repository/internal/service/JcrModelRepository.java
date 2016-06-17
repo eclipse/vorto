@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.internal.service;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,13 +22,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.Binary;
@@ -53,19 +50,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
-import org.eclipse.vorto.repository.internal.service.utils.UploadHelper;
-import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
-import org.eclipse.vorto.repository.internal.service.validation.exception.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.model.ModelEMFResource;
-import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.model.ZipData;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
@@ -78,11 +70,6 @@ import org.eclipse.vorto.repository.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 
 /**
@@ -103,32 +90,8 @@ public class JcrModelRepository implements IModelRepository {
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
 
-	public ModelSearchUtil getModelSearchUtil() {
-		return modelSearchUtil;
-	}
-
-	public void setModelSearchUtil(ModelSearchUtil modelSearchUtil) {
-		this.modelSearchUtil = modelSearchUtil;
-	}
-
-	public UserRepository getUserRepository() {
-		return userRepository;
-	}
-
-	public void setUserRepository(UserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
-
 	@Autowired
 	private INotificationService notificationService;
-
-	public INotificationService getNotificationService() {
-		return notificationService;
-	}
-
-	public void setNotificationService(INotificationService notificationService) {
-		this.notificationService = notificationService;
-	}
 	
 	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
 
@@ -256,152 +219,29 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-
-	@Override
-	public List<UploadModelResult> uploadMultipleModels(String file) {
-		List<UploadModelResult> uploadResults = new ArrayList<UploadModelResult>();
-		List<UploadModelResult> invalidResults = new ArrayList<UploadModelResult>();
-		Set<ModelResource> modelResources;
-		Set<ZipData> zipFiles;
-		try {
-			if (!isValid(file))
-				throw new ValidationException("Filename/type is invalid", null);
-			zipFiles =  UploadHelper.extractZipFile(file);
-		} catch (ValidationException exception) {
-			UploadModelResult invalidFileType = UploadModelResult.invalid(new ValidationException(exception.getMessage(), null));
-			uploadResults.add(invalidFileType);
-			return uploadResults;
-		}
-		
-		modelResources = parseModelResources(zipFiles);
-		List<IModelValidator> bulkUploadValidators = constructBulkUploadValidators(modelResources);
-		for (ModelResource modelResource : modelResources) {
-			try {
-				for (IModelValidator validator : bulkUploadValidators) {
-					validator.validate(modelResource);
-				}
-			} catch (CouldNotResolveReferenceException referenceException) {
-				UploadModelResult invalidResource = UploadModelResult.invalid(referenceException);
-				invalidResults.add(invalidResource);
-			} catch (ValidationException validationException) {
-				UploadModelResult invalidResource = UploadModelResult.invalid(validationException);
-				invalidResults.add(invalidResource);
-			}
-		}
-		
-		buildModelResults(uploadResults, invalidResults, modelResources, zipFiles);
-		return uploadResults;
-	}
-
-	private List<IModelValidator> constructBulkUploadValidators(Set<ModelResource> modelResources) {
-		List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
-		bulkUploadValidators.add(new DuplicateModelValidation(this));
-		bulkUploadValidators.add(new BulkModelReferencesValidation(this, modelResources));
-		return bulkUploadValidators;
-	}
-
-
 	@Override
 	public void checkin(String handleId, final String author) {
-		String absoluteHandleId = new File(FilenameUtils.normalize(UploadHelper.getDefaultExtractDirectory() + "/" + handleId)).getAbsolutePath();
+		String absoluteHandleId = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + handleId)).getAbsolutePath();
 		final ModelResource resource = parseModelResource(absoluteHandleId);
 		checkinModel(absoluteHandleId, resource, author);			
 	}
 	
-	@Override
-	public void checkinMultiple(ModelHandle[] modelHandles, final String author) {
-		List<ModelId> modelIdsList = filterModelIds(modelHandles);
-		List<ModelHandle> handlesList = new ArrayList<ModelHandle>(Arrays.asList(modelHandles));
-		for (ModelHandle handle : modelHandles) {
-			checkin(handle, handlesList, modelIdsList, author);
-		} 
-	}
-
-	private void buildModelResults(List<UploadModelResult> uploadResults, List<UploadModelResult> invalidResults, Set<ModelResource> modelResources, Set<ZipData> zipFiles) {
-		List<ModelId> modelIds = Lists.transform(invalidResults, new Function<UploadModelResult, ModelId>(){
-			@Override
-			public ModelId apply(UploadModelResult modelResult) {
-				return modelResult.getModelResource().getId();
-			}
-		});
-		//Build all valid Model Results
-		for (ModelResource modelResource : modelResources) {
-			if(!modelIds.contains(modelResource.getId())) {
-				uploadResults.add(UploadModelResult.valid(createUploadHandle(modelResource.getId(), zipFiles), modelResource));
-			}
-		}
-		//Add all invalid models
-		uploadResults.addAll(invalidResults);
-	}
-
-	private String createUploadHandle(ModelId id, Set<ZipData> zipFiles) {
-		
-		ZipData found = Iterables.find(zipFiles, new com.google.common.base.Predicate<ZipData>() {
-			@Override
-			public boolean apply(ZipData zipData) {
-				return zipData.getModelId().equals(id);
-			}
-		});
-		return found.getFileName();
+	private static String getDefaultExtractDirectory() {
+		return FilenameUtils.normalize(FileUtils.getTempDirectory().getPath() + "/vorto", true);
 	}
 	
-	private Set<ModelResource> parseModelResources(Set<ZipData> zipFiles) {
-		Set<ModelResource> extractedModelResources = Sets.newHashSet();
-		for (ZipData zipData : zipFiles) {
-			ModelResource resource;
-			try {
-				resource = ModelParserFactory.getParser(zipData.getFileName()).parse(new BufferedInputStream(new FileInputStream(zipData.getFileName())));
-				zipData.setModelId(resource.getId());
-				extractedModelResources.add(resource);
-			} catch (FileNotFoundException e) {
-				throw new ValidationException("File cannot be extracted. Invalid File.", null);
-			}
-		}
-		return extractedModelResources;
-	}	
-	
-	private boolean isValid(String file) {
-		return !StringUtils.isEmpty(file) &&  StringUtils.endsWithIgnoreCase(file, ".zip");
-	}
-
 	private String createUploadHandle(ModelId id, byte[] content, String fileName) {
 		try {
-			File tmpDirectory = new File(UploadHelper.getDefaultExtractDirectory());
+			File tmpDirectory = new File(getDefaultExtractDirectory());
 			if (!tmpDirectory.exists()) {
 				tmpDirectory.mkdirs();
 			}
-			File file = new File(FilenameUtils.normalize(UploadHelper.getDefaultExtractDirectory() + "/" + fileName));
+			File file = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + StringUtils.getFilename(fileName)));
 			IOUtils.write(content, new FileOutputStream(file));
 			logger.debug("Created temporary file for upload : " + file.getName());
 			return file.getName();
 		} catch (IOException e) {
 			throw new RuntimeException("Could not create temporary file for uploaded model", e);
-		}
-	}
-
-	private void checkin(ModelHandle handle, List<ModelHandle> handlesList, List<ModelId> modelIdsList, String author) {
-		if(handlesList.contains(handle)){
-			String handleId = handle.getHandleId();
-			final ModelResource resource = parseModelResource(handleId);
-			List<ModelId> references = resource.getReferences();
-			//Recursively checkin referenced models to avoid reference validation error.
-			if(references != null && !references.isEmpty()) {
-				for (ModelId modelId : references) {
-					ModelResource existingResource = this.getById(modelId);
-					if(existingResource == null) {
-						if(modelIdsList.contains(modelId)) {
-							ModelHandle childHandle = handlesList.stream().filter(h -> h.getId().equals(modelId)).findFirst().get();
-							checkin(childHandle, handlesList, modelIdsList, author);
-							modelIdsList.remove(modelId);
-							handlesList.remove(childHandle);
-						} else {
-							throw new ModelNotFoundException("Model with the specified handle is not found in repository and upload handle." + modelId, null);
-						}
-					} 
-				}
-			}
-			//If no references then directly checkin the model.
-			checkinModel(handleId, resource, author);			
 		}
 	}
 
@@ -444,15 +284,6 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + handleId, e);
 		}
 		}
-
-	private List<ModelId> filterModelIds(ModelHandle[] modelHandles) {
-		List<ModelHandle> modelHandlesList = Arrays.asList(modelHandles);
-		List<ModelId> modelIdsList = new ArrayList<ModelId>();
-		for (ModelHandle modelHandle : modelHandlesList) {
-			modelIdsList.add(modelHandle.getId());
-		}
-		return modelIdsList;
-	}
 
 	private void notifyWatchers(ModelResource resource, String author) {
 		resource.setAuthor(author);
@@ -618,5 +449,29 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something severe went wrong when trying to read image content", e);
 		}
 		return null;
+	}
+	
+	public ModelSearchUtil getModelSearchUtil() {
+		return modelSearchUtil;
+	}
+
+	public void setModelSearchUtil(ModelSearchUtil modelSearchUtil) {
+		this.modelSearchUtil = modelSearchUtil;
+	}
+
+	public UserRepository getUserRepository() {
+		return userRepository;
+	}
+
+	public void setUserRepository(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
+	
+	public INotificationService getNotificationService() {
+		return notificationService;
+	}
+
+	public void setNotificationService(INotificationService notificationService) {
+		this.notificationService = notificationService;
 	}
 }

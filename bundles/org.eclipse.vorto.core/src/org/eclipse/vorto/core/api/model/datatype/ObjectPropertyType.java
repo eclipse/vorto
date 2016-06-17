@@ -10,10 +10,10 @@ package org.eclipse.vorto.core.api.model.datatype;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType#getType <em>Type</em>}</li>
  * </ul>
- * </p>
  *
  * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getObjectPropertyType()
  * @model

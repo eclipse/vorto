@@ -84,11 +84,11 @@ ReturnObjectType :
 ;
 
 ReturnPrimitiveType :
-	 (multiplicity ?= 'multiple')? returnType = PrimitiveType
+	 (multiplicity ?= 'multiple')? returnType = PrimitiveType ('<' constraintRule = ConstraintRule '>')?
 ;
 
 PrimitiveParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType (description=STRING)?
+	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
 ;
 
 RefParam:
