@@ -30,37 +30,39 @@ The Vorto project is an approach to leverage the standardization of so called In
 
 ## Features
 
-Vorto plug-ins provide the following features:
+Vorto allows the user to create the following:
 
-**Datatype (Entity/Enum) wizard**  
- Vorto provides an Eclipse wizard to create a new data type (Entity or Enum). You can use auto-completion and validation to update data types.
+**Datatypes**  
+Vorto provides a facility to create a new data type (Entity or Enum). You can use auto-completion and validation to update data types.
 
-**Function block model wizard**  
-Vorto provides an Eclipse project wizard to create a function block model project containing all necessary resources.
+**Function block model**  
+Vorto provides a facility to create a function block model project containing all necessary resources.
 
-**Information model wizard**  
-Information models represent the capabilities of a particular type of device in its entirety. An information model contains one or more function blocks. Vorto provides an UI wizard to create an information model project and all required resources.
+**Information model**  
+Information models represent the capabilities of a particular type of device in its entirety. An information model contains one or more function blocks. Vorto allows to create an information model project and all required resources.
 
+**Mapping model**  
+Vorto provides a facility to create a mapping model from existing Datatype, Function block, or Information models.
 
-**Mapping model wizard**  
-Vorto provides an Eclipse project wizard to create a mapping model from existing Datatype, Function block, or Information models.
+**Generate code**  
+Vorto provides a facility to create information model based code artifacts which you can use in specific solutions by choosing a suitable generator from the list of existing generators or allows the user to implement/create his own code generator
 
 **DSL editors**  
 The new Domain-specific Language (DSL) is a simple way to define and read datatype models, function block models and information models without the need to understand XML, XSD or even Java. On-the-fly auto-completion and validation lets you create the named models even faster than ever.
 
-Datatype model DSL editor:  
+* _Datatype model DSL editor:_
 
 ![Datatype model DSL editor]({{base}}/img/documentation/m2m_tc_datatype_model_dsl_editor.png)
 
-Function block model DSL editor:  
+* _Function block model DSL editor:_
 
 ![Function block model DSL editor]({{base}}/img/documentation/m2m_tc_function_block_model_dsl_editor.png)
 
-Information model DSL editor:
+* _Information model DSL editor:_
 
 ![Information model DSL editor]({{base}}/img/documentation/m2m_tc_information_model_dsl_editor.png)
 
-Mapping model DSL editor:
+* _Mapping model DSL editor:_
 
 Vorto provides Mapping DSL editor for user to create customized mapping that map a vorto model to another platform model.
 
@@ -80,7 +82,7 @@ Vorto provides several code generators, so that the user can generate code based
 The Vorto project considers the following contributions as significant contribution:
 
 - Giving technical input to the Vorto Meta Information Model that leads to an update of the current ecore model.
-- Giving input to the project that leads to a high prioritized bug in Bugzilla.
+- Giving input to the project that leads to a high prioritized bug in [Github Issues](https://github.com/eclipse/vorto/issues).
 - Implementing and contributing a new Vorto code generator to the project.
 - Fixing a bug that is considered as critical.
 - Implementing a complex feature.
@@ -92,8 +94,7 @@ The Vorto project considers the following contributions as significant contribut
 For the use of the Vorto plug-ins the following software requirements must be met:
 
 - IDE
-  - Eclipse (Luna or higher)
-  - Eclipse [Xtext plug-in](http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/) 2.7.\* (Xtext Redestributable)
+  - Eclipse Mars for DSL Developers
 - [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/)  
 
 <table class="table table-bordered">
