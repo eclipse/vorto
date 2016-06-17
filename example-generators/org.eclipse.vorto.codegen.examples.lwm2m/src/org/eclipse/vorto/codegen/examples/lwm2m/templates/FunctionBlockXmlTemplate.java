@@ -325,7 +325,8 @@ public class FunctionBlockXmlTemplate implements ITemplate<FunctionblockModel> {
    }
 
    private void handleRangeEnumeration( final Object lwm2mObject, final Property property, final Item item ) {
-      final EList<Constraint> constraints = property.getConstraints();
+	   if (property.getConstraintRule() != null) {
+	      final EList<Constraint> constraints = property.getConstraintRule().getConstraints();
 
       final StringBuilder rangeSb = new StringBuilder();
       for( final Constraint constraint : constraints ) {
@@ -350,6 +351,7 @@ public class FunctionBlockXmlTemplate implements ITemplate<FunctionblockModel> {
       }
 
       item.setRangeEnumeration( rangeSb.toString() );
+   }
    }
 
    /**
