@@ -1,0 +1,20 @@
+namespace examples.lwm2m
+version 0.0.1
+displayname "Location"
+description "Object ID: 6 - This LWM2M Objects provide a range of device related information which can be queried by the LWM2M Server, and a device reboot and factory reset function."
+category SmartObject
+
+functionblock Location {
+
+	status {
+		mandatory latitude as string with { readable: true} "Item ID: 0 - The decimal notation of latitude, e.g. -43.5723 [World Geodetic System 1984]."
+		mandatory longitude as string with { readable: true} "Item ID: 1 - The decimal notation of longitude, e.g. 153.21760 [World Geodetic System 1984]."
+		optional altitude as string with { readable: true} "Item ID: 2 - The decimal notation of altitude in meters above sea level."
+		optional uncertainty as string with { readable: true} "Item ID: 3 - The accuracy of the position in meters."
+		optional velocity as byte with { readable: true} "Item ID: 4 - The velocity of the device as defined in 3GPP 23.032 GAD specification. This set of values may not be available if the device is static."
+		mandatory timestamp as dateTime with { readable: true} "Item ID: 5 - The timestamp of when the location measurement was performed."
+	}
+
+	operations {
+	}
+}
