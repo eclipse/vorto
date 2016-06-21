@@ -1,0 +1,18 @@
+namespace examples.mappings.leshan
+version 1.0.0
+displayname "Location leshan Mapping"
+description "Maps Location functionblock to OMA leshan"
+using examples.lwm2m.Location;1.0.0
+functionblockmapping Temperature_leshan {
+	targetplatform leshan
+
+	from Location to Object with {ObjectID:"6", ObjectURL:"oma:leshan:test:6", MultipleInstances:"Single",Mandatory:"Optional",Description2:"Location mapping"}
+	
+	from Location.status.latitude to Resources with {ID:"0"}
+	from Location.status.longitude to Resources with {ID:"1"}
+	from Location.status.altitude to Resources with {ID:"2"}
+    from Location.status.uncertainty to Resources with {ID:"3"}
+    from Location.status.velocity to Resources with {ID:"4"}
+    from Location.status.timestamp to Resources with {ID:"5"}
+
+}	
