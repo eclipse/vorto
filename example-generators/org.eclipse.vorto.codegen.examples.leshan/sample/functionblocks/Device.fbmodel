@@ -1,0 +1,31 @@
+namespace com.ipso.smartobjects
+version 0.0.1
+displayname "Device"
+description "Object ID: 3 - This LWM2M Object provides a range of device related information which can be queried by the LWM2M Server, and a device reboot and factory reset function."
+category SmartObject
+
+functionblock Device {
+
+	status {
+		optional manufacturer as string with { readable: true} "Item ID: 0 - Human readable manufacturer name"
+		optional model_number as string with { readable: true} "Item ID: 1 - A model identifier (manufacturer specified string)"
+		optional serial_number as string with { readable: true} "Item ID: 2 - Serial Number"
+		optional firmware_version as string with { readable: true} "Item ID: 3 - Current firmware version"
+		optional available_power_sources as int with { readable: true} "Item ID: 6 - 0 – DC power 1 – Internal Battery 2 – External Battery 4 – Power over Ethernet 5 – USB 6 – AC (Mains) power 7 – Solar"
+		optional power_source_voltage as int with { readable: true} "Item ID: 7 - Present voltage for each Available Power Sources Resource Instance. Each Resource Instance ID MUST map to the value of Available Power Sources Resource."
+		optional power_source_current as int with { readable: true} "Item ID: 8 - Present current for each Available Power Source"
+		optional battery_level as int with { readable: true} "Item ID: 9 - Contains the current battery level as a percentage (with a range from 0 to 100). This value is only valid when the value of Available Power Sources Resource is 1."
+		optional memory_free as int with { readable: true} "Item ID: 10 - Estimated current available amount of storage space which can store data and software in the LWM2M Device (expressed in kilobytes)."
+		mandatory error_code as int with { readable: true} "Item ID: 11 - 0=No error 1=Low battery power 2=External power supply off 3=GPS module failure 4=Low received signal strength 5=Out of memory 6=SMS failure 7=IP connectivity failure 8=Peripheral malfunction When the single Device Object Instance is initiated, there is only one error code Resource Instance whose value is equal to 0 that means no error. When the first error happens, the LWM2M Client changes error code Resource Instance to any non-zero value to indicate the error type. When any other error happens, a new error code Resource Instance is created. This error code Resource MAY be observed by the LWM2M Server. How to deal with LWM2M Client’s error report depends on the policy of the LWM2M Server."
+		optional current_time as dateTime with { readable: true, writable: true} "Item ID: 13 - Current UNIX time of the LWM2M Client. The LWM2M Client should be responsible to increase this time value as every second elapses. The LWM2M Server is able to write this Resource to make the LWM2M Client synchronized with the LWM2M Server."
+		optional utc_offset as string with { readable: true, writable: true} "Item ID: 14 - Indicates the UTC offset currently in effect for this LWM2M Device. UTC+X [ISO 8601]."
+		optional timezone as string with { readable: true, writable: true} "Item ID: 15 - Indicates in which time zone the LWM2M Device is located, in IANA Timezone (TZ) database format."
+		mandatory supported_binding_and_modes as string with { readable: true} "Item ID: 16 - Indicates which bindings and modes are supported in the LWM2M Client. The possible values of Resource are combination of 'U' or 'UQ' and 'S' or 'SQ'."
+	}
+
+	operations {
+		reboot()  "Item ID: 4 - Reboot the LWM2M Device to restore the Device from unexpected firmware failure."
+		factory_reset()  "Item ID: 5 - Perform factory reset of the LWM2M Device to make the LWM2M Device have the same configuration as at the initial deployment. When this Resource is executed, “De-register” operation  MAY be sent to the LWM2M Server(s) before factory reset of the LWM2M Device."
+		reset_error_code()  "Item ID: 12 - Delete all error code Resource Instances and create only one zero-value error code that implies no error."
+	}
+}
