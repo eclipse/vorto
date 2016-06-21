@@ -1,0 +1,17 @@
+namespace com.mycompany
+version 1.0.0
+displayname "LeshanClientDemo"
+description "Information model for LeshanClientDemo"
+category demo
+using com.ipso.smartobjects.Device ; 0.0.1
+using com.ipso.smartobjects.Location ; 0.0.1
+using com.ipso.smartobjects.Power_Measurement ; 0.0.1
+
+infomodel LeshanClientDemo {
+
+	functionblocks {
+		device as Device
+		location as Location
+		power_measurement as Power_Measurement
+	}
+}
