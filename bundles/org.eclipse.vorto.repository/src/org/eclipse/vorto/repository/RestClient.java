@@ -22,11 +22,15 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -56,10 +60,12 @@ public class RestClient {
 	@SuppressWarnings("restriction")
 	public <Result> Result executeGet(String query, final Function<String, Result> responseConverter)
 			throws ClientProtocolException, IOException {
+		ProxyConfiguration proxyProvider = getProxyConfiguration();
 
-		CloseableHttpClient client = HttpClients.custom().build();
+		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
 
-		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
+		HttpUriRequest request = RequestBuilder.get().setConfig(proxyProvider.requestConfig).setUri(createQuery(query)).build();
+		
 		return client.execute(request, new DefaultResponseHandler<Result>() {
 			
 			@Override
@@ -71,10 +77,11 @@ public class RestClient {
 	
 	@SuppressWarnings("restriction")
 	public Attachment executeGetAttachment(String query) throws ClientProtocolException, IOException {
+		ProxyConfiguration proxyProvider = getProxyConfiguration();
+		
+		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
 
-		CloseableHttpClient client = HttpClients.custom().build();
-
-		HttpUriRequest request = RequestBuilder.get().setConfig(createProxyConfiguration()).setUri(createQuery(query)).build();
+		HttpUriRequest request = RequestBuilder.get().setConfig(proxyProvider.requestConfig).setUri(createQuery(query)).build();
 		
 		return client.execute(request, new DefaultResponseHandler<Attachment>() {
 	
@@ -93,10 +100,11 @@ public class RestClient {
 	@SuppressWarnings("restriction")
 	public <Result> Result executePost(String query, HttpEntity content,
 			final Function<String, Result> responseConverter) throws ClientProtocolException, IOException {
+		ProxyConfiguration proxyProvider = getProxyConfiguration();
+		
+		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
 
-		CloseableHttpClient client = HttpClients.custom().build();
-
-		HttpUriRequest request = RequestBuilder.post().setConfig(createProxyConfiguration()).setUri(createQuery(query))
+		HttpUriRequest request = RequestBuilder.post().setConfig(proxyProvider.requestConfig).setUri(createQuery(query))
 				.addHeader(createSecurityHeader()).setEntity(content).build();
 		
 		return client.execute(request, new DefaultResponseHandler<Result>() {
@@ -115,9 +123,11 @@ public class RestClient {
 
 	@SuppressWarnings("restriction")
 	public void executePut(String query) throws ClientProtocolException, IOException {
-		CloseableHttpClient client = HttpClients.custom().build();
+		ProxyConfiguration proxyProvider = getProxyConfiguration();
+		
+		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
 
-		HttpUriRequest request = RequestBuilder.put().setConfig(createProxyConfiguration()).setUri(createQuery(query))
+		HttpUriRequest request = RequestBuilder.put().setConfig(proxyProvider.requestConfig).setUri(createQuery(query))
 				.addHeader(createSecurityHeader()).build();
 		client.execute(request);
 	}
@@ -132,16 +142,27 @@ public class RestClient {
 		
 		return connectionUrl.toString();
 	}
-
-	private RequestConfig createProxyConfiguration() {
+	
+	private ProxyConfiguration getProxyConfiguration() {
 		IProxyService proxyService = getProxyService();
 		IProxyData[] proxyDataForHost = proxyService.select(java.net.URI.create(connectionInfo.getUrl()));
+		
+		@SuppressWarnings("restriction")
+		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		RequestConfig.Builder configBuilder = RequestConfig.custom();
+		
 		for (IProxyData data : proxyDataForHost) {
-			HttpHost proxyConfig = new HttpHost(data.getHost(), data.getPort(), data.getType());
-			configBuilder.setProxy(proxyConfig);
+			if (!Strings.isNullOrEmpty(data.getHost())) {
+				HttpHost proxyConfig = new HttpHost(data.getHost(), data.getPort(), data.getType());
+				configBuilder.setProxy(proxyConfig);
+				if (!Strings.isNullOrEmpty(data.getUserId())) {
+					credsProvider.setCredentials(new AuthScope(data.getHost(), data.getPort()),
+							new UsernamePasswordCredentials(data.getUserId(), data.getPassword()));
+				}
+			}
 		}
-		return configBuilder.build();
+		
+		return new ProxyConfiguration(configBuilder.build(), credsProvider);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -175,9 +196,7 @@ public class RestClient {
 				return handleSuccess(response);
 			} else if (statusCode == 401) {
 				throw new AuthenticationException();
-			} else if (statusCode == 400) {
-				throw new ConfigurationException(); 
-			} else if (statusCode == 404) {
+			} else if (statusCode == 400 || statusCode == 404) {
 				throw new ConfigurationException(); 
 			} else {
 				return handleFailure(response);
@@ -190,5 +209,16 @@ public class RestClient {
 		}
 		
 		protected abstract T handleSuccess(HttpResponse response) throws ClientProtocolException, IOException;
+	}
+	
+	private class ProxyConfiguration {
+		RequestConfig requestConfig;
+		CredentialsProvider credentialsProvider;
+		
+		public ProxyConfiguration(RequestConfig requestConfig,
+				CredentialsProvider credentialsProvider) {
+			this.requestConfig = requestConfig;
+			this.credentialsProvider = credentialsProvider;
+		}
 	}
 }
