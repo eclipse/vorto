@@ -195,6 +195,7 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	private ComboViewer createProjectSelectionViewer(final Composite container, String labelStr) {
 		Button newProjectButton = new Button(container, SWT.NONE);
 		newProjectButton.setImage(ImageUtil.getImage("add_exc.gif"));
+		newProjectButton.setToolTipText("Add a new Vorto Project");
 		newProjectButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				switch (e.type) {
@@ -218,7 +219,8 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		newProjectButton.setLayoutData(buttonFormdata);
 
 		Button deleteButton = new Button(container, SWT.NONE);
-		deleteButton.setImage(ImageUtil.getImage("delete_resource.gif"));
+		deleteButton.setImage(ImageUtil.getImage("delete.gif"));
+		deleteButton.setToolTipText("Delete the selected Vorto Project");
 		deleteButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				switch (e.type) {
