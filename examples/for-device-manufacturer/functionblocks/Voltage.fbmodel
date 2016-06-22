@@ -6,8 +6,9 @@ category demo
 using com.mycompany.type.VoltageUnit ; 1.0.0
 
 functionblock Voltage {
+	
 	status {
-		currentValue as float with {
+		optional currentValue as float with {
 			measurementUnit : VoltageUnit.V
 		}
 	}

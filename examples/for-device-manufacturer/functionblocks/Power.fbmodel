@@ -6,8 +6,9 @@ category demo
 using com.mycompany.type.PowerUnit ; 1.0.0
 
 functionblock Power {
+	
 	status {
-		currentValue as float with {
+		optional currentValue as float with {
 			measurementUnit : PowerUnit.kW
 		}
 	}

@@ -6,8 +6,9 @@ category demo
 using com.mycompany.type.FrequencyUnit ; 1.0.0
 
 functionblock Frequency {
+	
 	status {
-		currentValue as float with {
+		optional currentValue as float with { 
 			measurementUnit : FrequencyUnit.Hz
 		}
 	}

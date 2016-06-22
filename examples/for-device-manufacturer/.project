@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>PowerUnit</name>
+	<name>VortoDemo</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -13,6 +13,6 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
-		<nature>org.eclipse.vorto.datatypenature</nature>
+		<nature>org.eclipse.vorto.vortonature</nature>
 	</natures>
 </projectDescription>
