@@ -6,173 +6,69 @@ services:
     build:
       context: ./repo
     image: vorto/infomodelrepository
-    container_name: vorto-repo
-    ports:
-      - 8080:8080
-    expose:
-      - "8080"
 
   vorto-markdown-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.markdown
     image: vorto/markdown-generator
-    container_name: vorto-markdown-generator
-    ports:
-      - 9005:9005
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-markdown
-      SERVER_HOST: vorto-markdown-generator-host
-      SERVER_PORT: "9005"
 
   vorto-bosch-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.bosch
     image: vorto/bosch-generator
-    container_name: vorto-bosch-generator
-    ports:
-      - 9006:9006
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-bosch
-      SERVER_HOST: vorto-bosch-generator-host
-      SERVER_PORT: "9006"
 
   vorto-ios-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.ios
     image: vorto/ios-generator
-    container_name: vorto-ios-generator
-    ports:
-      - 9007:9007
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-ios
-      SERVER_HOST: vorto-ios-generator-host
-      SERVER_PORT: "9007"
 
   vorto-javabean-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.javabean
     image: vorto/javabean-generator
-    container_name: vorto-javabean-generator
-    ports:
-      - 9008:9008
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-javabean
-      SERVER_HOST: vorto-javabean-generator-host
-      SERVER_PORT: "9008"
 
   vorto-mqtt-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.mqtt
     image: vorto/mqtt-generator
-    container_name: vorto-mqtt-generator
-    ports:
-      - 9009:9009
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-mqtt
-      SERVER_HOST: vorto-mqtt-generator-host
-      SERVER_PORT: "9009"
 
   vorto-thingworx-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.thingworx
     image: vorto/thingworx-generator
-    container_name: vorto-thingworx-generator
-    ports:
-      - 9010:9010
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-thingworx
-      SERVER_HOST: vorto-thingworx-generator-host
-      SERVER_PORT: "9010"
 
   vorto-webdevice-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.webdevice
     image: vorto/webdevice-generator
-    container_name: vorto-webdevice-generator
-    ports:
-      - 9011:9011
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-webdevice
-      SERVER_HOST: vorto-webdevice-generator-host
-      SERVER_PORT: "9011"
 
   vorto-latex-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.latex
     image: vorto/latex-generator
-    container_name: vorto-latex-generator
-    ports:
-      - 9012:9012
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-latex
-      SERVER_HOST: vorto-latex-generator-host
-      SERVER_PORT: "9012"
 
   vorto-coap-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.coap
     image: vorto/coap-generator
-    container_name: vorto-coap-generator
-    ports:
-      - 9013:9013
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-coap
-      SERVER_HOST: vorto-coap-generator-host
-      SERVER_PORT: "9013"
 
   vorto-jsonschema-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.jsonschema
     image: vorto/jsonschema-generator
-    container_name: vorto-jsonschema-generator
-    ports:
-      - 9014:9014
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-jsonschema
-      SERVER_HOST: vorto-jsonschema-generator-host
-      SERVER_PORT: "9014"
 
   vorto-aws-generator-host:
     build:
       context: ./generators/org.eclipse.vorto.codegen.service.aws
     image: vorto/aws-generator
-    container_name: vorto-aws-generator
-    ports:
-      - 9015:9015
-    depends_on:
-      - vorto-repo-host
-    environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-aws
-      SERVER_HOST: vorto-aws-generator-host
-      SERVER_PORT: "9015"
+
+  vorto-lwm2m-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.lwm2m
+    image: vorto/lwm2m-generator
+
+  vorto-leshan-generator-host:
+    build:
+      context: ./generators/org.eclipse.vorto.codegen.service.leshan
+    image: vorto/leshan-generator
+
