@@ -152,3 +152,29 @@ services:
       SERVER_CONTEXTPATH: /vorto-aws
       SERVER_HOST: vorto-aws-generator-host
       SERVER_PORT: "9015"
+
+   vorto-lwm2m-generator-host:
+    image: vorto/lwm2m-generator
+    container_name: vorto-lwm2m-generator
+    ports:
+      - 9016:9016
+    depends_on:
+      - vorto-repo-host
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-lwm2m
+      SERVER_HOST: vorto-lwm2m-generator-host
+      SERVER_PORT: "9016"
+
+  vorto-leshan-generator-host:
+    image: vorto/leshan-generator
+    container_name: vorto-leshan-generator
+    ports:
+      - 9017:9017
+    depends_on:
+      - vorto-repo-host
+    environment:
+      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo-host:8080/infomodelrepository/rest
+      SERVER_CONTEXTPATH: /vorto-leshan
+      SERVER_HOST: vorto-leshan-generator-host
+      SERVER_PORT: "9017"
