@@ -115,6 +115,7 @@ public class VortoRepository {
 					.antMatchers(HttpMethod.GET, "/rest/**").permitAll()
 					.antMatchers("/user/**").permitAll()
 					.antMatchers(HttpMethod.PUT, "/rest/**").permitAll()
+					.antMatchers(HttpMethod.POST, "/rest/**").authenticated()
 					.antMatchers(HttpMethod.DELETE, "/rest/**").authenticated()
 					.and()
 					.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class).csrf()
