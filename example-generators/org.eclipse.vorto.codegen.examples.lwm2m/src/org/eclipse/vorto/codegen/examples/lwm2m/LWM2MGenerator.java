@@ -18,6 +18,7 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockLeshanGeneratorTask;
 import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockXmlGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -30,6 +31,7 @@ public class LWM2MGenerator implements IVortoCodeGenerator {
 		
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
 			new FunctionBlockXmlGeneratorTask().generate(fbProperty.getType(), context, output);
+			new FunctionBlockLeshanGeneratorTask().generate(fbProperty.getType(), context, output);
 		}
 					
 		return output;

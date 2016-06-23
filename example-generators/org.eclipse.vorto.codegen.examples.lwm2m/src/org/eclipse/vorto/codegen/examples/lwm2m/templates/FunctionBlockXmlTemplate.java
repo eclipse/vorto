@@ -51,28 +51,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Status;
  * 
  *
  */
-public class FunctionBlockXmlTemplate implements ITemplate<FunctionblockModel> {
-
-   private static final String    STEREOTYPE_OBJECT                                = "Object";
-   private static final String    STEREOTYPE_RESOURCE                              = "Resources";
-
-   private static final String    OBJECT_ID                                        = "ObjectID";
-   private static final String    OBJECT_URN                                       = "ObjectURN";
-
-   private static final String    ATTRIBUTE_ID                                     = "ID";
-   private static final String    ATTRIBUTE_OPERATIONS                             = "Operations";
-   private static final String    ATTRIBUTE_UNITS                                  = "Units";
-   private static final String    ATTRIBUTE_MULTIPLE_INSTANCES                     = "MultipleInstances";
-   private static final String    ATTRIBUTE_MANDATORY                              = "Mandatory";
-   private static final String    ATTRIBUTE_RANGE_ENUMERATION                      = "RangeEnumeration";
-   private static final String    ATTRIBUTE_TYPE                                   = "Type";
-   private static final String    ATTRIBUTE_DESCRIPTION2                           = "Description2";
-
-   private static final String    ATTR_MANDATORY_MANDATORY_VALUE                   = "Mandatory";
-   private static final String    ATTR_MANDATORY_OPTIONAL_VALUE                    = "Optional";
-
-   private static final String    ATTR_MULTIPLE_INSTANCES_MULTIPLE_VALUE           = "Multiple";
-   private static final String    ATTR_MULTIPLE_INSTANCES_SINGLE_VALUE             = "Single";
+public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplate<FunctionblockModel> {
 
    private static final String    STR_ABORT_GENERATOR                              = " - abort Generator!";
 

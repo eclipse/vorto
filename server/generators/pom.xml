@@ -26,7 +26,6 @@
 		<module>org.eclipse.vorto.codegen.service.coap</module>
 		<module>org.eclipse.vorto.codegen.service.aws</module>
 		<module>org.eclipse.vorto.codegen.service.lwm2m</module>
-        <module>org.eclipse.vorto.codegen.service.leshan</module>
     </modules>
 
 	<dependencies>

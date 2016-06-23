@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.examples.leshan.utils;
+package org.eclipse.vorto.codegen.examples.lwm2m.utils;
 
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 

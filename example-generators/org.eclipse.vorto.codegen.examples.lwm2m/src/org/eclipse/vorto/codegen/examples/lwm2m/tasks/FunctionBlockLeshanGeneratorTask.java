@@ -12,17 +12,18 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.examples.leshan.tasks;
+package org.eclipse.vorto.codegen.examples.lwm2m.tasks;
 
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ITemplate;
-import org.eclipse.vorto.codegen.examples.leshan.templates.FunctionBlockLeshanTemplate;
+import org.eclipse.vorto.codegen.examples.lwm2m.templates.FunctionBlockLeshanTemplate;
+import org.eclipse.vorto.codegen.examples.lwm2m.utils.ModuleUtil;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 
 /**
  * @author Shaodong Ying (Robert Bosch (SEA) Pte. Ltd)
  */
-public class FunctionBlockGeneratorTask extends AbstractTemplateGeneratorTask<FunctionblockModel> {
+public class FunctionBlockLeshanGeneratorTask extends AbstractTemplateGeneratorTask<FunctionblockModel> {
 
 	@Override
 	public String getFileName(final FunctionblockModel model) {
@@ -31,7 +32,7 @@ public class FunctionBlockGeneratorTask extends AbstractTemplateGeneratorTask<Fu
 
 	@Override
 	public String getPath(final FunctionblockModel model) {
-		return "/generated_code/";
+		 return ModuleUtil.getLeshanPath();
 	}
 
 	@Override

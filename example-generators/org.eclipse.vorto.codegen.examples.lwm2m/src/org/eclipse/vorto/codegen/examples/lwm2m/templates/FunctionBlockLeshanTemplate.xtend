@@ -12,27 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.examples.leshan.templates
+package org.eclipse.vorto.codegen.examples.lwm2m.templates
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.codegen.examples.leshan.utils.TypeMapper
+import org.eclipse.vorto.codegen.examples.lwm2m.utils.TypeMapper
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 /**
  * @author Shaodong Ying (Robert Bosch (SEA) Pte. Ltd)
  */
-class FunctionBlockLeshanTemplate implements IFileTemplate<FunctionblockModel> {
+class FunctionBlockLeshanTemplate extends LWM2MConstants implements ITemplate<FunctionblockModel> {
 
-	override getFileName(FunctionblockModel model) {
-		return '''Fb«model.name».java'''
-	}
-	
-	override getPath(FunctionblockModel model) {
-		return "/generated_code/"
-	}
 	override getContent(FunctionblockModel model,InvocationContext context) {
 	    
 '''
@@ -79,8 +72,8 @@ public class «model.name» extends BaseInstanceEnabler {
     public ReadResponse read(int resourceid) {
         switch (resourceid) {
         «FOR statusProperty : model.functionblock.status.properties»
-            «var mappedElement = context.getMappedElement(statusProperty, "Resources")»
-            «var obj_id = mappedElement.getAttributeValue("ID", null)»
+            «var mappedElement = context.getMappedElement(statusProperty, STEREOTYPE_RESOURCE)»
+            «var obj_id = mappedElement.getAttributeValue(ATTRIBUTE_ID, null)»
             case «obj_id»:
                 return ReadResponse.success(resourceid, get«statusProperty.name.toFirstUpper»());
         «ENDFOR»
@@ -96,8 +89,8 @@ public class «model.name» extends BaseInstanceEnabler {
     public ExecuteResponse execute(int resourceid, String params) {
         switch (resourceid) {
         «FOR operation : model.functionblock.operations»
-            «var mappedElement = context.getMappedElement(operation, "Resources")»
-            «var obj_id = mappedElement.getAttributeValue("ID", null)»
+            «var mappedElement = context.getMappedElement(operation, STEREOTYPE_RESOURCE)»
+            «var obj_id = mappedElement.getAttributeValue(ATTRIBUTE_ID, null)»
             case «obj_id»:
                 // TODO: Implement execution code here
                 // ...

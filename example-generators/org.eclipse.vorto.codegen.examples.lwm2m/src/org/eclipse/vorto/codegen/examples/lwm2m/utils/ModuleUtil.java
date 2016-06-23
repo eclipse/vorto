@@ -20,7 +20,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  * Utility class to define target path of Object Generator.
  */
 public final class ModuleUtil {
-   public static final String  XML_SRC_LOCATION = "/objects/";
+   private static final String  XML_SRC_LOCATION = "/objects/";
+   private static final String LESHAN_SRC_LOCATION = "/leshan";
 
    private ModuleUtil() {
    }
@@ -32,6 +33,10 @@ public final class ModuleUtil {
     */
    public static String getLwm2mObjectsPath() {
       return XML_SRC_LOCATION;
+   }
+   
+   public static String getLeshanPath() {
+	   return LESHAN_SRC_LOCATION;
    }
 
    /**
