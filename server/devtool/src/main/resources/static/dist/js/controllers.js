@@ -94,12 +94,27 @@ app.controller('InfomodelEditorController', function($rootScope, $scope, $http, 
   	$scope.displayedPages 	= ($scope.models.length / 2);
 
   	$scope.getters= {
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
         name: function (value) {
 	        return value.id.name.sort();
         }
   	 }
   	
   	$scope.predicates = ['Name'];
+=======
+        namespace: function (value) {
+	        return value.id.namespace.sort();
+        },
+        name: function (value) {
+	        return value.id.name.sort();
+        },
+        version: function (value) {
+	        return value.id.version.sort();
+        }
+  	 }
+  	
+  	$scope.predicates = ['Name', 'Namespace', 'Version'];
+>>>>>>> Devtool (#1)
   	
 });
 

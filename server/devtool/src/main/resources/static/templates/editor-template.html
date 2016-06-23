@@ -13,13 +13,18 @@
 	</div>
 </div>
 <div class="row">
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 	<div class="col-md-8">
+=======
+	<div class="col-md-6">
+>>>>>>> Devtool (#1)
 		<div id="editor-container">
 			<div id="xtext-editor" data-editor-xtext-lang="infomodel"
 				data-editor-enable-formatting-action="true"
 				data-editor-show-error-dialogs="true"></div>
 		</div>
 	</div>
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 	
 	<div class="col-md-1">
 		<div id="import-button-container">
@@ -30,6 +35,10 @@
 	</div>
 
 	<div class="col-md-3">
+=======
+
+	<div class="col-md-6">
+>>>>>>> Devtool (#1)
 		<div id="function-block-browser-container">
 			<div id="searchResult">
 				<div>
@@ -42,8 +51,16 @@
 										<input type="search" placeholder="Search Function Blocks"
 											ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
 											st-search autofocus class="queryFilter input-sm" />
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 										<button id="search" class="search-button" ng-click="search()">
 											<i class="fa fa-search"></i>
+=======
+										<button id="search" type="button" class="btn btn-primary" ng-click="search()">
+											Search
+										</button>
+										<button type="button" class="btn btn-primary" ng-click="importFunctionBlock()" ng-disabed="showAddFunctionBlockButton">
+											Import Function block
+>>>>>>> Devtool (#1)
 										</button>
 									</div>
 								</th>
@@ -54,13 +71,27 @@
 							<tr>
 								<th id="onName" st-sort="id.name"><a href="">Name <i
 										class="fa fa-sort"></i></a></th>
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 								 <th class="action">Details</th>								
+=======
+								<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace
+										<i class="fa fa-sort"></i>
+								</a></th>
+								<th id="onVersion" st-sort="id.version"><a href="">Version
+										<i class="fa fa-sort"></i>
+								</a></th>
+>>>>>>> Devtool (#1)
 							</tr>
 						</thead>
 						<tbody>
 							<tr st-select-row="model" ng-repeat="model in displayedModels">
 								<td>{{ model.id.name }}</td>
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 								<td class="action"><a class="action"><i class="fa fa-info-circle"></i></a></td>
+=======
+								<td>{{ model.id.namespace }}</td>
+								<td>{{ model.id.version }}</td>
+>>>>>>> Devtool (#1)
 							</tr>
 						</tbody>
 						<tfoot>

@@ -363,7 +363,11 @@ ul.nav {
 }
 
 .queryFilter {
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
     width: 240px;
+=======
+    width: 327px;
+>>>>>>> Devtool (#1)
 }
 
 .main .login-box .page-header .signup-box{
@@ -802,6 +806,7 @@ th.action
 	width: auto;
 }
 
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 #import-button-container {
 	position:relative;
 	padding: 4px;
@@ -809,12 +814,15 @@ th.action
 	width: auto;
 }
 
+=======
+>>>>>>> Devtool (#1)
 /* Editor End */
 
 .st-selected{
 	background-color: #337ab7;
 }
 
+<<<<<<< b3179dff921b0569bff00f05397e808255908577
 .import-button {
 	font-size: 50px;
 	background: none;
@@ -833,3 +841,5 @@ th.action
 	background: none;
 	border: none;
 }
+=======
+>>>>>>> Devtool (#1)
