@@ -14,7 +14,7 @@
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.3.0.RELEASE</version>
 	</parent>
-	
+
 	<properties>
 		<xtext.version>2.9.2</xtext.version>
 	</properties>
@@ -24,6 +24,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jvmArguments>
+						-Xdebug
+						-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+					</jvmArguments>
+				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -55,10 +61,30 @@
 		</dependency>
 
 		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-models</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repo-http-models</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
@@ -80,50 +106,25 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.web.servlet</artifactId>
-			<version>${xtext.version}</version>
-		</dependency>
+		<!-- http://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
-			<groupId>org.eclipse.xtend</groupId>
-			<artifactId>org.eclipse.xtend.lib</artifactId>
-			<version>${xtext.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext</artifactId>
-			<version>${xtext.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+		<!-- <dependency> <groupId>org.eclipse.xtext</groupId> <artifactId>org.eclipse.xtext.web.servlet</artifactId> 
+			<version>${xtext.version}</version> </dependency> <dependency> <groupId>org.eclipse.xtend</groupId> 
+			<artifactId>org.eclipse.xtend.lib</artifactId> <version>${xtext.version}</version> 
+			<exclusions> <exclusion> <groupId>com.google.guava</groupId> <artifactId>guava</artifactId> 
+			</exclusion> </exclusions> </dependency> <dependency> <groupId>org.eclipse.xtext</groupId> 
+			<artifactId>org.eclipse.xtext</artifactId> <version>${xtext.version}</version> 
+			<exclusions> <exclusion> <groupId>com.google.guava</groupId> <artifactId>guava</artifactId> 
+			</exclusion> </exclusions> </dependency> <dependency> <groupId>org.eclipse.xtext</groupId> 
+			<artifactId>org.eclipse.xtext.xbase</artifactId> <version>${xtext.version}</version> 
+			<exclusions> <exclusion> <groupId>org.ow2.asm</groupId> <artifactId>asm</artifactId> 
+			</exclusion> <exclusion> <groupId>com.google.guava</groupId> <artifactId>guava</artifactId> 
+			</exclusion> </exclusions> </dependency> -->
 
-		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.xbase</artifactId>
-			<version>${xtext.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.ow2.asm</groupId>
-					<artifactId>asm</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency> -->
-	
 	</dependencies>
 </project>

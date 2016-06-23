@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.internal.service.validation;
 
-import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.validation.IModelValidator;
 import org.eclipse.vorto.repository.validation.ValidationException;

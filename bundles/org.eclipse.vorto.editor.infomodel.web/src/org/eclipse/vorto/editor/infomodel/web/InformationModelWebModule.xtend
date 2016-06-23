@@ -18,11 +18,17 @@
  */
 package org.eclipse.vorto.editor.infomodel.web
 
+import org.eclipse.vorto.editor.infomodel.web.resource.InformationModelResourceSetProvider
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
 
 /**
  * Use this class to register additional components to be used within the web application.
  */
 @FinalFieldsConstructor
 class InformationModelWebModule extends AbstractInformationModelWebModule {
+		
+	def Class<? extends IWebResourceSetProvider> bindIWebResourceSetProvider() {
+		return InformationModelResourceSetProvider
+	}	
 }

@@ -1,4 +1,4 @@
-define("devtoolApp",["angular","angular-route","controllers"],function(angular) {
+define("devtoolApp",["angular","angular-route","smart-table","controllers"],function(angular) {
 
 	var app = angular.module('devtoolApp', ['ngRoute','apps.controller']);
 	
