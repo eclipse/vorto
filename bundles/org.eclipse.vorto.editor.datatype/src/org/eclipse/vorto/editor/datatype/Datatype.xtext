@@ -100,7 +100,7 @@ enum EnumLiteralPropertyAttributeType:
 ;
 
 PropertyType:
-	ObjectPropertyType | PrimitivePropertyType
+	ObjectPropertyType | PrimitivePropertyType | ComplexPrimitivePropertyType
 ;
 
 PrimitivePropertyType:
@@ -109,6 +109,14 @@ PrimitivePropertyType:
 
 ObjectPropertyType:
 	type = [Type|QualifiedName]
+;
+
+ComplexPrimitivePropertyType:
+	DictionaryPropertyType
+;
+
+DictionaryPropertyType:
+	{DictionaryPropertyType} 'Dictionary' ('[' keyType = PrimitiveType ',' valueType = PrimitiveType ']')?
 ;
 
 enum PrimitiveType: string = 'string' | int = 'int' | float =  'float' | boolean =  'boolean' | datetime = 'dateTime' | double = 'double' | long = 'long' | short = 'short' | base64Binary ='base64Binary' | byte = 'byte';

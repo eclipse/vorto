@@ -12,11 +12,13 @@ import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
+import org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
@@ -139,6 +141,20 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * @generated
 	 */
 	private EClass constraintRuleEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass complexPrimitivePropertyTypeEClass = null;
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass dictionaryPropertyTypeEClass = null;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -563,6 +579,42 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EClass getComplexPrimitivePropertyType() {
+		return complexPrimitivePropertyTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getDictionaryPropertyType() {
+		return dictionaryPropertyTypeEClass;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDictionaryPropertyType_KeyType() {
+		return (EAttribute)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getDictionaryPropertyType_ValueType() {
+		return (EAttribute)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EEnum getPrimitiveType() {
 		return primitiveTypeEEnum;
 	}
@@ -672,6 +724,12 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		constraintRuleEClass = createEClass(CONSTRAINT_RULE);
 		createEReference(constraintRuleEClass, CONSTRAINT_RULE__CONSTRAINTS);
 
+		complexPrimitivePropertyTypeEClass = createEClass(COMPLEX_PRIMITIVE_PROPERTY_TYPE);
+
+		dictionaryPropertyTypeEClass = createEClass(DICTIONARY_PROPERTY_TYPE);
+		createEAttribute(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__KEY_TYPE);
+		createEAttribute(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__VALUE_TYPE);
+
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
 		constraintIntervalTypeEEnum = createEEnum(CONSTRAINT_INTERVAL_TYPE);
@@ -717,6 +775,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		typeEClass.getESuperTypes().add(theModelPackage.getModel());
 		booleanPropertyAttributeEClass.getESuperTypes().add(this.getPropertyAttribute());
 		enumLiteralPropertyAttributeEClass.getESuperTypes().add(this.getPropertyAttribute());
+		complexPrimitivePropertyTypeEClass.getESuperTypes().add(this.getPropertyType());
+		dictionaryPropertyTypeEClass.getESuperTypes().add(this.getComplexPrimitivePropertyType());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(entityEClass, Entity.class, "Entity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -768,6 +828,12 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 
 		initEClass(constraintRuleEClass, ConstraintRule.class, "ConstraintRule", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getConstraintRule_Constraints(), this.getConstraint(), null, "Constraints", null, 0, -1, ConstraintRule.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(complexPrimitivePropertyTypeEClass, ComplexPrimitivePropertyType.class, "ComplexPrimitivePropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		initEClass(dictionaryPropertyTypeEClass, DictionaryPropertyType.class, "DictionaryPropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getDictionaryPropertyType_KeyType(), this.getPrimitiveType(), "keyType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getDictionaryPropertyType_ValueType(), this.getPrimitiveType(), "valueType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");
