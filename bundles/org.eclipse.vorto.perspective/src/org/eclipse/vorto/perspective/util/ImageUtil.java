@@ -25,9 +25,9 @@ import org.eclipse.vorto.core.api.model.model.ModelType;
 
 public class ImageUtil {
 	private static final String BUNDLE_ICON_URL = "platform:/plugin/org.eclipse.vorto.core.ui/icons/";
-	private static final String SHARED_DT = "shared_dt.png";
-	private static final String SHARED_FB = "shared_fb.png";
-	private static final String SHARED_IM = "shared_im.png";
+	private static final String SHARED_DT = "dt.png";
+	private static final String SHARED_FB = "fb.png";
+	private static final String SHARED_IM = "im.png";
 	private static Map<ModelType, Image> modelImageMap = getImageMap(); 
 	private static Map<ModelType, Image> getImageMap() {
 		Map<ModelType, Image> imageMap = new HashMap<ModelType, Image>();

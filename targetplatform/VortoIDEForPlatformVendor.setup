@@ -44,7 +44,7 @@
     <requirement
         name="org.eclipse.vorto.feature.feature.group"/>
     <repository
-        url="http://download.eclipse.org/vorto/update/milestones/"/>
+        url="http://download.eclipse.org/vorto/update/nightly-snapshots/"/>
     <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
   </setupTask>
   <setupTask
