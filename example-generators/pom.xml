@@ -27,7 +27,6 @@
 		<module>org.eclipse.vorto.codegen.examples.coap</module>
 		<module>org.eclipse.vorto.codegen.examples.aws</module>
 		<module>org.eclipse.vorto.codegen.examples.lwm2m</module>
-		<module>org.eclipse.vorto.codegen.examples.leshan</module>
   </modules>
   
 </project>
