@@ -597,8 +597,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDictionaryPropertyType_KeyType() {
-		return (EAttribute)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(0);
+	public EReference getDictionaryPropertyType_KeyType() {
+		return (EReference)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(0);
 	}
 
 	/**
@@ -606,8 +606,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getDictionaryPropertyType_ValueType() {
-		return (EAttribute)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(1);
+	public EReference getDictionaryPropertyType_ValueType() {
+		return (EReference)dictionaryPropertyTypeEClass.getEStructuralFeatures().get(1);
 	}
 
 	/**
@@ -727,8 +727,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		complexPrimitivePropertyTypeEClass = createEClass(COMPLEX_PRIMITIVE_PROPERTY_TYPE);
 
 		dictionaryPropertyTypeEClass = createEClass(DICTIONARY_PROPERTY_TYPE);
-		createEAttribute(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__KEY_TYPE);
-		createEAttribute(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__VALUE_TYPE);
+		createEReference(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__KEY_TYPE);
+		createEReference(dictionaryPropertyTypeEClass, DICTIONARY_PROPERTY_TYPE__VALUE_TYPE);
 
 		// Create enums
 		primitiveTypeEEnum = createEEnum(PRIMITIVE_TYPE);
@@ -832,8 +832,8 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		initEClass(complexPrimitivePropertyTypeEClass, ComplexPrimitivePropertyType.class, "ComplexPrimitivePropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
 		initEClass(dictionaryPropertyTypeEClass, DictionaryPropertyType.class, "DictionaryPropertyType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getDictionaryPropertyType_KeyType(), this.getPrimitiveType(), "keyType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getDictionaryPropertyType_ValueType(), this.getPrimitiveType(), "valueType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDictionaryPropertyType_KeyType(), this.getPropertyType(), null, "keyType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getDictionaryPropertyType_ValueType(), this.getPropertyType(), null, "valueType", null, 0, 1, DictionaryPropertyType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(primitiveTypeEEnum, PrimitiveType.class, "PrimitiveType");

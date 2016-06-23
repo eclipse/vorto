@@ -4,13 +4,16 @@ package org.eclipse.vorto.core.api.model.datatype.impl;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
+import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,44 +31,24 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
  */
 public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl implements DictionaryPropertyType {
 	/**
-	 * The default value of the '{@link #getKeyType() <em>Key Type</em>}' attribute.
+	 * The cached value of the '{@link #getKeyType() <em>Key Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getKeyType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType KEY_TYPE_EDEFAULT = PrimitiveType.STRING;
+	protected PropertyType keyType;
 
 	/**
-	 * The cached value of the '{@link #getKeyType() <em>Key Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getKeyType()
-	 * @generated
-	 * @ordered
-	 */
-	protected PrimitiveType keyType = KEY_TYPE_EDEFAULT;
-
-	/**
-	 * The default value of the '{@link #getValueType() <em>Value Type</em>}' attribute.
+	 * The cached value of the '{@link #getValueType() <em>Value Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getValueType()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final PrimitiveType VALUE_TYPE_EDEFAULT = PrimitiveType.STRING;
-
-	/**
-	 * The cached value of the '{@link #getValueType() <em>Value Type</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getValueType()
-	 * @generated
-	 * @ordered
-	 */
-	protected PrimitiveType valueType = VALUE_TYPE_EDEFAULT;
+	protected PropertyType valueType;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -91,7 +74,7 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getKeyType() {
+	public PropertyType getKeyType() {
 		return keyType;
 	}
 
@@ -100,11 +83,14 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setKeyType(PrimitiveType newKeyType) {
-		PrimitiveType oldKeyType = keyType;
-		keyType = newKeyType == null ? KEY_TYPE_EDEFAULT : newKeyType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE, oldKeyType, keyType));
+	public NotificationChain basicSetKeyType(PropertyType newKeyType, NotificationChain msgs) {
+		PropertyType oldKeyType = keyType;
+		keyType = newKeyType;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE, oldKeyType, newKeyType);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
 	}
 
 	/**
@@ -112,7 +98,26 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public PrimitiveType getValueType() {
+	public void setKeyType(PropertyType newKeyType) {
+		if (newKeyType != keyType) {
+			NotificationChain msgs = null;
+			if (keyType != null)
+				msgs = ((InternalEObject)keyType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE, null, msgs);
+			if (newKeyType != null)
+				msgs = ((InternalEObject)newKeyType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE, null, msgs);
+			msgs = basicSetKeyType(newKeyType, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE, newKeyType, newKeyType));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public PropertyType getValueType() {
 		return valueType;
 	}
 
@@ -121,11 +126,49 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setValueType(PrimitiveType newValueType) {
-		PrimitiveType oldValueType = valueType;
-		valueType = newValueType == null ? VALUE_TYPE_EDEFAULT : newValueType;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE, oldValueType, valueType));
+	public NotificationChain basicSetValueType(PropertyType newValueType, NotificationChain msgs) {
+		PropertyType oldValueType = valueType;
+		valueType = newValueType;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE, oldValueType, newValueType);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setValueType(PropertyType newValueType) {
+		if (newValueType != valueType) {
+			NotificationChain msgs = null;
+			if (valueType != null)
+				msgs = ((InternalEObject)valueType).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE, null, msgs);
+			if (newValueType != null)
+				msgs = ((InternalEObject)newValueType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE, null, msgs);
+			msgs = basicSetValueType(newValueType, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE, newValueType, newValueType));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE:
+				return basicSetKeyType(null, msgs);
+			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE:
+				return basicSetValueType(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
@@ -153,10 +196,10 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE:
-				setKeyType((PrimitiveType)newValue);
+				setKeyType((PropertyType)newValue);
 				return;
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE:
-				setValueType((PrimitiveType)newValue);
+				setValueType((PropertyType)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -171,10 +214,10 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	public void eUnset(int featureID) {
 		switch (featureID) {
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE:
-				setKeyType(KEY_TYPE_EDEFAULT);
+				setKeyType((PropertyType)null);
 				return;
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE:
-				setValueType(VALUE_TYPE_EDEFAULT);
+				setValueType((PropertyType)null);
 				return;
 		}
 		super.eUnset(featureID);
@@ -189,29 +232,11 @@ public class DictionaryPropertyTypeImpl extends ComplexPrimitivePropertyTypeImpl
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__KEY_TYPE:
-				return keyType != KEY_TYPE_EDEFAULT;
+				return keyType != null;
 			case DatatypePackage.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE:
-				return valueType != VALUE_TYPE_EDEFAULT;
+				return valueType != null;
 		}
 		return super.eIsSet(featureID);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	@Override
-	public String toString() {
-		if (eIsProxy()) return super.toString();
-
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (keyType: ");
-		result.append(keyType);
-		result.append(", valueType: ");
-		result.append(valueType);
-		result.append(')');
-		return result.toString();
 	}
 
 } //DictionaryPropertyTypeImpl

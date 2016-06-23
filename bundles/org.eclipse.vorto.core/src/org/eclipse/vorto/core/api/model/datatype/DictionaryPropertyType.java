@@ -22,61 +22,55 @@ package org.eclipse.vorto.core.api.model.datatype;
  */
 public interface DictionaryPropertyType extends ComplexPrimitivePropertyType {
 	/**
-	 * Returns the value of the '<em><b>Key Type</b></em>' attribute.
-	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType}.
+	 * Returns the value of the '<em><b>Key Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Key Type</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Key Type</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-	 * @see #setKeyType(PrimitiveType)
+	 * @return the value of the '<em>Key Type</em>' containment reference.
+	 * @see #setKeyType(PropertyType)
 	 * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getDictionaryPropertyType_KeyType()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
-	PrimitiveType getKeyType();
+	PropertyType getKeyType();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getKeyType <em>Key Type</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getKeyType <em>Key Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Key Type</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+	 * @param value the new value of the '<em>Key Type</em>' containment reference.
 	 * @see #getKeyType()
 	 * @generated
 	 */
-	void setKeyType(PrimitiveType value);
+	void setKeyType(PropertyType value);
 
 	/**
-	 * Returns the value of the '<em><b>Value Type</b></em>' attribute.
-	 * The literals are from the enumeration {@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType}.
+	 * Returns the value of the '<em><b>Value Type</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Value Type</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Value Type</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-	 * @see #setValueType(PrimitiveType)
+	 * @return the value of the '<em>Value Type</em>' containment reference.
+	 * @see #setValueType(PropertyType)
 	 * @see org.eclipse.vorto.core.api.model.datatype.DatatypePackage#getDictionaryPropertyType_ValueType()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
-	PrimitiveType getValueType();
+	PropertyType getValueType();
 
 	/**
-	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getValueType <em>Value Type</em>}' attribute.
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getValueType <em>Value Type</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Value Type</em>' attribute.
-	 * @see org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+	 * @param value the new value of the '<em>Value Type</em>' containment reference.
 	 * @see #getValueType()
 	 * @generated
 	 */
-	void setValueType(PrimitiveType value);
+	void setValueType(PropertyType value);
 
 } // DictionaryPropertyType
