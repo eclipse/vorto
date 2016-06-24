@@ -1,10 +1,10 @@
 ---
 layout: documentation
-title: CLI Tool
+title: Vorto CLI Tool
 ---
 {% include base.html %}
 
-## **C**ommand **L**ine **I**nterface (CLI) Tool##
+##Vorto **C**ommand **L**ine **I**nterface (CLI) Tool##
 
 [Overview](#overview)
 
