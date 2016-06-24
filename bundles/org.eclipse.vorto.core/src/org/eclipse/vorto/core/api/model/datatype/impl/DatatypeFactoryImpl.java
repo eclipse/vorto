@@ -13,11 +13,13 @@ import org.eclipse.emf.ecore.plugin.EcorePlugin;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttributeType;
+import org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypeFactory;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
@@ -89,6 +91,8 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 			case DatatypePackage.BOOLEAN_PROPERTY_ATTRIBUTE: return createBooleanPropertyAttribute();
 			case DatatypePackage.ENUM_LITERAL_PROPERTY_ATTRIBUTE: return createEnumLiteralPropertyAttribute();
 			case DatatypePackage.CONSTRAINT_RULE: return createConstraintRule();
+			case DatatypePackage.COMPLEX_PRIMITIVE_PROPERTY_TYPE: return createComplexPrimitivePropertyType();
+			case DatatypePackage.DICTIONARY_PROPERTY_TYPE: return createDictionaryPropertyType();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -264,6 +268,26 @@ public class DatatypeFactoryImpl extends EFactoryImpl implements DatatypeFactory
 	public ConstraintRule createConstraintRule() {
 		ConstraintRuleImpl constraintRule = new ConstraintRuleImpl();
 		return constraintRule;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ComplexPrimitivePropertyType createComplexPrimitivePropertyType() {
+		ComplexPrimitivePropertyTypeImpl complexPrimitivePropertyType = new ComplexPrimitivePropertyTypeImpl();
+		return complexPrimitivePropertyType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public DictionaryPropertyType createDictionaryPropertyType() {
+		DictionaryPropertyTypeImpl dictionaryPropertyType = new DictionaryPropertyTypeImpl();
+		return dictionaryPropertyType;
 	}
 
 	/**

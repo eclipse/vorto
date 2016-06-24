@@ -712,6 +712,62 @@ public interface DatatypePackage extends EPackage {
 	int CONSTRAINT_RULE_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.ComplexPrimitivePropertyTypeImpl <em>Complex Primitive Property Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.ComplexPrimitivePropertyTypeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getComplexPrimitivePropertyType()
+	 * @generated
+	 */
+	int COMPLEX_PRIMITIVE_PROPERTY_TYPE = 14;
+
+	/**
+	 * The number of structural features of the '<em>Complex Primitive Property Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int COMPLEX_PRIMITIVE_PROPERTY_TYPE_FEATURE_COUNT = PROPERTY_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.DictionaryPropertyTypeImpl <em>Dictionary Property Type</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DictionaryPropertyTypeImpl
+	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getDictionaryPropertyType()
+	 * @generated
+	 */
+	int DICTIONARY_PROPERTY_TYPE = 15;
+
+	/**
+	 * The feature id for the '<em><b>Key Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DICTIONARY_PROPERTY_TYPE__KEY_TYPE = COMPLEX_PRIMITIVE_PROPERTY_TYPE_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Value Type</b></em>' containment reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DICTIONARY_PROPERTY_TYPE__VALUE_TYPE = COMPLEX_PRIMITIVE_PROPERTY_TYPE_FEATURE_COUNT + 1;
+
+	/**
+	 * The number of structural features of the '<em>Dictionary Property Type</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int DICTIONARY_PROPERTY_TYPE_FEATURE_COUNT = COMPLEX_PRIMITIVE_PROPERTY_TYPE_FEATURE_COUNT + 2;
+
+	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -719,7 +775,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getPrimitiveType()
 	 * @generated
 	 */
-	int PRIMITIVE_TYPE = 14;
+	int PRIMITIVE_TYPE = 16;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType <em>Constraint Interval Type</em>}' enum.
@@ -729,7 +785,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getConstraintIntervalType()
 	 * @generated
 	 */
-	int CONSTRAINT_INTERVAL_TYPE = 15;
+	int CONSTRAINT_INTERVAL_TYPE = 17;
 
 
 	/**
@@ -740,7 +796,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getBooleanPropertyAttributeType()
 	 * @generated
 	 */
-	int BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = 16;
+	int BOOLEAN_PROPERTY_ATTRIBUTE_TYPE = 18;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttributeType <em>Enum Literal Property Attribute Type</em>}' enum.
@@ -750,7 +806,7 @@ public interface DatatypePackage extends EPackage {
 	 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getEnumLiteralPropertyAttributeType()
 	 * @generated
 	 */
-	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = 17;
+	int ENUM_LITERAL_PROPERTY_ATTRIBUTE_TYPE = 19;
 
 	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.Entity <em>Entity</em>}'.
@@ -1135,6 +1191,48 @@ public interface DatatypePackage extends EPackage {
 	EReference getConstraintRule_Constraints();
 
 	/**
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType <em>Complex Primitive Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Complex Primitive Property Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType
+	 * @generated
+	 */
+	EClass getComplexPrimitivePropertyType();
+
+	/**
+	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType <em>Dictionary Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Dictionary Property Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
+	 * @generated
+	 */
+	EClass getDictionaryPropertyType();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getKeyType <em>Key Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Key Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getKeyType()
+	 * @see #getDictionaryPropertyType()
+	 * @generated
+	 */
+	EReference getDictionaryPropertyType_KeyType();
+
+	/**
+	 * Returns the meta object for the containment reference '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getValueType <em>Value Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference '<em>Value Type</em>'.
+	 * @see org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType#getValueType()
+	 * @see #getDictionaryPropertyType()
+	 * @generated
+	 */
+	EReference getDictionaryPropertyType_ValueType();
+
+	/**
 	 * Returns the meta object for enum '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1511,6 +1609,42 @@ public interface DatatypePackage extends EPackage {
 		 * @generated
 		 */
 		EReference CONSTRAINT_RULE__CONSTRAINTS = eINSTANCE.getConstraintRule_Constraints();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.ComplexPrimitivePropertyTypeImpl <em>Complex Primitive Property Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.ComplexPrimitivePropertyTypeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getComplexPrimitivePropertyType()
+		 * @generated
+		 */
+		EClass COMPLEX_PRIMITIVE_PROPERTY_TYPE = eINSTANCE.getComplexPrimitivePropertyType();
+
+		/**
+		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.impl.DictionaryPropertyTypeImpl <em>Dictionary Property Type</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DictionaryPropertyTypeImpl
+		 * @see org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl#getDictionaryPropertyType()
+		 * @generated
+		 */
+		EClass DICTIONARY_PROPERTY_TYPE = eINSTANCE.getDictionaryPropertyType();
+
+		/**
+		 * The meta object literal for the '<em><b>Key Type</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DICTIONARY_PROPERTY_TYPE__KEY_TYPE = eINSTANCE.getDictionaryPropertyType_KeyType();
+
+		/**
+		 * The meta object literal for the '<em><b>Value Type</b></em>' containment reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference DICTIONARY_PROPERTY_TYPE__VALUE_TYPE = eINSTANCE.getDictionaryPropertyType_ValueType();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.datatype.PrimitiveType <em>Primitive Type</em>}' enum.

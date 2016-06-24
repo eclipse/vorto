@@ -84,4 +84,11 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="Constraints" upperBound="-1"
         eType="#//Constraint" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComplexPrimitivePropertyType" eSuperTypes="#//PropertyType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DictionaryPropertyType" eSuperTypes="#//ComplexPrimitivePropertyType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyType" eType="#//PropertyType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valueType" eType="#//PropertyType"
+        containment="true"/>
+  </eClassifiers>
 </ecore:EPackage>

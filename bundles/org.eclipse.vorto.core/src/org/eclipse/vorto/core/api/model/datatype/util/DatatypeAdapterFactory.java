@@ -10,9 +10,11 @@ import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 import org.eclipse.emf.ecore.EObject;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
@@ -137,6 +139,14 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseConstraintRule(ConstraintRule object) {
 				return createConstraintRuleAdapter();
+			}
+			@Override
+			public Adapter caseComplexPrimitivePropertyType(ComplexPrimitivePropertyType object) {
+				return createComplexPrimitivePropertyTypeAdapter();
+			}
+			@Override
+			public Adapter caseDictionaryPropertyType(DictionaryPropertyType object) {
+				return createDictionaryPropertyTypeAdapter();
 			}
 			@Override
 			public Adapter caseModel(Model object) {
@@ -355,6 +365,34 @@ public class DatatypeAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConstraintRuleAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType <em>Complex Primitive Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType
+	 * @generated
+	 */
+	public Adapter createComplexPrimitivePropertyTypeAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType <em>Dictionary Property Type</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
+	 * @generated
+	 */
+	public Adapter createDictionaryPropertyTypeAdapter() {
 		return null;
 	}
 

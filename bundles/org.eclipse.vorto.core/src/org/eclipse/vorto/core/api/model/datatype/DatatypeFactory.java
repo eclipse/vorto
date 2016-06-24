@@ -139,6 +139,24 @@ public interface DatatypeFactory extends EFactory {
 	ConstraintRule createConstraintRule();
 
 	/**
+	 * Returns a new object of class '<em>Complex Primitive Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Complex Primitive Property Type</em>'.
+	 * @generated
+	 */
+	ComplexPrimitivePropertyType createComplexPrimitivePropertyType();
+
+	/**
+	 * Returns a new object of class '<em>Dictionary Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Dictionary Property Type</em>'.
+	 * @generated
+	 */
+	DictionaryPropertyType createDictionaryPropertyType();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

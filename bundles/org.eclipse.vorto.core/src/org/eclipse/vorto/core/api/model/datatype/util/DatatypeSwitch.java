@@ -8,9 +8,11 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.util.Switch;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.ComplexPrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule;
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
@@ -171,6 +173,21 @@ public class DatatypeSwitch<T> extends Switch<T> {
 			case DatatypePackage.CONSTRAINT_RULE: {
 				ConstraintRule constraintRule = (ConstraintRule)theEObject;
 				T result = caseConstraintRule(constraintRule);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DatatypePackage.COMPLEX_PRIMITIVE_PROPERTY_TYPE: {
+				ComplexPrimitivePropertyType complexPrimitivePropertyType = (ComplexPrimitivePropertyType)theEObject;
+				T result = caseComplexPrimitivePropertyType(complexPrimitivePropertyType);
+				if (result == null) result = casePropertyType(complexPrimitivePropertyType);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case DatatypePackage.DICTIONARY_PROPERTY_TYPE: {
+				DictionaryPropertyType dictionaryPropertyType = (DictionaryPropertyType)theEObject;
+				T result = caseDictionaryPropertyType(dictionaryPropertyType);
+				if (result == null) result = caseComplexPrimitivePropertyType(dictionaryPropertyType);
+				if (result == null) result = casePropertyType(dictionaryPropertyType);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -385,6 +402,36 @@ public class DatatypeSwitch<T> extends Switch<T> {
 	 * @generated
 	 */
 	public T caseConstraintRule(ConstraintRule object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Complex Primitive Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Complex Primitive Property Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseComplexPrimitivePropertyType(ComplexPrimitivePropertyType object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Dictionary Property Type</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Dictionary Property Type</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseDictionaryPropertyType(DictionaryPropertyType object) {
 		return null;
 	}
 
