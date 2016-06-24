@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ThingWorx Code Generator (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.examples.thingworx;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Require-Bundle: org.eclipse.ui,
- org.eclipse.vorto.core,
+Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.core.runtime,
  org.eclipse.vorto.codegen,
  org.eclipse.xtend.lib
