@@ -33,6 +33,10 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
 		</dependency>
@@ -91,7 +95,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.webjars.bower</groupId>
 			<artifactId>angular-swagger-ui</artifactId>
@@ -110,7 +114,7 @@
 					<artifactId>angular</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>		
+		</dependency>
 
 		<!-- Database -->
 

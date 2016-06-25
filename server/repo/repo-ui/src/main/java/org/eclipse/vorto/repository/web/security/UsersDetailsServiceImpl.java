@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.repository.internal.service;
+package org.eclipse.vorto.repository.web.security;
 
 import javax.transaction.Transactional;
 
@@ -23,13 +23,11 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Component
 @Service
 @Transactional
 public class UsersDetailsServiceImpl implements UserDetailsService {
@@ -57,7 +55,7 @@ public class UsersDetailsServiceImpl implements UserDetailsService {
         		  accountNonExpired,
         		  credentialsNonExpired, 
         		  accountNonLocked,
-        		  AuthorityUtils.createAuthorityList(user.getRole().toString()));
+        		  AuthorityUtils.createAuthorityList("ROLE_"+user.getRole().toString()));
     }
 
 }

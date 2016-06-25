@@ -23,7 +23,6 @@ import org.eclipse.vorto.repository.model.UserDto;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.RegistrationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -34,9 +33,6 @@ public class DefaultRegistrationService implements IRegistrationService{
 	
 	@Autowired
     private UserRepository userRepository;
-	
-    @Autowired(required=false)
-    private PasswordEncoder passwordEncoder;
     
 	@Autowired
 	private INotificationService notificationService;
@@ -56,7 +52,7 @@ public class DefaultRegistrationService implements IRegistrationService{
 		user.setFirstName(userDto.getFirstName());
 		user.setLastName(userDto.getLastName());
 		user.setUsername(userDto.getUsername().toLowerCase());
-		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		user.setPassword(userDto.getPassword());
 		user.setHasWatchOnRepository(false);
 		user.setEmail(userDto.getEmail());
 		user.setRoles(Role.USER);

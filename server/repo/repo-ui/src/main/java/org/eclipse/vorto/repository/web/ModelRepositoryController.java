@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -82,15 +83,14 @@ public class ModelRepositoryController {
 		return modelRepository.getById(modelId);
 	}
 	
-	@ApiOperation(value = "Deletes the Model for a specific Model ID")
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.DELETE)
+	@Secured("ROLE_ADMIN")
 	public void deleteModelResource(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 											@ApiParam(value = "name", required = true) final @PathVariable String name,
 											@ApiParam(value = "version", required = true) final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
-
 		final ModelId modelId = new ModelId(name, namespace, version);
 		logger.info("getModelResource: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
 		modelRepository.removeModel(modelId);
@@ -118,7 +118,6 @@ public class ModelRepositoryController {
 		}
 	}
 	
-	@ApiOperation(value = "Model Image upload")
 	@RequestMapping(value = "/image", method = RequestMethod.POST)
 	public void uploadModelImage(	@ApiParam(value = "Image", required = true)	@RequestParam("file") MultipartFile file,
 									@ApiParam(value = "Namespace", required = true) final @RequestParam String namespace,

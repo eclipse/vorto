@@ -14,22 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.repository.model;
 
-import java.util.Collection;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class UserDto implements UserDetails {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -4036429074853939005L;
+public class UserDto {
 
     private String firstName;
 
@@ -117,34 +108,4 @@ public class UserDto implements UserDetails {
         builder.append("User [firstName=").append(firstName).append("]").append("[lastName=").append(lastName).append("]").append("[username=").append(username).append("]").append("[email=").append(email).append("]").append("[password=").append(password).append("[role=").append(role).append("]");
         return builder.toString();
     }
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 }
