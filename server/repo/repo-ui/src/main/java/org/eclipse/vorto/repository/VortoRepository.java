@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
-import org.eclipse.vorto.repository.service.UserRepository;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.RESTAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +114,7 @@ public class VortoRepository {
 					.antMatchers(HttpMethod.GET, "/rest/**").permitAll()
 					.antMatchers("/user/**").permitAll()
 					.antMatchers(HttpMethod.PUT, "/rest/**").permitAll()
-					.antMatchers(HttpMethod.POST, "/rest/**").authenticated()
+					.antMatchers(HttpMethod.POST, "/rest/secure/**").authenticated()
 					.antMatchers(HttpMethod.DELETE, "/rest/**").authenticated()
 					.and()
 					.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class).csrf()
