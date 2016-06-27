@@ -42,14 +42,16 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="Code Generation Controller", description="REST API to controll Code Generator ")
+@Api(value="/generate", description="Generate Code from an Information Model")
 @RestController
 @RequestMapping(value = "/rest/generation-router")
-public class ModelGenerationController {
+public class ModelGenerationController extends RepositoryController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -61,6 +63,7 @@ public class ModelGenerationController {
 	private IGeneratorService generatorService;
 	
 	@ApiOperation(value = "Generate code for a specified platform")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}/{serviceKey}", method = RequestMethod.GET)
 	public void generate( 	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 							@ApiParam(value = "Name", required = true) final @PathVariable String name,
@@ -105,7 +108,7 @@ public class ModelGenerationController {
 		return this.generatorService.getMostlyUsedGenerators(top);
 	}
 	
-	@ApiOperation(value = "Register a Code Generator")
+	@ApiOperation(value = "Register a Code Generator",hidden=true)
 	@RequestMapping(value = "/register/{serviceKey}/{classifier}", method = RequestMethod.PUT)
 	public void registerGenerator(	@ApiParam(value = "Service Key - Platform", required = true) final @PathVariable String serviceKey,
 									@ApiParam(value = "Classifier", required = true) final @PathVariable ServiceClassifier classifier,
@@ -113,7 +116,7 @@ public class ModelGenerationController {
 		this.generatorService.registerGenerator(serviceKey, baseUrl,classifier);
 	}
 
-	@ApiOperation(value = "Deregister a Code Generator")
+	@ApiOperation(value = "Deregister a Code Generator",hidden=true)
 	@RequestMapping(value = "/deregister/{serviceKey}", method = RequestMethod.PUT)
 	public boolean deregisterGenerator(@ApiParam(value = "Service Key - Platform", required = true) final @PathVariable String serviceKey) {
 		this.generatorService.unregisterGenerator(serviceKey);

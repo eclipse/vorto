@@ -38,7 +38,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.util.StopWatch;
 
 import com.google.common.base.Predicate;
 
@@ -63,12 +62,8 @@ public class VortoRepository {
 
 	@Bean
 	public Docket vortoApi() {
-		StopWatch watch = new StopWatch();
-		watch.start();
-		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build();
-		watch.stop();
-		return docket;
 
 	}
 
@@ -86,7 +81,7 @@ public class VortoRepository {
 						+ "These information models can be managed and shared within the Vorto Information Model Repository. <br/>"
 						+ " Code Generators for Information Models let you integrate devices into different platforms."
 						+ "<br/>",
-				"1.0.0", "", "", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
+				"1.0.0", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}
 
 	@Bean
