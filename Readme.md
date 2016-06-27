@@ -2,69 +2,43 @@
 [![CircleCI](https://circleci.com/gh/eclipse/vorto/tree/development.svg?style=svg)](https://circleci.com/gh/eclipse/vorto/tree/development)
 [![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=Issues%20In%20Progress)](http://waffle.io/eclipse/vorto)
 [![Throughput Graph](https://graphs.waffle.io/eclipse/vorto/throughput.svg)](https://waffle.io/eclipse/vorto/metrics)
+
 # Getting started with Vorto
 
-Great, that you are interested in the Eclipse Vorto project!
+[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Convert the Information Models into executable code with the help of Vorto Code Generators. 
 
-## Automated Setup
+## Install & Run Vorto IDE
 
-Start developing Vorto in a couple of minutes by downloading the [Vorto Developer IDE](https://marketplace.yatta.de/profiles/qTKP)
+1. Eclipse for DSL Developers
+2. Java 8
+3. Install Vorto from Eclipse Marketplace 
 
+Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/ziXJ) and we set everything up for you, automatically.
 
-## Manual Setup
+## Describe once, Integrate Anywhere
 
-Users with an existing Eclipse IDE, follow these steps:
+1. Open the Model Repository Browser in the Eclipse Vorto Perspective
+2. Search for an Information Model, e.g. 'XDK'
+3. Right-Click on the model, Choose 'Generate' and Select the Generator(s) of your choice, e.g. CoAP and Web UI. You should see the generated bundles in the Java Perspective.
+4. **That's it**! You have just generated CoAP specific bundles and a web-based UI from a single Vorto model.  
 
-### Prerequisites
+# Documentation
 
- - [Java] 8
- - [Eclipse] Mars
- - [Xtext] 2.7.x or above
- - [Xtext Antlr] 2.1.x or above 
- - [Apache Maven] 3 (only needed if you would like to build from the command line)
+Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overview/introduction.html)
 
- 
-### Steps:
+# Contact us
+ - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+ - You have problems with Vorto ? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
+ - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
+ - Reach out to our developers on our [Discussion Forum](http://www.eclipse.org/vorto/community.html) 
 
-  1. git clone [https://github.com/eclipse/vorto.git](https://github.com/eclipse/vorto.git)
-  2. Import the project into eclipse 
-  3. Generate Xtext Artifacts for all editors files ( Right click -> Run As - Generate Xtext Artifacts), such as
-	  1. org.eclipse.vorto.editor.datatype/src/org/eclipse/vorto/editor/datatype/Datatype.xtext
-	  2. org.eclipse.vorto.editor.functionblock/src/org/eclipse/vorto/editor/functionblock/Functionblock.xtext
-	  3. org.eclipse.vorto.editor.infomodel/src/org/eclipse/vorto/editor/infomodel/InformationModel.xtext
-	  4. org.eclipse.vorto.editor.mapping/src/org/eclipse/vorto/editor/mapping/Mapping.xtext 	   
-  4. With no compile errors, right click on any plugin Run As - > Eclipse Application would launch new Eclipse application. Add the following VM arguments to your eclipse run configuration
-  "-Xms40m -Xmx512m -XX:MaxPermSize=256m"
+# Contribute to the Project
 
+Download the [Vorto for Contributors IDE](https://marketplace.yatta.de/profiles/qTKP). 
 
-### Troubleshooting:
+When you create a Pull Request, make sure:
 
-  1. If compile errors exists, check vorto.target is checked as active the target platform (Windows -> Preferences - > Plugin Development -> Target Platform - > target definitions - vorto.target)
-  2. If network error, check for proxy settings. (Preferences - > General -> Network Connections)  
-
-# Support
--------
-For more details and documentation, 
-visit 
-
-[Vorto Homepage](http://www.eclipse.org/vorto)
-
-[Vorto Discussions/Community](http://www.eclipse.org/vorto/community.html) 
-
-
-[Java]:  http://www.oracle.com/technetwork/java/javase/downloads/index.html
-[Eclipse]: http://www.eclipse.org/downloads/
-[Xtext]: http://www.eclipse.org/Xtext/download.html
-[Xtext Antlr]: http://download.itemis.com/updates/
-[Apache Maven]: https://maven.apache.org/download.cgi  
-  
-Contributing to Vorto
----------------------
-
-When you create a Pull Request to Vorto, make sure 
-
-1. all your commits are signed off (git commit -s)
-2. you have a valid CLA signed with Eclipse
-3. you reference an existing vorto bugzilla issue that your Pull Request fixes
-4. targets to be merged with our development branch
-
+1. You have a valid CLA signed with Eclipse
+2. All your commits are signed off (git commit -s)
+3. Your commit message contains "Fixes #`<Github issue no>`
+4. Target to merge your fix is development branch

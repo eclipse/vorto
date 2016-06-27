@@ -64,13 +64,13 @@
   <setupTask
       xsi:type="projects:ProjectsImportTask">
     <sourceLocator
-        rootFolder="${git.clone.vorto.location}/examples/for-device-manufacturer/"
+        rootFolder="${git.clone.vorto.location}/targetplatform/examples/for-device-manufacturer/"
         locateNestedProjects="true"/>
   </setupTask>
   <setupTask
       xsi:type="projects:ProjectsImportTask">
     <sourceLocator
-        rootFolder="${git.clone.vorto.location}/examples/for-platform-vendor/"
+        rootFolder="${git.clone.vorto.location}/targetplatform/examples/for-platform-vendor/"
         locateNestedProjects="true"/>
   </setupTask>
   <stream name="master"
