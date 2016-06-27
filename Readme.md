@@ -29,7 +29,7 @@ Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overvi
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  - You have problems with Vorto ? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
  - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
- - Reach out to our developers on our [Discussion Forum](http://www.eclipse.org/vorto/community.html) 
+ - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
 # Contribute to the Project
 
