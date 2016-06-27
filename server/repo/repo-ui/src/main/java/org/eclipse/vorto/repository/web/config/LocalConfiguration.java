@@ -36,14 +36,21 @@ public class LocalConfiguration {
 	
 	@PostConstruct
 	public void setUpTestUser() {
-		User user = new User();
+		User admin = new User();
 		
-		user.setUsername("admin".toLowerCase());
-		user.setPassword( encoder.encode("admin"));
-		user.setHasWatchOnRepository(false);
-		user.setEmail("alexander.edelmann@bosch-si.com");
-		user.setRoles(Role.ADMIN);
+		admin.setUsername("admin".toLowerCase());
+		admin.setPassword( encoder.encode("admin"));
+		admin.setHasWatchOnRepository(false);
+		admin.setEmail("alexander.edelmann@bosch-si.com");
+		admin.setRoles(Role.ADMIN);
 			
+		userRepository.save(admin);
+		
+		User user = new User();
+		user.setUsername("alex");
+		user.setPassword(encoder.encode("alex"));
+		user.setRoles(Role.USER);
+		
 		userRepository.save(user);
 	}
 }

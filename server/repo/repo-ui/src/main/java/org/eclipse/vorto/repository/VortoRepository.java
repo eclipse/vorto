@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
-import org.eclipse.vorto.repository.service.UserRepository;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.RESTAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +28,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -38,7 +38,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.util.StopWatch;
 
 import com.google.common.base.Predicate;
 
@@ -63,12 +62,8 @@ public class VortoRepository {
 
 	@Bean
 	public Docket vortoApi() {
-		StopWatch watch = new StopWatch();
-		watch.start();
-		Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build();
-		watch.stop();
-		return docket;
 
 	}
 
@@ -86,7 +81,7 @@ public class VortoRepository {
 						+ "These information models can be managed and shared within the Vorto Information Model Repository. <br/>"
 						+ " Code Generators for Information Models let you integrate devices into different platforms."
 						+ "<br/>",
-				"1.0.0", "", "", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
+				"1.0.0", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}
 
 	@Bean
@@ -96,6 +91,7 @@ public class VortoRepository {
 
 	@Configuration
 	@EnableWebSecurity
+	@EnableGlobalMethodSecurity(securedEnabled = true)
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
@@ -115,7 +111,7 @@ public class VortoRepository {
 					.antMatchers(HttpMethod.GET, "/rest/**").permitAll()
 					.antMatchers("/user/**").permitAll()
 					.antMatchers(HttpMethod.PUT, "/rest/**").permitAll()
-					.antMatchers(HttpMethod.POST, "/rest/**").authenticated()
+					.antMatchers(HttpMethod.POST, "/rest/secure/**").authenticated()
 					.antMatchers(HttpMethod.DELETE, "/rest/**").authenticated()
 					.and()
 					.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class).csrf()

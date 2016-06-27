@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="Model Controller", description="REST API to upload Models")
+@Api(value="/share", description="Share an Information Model")
 @RestController
 @RequestMapping(value = "/rest/secure")
 public class ShareModelController {
@@ -62,7 +62,7 @@ public class ShareModelController {
 	
 	private UploadModelResult uploadModelResult;
 	
-	@ApiOperation(value = "Upload and validate a Model")
+	@ApiOperation(value = "Upload and validate a single Model")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "File", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
@@ -82,7 +82,7 @@ public class ShareModelController {
 		}
 	}
 
-	@ApiOperation(value = "Upload and validates multiple models.")
+	@ApiOperation(value = "Upload and validate multiple Models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
 	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "File", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
@@ -105,7 +105,7 @@ public class ShareModelController {
 	}
 
 
-	@ApiOperation(value = "Checkin a Model into the Repository")
+	@ApiOperation(value = "Checkin an uploaded Model into the Repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
 	public ResponseEntity<ServerResponse> checkin(@ApiParam(value = "Handle Id", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
@@ -121,7 +121,7 @@ public class ShareModelController {
 		
 	}
 	
-	@ApiOperation(value = "Checkin multiple models into the Repository")
+	@ApiOperation(value = "Checkin multiple uploaded models into the Repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
 	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "File Handle ids.", required=true) final @RequestBody ModelHandle[] modelHandles) {
 		LOGGER.info("Bulk check in Models.");

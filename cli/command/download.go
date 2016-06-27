@@ -103,7 +103,7 @@ func (this *DownloadCommand) Execute() error {
 		}
 	}
 
-	resp, err := this.Client.MyClient.Get(this.Repository + "/rest/model/" + resolveAs + "/" + this.Namespace + "/" + this.Name + "/" + this.Version + "?output=" + this.Output)
+	resp, err := this.Client.MyClient.Get(this.Repository + "/rest/model/file/" + this.Namespace + "/" + this.Name + "/" + this.Version + "?output=" + this.Output +"&includeDependencies="+this.IncludeDependencies)
 	if err != nil {
 		return errorMessages.ERR_NO_VALID_ID
 	} else {

@@ -25,12 +25,14 @@ import org.eclipse.vorto.repository.model.GeneratedOutput;
 import org.eclipse.vorto.repository.model.Generator;
 import org.eclipse.vorto.repository.model.GeneratorServiceInfo;
 import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.ServiceClassifier;
 import org.eclipse.vorto.repository.service.GenerationException;
 import org.eclipse.vorto.repository.service.GeneratorAlreadyExistsException;
 import org.eclipse.vorto.repository.service.IGeneratorService;
 import org.eclipse.vorto.repository.service.IModelRepository;
+import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.modeshape.common.collection.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +102,11 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 
 	@Override
 	public GeneratedOutput generate(ModelId modelId, String serviceKey) {
-		if (modelRepositoryService.getById(modelId).getModelType() != ModelType.InformationModel) {
+		ModelResource modelResource = modelRepositoryService.getById(modelId);
+		if (modelResource == null) {
+			throw new ModelNotFoundException("Model with the given ID does not exist",null);
+		}
+		if (modelResource.getModelType() != ModelType.InformationModel) {
 			throw new GenerationException("Provided model is not an information model. Generation aborted.");
 		}
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
