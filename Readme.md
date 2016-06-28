@@ -6,7 +6,9 @@
 
 [Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Convert the Information Models into executable code with the help of Vorto Code Generators. 
 
-## Install & Run Vorto IDE
+# Vorto Toolset
+
+### Install & Run
 
 1. Eclipse for DSL Developers
 2. Java 8
@@ -14,12 +16,19 @@
 
 Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/ziXJ) and we set everything up for you, automatically.
 
-## Describe once, Integrate Anywhere
+### Describe once, Integrate Anywhere
 
 1. Open the Model Repository Browser in the Eclipse Vorto Perspective
 2. Search for an Information Model, e.g. 'XDK'
 3. Right-Click on the model, Choose 'Generate' and Select the Generator(s) of your choice, e.g. CoAP and Web UI. You should see the generated bundles in the Java Perspective.
 4. **That's it**! You have just generated CoAP specific bundles and a web-based UI from a single Vorto model.  
+
+# Vorto Repository Server
+
+Setup your own Vorto Server Backend in a couple of minutes:
+
+ - Set up [Vorto Repository](repo/repo-ui/Readme.md)
+ - Set up [Vorto Code Generators](generators/Readme.md)
 
 # Documentation
 
