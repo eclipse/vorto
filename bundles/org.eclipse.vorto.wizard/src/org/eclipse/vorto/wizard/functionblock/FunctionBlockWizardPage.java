@@ -57,6 +57,6 @@ public class FunctionBlockWizardPage extends ModelBaseWizardPage {
 	
 	@Override
 	public ModelId getModelId() {
-		return ModelIdFactory.newInstance(ModelType.Functionblock, "com.mycompany.fb",txtVersion.getText(),txtModelName.getText());
+		return getModelId(ModelType.Functionblock);
 	}
 }

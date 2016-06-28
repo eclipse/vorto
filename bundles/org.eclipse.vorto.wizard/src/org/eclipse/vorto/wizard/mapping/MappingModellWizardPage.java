@@ -14,8 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.wizard.mapping;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
@@ -26,37 +28,38 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 	private static final String DEFAULT_DESCRIPTION = "Mapping model for ";
 	private static final String DEFAULT_MAPPINGMODEL_NAME = "NewMapping";
 
+	private Text txtPlatform;
+	
 	protected MappingModellWizardPage(String pageName, IModelProject modelProject) {
-		super(pageName,modelProject);
-	}
-
-	@Override
-	protected boolean isMappingModelWizard() {
-		return true;
+		super(pageName, modelProject);
 	}
 	
+	protected void decorate(Composite parent) {
+		txtPlatform = newLabeledText(parent, "Platform:", SWT.BORDER, newTxtGridData(400, null), modificationListener);
+	}
+
 	@Override
 	protected void initialize() {
 		super.initialize();
 		txtPlatform.setText(getDefaultTargetPlatform());
 	}
-	
+
 	@Override
 	protected boolean validateProject() {
 		boolean result = super.validateProject();
 		String platform = txtPlatform.getText();
-		
+
 		result &= !ifModelExist(getModelId(), "Mapping model already exists");
 		result &= validateStrExist(platform, "Target Platform must be provided.");
 		return result;
 	}
-	
+
 	private boolean ifModelExist(ModelId modelId, String errorMessage) {
-		if(getModelProject().exists(modelId)) {
+		if (getModelProject().exists(modelId)) {
 			setErrorMessage(errorMessage);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -79,6 +82,10 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 		return DEFAULT_MAPPINGMODEL_NAME;
 	}
 
+	protected String getDefaultNamespace() {
+		return "com.mycompany.mapping";
+	}
+
 	@Override
 	protected String getGroupTitle() {
 		return "Mapping Model Details";
@@ -92,10 +99,10 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 	protected String getDefaultTargetPlatform() {
 		return "myplatform";
 	}
-	
+
 	@Override
 	public ModelId getModelId() {
-		return ModelIdFactory.newInstance(ModelType.Mapping, "com.mycompany.mapping",txtVersion.getText(),txtModelName.getText());
+		return getModelId(ModelType.Mapping);
 	}
 
 }

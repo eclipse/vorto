@@ -52,22 +52,6 @@ public abstract class AbstractWizardPage extends WizardPage {
 		return true;
 	}
 
-	protected boolean checkModelName(String modelName) {
-		if (checkForRegexPattern(modelName, false, MODEL_NAME_REGEX)) {
-			setErrorMessage("Model name should start with a capital letter and must not contain any special characters.");
-			return false;
-		}
-		return true;
-	}
-
-	protected boolean checkFBVersion(String fbVersion) {
-		if (checkForRegexPattern(fbVersion, false, VERSION_REGEX)) {
-			setErrorMessage("Version should follow pattern <MAJOR>.<MINOR>.<PATCH>");
-			return false;
-		}
-		return true;
-	}
-
 	protected boolean checkForRegexPattern(String input, boolean expectedBool,
 			String regexPattern) {
 		return Pattern.compile(regexPattern).matcher(input).matches() == expectedBool;

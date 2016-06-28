@@ -26,8 +26,8 @@ public class InfomodelWizardPage extends ModelBaseWizardPage {
 	private static final String DEFAULT_DESCRIPTION = "Information model for ";
 	private static final String DEFAULT_INFORMATIONMODEL_NAME = "NewInfomodel";
 
-	protected InfomodelWizardPage(String pageName,IModelProject modelProject) {
-		super(pageName,modelProject);
+	protected InfomodelWizardPage(String pageName, IModelProject modelProject) {
+		super(pageName, modelProject);
 	}
 
 	@Override
@@ -54,10 +54,10 @@ public class InfomodelWizardPage extends ModelBaseWizardPage {
 	protected String getModelLabel() {
 		return "Information Model Name:";
 	}
-	
+
 	@Override
 	public ModelId getModelId() {
-		return ModelIdFactory.newInstance(ModelType.InformationModel, "com.mycompany",txtVersion.getText(),txtModelName.getText());
+		return getModelId(ModelType.InformationModel);
 	}
 
 }
