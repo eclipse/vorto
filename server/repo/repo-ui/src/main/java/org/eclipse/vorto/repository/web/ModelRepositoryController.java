@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
+import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -42,14 +43,16 @@ import org.springframework.web.multipart.MultipartFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="Model Controller", description="REST API to manage Models")
+@Api(value="/find", description="Find an Information Model")
 @RestController
 @RequestMapping(value = "/rest/model")
-public class ModelRepositoryController {
+public class ModelRepositoryController extends RepositoryController {
 
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String XMI = ".xmi";
@@ -61,7 +64,7 @@ public class ModelRepositoryController {
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
-	@ApiOperation(value = "Search in the model repository for the expression")
+	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
 	public List<ModelResource> searchByExpression(@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 		List<ModelResource> modelResources = modelRepository.search(expression);
@@ -69,7 +72,8 @@ public class ModelRepositoryController {
 		return modelResources;
 	}
 
-	@ApiOperation(value = "Returns the Model for a specific Model ID")
+	@ApiOperation(value = "Returns a model by its full qualified model ID")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ModelResource getModelResource(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 											@ApiParam(value = "name", required = true) final @PathVariable String name,
@@ -80,10 +84,16 @@ public class ModelRepositoryController {
 
 		final ModelId modelId = new ModelId(name, namespace, version);
 		logger.info("getModelResource: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
-		return modelRepository.getById(modelId);
+		ModelResource resource =  modelRepository.getById(modelId);
+		if (resource == null) {
+			throw new ModelNotFoundException("Model does not exist", null);
+		}
+		return resource;
 	}
 	
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.DELETE)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiOperation(value="Deletes a model",hidden=true)
 	@Secured("ROLE_ADMIN")
 	public void deleteModelResource(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 											@ApiParam(value = "name", required = true) final @PathVariable String name,
@@ -96,7 +106,8 @@ public class ModelRepositoryController {
 		modelRepository.removeModel(modelId);
 	}
 	
-	@ApiOperation(value = "Returns the image of a Model")
+	@ApiOperation(value = "Returns the image of an Information Model")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/image/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void getModelImage(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 								@ApiParam(value = "Namespace", required = true) final @PathVariable String name,
@@ -118,6 +129,8 @@ public class ModelRepositoryController {
 		}
 	}
 	
+	@ApiOperation(value = "Adds an image for an Information Model",hidden=true)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/image", method = RequestMethod.POST)
 	public void uploadModelImage(	@ApiParam(value = "Image", required = true)	@RequestParam("file") MultipartFile file,
 									@ApiParam(value = "Namespace", required = true) final @RequestParam String namespace,
@@ -131,13 +144,15 @@ public class ModelRepositoryController {
 		}
 	}
 	
-	@ApiOperation(value = "Download a Model specified by Model ID")
+	@ApiOperation(value = "Downloads the model content in a specific output format")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/file/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void downloadModelById(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
 									@ApiParam(value = "Name", required = true) final @PathVariable String name,
 									@ApiParam(value = "Version", required = true) final @PathVariable String version, 
-									@ApiParam(value = "Output Type", required = true) final @RequestParam(value="output",required=false) String outputType,
-									@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
+									@ApiParam(value = "Output Type", required = true) final @RequestParam(value="output",required=false) ContentType outputType, 
+									@ApiParam(value = "Include dependencies", required = false) final @RequestParam(value="includeDependencies",required=false) boolean includeDependencies, 
+									final HttpServletResponse response) {
 
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
@@ -147,41 +162,18 @@ public class ModelRepositoryController {
 
 		logger.info("downloadModelById: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
 
-		final ContentType contentType = getContentType(outputType);
-		byte[] modelContent = modelRepository.getModelContent(modelId, contentType);
-		if (modelContent != null && modelContent.length > 0) {
-			final ModelResource modelResource = modelRepository.getById(modelId);
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource, contentType));
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
-		} else {
-			throw new RuntimeException("File not found.");
-		}
-	}
-
-	@ApiOperation(value = "Download a specified Model by Model ID, including all References")
-	@RequestMapping(value = "/zip/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void downloadModelByIdWithReferences( 	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-													@ApiParam(value = "Name", required = true) final @PathVariable String name,
-													@ApiParam(value = "Version", required = true) final @PathVariable String version, 
-													@ApiParam(value = "Output Type", required = true) final @RequestParam(value="output",required=false) String outputType,
-													@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
-
-		Objects.requireNonNull(namespace, "namespace must not be null");
-		Objects.requireNonNull(name, "name must not be null");
-		Objects.requireNonNull(version, "version must not be null");
-
-		final ModelId modelId = new ModelId(name, namespace, version);
-
-		logger.info("downloadModelById: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
-
-		final ContentType contentType = getContentType(outputType);
+		final ContentType contentType = outputType;
 		
+		if (includeDependencies) {
+			createZipWithAllDependencies(modelId, contentType, response);
+		} else {
+			createSingleModelContent(modelId,contentType, response);
+		}
+		
+		
+	}
+	
+	private void createZipWithAllDependencies(ModelId modelId, ContentType contentType, HttpServletResponse response) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 		
@@ -203,6 +195,23 @@ public class ModelRepositoryController {
 			
 		} catch(Exception ex) {
 			throw new RuntimeException(ex);
+		}
+	}
+	
+	private void createSingleModelContent(ModelId modelId, ContentType contentType, HttpServletResponse response) {
+		byte[] modelContent = modelRepository.getModelContent(modelId, contentType);
+		if (modelContent != null && modelContent.length > 0) {
+			final ModelResource modelResource = modelRepository.getById(modelId);
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource, contentType));
+			response.setContentType(APPLICATION_OCTET_STREAM);
+			try {
+				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
+				response.flushBuffer();
+			} catch (IOException e) {
+				throw new RuntimeException("Error copying file.", e);
+			}
+		} else {
+			throw new RuntimeException("File not found.");
 		}
 	}
 	
@@ -232,21 +241,12 @@ public class ModelRepositoryController {
 		}
 	}
 
-	private ContentType getContentType(String output) {
-		if (output == null || output.isEmpty()) {
-			return ContentType.DSL;
-		} else {
-			return ContentType.valueOf(output.toUpperCase());
-		}
-	}
-
 	@ApiOperation(value = "Getting all mapped Resources")
 	@RequestMapping(value = "/mapping/zip/{namespace}/{name}/{version:.+}/{targetPlatform}", method = RequestMethod.GET)
 	public void getMappingResources( 	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 										@ApiParam(value = "Name", required = true) final @PathVariable String name, 
 										@ApiParam(value = "Version", required = true) final @PathVariable String version,
-										@ApiParam(value = "Target Platform", required = true) final @PathVariable String targetPlatform,
-										@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
+										@ApiParam(value = "Target Platform", required = true) final @PathVariable String targetPlatform, final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");

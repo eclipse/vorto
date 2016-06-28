@@ -44,14 +44,14 @@
     <requirement
         name="org.eclipse.vorto.feature.feature.group"/>
     <repository
-        url="http://download.eclipse.org/vorto/update/nightly-snapshots/"/>
+        url="http://download.eclipse.org/vorto/update/milestones"/>
     <description>Install the tools needed in the IDE to work with the source code for ${scope.project.label}</description>
   </setupTask>
   <setupTask
       xsi:type="git:GitCloneTask"
       id="git.clone.vorto"
       remoteURI="https://github.com/eclipse/vorto.git"
-      checkoutBranch="development">
+      checkoutBranch="master">
     <annotation
         source="http://www.eclipse.org/oomph/setup/InducedChoices">
       <detail
@@ -64,7 +64,7 @@
   <setupTask
       xsi:type="projects:ProjectsImportTask">
     <sourceLocator
-        rootFolder="${git.clone.vorto.location}/examples/for-platform-vendor/"
+        rootFolder="${git.clone.vorto.location}/targetplatform/examples/for-platform-vendor/"
         locateNestedProjects="true"/>
   </setupTask>
   <setupTask
