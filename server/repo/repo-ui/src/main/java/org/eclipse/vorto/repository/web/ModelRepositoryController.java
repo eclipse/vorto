@@ -49,7 +49,7 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/find", description="Find an Information Model")
+@Api(value="/find", description="Find useful vorto models")
 @RestController
 @RequestMapping(value = "/rest/model")
 public class ModelRepositoryController extends RepositoryController {
@@ -66,7 +66,7 @@ public class ModelRepositoryController extends RepositoryController {
 
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
-	public List<ModelResource> searchByExpression(@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
+	public List<ModelResource> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) {
 		List<ModelResource> modelResources = modelRepository.search(expression);
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
 		return modelResources;
@@ -75,9 +75,9 @@ public class ModelRepositoryController extends RepositoryController {
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public ModelResource getModelResource(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-											@ApiParam(value = "name", required = true) final @PathVariable String name,
-											@ApiParam(value = "version", required = true) final @PathVariable String version) {
+	public ModelResource getModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+											@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+											@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
@@ -93,11 +93,11 @@ public class ModelRepositoryController extends RepositoryController {
 	
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.DELETE)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@ApiOperation(value="Deletes a model",hidden=true)
+	@ApiOperation(value="Deletes a vorto model",hidden=true)
 	@Secured("ROLE_ADMIN")
-	public void deleteModelResource(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-											@ApiParam(value = "name", required = true) final @PathVariable String name,
-											@ApiParam(value = "version", required = true) final @PathVariable String version) {
+	public void deleteModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+										@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+										@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
@@ -106,12 +106,12 @@ public class ModelRepositoryController extends RepositoryController {
 		modelRepository.removeModel(modelId);
 	}
 	
-	@ApiOperation(value = "Returns the image of an Information Model")
+	@ApiOperation(value = "Returns the image of a vorto model")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/image/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void getModelImage(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-								@ApiParam(value = "Namespace", required = true) final @PathVariable String name,
-								@ApiParam(value = "Namespace", required = true) final @PathVariable String version, 
+	public void getModelImage(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+								@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+								@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
 								@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
@@ -129,13 +129,13 @@ public class ModelRepositoryController extends RepositoryController {
 		}
 	}
 	
-	@ApiOperation(value = "Adds an image for an Information Model",hidden=true)
+	@ApiOperation(value = "Adds an image for a vorto model",hidden=true)
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/image", method = RequestMethod.POST)
-	public void uploadModelImage(	@ApiParam(value = "Image", required = true)	@RequestParam("file") MultipartFile file,
-									@ApiParam(value = "Namespace", required = true) final @RequestParam String namespace,
-									@ApiParam(value = "name", required = true) final @RequestParam String name,
-									@ApiParam(value = "version", required = true) final @RequestParam String version) {
+	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
+									@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @RequestParam String namespace,
+									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @RequestParam String name,
+									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @RequestParam String version) {
 		logger.info("uploadImage: [" + file.getOriginalFilename() + "]");
 		try {
 			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
@@ -147,11 +147,11 @@ public class ModelRepositoryController extends RepositoryController {
 	@ApiOperation(value = "Downloads the model content in a specific output format")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/file/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void downloadModelById(	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-									@ApiParam(value = "Name", required = true) final @PathVariable String name,
-									@ApiParam(value = "Version", required = true) final @PathVariable String version, 
-									@ApiParam(value = "Output Type", required = true) final @RequestParam(value="output",required=false) ContentType outputType, 
-									@ApiParam(value = "Include dependencies", required = false) final @RequestParam(value="includeDependencies",required=false) boolean includeDependencies, 
+	public void downloadModelById(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
+									@ApiParam(value = "Choose output file format, e.g. DSL", required = true) final @RequestParam(value="output",required=false) ContentType outputType, 
+									@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value="includeDependencies",required=false) boolean includeDependencies, 
 									final HttpServletResponse response) {
 
 		Objects.requireNonNull(namespace, "namespace must not be null");
@@ -163,7 +163,7 @@ public class ModelRepositoryController extends RepositoryController {
 		logger.info("downloadModelById: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
 
 		final ContentType contentType = outputType;
-		
+
 		if (includeDependencies) {
 			createZipWithAllDependencies(modelId, contentType, response);
 		} else {
@@ -241,12 +241,12 @@ public class ModelRepositoryController extends RepositoryController {
 		}
 	}
 
-	@ApiOperation(value = "Getting all mapped Resources")
+	@ApiOperation(value = "Getting all mapping resources")
 	@RequestMapping(value = "/mapping/zip/{namespace}/{name}/{version:.+}/{targetPlatform}", method = RequestMethod.GET)
-	public void getMappingResources( 	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
-										@ApiParam(value = "Name", required = true) final @PathVariable String name, 
-										@ApiParam(value = "Version", required = true) final @PathVariable String version,
-										@ApiParam(value = "Target Platform", required = true) final @PathVariable String targetPlatform, final HttpServletResponse response) {
+	public void getMappingResources( 	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+										@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name, 
+										@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
+										@ApiParam(value = "The name of target platform, e.g. lwm2m", required = true) final @PathVariable String targetPlatform, final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
