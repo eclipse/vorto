@@ -10,7 +10,7 @@
 	<artifactId>org.eclipse.vorto.editor.functionblock.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<name>Vorto Functionblock Editor Tests</name>
+	<name>Vorto Function Block Editor Tests</name>
 
 	<build>
 		<plugins>

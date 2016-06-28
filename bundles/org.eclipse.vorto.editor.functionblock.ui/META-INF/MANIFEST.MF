@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Functionblock Editor UI (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.4.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.functionblock.ui;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.ui,
@@ -18,15 +18,17 @@ Require-Bundle: org.eclipse.xtext.ui,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.datatype.ui,
  org.eclipse.vorto.editor.functionblock,
+ org.eclipse.vorto.editor.functionblock.ide,
  org.eclipse.vorto.core,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib;resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.functionblock.ui,org.eclipse.
- vorto.editor.functionblock.ui.contentassist,org.eclipse.vorto.editor.
- functionblock.ui.contentassist.antlr,org.eclipse.vorto.editor.functio
- nblock.ui.contentassist.antlr.internal,org.eclipse.vorto.editor.funct
- ionblock.ui.internal,org.eclipse.vorto.editor.functionblock.ui.quickf
- ix
-Bundle-ClassPath: templates/,.,icons/
+Export-Package: org.eclipse.vorto.editor.functionblock.ui,
+ org.eclipse.vorto.editor.functionblock.ui.contentassist,
+ org.eclipse.vorto.editor.functionblock.ui.internal,
+ org.eclipse.vorto.editor.functionblock.ui.quickfix
+Bundle-ClassPath: templates/,
+ .,
+ icons/
 Import-Package: org.apache.log4j
 Bundle-Activator: org.eclipse.vorto.editor.functionblock.ui.internal.FunctionblockActivator

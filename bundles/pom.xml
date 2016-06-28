@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="MACROMAN"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.eclipse.vorto</groupId>
-    <artifactId>org.eclipse.vorto.parent</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
-  </parent>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>org.eclipse.vorto.parent</artifactId>
+		<version>0.9.0-SNAPSHOT</version>
+	</parent>
 
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>bundles</artifactId>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>bundles</artifactId>
 
-  <name>Eclipse Vorto Bundles</name>
+	<name>Eclipse Vorto Bundles</name>
 
-  <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-  <modules>
+	<modules>
 		<module>org.eclipse.vorto.core</module>
-        <module>org.eclipse.vorto.core.ui</module>
+		<module>org.eclipse.vorto.core.ui</module>
 		<module>org.eclipse.vorto.editor</module>
-        <module>org.eclipse.vorto.editor.ui</module>
-	
+		<module>org.eclipse.vorto.editor.ui</module>
+
 		<module>org.eclipse.vorto.editor.datatype</module>
-		<module>org.eclipse.vorto.editor.datatype.ui</module>	
+		<module>org.eclipse.vorto.editor.datatype.ui</module>
 		<module>org.eclipse.vorto.editor.datatype.tests</module>
-		
+
 		<module>org.eclipse.vorto.editor.functionblock</module>
-		<module>org.eclipse.vorto.editor.functionblock.ui</module>	
+		<module>org.eclipse.vorto.editor.functionblock.ui</module>
 		<module>org.eclipse.vorto.editor.functionblock.tests</module>
+		<module>org.eclipse.vorto.editor.functionblock.ide</module>
+		<module>org.eclipse.vorto.editor.functionblock.web</module>
 
 		<module>org.eclipse.vorto.editor.infomodel</module>
-		<module>org.eclipse.vorto.editor.infomodel.ui</module>	
+		<module>org.eclipse.vorto.editor.infomodel.ui</module>
 		<module>org.eclipse.vorto.editor.infomodel.tests</module>
 		<module>org.eclipse.vorto.editor.infomodel.ide</module>
-		<module>org.eclipse.vorto.editor.infomodel.web</module>			
+		<module>org.eclipse.vorto.editor.infomodel.web</module>
 
 		<module>org.eclipse.vorto.editor.mapping</module>
-		<module>org.eclipse.vorto.editor.mapping.ui</module>	
-		<module>org.eclipse.vorto.editor.mapping.tests</module>	
-		
+		<module>org.eclipse.vorto.editor.mapping.ui</module>
+		<module>org.eclipse.vorto.editor.mapping.tests</module>
+
 		<module>org.eclipse.vorto.codegen</module>
-		<module>org.eclipse.vorto.codegen.ui</module>		
+		<module>org.eclipse.vorto.codegen.ui</module>
 		<module>org.eclipse.vorto.codegen.templates.java</module>
-		
+
 		<module>org.eclipse.vorto.wizard</module>
 		<module>org.eclipse.vorto.repository</module>
-		<module>org.eclipse.vorto.perspective</module>	
-		
-  </modules>
-  
+		<module>org.eclipse.vorto.perspective</module>
+
+	</modules>
+
 </project>
