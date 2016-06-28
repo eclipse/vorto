@@ -24,3 +24,7 @@ Admin Account:
 	username: admin
 	password: admin
 
+----------
+----------
+Back to [Vorto Server Overview](../../Readme.md)
+

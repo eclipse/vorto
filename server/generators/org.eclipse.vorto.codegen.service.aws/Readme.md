@@ -19,5 +19,4 @@ A Vorto Mapping can (optionally) be used to enhance the Alexa voice recognition.
 
 
 ----------
-
 List of other available [Code Generators](../Readme.md).

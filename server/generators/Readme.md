@@ -7,7 +7,7 @@ If you would like to find out more about available code generators, to set them 
 Available Generators:
 
  - [Amazon Web Services Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
- - [Bosch Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
+ - [Bosch Generator](org.eclipse.vorto.codegen.service.bosch/Readme.md)
  - [CoAP Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
  - [IOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
  - [Javabean Generator](org.eclipse.vorto.codegen.service.javabean/Readme.md)
@@ -22,3 +22,7 @@ Available Generators:
 # Add your Code Generator
 
 It is easier than it sounds to implement your own code generator and plug it into the Vorto infrastructure. For this, please read our [Developer Documentation](http://www.eclipse.org/vorto/documentation/developer-api/codegenerator-implementation.html) 
+
+
+----------
+Back to [Vorto Server Overview](../Readme.md)
