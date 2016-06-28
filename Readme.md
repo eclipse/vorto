@@ -27,8 +27,8 @@ Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/zi
 
 Setup your own Vorto Server Backend in a couple of minutes:
 
- - Set up [Vorto Repository](repo/repo-ui/Readme.md)
- - Set up [Vorto Code Generators](generators/Readme.md)
+ - Set up [Vorto Repository](server/repo/repo-ui/Readme.md)
+ - Set up [Vorto Code Generators](server/generators/Readme.md)
 
 # Documentation
 
