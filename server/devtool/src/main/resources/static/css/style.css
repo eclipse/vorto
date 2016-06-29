@@ -363,7 +363,7 @@ ul.nav {
 }
 
 .queryFilter {
-    width: 327px;
+    width: 240px;
 }
 
 .main .login-box .page-header .signup-box{
@@ -802,9 +802,34 @@ th.action
 	width: auto;
 }
 
+#import-button-container {
+	position:relative;
+	padding: 4px;
+	height: 440px;
+	width: auto;
+}
+
 /* Editor End */
 
 .st-selected{
 	background-color: #337ab7;
 }
 
+.import-button {
+	font-size: 50px;
+	background: none;
+	border: none;
+	position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+	
+}
+
+.search-button {
+	padding: 2px;
+	font-size: 20px;
+	background: none;
+	border: none;
+}
