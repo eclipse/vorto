@@ -121,7 +121,7 @@ public class CodeGenerationController {
 	private byte[] downloadModelWithReferences(String namespace, String name, String version) {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			return restTemplate.getForObject(basePath + "/model/zip/{namespace}/{name}/{version}?output=DSL",
+			return restTemplate.getForObject(basePath + "/model/file/{namespace}/{name}/{version}?output=DSL&includeDependencies=true",
 					byte[].class, namespace, name, version);
 		} catch (RestClientException e) {
 			LOGGER.error(e.getMessage());
