@@ -15,7 +15,7 @@ This section details the following topics:
 
 ##### I Get an Error During the Installation That it Cannot Perform the Operation and is Trying for Alternative Solutions
 
-You need to uninstall the Vorto plug-ins as well as its dependent Xbase & Xtext plug-ins (refer to [Uninstalling the Vorto Plug-ins]({{base}}/documentation/appendix/uninstallation.html#uninstalling-the-vorto-plug-ins)).
+You need to uninstall the Vorto Toolset as well as its dependent Xbase & Xtext plug-ins (refer to [Uninstalling the Vorto Toolset]({{base}}/documentation/appendix/uninstallation.html#uninstalling-the-vorto-plug-ins)).
 
 ##### Should I Upgrade the Xtext Plug-in?
 

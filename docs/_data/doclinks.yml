@@ -12,12 +12,10 @@
 - title: "Installation"
   href: ""
   sub:
-    - title: "Getting"
-      href: "/documentation/installation/installation.html"
     - title: "Installing"
-      href: "/documentation/installation/installation.html#installing-the-vorto-plug-ins"
+      href: "/documentation/installation/installation.html#installing-the-vorto-toolset"
     - title: "Upgrading"
-      href: "/documentation/installation/installation.html#upgrading-the-vorto-plug-ins"
+      href: "/documentation/installation/installation.html#upgrading-the-vorto-toolset"
 - title: "Model Editors"
   href: ""
   sub:

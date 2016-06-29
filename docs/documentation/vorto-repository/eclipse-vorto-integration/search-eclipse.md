@@ -4,7 +4,7 @@ title: Searching Models
 ---
 {% include base.html %}
 
-## Searching Models Using the Eclipse Vorto Plug-ins
+## Searching Models Using the Eclipse Vorto Toolset
 
 This section details the following topics:
 

@@ -91,11 +91,14 @@ The Vorto project considers the following contributions as significant contribut
 
 ## System Requirements
 
-For the use of the Vorto plug-ins the following software requirements must be met:
+For the use of the Vorto Toolset the following software requirements must be met:
 
-- IDE
-  - Eclipse Mars for DSL Developers
-- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/)  
+- Eclipse
+  - [Eclipse IDE for Java and DSL Developers](http://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/mars2) (Mars or higher)  
+    or
+  - [Eclipse IDE](http://www.eclipse.org/downloads/packages/release/Mars/2) (Mars or higher)
+  - [Xtext](http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/) 2.9.x (or higher)
+- [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/)
 
 <table class="table table-bordered">
 <tbody>
