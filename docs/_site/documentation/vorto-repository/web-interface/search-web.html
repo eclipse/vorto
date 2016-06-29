@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html>
+  <!--Head section for CSS/Javascript  -->
+
+<head>
+  <meta charset="utf-8">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+  <meta name="description" content="IoT Toolset that lets you describe the characteristics of real world devices, share them in a central repository and generate code for different platforms">
+  <meta name="author" content="">
+  <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+  <title>Eclipse Vorto - IoT Toolset for standardized device descriptions</title>
+
+  <!--Stylesheets-->
+  <!-- Bootstrap 3.3.1 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="../../../css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+  <!-- Custom CSS -->
+  <link href="../../../css/vorto.css" rel="stylesheet">
+
+  <!--Javascript-->
+  <!-- JQuery 2.1.1-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.1 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../../../js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+               $(document).ready(function(){
+                 $("a[rel^='prettyPhoto']").prettyPhoto();
+               });
+             </script>
+</head>
+
+  <body>
+    <!--Header section Site navigation -->
+
+<!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="../../../index.html">Eclipse Vorto</a>
+				</div>
+				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
+						<ul class="nav navbar-nav pull-right">
+							
+								<li >
+									
+										<a href="../../../news/index.html">News</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../../../blog/index.html">Blog</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../../../documentation/overview/introduction.html">Documentation</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../../../downloads/index.html">Downloads</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a target="_blank" href="http://vorto.eclipse.org/repo">Model Repository</a>
+									
+								</li>
+							
+								<li >
+									
+										<a href="../../../overview/vorto_overview.html">Use cases</a>
+
+									
+								</li>
+							
+						</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+		</div>
+		<style>#forkongithub a{background:#8d0c0c;color:#fff;text-decoration:none;font-family:Arial, Helvetica, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:12px;line-height:3rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:50px;overflow:visible;height:200px;z-index:9999;}#forkongithub a{width:260px;position:absolute;top:40px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);}}</style><span id="forkongithub"><a href="https://github.com/eclipse/vorto">Fork me on GitHub</a></span>
+		<!-- /.container -->
+</nav>
+
+    <div id="header_wrapper" class="container">
+      <div class="nav-bar col-md-3">
+        <nav class="navmenu navmenu-default"  role="navigation">
+          <ul class="nav navmenu-nav">
+            <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li>
+      Introduction
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/overview/introduction.html">Overview</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/overview/introduction.html#features">Features</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/overview/introduction.html#significant-contribution">Significant Contribution</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/overview/introduction.html#system-requirements">System Requirements</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Installation
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/installation/installation.html">Getting</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/installation/installation.html#installing-the-vorto-plug-ins">Installing</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/installation/installation.html#upgrading-the-vorto-plug-ins">Upgrading</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Model Editors
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/editors/datatype.html">Data Types</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/editors/functionblock.html#defining-a-function-block">Function Block</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/editors/information-model.html#defining-an-information-model">Information Model</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/editors/mapping-model.html#defining-an-information-model-mapping">Information Model Mapping</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Code Generators
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/code-generators/codegenerators.html">Overview</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/code-generators/webdevice-codegenerator.html#example-code-generator-web-device-application">Example - Web Device Application</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/code-generators/m2m-codegenerator.html#example-code-generator-bosch-m2m-platform">Example - Bosch M2M Platform</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Developer Api
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/developer-api/codegenerator-implementation.html">Implementing a Code Generator</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Vorto Repository
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/overview.html">Vorto Repository Overview</a>
+      
+
+    </li>
+  
+
+  
+    <li>
+      Web Interface
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/login-register.html">Registering/Logging in/out</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/search-web.html">Searching Models</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/generate-code-web.html">Generating Code</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/share-web.html">Sharing Models</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/generators.html">Informing about Generators</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/about_vorto.html">Visiting the Vorto Project Page</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/rest-api.html#rest-api">Using REST API</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/web-interface/user-settings.html">Managing User Settings</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Eclipse Vorto Integration
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/eclipse-vorto-integration/setting-preferences-eclipse.html">Setting Required Preferences</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/eclipse-vorto-integration/search-eclipse.html">Searching Models</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/eclipse-vorto-integration/share-eclipse.html">Sharing Models</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/eclipse-vorto-integration/generate-code-eclipse.html">Generating Code</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Vorto CLI Tool
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/vorto-repository/cli-tool/cli-tool.html">Vorto CLI Tool</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Tutorial
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/tutorial/mqttwithwebapp.html">Establish communication between Web app and Mqtt client </a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+  
+    <li>
+      Appendix
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/troubleshooting.html">Troubleshooting</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/uninstallation.html">Uninstallation</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/migration-guide.html">Migration Guide</a>
+      
+
+    </li>
+  
+
+  
+    <li>
+      Model DSL Reference
+      <ul class="nav navmenu-nav">
+        <!-- 2nd level -->
+        <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/datatype-dsl-reference.html">Data Type DSL</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/functionblock-dsl-reference.html">Function Block DSL</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/informationmodel-dsl-reference.html">Information Model DSL</a>
+      
+
+    </li>
+  
+
+  
+    <li  >
+      
+        <a href="../../../documentation/appendix/informationmodel-dsl-reference.html">Information Mapping Model DSL</a>
+      
+
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+
+      </ul>
+    </li>
+  
+
+
+          </ul>
+      </nav>
+    </div>
+
+
+    <div id="page" class="col-md-9">
+    	<div class="inner">
+        <div id="maincontainer">
+          <section id="top" class="documentation-section">
+            <div class="row">
+					     <div class="span8 offset3">
+                 <!--base to have relative path for offline navigation -->
+
+<h2 id="searching-models-using-the-vorto-repository-web-interface">Searching Models Using the Vorto Repository Web Interface</h2>
+
+<p>This section details the following topics:</p>
+
+<p><a href="#searching-models">Searching Models</a></p>
+
+<p><a href="#details">Details</a></p>
+
+<p><a href="#model">Model</a></p>
+
+<p><a href="#discussion">Discussion</a></p>
+
+<h3 id="searching-models">Searching Models</h3>
+
+<p>You can search for an existing model in the repository and use this shared model as reference in a local model project.</p>
+
+<p><strong>Prerequisites</strong></p>
+
+<p>You have opened the Vorto Repository Web interface (refer to <a href="./login-register#opening-the-vorto-repository-web-interface">Opening the Vorto Repository Web Interface</a>).</p>
+
+<p><strong>Proceed as follows</strong></p>
+
+<ol>
+  <li>If the <strong>Search</strong> page is not displayed, click <strong>Search</strong> in the menu bar.
+ The <strong>Search</strong> page displays the model table containing all shared models.</li>
+  <li>To find a specific model, filter the model table in one or both of the following ways:<br />
+    <ul>
+      <li>Select the appropriate radio button according to the model type you want to search for.  </li>
+      <li>In the <strong>Search</strong> entry field, enter a search string to find the item you want, e.g., the function block <code>Accelerometer</code><br />
+<img src="../../../img/documentation/vorto_repository_search_web.png" alt="Searching the Repository" />  </li>
+    </ul>
+  </li>
+  <li>Click the <strong>Search</strong> button.<br />
+The model table is updated according to the filter criteria and displays a subset of all models now.</li>
+</ol>
+
+<h3 id="details">Details</h3>
+
+<h4 id="model">Model</h4>
+
+<p><strong>Prerequisites</strong></p>
+
+<p>The model table displayes the model(s) you want to display details of (refer to <a href="#searching-models">Searching Models</a>).</p>
+
+<p><strong>Proceed as follows</strong></p>
+
+<ol>
+  <li>In the <strong>Details</strong> column of the model you want to get more information on, click the <img src="../../../img/documentation/repo_details_icon.jpg" /> icon.<br />
+The information page of the model opens with the active <strong>Model</strong> tab.<br />
+<img src="../../../img/documentation/vorto_repository_model_details.png" alt="Model Details" /><br />
+Among other information on the model, the following data is essential:<br />
+    <ul>
+      <li><strong>References</strong><br />
+ Displays the function block model or data type that the selected model is referencing to.<br />
+ Click the link(s) to get more details.</li>
+      <li><strong>Used by</strong><br />
+ Displays the model(s) model(s) using the selected model.<br />
+ Click the link(s) to get more details.</li>
+      <li><strong>Other Formats</strong><br />
+ Provides links for downloading the model definitions (XML, DSL or Markdown).<br />
+ Click the appropriate link to download the model in the specific format.  </li>
+      <li><strong>Model Preview</strong><br />
+ Provides links for downloading the model definitions (XML, DSL or Markdown).<br />
+ Click the appropriate link to download the model in the specific format.  </li>
+      <li><strong>Platform Generators</strong> (for information models only)<br />
+ Provides download links for several platform generators with which you can generate code artifacts of your model (refer to <a href="./generate-code-web.html">Generating Code</a>).<br />
+<img src="../../../img/documentation/vorto_repository_information_model_generators.png" alt="Information Model Generators" />  </li>
+    </ul>
+  </li>
+  <li>For the information model type, you can optionally upload or change a suitable image which will also be displayed in the <strong>Model</strong> tab.<br />
+For this, point to the image and click <strong>Click to change image</strong>.<br />
+<img src="../../../img/documentation/vorto_repository_information_model_change_image.png" alt="Add Image" /></li>
+</ol>
+
+<h4 id="discussion">Discussion</h4>
+
+<p><strong>Prerequisites</strong></p>
+
+<p>The information tab of the model is displayed (refer to <a href="#model">Model</a>).</p>
+
+<p><strong>Proceed as follows</strong></p>
+
+<p>Click the <strong>Discussion</strong> tab.<br />
+The <strong>Discussion</strong> tab of the of the model’s information page becomes active.</p>
+
+<p><img src="../../../img/documentation/vorto_repository_model_discussion.png" alt="Model discussion" /></p>
+
+<p>In the entry field of the <strong>Discussion</strong> tab page, you can comment on the selected model.</p>
+
+<table class="table table-bordered">
+  <tbody>
+    <tr>
+      <td><i class="fa fa-info-circle info-note"></i></td>
+      <td>You must be logged in to be able to write comments (refer to <a href="./login-register.html#logging-in">Logging in</a>).</td>
+    </tr>
+  </tbody>
+</table>
+
+                </div>
+             </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Footer -->
+<footer>
+   <div class="container">
+   <div class="row">
+         <div class="col-md-4">
+           <h3 class="footer-links-header">Quick Links</h3>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+             <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+             <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+             <li><a href="http://www.eclipse.org/legal/">Legal</a></li>
+           </ul>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org">Eclipse Home</a></li>
+             <li><a href="http://marketplace.eclipse.org/">Market Place</a></li>
+             <li><a href="http://live.eclipse.org/">Eclipse Live</a></li>
+             <li><a href="http://www.planeteclipse.org/">Eclipse Planet</a></li>
+           </ul>
+           </div>
+         <div class="col-md-2">
+          <h3 class="footer-links-header"><a href="http://eclipse.org/forums/eclipse.vorto" target="_blank" >Vorto Forum</a></h3>
+         </div>
+         <div class="col-md-6" data-twttr-id="twttr-sandbox-0">
+           <h3 class="footer-links-header"><a href="https://twitter.com/VortoIoT">Vorto</a> on Twitter</h3>
+           <a class="twitter-timeline"  href="https://twitter.com/VortoIoT" data-widget-id="624061088770994176" nofooter noborders noheader transparent height="250">Tweets by @VortoIoT</a>
+           <script>
+             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            </script>
+         </div>
+       </div>
+   </div>
+</footer>
+
+<!--/.Footer-->
+
+  </body>
+
+</html>

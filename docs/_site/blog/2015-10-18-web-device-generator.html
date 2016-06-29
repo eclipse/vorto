@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+  <!--Head section for CSS/Javascript  -->
+
+<head>
+  <meta charset="utf-8">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+  <meta name="description" content="IoT Toolset that lets you describe the characteristics of real world devices, share them in a central repository and generate code for different platforms">
+  <meta name="author" content="">
+  <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+  <title>Eclipse Vorto - IoT Toolset for standardized device descriptions</title>
+
+  <!--Stylesheets-->
+  <!-- Bootstrap 3.3.1 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="../css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+  <!-- Custom CSS -->
+  <link href="../css/vorto.css" rel="stylesheet">
+
+  <!--Javascript-->
+  <!-- JQuery 2.1.1-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.1 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+               $(document).ready(function(){
+                 $("a[rel^='prettyPhoto']").prettyPhoto();
+               });
+             </script>
+</head>
+
+
+  <body>
+    <!--Header section Site navigation -->
+
+<!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="../index.html">Eclipse Vorto</a>
+				</div>
+				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
+						<ul class="nav navbar-nav pull-right">
+							
+								<li >
+									
+										<a href="../news/index.html">News</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../blog/index.html">Blog</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../documentation/overview/introduction.html">Documentation</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../downloads/index.html">Downloads</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a target="_blank" href="http://vorto.eclipse.org/repo">Model Repository</a>
+									
+								</li>
+							
+								<li >
+									
+										<a href="../overview/vorto_overview.html">Use cases</a>
+
+									
+								</li>
+							
+						</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+		</div>
+		<style>#forkongithub a{background:#8d0c0c;color:#fff;text-decoration:none;font-family:Arial, Helvetica, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:12px;line-height:3rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:50px;overflow:visible;height:200px;z-index:9999;}#forkongithub a{width:260px;position:absolute;top:40px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);}}</style><span id="forkongithub"><a href="https://github.com/eclipse/vorto">Fork me on GitHub</a></span>
+		<!-- /.container -->
+</nav>
+
+      <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+<div class="container content">
+  <div class="row">
+    <div class="span12">
+    <div class="page-header pull-left">
+        <h3>
+          <a href="../blog/index.html">Go Back</a>
+      </h3>
+    </div>
+    <div class="page-header pull-right">
+        <a href="https://github.com/eclipse/vorto/tree/development/docs/blog" target="_blank"><h4>Add a new blog post!</h4></a>
+    </div>
+       </div>
+  </div>
+
+
+    <h2>Web Application for Devices in < 2 minutes</h2>
+    <div class="postmetadata">
+      <ul>
+        
+           <li>
+            <i class="icon-user"></i>
+            <a href="https://github.com/nagavijays">Nagavijay Sivakumar</a>
+          </li>
+
+           
+        <li>
+          <i class="icon-calendar"></i> Oct 18, 2015
+        </li>
+    </ul>
+    </div>
+    <section>
+	  <!--base to have relative path for offline navigation -->
+
+<p>Sounds unrealistic? Not really, though!! Here is a quickest way to create a web interface for your physical devices
+using Vorto. Here are the list of ingredients you need before you develop it.</p>
+
+<!--more-->
+
+<h3 id="prerequisites">Prerequisites:</h3>
+<ul>
+  <li><a href="https://www.eclipse.org/">Eclipse Luna</a> or higher</li>
+  <li><a href="https://www.eclipse.org/vorto/index.html">Vorto Plugins</a></li>
+  <li><a href="https://maven.apache.org/">Maven 3.x</a>  (Not required if bundled with Eclipse)</li>
+</ul>
+
+<p>Lets say you want to build a “Weather Station” which measures humidity and temperature. Follow the simple steps to create a web interface using Vorto.</p>
+
+<div class="blogstep">
+  <div class="blogpicture">
+  <a href="https://youtu.be/HUljUdg4PpU&amp;width=1500&amp;height=1000" rel="prettyPhoto" title="Create a Function Block">
+    <img alt="Create a Function Block" class="noshadow" src="../img/blogpics/CreateFunctionBlock.gif" width="380" />
+  </a>
+  </div>
+  <div class="blogtext">
+    <strong>Step 1: Create &amp; describe attributes and behaviours of your Temperature and Humidity sensors
+    using <a href="../documentation/editors/functionblock.html#defining-a-function-block">function blocks.</a></strong>
+    <p>
+    (Hint: you can modularize and make it reusuable by using <a href="../documentation/editors/datatype.html">entites</a>)
+    </p>
+  </div>
+  <div class="clear">
+  </div>
+</div>
+
+<div class="blogstep">
+  <div class="blogtext">
+    <strong>Step 2: Represent your device "WeatherStation" by creating an
+    <a href="../documentation/editors/information-model.html#defining-an-information-model">Information model.</a></strong>
+  </div>
+  <div class="clear">
+  </div>
+</div>
+
+<div class="blogstep">
+  <div class="blogpicture">
+  <a href="https://youtu.be/SsDBns6MBf0&amp;width=1500&amp;height=1000" rel="prettyPhoto" title="Create a Information Model">
+    <img alt="Create a Information Model" class="noshadow" src="../img/blogpics/InformationModel.gif" width="380" />
+  </a>
+  </div>
+  <div class="blogtext">
+    <strong>Step 3: Refer all your function blocks (temperature &amp; humidity sensor) into your "WeatherStation" information model
+    using simple drag and drop into information model.</strong>
+  </div>
+  <div class="clear">
+  </div>
+</div>
+
+<div class="blogstep">
+  <div class="blogtext">
+    <strong>Step 4: Right click on "WeatherStation" -&gt; Generate Code -&gt; Web Device Application Generator.</strong>
+  </div>
+  <div class="clear">
+  </div>
+</div>
+
+<p>Done! Your web application for your “Weather Station” is generated. A new web application called “weatherstation-webapp” is created in your workspace. Inorder to quickly test and see your application live, Run maven “jetty:run” from your web application that you have created. To view your web application visit
+<a href="http://localhost:8080/weatherstation-webapp" target="_blank">Weather Station - Web Application</a></p>
+
+<p>Lets explore the generated web application’s structure, technology used and customization options.</p>
+
+<h3 id="user-interface-styling">User Interface Styling:</h3>
+
+<p>The webapplication user inteface is built using <a href="http://getbootstrap.com/">Twitter Bootstrap</a>  which is almost defacto standard of any web application. You are free to change your application theme or develop on your own. There are plenty of free &amp; commerical bootstrap themes available (e.g <a href="https://bootswatch.com/">Bootswatch.com</a>, <a href="http://startbootstrap.com/">startbootstrap.com</a> to name a few) which can be easily replaced by changing the stylesheet in index.html.</p>
+
+<h3 id="web-routes--modularization">Web Routes &amp; Modularization:</h3>
+<p><a href="https://angularjs.org/">Angular js</a> provides REST controllers using angular routes module, which is used for making server calls. It makes use of  html templates for modularizing the web application and provide component behaviours like tabs,navigation etc. Any angular js compatible library can be used in addition to enrich your web application.</p>
+
+<h3 id="http-services">Http Services:</h3>
+<p>All necessary REST service which is required for server calls is created using Jersey. The rest services are geneated under “service” package and associated models under “model” package, grouped by function blocks and information model. Your functional logic can be writtern in these service classes for appropriate behaviours.</p>
+
+<p>As you can see, how easy and quick it is to generate a web interface to monitor/control your devices using Vorto. Your development time is considerably reduced so that you can focus more on building your functionality.</p>
+
+<p><em>You need to use appropriate device library for your your device, inorder to communicate to this webapplication</em></p>
+
+<p>To see how web application is created, watch the video  </p>
+
+
+
+     
+          <div class="thumb1">
+             <a title="Web Application for Devices in < 2 minutes" data-rel="prettyPhoto" href="https://youtu.be/zUJK2wWXIpo&width=1500&height=1000" rel="prettyPhoto" >
+              <img src="../img/blogpics/WebDeviceGenerator.png"  class="box-img img-responsive zoom1">
+               <i class="fa fa-play-circle fa-5 play-icon"></i>
+             </a>
+          </div>
+      
+       
+
+
+</div>
+
+<!-- Pagination -->
+
+</div>
+
+    <!-- Footer -->
+<footer>
+   <div class="container">
+   <div class="row">
+         <div class="col-md-4">
+           <h3 class="footer-links-header">Quick Links</h3>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+             <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+             <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+             <li><a href="http://www.eclipse.org/legal/">Legal</a></li>
+           </ul>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org">Eclipse Home</a></li>
+             <li><a href="http://marketplace.eclipse.org/">Market Place</a></li>
+             <li><a href="http://live.eclipse.org/">Eclipse Live</a></li>
+             <li><a href="http://www.planeteclipse.org/">Eclipse Planet</a></li>
+           </ul>
+           </div>
+         <div class="col-md-2">
+          <h3 class="footer-links-header"><a href="http://eclipse.org/forums/eclipse.vorto" target="_blank" >Vorto Forum</a></h3>
+         </div>
+         <div class="col-md-6" data-twttr-id="twttr-sandbox-0">
+           <h3 class="footer-links-header"><a href="https://twitter.com/VortoIoT">Vorto</a> on Twitter</h3>
+           <a class="twitter-timeline"  href="https://twitter.com/VortoIoT" data-widget-id="624061088770994176" nofooter noborders noheader transparent height="250">Tweets by @VortoIoT</a>
+           <script>
+             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            </script>
+         </div>
+       </div>
+   </div>
+</footer>
+
+<!--/.Footer-->
+
+
+  </body>
+
+</html>

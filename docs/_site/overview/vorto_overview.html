@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+  <!--Head section for CSS/Javascript  -->
+
+<head>
+  <meta charset="utf-8">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+  <meta name="description" content="IoT Toolset that lets you describe the characteristics of real world devices, share them in a central repository and generate code for different platforms">
+  <meta name="author" content="">
+  <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+  <title>Eclipse Vorto - IoT Toolset for standardized device descriptions</title>
+
+  <!--Stylesheets-->
+  <!-- Bootstrap 3.3.1 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="../css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+  <!-- Custom CSS -->
+  <link href="../css/vorto.css" rel="stylesheet">
+
+  <!--Javascript-->
+  <!-- JQuery 2.1.1-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.1 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="../js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+               $(document).ready(function(){
+                 $("a[rel^='prettyPhoto']").prettyPhoto();
+               });
+             </script>
+</head>
+
+
+  <body>
+    <!--Header section Site navigation -->
+
+<!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="../index.html">Eclipse Vorto</a>
+				</div>
+				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
+						<ul class="nav navbar-nav pull-right">
+							
+								<li >
+									
+										<a href="../news/index.html">News</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../blog/index.html">Blog</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../documentation/overview/introduction.html">Documentation</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="../downloads/index.html">Downloads</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a target="_blank" href="http://vorto.eclipse.org/repo">Model Repository</a>
+									
+								</li>
+							
+								<li >
+									
+										<a href="../overview/vorto_overview.html">Use cases</a>
+
+									
+								</li>
+							
+						</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+		</div>
+		<style>#forkongithub a{background:#8d0c0c;color:#fff;text-decoration:none;font-family:Arial, Helvetica, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:12px;line-height:3rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:50px;overflow:visible;height:200px;z-index:9999;}#forkongithub a{width:260px;position:absolute;top:40px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);}}</style><span id="forkongithub"><a href="https://github.com/eclipse/vorto">Fork me on GitHub</a></span>
+		<!-- /.container -->
+</nav>
+
+      <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+<div class="container content">
+  <div class="row">
+    <div class="span12">
+       <div class="page-header pull-left">
+        <h3>
+          <a href="../index.html">Go Back</a>
+      </h3>
+     </div>
+    </div>
+  </div>
+
+    <h1>Vorto use cases</h1>
+      <section>
+   		 <!--base to have relative path for offline navigation -->
+
+<p>The image below describes the interaction of three stakeholders with Eclipse Vorto: The stakeholders are</p>
+
+<ul>
+  <li>The device manufacturers</li>
+  <li>The vendors of IoT platforms</li>
+  <li>Solution developers.</li>
+</ul>
+
+<p>All of them have specific use cases that can be supported by the components of Vorto.</p>
+
+<p><a href="../img/VortoEclipseOverview.png" rel="prettyPhoto" title="Vorto use cases">
+<img src="../img/VortoEclipseOverview.png" style="width:50%;height50%;margin-top:0px;" title="Click to view in high resolution" />
+</a></p>
+
+<h2 id="device-manufacturers">Device Manufacturers</h2>
+
+<p>Interoperability is one of the most important criteria in the IoT. This is solved using IoT platforms that are able to integrate devices and to provide an infrastructure for interactions. It is crucial for device vendors to enable platform vendors to integrate their devices without major effort. A device that can be integrated on various platforms can be used in various scenarios which helps to increase the sales of the specific device vendor. The Vorto IoT toolset allows to comfortably create abstract, technology agnostic descriptions of devices. These descriptions are machine readable and thus can be transformed into formats that are required for an integration into a specific platform. By providing such device descriptions a device vendor allows an easy integration of devices into platforms for which Vorto code generators exist.</p>
+
+<p><a href="https://marketplace.yatta.de/profiles/ziXJ" target="_blank"><strong>Vorto IDE for device manufacturers</strong></a></p>
+
+<h2 id="platform-vendors">Platform Vendors</h2>
+
+<p>There is a large variety of smart devices available in the market. A customer doesn’t want to be restricted to devices of specific vendors because the platform, his IoT environment is based on, doesn’t support others. This is the reason why platform vendors would like to integrate as many devices as possible on their platform. It is very easy to create a platform specific Vorto code generator which allows to transform Vorto device descriptions (so called information models) into formats that are required for an integration into a specific platform. After such a code generator is implemented it is very easy to integrate devices using Information Models that are available within the Vorto repository.</p>
+
+<p><a href="https://marketplace.yatta.de/profiles/4PTx" target="_blank"><strong>Vorto IDE for platform vendors</strong></a></p>
+
+<h2 id="solution-developers">Solution Developers</h2>
+
+<p>Solution developers that integrate devices into specific platforms often have to write a lot of code that could be generated using information about the corresponding device. The Vorto code generator infrastructure allows to do that which results in a significant reduction of development efforts.</p>
+
+<p><a href="https://marketplace.yatta.de/profiles/KezX" target="_blank"><strong>Vorto IDE for solution developers</strong></a></p>
+   
+    </section>
+</div>
+
+    <!-- Footer -->
+<footer>
+   <div class="container">
+   <div class="row">
+         <div class="col-md-4">
+           <h3 class="footer-links-header">Quick Links</h3>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+             <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+             <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+             <li><a href="http://www.eclipse.org/legal/">Legal</a></li>
+           </ul>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org">Eclipse Home</a></li>
+             <li><a href="http://marketplace.eclipse.org/">Market Place</a></li>
+             <li><a href="http://live.eclipse.org/">Eclipse Live</a></li>
+             <li><a href="http://www.planeteclipse.org/">Eclipse Planet</a></li>
+           </ul>
+           </div>
+         <div class="col-md-2">
+          <h3 class="footer-links-header"><a href="http://eclipse.org/forums/eclipse.vorto" target="_blank" >Vorto Forum</a></h3>
+         </div>
+         <div class="col-md-6" data-twttr-id="twttr-sandbox-0">
+           <h3 class="footer-links-header"><a href="https://twitter.com/VortoIoT">Vorto</a> on Twitter</h3>
+           <a class="twitter-timeline"  href="https://twitter.com/VortoIoT" data-widget-id="624061088770994176" nofooter noborders noheader transparent height="250">Tweets by @VortoIoT</a>
+           <script>
+             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            </script>
+         </div>
+       </div>
+   </div>
+</footer>
+
+<!--/.Footer-->
+
+
+  </body>
+
+</html>

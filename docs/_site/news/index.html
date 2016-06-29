@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html>
+
+  <!--Head section for CSS/Javascript  -->
+
+<head>
+  <meta charset="utf-8">
+  <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+  <meta name="description" content="IoT Toolset that lets you describe the characteristics of real world devices, share them in a central repository and generate code for different platforms">
+  <meta name="author" content="">
+  <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+  <title>Eclipse Vorto - IoT Toolset for standardized device descriptions</title>
+
+  <!--Stylesheets-->
+  <!-- Bootstrap 3.3.1 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <!-- Font Awesome Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./css/prettyPhoto.css" type="text/css" media="screen" title="prettyPhoto main stylesheet" charset="utf-8" />
+  <!-- Custom CSS -->
+  <link href="./css/vorto.css" rel="stylesheet">
+
+  <!--Javascript-->
+  <!-- JQuery 2.1.1-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <!-- Bootstrap 3.3.1 JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+  <script src="./js/jquery.prettyPhoto.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" charset="utf-8">
+               $(document).ready(function(){
+                 $("a[rel^='prettyPhoto']").prettyPhoto();
+               });
+             </script>
+</head>
+
+
+  <body>
+    <!--Header section Site navigation -->
+
+<!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+				<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="./index.html">Eclipse Vorto</a>
+				</div>
+				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
+						<ul class="nav navbar-nav pull-right">
+							
+								<li >
+									
+										<a href="./news/index.html">News</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="./blog/index.html">Blog</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="./documentation/overview/introduction.html">Documentation</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a href="./downloads/index.html">Downloads</a>
+
+									
+								</li>
+							
+								<li >
+									
+										<a target="_blank" href="http://vorto.eclipse.org/repo">Model Repository</a>
+									
+								</li>
+							
+								<li >
+									
+										<a href="./overview/vorto_overview.html">Use cases</a>
+
+									
+								</li>
+							
+						</ul>
+				</div>
+				<!-- /.navbar-collapse -->
+		</div>
+		<style>#forkongithub a{background:#8d0c0c;color:#fff;text-decoration:none;font-family:Arial, Helvetica, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:12px;line-height:3rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#c11;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:fixed;display:block;top:0;right:0;width:50px;overflow:visible;height:200px;z-index:9999;}#forkongithub a{width:260px;position:absolute;top:40px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);-ms-transform:rotate(45deg);-moz-transform:rotate(45deg);-o-transform:rotate(45deg);}}</style><span id="forkongithub"><a href="https://github.com/eclipse/vorto">Fork me on GitHub</a></span>
+		<!-- /.container -->
+</nav>
+
+      <!--base to have relative path for offline navigation -->
+
+
+
+
+
+ 
+
+<div class="container content">
+  <div class="row">
+    <div class="span12">
+    <div class="page-header">
+        <h2>
+          News
+      </h2>
+    </div>
+    </div>
+  </div>
+<div class="row">  
+<div class="col-md-9">
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <h2><a href="./news/2016-02-05-iotappworkshop.html">Vorto Hands-on Workshop</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Feb 5, 2016
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>At an <a href="http://www.meetup.com/IoT_Singapore/events/228200444/">IoT meetup event</a> in Singapore, <a href="mailto:alexander.edelmann@bosch-si.com" target="_top"> 
+Alexander Edelmann</a> and about 50 IoT developers from various companies met up for a Vorto workshop where participants were guided through to create an IoT application from scratch with the help of Vorto. </p>
+
+<p>Here are some pictures from this great event. To find out more, visit the organizers page on <a href="https://www.facebook.com/atcalliance/posts/710984922371287">Facebook</a>.</p>
+
+<p><a href="../img/news/IOTAppWorkshop/workshop1.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
+<img src="../img/news/IOTAppWorkshop/workshop1.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a>
+<a href="../img/news/IOTAppWorkshop/workshop2.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
+<img src="../img/news/IOTAppWorkshop/workshop2.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a></p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2016-01-01-iotTech.html">IOTTechspresso - A Hands-on workshop on Vorto</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Feb 4, 2016
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>When developing an Internet-of-Things solution, one can draw upon a wide variety of connected devices, interconnection protocols &amp; management systems from a range of vendors. However, there is little interoperability between these components due to the disparate industry and vendor specific implementations of the device abstraction layer or information models.</p>
+
+<p>At this IoT meetup event, <a href="http://projects.eclipse.org/user/4788" target="_blank">Alexander Edelmann</a> will provide an introduction to Vorto and lead a hands-on demonstration of how the tool can help you develop compelling IoT-enabled solutions using a broad range of components.</p>
+
+<p><a href="https://www.eventbrite.com/e/iottechpresso-workshop-on-vorto-iot-information-modelling-system-by-eclipse-foundation-tickets-20861284664" title="Registration">Click here</a> to register for the event.</p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-30-11-4M2Milestone.html">Eclipse Vorto 0.4 Milestone 2 is available now</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Dec 11, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>We can proudly announce that Eclipse Vorto 0.4 Milestone 2 is available on <a href="https://github.com/eclipse/vorto" target="_blank">Github</a>.
+<br /></p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-27-11-eclipseconEur.html">Speaker Pitch @Eclipsecon 2015</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Nov 27, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>Talks on two interesting topics were presented @Eclipsecon Europe held during November 2015.</p>
+
+<p>1.<a href="https://www.eclipsecon.org/europe2015/session/making-iot-childs-play" target="_blank"> Making IoT a child’s play</a></p>
+
+<p>2.<a href="https://www.eclipsecon.org/europe2015/bof-session/how-generate-code-using-eclipse-vorto" target="_blank"> How to generate code using Eclipse Vorto</a></p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-26-11-ptcvorto.html">PTC and Bosch IoT suite</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Nov 26, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p><a href="http://www.ptc.com/" target="_blank">PTC</a> and Bosch Software Innovations announced a technology alliance to facilitate the integration of the ThingWorx® Platform and the Bosch IoT Suite. The new <a href="http://marketplace.thingworx.com/downloads/bosch-iot-suite-m2m-connector/" target="_blank">Bosch IoT Suite M2M Connector </a>for ThingWorx allows for technical interplay between the two platforms and is now available on the<a href="http://marketplace.thingworx.com/downloads/bosch-iot-suite-m2m-connector/" target="_blank"> ThingWorx Marketplace</a>.</p>
+
+<p>The Device Management component (M2M) from the Bosch IoT Suite provides a reliable connection and control of devices, while operating a secure, flexible and transparent infrastructure for distributed devices. <b>Vorto</b>, an open source tool initiated by Bosch Software Innovations and developed by <a href="http://iot.eclipse.org/" target="_blank">Eclipse IoT</a>, enables the creation and management of information models for integration into different platforms. The ThingWorx® IoT application development platform enables rapid development of drag-and-drop business applications. A comprehensive security concept is designed to protect applications against unauthorized access.</p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-23-09-iotasia.html">IoT Show Asia 2015, Singapore</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Sep 22, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>At the <a href="http://www.iotevents.org/iot-show-asia-singapore" target="_blank">IoT Show Asia 2015</a> ,Vorto showcased a very interesting use case about IoT gaming. There were also several talks and demonstrations about Vorto, addressing the needs of fast growing IoT industries.</p>
+
+<p>Here are few captures from the event.
+<br />
+<a href="../img/news/iotasia2015/Iotasia2A.jpg" rel="prettyPhoto" title="IoT show Asia 2015">
+<img src="../img/news/iotasia2015/Iotasia2A.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a>
+<a href="../img/news/iotasia2015/Iotasia2B.jpg" rel="prettyPhoto" title="IoT show Asia 2015">
+<img src="../img/news/iotasia2015/Iotasia2B.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a></p>
+
+       
+    </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <h2><a href="./news/2015-08-08-eclipseconferenceEurope.html">Eclipse Conference 2015, Europe</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Nov 3, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>An interesting talk around the Vorto project is going to be held at the Eclipse Conference Ludwigsburg, Germany from the <strong>3rd until the 5th of November 2015</strong>.
+<br />
+In this talk we are going to take &amp; combine <a href="https://www.eclipse.org/vorto/" target="_blank">Eclipse Vorto</a> and <a href="http://www.eclipse.org/kura/" target="_blank">Eclipse Kura</a> showing how easy it can be to develop and gamify IoT. 
+<br />
+For further information about the content of the presentation, check out on <a href="https://www.eclipsecon.org/europe2015/session/making-iot-childs-play" target="_blank">Making IoT child’s play</a>.</p>
+
+       
+    </section>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+    <h2><a href="./news/2015-07-08-eclipse-04-release.html">Eclipse Vorto 0.4 Milestone 1 is available now</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Jul 8, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>We can proudly announce that Eclipse Vorto 0.4 Milestone 1 is available on <a href="https://github.com/eclipse/vorto" target="_blank">Github</a>.
+<br />
+It features the following core functionality:</p>
+
+<ul>
+  <li>A simple Information Model language to define devices with their properties and services</li>
+  <li>Example Code Generators that create platform - specific representations from information models</li>
+  <li>Information Model Repository that allows you to search and download models from a web-based interface</li>
+</ul>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-03-08-iotasia.html">IoT Asia 2015, Singapore</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Mar 8, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>At the <a href="http://www.internetofthingsasia.com/events/iot-asia-2015/event-summary-2fae431387124a1d9981c93c3f9e87dc.aspx#3" target="_blank">IoT Asia 2015</a> ,Vorto shared an exhibition booth,
+inviting various visitors, from around the world, to Vorto tech talks in order to find out more about the concepts and ideas behind it.
+It was a successful event with many interested attendees at the Vorto booth curious to understand Vorto and IoT.</p>
+
+<p>Here are few captures from the event.</p>
+
+<p><a href="../img/news/iotasia2015/Vorto_Panel.JPG" rel="prettyPhoto" title="IoT Asia 2015">
+<img src="../img/news/iotasia2015/Vorto_Panel.JPG" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a>
+<a href="../img/news/iotasia2015/Vorto_Panel2.jpg" rel="prettyPhoto" title="IoT Asia 2015">
+<img src="../img/news/iotasia2015/Vorto_Panel2.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution" />
+</a>
+<a href="../img/news/iotasia2015/Vorto_Talk.JPG" rel="prettyPhoto" title="IoT Asia 2015">
+<img src="../img/news/iotasia2015/Vorto_Talk.JPG" style="width:34%;height:34%;margin-top:0px;" title="click to view higher resolution" />
+</a></p>
+
+       
+    </section>
+  
+  
+  
+
+    <h2><a href="./news/2015-02-04-eclipseconference.html">Eclipse Conference 2015, San Francisco</a></h2>
+    <div class="postmetadata">
+      <ul>
+        <li>
+          <i class="icon-calendar"></i> Feb 4, 2015
+        </li>
+    </ul>
+    </div>
+    
+    <section>
+     
+    <!--base to have relative path for offline navigation -->
+
+<p>Two interesting talks around the Vorto project are going to be held at the Eclipse Conference North America from the <strong>9th until the 12th of March 2015</strong>. The first talk is about the Vorto project itself and the idea behind it. The second talk covers practical insights about the Eclipse Smarthome Platform - among others, how Vorto information models can be used to integrate new devices into the Smart Home platform. For further information about the content of the presentation, check out the link below.</p>
+
+<p><a href="https://www.eclipsecon.org/na2015/session/vorto-project-advanced-device-integration" target="_blank">The Vorto Project - Advanced Device Integration</a></p>
+
+<p>Speaker Pitch Video about Vorto: <a href="https://www.youtube.com/watch?v=JgpBzZs_A6k" target="_blank">Watch Video</a></p>
+
+<p><a href="https://www.eclipsecon.org/na2015/session/mastering-diversity-smart-homes-practical-approach" target="_blank">Mastering the Diversity in Smart Homes - A Practical Approach</a></p>
+
+       
+    </section>
+  
+  
+</div>
+  <div class="col-md-3 pull-right">
+            <div class="well"> 
+              <center><h3>News Overview</h3></center>
+                <ul class="nav nav-stacked" id="sidebar">
+
+                  
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+                  <li><a href="./news/2016-02-05-iotappworkshop.html">Vorto Hands-on Workshop</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2016-02-05-iotappworkshop.html"><em>Feb 5, 2016</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2016-01-01-iotTech.html">IOTTechspresso - A Hands-on workshop on Vorto</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2016-01-01-iotTech.html"><em>Feb 4, 2016</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-30-11-4M2Milestone.html">Eclipse Vorto 0.4 Milestone 2 is available now</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-30-11-4M2Milestone.html"><em>Dec 11, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-27-11-eclipseconEur.html">Speaker Pitch @Eclipsecon 2015</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-27-11-eclipseconEur.html"><em>Nov 27, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-26-11-ptcvorto.html">PTC and Bosch IoT suite</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-26-11-ptcvorto.html"><em>Nov 26, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-23-09-iotasia.html">IoT Show Asia 2015, Singapore</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-23-09-iotasia.html"><em>Sep 22, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+                  <li><a href="./news/2015-08-08-eclipseconferenceEurope.html">Eclipse Conference 2015, Europe</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-08-08-eclipseconferenceEurope.html"><em>Nov 3, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+         
+                  
+         
+                  
+         
+                  
+                  <li><a href="./news/2015-07-08-eclipse-04-release.html">Eclipse Vorto 0.4 Milestone 1 is available now</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-07-08-eclipse-04-release.html"><em>Jul 8, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-03-08-iotasia.html">IoT Asia 2015, Singapore</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-03-08-iotasia.html"><em>Mar 8, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                  
+                  <li><a href="./news/2015-02-04-eclipseconference.html">Eclipse Conference 2015, San Francisco</a></li>
+                  <ul>
+                      
+                    <li type="square"> <a href="./news/2015-02-04-eclipseconference.html"><em>Feb 4, 2015</em></a></li>
+    
+
+                  </ul>
+                           
+         
+                </ul>
+          </div>
+     
+           
+
+          </div> 
+        </div>
+
+</div>
+
+    <!-- Footer -->
+<footer>
+   <div class="container">
+   <div class="row">
+         <div class="col-md-4">
+           <h3 class="footer-links-header">Quick Links</h3>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org/legal/privacy.php">Privacy Policy</a></li>
+             <li><a href="http://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
+             <li><a href="http://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
+             <li><a href="http://www.eclipse.org/legal/">Legal</a></li>
+           </ul>
+           <ul class="footer-links clearfix">
+             <li><a href="http://www.eclipse.org">Eclipse Home</a></li>
+             <li><a href="http://marketplace.eclipse.org/">Market Place</a></li>
+             <li><a href="http://live.eclipse.org/">Eclipse Live</a></li>
+             <li><a href="http://www.planeteclipse.org/">Eclipse Planet</a></li>
+           </ul>
+           </div>
+         <div class="col-md-2">
+          <h3 class="footer-links-header"><a href="http://eclipse.org/forums/eclipse.vorto" target="_blank" >Vorto Forum</a></h3>
+         </div>
+         <div class="col-md-6" data-twttr-id="twttr-sandbox-0">
+           <h3 class="footer-links-header"><a href="https://twitter.com/VortoIoT">Vorto</a> on Twitter</h3>
+           <a class="twitter-timeline"  href="https://twitter.com/VortoIoT" data-widget-id="624061088770994176" nofooter noborders noheader transparent height="250">Tweets by @VortoIoT</a>
+           <script>
+             !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+            </script>
+         </div>
+       </div>
+   </div>
+</footer>
+
+<!--/.Footer-->
+
+
+  </body>
+
+</html>
