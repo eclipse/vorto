@@ -14,11 +14,7 @@ This section details the following topics:
 
 This section lists the steps required to install the Vorto Toolset.
 
-<<<<<<< HEAD:website/documentation/installation/installation.md
-The Vorto plug-ins are available on the Eclipse update site server. The URL to the server is [http://download.eclipse.org/vorto/update/milestones](http://download.eclipse.org/vorto/update/milestones "http://download.eclipse.org/vorto/update/milestones"). You must add this repository to your IDE or, alternatively, import the Vorto plug-in zip archive to get the Vorto plug-ins.
-=======
 Install the Eclipse Vorto Toolset in one of the following three ways:
->>>>>>> Closes #258:docs/documentation/installation/installation.md
 
 * [Installing from the Eclipse Vorto download page](#installing-from-the-eclipse-vorto-download-page)  
 * [Installing from the Eclipse Marketplace](#installing-from-the-eclipse-marketplace)  
@@ -76,11 +72,7 @@ The Vorto Toolset is available on the Eclipse Vorto update site server. The URL 
 4. Add the *Vorto Toolset update site* URL:  
    a. Click the **Add...** button beside the **Work with** field. The **Add Repository** dialog opens.  
    b. Enter a Name (optionally, e.g., *Vorto*).  
-<<<<<<< HEAD:website/documentation/installation/installation.md
-   c. Enter the *Vorto plug-ins repository* URL [http://download.eclipse.org/vorto/update/milestones](http://download.eclipse.org/vorto/update/milestones "http://download.eclipse.org/vorto/update/milestones") into the **Location** field.  
-=======
    c. Enter the *Vorto Toolset update site* URL `http://download.eclipse.org/vorto/update/milestones` into the **Location** field.  
->>>>>>> Closes #258:docs/documentation/installation/installation.md
    d. Click **OK**.
 
 In the **Install** dialog, the available software list is updated and now contains the software found in the added repository and in the installed archive, respectively.
