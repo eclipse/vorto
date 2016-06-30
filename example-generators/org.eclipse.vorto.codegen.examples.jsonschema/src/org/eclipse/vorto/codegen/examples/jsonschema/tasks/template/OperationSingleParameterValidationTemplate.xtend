@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,24 +16,29 @@ package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.RefParam
 
-class OperationSingleParameterValidation implements ITemplate<Param>{
+class OperationSingleParameterValidationTemplate implements ITemplate<Param>{
 		
 	var EntityValidationTemplate entityValidationTemplate;
 	var EnumValidationTemplate enumValidationTemplate;
 	var PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate;
+	var ConstraintTemplate constraintTemplate
 	
 	new(EntityValidationTemplate entityValidationTemplate,
 		EnumValidationTemplate enumValidationTemplate,
-		PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate
+		PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate,
+		ConstraintTemplate constraintTemplate
+		
 	) {
 		this.entityValidationTemplate = entityValidationTemplate;
 		this.enumValidationTemplate = enumValidationTemplate;
+		this.constraintTemplate = constraintTemplate
 		this.primitiveTypeValidationTemplate = primitiveTypeValidationTemplate;
 	}
 	
@@ -45,12 +50,16 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 					"«param.name»": {
 						"type": "array",
 						"items" : {
+							"description" : "«param.description»",
 							«primitiveTypeValidationTemplate.getContent(primitiveParam.type,invocationContext)»
+							«getConstraintsContent(param.constraintRule, invocationContext)»
 						}
 					}
 				«ELSE»
 					"«param.name»": {
+						"description" : "«param.description»",
 						«primitiveTypeValidationTemplate.getContent(primitiveParam.type,invocationContext)»
+						«getConstraintsContent(param.constraintRule, invocationContext)»
 					}
 				«ENDIF»
 			«ELSEIF param instanceof RefParam»
@@ -91,4 +100,18 @@ class OperationSingleParameterValidation implements ITemplate<Param>{
 			«ENDIF»
 		'''
 	}
+	
+	private def getConstraintsContent(ConstraintRule constraintRule,InvocationContext invocationContext){
+		return 
+		'''
+		«IF constraintRule != null»
+			«FOR constraint : constraintRule.constraints BEFORE ',\n' SEPARATOR ', '»
+				«constraintTemplate.getContent(constraint, invocationContext)»
+			«ENDFOR»
+		«ENDIF»
+		'''
+
+	}
+	
+	
 }
