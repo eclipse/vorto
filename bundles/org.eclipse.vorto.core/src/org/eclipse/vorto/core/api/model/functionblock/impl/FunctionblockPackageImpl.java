@@ -401,6 +401,15 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getOperation_Breakable() {
+		return (EAttribute)operationEClass.getEStructuralFeatures().get(4);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getReturnType() {
 		return returnTypeEClass;
 	}
@@ -622,6 +631,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		createEReference(operationEClass, OPERATION__PARAMS);
 		createEReference(operationEClass, OPERATION__RETURN_TYPE);
 		createEAttribute(operationEClass, OPERATION__DESCRIPTION);
+		createEAttribute(operationEClass, OPERATION__BREAKABLE);
 
 		returnTypeEClass = createEClass(RETURN_TYPE);
 		createEAttribute(returnTypeEClass, RETURN_TYPE__MULTIPLICITY);
@@ -716,6 +726,7 @@ public class FunctionblockPackageImpl extends EPackageImpl implements Functionbl
 		initEReference(getOperation_Params(), this.getParam(), null, "params", null, 0, -1, Operation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEReference(getOperation_ReturnType(), this.getReturnType(), null, "returnType", null, 0, 1, Operation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 		initEAttribute(getOperation_Description(), ecorePackage.getEString(), "description", null, 0, 1, Operation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
+		initEAttribute(getOperation_Breakable(), ecorePackage.getEBoolean(), "breakable", null, 0, 1, Operation.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
 
 		initEClass(returnTypeEClass, ReturnType.class, "ReturnType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS); //$NON-NLS-1$
 		initEAttribute(getReturnType_Multiplicity(), ecorePackage.getEBoolean(), "multiplicity", null, 0, 1, ReturnType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED); //$NON-NLS-1$
