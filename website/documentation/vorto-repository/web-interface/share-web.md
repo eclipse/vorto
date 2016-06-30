@@ -8,7 +8,7 @@ title: Sharing Models Using the Web Interface
 
 You can share models (information models, function block models or data type models) by uploading them to the Vorto Repository within the Vorto Repository Web interface.
 
-For sharing models using the Eclipse Vorto plug-in, refer to [Sharing Models Using the Eclipse Vorto Plug-in](../eclipse-vorto-integration/share-eclipse.html).  
+For sharing models using the Eclipse Vorto Toolset, refer to [Sharing Models Using the Eclipse Vorto Toolset](../eclipse-vorto-integration/share-eclipse.html).  
 For sharing models using the Vorto CLI tool, refer to [Vorto CLI Tool]({{base}}/documentation/cli-tool/cli-tool.html).
 
 **Prerequisites**
