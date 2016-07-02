@@ -115,9 +115,6 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 		if (isCamelCasedName(name)) {
 			error(DatatypeSystemMessage.ERROR_ENTITYNAME_INVALID_CAMELCASE, entity, ModelPackage.Literals.MODEL__NAME)
 		}
-		if (name.toLowerCase.endsWith('reply')) {
-			error(DatatypeSystemMessage.ERROR_ENTITYNAME_SUFFIX_REPLY, entity, ModelPackage.Literals.MODEL__NAME)
-		}
 	}
 
 	def boolean isCamelCasedName(String name) {
@@ -134,14 +131,4 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 			}
 		}
 	}
-	
-	@Check
-	def checkPropertyName(Property property) {
-		var name = property.name
-		if (name.endsWith('TS')) {
-			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)
-		}
-	}
-	
-	
 }
