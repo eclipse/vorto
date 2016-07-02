@@ -59,5 +59,10 @@ public class DatatypeWizardPage extends ModelBaseWizardPage {
 	public ModelId getModelId() {
 		return getModelId(ModelType.Datatype);
 	}
+	
+	@Override
+	protected String getDefaultNamespace() {
+		return "com.mycompany.type";
+	}
 
 }

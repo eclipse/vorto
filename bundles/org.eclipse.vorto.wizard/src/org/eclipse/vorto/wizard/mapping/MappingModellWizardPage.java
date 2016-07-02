@@ -82,6 +82,7 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 		return DEFAULT_MAPPINGMODEL_NAME;
 	}
 
+	@Override
 	protected String getDefaultNamespace() {
 		return "com.mycompany.mapping";
 	}
