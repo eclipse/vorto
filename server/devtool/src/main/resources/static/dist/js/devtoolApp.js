@@ -8,11 +8,17 @@ define("devtoolApp",["angular","angular-route","smart-table","controllers"],func
 	
 	app.config([ '$routeProvider', '$httpProvider',
 		function($routeProvider, $httpProvider) {
-			$routeProvider.when('/editor', {
-				templateUrl : "templates/editor-template.html",
+			$routeProvider
+			.when('/infomodel-editor', {
+				templateUrl : "templates/infomodel-editor-template.html",
 				controller : 'InfomodelEditorController'
-			}).otherwise({
-				redirectTo : '/editor'
+			})
+			.when('/functionblock-editor', {
+				templateUrl : "templates/functionblock-editor-template.html",
+				controller : 'FunctionblockEditorController'
+			})
+			.otherwise({
+				redirectTo : '/infomodel-editor'
 			});
 			
 } ]).run(function($location, $http, $rootScope) {

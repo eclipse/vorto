@@ -37,11 +37,11 @@ public class InformationModelEditorReferenceLinker {
 		if (!modelType.equals(ModelType.Functionblock)) {
 			throw new RuntimeException("No FunctionBlock [" + functionBlockModelId.toString() + "]");
 		}
-		
+
 		linkReferenceToModel(infoModelResourceId, functionBlockModelId, resourceSet, referencedResourceSet);
 
 		Resource targetResource = resourceSet.getResource(URI.createURI(infoModelResourceId), true);
-		InformationModel informationModel = (InformationModel) targetResource.getContents().get(0);		
+		InformationModel informationModel = (InformationModel) targetResource.getContents().get(0);
 		Resource referencedResource = resourceSet.getResource(getURI(functionBlockModelId), true);
 		EObject eObject = referencedResource.getContents().get(0);
 		FunctionblockModel funtionblockModel = (FunctionblockModel) eObject;
@@ -50,20 +50,33 @@ public class InformationModelEditorReferenceLinker {
 		referencedResource.getContents().add(eObject);
 	}
 
+	public void linkDataTypeToFunctionBlock(String functionBlockResourceId, ModelId datatypeModelId,
+			ResourceSet resourceSet, Set<String> referencedResourceSet) {
+		if (!containsResource(functionBlockResourceId, resourceSet)) {
+			throw new RuntimeException("No resource with resourceId : " + functionBlockResourceId);
+		}
+		ModelType modelType = informationModelEditorRestClient.getModelType(datatypeModelId);
+		if (!modelType.equals(ModelType.Datatype)) {
+			throw new RuntimeException("No DataType [" + datatypeModelId.toString() + "]");
+		}
+		
+		linkReferenceToModel(functionBlockResourceId, datatypeModelId, resourceSet, referencedResourceSet);
+	}
+
 	private void linkReferenceToModel(String modelResourceId, ModelId referenceModelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet) {
 
 		ModelType referenceModelType = informationModelEditorRestClient.getModelType(referenceModelId);
 		String fileName = getFileName(referenceModelId);
 		URI uri = getURI(referenceModelId);
-		
+
 		Resource targetResource = resourceSet.getResource(URI.createURI(modelResourceId), true);
 		Model model = (Model) targetResource.getContents().get(0);
 
 		ModelReference modelReference = new org.eclipse.vorto.core.api.model.model.ModelId(referenceModelType,
 				referenceModelId.getName(), referenceModelId.getNamespace(), referenceModelId.getVersion())
 						.asModelReference();
-		
+
 		if (!containsModelReference(model, modelReference)) {
 			Resource resource = null;
 			EObject eObject = null;
@@ -74,6 +87,7 @@ public class InformationModelEditorReferenceLinker {
 					resource.load(new ByteArrayInputStream(fileContents.getBytes((StandardCharsets.UTF_8))),
 							resourceSet.getLoadOptions());
 					referencedResourceSet.add(fileName);
+					System.out.println(resourceSet);
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
@@ -135,8 +149,8 @@ public class InformationModelEditorReferenceLinker {
 		return modelId.getNamespace().replace(".", "_") + "_" + modelId.getName() + "_"
 				+ modelId.getVersion().replace(".", "_") + modelType.getExtension();
 	}
-	
-	private URI getURI(ModelId modelId){
+
+	private URI getURI(ModelId modelId) {
 		URI uri = URI.createURI("fake:/" + getFileName(modelId));
 		return uri;
 	}

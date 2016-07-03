@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.server.devtool.service.IInformationModelEditorService;
+import org.eclipse.vorto.server.devtool.service.IFunctionBlockEditorService;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,19 +29,18 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/editor/infomodel")
-public class InformationModelEditorController {
+@RequestMapping(value = "/editor/functionblock")
+public class FunctionBlockEditorController {
 
 	@Autowired
 	Injector injector;
 
 	@Autowired
-	IInformationModelEditorService iInformationModelEditorService;
+	IFunctionBlockEditorService iFunctionBlockEditorService;
 
-	@ApiOperation(value = "Adds the function block to the resource set")
-	@RequestMapping(value = "/link/functionblock/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void linkFunctionBlock(
-			@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
+	@ApiOperation(value = "Adds the data type to the resource set")
+	@RequestMapping(value = "/link/datatype/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
+	public void linkFunctionBlock(@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
 			@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
 			@ApiParam(value = "Version", required = true) final @PathVariable String version,
@@ -54,16 +53,14 @@ public class InformationModelEditorController {
 		Objects.requireNonNull(version, "version must not be null");
 
 		ModelId modelId = new ModelId(name, namespace, version);
-
+		
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
-		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
-				.getInstance(IWebResourceSetProvider.class);
+		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector.getInstance(IWebResourceSetProvider.class);
 		ResourceSet resourceSet = webEditorResourceSetProvider.getResourceSetFromSession(httpServiceContext);
 		HashSet<String> referencedResourceSet = (HashSet<String>) webEditorResourceSetProvider
 				.getReferencedResourcesFromSession(httpServiceContext);
-
-		String content = iInformationModelEditorService.linkFunctionBlockToInformationModel(resourceId, modelId,
-				resourceSet, referencedResourceSet);
+		
+		String content = iFunctionBlockEditorService.linkDatatypeToFunctionBlock(resourceId, modelId, resourceSet, referencedResourceSet);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();
@@ -71,14 +68,13 @@ public class InformationModelEditorController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-
+	
 	@ApiOperation(value = "")
 	@RequestMapping(value = "/search={expression:.*}", method = RequestMethod.GET)
 	public List<ModelResource> searchByExpression(
 			@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 
 		Objects.requireNonNull(expression, "namespace must not be null");
-		return iInformationModelEditorService.searchFunctionBlockByExpression(expression);
-
-	}
+		return iFunctionBlockEditorService.searchDataTypeByExpression(expression);
+	}	
 }
