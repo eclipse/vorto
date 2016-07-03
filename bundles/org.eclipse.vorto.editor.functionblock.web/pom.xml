@@ -80,6 +80,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
 			<version>${project.version}</version>
 		</dependency>
