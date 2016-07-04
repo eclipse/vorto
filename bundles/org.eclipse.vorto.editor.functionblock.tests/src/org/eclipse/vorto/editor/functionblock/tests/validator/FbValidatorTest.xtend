@@ -63,7 +63,7 @@ class FbValidatorTest extends AbstractXtextTests {
 		entity.setName("AbcReply");
 		
 		tester.validator().checkEntityName(entity);
-		tester.diagnose().assertErrorContains(DatatypeSystemMessage.ERROR_ENTITYNAME_SUFFIX_REPLY);
+		tester.diagnose().assertOK();
 	}
 	
 	@Test
@@ -72,7 +72,7 @@ class FbValidatorTest extends AbstractXtextTests {
 		entity.setName("Reply");
 		
 		tester.validator().checkEntityName(entity);
-		tester.diagnose().assertErrorContains(DatatypeSystemMessage.ERROR_ENTITYNAME_SUFFIX_REPLY);
+		tester.diagnose().assertOK();
 	}
 	
 	@Test
