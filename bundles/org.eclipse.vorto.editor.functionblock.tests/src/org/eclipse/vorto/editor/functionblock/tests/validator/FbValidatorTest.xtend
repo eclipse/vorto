@@ -84,25 +84,7 @@ class FbValidatorTest extends AbstractXtextTests {
 		tester.validator().checkFunctionBlockName( fbmodel);
 		tester.diagnose().assertErrorContains(SystemMessage.ERROR_FBNAME_INVALID);
 	}
-	
-	@Test
-	def test_Property_Name_SuffixTS(){
-		var property = getDTFactoryInstance().createProperty();
-		property.name = "sodaTS"
 		
-		tester.validator().checkPropertyName(property)
-		tester.diagnose().assertErrorContains(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS);
-	}
-	
-	@Test
-	def test_Property_Name_Suffixts(){
-		var property = getDTFactoryInstance().createProperty();
-		property.name = "products"
-		
-		tester.validator().checkPropertyName(property)
-		tester.diagnose().assertOK()
-	}
-	
 	@Test
 	def test_FuncBlock_Version_Valid(){
 		var fb = getFBFactoryInstance().createFunctionblockModel
