@@ -236,40 +236,6 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 		}
 	}
 	
-	/* 
-	@Check
-	def checkCircularRefInReturnType(ReturnObjectType returnType) {
-		if (returnType.returnType != null) {
-			try {
-				val parent = ValidatorUtils.getParentOfType(returnType, Model) as Model;
-				if (parent != null) {
-					if (ValidatorUtils.hasCircularReference(parent, returnType.returnType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
-						error("Return type has circular reference", returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
-					}	
-				}	
-			} catch(Exception e) {
-				e.printStackTrace	
-			}
-		}
-	}
-	
-	@Check
-	def checkCircularRefInReferenceParameter(RefParam refParam) {
-		if (refParam.type != null) {
-			try {
-				val parent = ValidatorUtils.getParentOfType(refParam, Model) as Model;
-				if (parent != null) {
-					if (ValidatorUtils.hasCircularReference(parent, refParam.type, FbValidatorUtils.modelToChildrenSupplierFunction)) {
-						error("Parameter reference type has circular reference", refParam, FunctionblockPackage.Literals.REF_PARAM__TYPE);
-					}	
-				}	
-			} catch(Exception e) {
-				e.printStackTrace	
-			}			
-		}
-	}
-	*/
-	
 	def setHelper(TypeHelper helper){
 		this.helper = helper
 	}

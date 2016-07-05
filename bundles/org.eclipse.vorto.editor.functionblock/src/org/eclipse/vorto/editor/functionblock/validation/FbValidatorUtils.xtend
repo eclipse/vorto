@@ -29,39 +29,6 @@ class FbValidatorUtils {
 				children.add(parent.superType);	
 			}
 			
-			/* 
-			if (parent.functionblock != null) {
-				if (parent.functionblock.configuration != null) {
-					children.addAll(getReferenceModels(parent.functionblock.configuration.properties));
-				}
-				
-				if (parent.functionblock.status != null) {
-					children.addAll(getReferenceModels(parent.functionblock.status.properties));
-				}
-				
-				if (parent.functionblock.fault != null) {
-					children.addAll(getReferenceModels(parent.functionblock.fault.properties));
-				}
-				
-				for(event : parent.functionblock.events) {
-					children.addAll(getReferenceModels(event.properties));
-				}
-				
-				for(operation : parent.functionblock.operations) {
-					for(param : operation.params) {
-						if (param instanceof RefParam) {
-							val refParam = param as RefParam;
-							children.add(refParam.type);
-						}	
-					}
-					
-					if (operation.returnType instanceof ReturnObjectType) {
-						val returnType = operation.returnType as ReturnObjectType;
-						children.add(returnType.returnType);
-					}
-				}
-			}
-			*/
 			return children;
 		}		
 	}

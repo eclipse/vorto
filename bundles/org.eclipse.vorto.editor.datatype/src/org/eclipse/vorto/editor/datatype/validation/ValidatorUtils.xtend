@@ -60,7 +60,6 @@ public class ValidatorUtils {
 	}
 	
 	public static interface ModelTypeBasedChildrenSupplier extends Function<Class<?>, Function<Model, Collection<Model>>> {}
-	
 	public static val entityTypeToChildrenSupplierFunction = newModelTypeChildrenSupplier(newEntityToFunctionMap());
 	
 	private static def newEntityToFunctionMap() {
