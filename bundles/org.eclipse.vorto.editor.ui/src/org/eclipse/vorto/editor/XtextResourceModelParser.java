@@ -67,12 +67,13 @@ public class XtextResourceModelParser implements IModelParser {
 	@SuppressWarnings("unchecked")
 	private <M> ParseModelResult<M> parseModel(URI uri, Class<M> modelClass) {
 		ResourceSet rs = new XtextResourceSet();
-		if (!rs.getResource(uri, true).getContents().isEmpty()) {
-			Resource resource = rs.getResource(uri, true);
+		Resource resource = rs.getResource(uri, true);
+		if (!resource.getContents().isEmpty()) {
 			return ParseModelResult.newResult(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics), 
 					(M) resource.getContents().get(0));
 		} else {
-			return null;
+			return ParseModelResult.newResult(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics), 
+					null);
 		}
 	}
 

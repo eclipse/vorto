@@ -15,6 +15,7 @@
 package org.eclipse.vorto.core.ui.model;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -31,7 +32,7 @@ public class DatatypeModelElement extends AbstractModelElement {
 	
 	private Type model;
 	
-	private Collection<Resource.Diagnostic> diagnostics;
+	private Collection<Resource.Diagnostic> diagnostics = Collections.emptyList();
 	
 	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Datatype };
 
@@ -39,7 +40,6 @@ public class DatatypeModelElement extends AbstractModelElement {
 		super(modelProject);
 		this.modelFile = modelFile;
 		ParseModelResult<Type> parseResult = modelParser.parseModelWithError(modelFile, Type.class);
-		//this.model = modelParser.parseModel(modelFile, Type.class);
 		this.model = parseResult.getModel();
 		this.diagnostics = parseResult.getErrors();
 	}
