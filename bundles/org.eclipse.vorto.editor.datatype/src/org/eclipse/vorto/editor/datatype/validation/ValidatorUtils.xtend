@@ -59,10 +59,6 @@ public class ValidatorUtils {
 		return false;
 	}
 	
-	private static def toStr(Model e) {
-		return e.namespace + "." + e.name + ":" + e.version;
-	}
-	
 	public static interface ModelTypeBasedChildrenSupplier extends Function<Class<?>, Function<Model, Collection<Model>>> {}
 	
 	public static val entityTypeToChildrenSupplierFunction = newModelTypeChildrenSupplier(newEntityToFunctionMap());

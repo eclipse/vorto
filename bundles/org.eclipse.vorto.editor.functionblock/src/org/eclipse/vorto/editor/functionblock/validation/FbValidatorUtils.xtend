@@ -6,8 +6,6 @@ import java.util.Collection
 import java.util.HashMap
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
-import org.eclipse.vorto.core.api.model.functionblock.RefParam
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 
