@@ -35,10 +35,11 @@ import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Status
 import org.eclipse.vorto.core.api.model.model.ModelPackage
-import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
-import org.eclipse.xtext.validation.Check
-import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
 import org.eclipse.vorto.editor.datatype.validation.ConstraintValidatorFactory
+import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
+import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
+import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
+import org.eclipse.xtext.validation.Check
 
 /**
  * Custom validation rules. 
@@ -221,6 +222,53 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	def checkPropsIn(Entity e) {
 		checkDuplicatedProperty(e.properties)
 	}
+	
+	@Check
+	def checkCircularRefInSuperType(FunctionblockModel functionblock) {
+		if (functionblock.superType != null) {
+			try {
+				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
+					error("Super type has circular reference", functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
+				}	
+			} catch(Exception e) {
+				e.printStackTrace
+			}
+		}
+	}
+	
+	/* 
+	@Check
+	def checkCircularRefInReturnType(ReturnObjectType returnType) {
+		if (returnType.returnType != null) {
+			try {
+				val parent = ValidatorUtils.getParentOfType(returnType, Model) as Model;
+				if (parent != null) {
+					if (ValidatorUtils.hasCircularReference(parent, returnType.returnType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
+						error("Return type has circular reference", returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
+					}	
+				}	
+			} catch(Exception e) {
+				e.printStackTrace	
+			}
+		}
+	}
+	
+	@Check
+	def checkCircularRefInReferenceParameter(RefParam refParam) {
+		if (refParam.type != null) {
+			try {
+				val parent = ValidatorUtils.getParentOfType(refParam, Model) as Model;
+				if (parent != null) {
+					if (ValidatorUtils.hasCircularReference(parent, refParam.type, FbValidatorUtils.modelToChildrenSupplierFunction)) {
+						error("Parameter reference type has circular reference", refParam, FunctionblockPackage.Literals.REF_PARAM__TYPE);
+					}	
+				}	
+			} catch(Exception e) {
+				e.printStackTrace	
+			}			
+		}
+	}
+	*/
 	
 	def setHelper(TypeHelper helper){
 		this.helper = helper
