@@ -64,30 +64,8 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Functionblock) {
-						menuMgr.add(new ShareModelAction() {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
-						menuMgr.add(new DeleteModelAction(localModelWorkspace) {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
+						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
+						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
 						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
 							@Override
 							public void doAction() {

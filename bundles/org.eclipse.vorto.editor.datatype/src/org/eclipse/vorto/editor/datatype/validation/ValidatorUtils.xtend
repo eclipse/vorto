@@ -18,6 +18,7 @@ import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils.ModelTypeBasedChildrenSupplier
 
 public class ValidatorUtils {
+	
 	public static def EObject getParentOfType(EObject obj, Class<?> type) {
 		if (obj == null) {
 			return null;
@@ -42,8 +43,6 @@ public class ValidatorUtils {
 					return true;
 				}	
 			}	
-		} else {
-			println("a children of unknown type was passed.")	
 		}
 		
 		return false;

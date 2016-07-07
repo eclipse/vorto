@@ -15,19 +15,26 @@
 package org.eclipse.vorto.editor;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
 import org.eclipse.vorto.core.ui.parser.ParseModelResult;
 import org.eclipse.xtext.linking.impl.XtextLinkingDiagnostic;
 import org.eclipse.xtext.resource.XtextResourceSet;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 
 /**
  * 
@@ -69,13 +76,50 @@ public class XtextResourceModelParser implements IModelParser {
 		ResourceSet rs = new XtextResourceSet();
 		Resource resource = rs.getResource(uri, true);
 		if (!resource.getContents().isEmpty()) {
-			return ParseModelResult.newResult(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics), 
-					(M) resource.getContents().get(0));
+			Collection<Resource.Diagnostic> errorDiagnostics = Lists.newArrayList();
+			EObject eModel = resource.getContents().get(0);
+			// linking errors
+			errorDiagnostics.addAll(getLinkingErrors(eModel));
+			// syntax errors
+			errorDiagnostics.addAll(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics));
+			
+			return ParseModelResult.newResult(errorDiagnostics, (M) eModel);
 		} else {
 			return ParseModelResult.newResult(Collections2.filter(resource.getErrors(), notXtextLinkingDiagnostics), 
 					null);
 		}
 	}
+	
+	private Collection<Resource.Diagnostic> getLinkingErrors(EObject model) {
+		Diagnostic diagnostic = Diagnostician.INSTANCE.validate(model);
+		switch (diagnostic.getSeverity()) {
+		  case Diagnostic.ERROR:
+			  return Collections2.transform(diagnostic.getChildren(), emfDiagnosticToResourceDiagnostic);
+		}
+		return Collections.emptyList();
+	}
+	
+	private static Function<Diagnostic, Resource.Diagnostic> emfDiagnosticToResourceDiagnostic = new Function<Diagnostic, Resource.Diagnostic>() {
+		public Resource.Diagnostic apply(Diagnostic input) {
+			return new Resource.Diagnostic() {
+				public String getMessage() {
+					return input.getMessage();
+				}
+				
+				public String getLocation() {
+					return input.getSource();
+				}
+				
+				public int getLine() {
+					return 0;
+				}
+				
+				public int getColumn() {
+					return 0;
+				}
+			};
+		}
+	};
 
 	@Override
 	public <M extends Model> M parseModel(File modelFile, Class<M> modelClass) {
