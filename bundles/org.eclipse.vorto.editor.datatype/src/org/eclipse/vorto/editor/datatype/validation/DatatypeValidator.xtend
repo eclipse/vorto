@@ -46,7 +46,7 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 				val parent = ValidatorUtils.getParentOfType(ref, Model) as Model;
 				if (parent != null) {
 					if (ValidatorUtils.hasCircularReference(parent as Model, ref.type, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
-						error("Object property type has circular reference", ref, DatatypePackage.Literals.OBJECT_PROPERTY_TYPE__TYPE);
+						error(DatatypeSystemMessage.ERROR_OBJ_PROPERTY_CIRCULAR_REF, ref, DatatypePackage.Literals.OBJECT_PROPERTY_TYPE__TYPE);
 					}
 				}	
 			} catch(Exception e) {
@@ -60,7 +60,7 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 		if (entity.superType != null) {
 			try {
 				if (ValidatorUtils.hasCircularReference(entity, entity.superType, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
-					error("Super type has circular reference", entity, DatatypePackage.Literals.ENTITY__SUPER_TYPE);
+					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, entity, DatatypePackage.Literals.ENTITY__SUPER_TYPE);
 				}	
 			} catch(Exception e) {
 				e.printStackTrace

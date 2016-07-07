@@ -100,7 +100,7 @@ public class XtextResourceModelParser implements IModelParser {
 	}
 	
 	private static Function<Diagnostic, Resource.Diagnostic> emfDiagnosticToResourceDiagnostic = new Function<Diagnostic, Resource.Diagnostic>() {
-		public Resource.Diagnostic apply(Diagnostic input) {
+		public Resource.Diagnostic apply(final Diagnostic input) {
 			return new Resource.Diagnostic() {
 				public String getMessage() {
 					return input.getMessage();

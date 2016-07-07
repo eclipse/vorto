@@ -228,7 +228,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 		if (functionblock.superType != null) {
 			try {
 				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
-					error("Super type has circular reference", functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
+					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
 				}	
 			} catch(Exception e) {
 				e.printStackTrace
