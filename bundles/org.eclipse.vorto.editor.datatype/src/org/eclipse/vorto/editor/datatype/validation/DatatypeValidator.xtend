@@ -148,9 +148,6 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 		if (isCamelCasedName(name)) {
 			error(DatatypeSystemMessage.ERROR_ENTITYNAME_INVALID_CAMELCASE, entity, ModelPackage.Literals.MODEL__NAME)
 		}
-		if (name.toLowerCase.endsWith('reply')) {
-			error(DatatypeSystemMessage.ERROR_ENTITYNAME_SUFFIX_REPLY, entity, ModelPackage.Literals.MODEL__NAME)
-		}
 	}
 
 	def boolean isCamelCasedName(String name) {
@@ -174,5 +171,4 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)
 		}
 	}
-
 }

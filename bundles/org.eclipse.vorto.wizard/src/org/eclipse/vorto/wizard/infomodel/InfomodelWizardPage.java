@@ -59,5 +59,10 @@ public class InfomodelWizardPage extends ModelBaseWizardPage {
 	public ModelId getModelId() {
 		return getModelId(ModelType.InformationModel);
 	}
+	
+	@Override
+	protected String getDefaultNamespace() {
+		return "com.mycompany.informationmodels";
+	}
 
 }

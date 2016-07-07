@@ -348,7 +348,7 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
       
       item.setID(Short.parseShort(propertyMapping.getAttributeValue(ATTRIBUTE_ID, "0")));
       item.setUnits(propertyMapping.getAttributeValue(ATTRIBUTE_UNITS, ""));
-      item.setOperations(propertyMapping.getAttributeValue(ATTRIBUTE_OPERATIONS, ""));
+      item.setOperations(propertyMapping.getAttributeValue(ATTRIBUTE_OPERATIONS, item.getOperations()));
    }
 
    private String unsupportedValueForPropertyMsg( final String value, final Property property, final Object lwm2mObject ) {

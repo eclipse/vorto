@@ -222,7 +222,5 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	
 	protected abstract String getModelLabel();
 	
-	protected String getDefaultNamespace() {
-		return "com.mycompany.type";
-	}
+	protected abstract String getDefaultNamespace();
 }

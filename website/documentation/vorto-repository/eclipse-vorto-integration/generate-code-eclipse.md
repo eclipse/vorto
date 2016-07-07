@@ -35,7 +35,7 @@ You can generate code from shared information models in the Vorto Repository. Th
 
 ###Generating Code from Your Local Workspace
 
-You can generate code from information models in your local workspace. The code generation is carried out locally on your computer. You can choose one of the code generators which have been installed along with the Eclipse Vorto plug-ins.
+You can generate code from information models in your local workspace. The code generation is carried out locally on your computer. You can choose one of the code generators which have been installed along with the Eclipse Vorto Toolset.
 
 **Prerequisites**  
 

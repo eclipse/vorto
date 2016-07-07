@@ -370,13 +370,22 @@ public interface FunctionblockPackage extends EPackage {
 	int OPERATION__DESCRIPTION = 3;
 
 	/**
+	 * The feature id for the '<em><b>Breakable</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int OPERATION__BREAKABLE = 4;
+
+	/**
 	 * The number of structural features of the '<em>Operation</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int OPERATION_FEATURE_COUNT = 4;
+	int OPERATION_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnTypeImpl <em>Return Type</em>}' class.
@@ -929,6 +938,17 @@ public interface FunctionblockPackage extends EPackage {
 	EAttribute getOperation_Description();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.eclipse.vorto.core.api.model.functionblock.Operation#isBreakable <em>Breakable</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Breakable</em>'.
+	 * @see org.eclipse.vorto.core.api.model.functionblock.Operation#isBreakable()
+	 * @see #getOperation()
+	 * @generated
+	 */
+	EAttribute getOperation_Breakable();
+
+	/**
 	 * Returns the meta object for class '{@link org.eclipse.vorto.core.api.model.functionblock.ReturnType <em>Return Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1339,6 +1359,14 @@ public interface FunctionblockPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute OPERATION__DESCRIPTION = eINSTANCE.getOperation_Description();
+
+		/**
+		 * The meta object literal for the '<em><b>Breakable</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute OPERATION__BREAKABLE = eINSTANCE.getOperation_Breakable();
 
 		/**
 		 * The meta object literal for the '{@link org.eclipse.vorto.core.api.model.functionblock.impl.ReturnTypeImpl <em>Return Type</em>}' class.
