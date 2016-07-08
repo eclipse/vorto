@@ -2,8 +2,7 @@
 	<div class="col-md-12">
 		<div class="box box-primary">
 			<div class="box-header">
-				<i class="fa fa-edit"></i>
-				<h3 class="box-title">Describe your Information Model</h3>
+				<h3 class="box-title"><i class="fa fa-edit"></i> Describe your Vorto Model</h3>
 			</div>
 			<!-- /.box-header -->
 			<p>
@@ -15,6 +14,7 @@
 <div class="row">
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
 	<div class="col-md-8">
+<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b:server/devtool/src/main/resources/static/templates/infomodel-editor-template.html
 =======
 	<div class="col-md-6">
 >>>>>>> Devtool (#1)
@@ -23,14 +23,29 @@
 				data-editor-enable-formatting-action="true"
 				data-editor-show-error-dialogs="true"></div>
 		</div>
+=======
+		<div id="tabbed-editor-container">
+			<div role="tabpanel">
+				<ul class="nav nav-tabs editor-ul" role="tablist">
+			    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
+			        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">Tab {{tab.id}} <span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span></a>
+					</li>
+			        <li role="presentation">
+			        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
+			        </li>
+			    </ul>		    
+			</div>
+	        <div id="editors""></div>
+	   </div>
+>>>>>>> Created tabbed editor in devtool:server/devtool/src/main/resources/static/templates/editor-template.html
 	</div>
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
 	
 	<div class="col-md-1">
 		<div id="import-button-container">
-			<button class="import-button" ng-click="importFunctionBlock()" ng-disabed="showAddFunctionBlockButton">
-					<i class="fa fa-long-arrow-left"></i>
-			</button>
+			<a>
+				<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
+			</a>
 		</div>
 	</div>
 
@@ -51,6 +66,7 @@
 										<input type="search" placeholder="Search Function Blocks"
 											ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
 											st-search autofocus class="queryFilter input-sm" />
+<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b:server/devtool/src/main/resources/static/templates/infomodel-editor-template.html
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
 										<button id="search" class="search-button" ng-click="search()">
 											<i class="fa fa-search"></i>
@@ -62,6 +78,11 @@
 											Import Function block
 >>>>>>> Devtool (#1)
 										</button>
+=======
+										<a id="search" class="search-button" ng-click="search()">
+											<i class="fa fa-search"></i>
+										</a>
+>>>>>>> Created tabbed editor in devtool:server/devtool/src/main/resources/static/templates/editor-template.html
 									</div>
 								</th>
 							</tr>

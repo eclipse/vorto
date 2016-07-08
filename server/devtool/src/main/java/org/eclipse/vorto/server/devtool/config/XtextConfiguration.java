@@ -66,8 +66,6 @@ public class XtextConfiguration {
 		
 
 		return Guice.createInjector(
-//				Modules.override(new FunctionblockRuntimeModule())
-//						.with(new FunctionblockWebModule(executorServiceProvider)),
 				Modules.override(new InformationModelRuntimeModule())
 						.with(new InformationModelWebModule(executorServiceProvider)));
 	}

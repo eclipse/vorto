@@ -790,11 +790,16 @@ th.action
 
 /* Editor Start */
 
-#editor-container {
-	position:relative;
+.custom-xtext-editor {
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 	padding: 4px;
-	border: 1px solid #aaa;	
-	height: 440px;
+	border: 1px solid #aaa;
+	height: 387px;
 	width: auto;
 }
 
@@ -824,22 +829,43 @@ th.action
 
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
 .import-button {
+	text-align: center;
 	font-size: 50px;
 	background: none;
 	border: none;
-	position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-	
+	margin-top: 180px;
+	margin-bottom: 180px;
 }
 
 .search-button {
 	padding: 2px;
 	font-size: 20px;
-	background: none;
 	border: none;
 }
+<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b
 =======
 >>>>>>> Devtool (#1)
+=======
+
+a:hover {
+	cursor: pointer; 
+	cursor: hand;
+}
+
+.nav-tabs > li > a{
+    cursor:pointer;
+}
+
+.nav-tabs li a span:hover {
+    color: red;
+    cursor:pointer;
+}
+
+.editor-ul.nav a {
+	box-shadow: none;
+    background: transparent;
+    color: #000000;
+    text-shadow: none;
+    font-weight: bold;
+}
+>>>>>>> Created tabbed editor in devtool
