@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -22,7 +22,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 
-class OperationReturnTypeValidation implements ITemplate<Operation>{
+class OperationReturnTypeValidationTemplate implements ITemplate<Operation>{
 		
 	var EntityValidationTemplate entityValidationTemplate;
 	var EnumValidationTemplate enumValidationTemplate;
