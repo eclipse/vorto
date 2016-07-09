@@ -1,14 +1,21 @@
 <div class="modal-header">
-	<h3 class="modal-title">Please select the type of Editor</h3>
+	<h3 class="modal-title"><center>New Vorto Model</center></h3>
 </div>
 <div class="modal-body">
-	<ul>
-		<li ng-repeat="editorType in editorTypes">
-			<input type="radio" name="response" data-ng-model="selected.editorType"  value="{{editorType}}"/> {{editorType}}
-		</li>
-	</ul>
+	<div>
+		<p>What kind of model do you want to create?</p>
+	</div>
+	<div ng-repeat="editorType in editorTypes">
+		<p>
+			<input type="radio" name="response" data-ng-model="selected.language"  value="{{editorType.language}}"/> {{editorType.display}}
+		</p>
+	</div>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+	<div class="align-left">
+	    <button class="btn btn-primary" type="button" ng-click="ok()">Create</button>
+	 </div>
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+	</div>
 </div>

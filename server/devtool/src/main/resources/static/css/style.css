@@ -868,4 +868,15 @@ a:hover {
     text-shadow: none;
     font-weight: bold;
 }
+<<<<<<< 9ccb744cb70dc2397a9fdece0b3f02fbeb322f16
 >>>>>>> Created tabbed editor in devtool
+=======
+
+.align-left {
+	float:left;
+}
+
+.align-right {
+	float:right;
+}
+>>>>>>> Modified the UI of add Vorto Model modal.

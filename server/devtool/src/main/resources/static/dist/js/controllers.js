@@ -17,17 +17,19 @@ define(["angular"], function(angular) {
     $scope.selectedTabId = 0;
     $scope.selectedEditor = null;
 
-    $scope.editorTypes = ['InformationModel', 'FunctionBlock'];
+    $scope.editorTypes = [
+    	{language:'infomodel', display:'Info Model'}, 
+    	{language:'fbmodel', display:'Function Block'}
+    	];
 
     $scope.models = [];
     $scope.queryFilter = "";
 
     $scope.$on("addTab", function(event, args) {
-      console.log(args.editorType);
-      $scope.addEditor(args.editorType);
+      $scope.addEditor(args.language);
     });
 
-    $scope.addEditor = function(editorType) {
+    $scope.addEditor = function(language) {
       $scope.counter++;
       var tabId = $scope.counter;
       var editorParentDivId = "xtext-editor-parent-" + tabId;
@@ -36,7 +38,7 @@ define(["angular"], function(angular) {
         id: tabId,
         editorParentDivId: editorParentDivId,
         editorDivId: editorDivId,
-        language: editorType
+        language: language
       };
       console.log(tab);
       $scope.tabs.push(tab);
@@ -45,9 +47,9 @@ define(["angular"], function(angular) {
       var element = angular.element(document).find('#editors');
       element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
       $compile(element.contents())($scope);
-      if (editorType == 'InformationModel') {
+      if (language == 'infomodel') {
         $scope.addInfoModelEditor(editorDivId);
-      } else if (editorType == 'FunctionBlock') {
+      } else if (language == 'fbmodel') {
         $scope.addFunctionBlockEditor(editorDivId);
       }
     }
@@ -227,7 +229,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
         animation: true,
         controller: 'AddEditorModalController',
         templateUrl: 'templates/add-editor-modal-template.html',
-        size: 'lg',
+        size: 'sm',
         resolve: {
           editorTypes: function() {
             return $scope.editorTypes;
@@ -267,14 +269,14 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.importModel = function() {
       if ($scope.isValidModel()) {
         if ($scope.isModelSelected()) {
-          if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'InformationModel') {
-            $http.get('./editor/infomodel/link/functionblock/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+          if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
+            $http.get('./editor/infomodel/link/fbmodel/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 $scope.selectedEditor.setValue(data);
               }).error(function(data, status, headers, config) {
               window.alert('Failed')
             });
-          } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'FunctionBlock') {
+          } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
             $http.get('./editor/functionblock/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 editor.setValue(data);
@@ -301,8 +303,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       var modelType = null;
       console.log('called here');
       console.log($scope.tabs[$scope.selectedTabIndex]['language']);
-      if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'InformationModel') {
-        modelType = "Functionblock";
+      if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
+        modelType = "fbmodel";
         filter = $scope.queryFilter + " " + modelType;
         $http.get('./editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
@@ -310,7 +312,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           }).error(function(data, status, headers, config) {
           $scope.models = [];
         });
-      } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'FunctionBlock') {
+      } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
         modelType = "Datatype";
         filter = $scope.queryFilter + " " + modelType;
         $http.get('./editor/functionblock/search=' + filter).success(
@@ -340,13 +342,13 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 
     $scope.editorTypes = editorTypes;
     $scope.selected = {
-      editorType: $scope.editorTypes[0]
+      language: $scope.editorTypes[0]['language']
     };
 
     $scope.ok = function() {
       $uibModalInstance.close($scope.selected.editorType);
       $rootScope.$broadcast("addTab", {
-        editorType: $scope.selected.editorType
+        language: $scope.selected.language
       });
       console.log('sent');
     };
