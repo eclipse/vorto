@@ -31,12 +31,12 @@
 			        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
 			        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
 			        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
-			        		Tab {{tab.id}} 
+			        		{{tab.filename}} 
 			        		<span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span>
 			        	</a>
 					</li>
 			        <li role="presentation">
-			        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
+			        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openAddEditorModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
 			        </li>
 			    </ul>		    
 			</div>

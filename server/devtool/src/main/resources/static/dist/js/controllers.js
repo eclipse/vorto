@@ -25,11 +25,15 @@ define(["angular"], function(angular) {
     $scope.models = [];
     $scope.queryFilter = "";
 
-    $scope.$on("addTab", function(event, args) {
-      $scope.addEditor(args.language);
+    $scope.$on("addTab", function(event, model) {
+      $scope.addEditor(model);
+    });
+    
+    $scope.$on("describeEditor", function(event, editor) {
+      $scope.openDescribeEditorModal(editor);
     });
 
-    $scope.addEditor = function(language) {
+    $scope.addEditor = function(model) {
       $scope.counter++;
       var tabId = $scope.counter;
       var editorParentDivId = "xtext-editor-parent-" + tabId;
@@ -38,18 +42,19 @@ define(["angular"], function(angular) {
         id: tabId,
         editorParentDivId: editorParentDivId,
         editorDivId: editorDivId,
-        language: language
+        language: model.language,
+        name: model.name,
+        filename: model.filename
       };
-      console.log(tab);
       $scope.tabs.push(tab);
       $scope.selectedTabIndex = $scope.tabs.length - 1;
       $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id'];
       var element = angular.element(document).find('#editors');
       element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
       $compile(element.contents())($scope);
-      if (language == 'infomodel') {
+      if (model.language == 'infomodel') {
         $scope.addInfoModelEditor(editorDivId);
-      } else if (language == 'fbmodel') {
+      } else if (model.language == 'fbmodel') {
         $scope.addFunctionBlockEditor(editorDivId);
       }
     }
@@ -205,7 +210,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 
     $scope.getEditor = function(index) {
       var tab = $scope.tabs[index];
-      console.log(tab);
       var tabEditorId = '#' + tab['editorParentDivId'];
       return angular.element(document.querySelector(tabEditorId));
     }
@@ -221,10 +225,9 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id']
       $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
       $scope.search();
-      console.log('Selected ' + index);
     }
 
-    $scope.openModal = function() {
+    $scope.openAddEditorModal = function() {
       var modalInstance = $uibModal.open({
         animation: true,
         controller: 'AddEditorModalController',
@@ -236,12 +239,27 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           }
         }
       });
+<<<<<<< b6c9b094e2d16aa9068c156341ebfedd562b2548
 >>>>>>> Created tabbed editor in devtool
 
       modalInstance.result.then(function(selectedItem) {
         $scope.selected = selectedItem;
       });
+=======
+>>>>>>> Created modal to describe model before creating editor
     };
+    
+    $scope.openDescribeEditorModal = function(editorType) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: 'DescribeEditorModalController',
+        templateUrl: 'templates/describe-editor-modal-template.html',
+        size: 'sm',
+        resolve: {
+			editorType: editorType			
+        }
+      });
+    };    
 
     $scope.isModelSelected = function() {
       for (i = 0; i < $scope.displayedModels.length; i++) {
@@ -344,24 +362,39 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
   });
 
   app.controller('AddEditorModalController', function($rootScope, $scope, $uibModalInstance, editorTypes) {
-
     $scope.editorTypes = editorTypes;
-    $scope.selected = {
-      language: $scope.editorTypes[0]['language']
-    };
+	$scope.selected = $scope.editorTypes[0];
 
     $scope.ok = function() {
-      $uibModalInstance.close($scope.selected.editorType);
-      $rootScope.$broadcast("addTab", {
-        language: $scope.selected.language
-      });
-      console.log('sent');
+      $uibModalInstance.close($scope.selected.editorType);      
+      $rootScope.$broadcast("describeEditor", $scope.selected);
     };
 
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     };
   });
+  
+  app.controller('DescribeEditorModalController', function($rootScope, $scope, $uibModalInstance, editorType) {
+
+    $scope.editorType = editorType;
+    $scope.model = {
+    	language: editorType.language,
+		name: "",
+		version: "",
+		description: "",
+    };
+
+    $scope.ok = function() {
+      $uibModalInstance.close($scope.model);
+      $scope.model.filename = $scope.model.name + "." + $scope.model.language;
+      $rootScope.$broadcast("addTab", $scope.model);
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });  
 
   return app;
 });

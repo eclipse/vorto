@@ -1,0 +1,36 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Create New {{editorType.display}}</center></h3>
+</div>
+<div class="modal-body">
+	<div>
+		<p>Please enter the following details</p>
+	</div>
+	<div>
+		<p>
+			<div class="describe-modal-label">
+				{{editorType.display}} Name 
+			</div>
+			<input type="text" size="37" data-ng-model="model.name" required/> 
+		</p>
+		<p>
+			<div class="describe-modal-label">
+				{{editorType.display}} Version 
+			</div>
+			<input type="text" size="37" data-ng-model="model.version" required/> 
+		</p>
+		<p>
+			<div class="describe-modal-label">
+				{{editorType.display}} Description 
+			</div>			
+			<textarea rows="4" cols="35" data-ng-model="model.description"/> 
+		</p>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="align-left">
+	    <button class="btn btn-primary" type="button" ng-click="ok()">Create</button>
+	 </div>
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>
