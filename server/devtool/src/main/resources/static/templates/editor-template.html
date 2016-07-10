@@ -28,7 +28,12 @@
 			<div role="tabpanel">
 				<ul class="nav nav-tabs editor-ul" role="tablist">
 			    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
-			        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">Tab {{tab.id}} <span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span></a>
+			        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
+			        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
+			        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
+			        		Tab {{tab.id}} 
+			        		<span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span>
+			        	</a>
 					</li>
 			        <li role="presentation">
 			        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
@@ -107,12 +112,16 @@
 						<tbody>
 							<tr st-select-row="model" ng-repeat="model in displayedModels">
 								<td>{{ model.id.name }}</td>
+<<<<<<< 096cb92a15e53dee883c6fcdaa97100e6258dbea
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
 								<td class="action"><a class="action"><i class="fa fa-info-circle"></i></a></td>
 =======
 								<td>{{ model.id.namespace }}</td>
 								<td>{{ model.id.version }}</td>
 >>>>>>> Devtool (#1)
+=======
+								<td class="action"><a class="action"><i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i></a></td>
+>>>>>>> Added editor valid status to tab
 							</tr>
 						</tbody>
 						<tfoot>

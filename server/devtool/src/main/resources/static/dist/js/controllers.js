@@ -256,10 +256,15 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       return false;
     }
 
-    $scope.isValidModel = function() {
-      console.log('Checking model');
-      console.log($scope.selectedEditor);
-      if ($scope.selectedEditor.xtextServices.editorContext._annotations.length !== 0) {
+	$scope.isValidEditorTab = function(index) {
+		return $scope.isValidModel($scope.editors[index]);
+	}
+
+    $scope.isValidModel = function(editor) {
+      if(editor == null){
+      	return false;
+      }
+      if (editor.xtextServices.editorContext._annotations.length !== 0) {
         return false;
       } else {
         return true;
@@ -267,10 +272,10 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     }
 
     $scope.importModel = function() {
-      if ($scope.isValidModel()) {
+      if ($scope.isValidModel($scope.selectedEditor)) {
         if ($scope.isModelSelected()) {
           if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
-            $http.get('./editor/infomodel/link/fbmodel/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+            $http.get('./editor/infomodel/link/functionblock/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 $scope.selectedEditor.setValue(data);
               }).error(function(data, status, headers, config) {
