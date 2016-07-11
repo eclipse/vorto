@@ -14,13 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.view;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -32,9 +25,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.vorto.codegen.ui.handler.PopulateGeneratorsMenu;
-import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.command.DeleteModelAction;
@@ -43,8 +33,6 @@ import org.eclipse.vorto.perspective.command.ShareModelAction;
 import org.eclipse.vorto.perspective.dnd.ModelDropListenerFactory;
 import org.eclipse.vorto.perspective.util.ImageUtil;
 import org.eclipse.vorto.wizard.infomodel.InfomodelWizard;
-
-import com.google.common.collect.Collections2;
 
 public class InfomodelTreeViewer extends ModelTreeViewer {
 
@@ -75,12 +63,9 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.InformationModel) {
-						
-						if (modelCanGenerate(model)) {
-							MenuManager generatorMenuMgr = new MenuManager("Generate Code");
-							generatorMenuMgr.add(new PopulateGeneratorsMenu());
-							menuMgr.add(generatorMenuMgr);
-						}
+						MenuManager generatorMenuMgr = new MenuManager("Generate Code");
+						generatorMenuMgr.add(new PopulateGeneratorsMenu());
+						menuMgr.add(generatorMenuMgr);
 						
 						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
 						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
@@ -110,35 +95,6 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 		});
 		menuMgr.setRemoveAllWhenShown(true);
 		this.treeViewer.getControl().setMenu(menu);
-	}
-	
-	// check if model has no syntax errors
-	private boolean modelCanGenerate(IModelElement modelElement) {
-		Model model = modelElement.getModel();
-		if (model instanceof InformationModel) {
-			InformationModel infoModel = (InformationModel) model;
-			for(FunctionblockProperty property : infoModel.getProperties()) {				
-				// for syntax and parsing errors
-				if (property.getType().eResource().getErrors().size() > 0) {
-					return false;
-				}
-				
-				// for linking errors
-				if (getLinkingErrors(property.getType()).size() > 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	private Collection<Diagnostic> getLinkingErrors(EObject model) {
-		Diagnostic diagnostic = Diagnostician.INSTANCE.validate(model);
-		switch (diagnostic.getSeverity()) {
-		  case Diagnostic.ERROR:
-			  return diagnostic.getChildren();
-		}
-		return Collections.emptyList();
 	}
 
 	@Override
