@@ -16,21 +16,20 @@ package org.eclipse.vorto.codegen.examples.jsonschema.tasks;
 
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.ConstraintTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EntityValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EnumValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.OperationParametersValidationTemplate;
-import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.OperationSingleParameterValidation;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.OperationSingleParameterValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.PrimitiveTypeValidationTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
-public class OperationParametersValidationTask extends
-AbstractTemplateGeneratorTask<Operation> {
+public class OperationParametersValidationTask extends AbstractTemplateGeneratorTask<Operation> {
 	
 	private String jsonSchmaFileExtension;
 	private String targetPath;
 	
-	public OperationParametersValidationTask(String jsonSchmaFileExtension, 
-			String targetPath) {
+	public OperationParametersValidationTask(String jsonSchmaFileExtension, String targetPath) {
 		super();
 		this.jsonSchmaFileExtension = jsonSchmaFileExtension;
 		this.targetPath = targetPath;
@@ -48,13 +47,10 @@ AbstractTemplateGeneratorTask<Operation> {
 
 	@Override
 	public ITemplate<Operation> getTemplate() {
-		OperationSingleParameterValidation operationSingleParameterValidation = 
-				new OperationSingleParameterValidation(
-						new EntityValidationTemplate(
-								new EnumValidationTemplate(),
-								new PrimitiveTypeValidationTemplate()), 
-						new EnumValidationTemplate(),
-						new PrimitiveTypeValidationTemplate());
+		OperationSingleParameterValidationTemplate operationSingleParameterValidation = new OperationSingleParameterValidationTemplate(
+				new EntityValidationTemplate(new EnumValidationTemplate(), new PrimitiveTypeValidationTemplate(),
+						new ConstraintTemplate()),
+				new EnumValidationTemplate(), new PrimitiveTypeValidationTemplate(), new ConstraintTemplate());
 		return new OperationParametersValidationTemplate(operationSingleParameterValidation);
 	}
 

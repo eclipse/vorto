@@ -33,6 +33,7 @@ import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object.Resources
 import org.eclipse.vorto.codegen.examples.lwm2m.utils.ResourceIdComparator;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.impl.PrimitivePropertyTypeImpl;
@@ -253,13 +254,13 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
          handleMappingRulesForProperties( lwm2mObject, property, item, context);
 
          // handle mandatory
-         final boolean mandatory = property.getPresence().isMandatory();
+         final Presence mandatory = property.getPresence();
 
-         if( mandatory ) {
-            item.setMandatory( ATTR_MANDATORY_MANDATORY_VALUE );
+         if( mandatory == null || !mandatory.isMandatory() ) {
+            item.setMandatory( ATTR_MANDATORY_OPTIONAL_VALUE );		// default mapping
          }
          else {
-            item.setMandatory( ATTR_MANDATORY_OPTIONAL_VALUE );
+            item.setMandatory( ATTR_MANDATORY_MANDATORY_VALUE );
          }
 
          // handle multiplicity

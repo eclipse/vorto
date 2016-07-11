@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,9 +16,10 @@ package org.eclipse.vorto.codegen.examples.jsonschema.tasks;
 
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.ConstraintTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EntityValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EnumValidationTemplate;
-import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.OperationReturnTypeValidation;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.OperationReturnTypeValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.PrimitiveTypeValidationTemplate;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 
@@ -47,11 +48,11 @@ AbstractTemplateGeneratorTask<Operation> {
 
 	@Override
 	public ITemplate<Operation> getTemplate() {
-		OperationReturnTypeValidation operationReturnTypeValidation = 
-				new OperationReturnTypeValidation(
+		OperationReturnTypeValidationTemplate operationReturnTypeValidation = 
+				new OperationReturnTypeValidationTemplate(
 						new EntityValidationTemplate(
 								new EnumValidationTemplate(),
-								new PrimitiveTypeValidationTemplate()), 
+								new PrimitiveTypeValidationTemplate(), new ConstraintTemplate()), 
 						new EnumValidationTemplate(),
 						new PrimitiveTypeValidationTemplate());
 		return operationReturnTypeValidation;
