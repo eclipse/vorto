@@ -21,51 +21,83 @@ import org.eclipse.vorto.core.api.model.datatype.Constraint
 import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.vorto.core.api.model.model.ModelPackage
 import org.eclipse.vorto.editor.datatype.internal.validation.ConstraintValueValidator
 import org.eclipse.xtext.validation.Check
 
 /**
  * Custom validation rules. 
- *
+ * 
  * see http://www.eclipse.org/Xtext/documentation.html#validation
  */
 class DatatypeValidator extends AbstractDatatypeValidator {
 
-public val propertyValidator = new PropertyConstraintMappingValidation
+	public val propertyValidator = new PropertyConstraintMappingValidation
+
+	@Check
+	def checkCircularRefInObjectPropertyType(ObjectPropertyType ref) {
+		if (ref.type != null) {
+			try {
+				val parent = ValidatorUtils.getParentOfType(ref, Model) as Model;
+				if (parent != null) {
+					if (ValidatorUtils.hasCircularReference(parent as Model, ref.type, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
+						error(DatatypeSystemMessage.ERROR_OBJ_PROPERTY_CIRCULAR_REF, ref, DatatypePackage.Literals.OBJECT_PROPERTY_TYPE__TYPE);
+					}
+				}	
+			} catch(Exception e) {
+				e.printStackTrace
+			}
+		}
+	}
+	
+	@Check
+	def checkCircularRefInSuperType(Entity entity) {
+		if (entity.superType != null) {
+			try {
+				if (ValidatorUtils.hasCircularReference(entity, entity.superType, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
+					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, entity, DatatypePackage.Literals.ENTITY__SUPER_TYPE);
+				}	
+			} catch(Exception e) {
+				e.printStackTrace
+			}
+		}
+	}
 
 	@Check
 	def checkConstraint(Property prop) {
 		var constraints = prop.constraintRule.constraints
-		
+
 		if(constraints.length == 0) return;
-			var primi = prop.type as PrimitivePropertyType
+		var primi = prop.type as PrimitivePropertyType
 		var isMultiplcity = prop.multiplicity;
 		for (constraint : constraints) {
 			verifyConstraintForType(primi, constraint, isMultiplcity)
 		}
 	}
-		
-	def verifyConstraintForType(PrimitivePropertyType primitivePropertyType, Constraint constraint, boolean isMultiplcity) {
+
+	def verifyConstraintForType(PrimitivePropertyType primitivePropertyType, Constraint constraint,
+		boolean isMultiplcity) {
 		if (!isValidConstraintType(primitivePropertyType.type, constraint)) {
-					error(propertyValidator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__TYPE)
-				}else{
-					var validator = ConstraintValidatorFactory.getValueValidator(constraint.type)
+			error(propertyValidator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__TYPE)
+		} else {
+			var validator = ConstraintValidatorFactory.getValueValidator(constraint.type)
 			if (!isValidConstraintValue(validator, primitivePropertyType.type, constraint)) {
-						error(validator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__CONSTRAINT_VALUES)
-					}
-				}
-				
-		if(isMimeConstraint(primitivePropertyType.type.getName(), constraint)){
-			if(!isMultiplcity)
-						error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, constraint, DatatypePackage.Literals.CONSTRAINT__TYPE)
-				}
+				error(validator.errorMessage, constraint, DatatypePackage.Literals.CONSTRAINT__CONSTRAINT_VALUES)
 			}
-	
-	
+		}
+
+		if (isMimeConstraint(primitivePropertyType.type.getName(), constraint)) {
+			if (!isMultiplcity)
+				error(DatatypeSystemMessage.ERROR_MIMETYPE_FOR_BYTE, constraint,
+					DatatypePackage.Literals.CONSTRAINT__TYPE)
+		}
+	}
+
 	def isValidConstraintType(PrimitiveType primitiveType, Constraint constraint) {
 		return propertyValidator.checkPropertyConstraints(primitiveType, constraint)
 	}
@@ -73,7 +105,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	def isValidConstraintValue(ConstraintValueValidator validator, PrimitiveType primitiveType, Constraint constraint) {
 		return validator.evaluateValueType(primitiveType, constraint)
 	}
-	
+
 	def isMimeConstraint(String primitiveTypeName, Constraint constraint) {
 		return "MIMETYPE" == constraint.type.literal && "byte" == primitiveTypeName
 	}
@@ -85,14 +117,15 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 			error(DatatypeSystemMessage.ERROR_ENUMNAME_INVALID_CAMELCASE, ent, ModelPackage.Literals.MODEL__NAME)
 		}
 	}
-	
+
 	@Check
-	def checkDuplicatedLiteral(Enum enu){
+	def checkDuplicatedLiteral(Enum enu) {
 		var list = enu.enums
 		var set = new HashSet<String>();
 		for (var i = 0; i < list.length; i++) {
-			if(!set.add(list.get(i).name)){
-				error(DatatypeSystemMessage.ERROR_DUPLICATED_ENUM_LITERAL, list.get(i), DatatypePackage.Literals.ENUM_LITERAL__NAME)
+			if (!set.add(list.get(i).name)) {
+				error(DatatypeSystemMessage.ERROR_DUPLICATED_ENUM_LITERAL, list.get(i),
+					DatatypePackage.Literals.ENUM_LITERAL__NAME)
 			}
 		}
 	}
@@ -101,7 +134,7 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	def checkDuplicatedConstraint(Property feature) {
 		var set = new HashSet<String>();
 		var list = feature.constraintRule.constraints;
-		for (var i = 0; i < list.length; i ++) {
+		for (var i = 0; i < list.length; i++) {
 			var con = list.get(i);
 			if (!set.add(con.type.literal)) {
 				error(DatatypeSystemMessage.ERROR_DUPLICATED_CONSTRAINT, con, DatatypePackage.Literals.CONSTRAINT__TYPE)
@@ -120,15 +153,22 @@ public val propertyValidator = new PropertyConstraintMappingValidation
 	def boolean isCamelCasedName(String name) {
 		!Character.isUpperCase((name).charAt(0))
 	}
-	
 
-	def checkDuplicatedProperty(List<Property> props){
+	def checkDuplicatedProperty(List<Property> props) {
 		var set = new HashSet<String>();
-		
-		for ( pp : props){
-			if(!set.add(pp.name)){
+
+		for (pp : props) {
+			if (!set.add(pp.name)) {
 				error(DatatypeSystemMessage.ERROR_DUPLICATED_PROPERTY_NAME, pp, DatatypePackage.Literals.PROPERTY__NAME)
 			}
+		}
+	}
+
+	@Check
+	def checkPropertyName(Property property) {
+		var name = property.name
+		if (name.endsWith('TS')) {
+			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)
 		}
 	}
 }

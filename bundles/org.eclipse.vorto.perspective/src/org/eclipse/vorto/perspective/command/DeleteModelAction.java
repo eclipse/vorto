@@ -37,6 +37,20 @@ public abstract class DeleteModelAction extends Action {
 		super("Delete", ImageDescriptor.createFromImage(ImageUtil.getImage("delete.gif")));
 		this.workspace = workspace;
 	}
+	
+	public static Action newInstance(ILocalModelWorkspace workspace, final TreeViewer viewer, final IModelElement model) {
+		return new DeleteModelAction(workspace) {
+			@Override
+			protected TreeViewer getViewer() {
+				return viewer;
+			}
+
+			@Override
+			protected IModelElement getSelectedElement() {
+				return model;
+			}
+		};
+	}
 
 	@Override
 	public void run() {

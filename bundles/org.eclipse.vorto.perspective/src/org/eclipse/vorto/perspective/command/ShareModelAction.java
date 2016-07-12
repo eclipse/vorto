@@ -14,14 +14,10 @@
  *******************************************************************************/
 package org.eclipse.vorto.perspective.command;
 
-import java.io.IOException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
-import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.UploadResult;
@@ -39,6 +35,20 @@ public abstract class ShareModelAction extends Action {
 	
 	public ShareModelAction() {
 		super("Share",ImageDescriptor.createFromImage(ImageUtil.getImage("share.gif")));
+	}
+	
+	public static Action newInstance(final TreeViewer viewer, final IModelElement model) {
+		return new ShareModelAction() {
+			@Override
+			protected TreeViewer getViewer() {
+				return viewer;
+			}
+
+			@Override
+			protected IModelElement getSelectedElement() {
+				return model;
+			}
+		};
 	}
 	
 	@Override
