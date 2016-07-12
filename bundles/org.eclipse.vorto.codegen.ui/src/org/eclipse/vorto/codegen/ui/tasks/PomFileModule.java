@@ -34,10 +34,13 @@ public class PomFileModule<Context> implements ICodeGeneratorTask<Context> {
 	}
 
 	public void generate(Context model, InvocationContext invocationContext, IGeneratedWriter outputter) {
-		Generated generatedPom = new Generated(FILE_NAME, null,
-				template.getContent(model,invocationContext));
-
-		outputter.write(generatedPom);
+		Generated generatedPom;
+		try {
+			generatedPom = new Generated(FILE_NAME, null, template.getContent(model,invocationContext));
+			outputter.write(generatedPom);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

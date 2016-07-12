@@ -56,9 +56,17 @@ public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationMode
 	    
 		for (Type type : allTypesUsedInModel) {
 			if (type instanceof Entity) {
-				writer.write(new Generated(entityTemplate.getFileName((Entity)type),entityTemplate.getPath((Entity)type),entityTemplate.getContent((Entity)type,context)));
+				try {
+					writer.write(new Generated(entityTemplate.getFileName((Entity)type),entityTemplate.getPath((Entity)type),entityTemplate.getContent((Entity)type,context)));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			} else if (type instanceof Enum) {
-				writer.write(new Generated(enumTemplate.getFileName((Enum)type),enumTemplate.getPath((Enum)type),enumTemplate.getContent((Enum)type,context)));
+				try {
+					writer.write(new Generated(enumTemplate.getFileName((Enum)type),enumTemplate.getPath((Enum)type),enumTemplate.getContent((Enum)type,context)));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

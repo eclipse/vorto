@@ -21,7 +21,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  */
 public final class ModuleUtil {
    private static final String  XML_SRC_LOCATION = "/objects/";
-   private static final String LESHAN_SRC_LOCATION = "/leshan";
+   private static final String LESHAN_SRC_LOCATION = "/leshan/";
 
    private ModuleUtil() {
    }

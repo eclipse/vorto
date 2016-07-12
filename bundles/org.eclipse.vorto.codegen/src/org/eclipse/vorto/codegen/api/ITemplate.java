@@ -32,6 +32,6 @@ public interface ITemplate<Element> {
 	 * @param context
 	 * @return generated content for the specified context
 	 */
-	String getContent(Element element, InvocationContext context);
+	String getContent(Element element, InvocationContext context) throws Exception;
 
 }

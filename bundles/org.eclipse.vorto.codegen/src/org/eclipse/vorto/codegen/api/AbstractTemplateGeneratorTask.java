@@ -23,7 +23,12 @@ public abstract class AbstractTemplateGeneratorTask<InformationModelFragment> im
 
 	public void generate(final InformationModelFragment fragmentModel, final InvocationContext context, final IGeneratedWriter writer) {
 
-		Generated generated = new Generated(getFileName(fragmentModel), getPath(fragmentModel), getTemplate().getContent(fragmentModel,context));
+		Generated generated;
+		try {
+			generated = new Generated(getFileName(fragmentModel), getPath(fragmentModel), getTemplate().getContent(fragmentModel,context));
+		} catch (Exception e) {
+			generated = new Generated("error.log", getPath(fragmentModel), e.getMessage());
+		}
 		writer.write(generated);
 	}
 
