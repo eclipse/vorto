@@ -18,4 +18,4 @@ With the Information Model Repository,  **Platform vendors** are able to manage,
 
 <a href="http://vorto.eclipse.org/repo" target="_blank">Information Model Repository</a>
 
-<a href ="{{base}}/documentation/vorto-repository/share-web.html"> Find out more on how to Share Information Models
+<a href ="{{base}}/documentation/vorto-repository/web-interface/share-web.html"> Find out more on how to Share Information Models
