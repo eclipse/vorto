@@ -26,7 +26,7 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
  */
 class FunctionBlockLeshanTemplate extends LWM2MConstants implements ITemplate<FunctionblockModel> {
 
-	override getContent(FunctionblockModel model,InvocationContext context) {
+	override getContent(FunctionblockModel model,InvocationContext context) throws Exception {
 	    
 '''
 package examples.leshan.client;
@@ -37,6 +37,8 @@ import org.eclipse.leshan.core.response.ReadResponse;
 
 public class «model.name» extends BaseInstanceEnabler {
 
+    «IF model.functionblock.status != null»
+    
     «FOR statusProperty : model.functionblock.status.properties»
     /**
      * «statusProperty.description»
@@ -101,6 +103,8 @@ public class «model.name» extends BaseInstanceEnabler {
         }
 
     }
+    
+    «ENDIF»
 
 }
 

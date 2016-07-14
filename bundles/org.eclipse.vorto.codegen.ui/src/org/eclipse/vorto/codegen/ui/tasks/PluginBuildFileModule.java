@@ -37,8 +37,12 @@ public class PluginBuildFileModule<Context> implements
 	}
 
 	public void generate(Context metaData, InvocationContext invocationContext, IGeneratedWriter outputter) {
-		Generated generatedBuildFile = new Generated(FILE_NAME, null,
-				template.getContent(metaData,invocationContext));
-		outputter.write(generatedBuildFile);
+		Generated generatedBuildFile;
+		try {
+			generatedBuildFile = new Generated(FILE_NAME, null, template.getContent(metaData,invocationContext));
+			outputter.write(generatedBuildFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

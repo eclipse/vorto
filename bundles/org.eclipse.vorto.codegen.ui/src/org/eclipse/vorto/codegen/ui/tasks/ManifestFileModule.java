@@ -38,8 +38,12 @@ public class ManifestFileModule<ProjectMetaData> implements
 	}
 
 	public void generate(ProjectMetaData metaData, InvocationContext invocationContext, IGeneratedWriter outputter) {
-		Generated generatedPom = new Generated(FILE_NAME, FOLDER_NAME,
-				template.getContent(metaData,invocationContext));
-		outputter.write(generatedPom);
+		Generated generatedPom;
+		try {
+			generatedPom = new Generated(FILE_NAME, FOLDER_NAME, template.getContent(metaData,invocationContext));
+			outputter.write(generatedPom);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
