@@ -10,6 +10,8 @@ import java.io.IOException;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.codegen.api.Generated;
+import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -92,14 +94,22 @@ public class CodeGenerationController {
 		
 		InformationModel infomodel = extractor.extract(new ModelId(ModelType.InformationModel, name, namespace, version));
 		
-		IGenerationResult result = vortoGenerator.generate(infomodel, resolveMappingContext(infomodel, vortoGenerator.getServiceKey()));
-				
+		IGenerationResult result = null;
+		try {
+			result = vortoGenerator.generate(infomodel, resolveMappingContext(infomodel, vortoGenerator.getServiceKey()));
+		} catch (Exception e) {
+			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
+			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
+			output.write(generated);
+			result = output;
+		}
+
 		return ResponseEntity.ok().contentLength(result.getContent().length)
 				.header("content-disposition", "attachment; filename = " + result.getFileName())
 				.contentType(MediaType.parseMediaType(result.getMediatype()))
 				.body(new InputStreamResource(new ByteArrayInputStream(result.getContent())));
+
 	}
-	
 	
 	private InvocationContext resolveMappingContext(InformationModel model, String targetPlatform) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
