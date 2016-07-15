@@ -79,36 +79,17 @@ func NewDownloadCommand(commandValue string, commandArgs []string, cfg *config.C
 }
 
 func (this *DownloadCommand) Execute() error {
-
-	var resolveAs string
-	var datatype string
-
-	if this.IncludeDependencies == true {
-		// if flag for -includeDependencies=true resolve all dependencies and download them
-		resolveAs = "zip"
-		datatype = "zip"
-	} else {
-		// if flag for -includeDependencies=false don't resolve all dependencies and don't download them
-		resolveAs = "file"
-
-		switch {
-		case strings.Contains(this.Namespace, "functionblockmodels"):
-			datatype = "fbmodel"
-		case strings.Contains(this.Namespace, "informationmodels"):
-			datatype = "infomodel"
-		case strings.Contains(this.Namespace, "type"):
-			datatype = "type"
-		default:
-			return errorMessages.ERR_NO_DATATYPE
-		}
-	}
-
-	resp, err := this.Client.MyClient.Get(this.Repository + "/rest/model/file/" + this.Namespace + "/" + this.Name + "/" + this.Version + "?output=" + this.Output +"&includeDependencies="+this.IncludeDependencies)
+	urlStr := fmt.Sprintf("%v/rest/model/file/%v/%v/%v?output=%v&includeDependencies=%v", this.Repository, this.Namespace, this.Name, this.Version, this.Output, this.IncludeDependencies);
+	resp, err := this.Client.MyClient.Get(urlStr)
 	if err != nil {
 		return errorMessages.ERR_NO_VALID_ID
 	} else {
 		defer resp.Body.Close()
 
+		contentDisposition := resp.Header.Get("content-disposition")
+		var filename string
+		fmt.Sscanf(contentDisposition, "attachment; filename = %s", &filename)
+		
 		// check directory spelling
 		if !strings.HasSuffix(this.OutputPath, "\\") {
 			this.OutputPath = this.OutputPath + "\\"
@@ -116,7 +97,7 @@ func (this *DownloadCommand) Execute() error {
 
 		exists(this.OutputPath)
 
-		file, err := os.Create(this.OutputPath + this.Name + "." + datatype)
+		file, err := os.Create(this.OutputPath + filename)
 		if err != nil {
 			return err
 		}
@@ -128,9 +109,7 @@ func (this *DownloadCommand) Execute() error {
 			return err
 		}
 
-		println()
-		fmt.Printf("Message: Download successful, %swith %v bytes", this.OutputPath+this.Name+"."+datatype+" ", size)
-		println()
+		fmt.Printf("\nMessage: Download successful, %s with %v bytes\n", this.OutputPath + filename, size)
 	}
 
 	return nil
