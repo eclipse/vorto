@@ -873,10 +873,27 @@ a:hover {
 =======
 
 .align-left {
-	float:left;
+	float: left;
 }
 
 .align-right {
-	float:right;
+	float: right;
 }
+<<<<<<< c33c14e98d919e49aaf799f3191a3f502d640bbd
 >>>>>>> Modified the UI of add Vorto Model modal.
+=======
+
+.project-button-container {
+	text-align: center;
+	width: auto;
+}
+
+.project-container {
+	height: 100%	
+    transform: translateX(50%) translateY(50%);
+}    
+
+.btn-project {
+	width: 150px;
+}
+>>>>>>> Added Create and Open Project Features

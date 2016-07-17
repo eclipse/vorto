@@ -18,14 +18,20 @@ class WebEditorResourceSetProvider implements IWebResourceSetProvider {
 		return getResourceSetFromSession(serviceContext)
 	}
 
+	def setSessionResourceSet(IServiceContext serviceContext, ResourceSet resourceSet) {
+		serviceContext.getSession().put("set", resourceSet)
+	}
+
+	def setSessionRefencedResourceSet(IServiceContext serviceContext, HashSet<String> referencedResourceSet) {
+		serviceContext.getSession().put("referenceSet", referencedResourceSet)
+	}
+
 	def ResourceSet getResourceSetFromSession(IServiceContext serviceContext) {
 		if (serviceContext.getSession().get("set") === null) {
 			var ResourceSet resourceSet = provider.get()
-			serviceContext.getSession().put("set", resourceSet)
-			println(resourceSet);
+			setSessionResourceSet(serviceContext, resourceSet);
 			return resourceSet
 		} else {
-			println(serviceContext.getSession().get("set"));
 			return serviceContext.getSession().get("set")
 		}
 	}
@@ -38,5 +44,9 @@ class WebEditorResourceSetProvider implements IWebResourceSetProvider {
 		} else {
 			return serviceContext.getSession().get("referenceSet")
 		}
+	}
+
+	def ResourceSet getNewResourceSet() {
+		return provider.get();
 	}
 }

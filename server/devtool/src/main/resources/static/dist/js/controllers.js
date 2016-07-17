@@ -16,6 +16,8 @@ define(["angular"], function(angular) {
     $scope.selectedTabIndex = 0;
     $scope.selectedTabId = 0;
     $scope.selectedEditor = null;
+    
+    $scope.showEditorBody = false;
 
     $scope.editorTypes = [
     	{language:'infomodel', display:'Info Model'}, 
@@ -32,6 +34,27 @@ define(["angular"], function(angular) {
     $scope.$on("describeEditor", function(event, editor) {
       $scope.openDescribeEditorModal(editor);
     });
+    
+    $scope.$on("createProject", function(event, projectName) {
+      $scope.createProject(projectName);
+    });    
+
+    $scope.$on("closeProject", function(event) {
+      $scope.closeProject();
+    });
+
+	$scope.createProject = function(projectName){
+	    $http.get('./project/new/' + projectName).success(
+	      function(data, status, headers, config) {
+	        $scope.showEditorBody=true;
+	      }).error(function(data, status, headers, config) {
+	      window.alert('Failed to create new Project ' + projectName)
+	    });		
+	}
+
+	$scope.closeProject = function(){
+		$scope.showEditorBody=false;	
+	}
 
     $scope.addEditor = function(model) {
       $scope.counter++;
@@ -53,9 +76,9 @@ define(["angular"], function(angular) {
       element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
       $compile(element.contents())($scope);
       if (model.language == 'infomodel') {
-        $scope.addInfoModelEditor(editorDivId);
+        $scope.addInfoModelEditor(editorDivId, model.filename);
       } else if (model.language == 'fbmodel') {
-        $scope.addFunctionBlockEditor(editorDivId);
+        $scope.addFunctionBlockEditor(editorDivId, model.filename);
       }
     }
 
@@ -261,6 +284,42 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       });
     };    
 
+    $scope.openCreateProjectModal = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: 'CreateProjectModalController',
+        templateUrl: 'templates/create-project-modal-template.html',
+        size: 'sm'
+      });
+    };
+
+    $scope.openCloseProjectModal = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: 'CloseProjectModalController',
+        templateUrl: 'templates/close-project-modal-template.html',
+        size: 'sm'
+      });
+    };
+
+    $scope.openOpenProjectModal = function() {
+	  $http.get('./project/get' ).success(
+	  	function(data, status, headers, config) {	  	
+	    	var modalInstance = $uibModal.open({
+	    		animation: true,
+	        	controller: 'OpenProjectModalController',
+	        	templateUrl: 'templates/open-project-modal-template.html',
+	        	size: 'sm'
+	        	resolve: {
+					projects: data			
+	        	}        
+	     	 });	  	
+		}).error(function(data, status, headers, config) {
+		  window.alert('Failed to open project)
+		});
+    };
+
+
     $scope.isModelSelected = function() {
       for (i = 0; i < $scope.displayedModels.length; i++) {
         if ($scope.displayedModels[i]['isSelected']) {
@@ -324,8 +383,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.search = function() {
       var filter = null;
       var modelType = null;
-      console.log('called here');
-      console.log($scope.tabs[$scope.selectedTabIndex]['language']);
       if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
         modelType = "fbmodel";
         filter = $scope.queryFilter + " " + modelType;
@@ -394,7 +451,41 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     };
-  });  
+  });
+  
+  app.controller('CreateProjectModalController', function($rootScope, $scope, $uibModalInstance) {
+    $scope.projectName;
+    $scope.ok = function() {
+      $uibModalInstance.close($scope.model);
+      $rootScope.$broadcast("createProject", $scope.projectName);
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });    
+  
+  app.controller('CloseProjectModalController', function($rootScope, $scope, $uibModalInstance) {
+    $scope.ok = function() {
+      $rootScope.$broadcast("closeProject");
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });      
+
+  app.controller('OpenProjectModalController', function($rootScope, $scope, $uibModalInstance, projects) {
+    $scope.ok = function() {
+      $rootScope.$broadcast("closeProject");
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss('cancel');
+    };
+  });
 
   return app;
 });

@@ -1,0 +1,54 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Choose the Project</center></h3>
+</div>
+<div class="modal-body">
+	<div>
+		<table st-table="displayedModels" st-safe-src="models"
+			class="table">
+			<thead>
+				<tr>
+					<th colspan="6">
+						<div class="form-inline form-group">
+							<input type="search" placeholder="Search Function Blocks"
+								ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
+								st-search autofocus class="queryFilter input-sm" />
+							<a id="search" class="search-button" ng-click="search()">
+								<i class="fa fa-search"></i>
+							</a>
+						</div>
+					</th>
+				</tr>
+				<tr>
+					<th><b>Search Results: {{models.length}} </b></th>
+				</tr>
+				<tr>
+					<th id="onName" st-sort="id.name"><a href="">Name <i
+							class="fa fa-sort"></i></a></th>
+					 <th class="action">Details</th>								
+				</tr>
+			</thead>
+			<tbody>
+				<tr st-select-row="model" ng-repeat="model in displayedModels">
+					<td>{{ model.id.name }}</td>
+					<td class="action"><a class="action"><i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i></a></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6" class="text-center">
+						<div st-pagination="" st-items-by-page="itemsByPage"
+							st-displayed-pages="displayedPages"></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="align-left">
+	    <button class="btn btn-primary" type="button" ng-click="ok()">Create</button>
+	 </div>
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>

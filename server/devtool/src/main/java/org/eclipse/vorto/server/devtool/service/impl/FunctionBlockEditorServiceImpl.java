@@ -1,4 +1,4 @@
-package org.eclipse.vorto.server.devtool.service;
+package org.eclipse.vorto.server.devtool.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -11,13 +11,14 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.server.devtool.service.IFunctionBlockEditorService;
 import org.eclipse.vorto.server.devtool.utils.InformationModelEditorReferenceLinker;
 import org.eclipse.vorto.server.devtool.utils.InformationModelEditorRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class InformationModelEditorServiceImpl implements IInformationModelEditorService {
+public class FunctionBlockEditorServiceImpl implements IFunctionBlockEditorService {
 
 	@Autowired
 	InformationModelEditorRestClient informationModelEditorRestClient;
@@ -26,23 +27,24 @@ public class InformationModelEditorServiceImpl implements IInformationModelEdito
 	InformationModelEditorReferenceLinker infomrationModelRefernceLinker;
 
 	@Override
-	public String linkFunctionBlockToInformationModel(String infoModelResourceId, ModelId functionBlockModelId,
+	public String linkDatatypeToFunctionBlock(String functionBlockResourceId, ModelId datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
-		infomrationModelRefernceLinker.linkFunctionBlockToInfoModel(infoModelResourceId, functionBlockModelId,
+		infomrationModelRefernceLinker.linkDataTypeToFunctionBlock(functionBlockResourceId, datatypeModelId,
 				resourceSet, referencedResourceSet);
-		Resource infoModelResource = resourceSet.getResource(URI.createURI(infoModelResourceId), true);
+		Resource functionBlockResource = resourceSet.getResource(URI.createURI(functionBlockResourceId), true);
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			infoModelResource.save(byteArrayOutputStream, null);
+			functionBlockResource.save(byteArrayOutputStream, null);
 			return byteArrayOutputStream.toString();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+
 	}
-	
+
 	@Override
-	public List<ModelResource> searchFunctionBlockByExpression(String expression) {
-		return searchModelByExpressionAndValidate(expression, org.eclipse.vorto.http.model.ModelType.Functionblock);
+	public List<ModelResource> searchDataTypeByExpression(String expression) {
+		return searchModelByExpressionAndValidate(expression, org.eclipse.vorto.http.model.ModelType.Datatype);
 	}
 
 	private List<ModelResource> searchModelByExpressionAndValidate(String expression,
