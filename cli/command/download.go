@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"path"
 
 	"github.com/eclipse/vorto/client/cli/config"
 	"github.com/eclipse/vorto/client/cli/errorMessages"
@@ -88,16 +89,19 @@ func (this *DownloadCommand) Execute() error {
 
 		contentDisposition := resp.Header.Get("content-disposition")
 		var filename string
+		var absPathFileName string
 		fmt.Sscanf(contentDisposition, "attachment; filename = %s", &filename)
 		
 		// check directory spelling
-		if !strings.HasSuffix(this.OutputPath, "\\") {
-			this.OutputPath = this.OutputPath + "\\"
+		if this.OutputPath != ""  {
+			this.OutputPath = path.Clean(this.OutputPath)
+			absPathFileName = (this.OutputPath + string(os.PathSeparator) + filename)
+		}else {
+			absPathFileName = filename
 		}
-
 		exists(this.OutputPath)
 
-		file, err := os.Create(this.OutputPath + filename)
+		file, err := os.Create(absPathFileName)
 		if err != nil {
 			return err
 		}
@@ -109,7 +113,7 @@ func (this *DownloadCommand) Execute() error {
 			return err
 		}
 
-		fmt.Printf("\nMessage: Download successful, %s with %v bytes\n", this.OutputPath + filename, size)
+		fmt.Printf("\nMessage: Download successful, %s with %v bytes\n", absPathFileName, size)
 	}
 
 	return nil
