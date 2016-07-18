@@ -18,6 +18,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.vorto.codegen.api.Generated;
+import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
@@ -48,17 +50,17 @@ public class CodeGeneratorTaskExecutor {
 				monitor.beginTask(
 						"Invoking generator [" + codeGenerator.getServiceKey() + "]",
 						1);
+				IGenerationResult generatedResult = null;
 				try {
-					IGenerationResult generatedResult = ((IVortoCodeGenerator) codeGenerator).generate(informationModel,invocationContext);
-					CodeGenerationHelper.createEclipseProject(ModelIdFactory.newInstance(informationModel), codeGenerator.getServiceKey(), generatedResult);
-					monitor.worked(1);
-					if (monitor.isCanceled()) {
-						monitor.done();
-						return Status.CANCEL_STATUS;
-					}
-
+					generatedResult = ((IVortoCodeGenerator) codeGenerator).generate(informationModel,invocationContext);
 				} catch (Exception e) {
-					e.printStackTrace();
+					MessageDisplayFactory.getMessageDisplay().displayError(e);
+					return Status.CANCEL_STATUS;
+				}
+				CodeGenerationHelper.createEclipseProject(ModelIdFactory.newInstance(informationModel), codeGenerator.getServiceKey(), generatedResult);
+				monitor.worked(1);
+				if (monitor.isCanceled()) {
+					monitor.done();
 					return Status.CANCEL_STATUS;
 				}
 				monitor.done();

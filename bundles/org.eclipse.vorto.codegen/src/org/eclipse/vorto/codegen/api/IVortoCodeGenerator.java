@@ -32,7 +32,7 @@ public interface IVortoCodeGenerator {
 	 * @param context generation invocation context, e.g. mapping rules or invocation parameters
 	 * @return
 	 */
-	IGenerationResult generate(InformationModel model, InvocationContext context);
+	IGenerationResult generate(InformationModel model, InvocationContext context) throws Exception;
 	
 	/**
 	 * 
