@@ -54,10 +54,8 @@ public class CodeGeneratorTaskExecutor {
 				try {
 					generatedResult = ((IVortoCodeGenerator) codeGenerator).generate(informationModel,invocationContext);
 				} catch (Exception e) {
-					GenerationResultZip output = new GenerationResultZip(informationModel,codeGenerator.getServiceKey());
-					Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
-					output.write(generated);
-					generatedResult = output;
+					MessageDisplayFactory.getMessageDisplay().displayError(e);
+					return Status.CANCEL_STATUS;
 				}
 				CodeGenerationHelper.createEclipseProject(ModelIdFactory.newInstance(informationModel), codeGenerator.getServiceKey(), generatedResult);
 				monitor.worked(1);
