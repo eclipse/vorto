@@ -1,10 +1,10 @@
 ---
 layout: documentation
-title: Code Generators
+title: Example 1 - Web Device Application Code Generator
 ---
 {% include base.html %}
 
-## Example Code Generator - Web Device Application
+## Example 1 - Web Device Application Code Generator
 
 This section describes the use of an example code generator to generate a Web Device Application.
 

@@ -1,9 +1,9 @@
 ---
 layout: documentation
-title: Example - Bosch M2M Platform Code Generator
+title: Example 2 - Bosch M2M Platform Code Generator
 ---
 {% include base.html %}
-## Example Code Generator - Bosch M2M Platform
+## Example 2 - Bosch M2M Platform Code Generator
 
 A function block model contains necessary artifacts (e.g., Java representation of the model) which can be used by the M2M Agent Hub and the Central Registry at run time.
 
