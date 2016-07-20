@@ -32,10 +32,18 @@
   sub:
     - title: "Overview"
       href: "/documentation/code-generators/codegenerators.html"
-    - title: "Example - Web Device Application"
-      href: "/documentation/code-generators/webdevice-codegenerator.html#example-code-generator-web-device-application"
-    - title: "Example - Bosch M2M Platform"
-      href: "/documentation/code-generators/m2m-codegenerator.html#example-code-generator-bosch-m2m-platform"
+    - title: "Example Code Generators"
+      href: ""
+      sub:
+        - title: "Vorto Code Generators"
+          href: "https://github.com/eclipse/vorto/blob/master/server/generators/Readme.md"
+    - title: "Own Code Generators"
+      href: ""
+      sub:
+        - title: "Example 1 - Web Device  Application Code Generator"
+          href: "/documentation/code-generators/webdevice-codegenerator.html"
+        - title: "Example 2 - Bosch M2M Platform Code Generator"
+          href: "/documentation/code-generators/m2m-codegenerator.html"
 - title: "Developer Api"
   href: ""
   sub:

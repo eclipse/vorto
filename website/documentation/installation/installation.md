@@ -25,7 +25,7 @@ Install the Eclipse Vorto Toolset in one of the following three ways:
 **Proceed as follows**
 
 1. Start Eclipse.
-2. With your browser, go to the [Eclipse Vorto Daownload Page](https://eclipse.org/vorto/downloads).  
+2. With your browser, go to the [Eclipse Vorto Download Page](https://eclipse.org/vorto/downloads).  
    The Eclipse Vorto download page opens.  
    ![Eclipse Vorto Download Page]({{base}}/img/documentation/vorto_eclipse_vorto_download_page.png)
 2. Do one of the following:  
