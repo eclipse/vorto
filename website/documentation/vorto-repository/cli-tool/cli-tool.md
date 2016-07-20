@@ -23,7 +23,7 @@ Vorto Command Line Interface (CLI) tool is REST-Client that allows you, to acces
 
 The CLI-Tool is based on a simple structure.
 
-It consists of a Command Line Interface as well as a **.yaml** file, that stores all necessary configuration properties like _Username_, _Password_, _Proxy_ and _Repository_.
+It consists of a Command Line Interface as well as a `.yaml` file, that stores all necessary configuration properties like _Username_, _Password_, _Proxy_ and _Repository_.
 
 ## Installation
 
@@ -33,15 +33,17 @@ A very convenient way to use the CLI Tool is, to add the path of the directory i
 
 ![Environment Variable]({{base}}/img/documentation/cli_evnmt_variable.jpg)
 
-Before you can use the CLI Tool as a REST Client, you need to initialize basic preferences. The preferences are stored in a `C:\Users\{$username}\.vortocli.yaml.file`, which is located in your home directory.
+Before you can use the CLI Tool as a REST Client, you need to initialize basic preferences. The preferences are stored in the file `.vortocli.yaml`, which is located in your home directory (in Windows, for example: `C:\Users\{$username}\`).
 
-You have to setup vorto via **vorto config**. If you want to initialize vorto with additional values (or change them afterwards) like _-username_, _-password_, _-proxy_ and _-repo_, then you can extend the **vorto config** command with four additional flag parameters _-username_, _-password_, _-proxy_ and _-repo_, or you can edit the _.vortocli.yaml_ file via text editor. 
+You have to setup vorto in one of the following ways:
 
-	vorto config -username andreas -password test1234 -repo http://vorto.eclipse.org/repo
+* Use the **vorto config** command.  
+  To initialize vorto with additional values (or change them afterwards) like username, password, proxy or repository, use the command flags `-username`, `-password`, `-proxy` or `-repo`.  
+  Example: `vorto config -username <username> -password <password> -repo http://vorto.eclipse.org`
+* Edit the `.vortocli.yaml` file with a text editor.  
+  ![CLI Yaml file]({{base}}/img/documentation/yamlfile.jpg)
 
 Congratulations! - Setup is done and you are now able to use the Vorto CLI Tool.
-
-![CLI Yaml file]({{base}}/img/documentation/yamlfile.jpg)
 
 
 ## CLI Commands
