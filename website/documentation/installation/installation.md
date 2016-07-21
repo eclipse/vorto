@@ -1,14 +1,16 @@
 ---
 layout: documentation
-title: Installing the Vorto Toolset
+title: Installation
 ---
 {% include base.html %}
+
+##Installation
 
 This section details the following topics:
 
 [Installing the Vorto Toolset](#installing-the-vorto-toolset)  
 
-[Upgrading the Vorto Toolset](#upgrading-the-vorto-toolset)  
+[Upgrading the Vorto Toolset](./upgrade.html)  
 
 ##Installing the Vorto Toolset
 
