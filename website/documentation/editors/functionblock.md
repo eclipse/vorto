@@ -1,9 +1,9 @@
 ---
 layout: documentation
-title: Defining a Function Block
+title: Defining Function Blocks
 ---
 {% include base.html %}
-## Defining a Function Block
+## Defining Function Blocks
 
 This section details the following topics:
 
@@ -41,18 +41,22 @@ A function block definition is typically structured as follows:
 
 - You have started your IDE.  
 - You have selected the the Vorto perspective.
+- You have created a project (refer to [Defining Projects]({{base}}/documentation/editors/project.html))
 
 **Proceed as follows**
 
-1.  Right-click in the **Function Block Models** tab and choose **Create new Function Block** from the context menu:  
-  ![Creating function block]({{base}}/img/documentation/m2m_tc_create_function_block_2.png)  
-   Alternatively, you can click **File > New > Project...**. in the main menu. In the opening **New Project** dialog select **Vorto > Function Block Model** and click **Next**.  
-   The **Create Function Block** dialog opens.  
+1. In the **Vorto Model Project Browser**, select the project in the **Select Vorto Project** drop-down list.  
+   ![Select a Project]({{base}}/img/documentation/vorto_select_vorto_project.png)  
+2.  Right-click in the **Functionblocks** area and choose **New Functionblock** from the context menu.  
+   The **Create Function Block Model** dialog opens.  
    ![Creating function block designer dialog]({{base}}/img/documentation/m2m_tc_create_function_block_designer_dialog_2.png)
-
-2. Adjust the entries for the input fields **Function Block Name**, **Version**, **Description** and **Project Name** according to your needs and click **Finish**.  
-   The function block model DSL source file (with suffix .fbmodel) is generated and displayed in the function block editor. The file contains a complete structure according the DSL syntax with the values given in the preceding step.  
+3. Enter a name as **Function Block Name**, for example, `ColorLight`.  
+4. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
+5. Optionally, enter a description in the **Description** entry field.
+6. Click **Finish**.  
+   The new function block (`ColorLight`) is created. Furthermore, the function block DSL source file (`.fbmodel`) is generated and displayed in the model editor. The file contains a complete structure according to the DSL syntax with the values given in the preceding steps.  
    ![Generated source]({{base}}/img/documentation/m2m_tc_create_function_block_generated_source_1.png)
+
 
 ## Editing a Function Block
 
@@ -65,32 +69,28 @@ You have created a function block project (refer to [Creating a New Function Blo
 Edit the function block project by extending the generated source file in the function block DSL editor.
 
 **Example**
-	
-	namespace com.mycompany.fb
-	version 1.0.0
-	displayname "Lamp"
-	description "A lamp makes the environment bright"
-	category demo
-	
-	functionblock Lamp {
-		configuration {
-			mandatory blinking as boolean "if the lamp is currently blinking or not"
-			mandatory on as boolean "if the lamp is currently switched on"
-			mandatory powerConsumption as int "the amount of power the lamp is consuming"
-		}
-	
-		fault {
-			mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
-		}
-	
-		operations {
-			blink(blinkType as int) "sets the blinking type for the lamp"
-			getPowerConsumption() returns int "gets the amount of power being consumed by the lamp"
-			isOn() returns boolean "checks if the lamp is switched on"
-			off() "turns the lamp off"
-			on() "turns the lamp on"
-			stopBlinking() "stops the blinking of the lamp"
-			toggle() "switches the lamp on or off"
-			toggleWithDelay(delayInSeconds as int) "switches the lamp on or off with a delay of the specified seconds"
-		}	
-	}
+
+    namespace com.mycompany.fb
+    version 1.0.0
+    displayname "ColorLight"
+    description "A light makes the environment bright and colorful"
+    category hue
+    using com.mycompany.type.Color ; 1.0.0
+    
+    functionblock ColorLight {
+        configuration {
+            optional brightnessLevel as int
+            optional defaultColor as Color
+        }
+    
+        fault {
+            mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
+        }
+    
+        operations {
+            setR(r as int)
+            setG(g as int)
+            setB(b as int)
+        }
+    
+    }
