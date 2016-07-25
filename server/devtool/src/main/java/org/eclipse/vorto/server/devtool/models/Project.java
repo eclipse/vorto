@@ -1,5 +1,6 @@
 package org.eclipse.vorto.server.devtool.models;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -7,9 +8,10 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 public class Project {
 	
 	private String projectName;	
-	private String sessionId; //change this later to author
+	private String sessionId; //change this later to author or login id
 	private ResourceSet resourceSet;
-	private HashSet<String> referencedResourceSet;
+	private HashSet<String> referencedResourceSet;	
+	private ArrayList<ProjectResource> resourceList;
 	
 	public Project(String projectName){
 		this.projectName = projectName;
@@ -46,18 +48,12 @@ public class Project {
 	public void setReferencedResourceSet(HashSet<String> referencedResourceSet) {
 		this.referencedResourceSet = referencedResourceSet;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj == null || !obj.getClass().equals(Project.class)){
-			return false;
-		}
-		Project project = (Project)obj;
-		if(this.getProjectName().equals(project.getProjectName())){
-			return true;
-		}else{
-			return false;
-		}
+
+	public ArrayList<ProjectResource> getResourceList() {
+		return resourceList;
 	}
-	
+
+	public void setResourceList(ArrayList<ProjectResource> resourceList) {
+		this.resourceList = resourceList;
+	}		
 }

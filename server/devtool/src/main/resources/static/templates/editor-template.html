@@ -1,3 +1,4 @@
+<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
 <div class="project-container" ng-hide="showEditorBody == true">
 	<div class="project-button-container">
 		 <p>
@@ -134,12 +135,15 @@
 =======
 
 <div class="editor-body" ng-show="showEditorBody == true">
+=======
+<div class="editor-body">
+>>>>>>> Implemented the web-editor with in memory data storage
 	<div class="row">
 		<div class="col-md-12">
 			<div class="box box-primary">
 				<div class="box-header">
 					<h3 class="box-title">
-						<i class="fa fa-edit"></i> Describe your Vorto Model
+						<b>{{projectName}}</b>
 						<div class="align-right">
 				        	<a><span ng-click="openCloseProjectModal()" class="glyphicon glyphicon-remove"></span></a>
 						</div>
@@ -147,6 +151,8 @@
 				</div>
 				<!-- /.box-header -->
 				<p>
+					<i class="fa fa-edit"></i> Describe your Vorto Model
+					<br>	
 					<i>Hint: Press Ctrl + Space for Content Assist</i>
 				</p>
 			</div>
@@ -162,7 +168,7 @@
 				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
 				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
 				        		{{tab.filename}} 
-				        		<span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span>
+				        		<span ng-click="openDeleteEditorModal($index)" class="glyphicon glyphicon-remove"></span>
 				        	</a>
 						</li>
 				        <li role="presentation">
@@ -202,9 +208,6 @@
 									</th>
 								</tr>
 								<tr>
-									<th><b>Search Results: {{models.length}} </b></th>
-								</tr>
-								<tr>
 									<th id="onName" st-sort="id.name"><a href="">Name <i
 											class="fa fa-sort"></i></a></th>
 									 <th class="action">Details</th>								
@@ -230,5 +233,5 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>	
 </div>

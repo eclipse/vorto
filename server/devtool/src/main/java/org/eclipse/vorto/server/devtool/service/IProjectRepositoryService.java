@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.server.devtool.models.Project;
+import org.eclipse.vorto.server.devtool.models.ProjectResource;
 
 public interface IProjectRepositoryService {
 	
@@ -11,9 +12,11 @@ public interface IProjectRepositoryService {
 	
 	Project openProject(String sessionId, String projectName);
 	
-	ArrayList<String> getProjects(String sessionId);	
+	ArrayList<Project> getProjects(String sessionId);	
 	
-	ArrayList<String> getProjectResources(String sessionId, String projectName);
+	ArrayList<ProjectResource> getProjectResources(String sessionId, String projectName);
 	
-	String getProjectResourceContents(String sessionId, String projectName, String resourceId);
+	void createResource(String sessionId, String projectName, String resourceName, String resourceId);
+	
+	void deleteResource(String sessionId, String projectName, String resourceId);
 }

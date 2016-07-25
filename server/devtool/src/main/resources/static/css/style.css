@@ -811,7 +811,17 @@ th.action
 	width: auto;
 }
 
+<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
 <<<<<<< b3179dff921b0569bff00f05397e808255908577
+=======
+#project-container {
+	position:relative;
+	padding: 4px;
+	height: auto;
+	width: auto;
+}
+
+>>>>>>> Implemented the web-editor with in memory data storage
 #import-button-container {
 	position:relative;
 	padding: 4px;
@@ -888,12 +898,23 @@ a:hover {
 	width: auto;
 }
 
-.project-container {
+.project-list-container {
 	height: 100%	
     transform: translateX(50%) translateY(50%);
+}    
+
+.align-center {
+	text-align: center;
 }    
 
 .btn-project {
 	width: 150px;
 }
+<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
 >>>>>>> Added Create and Open Project Features
+=======
+
+.search-box-open-project {
+	width: 440px;
+}
+>>>>>>> Implemented the web-editor with in memory data storage

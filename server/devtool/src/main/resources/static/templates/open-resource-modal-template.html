@@ -1,15 +1,15 @@
 <div class="modal-header">
-	<h3 class="modal-title"><center>Choose the Project</center></h3>
+	<h3 class="modal-title"><center>Choose the Resource</center></h3>
 </div>
 <div class="modal-body">
 	<div>
-		<table st-table="displayedProjects" st-safe-src="projects" class="table">
+		<table st-table="displayedResources" st-safe-src="resources" class="table">
 			<thead>
 				<tr>
 					<th colspan="6">
 						<div class="form-inline form-group">
-							<input type="search" placeholder="Search Projects"
-								ng-model="project"
+							<input type="search" placeholder="Search Resources"
+								ng-model="resource"
 								st-search autofocus class="search-box-open-project input-sm" />
 							<a id="search" class="search-button">
 								<i class="fa fa-search"></i>
@@ -18,13 +18,13 @@
 					</th>
 				</tr>
 				<tr>
-					<th id="onName" st-sort="project"><a href="">Name <i
+					<th id="onName" st-sort="resource"><a href="">Name <i
 							class="fa fa-sort"></i></a></th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr st-select-row="project" ng-repeat="project in displayedProjects">
-					<td>{{ project.projectName }}</td>
+				<tr st-select-row="resource" ng-repeat="resource in displayedResources">
+					<td>{{ resource.name }}</td>
 				</tr>
 			</tbody>
 			<tfoot>

@@ -57,5 +57,4 @@ public class InformationModelEditorServiceImpl implements IInformationModelEdito
 		}
 		return modelResourceList;
 	}
-
 }

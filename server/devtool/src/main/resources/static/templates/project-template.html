@@ -1,0 +1,70 @@
+<div class="row">
+	<div class="col-md-3">
+	</div>
+	<div class="col-md-6">
+		<div class="align-center">
+			<div class="box box-primary">
+				<div class="box-header">
+					<h2 class="box-title">
+						Create a New Vorto Project
+					</h2>
+				</div>
+			</div>
+			<button class="btn btn-primary btn-project" ng-click="openCreateProjectModal()" type="button">
+				Create Project
+			</button>
+		</div>
+		<div>
+			<hr></hr>
+		</div>
+		<div id="project-list-container">
+			<div class="align-center">
+				<div class="box box-primary">
+					<div class="box-header">
+						<h2 class="box-title">
+							Open an Existing Vorto Project
+						</h2>
+					</div>
+				</div>
+			</div>		
+			<table st-table="displayedProjects" st-safe-src="projects" class="table">
+				<thead>
+					<tr>
+						<th colspan="6">
+							<div class="form-inline form-group">
+								<input type="search" placeholder="Search Projects"
+									ng-model="project"
+									st-search class="search-box-open-project input-sm" />
+							    <button class="btn btn-primary btn-project" ng-click="openProject()" type="button">
+							    	Open Project
+							    </button>
+							</div>
+						</th>
+					</tr>
+					<tr>
+						<th><b>{{projects.length}} Project(s) found</b></th>
+					</tr>
+					<tr>
+						<th id="onName" st-sort="project"><a href="">Name <i class="fa fa-sort"></i></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr st-select-row="project" ng-repeat="project in displayedProjects">
+						<td>{{ project.projectName }}</td>
+					</tr>
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="6" class="text-center">
+							<div st-pagination="" st-items-by-page="itemsByPage"
+								st-displayed-pages="displayedPages"></div>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+	</div>
+</div>		

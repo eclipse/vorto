@@ -18,9 +18,11 @@
  */
 package org.eclipse.vorto.editor.functionblock.web
 
+import org.eclipse.vorto.editor.web.resource.HashMapResourceHandler
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
+import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
 
 /**
  * Use this class to register additional components to be used within the web application.
@@ -30,6 +32,10 @@ class FunctionblockWebModule extends AbstractFunctionblockWebModule {
 
 	def Class<? extends IWebResourceSetProvider> bindIWebResourceSetProvider() {
 		return WebEditorResourceSetProvider
+	}
+
+	def Class<? extends IServerResourceHandler> bindIServerResourceHandler() {
+		return HashMapResourceHandler;
 	}
 
 }
