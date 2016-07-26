@@ -133,7 +133,7 @@ public class ModelRepositoryViewPart extends ViewPart {
 				}
 				ModelResource model = (ModelResource) viewer.getStructuredSelection().getFirstElement();
 				
-				if (model.getId().getModelType() == ModelType.InformationModel) {
+				if (model.getId().getModelType() == ModelType.InformationModel || model.getId().getModelType() == ModelType.Functionblock) {
 					addListGeneratorsToMenu(manager, model);
 				}
 				

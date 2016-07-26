@@ -17,12 +17,13 @@ import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
-import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
 import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
 import org.slf4j.Logger;
@@ -92,8 +93,16 @@ public class CodeGenerationController {
 		
 		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelResources);
 		
-		InformationModel infomodel = extractor.extract(new ModelId(ModelType.InformationModel, name, namespace, version));
+		Model model = extractor.extract(name);
 		
+		InformationModel infomodel = null;
+		
+		if (model instanceof InformationModel) {
+			infomodel = (InformationModel)model;
+		} else if (model instanceof FunctionblockModel) {
+			infomodel = Utils.disguiseFunctionblock((FunctionblockModel)model);
+		}
+				
 		IGenerationResult result = null;
 		try {
 			result = vortoGenerator.generate(infomodel, resolveMappingContext(infomodel, vortoGenerator.getServiceKey()));

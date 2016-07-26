@@ -18,13 +18,13 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.vorto.codegen.ui.handler.PopulateGeneratorsMenu;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.command.DeleteModelAction;
@@ -64,6 +64,9 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Functionblock) {
+						MenuManager generatorMenuMgr = new MenuManager("Generate Code");
+						generatorMenuMgr.add(new PopulateGeneratorsMenu());
+						menuMgr.add(generatorMenuMgr);
 						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
 						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
 						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {

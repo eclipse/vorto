@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -71,6 +72,8 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	public static final String PROJECT_SELECT_VIEW_ID = "org.eclipse.vorto.perspective.view.ProjectSelectionViewPart";
 
 	protected ComboViewer projectSelectionViewer;
+	
+	protected MultipleSelectionProvider multipleSelectionProvider;
 
 	private IModelProject selectedProject = null;
 
@@ -138,9 +141,10 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 		datatypeTreeViewer = new DatatypeTreeViewer(modelPanel, this);
 		functionBlockTreeViewer = new FunctionblockTreeViewer(modelPanel, this);
 		infoModelTreeViewer = new InfomodelTreeViewer(modelPanel, this);
-
-		getSite().setSelectionProvider(infoModelTreeViewer.treeViewer);
-
+		
+		multipleSelectionProvider = new MultipleSelectionProvider();
+		getSite().setSelectionProvider(multipleSelectionProvider);
+		
 		if (!modelProjects.isEmpty()) {
 			setSelectedProject(modelProjects.iterator().next());
 		}
@@ -386,5 +390,10 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 	@Override
 	public Shell getShell() {
 		return projectSelectionViewer.getControl().getShell();
+	}
+
+	@Override
+	public void setFocus(TreeViewer treeViewer) {
+		this.multipleSelectionProvider.setSelectionProvider(treeViewer);
 	}
 }
