@@ -27,6 +27,8 @@ import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
+import org.eclipse.vorto.codegen.utils.Utils;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -77,7 +79,7 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 			return false;
 		}
 
-		InformationModel informationModel = (InformationModel) selectedElement.getModel();
+		InformationModel informationModel = getInformationModel(selectedElement.getModel());
 
 		for (IConfigurationElement e : configElements) {
 			try {
@@ -101,6 +103,15 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		}
 
 		return true;
+	}
+
+	private InformationModel getInformationModel(Model model) {
+		if (model instanceof InformationModel) {
+			return (InformationModel)model;
+		} else if (model instanceof FunctionblockModel) {
+			return Utils.disguiseFunctionblock((FunctionblockModel)model);
+		}
+		throw new IllegalArgumentException("Cannot generate from selected model");
 	}
 
 	private boolean hasNoErrors(IModelElement selectedElement) {

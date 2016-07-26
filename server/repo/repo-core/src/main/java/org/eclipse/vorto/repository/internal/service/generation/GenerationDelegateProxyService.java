@@ -106,8 +106,8 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 		if (modelResource == null) {
 			throw new ModelNotFoundException("Model with the given ID does not exist",null);
 		}
-		if (modelResource.getModelType() != ModelType.InformationModel) {
-			throw new GenerationException("Provided model is not an information model. Generation aborted.");
+		if (modelResource.getModelType() == ModelType.Datatype || modelResource.getModelType() == ModelType.Mapping) {
+			throw new GenerationException("Provided model is neither an information model nor a function block model!");
 		}
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 		Generator generatorEntity = getGenerator(serviceKey);

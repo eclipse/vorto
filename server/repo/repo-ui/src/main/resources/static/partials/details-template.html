@@ -94,14 +94,14 @@
 								  <dd> 
 							   <a ng-href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}?output=XMI" class="pull-center"><i class="fa fa-fw fa-download"></i>XMI</a>
 								 <a ng-href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}" class="pull-center"><i class="fa fa-fw fa-download"></i>DSL</a>
-								  <a ng-show="model.modelType === 'InformationModel'" ng-repeat="documentationGenerator in documentationGenerators" ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{documentationGenerator.key}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{documentationGenerator.name}}</a>
+								  <a ng-hide="model.modelType === 'Datatype'" ng-repeat="documentationGenerator in documentationGenerators" ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{documentationGenerator.key}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{documentationGenerator.name}}</a>
 								 
 							</dd>
 							</dl>
 						  </div>
 						  
 						  </div>
-						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-show="model.modelType === 'InformationModel'">
+						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.modelType === 'Datatype'">
 							<div class="row">
 								<label>Platform Generators: </label>
 							</div>
