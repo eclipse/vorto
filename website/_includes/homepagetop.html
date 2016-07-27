@@ -4,14 +4,9 @@
   {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
   <div class="box">
     {% if thecycle == 'odd' %}
-    {% if main.playvideo == 'yes' %}
-      <video class="box-img img-responsive pull-right wow {{ main.animatestyle}}" width="500" height="500" controls autoplay><source src="{{base}}/video/vortointro.webm" type="video/webm"></video>
-          {% endif %}
-          {% if main.playvideo == 'no' %}
           <img class="box-img img-responsive pull-right wow {{ main.animatestyle}} zoom1" src="{{ base }}/img/{{ main.imagename}}">
-            {% endif %}
 
-       {% if main.videourl %}
+     {% if main.videourl %}
        <div class="{{ main.style }}">
       <a title="{{main.videotitle}}" data-rel="prettyPhoto" href="{{main.videourl}}" rel="prettyPhoto" >
           <i class="fa fa-play-circle fa-5 play-icon"></i>
