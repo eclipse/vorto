@@ -14,7 +14,27 @@ layout: default
   </div>
 
     <h1>{{page.title}}</h1>
-      <section>
-   		 {{ content }}   
+    <p>
+    The image below describes the interaction of three stakeholders with Eclipse Vorto: The stakeholders are
+
+    * The device manufacturers
+    * The vendors of IoT platforms
+    * Solution developers.
+
+    All of them have specific use cases that can be supported by the components of Vorto.
+
+
+    <div class="col-md-6">
+      <a href="{{ $base}}/img/VortoEclipseOverview.png" rel="prettyPhoto" title="Vorto use cases" >
+      <img src="{{ $base}}/img/VortoEclipseOverview.png" style="width:90%;height:70%;margin-top:0px;" title="Click to view in high resolution"/>
+      </a>
+    </div>
+    <div class="col-md-6">
+    <video width="500" height="300" controls autoplay><source src="{{base}}/video/vortointro.webm" type="video/webm"></video>
+    </div>
+    </p>
+    <br>
+    <section>
+   		 {{ content }}
     </section>
 </div>
