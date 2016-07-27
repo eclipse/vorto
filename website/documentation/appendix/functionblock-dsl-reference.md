@@ -15,86 +15,86 @@ This section details the following topics:
 
 The following code represents the Function Block Model DSL syntax. Function block model use all variables that are defined in Data Type DSL.
 
-	functionblockmodel:
-    'namespace' qualifiedName
-    'version' version
-    'displayname' displayname
-    ('description' description)?
-    'category' category
-    (modelReference)*
-    'functionblock' id ('extends' functionblockmodel)? '{'
-        functionblock
-    '}'
-  ;
+    functionblockmodel:
+        'namespace' qualifiedName
+        'version' version
+        'displayname' displayname
+        ('description' description)?
+        'category' category
+        (modelReference)*
+        'functionblock' id ('extends' functionblockmodel)? '{'
+            functionblock
+        '}'
+    ;
 
-  functionblock:
-      'configuration' '{' 
-          (property)*  
-      '}'
+    functionblock:
+        'configuration' '{' 
+            (property)*  
+        '}'
 
-      ('status' '{'
-          (property)*
-      '}')?
+        ('status' '{'
+            (property)*
+        '}')?
 
-      ('fault' '{'
-          (property)*
-      '}')?
+        ('fault' '{'
+            (property)*
+        '}')?
 
-      ('events' '{'
-          (event)*
-      '}')?
+        ('events' '{'
+            (event)*
+        '}')?
 
-      ('operations' '{'
-          (operation)*
-      '}')?
-  ;
+        ('operations' '{'
+            (operation)*
+        '}')?
+    ;
 
-  operation :
-      ('breakable')? id '(' (param (description)?)? ')' ('returns'  returnType)? (string)?
-  ;
+    operation :
+        ('breakable')? id '(' (param (description)?)? ')' ('returns'  returnType)? (string)?
+    ;
 
-  returnType :
-      returnObjectType | returnPrimitiveType
-  ;
+    returnType :
+        returnObjectType | returnPrimitiveType
+    ;
 
-  returnObjectType :
-      ('multiple')? [datatype::type | qualifiedName]
-  ;
+    returnObjectType :
+        ('multiple')? [datatype::type | qualifiedName]
+    ;
 
-  returnPrimitiveType :
-      ('multiple')? primitiveType
-  ;
+    returnPrimitiveType :
+        ('multiple')? primitiveType
+    ;
 
-  primitiveParam:
-      (multiple')? id 'as' primitiveType
-  ;
+    primitiveParam:
+        (multiple')? id 'as' primitiveType
+    ;
 
-  refParam:
-      ('multiple')? id 'as' [datatype::type|qualifiedName]
-  ;
+    refParam:
+        ('multiple')? id 'as' [datatype::type|qualifiedName]
+    ;
 
-  param:
-      primitiveParam | refParam
-  ;
+    param:
+        primitiveParam | refParam
+    ;
 
-  event:
-      id '{'
-          (property)*
-      '}'
-  ;
+    event:
+        id '{'
+            (property)*
+        '}'
+    ;
 
-  string:
-      '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-      "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
-  ;
+    string:
+        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+    ;
 
-  qualifiedName: id ('.' id)*;
+    qualifiedName: id ('.' id)*;
 
-  version : int('.' int)*('-'id)?;
+    version : int('.' int)*('-'id)?;
 
-  id:
-      '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
-  ;
+    id:
+        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
+    ;
 
 ## Function Block DSL Semantics
 
