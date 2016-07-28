@@ -49,7 +49,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 		treeViewer.addDragSupport(operations, transferTypes, new ModelDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
-				ModelDropListenerFactory.datatypeViewPartDropListener(treeViewer));
+				ModelDropListenerFactory.datatypeViewPartDropListener(treeViewer, localModelWorkspace));
 	}
 
 	@Override

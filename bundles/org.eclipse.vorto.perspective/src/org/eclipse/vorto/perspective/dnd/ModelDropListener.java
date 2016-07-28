@@ -18,12 +18,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.vorto.core.ui.model.IModelElement;
+import org.eclipse.vorto.core.ui.model.IModelProject;
+import org.eclipse.vorto.perspective.view.ILocalModelWorkspace;
 import org.eclipse.vorto.perspective.view.ModelProjectTreeViewer;
 
 /**
@@ -36,13 +37,16 @@ import org.eclipse.vorto.perspective.view.ModelProjectTreeViewer;
 
 // -erle- : This needs to be refactored.
 public class ModelDropListener extends ViewerDropAdapter {
+	
+	private ILocalModelWorkspace localModelBrowser;
 
 	private Class<?> allowedTarget;
 
 	private Collection<DropSourceValidatorAndAction> dropActors = new ArrayList<DropSourceValidatorAndAction>();
 
-	public ModelDropListener(Viewer viewer) {
-		super(viewer);
+	public ModelDropListener(Viewer viewer, ILocalModelWorkspace localModelBrowser) {
+		super(Objects.requireNonNull(viewer));
+		this.localModelBrowser = Objects.requireNonNull(localModelBrowser);
 	}
 
 	public ModelDropListener setAllowedTarget(Class<?> allowedTarget) {
@@ -79,7 +83,6 @@ public class ModelDropListener extends ViewerDropAdapter {
 				if (targetModelElement != null) {
 					viewer.expandToLevel(targetModelElement, 1);
 				}
-
 				return true;
 			}
 
@@ -99,15 +102,14 @@ public class ModelDropListener extends ViewerDropAdapter {
 
 	private Object getTarget() {
 		Object target = this.getCurrentTarget();
-		if (target == null) {
-			Viewer viewer = this.getViewer();
-			if (viewer instanceof ModelProjectTreeViewer) {
-				target = ((ModelProjectTreeViewer) viewer).getLocalModelWorkspace().getProjectBrowser()
-						.getSelectedProject();
-			}
+
+		if (target instanceof IModelElement) {
+			// Get the latest version of this IModelElement
+			IModelProject project = localModelBrowser.getProjectBrowser().getSelectedProject();
+			return project.getModelElementById(((IModelElement) target).getId());
 		}
 
-		return target;
+		throw new RuntimeException("Target is not an IModelElement");
 	}
 
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
