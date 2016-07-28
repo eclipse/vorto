@@ -49,7 +49,7 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 		treeViewer.addDragSupport(operations, transferTypes, new ModelDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
-				ModelDropListenerFactory.functionblockViewPartDropListener(treeViewer));
+				ModelDropListenerFactory.functionblockViewPartDropListener(treeViewer, localModelWorkspace));
 	}
 
 	protected void initContextMenu() {

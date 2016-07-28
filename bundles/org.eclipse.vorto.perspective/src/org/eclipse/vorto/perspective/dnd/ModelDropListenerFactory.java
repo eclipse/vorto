@@ -28,11 +28,12 @@ import org.eclipse.vorto.perspective.dnd.dropaction.RepositoryResourceDropAction
 import org.eclipse.vorto.perspective.dnd.dropvalidator.DatatypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassModelTypeValidator;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassSourceClassValidator;
+import org.eclipse.vorto.perspective.view.ILocalModelWorkspace;
 
 public class ModelDropListenerFactory {
 
-	public static DropTargetListener datatypeViewPartDropListener(Viewer viewer) {
-		return new ModelDropListener(viewer)
+	public static DropTargetListener datatypeViewPartDropListener(Viewer viewer, ILocalModelWorkspace localModelBrowser) {
+		return new ModelDropListener(viewer, localModelBrowser)
 				.addDropAction(
 						new DatatypeValidator(
 								DatatypeModelElement.class,
@@ -49,8 +50,8 @@ public class ModelDropListenerFactory {
 						new AddSharedReferenceDropAction(ModelResource.class));
 	}
 	
-	public static DropTargetListener functionblockViewPartDropListener(Viewer viewer) {
-		return new ModelDropListener(viewer)
+	public static DropTargetListener functionblockViewPartDropListener(Viewer viewer, ILocalModelWorkspace localModelBrowser) {
+		return new ModelDropListener(viewer, localModelBrowser)
 				.addDropAction(
 						new TargetClassSourceClassValidator(
 								FunctionblockModelElement.class,
@@ -72,8 +73,8 @@ public class ModelDropListenerFactory {
 						new AddSharedReferenceDropAction(ModelResource.class));
 	}
 	
-	public static DropTargetListener infomodelViewPartDropListener(Viewer viewer) {
-		return new ModelDropListener(viewer)
+	public static DropTargetListener infomodelViewPartDropListener(Viewer viewer, ILocalModelWorkspace localModelBrowser) {
+		return new ModelDropListener(viewer, localModelBrowser)
 				.addDropAction(
 						new TargetClassSourceClassValidator(
 								InformationModelElement.class,

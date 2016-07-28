@@ -48,7 +48,7 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 
 		treeViewer.addDropSupport(operations, transferTypes,
-				ModelDropListenerFactory.infomodelViewPartDropListener(treeViewer));
+				ModelDropListenerFactory.infomodelViewPartDropListener(treeViewer, localModelWorkspace));
 	}
 
 	protected void initContextMenu() {
