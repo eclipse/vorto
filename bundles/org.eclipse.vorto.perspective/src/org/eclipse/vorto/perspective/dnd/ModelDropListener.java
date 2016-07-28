@@ -75,14 +75,18 @@ public class ModelDropListener extends ViewerDropAdapter {
 				}
 			}
 
-			if (result != null) {
+			if (target != null) {
 				ModelProjectTreeViewer viewer = (ModelProjectTreeViewer) this.getViewer();
 				viewer.getLocalModelWorkspace().refreshCurrent();
-				IModelElement targetModelElement = findTarget((IModelElement) target,
-						(Collection<IModelElement>) viewer.getInput());
-				if (targetModelElement != null) {
-					viewer.expandToLevel(targetModelElement, 1);
+				
+				if (target instanceof IModelElement) {
+					IModelElement targetModelElement = findTarget((IModelElement) target,
+							(Collection<IModelElement>) viewer.getInput());
+					if (targetModelElement != null) {
+						viewer.expandToLevel(targetModelElement, 1);
+					}
 				}
+				
 				return true;
 			}
 
@@ -103,13 +107,20 @@ public class ModelDropListener extends ViewerDropAdapter {
 	private Object getTarget() {
 		Object target = this.getCurrentTarget();
 
-		if (target instanceof IModelElement) {
+		if (target == null) {
+			Viewer viewer = this.getViewer();
+			if (viewer instanceof ModelProjectTreeViewer) {
+				target = ((ModelProjectTreeViewer) viewer).getLocalModelWorkspace().getProjectBrowser().getSelectedProject();
+			}
+		} else if (target instanceof IModelElement) {
 			// Get the latest version of this IModelElement
 			IModelProject project = localModelBrowser.getProjectBrowser().getSelectedProject();
-			return project.getModelElementById(((IModelElement) target).getId());
+			target = project.getModelElementById(((IModelElement) target).getId());
+		} else {
+			throw new RuntimeException("Target is not an IModelElement");
 		}
 
-		throw new RuntimeException("Target is not an IModelElement");
+		return target;
 	}
 
 	public boolean validateDrop(Object target, int operation, TransferData transferType) {
