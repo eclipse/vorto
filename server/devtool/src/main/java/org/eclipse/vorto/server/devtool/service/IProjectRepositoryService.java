@@ -2,13 +2,12 @@ package org.eclipse.vorto.server.devtool.service;
 
 import java.util.ArrayList;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 
 public interface IProjectRepositoryService {
 	
-	Project createProject(String sessionId, String projectName, ResourceSet resourceSet);
+	Project createProject(String sessionId, String projectName);
 	
 	Project openProject(String sessionId, String projectName);
 	

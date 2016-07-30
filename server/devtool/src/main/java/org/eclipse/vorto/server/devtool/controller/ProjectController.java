@@ -6,7 +6,6 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
@@ -46,9 +45,8 @@ public class ProjectController {
 				.getInstance(IWebResourceSetProvider.class);
 
 		String sessionId = request.getSession().getId();
-		ResourceSet resourceSet = webEditorResourceSetProvider.getNewResourceSet();
 
-		Project project = projectRepositoryService.createProject(sessionId, projectName, resourceSet);
+		Project project = projectRepositoryService.createProject(sessionId, projectName);
 
 		webEditorResourceSetProvider.setSessionResourceSet(httpServiceContext, project.getResourceSet());
 		webEditorResourceSetProvider.setSessionRefencedResourceSet(httpServiceContext,

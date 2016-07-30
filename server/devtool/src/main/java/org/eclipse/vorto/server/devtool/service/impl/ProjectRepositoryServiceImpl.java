@@ -1,54 +1,49 @@
 package org.eclipse.vorto.server.devtool.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.service.IProjectRepositoryService;
+import org.eclipse.vorto.server.devtool.service.IProjectRespositoryDAO;
+import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.google.inject.Injector;
 
 @Service
 public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
-
-	private HashMap<String, ArrayList<Project>> projectRepositoryHashMap = new HashMap<>();
 	
+	@Autowired
+	Injector injector;
+	
+	@Autowired
+	IProjectRespositoryDAO projectRespositoryDAO;
+		
 	@Override
-	public Project createProject(String sessionId, String projectName, ResourceSet resourceSet) {
-		ArrayList<Project> projectList = projectRepositoryHashMap.get(sessionId);
-		if(projectList == null || projectList.isEmpty()){
-			projectList = new ArrayList<>();
-		}
-		for(Project project : projectList){
-			if(project.getProjectName().equals(projectName)){
-				throw new RuntimeException("The project " + projectName + " already exists. Please choose another name");
-			}
-		}
+	public Project createProject(String sessionId, String projectName) {
+		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector.getInstance(IWebResourceSetProvider.class);		
 		Project project = new Project(projectName);
-		project.setResourceSet(resourceSet);
+		project.setResourceSet(webEditorResourceSetProvider.getNewResourceSet());
 		project.setReferencedResourceSet(new HashSet<String>());
 		project.setResourceList(new ArrayList<>());
-		projectList.add(project);
-		projectRepositoryHashMap.put(sessionId, projectList);
+		projectRespositoryDAO.createProject(project, sessionId);
 		return project;
 	}
 
 	@Override
 	public Project openProject(String sessionId, String projectName) {
-		ArrayList<Project> projectList = projectRepositoryHashMap.get(sessionId);
-		if(projectList == null || projectList.isEmpty()){
-			throw new RuntimeException("The project with name : " + projectName + " does not exist");
+		Project project = projectRespositoryDAO.openProject(projectName, sessionId);
+		if(project == null){
+			throw new RuntimeException("The project with name : " + projectName + " does not exist");			
 		}
-		for(Project project : projectList){
-			if(project.getProjectName().equals(projectName)){
-				return project;
-			}
-		}
-		throw new RuntimeException("The project with name : " + projectName + " does not exist");
+		return project;
 	}
 
 	@Override
@@ -59,10 +54,7 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	
 	@Override
 	public ArrayList<Project> getProjects(String sessionId) {
-		ArrayList<Project> projectList = projectRepositoryHashMap.get(sessionId);
-		if(projectList == null || projectList.isEmpty()){
-			projectList = new ArrayList<>();
-		}
+		ArrayList<Project> projectList = projectRespositoryDAO.getProjects(sessionId);
 		ArrayList<Project> projectNameList = new ArrayList<>();
 		for(Project iterProject : projectList){
 			Project project = new  Project(iterProject.getProjectName());
