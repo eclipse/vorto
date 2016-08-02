@@ -114,11 +114,12 @@ After packaging and deploying the plug-in in the eclipse plug-ins folder, the co
 
 This example code generator is provided for you to understand code generator easier. There are already some predefined code generators included in our code base, please see the list [here](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md). 
 
-## Using Mapping in a code generator
-If the information model's properties cannot be directly used in a code generator, then a mapping file is needed to map information model's property to the other platform specific value. 
+## Using mapping model in a code generator
+
+If the information model's properties cannot be directly used in a code generator, then a mapping file is needed to map information model's property to the other platform specific value. Vorto mapping model supports mapping Vorto models (Information Model/Function Block/Data Type) to the platform-specific models. Please refer to here(link to be added) for mapping model syntax and more details. 
 
 Following the above tutorial, the helloworld generator could already generate "Hello World from XDK !", here "XDK" is the name of the information model. 
-Now, let's say, if user would like to use a nick name instead of information model name, and user doen't want to incorporate this platform-specific nick name into the existing information model, so we can use mapping mechanism to acheive that purpose. 
+Now, let's say, if user would like to use a nick name instead of information model name, and user doen't want to incorporate this platform-specific nick name into the existing information model, so we can use mapping model to acheive that purpose. 
 
 **Proceed as follows**
 
@@ -204,3 +205,23 @@ Implement the actual code under the `generate()` method for the code to be gener
 3. A new project with name `XDK_helloworldgenerator_generated` is generated.  
 4. Open the file `sample.txt`, it shows "Hello World from My Secret Weapon !" now.
   ![generated code]({{base}}/img/documentation/vorto_generated_with_mapping.png)  
+
+## Futher information for utility classes
+
+HelloworldGenerator is a simple demo for creating a code generator, it implements `IVortoCodeGenerator` interface and directly overrides `generate()` methord. It is enough for many of simple code generation tasks, but for some more complicated tasks, Vorto project provides a few utility classes to help user implement new code generators. For example, `ChainedCodeGeneratorTask` class helps to break down a big complex task to several sub tasks, `GeneratorTaskFromFileTemplate` class helps to generate code from file template, and `GenerationResultZip` class helps to generate compressed code, usually these classes work together to implement a new code generator, here is the example code in MQTT code generator: 
+
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
+		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
+		for (FunctionblockProperty property : context.getProperties()) {			
+			ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
+			
+			if (property.getType().getFunctionblock().getStatus() != null) {
+				generator.addTask(new GeneratorTaskFromFileTemplate<>(new IClientHandlerTemplate()));
+				generator.addTask(new GeneratorTaskFromFileTemplate<>(new MqttConfigurationTemplate()));
+			}
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
+			generator.generate(property.getType(),invocationContext, outputter);
+		}
+		return outputter;
+	}
+
