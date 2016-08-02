@@ -24,7 +24,7 @@ A projects is an entity wherein you can define data types, function blocks and i
 
 **Prerequisites**  
 
-- You have started your IDE.  
+- You have started Eclipse.  
 - You have selected the Vorto perspective.
 
 **Proceed as follows**

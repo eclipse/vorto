@@ -103,6 +103,8 @@
 - title: "Tutorial"
   href: ""
   sub:
+    - title: "Vorto in 5 Minutes"
+      href: "/documentation/tutorial/vortoin5minutes.html"
     - title: "Establish communication between Web app and Mqtt client "
       href: "/documentation/tutorial/mqttwithwebapp.html"
 - title: "Appendix"

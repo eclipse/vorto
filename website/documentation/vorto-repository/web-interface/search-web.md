@@ -27,8 +27,8 @@ You have opened the Vorto Repository Web interface (refer to [Opening the Vorto 
 
 **Proceed as follows**
 
-1. If the **Search** page is not displayed, click **Search** in the menu bar.
-    The **Search** page displays the model table containing all shared models.
+1. If the **Search** page is not displayed, click **Search** in the menu bar.  
+   The **Search** page displays the model table containing all shared models.
 2. To find a specific model, filter the model table in one or both of the following ways:  
    * Select the appropriate radio button according to the model type you want to search for.  
    * In the **Search** entry field, enter a search string to find the item you want, e.g., the function block `Accelerometer`  
