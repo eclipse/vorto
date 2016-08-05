@@ -1,46 +1,60 @@
 ---
 layout: documentation
-title: Model Mappings
+title: Defining Model Mappings
 ---
 {% include base.html %}
 
-## Mapping Models
+
+# Defining Model Mappings
+
+This section details the following topics:
+
+[Model Mapping](#model-mapping)  
+
+[Defining a Data Type Mapping](./data-type-mapping.html)  
+
+[Defining a Function Block Mapping](./function-block-mapping.html)  
+
+[Defining an Information Model Mapping](./information-model-mapping.html)  
+
+
+## Model Mapping
 
 Vorto allows the user to define mapping rules to map Vorto models to other target platform domain models.
 
-The primary purpose of defining Mapping models in Vorto is to directly translate or map datatype/functionblock/information model descriptions from Vorto to any other IoT platforms (For e.g Kura, Eclipse Smarthome). Vorto Mapping models acts as a bridge between Vorto definitions and target platforms/technologies.
+The primary purpose of defining model mappings in Vorto is to directly translate or map datatype/functionblock/information model descriptions from Vorto to any other IoT platforms (for example, Kura, Eclipse Smarthome). Vorto model mapping acts as a bridge between Vorto definitions and target platforms/technologies.
 
-In addition to that, the mapping models provides an option to enhance the Vorto models with additional meta data descriptions targeted for a specific platform. Thereby the code generators can leverage the expanded meta data descriptions customized for their platforms. Vorto helps to  integrate with other IoT platforms through the Mapping models in flexible manner. Here are few possible scenarios where Mapping models can be used. 
+In addition to that, the model mapping provides an option to enhance the Vorto models with additional metadata descriptions targeted for a specific platform. Thereby the code generators can leverage the expanded metadata descriptions customized for their platforms. Vorto helps to integrate with other IoT platforms through the model mapping in flexible manner. Here are few possible scenarios where model mapping can be used:
 
- - Translate Vorto model definitions to understand other IoT platforms
- - Provide additional metadata in which Vorto models is not able to describe for specific IoT solutions.
- - Provide different mapping models for multiple versions of target platforms (For eg. iOS 7/8) 
+ - Translate Vorto model definitions to understand other IoT platforms.
+ - Provide additional metadata in case the Vorto model is not able to describe a specific IoT solution.
+ - Provide different model mappings for multiple versions of target platforms (For example, iOS 7/8).
 
-
-Mapping models can be defined for
+Model mapping can be defined for the following:
  
- - [Datatypes](./data-type-mapping.html)
- - [Function Blocks](./function-block-mapping.html)
- - [Information Models](./information-model-mapping.html)   
+- [Datatypes](./data-type-mapping.html)
+- [Function Blocks](./function-block-mapping.html)
+- [Information Models](./information-model-mapping.html)   
 
-The Mapping models contains direct mapping of Vorto grammar descriptions to custom defined `Stereotypes` and `Attributes` specific for that target platform. 
+The model mapping contains a direct mapping of Vorto grammar descriptions to custom defined `Stereotypes` and `Attributes` specific for the target platform.
 
-`Stereotypes` are custom defined keyword which is leveraged by target platform generators.
+`Stereotypes` are custom defined keywords which are leveraged by target platform generators.
 
-`Attributes` are custom defined key value pairs for a specific Stereotypes which is again leveraged by specific target platform generators.    
+`Attributes` are custom defined key value pairs for a specific stereotype which is again leveraged by specific target platform generators.
 
-A simple Mapping model definition from Vorto to Philips Hue looks likes below, 
+A simple model mapping statement from Vorto to Philips Hue looks likes below
 
+	...
 	from ColorLight.category to philipshue with {configuration : "devicetype"}
+	...
 
-In the above mapping 'philipshue' is a custom defined stereotype and 'configuration' is custom defined attribute and a value 'devicetype' is actual value which is being mapped to Philips Hue definitions. The code generators can make use of these additional metadata which could be targeted for specific IoT solutions or platforms. 
+In the above mapping `philipshue` is a custom defined stereotype, `configuration` is a custom defined attribute and the value `devicetype` is the actual value which is being mapped to Philips Hue definitions. The code generators can make use of these additional metadata which could be targeted for specific IoT solutions or platforms.
 
+To demonstrate the potential for model mapping, let us define a model mapping to enhance *Alexa* commands for the *AWS genertor*.
 
+The following two examples definitions are given:
 
-To demonstrate the potential for Mapping models, let us define a mapping model to enhance Alexa commands for AWS genertor.
-
-Lets take a simple example of `ColorLight` functionblock definition, 
-
+`ColorLight` functionblock definition
 
 	namespace com.mycompany.fb
 	version 1.0.0
@@ -48,16 +62,15 @@ Lets take a simple example of `ColorLight` functionblock definition,
 	description "Function block model for ColorLight"
 	category demo	
 	functionblock ColorLight {
-		status{ 
+		status{
 			mandatory brightness as int
 		}
 		operations{
-			setBrightness(level as int)		
+			setBrightness(level as int)
 		}
 	}
 
-
-and with `ColorLightSystem` information model definition, 	
+`ColorLightSystem` information model definition
 
 	namespace com.mycompany.informationmodels
 	version 1.0.0
@@ -74,14 +87,15 @@ and with `ColorLightSystem` information model definition,
 		}
 	}
 
-By invoking AWS generator without any mapping models from Vorto Repository, it generates the following Alexa voice command vocabulary in `colorlightsystemUtterances.txt` file. These  voice commands are provided as a input to AWS service to set the appropriate brightness level to any device. The details of how the AWS services control the actual devices are beyond the scope of this documentation. 
-	
-	setBrightness {level}
-	
-	brightness get brightness status
-  
+By invoking the *AWS Generator* without any model mapping from Vorto Repository, it generates the following *Alexa* voice command vocabulary in the `colorlightsystemUtterances.txt` file.
 
-Lets define a mapping model `ColorLightMapping` to enhance the Alexa voice commands vocabulary for the `ColorLight` functionblock. Thereby more voice commands are recognized by AWS services to control the actual devices.
+	setBrightness {level}
+
+	brightness get brightness status
+
+These voice commands are provided as an input to the AWS service to set the appropriate brightness level to any device. The details of how the AWS services control the actual devices are beyond the scope of this documentation.
+
+Now we define a model mapping `ColorLightMapping` to enhance the *Alexa* voice commands vocabulary for the `ColorLight` functionblock. Thereby, more voice commands are recognized by AWS services to control the actual devices.
 
 	namespace examples.mappings.aws
 	version 1.0.0
@@ -90,27 +104,26 @@ Lets define a mapping model `ColorLightMapping` to enhance the Alexa voice comma
 	using com.mycompany.fb.ColorLight;1.0.0
 	functionblockmapping ColorLightMapping {
 		targetplatform aws
-		from ColorLight.operation.setBrightness to alexa with {command: "set brightness to {level} ; increase brightness to {level} ; decrease brightness to {level}"}		
-	}	
+		from ColorLight.operation.setBrightness to alexa with {command: "set brightness to {level} ; increase brightness to {level} ; decrease brightness to {level}"}
+	}
+
+In the above mapping, the *Alexa* voice command is enhanced by  additional commands with `increase` and `decrease` to control the `ColorLight`. Here, `alexa` is a custom defined `Stereotypes` keyword which the *AWS Generator* interprets and makes use of the additional values defined in the model mapping. Again, `command` is a custom defined `Attribute` keyword which the *AWS generator* can understand. 
 
 
-In the above mapping, the Alexa voice command is enhanced by additional command with `increase` and `decrease` to control the `ColorLight`.  Here `alexa` is a custom defined `Stereotype` keyword which AWS code generator interprets and makes use of the additional values defined in the mapping model. Again `command` is a custom defined `Attribute` keyword which is AWS code generator can understand. 
+Once this model mapping `ColorLightMapping` is defined, it can be shared using the Vorto Repository Web interface page:
 
-
-Once this mapping model `ColorLightMapping` is shared using Vorto Repository Web UI page as below
-
- ![Share Mapping Model]({{base}}/img/documentation/vorto_share_mapping_model.png). 
+![Share Model Mapping]({{base}}/img/documentation/vorto_share_mapping_model.png)
 
 <table class="table table-bordered">
 	<tbody>
  <tr>
    <td><i class="fa fa-info-circle info-note"></i></td>
-    <td>Note: Currently mapping models are shared only through Vorto repository Web UI.</td>
+    <td>Note: Currently, model mappings are shared only through the Vorto Repository Web interafce.</td>
   </tr></tbody>
 </table>  
 
 
-With this mapping model, when the AWS generator is invoked, it generates the following `colorlightsystemUtterances.txt`
+With this model mapping the *AWS Generator* generates the file `colorlightsystemUtterances.txt` with the following content:
 
 	setBrightness set brightness to {level} 
 	setBrightness  increase brightness to {level} 
@@ -118,9 +131,7 @@ With this mapping model, when the AWS generator is invoked, it generates the fol
 	
 	brightness get brightness status   
 
-Here the Vorto mapping model descriptions greatly enhances the capabilities of any platform, in this case it is AWS Alexa platform.
-
-
+As you can see, the Vorto model mapping definition greatly enhances the capabilities of any platform, in this case the AWS Alexa platform.
 
 <div class="thumb1">
 <a title="Defining a new Mapping" data-rel="prettyPhoto" href="https://youtu.be/C5c5tTFwG0U&width=1500&height=1000" rel="prettyPhoto" >
