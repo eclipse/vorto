@@ -5,7 +5,7 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;

@@ -1,7 +1,7 @@
 package org.eclipse.vorto.example.template
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
 /**
