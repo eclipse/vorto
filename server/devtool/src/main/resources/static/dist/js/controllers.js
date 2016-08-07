@@ -1,5 +1,5 @@
 define(["angular"], function(angular) {
-  var app = angular.module('apps.controller', ['smart-table']);
+  var app = angular.module('apps.controller', ['smart-table','apps.directive']);
 
   app.controller('EditorController', function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal) {
 
@@ -17,7 +17,7 @@ define(["angular"], function(angular) {
     $scope.selectedTabId = 0;
     $scope.selectedEditor = null;
     
-    $scope.showEditorBody = false;
+    $scope.showEditorBody = true;
   	$scope.projectName;
 
     $scope.editorTypes = [
@@ -31,9 +31,10 @@ define(["angular"], function(angular) {
   	  $scope.projectName = $routeParams.projectName;	
   	  $http.get('./project/open/' + $scope.projectName).success(
   	  	function(data, status, headers, config) {
+			$scope.showEditorBody = true;
 			$scope.getResources();
   		}).error(function(data, status, headers, config) {
-          console.log('Damn son');
+			$scope.showEditorBody = false;
   	  });	
   	}
 
@@ -47,7 +48,7 @@ define(["angular"], function(angular) {
 		  	$scope.openEditor(data[i]);
 		  }
   		}).error(function(data, status, headers, config) {
-          console.log('Damn son');
+
   	  });		
 	}
 
@@ -625,6 +626,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
   });
   
   app.controller('DescribeEditorModalController', function($rootScope, $scope, $uibModalInstance, editorType) {
+	
+	$scope.modelVersionRegex = "/^\d\.\d\.\d+$/";
 
     $scope.editorType = editorType;
     $scope.model = {

@@ -5,7 +5,9 @@ import java.util.HashMap;
 
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.service.IProjectRespositoryDAO;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MapProjectRespositoryDAOImpl implements IProjectRespositoryDAO {
 
 	private HashMap<String, ArrayList<Project>> projectRepositoryHashMap = new HashMap<>();
@@ -13,7 +15,7 @@ public class MapProjectRespositoryDAOImpl implements IProjectRespositoryDAO {
 	@Override
 	public void createProject(Project project, String sessionId) {
 		ArrayList<Project> projectList = projectRepositoryHashMap.get(sessionId);
-		if(projectList == null || projectList.isEmpty()){
+		if(projectList == null){
 			projectList = new ArrayList<>();
 		}
 		projectRepositoryHashMap.put(sessionId, projectList);
@@ -26,6 +28,9 @@ public class MapProjectRespositoryDAOImpl implements IProjectRespositoryDAO {
 	@Override
 	public boolean projectExists(String projectName, String sessionId) {
 		ArrayList<Project> projectList = projectRepositoryHashMap.get(sessionId);
+		if(projectList == null){
+			projectList = new ArrayList<>();
+		}
 		for(Project project : projectList){
 			if(project.getProjectName().equals(projectName)){
 				return true;
@@ -55,7 +60,5 @@ public class MapProjectRespositoryDAOImpl implements IProjectRespositoryDAO {
 		}
 		return projectList;
 	}
-	
-	
 
 }

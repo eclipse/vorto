@@ -7,17 +7,19 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
+import org.eclipse.vorto.server.devtool.exception.ProjectAlreadyExistsException;
+import org.eclipse.vorto.server.devtool.exception.ProjectNotFoundException;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.service.IProjectRepositoryService;
 import org.eclipse.vorto.server.devtool.service.IProjectRespositoryDAO;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.google.inject.Injector;
 
-@Service
+@Component
 public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	
 	@Autowired
@@ -25,29 +27,40 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	
 	@Autowired
 	IProjectRespositoryDAO projectRespositoryDAO;
+	
+	@Override
+	public void checkProjectExists(String sessionId, String projectName) throws ProjectAlreadyExistsException {
+		if(projectRespositoryDAO.projectExists(projectName, sessionId)){
+			throw new ProjectAlreadyExistsException();
+		}
+	}	
 		
 	@Override
-	public Project createProject(String sessionId, String projectName) {
+	public Project createProject(String sessionId, String projectName) throws ProjectAlreadyExistsException {
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector.getInstance(IWebResourceSetProvider.class);		
 		Project project = new Project(projectName);
 		project.setResourceSet(webEditorResourceSetProvider.getNewResourceSet());
 		project.setReferencedResourceSet(new HashSet<String>());
 		project.setResourceList(new ArrayList<>());
-		projectRespositoryDAO.createProject(project, sessionId);
-		return project;
+		if(!projectRespositoryDAO.projectExists(projectName, sessionId)){
+			projectRespositoryDAO.createProject(project, sessionId);
+			return project;
+		}else{
+			throw new ProjectAlreadyExistsException();
+		}
 	}
 
 	@Override
-	public Project openProject(String sessionId, String projectName) {
+	public Project openProject(String sessionId, String projectName) throws ProjectNotFoundException {
 		Project project = projectRespositoryDAO.openProject(projectName, sessionId);
 		if(project == null){
-			throw new RuntimeException("The project with name : " + projectName + " does not exist");			
+			throw new ProjectNotFoundException();			
 		}
 		return project;
 	}
 
 	@Override
-	public ArrayList<ProjectResource> getProjectResources(String sessionId, String projectName) {
+	public ArrayList<ProjectResource> getProjectResources(String sessionId, String projectName) throws ProjectNotFoundException {
 		Project project = openProject(sessionId, projectName);
 		return project.getResourceList();
 	}
@@ -64,15 +77,9 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	}
 
 	@Override
-	public void createResource(String sessionId, String projectName, String resourceName, String resourceId) {
+	public void createResource(String sessionId, String projectName, String resourceName, String resourceId) throws ProjectNotFoundException {
 		Project project = openProject(sessionId, projectName);
 		ArrayList<ProjectResource> resourceList = project.getResourceList();
-		URI uri = URI.createURI(resourceId);
-		ResourceSet resourceSet = project.getResourceSet();
-		Resource resource = resourceSet.getResource(uri, true);
-		if(resource == null){
-			throw new NullPointerException("The editor for resource id : " + resourceId + " does not exist");
-		}
 		ProjectResource projectResource = new ProjectResource();
 		projectResource.setResourceId(resourceId);
 		projectResource.setName(resourceName);
@@ -80,8 +87,8 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	}
 
 	@Override
-	public void deleteResource(String sessionId, String projectName, String resourceId) {
-		Project project = openProject(sessionId, projectName);		
+	public void deleteResource(String sessionId, String projectName, String resourceId) throws ProjectNotFoundException {
+		Project project = openProject(sessionId, projectName) ;		
 		URI uri = URI.createURI(resourceId);
 		ResourceSet resourceSet = project.getResourceSet();
 		Resource resource = resourceSet.getResource(uri, true);
@@ -89,5 +96,5 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 		ProjectResource projectResource = new ProjectResource();
 		projectResource.setResourceId(resourceId);
 		project.getResourceList().remove(projectResource);
-	}	
+	}
 }

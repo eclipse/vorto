@@ -18,12 +18,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockModelImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
-import org.eclipse.vorto.editor.functionblock.FunctionblockRuntimeModule;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.functionblock.web.FunctionblockServlet;
-import org.eclipse.vorto.editor.functionblock.web.FunctionblockWebModule;
 import org.eclipse.vorto.editor.infomodel.InformationModelRuntimeModule;
 import org.eclipse.vorto.editor.infomodel.web.InformationModelServlet;
 import org.eclipse.vorto.editor.infomodel.web.InformationModelWebModule;

@@ -1,4 +1,4 @@
-package org.eclipse.vorto.server.devtool.controller;
+package org.eclipse.vorto.server.devtool.controller.editor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(value = "/editor/infomodel")
-public class InformationModelEditorController {
+public class InformationModelEditorController implements IEditorController{
 
 	@Autowired
 	Injector injector;
@@ -40,7 +40,7 @@ public class InformationModelEditorController {
 
 	@ApiOperation(value = "Adds the function block to the resource set")
 	@RequestMapping(value = "/link/functionblock/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void linkFunctionBlock(
+	public void linkEditor(
 			@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
 			@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
