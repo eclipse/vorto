@@ -15,7 +15,7 @@
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.markdown.utils.Utils
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 

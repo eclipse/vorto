@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 
 class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 	

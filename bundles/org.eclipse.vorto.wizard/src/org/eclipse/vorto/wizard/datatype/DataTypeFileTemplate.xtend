@@ -15,7 +15,7 @@
 package org.eclipse.vorto.wizard.datatype
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IModelProjectContext
 
 /**

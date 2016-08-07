@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.latex.tasks.LatexInformationModelGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 

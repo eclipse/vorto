@@ -15,7 +15,7 @@
 package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 

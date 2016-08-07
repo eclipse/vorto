@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.templates.java
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 
 class JavaInformationModelInterfaceTemplate implements ITemplate<InformationModel>{
 	

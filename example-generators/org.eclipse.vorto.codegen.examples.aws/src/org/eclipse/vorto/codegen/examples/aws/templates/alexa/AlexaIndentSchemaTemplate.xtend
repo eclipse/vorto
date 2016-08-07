@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.examples.aws.templates.alexa
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**

@@ -46,7 +46,11 @@ public class ConfigurationElementLookup {
 			String extensionPtId, String id) {
 		IExtension extension = EXTENSION_REGISTRY.getExtension(extensionPtId,
 				id);
-		return extension.getConfigurationElements();
+		if (extension != null) {
+			return extension.getConfigurationElements();
+		} else {
+			return new IConfigurationElement[0];
+		}
 	}
 	
 	public void setExtensionRegistry(IExtensionRegistry reg) {

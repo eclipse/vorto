@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaIndentSchemaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaSkillLambdaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaUtterancesTemplate

@@ -16,7 +16,7 @@
 package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 

@@ -22,7 +22,7 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 
 class JavaClassMethodTemplate implements ITemplate<Operation>{
 	

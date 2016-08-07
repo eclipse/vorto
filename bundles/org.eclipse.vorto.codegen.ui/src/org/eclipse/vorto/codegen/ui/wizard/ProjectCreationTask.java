@@ -21,7 +21,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
 import org.eclipse.vorto.codegen.ui.progresstask.IProgressTask;
 import org.eclipse.vorto.codegen.ui.tasks.EclipseProjectGenerator;

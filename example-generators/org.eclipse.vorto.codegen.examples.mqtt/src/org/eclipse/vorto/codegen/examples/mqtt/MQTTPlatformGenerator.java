@@ -20,10 +20,12 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.examples.mqtt.templates.IClientHandlerTemplate;
 import org.eclipse.vorto.codegen.examples.mqtt.templates.MqttConfigurationTemplate;
 import org.eclipse.vorto.codegen.examples.mqtt.templates.PomTemplate;
+import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -36,7 +38,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class MQTTPlatformGenerator implements IVortoCodeGenerator {
 		
 	@Override
-	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) throws Exception {
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		for (FunctionblockProperty property : context.getProperties()) {			
 			ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
@@ -48,7 +50,11 @@ public class MQTTPlatformGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
 			generator.generate(property.getType(),invocationContext, outputter);
 		}
-		return outputter;
+		
+		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext);
+		
+		return GenerationResultBuilder.from(outputter).append(javaResult).build();
+
 	}
 	
 	@Override

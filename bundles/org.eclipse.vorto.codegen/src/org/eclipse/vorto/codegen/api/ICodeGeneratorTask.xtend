@@ -16,7 +16,7 @@
  
 package org.eclipse.vorto.codegen.api
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 
 /*
  * A specific generation task during the entire Code generation process

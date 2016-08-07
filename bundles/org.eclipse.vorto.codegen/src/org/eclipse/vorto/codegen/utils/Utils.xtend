@@ -51,13 +51,13 @@ public class Utils {
 		}
 	}
 
-	def static InformationModel disguiseFunctionblock(FunctionblockModel fbModel) {
+	def static InformationModel wrapFunctionBlock(FunctionblockModel fbModel) {
 		var infomodel = InformationModelFactory.eINSTANCE.createInformationModel();
 		infomodel.setCategory(fbModel.getCategory());
 		infomodel.setDescription(fbModel.getDescription());
 		infomodel.setDisplayname(fbModel.getDisplayname());
 		infomodel.setName(fbModel.getName());
-		infomodel.setNamespace(fbModel.getNamespace() + ".informationmodels");
+		infomodel.setNamespace(fbModel.getNamespace());
 		infomodel.setVersion(fbModel.getVersion());
 
 		var property = InformationModelFactory.eINSTANCE.createFunctionblockProperty();

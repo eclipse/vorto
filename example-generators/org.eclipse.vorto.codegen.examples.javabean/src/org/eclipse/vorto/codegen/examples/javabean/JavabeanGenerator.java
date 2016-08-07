@@ -20,7 +20,7 @@ import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockConfigurationGeneratorTask;
@@ -38,6 +38,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class JavabeanGenerator implements IVortoCodeGenerator {
+	
+	public static final String KEY = "javabean";
 	
 	public static final String JAVA_PROJECT_SUFFIX = "_Java";
 	public static final String JAVA_FILE_EXTENSION = ".java";
@@ -113,7 +115,7 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "javabean";
+		return KEY;
 	}
 
 	

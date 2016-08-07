@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.aws.templates.shadow
 import org.eclipse.emf.common.util.EList
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.mapping.IMapped
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.Param
 

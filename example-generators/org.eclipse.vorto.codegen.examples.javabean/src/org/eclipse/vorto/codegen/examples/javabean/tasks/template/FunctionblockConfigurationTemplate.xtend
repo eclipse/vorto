@@ -1,7 +1,7 @@
 package org.eclipse.vorto.codegen.examples.javabean.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldGetterTemplate
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldSetterTemplate
 import org.eclipse.vorto.codegen.examples.templates.java.JavaClassFieldTemplate
