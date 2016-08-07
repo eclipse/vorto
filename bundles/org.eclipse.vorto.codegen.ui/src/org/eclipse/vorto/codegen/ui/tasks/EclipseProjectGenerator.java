@@ -33,7 +33,7 @@ import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IFileTemplate;
 import org.eclipse.vorto.codegen.api.ITemplate;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
 
 /**

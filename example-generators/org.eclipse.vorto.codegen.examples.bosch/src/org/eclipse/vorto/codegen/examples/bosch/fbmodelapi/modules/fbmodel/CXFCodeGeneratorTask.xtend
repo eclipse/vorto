@@ -18,7 +18,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbmodelapi.modules.fbmodel
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum

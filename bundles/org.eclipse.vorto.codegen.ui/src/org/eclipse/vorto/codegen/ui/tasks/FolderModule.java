@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.ui.tasks;
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 
 /**
  * Code Generator which creates specific folder (structure)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+x * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -12,12 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.api.mapping;
+package org.eclipse.vorto.codegen.api;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.vorto.codegen.api.mapping.DefaultMapped;
+import org.eclipse.vorto.codegen.api.mapping.IMapped;
+import org.eclipse.vorto.codegen.api.mapping.NullMapped;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.Property;
@@ -44,16 +47,23 @@ import org.eclipse.vorto.core.api.model.model.Model;
 public class InvocationContext {
 
 	private List<MappingRule> mappingRules;
+	
+	private IGeneratorLookup lookupService;
+	
+	private static final IGeneratorLookup NOOP_RUNTIME = new NoopGeneratorLookup();
+	
+	private static final IVortoCodeGenerator NOOP_GEN = new NoopGenerator();
 
-	public InvocationContext(List<MappingModel> mappingModels) {
+	public InvocationContext(List<MappingModel> mappingModels, IGeneratorLookup generatorRuntime) {
 		this.mappingRules = new ArrayList<MappingRule>();
 		for (MappingModel mappingModel : mappingModels) {
 			this.mappingRules.addAll(mappingModel.getRules());
 		}
+		this.lookupService = generatorRuntime;
 	}
 
 	public static InvocationContext simpleInvocationContext() {
-		return new InvocationContext(new ArrayList<MappingModel>());
+		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME);
 	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
@@ -152,4 +162,35 @@ public class InvocationContext {
 
 		return new NullMapped<ModelAttribute>(attribute);
 	}
+	
+	public IVortoCodeGenerator lookupGenerator(String key) {
+		IVortoCodeGenerator gen =  this.lookupService.lookupByKey(key);
+		if (gen == null) {
+			return NOOP_GEN;
+		} else {
+			return gen;
+		}
+	}
+	
+    static class NoopGeneratorLookup implements IGeneratorLookup {
+
+		@Override
+		public IVortoCodeGenerator lookupByKey(String key) {
+			return  NOOP_GEN;
+		}
+	}
+    
+    static class NoopGenerator implements IVortoCodeGenerator {
+    	
+    	@Override
+    	public IGenerationResult generate(InformationModel model, InvocationContext context) throws Exception {
+    		return null;
+    	}
+
+    	@Override
+    	public String getServiceKey() {
+    		return "noop";
+    	}
+    }
+
 }

@@ -1,11 +1,23 @@
 /*******************************************************************************
- * Copyright (C) 2015 Bosch Software Innovations GmbH. All rights reserved.
+ * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
 
 package org.eclipse.vorto.service.generator.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
@@ -15,14 +27,15 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
 import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
@@ -84,6 +97,9 @@ public class CodeGenerationController {
 
 	@Autowired
 	private IVortoCodeGenerator vortoGenerator;
+	
+	@Autowired
+	private ServerGeneratorLookup lookupService;
 
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> generate(@PathVariable String namespace,
@@ -100,12 +116,12 @@ public class CodeGenerationController {
 		if (model instanceof InformationModel) {
 			infomodel = (InformationModel)model;
 		} else if (model instanceof FunctionblockModel) {
-			infomodel = Utils.disguiseFunctionblock((FunctionblockModel)model);
+			infomodel = Utils.wrapFunctionBlock((FunctionblockModel)model);
 		}
 				
 		IGenerationResult result = null;
 		try {
-			result = vortoGenerator.generate(infomodel, resolveMappingContext(infomodel, vortoGenerator.getServiceKey()));
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey()));
 		} catch (Exception e) {
 			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
@@ -120,9 +136,11 @@ public class CodeGenerationController {
 
 	}
 	
-	private InvocationContext resolveMappingContext(InformationModel model, String targetPlatform) {
+	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
-		return new MappingZipFileExtractor(mappingResources).extract();
+		List<MappingModel> mappingModels =  new MappingZipFileExtractor(mappingResources).extract();
+		
+		return new InvocationContext(mappingModels, lookupService);
 	}
 	
 

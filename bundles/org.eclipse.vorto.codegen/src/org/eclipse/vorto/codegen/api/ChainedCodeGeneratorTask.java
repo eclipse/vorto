@@ -17,8 +17,6 @@ package org.eclipse.vorto.codegen.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
-
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */

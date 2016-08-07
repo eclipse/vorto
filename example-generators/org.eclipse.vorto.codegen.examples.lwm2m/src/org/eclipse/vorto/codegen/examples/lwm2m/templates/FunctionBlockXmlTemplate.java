@@ -24,8 +24,8 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.mapping.IMapped;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object.Resources;

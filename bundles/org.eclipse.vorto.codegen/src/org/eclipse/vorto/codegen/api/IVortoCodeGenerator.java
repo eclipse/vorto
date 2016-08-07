@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**

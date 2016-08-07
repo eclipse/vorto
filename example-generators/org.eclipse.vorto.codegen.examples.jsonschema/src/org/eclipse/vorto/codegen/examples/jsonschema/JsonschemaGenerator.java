@@ -19,7 +19,7 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.EventValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationParametersValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationReturnTypeValidationTask;

@@ -15,7 +15,7 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Constraint
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
 

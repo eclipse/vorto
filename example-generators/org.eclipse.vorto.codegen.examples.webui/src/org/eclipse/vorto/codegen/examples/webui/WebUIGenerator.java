@@ -19,7 +19,9 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
+import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.AppScriptFileTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationMainTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationYmlTemplate;
@@ -33,9 +35,11 @@ import org.eclipse.vorto.codegen.examples.webui.tasks.templates.PomFileTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ReadmeTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ServiceClassTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.WebSocketConfigTemplate;
+import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -43,7 +47,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class WebUIGenerator implements IVortoCodeGenerator {
 			
 	@Override
-	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) throws Exception {
 		
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		for (FunctionblockProperty property : context.getProperties()) {			
@@ -66,8 +70,10 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ApplicationYmlTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ReadmeTemplate()));
 		generator.generate(context, invocationContext, outputter);
+				
+		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext);
 		
-		return outputter;
+		return GenerationResultBuilder.from(outputter).append(javaResult).build();
 	}
 		
 	@Override
