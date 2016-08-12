@@ -50,7 +50,7 @@ The following code represents the Function Block Model DSL syntax. Function bloc
     ;
 
     operation :
-        ('breakable')? id '(' (param (description)?)? ')' ('returns'  returnType)? (string)?
+        ('breakable')? id '(' (param (paramDescription)?)? ')' ('returns'  returnType)? (returnTypeDescription)?
     ;
 
     returnType :
@@ -62,11 +62,11 @@ The following code represents the Function Block Model DSL syntax. Function bloc
     ;
 
     returnPrimitiveType :
-        ('multiple')? primitiveType
+        ('multiple')? primitiveType ('<'constraintType [constraintIntervalType] ("," constraintType [constraintIntervalType])*'>')?
     ;
 
     primitiveParam:
-        (multiple')? id 'as' primitiveType
+        (multiple')? id 'as' primitiveType ('<'constraintType [constraintIntervalType] ("," constraintType [constraintIntervalType])*'>')?
     ;
 
     refParam:
@@ -141,12 +141,11 @@ Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-dsl-s
         "true if the light bulb of the lamp is defect"  
       }  
       operations{  
-        blink(blinkType as int) "sets the blinking type for the lamp"  
-        getPowerConsumption() returns int
-          "gets the amount of power being consumed by the lamp"  
+        blink(blinkType as int <MIN 0, MAX 5> "The type of blink") "sets the blinking type for the lamp"  
+        getPowerConsumption() returns int <MIN 0, MAX 5> "gets the amount of power being consumed by the lamp"  
         isOn() returns boolean "checks if the lamp is switched on"  
-        off() "turns the lamp off"  
-        on() "turns the lamp on"  
+        breakable off() "turns the lamp off"  
+        breakable on() "turns the lamp on"  
         stopBlinking() "stops the blinking of the lamp"  
         toggle() "switches the lamp on or off"  
         toggleWithDelay(delayInSeconds as int)
@@ -267,12 +266,12 @@ The following table describes the parameters and elements of a `functionblock`. 
 
       }
       operations{
-        blink(blinkType as int) "sets the blinking type for the lamp"
-        getPowerConsumption() returns int
+        blink(blinkType as int <MIN 0, MAX 5> "The type of blink") "sets the blinking type for the lamp"
+        getPowerConsumption() returns int <MIN 1, MAX 3000>
           "gets the amount of power being consumed by the lamp"
         isOn() returns boolean "checks if the lamp is switched on"
-        off() "turns the lamp off"
-        on() "turns the lamp on"
+        breakable off() "turns the lamp off"
+        breakable on() "turns the lamp on"
         stopBlinking() "stops the blinking of the lamp"
         toggle() "switches the lamp on or off"
         toggleWithDelay(delayInSeconds as int)
@@ -334,7 +333,23 @@ The following table describes the property elements. Mandatory property elements
 		<li>double</li>
 		<li>base64Binary</li>
 		<li>byte</li>
+    <li>Dictionary (with optional key and value types)</li>
+    <li>Another Entity</li>
+    <li>Another Enum</li>
 	  </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>with { [propertyAttribute] }</td>
+    <td>N</td>
+    <td>Additional property attributes</td>
+    <td>Supported property attributes:</br>
+    <ul>
+    <li>measurementUnit : an Enum literal</li>
+    <li>readable: [true or false]</li>
+    <li>writable: [true or false]</li>
+    <li>eventable: [true or false]</li>
+    </ul>
     </td>
   </tr>
   <tr>
@@ -364,8 +379,19 @@ The following table describes the property elements. Mandatory property elements
     optional vendingMachineIdentifier as string <STRLEN 8>
       "the id of the vending machine"
 
+    mandatory engineTemperature as float 
+      with { measurementUnit: Temperature.Celsius, readable: true, writable: true }
+
     mandatory positiveNum as int <MIN 0 , MAX 1111>
       "Positive numbers that is within [0 , 1111]"
+
+    mandatory lookupTable as Dictionary[string, Color] "Lookup table conversion for color"
+
+    mandatory lookupRGBTable as Dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
+
+    mandatory temperatureLabelConversion as Dictionary[int, string] "map of temperature to description"
+
+    mandatory noKeyAndValueTypeMap as Dictionary "example of a map with no key and value types"
 
     mandatory biggerThanInt as long <MAX 999999999999999999>
       "Value for constraint is validated according to the property type,
@@ -396,30 +422,58 @@ The following table shows the operation types.
   </thead>
   <tbody>
   <tr>
-    <td>One-way without parameter(s)</td>
-    <td>resetConfiguration()</br>switchOn()</td>
+    <td>Without parameter(s)</td>
+    <td>
+      <ul>
+        <li>resetConfiguration()</li>
+        <li>switchOn()</li>
+      </ul>
+    </td>
   </tr>
   <tr>
-    <td>One-way with parameter(s)</td>
-    <td>setTemperature(temperature as int)</br>setProductConfigurationList(multiple products as Product)</td>
+    <td>With parameter(s)</td>
+    <td>
+      <ul>
+        <li>setTemperature(temperature as int)</li>
+        <li>setProductConfigurationList(multiple products as Product)</li>
+      </ul>
+    </td>
   </tr>
   <tr>
-    <td>Request - response without parameter(s)</td>
-    <td>getProductIdsList() returns multiple string</br>getProductConfiguration() returns Product</td>
+    <td>With return type</td>
+    <td>
+      <ul>
+        <li>getProductIdsList() returns multiple string</li>
+        <li>getProductConfiguration() returns Product</li>
+      </ul>
+    </td>
   </tr>
   <tr>
-    <td>Request - response with parameter(s)</td>
-    <td>withdraw(productId as string, amount as int) returns boolean</td>
+    <td>With parameter(s) and return type</td>
+    <td>
+      <ul>
+        <li>withdraw(productId as string, amount as int) returns boolean</li>
+      </ul>
+    </td>
   </tr>
   </tbody>
 </table>
 
-All operations may have a \<description\> at the end of the operations definition.
+All operations may have a \<description\> at the end of each parameter declaration and the operations definition.
 
 **Example**
 
     getProductConfigurationList() returns multiple Product
       "Gets the current configured products from the vending machine"
+    getProductConfigurationList(count as int "Number of products to return", offset as int "What row to start") 
+      returns multiple Product "Gets the current configured products from the vending machine"
+
+The parameters and return type can also have constraints.
+
+**Example**
+    
+    setRedComponent(R as int <MIN 0, MAX 255>)
+    getRedComponent() returns int <MIN 0, MAX 255>
 
 ### Event
 
@@ -442,139 +496,3 @@ Example
         }  
       }  
     ...  
-
-### Entity
-
-The entity element defines a new data type that can be referenced by the function block definition. In a function block model 0 or many entity elements can be defined (refer to [Function Block Model](#function-block-model)).
-
-**Syntax**
-
-Refer to entity in [Function Block DSL Syntax](#function-block-dsl-syntax).
-
-**Usage**
-
-<table class="table table-bordered">
-<thead>
-  <tr>
-    <th>Entity element</th>
-    <th>Mandatory</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>&lt;entity_name&gt;</td>
-    <td>Y</td>
-    <td>A descriptive name of the entity.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>extends &lt;property_name&gt;</td>
-    <td></td>
-    <td>The entity extends the property &lt;property_name&gt;.</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>&lt;optional&nbsp;|&nbsp;mandatory&gt;</td>
-    <td></td>
-    <td>Declares if the entity is optional or mandatory.</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>multiple</td>
-    <td></td>
-    <td>Defines if the entity can have more than one value.</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>&lt;property_name&gt;</td>
-    <td>Y</td>
-    <td>The name of the property.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>as &lt;type&gt;</td>
-    <td>Y</td>
-    <td>The data type of the property.</td>
-    <td>Supported types:
-	  <ul>
-	    <li>boolean</li>
-		<li>dateTime</li>
-		<li>float</li>
-		<li>int</li>
-		<li>string</li>
-	  </ul>
-	</td>
-  </tr>
-  <tr>
-    <td>&lt;description&gt;</td>
-    <td></td>
-    <td>Extra information about the entity.</td>
-    <td>String enclosed in quotation marks</td>
-  </tr>
-  </tbody>
-</table>
-
-**Example**
-
-    entity BlinkType {  
-      mandatory type as int "0: fast flash, 1: slow flash"  
-    }  
-
-### Enum
-
-An Enum is data structure using group literals as values.
-
-**Syntax**
-
-Refer to entity in [Function Block DSL Syntax](#function-block-dsl-syntax).
-
-**Usage**
-
-<table class="table table-bordered">
-<thead>
-  <tr>
-    <th>Entity element</th>
-    <th>Mandatory</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>&lt;enum_name&gt;</td>
-    <td>Y</td>
-    <td>A descriptive name of the enum.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>{</td>
-    <td>Y</td>
-    <td>Delimiter of the literal list (comma separated literals).</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>&lt;literal&gt;</td>
-    <td>Y</td>
-    <td>A descriptive name of an enum value.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>}</td>
-    <td>Y</td>
-    <td>The name of the property.</td>
-    <td></td>
-  </tr>
-  </tbody>
-</table>
-
-**Example**
-
-    // definition of an enum type
-    enum Gender{
-      Male, Female, NA
-    }
-
-    // usage as a field
-    mandatory sex as Gender
