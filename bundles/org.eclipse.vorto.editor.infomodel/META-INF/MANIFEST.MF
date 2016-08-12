@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Information Model Editor (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext;visibility:=reexport,
@@ -26,12 +26,10 @@ Require-Bundle: org.eclipse.xtext;visibility:=reexport,
 Import-Package: org.apache.log4j,
  org.eclipse.vorto.editor.datatype.converter
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.infomodel,
- org.eclipse.vorto.editor.infomodel.formatting,
- org.eclipse.vorto.editor.infomodel.generator,
- org.eclipse.vorto.editor.infomodel.scoping,
- org.eclipse.vorto.editor.infomodel.validation,
- org.eclipse.vorto.editor.infomodel.services,
- org.eclipse.vorto.editor.infomodel.serializer,
- org.eclipse.vorto.editor.infomodel.parser.antlr,
- org.eclipse.vorto.editor.infomodel.parser.antlr.internal
+Export-Package: org.eclipse.vorto.editor.infomodel,org.eclipse.vorto.e
+ ditor.infomodel.formatting,org.eclipse.vorto.editor.infomodel.generat
+ or,org.eclipse.vorto.editor.infomodel.scoping,org.eclipse.vorto.edito
+ r.infomodel.validation,org.eclipse.vorto.editor.infomodel.services,or
+ g.eclipse.vorto.editor.infomodel.serializer,org.eclipse.vorto.editor.
+ infomodel.parser.antlr,org.eclipse.vorto.editor.infomodel.parser.antl
+ r.internal
