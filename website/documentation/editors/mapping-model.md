@@ -11,7 +11,7 @@ This section details the following topics:
 
 [Overview](#overview)  
 
-[Usecases](#usecases)  
+[Use Cases](#use-cases)  
 
 [Defining Mapping Models](#defining-mapping-models)
 
@@ -26,13 +26,15 @@ Vorto allows the user to define mapping rules to map Vorto models to other targe
 
 The primary purpose of defining model mappings in Vorto is to directly translate or map datatype/functionblock/information model descriptions from Vorto to any other IoT platforms (for example, Kura, Eclipse Smarthome). Vorto model mapping acts as a bridge between Vorto definitions and target platforms/technologies.
 
-## Usecases
+
+## Use Cases
 
 The model mapping provides an option to enhance the Vorto models with additional metadata descriptions targeted for a specific platform. Thereby the code generators can leverage the expanded metadata descriptions customized for their platforms. Vorto helps to integrate with other IoT platforms through the model mapping in flexible manner. Here are few possible scenarios where model mapping can be used:
 
  - Translate Vorto model definitions to understand other IoT platforms.
  - Provide additional metadata in case the Vorto model is not able to describe a specific IoT solution.
  - Provide different model mappings for multiple versions of target platforms (For example, iOS 7/8).
+
 
 ## Defining Mapping Models
 
@@ -41,6 +43,7 @@ Model mapping can be defined for the following:
 - [Datatypes](./data-type-mapping.html)
 - [Function Blocks](./function-block-mapping.html)
 - [Information Models](./information-model-mapping.html)   
+
 
 ## Features 
 
@@ -98,7 +101,6 @@ The following two examples definitions are given:
 		}
 	}
 
-
 ![Colorlight Without Mapping]({{base}}/img/documentation/vorto_aws_without_mapping.png)
 
 By invoking the *AWS Generator* without any model mapping from Vorto Repository, it generates the following *Alexa* voice command vocabulary in the `colorlightsystemUtterances.txt` file.
@@ -124,9 +126,7 @@ Now we define a model mapping `ColorLightMapping` to enhance the *Alexa* voice c
 
 ![Colorlight With Mapping]({{base}}/img/documentation/vorto_aws_with_mapping.png)
 
-
 In the above mapping, the *Alexa* voice command is enhanced by  additional commands with `increase` and `decrease` to control the `ColorLight`. Here, `alexa` is a custom defined `Stereotypes` keyword which the *AWS Generator* interprets and makes use of the additional values defined in the model mapping. Again, `command` is a custom defined `Attribute` keyword which the *AWS generator* can understand. 
-
 
 Once this model mapping `ColorLightMapping` is defined, it can be shared using the Vorto Repository Web interface page:
 
@@ -139,7 +139,6 @@ Once this model mapping `ColorLightMapping` is defined, it can be shared using t
     <td>Note: Currently, model mappings are shared only through the Vorto Repository Web interafce.</td>
   </tr></tbody>
 </table>  
-
 
 With this model mapping the *AWS Generator* generates the file `colorlightsystemUtterances.txt` with the following content:
 
@@ -157,4 +156,3 @@ As you can see, the Vorto model mapping definition greatly enhances the capabili
 <i class="fa fa-play-circle fa-5 play-icon"></i>
 </a>
 </div>
-
