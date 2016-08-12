@@ -18,7 +18,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.DND;
@@ -50,7 +49,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 		treeViewer.addDragSupport(operations, transferTypes, new ModelDragListener(treeViewer));
 		treeViewer.addDropSupport(operations, transferTypes,
-				ModelDropListenerFactory.datatypeViewPartDropListener(treeViewer));
+				ModelDropListenerFactory.datatypeViewPartDropListener(treeViewer, localModelWorkspace));
 	}
 
 	@Override
@@ -69,30 +68,8 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					final IModelElement model = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 
 					if (model.getId().getModelType() == ModelType.Datatype) {
-						menuMgr.add(new ShareModelAction() {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
-						menuMgr.add(new DeleteModelAction(localModelWorkspace) {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
+						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
+						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
 						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
 							@Override
 							public void doAction() {

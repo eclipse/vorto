@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Code-Generation Infrastructure UI (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.ui;singleton:=true
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-Activator: org.eclipse.vorto.codegen.ui.Activator
 Bundle-Vendor: Eclipse.org/Vorto
 Require-Bundle: org.eclipse.vorto.core,
@@ -25,14 +25,10 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: icons/,
  .
 Import-Package: org.eclipse.emf.common.util
-Export-Package: org.eclipse.vorto.codegen.ui,
- org.eclipse.vorto.codegen.ui.context,
- org.eclipse.vorto.codegen.ui.filewrite,
- org.eclipse.vorto.codegen.ui.handler,
- org.eclipse.vorto.codegen.ui.progresstask,
- org.eclipse.vorto.codegen.ui.tasks,
- org.eclipse.vorto.codegen.ui.tasks.natures,
- org.eclipse.vorto.codegen.ui.utils,
- org.eclipse.vorto.codegen.ui.wizard,
- org.eclipse.vorto.codegen.ui.wizard.command,
- org.eclipse.vorto.codegen.ui.wizard.generation.templates
+Export-Package: org.eclipse.vorto.codegen.ui,org.eclipse.vorto.codegen
+ .ui.context,org.eclipse.vorto.codegen.ui.filewrite,org.eclipse.vorto.
+ codegen.ui.handler,org.eclipse.vorto.codegen.ui.progresstask,org.ecli
+ pse.vorto.codegen.ui.tasks,org.eclipse.vorto.codegen.ui.tasks.natures
+ ,org.eclipse.vorto.codegen.ui.utils,org.eclipse.vorto.codegen.ui.wiza
+ rd,org.eclipse.vorto.codegen.ui.wizard.command,org.eclipse.vorto.code
+ gen.ui.wizard.generation.templates

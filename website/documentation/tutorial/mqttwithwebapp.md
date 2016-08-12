@@ -22,7 +22,11 @@ title: End user Tutorial
 
 ## Overview
 
-In this tutorial, you are going to implement a web application for the information model through a series of steps.
+In this tutorial, you are going to implement a web application for the information model  (e.g. TI SensorTag) through a series of steps. 
+
+Here is the system diagram that you are going to implement: 
+![System Architecture Intro]({{base}}/img/documentation/vorto_tutorial_architecture.jpg)
+
 The webapplication that is going to communicate with mqtt client will appear as shown below:
 ![Web UIIntro]({{base}}/img/documentation/tut_tisensorwebui.jpg)
 

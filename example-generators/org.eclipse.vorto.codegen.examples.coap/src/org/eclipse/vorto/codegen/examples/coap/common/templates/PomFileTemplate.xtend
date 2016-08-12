@@ -16,7 +16,7 @@
  package org.eclipse.vorto.codegen.examples.coap.common.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class PomFileTemplate implements IFileTemplate<InformationModel> {

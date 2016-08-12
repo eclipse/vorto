@@ -19,6 +19,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.Operation#isBreakable <em>Breakable</em>}</li>
  * </ul>
  *
  * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getOperation()
@@ -119,5 +120,31 @@ public interface Operation extends EObject {
 	 * @generated
 	 */
 	void setDescription(String value);
+
+	/**
+	 * Returns the value of the '<em><b>Breakable</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Breakable</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Breakable</em>' attribute.
+	 * @see #setBreakable(boolean)
+	 * @see org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage#getOperation_Breakable()
+	 * @model
+	 * @generated
+	 */
+	boolean isBreakable();
+
+	/**
+	 * Sets the value of the '{@link org.eclipse.vorto.core.api.model.functionblock.Operation#isBreakable <em>Breakable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Breakable</em>' attribute.
+	 * @see #isBreakable()
+	 * @generated
+	 */
+	void setBreakable(boolean value);
 
 } // Operation

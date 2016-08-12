@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Wizard (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.wizard;singleton:=true
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Localization: plugin
@@ -18,10 +18,8 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.vorto.codegen.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.vorto.wizard,
- org.eclipse.vorto.wizard.datatype,
- org.eclipse.vorto.wizard.functionblock,
- org.eclipse.vorto.wizard.infomodel,
- org.eclipse.vorto.wizard.mapping,
- org.eclipse.vorto.wizard.vorto
+Export-Package: org.eclipse.vorto.wizard,org.eclipse.vorto.wizard.data
+ type,org.eclipse.vorto.wizard.functionblock,org.eclipse.vorto.wizard.
+ infomodel,org.eclipse.vorto.wizard.mapping,org.eclipse.vorto.wizard.v
+ orto
 

@@ -25,7 +25,6 @@ func NewClient(conf *Configuration) *Client {
 
 	myClient := http.Client{}
 
-	// proxyUrl http://cache.innovations.de:3128
 	if conf.Proxy != "" {
 		proxyUrl, err := url.Parse(conf.Proxy)
 		if err != nil {

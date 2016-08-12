@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>generators</artifactId>
-		<version>0.4.0-SNAPSHOT</version>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>org.eclipse.vorto.codegen.service.latex</artifactId>
 	<description>Generates latex documentation for a given information model</description>

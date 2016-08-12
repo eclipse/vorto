@@ -2,8 +2,6 @@
 
 Vorto Code Generators convert an Information Model into executable code that is specific for the platform. Every generator translates the platform independent information model into a platform model and lastly source code. 
 
-If you would like to find out more about available code generators, to set them up and use them directly from your repository, visit our [Vorto Repository](../repo/repo-ui/Readme.md).
-
 Available Generators:
 
  - [Amazon Web Services Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)

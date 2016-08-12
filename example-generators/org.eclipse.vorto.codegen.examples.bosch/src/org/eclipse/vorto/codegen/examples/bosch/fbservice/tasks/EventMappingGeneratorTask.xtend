@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks
 
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.bosch.common.FbModelWrapper
 import org.eclipse.vorto.codegen.examples.bosch.fbservice.tasks.templates.EventMappingRuleTemplate
 import org.eclipse.vorto.core.api.model.functionblock.Event

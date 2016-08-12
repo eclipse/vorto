@@ -47,8 +47,8 @@ public class LocalConfiguration {
 		userRepository.save(admin);
 		
 		User user = new User();
-		user.setUsername("alex");
-		user.setPassword(encoder.encode("alex"));
+		user.setUsername("testuser");
+		user.setPassword(encoder.encode("testuser"));
 		user.setRoles(Role.USER);
 		
 		userRepository.save(user);

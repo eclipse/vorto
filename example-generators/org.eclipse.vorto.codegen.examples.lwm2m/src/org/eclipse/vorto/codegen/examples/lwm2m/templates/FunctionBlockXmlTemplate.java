@@ -24,8 +24,8 @@ import javax.xml.bind.Marshaller;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.vorto.codegen.api.ITemplate;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.mapping.IMapped;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object;
 import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object.Resources;
@@ -33,6 +33,7 @@ import org.eclipse.vorto.codegen.examples.lwm2m.generated.LWM2M.Object.Resources
 import org.eclipse.vorto.codegen.examples.lwm2m.utils.ResourceIdComparator;
 import org.eclipse.vorto.core.api.model.datatype.Constraint;
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType;
+import org.eclipse.vorto.core.api.model.datatype.Presence;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 import org.eclipse.vorto.core.api.model.datatype.impl.PrimitivePropertyTypeImpl;
@@ -253,13 +254,13 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
          handleMappingRulesForProperties( lwm2mObject, property, item, context);
 
          // handle mandatory
-         final boolean mandatory = property.getPresence().isMandatory();
+         final Presence mandatory = property.getPresence();
 
-         if( mandatory ) {
-            item.setMandatory( ATTR_MANDATORY_MANDATORY_VALUE );
+         if( mandatory == null || !mandatory.isMandatory() ) {
+            item.setMandatory( ATTR_MANDATORY_OPTIONAL_VALUE );		// default mapping
          }
          else {
-            item.setMandatory( ATTR_MANDATORY_OPTIONAL_VALUE );
+            item.setMandatory( ATTR_MANDATORY_MANDATORY_VALUE );
          }
 
          // handle multiplicity
@@ -348,7 +349,7 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
       
       item.setID(Short.parseShort(propertyMapping.getAttributeValue(ATTRIBUTE_ID, "0")));
       item.setUnits(propertyMapping.getAttributeValue(ATTRIBUTE_UNITS, ""));
-      item.setOperations(propertyMapping.getAttributeValue(ATTRIBUTE_OPERATIONS, ""));
+      item.setOperations(propertyMapping.getAttributeValue(ATTRIBUTE_OPERATIONS, item.getOperations()));
    }
 
    private String unsupportedValueForPropertyMsg( final String value, final Property property, final Object lwm2mObject ) {

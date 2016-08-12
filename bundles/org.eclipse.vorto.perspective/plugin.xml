@@ -33,10 +33,6 @@
 	               relationship="bottom"
 	               ratio="0.75"
 	               relative="org.eclipse.ui.editorss"/>
-	         <view
-	               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
-	               relationship="stack"
-	               relative="org.eclipse.ui.console.ConsoleView"/>  
         </perspectiveExtension>      
    </extension>
      
@@ -65,8 +61,9 @@
    <extension point="org.eclipse.ui.perspectiveExtensions">
         <perspectiveExtension targetID="org.eclipse.vorto.ui.perspective.VortoPerspective">
 	         <view
-	               id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
-	               relationship="bottom" />  
+                id="org.eclipse.vorto.perspective.views.ModelRepositoryViewPart"
+                relationship="stack"
+                relative="org.eclipse.ui.console.ConsoleView"/>  
         </perspectiveExtension>      
    </extension>
           	 

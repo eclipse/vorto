@@ -21,17 +21,16 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
-import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
+import org.springframework.util.StringUtils;
 
 import com.google.inject.Injector;
-import org.springframework.util.StringUtils;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -42,7 +41,7 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		super(zipFile);
 	}
 	
-	public InformationModel extract(final ModelId modelId) {
+	public Model extract(final String modelName) {
 		FunctionblockPackage.eINSTANCE.eClass();
 		InformationModelPackage.eINSTANCE.eClass();
 
@@ -57,7 +56,7 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		Resource infoModelResource = null;
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
-				if (StringUtils.stripFilenameExtension(entry.getName()).equals(modelId.getName())) {
+				if (StringUtils.stripFilenameExtension(entry.getName()).equals(modelName)) {
 					infoModelResource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
 					infoModelResource.load(new ByteArrayInputStream(copyStream(zis, entry)),
 							resourceSet.getLoadOptions());
@@ -72,7 +71,7 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		}
 
 		EcoreUtil2.resolveAll(resourceSet);	
-		return (InformationModel)infoModelResource.getContents().get(0);
+		return (Model)infoModelResource.getContents().get(0);
 	}
 	
 	

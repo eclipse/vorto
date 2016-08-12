@@ -4,14 +4,18 @@
   {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
   <div class="box">
     {% if thecycle == 'odd' %}
-    <img class="box-img img-responsive pull-right wow {{ main.animatestyle}} zoom1" src="{{ base }}/img/{{ main.imagename}}">
-       {% if main.videourl %}
+          <img class="box-img img-responsive pull-right wow {{ main.animatestyle}} zoom1" src="{{ base }}/img/{{ main.imagename}}">
+
+     {% if main.videourl %}
        <div class="{{ main.style }}">
-      <a title="{{main.videotitle}}" data-rel="prettyPhoto" href="{{main.videourl}}" rel="prettyPhoto" > 
+      <a title="{{main.videotitle}}" data-rel="prettyPhoto" href="{{main.videourl}}" rel="prettyPhoto" >
           <i class="fa fa-play-circle fa-5 play-icon"></i>
-          </a> 
+          </a>
+        <!--  {% if main.playvideo== 'yes' %}
+        <video width="500" height="500" controls autoplay><source src="{{base}}/video/mov_bbb.mp4" type="video/mp4"></video>
+          {% endif %} -->
         </div>
-             
+
         {% endif %}
 
     {% else %}
@@ -29,7 +33,7 @@
     {% else %}
       <div class="wow {{ main.fadestyle}}">
 
-    {% endif %}     
+    {% endif %}
       <h2 class="box-headline" id="header{{main.sequence}}">{{ main.title}}</h2>
       <p>{{ main.content }}</p>
       </div>

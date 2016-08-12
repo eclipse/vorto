@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/share", description="Share an Information Model")
+@Api(value="/share", description="Share your vorto models")
 @RestController
 @RequestMapping(value = "/rest/secure")
 public class ShareModelController {
@@ -62,9 +62,9 @@ public class ShareModelController {
 	
 	private UploadModelResult uploadModelResult;
 	
-	@ApiOperation(value = "Upload and validate a single Model")
+	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "File", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
 			FileHelper.copyFileToTempLocation(file);
@@ -82,9 +82,9 @@ public class ShareModelController {
 		}
 	}
 
-	@ApiOperation(value = "Upload and validate multiple Models")
+	@ApiOperation(value = "Upload and validate multiple vorto models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "File", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
 			FileHelper.copyFileToTempLocation(file);
@@ -104,10 +104,9 @@ public class ShareModelController {
 		}
 	}
 
-
-	@ApiOperation(value = "Checkin an uploaded Model into the Repository")
+	@ApiOperation(value = "Checkin an uploaded vorto model into the vorto repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkin(@ApiParam(value = "Handle Id", required = true) final @PathVariable String handleId) {
+	public ResponseEntity<ServerResponse> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
 		modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
@@ -117,14 +116,13 @@ public class ShareModelController {
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId +  e.getStackTrace());
 			return erroredResponse("Error during checkin. Try again. " + e.getMessage());
-	}
-		
+		}
 	}
 	
-	@ApiOperation(value = "Checkin multiple uploaded models into the Repository")
+	@ApiOperation(value = "Checkin multiple uploaded vorto models into the vorto repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "File Handle ids.", required=true) final @RequestBody ModelHandle[] modelHandles) {
-		LOGGER.info("Bulk check in Models.");
+	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
+		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
 				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());

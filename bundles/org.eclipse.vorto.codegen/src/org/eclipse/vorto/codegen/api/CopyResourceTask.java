@@ -26,7 +26,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 
 /**
  * This generator task copies generator plugin resources to the target generated

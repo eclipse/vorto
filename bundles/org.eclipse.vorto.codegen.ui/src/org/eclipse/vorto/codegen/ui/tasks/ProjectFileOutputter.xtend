@@ -56,11 +56,10 @@ class ProjectFileOutputter implements IGeneratedWriter {
 					generatedFile = project.getFile(generated.getFileName());
 				}
 				
-				getFileWritingStrategy.writeFile(new FileWriteContext(new String(generated.getContent())),generatedFile);
+				getFileWritingStrategy.writeFile(new FileWriteContext(new String(generated.getContent(),"UTF-8")),generatedFile);
 						MessageDisplayFactory.getMessageDisplay().display("Generated file " + generatedFile.location.toFile.path);
 			}
 		} catch (Exception ioEx) {
-			ioEx.printStackTrace;
 			MessageDisplayFactory.getMessageDisplay.displayError("File Generation failed !" + ioEx.message);
 			throw new RuntimeException("Generated resource " + generated + " could not be written", ioEx);
 		}

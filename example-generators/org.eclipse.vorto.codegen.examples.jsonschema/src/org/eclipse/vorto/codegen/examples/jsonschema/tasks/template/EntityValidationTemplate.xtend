@@ -15,21 +15,25 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 
 class EntityValidationTemplate implements ITemplate<Entity>{
 	var EnumValidationTemplate enumValidationTemplate;
 	var PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate;
+	var ConstraintTemplate constraintTemplate
 	
 	new(EnumValidationTemplate enumValidationTemplate,
-		PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate
+		PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate,
+		ConstraintTemplate constraintTemplate
 	) {
 		this.enumValidationTemplate = enumValidationTemplate;
 		this.primitiveTypeValidationTemplate = primitiveTypeValidationTemplate;
+		this.constraintTemplate = constraintTemplate
 	}
 	
 	override getContent(Entity entity,InvocationContext invocationContext) {
@@ -42,11 +46,14 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 						"«property.name»": {
 							"type": "array",
 							"items": {
+								"description" : "«property.description»",
 								«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
+								«getConstraintsContent(property.constraintRule, invocationContext)»
 							}
 						}
 					«ELSE» 
 						"«property.name»": {
+							"description" : "«property.description»",
 							«primitiveTypeValidationTemplate.getContent(primitiveType.type,invocationContext)»
 						}
 					«ENDIF»
@@ -59,7 +66,9 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 								"items": {
 									"type": "object",
 									"properties": {
+										"description" : "«property.description»",
 										«getContent(objectType.type as Entity,invocationContext)»
+										«getConstraintsContent(property.constraintRule, invocationContext)»
 									}
 								}
 							}
@@ -67,7 +76,9 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 							"«property.name»": {
 								"type": "object",
 								"properties": {
+									"description" : "«property.description»",
 									«getContent(objectType.type as Entity,invocationContext)»
+									«getConstraintsContent(property.constraintRule, invocationContext)»
 								}
 							}
 						«ENDIF»
@@ -76,17 +87,33 @@ class EntityValidationTemplate implements ITemplate<Entity>{
 							"«property.name»": {
 								"type": "array",
 								"items": {
+									"description" : "«property.description»",
 									«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
+									«getConstraintsContent(property.constraintRule, invocationContext)»
 								}
 							}
 						«ELSE»
 							"«property.name»": {
+								"description" : "«property.description»",
 								«enumValidationTemplate.getContent(objectType.type as Enum,invocationContext)»
+								«getConstraintsContent(property.constraintRule, invocationContext)»
 							}
 						«ENDIF»
 					«ENDIF»
 				«ENDIF»
 			«ENDFOR»
 		'''
+	}
+	
+	private def getConstraintsContent(ConstraintRule constraintRule,InvocationContext invocationContext){
+		return 
+		'''
+		«IF constraintRule != null»
+			,«FOR constraint : constraintRule.constraints SEPARATOR ', '»
+				«constraintTemplate.getContent(constraint, invocationContext)»
+			«ENDFOR»
+		«ENDIF»
+		'''
+
 	}
 }

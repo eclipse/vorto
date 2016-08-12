@@ -35,10 +35,11 @@ import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Status
 import org.eclipse.vorto.core.api.model.model.ModelPackage
-import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
-import org.eclipse.xtext.validation.Check
-import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
 import org.eclipse.vorto.editor.datatype.validation.ConstraintValidatorFactory
+import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
+import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
+import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
+import org.eclipse.xtext.validation.Check
 
 /**
  * Custom validation rules. 
@@ -220,6 +221,19 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	@Check
 	def checkPropsIn(Entity e) {
 		checkDuplicatedProperty(e.properties)
+	}
+	
+	@Check
+	def checkCircularRefInSuperType(FunctionblockModel functionblock) {
+		if (functionblock.superType != null) {
+			try {
+				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
+					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
+				}	
+			} catch(Exception e) {
+				e.printStackTrace
+			}
+		}
 	}
 	
 	def setHelper(TypeHelper helper){

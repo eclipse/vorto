@@ -17,7 +17,7 @@ package org.eclipse.vorto.codegen.examples.lwm2m;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockLeshanGeneratorTask;
 import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockXmlGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;

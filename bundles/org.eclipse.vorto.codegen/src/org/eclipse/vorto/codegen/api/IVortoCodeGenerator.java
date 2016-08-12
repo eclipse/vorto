@@ -14,7 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
@@ -32,7 +31,7 @@ public interface IVortoCodeGenerator {
 	 * @param context generation invocation context, e.g. mapping rules or invocation parameters
 	 * @return
 	 */
-	IGenerationResult generate(InformationModel model, InvocationContext context);
+	IGenerationResult generate(InformationModel model, InvocationContext context) throws Exception;
 	
 	/**
 	 * 

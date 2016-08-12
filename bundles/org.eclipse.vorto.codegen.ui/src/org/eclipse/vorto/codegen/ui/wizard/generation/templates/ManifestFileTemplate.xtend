@@ -16,7 +16,7 @@
  package org.eclipse.vorto.codegen.ui.wizard.generation.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext
 
 class ManifestFileTemplate implements IFileTemplate<IGeneratorProjectContext> {

@@ -16,7 +16,7 @@ package org.eclipse.vorto.codegen.examples.coap.server.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 
 class CoAPServerDemoAppTemplate implements IFileTemplate<InformationModel> {
 	

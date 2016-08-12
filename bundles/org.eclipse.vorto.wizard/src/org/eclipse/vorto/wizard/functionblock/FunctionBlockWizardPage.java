@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+O *  Copyright (c) 2015 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -15,7 +15,6 @@
 package org.eclipse.vorto.wizard.functionblock;
 
 import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
@@ -57,6 +56,11 @@ public class FunctionBlockWizardPage extends ModelBaseWizardPage {
 	
 	@Override
 	public ModelId getModelId() {
-		return ModelIdFactory.newInstance(ModelType.Functionblock, "com.mycompany.fb",txtVersion.getText(),txtModelName.getText());
+		return getModelId(ModelType.Functionblock);
+	}
+	
+	@Override
+	protected String getDefaultNamespace() {
+		return "com.mycompany.fb";
 	}
 }

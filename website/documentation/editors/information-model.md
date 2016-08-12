@@ -1,9 +1,10 @@
 ---
 layout: documentation
-title: Defining an Information Model
+title: Defining Information Models
 ---
 {% include base.html %}
-## Defining an Information Model
+
+## Defining Information Models
 
 This section details the following topics:
 
@@ -32,13 +33,16 @@ You have create a function block model (refer to [Creating a New Function Block 
 
 **Proceed as follows**
 
-1. Right-click in the **Information Models** tab and choose **Create new Information Model** from the context menu:  
-   ![Create new information model]({{base}}/img/documentation/m2m_tc_create_new_information_model.png)  
+1. In the **Vorto Model Project Browser**, select the project in the **Select Vorto Project** drop-down list.  
+   ![Select a Project]({{base}}/img/documentation/vorto_select_vorto_project.png)  
+2. Right-click in the **Information Models** area and choose **New Information Model** from the context menu.  
    The **Create Information Model** dialog opens:  
    ![Create information model dialog]({{base}}/img/documentation/m2m_tc_create_information_model_dialog.png)
-2. Enter, e.g., `PhilipsHue` as **Information Model Name**.  
-3. Click **Finish**.
-   The information model DSL source file (with suffix .infomodel) is generated and displayed in the information model editor. The file contains a complete structure according the DSL syntax with the values given in the preceding step.  
+3. Enter a name as **Information Model Name**, for example, `PhilipsHue`.  
+4. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
+5. Optionally, enter a description in the **Description** entry field.
+6. Click **Finish**.  
+   The new information model (`PhilipsHue`) is created. Furthermore, the information model DSL source file (`.infomodel`) is generated and displayed in the model editor. The file contains a complete structure according to the DSL syntax with the values given in the preceding steps.  
    ![Information model DSL editor]({{base}}/img/documentation/m2m_tc_information_model_dsl_editor.png)
 
 ## Editing an Information Model
@@ -53,72 +57,26 @@ Edit the information model by extending the generated source file in the informa
 
 **Example**
 
-1. Create a new function block model named `Switchable` and update it according the following:
+1. Drag and drop the data type **Color** from the **Datatypes** area into the `ColorLight` funciton block.
+2. Create a new function block model named `Switchable` and update it according the following:  
 
 		namespace com.mycompany.fb
 		version 1.0.0
-		displayname "Switch"
-		description "Function block model for Switch"
-		category demo
-		
+		displayname "Switchable"
+		description "Function block model for Switchable"
+		category demo	
 		functionblock Switchable {
-			status {
+			status{ 
 				optional on as boolean
 			}
 		
-			operations {
+			operations{
 				on()
 				off()
 				toggle()
-			}	
-
-		}
-
-
-2. Create a new function block model named `ColorLight`, drag and drop the entity model **Color** from **Data Types** into this funciton block model,  and update it according the following:
-
-	
-		namespace com.mycompany.fb
-		version 1.0.0
-		displayname "ColorLight"
-		description "A light makes the environment bright and colorful"
-		category hue
-		using com.mycompany.type.Color ; 1.0.0
-		
-		functionblock ColorLight {
-			configuration {
-				optional brightnessLevel as int
-				optional defaultColor as Color
-			}
-		
-			fault {
-				mandatory bulbDefect as boolean "true if the light bulb of the lamp is defect"
-			}
-		
-			operations {
-				setR(r as int)
-				setG(g as int)
-				setB(b as int)
-			}
-		
-		}
-
-3. Drag and drop the two created and edited function blocks from the **Function Block Models** tab into the information model **MyLightingDevice** in the **Information Models** tab to create the reference.  
-   ![Drag and drop from Function Block to Information Model]({{base}}/img/documentation/m2m_tc_drag_drop_function_block_to_information_model.png)
-4. Update the information model according the following:
-
-		namespace com.mycompany
-		version 1.0.0
-		displayname "PhilipsHue"
-		description "Information model for PhilipsHue"
-		category demo
-		using com.mycompany.fb.Switchable ; 1.0.0
-		using com.mycompany.fb.ColorLight ; 1.0.0
-		
-		infomodel MyLightingDevice {
-		
-			functionblocks {
-				switchable as Switchable
-				colorlight as ColorLight
 			}
 		}
+
+3. Drag and drop the two created and edited function blocks from the **Functionblocks** area into the information model `PhilipsHue` in the **Information Models** area to create the reference.  
+   The updated information model appears as follows:
+   ![Drag and drop from Function Block to Information Model]({{base}}/img/documentation/m2m_tc_drag_drop_function_block_to_information_model.png)  

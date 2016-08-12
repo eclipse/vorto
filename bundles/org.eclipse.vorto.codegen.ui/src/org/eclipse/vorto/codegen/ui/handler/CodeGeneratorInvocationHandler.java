@@ -14,14 +14,26 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.ui.handler;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.emf.common.util.Diagnostic;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.Diagnostician;
+import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IGeneratorLookup;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
+import org.eclipse.vorto.codegen.utils.Utils;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
@@ -34,9 +46,8 @@ import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
  * 
  */
 public class CodeGeneratorInvocationHandler extends AbstractHandler {
-
-	private static final String CLASS = "class";
-	private static final String GENERATOR_ID = IVortoCodeGenerator.GENERATOR_ID;
+	
+	private static final IGeneratorLookup lookupService = new GeneratorLookupLocal();
 
 	@Override
 	public boolean isEnabled() {
@@ -45,55 +56,86 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		final String generatorIdentifier = event.getParameter("org.eclipse.vorto.codegen.generator.commandParameter");
-		evaluate(generatorIdentifier);
-		PlatformUtils.switchPerspective(PlatformUtils.JAVA_PERSPECTIVE);
+		final String generatorServiceKey = event.getParameter("org.eclipse.vorto.codegen.generator.commandParameter");
+		if (evaluate(generatorServiceKey)) {
+			PlatformUtils.switchPerspective(PlatformUtils.JAVA_PERSPECTIVE);
+		}
+
 		return null;
 	}
 
-	private void evaluate(String generatorName) {
+	private boolean evaluate(String generatorServiceKey) {
 
-		final IConfigurationElement[] configElements = getUserSelectedGenerators(generatorName);
-		
-		
 		IModelElement selectedElement = ModelProjectFactory.getInstance().getModelElementFromSelection();
 		if (selectedElement == null) {
-			MessageDisplayFactory.getMessageDisplay().displayWarning("Model was not properly selected. Please try again.");
+			MessageDisplayFactory.getMessageDisplay()
+					.displayWarning("Model was not properly selected. Please try again.");
+			return false;
+		}
+
+		if (!hasNoErrors(selectedElement)) {
+			MessageDisplayFactory.getMessageDisplay().displayError("Model has errors. Cannot generate.");
+			return false;
+		}
+
+		InformationModel informationModel = getInformationModel(selectedElement.getModel());
+
+		try {
+			IVortoCodeGenerator generator = lookupService.lookupByKey(generatorServiceKey);
+			IGenerationResult result = generator.generate(informationModel, createInvocationContext(selectedElement.getProject(),generator.getServiceKey()));
+			CodeGenerationHelper.createEclipseProject(ModelIdFactory.newInstance(informationModel), generator.getServiceKey(), result);
+			
+		} catch(Exception e) {
+			MessageDisplayFactory.getMessageDisplay().displayError(e);
 		}
 		
-		InformationModel informationModel = (InformationModel) selectedElement.getModel();
+		return true;
+	}
 
-		for (IConfigurationElement e : configElements) {
-			try {
-				final Object codeGenerator = e.createExecutableExtension(CLASS);
+	private InformationModel getInformationModel(Model model) {
+		if (model instanceof InformationModel) {
+			return (InformationModel)model;
+		} else if (model instanceof FunctionblockModel) {
+			return Utils.wrapFunctionBlock((FunctionblockModel)model);
+		}
+		throw new IllegalArgumentException("Cannot generate from selected model");
+	}
 
-				// interested only in code generators
-				if (!(codeGenerator instanceof IVortoCodeGenerator)) {
-					continue; 
+	private boolean hasNoErrors(IModelElement selectedElement) {
+		return selectedElement.getDiagnostics().size() <= 0 && noLinkingErrors(selectedElement);
+	}
+
+	// check if model has no syntax errors
+	private boolean noLinkingErrors(IModelElement modelElement) {
+		Model model = modelElement.getModel();
+
+		if (model instanceof InformationModel) {
+			InformationModel infoModel = (InformationModel) model;
+			for (FunctionblockProperty property : infoModel.getProperties()) {
+				// for syntax and parsing errors
+				if (property.getType().eResource().getErrors().size() > 0) {
+					return false;
 				}
 
-				IVortoCodeGenerator informationModelCodeGenerator = (IVortoCodeGenerator) codeGenerator;
-
-				CodeGeneratorTaskExecutor.execute(informationModel, informationModelCodeGenerator,
-						createInvocationContext(selectedElement.getProject(), informationModelCodeGenerator.getServiceKey()));
-
-			} catch (Exception e1) {
-				MessageDisplayFactory.getMessageDisplay().displayError(e1);
-				throw new RuntimeException("Something went wrong during code generation", e1);
+				// for linking errors
+				if (getLinkingErrors(property.getType()).size() > 0) {
+					return false;
+				}
 			}
 		}
+		return true;
+	}
+
+	private Collection<Diagnostic> getLinkingErrors(EObject model) {
+		Diagnostic diagnostic = Diagnostician.INSTANCE.validate(model);
+		switch (diagnostic.getSeverity()) {
+		case Diagnostic.ERROR:
+			return diagnostic.getChildren();
+		}
+		return Collections.emptyList();
 	}
 
 	private InvocationContext createInvocationContext(IModelProject project, String targetPlatform) {
-		return new InvocationContext(project.getMapping(targetPlatform));
+		return new InvocationContext(project.getMapping(targetPlatform),lookupService);
 	}
-
-	private IConfigurationElement[] getUserSelectedGenerators(String generatorIdentifier) {
-
-		IConfigurationElement[] configurationElements;
-		ConfigurationElementLookup elementLookup = ConfigurationElementLookup.getDefault();
-		configurationElements = elementLookup.getSelectedConfigurationElementFor(GENERATOR_ID, generatorIdentifier);
-		return configurationElements;
-	}
-
 }

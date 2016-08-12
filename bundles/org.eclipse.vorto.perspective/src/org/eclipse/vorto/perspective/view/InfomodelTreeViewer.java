@@ -18,7 +18,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.dnd.DND;
@@ -49,7 +48,7 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 		Transfer[] transferTypes = new Transfer[] { LocalSelectionTransfer.getTransfer() };
 
 		treeViewer.addDropSupport(operations, transferTypes,
-				ModelDropListenerFactory.infomodelViewPartDropListener(treeViewer));
+				ModelDropListenerFactory.infomodelViewPartDropListener(treeViewer, localModelWorkspace));
 	}
 
 	protected void initContextMenu() {
@@ -67,30 +66,9 @@ public class InfomodelTreeViewer extends ModelTreeViewer {
 						MenuManager generatorMenuMgr = new MenuManager("Generate Code");
 						generatorMenuMgr.add(new PopulateGeneratorsMenu());
 						menuMgr.add(generatorMenuMgr);
-						menuMgr.add(new ShareModelAction() {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
-						menuMgr.add(new DeleteModelAction(localModelWorkspace) {
-
-							@Override
-							protected TreeViewer getViewer() {
-								return treeViewer;
-							}
-
-							@Override
-							protected IModelElement getSelectedElement() {
-								return model;
-							}
-						});
+						
+						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
+						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
 						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
 							@Override
 							public void doAction() {

@@ -15,9 +15,12 @@
 package org.eclipse.vorto.codegen.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
@@ -33,8 +36,17 @@ public class ZipFileExtractorTest {
 	@Test
 	public void testGetInformationModelFromZipFile() throws Exception {
 		ModelZipFileExtractor extractor = new ModelZipFileExtractor(IOUtils.toByteArray(new ClassPathResource("models.zip").getInputStream()));
-		InformationModel model = extractor.extract(new ModelId(ModelType.InformationModel,"TI_SensorTag_CC2650","examples.informationmodels.sensors","1.0.0"));
+		Model model = extractor.extract("TI_SensorTag_CC2650");
 		assertNotNull(model);
+		assertTrue(model instanceof InformationModel);
+	}
+	
+	@Test
+	public void testGetFunctionblockFromZipFile() throws Exception {
+		ModelZipFileExtractor extractor = new ModelZipFileExtractor(IOUtils.toByteArray(new ClassPathResource("models.zip").getInputStream()));
+		Model model = extractor.extract("LightSensor");
+		assertNotNull(model);
+		assertTrue(model instanceof FunctionblockModel);
 	}
 	
 	

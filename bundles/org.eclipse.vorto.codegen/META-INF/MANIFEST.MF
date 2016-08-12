@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen;singleton:=true
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-Vendor: Eclipse.org/Vorto
 Require-Bundle: org.eclipse.vorto.core,
  com.google.guava,
@@ -12,8 +12,7 @@ Require-Bundle: org.eclipse.vorto.core,
  org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.eclipse.vorto.codegen.api,
- org.eclipse.vorto.codegen.api.mapping,
- org.eclipse.vorto.codegen.utils
+Export-Package: org.eclipse.vorto.codegen.api,org.eclipse.vorto.codege
+ n.api.mapping,org.eclipse.vorto.codegen.utils
 Bundle-ClassPath: icons/,.
 Import-Package: org.eclipse.emf.common.util

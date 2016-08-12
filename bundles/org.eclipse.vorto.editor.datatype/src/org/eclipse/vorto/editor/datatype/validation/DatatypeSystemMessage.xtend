@@ -17,6 +17,9 @@
  package org.eclipse.vorto.editor.datatype.validation
 
 class DatatypeSystemMessage {
+	public static final String ERROR_OBJ_PROPERTY_CIRCULAR_REF = 'Object property type has circular reference'
+	public static final String ERROR_SUPERTYPE_CIRCULAR_REF = 'Super type has circular reference'
+	
 	public static final String ERROR_DUPLICATED_ENTITY_NAME = 'Entity name has been defined'
 	public static final String ERROR_DUPLICATED_PROPERTY_NAME = 'Property name has been defined'
 

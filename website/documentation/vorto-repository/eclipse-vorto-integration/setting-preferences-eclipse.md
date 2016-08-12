@@ -12,7 +12,7 @@ You must perform some settings in the Eclipse preferences so Eclipse is able to 
 
 **Prerequisites**
 
-* You have installed the Eclipse Vorto plug-ins (refer to [Installing the Plug-ins]({{base}}/documentation/installation/installation.html)).
+* You have installed the Eclipse Vorto Toolset (refer to [Installing the Toolset]({{base}}/documentation/installation/installation.html)).
 * You have started Eclipse.
 
 **Proceed as follows**

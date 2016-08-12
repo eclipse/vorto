@@ -16,6 +16,7 @@ package org.eclipse.vorto.perspective.view;
 
 import java.util.Collection;
 
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 
@@ -34,6 +35,12 @@ public interface ILocalModelWorkspace {
 	 * Only refreshes the current selected project
 	 */
 	void refreshCurrent();
+	
+	/**
+	 * Sets the focus on the specified treeViewer
+	 * @param treeViewer
+	 */
+	void setFocus(TreeViewer treeViewer);
 			
 	public interface IModelProjectBrowser {
 				

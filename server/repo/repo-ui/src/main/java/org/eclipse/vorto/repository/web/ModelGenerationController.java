@@ -48,7 +48,7 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/generate", description="Generate Code from an Information Model")
+@Api(value="/generate", description="Generate code from vorto models")
 @RestController
 @RequestMapping(value = "/rest/generation-router")
 public class ModelGenerationController extends RepositoryController {
@@ -65,10 +65,10 @@ public class ModelGenerationController extends RepositoryController {
 	@ApiOperation(value = "Generate code for a specified platform")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}/{serviceKey}", method = RequestMethod.GET)
-	public void generate( 	@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace, 
-							@ApiParam(value = "Name", required = true) final @PathVariable String name,
-							@ApiParam(value = "Version", required = true) final @PathVariable String version, 
-							@ApiParam(value = "Service Key - Platform", required = true) @PathVariable String serviceKey, 
+	public void generate( 	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+							@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+							@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
+							@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
 							@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
@@ -88,7 +88,7 @@ public class ModelGenerationController extends RepositoryController {
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
 	@RequestMapping(value = "/{classifier}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Classifier",allowableValues="platform, documentation", required = true) @PathVariable String classifier) {
+	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose object type to return",allowableValues="platform service key, platform documentation", required = true) @PathVariable String classifier) {
 		List<GeneratorServiceInfo> generatorInfoResult = new ArrayList<>();
 		
 		for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys(ServiceClassifier.valueOf(classifier))) {
@@ -102,23 +102,23 @@ public class ModelGenerationController extends RepositoryController {
 		return generatorInfoResult;
 	}
 		
-	@ApiOperation(value = "Returns the mostly used Code Generators")
+	@ApiOperation(value = "Returns the rank of code generators by usage")
 	@RequestMapping(value = "/topused/{top}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<GeneratorServiceInfo> getMostlyUsedGenerators(@ApiParam(value = "Top Generators", required = true) final @PathVariable int top) {
+	public Collection<GeneratorServiceInfo> getMostlyUsedGenerators(@ApiParam(value = "The upper limit number of top code generator list", required = true) final @PathVariable int top) {
 		return this.generatorService.getMostlyUsedGenerators(top);
 	}
 	
-	@ApiOperation(value = "Register a Code Generator",hidden=true)
+	@ApiOperation(value = "Register a code generator",hidden=true)
 	@RequestMapping(value = "/register/{serviceKey}/{classifier}", method = RequestMethod.PUT)
-	public void registerGenerator(	@ApiParam(value = "Service Key - Platform", required = true) final @PathVariable String serviceKey,
-									@ApiParam(value = "Classifier", required = true) final @PathVariable ServiceClassifier classifier,
-									@ApiParam(value = "baseUrl", required = true) final @RequestBody String baseUrl) {
+	public void registerGenerator(	@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey,
+									@ApiParam(value = "Service type for a specified code generator, e.g. platform", required = true) final @PathVariable ServiceClassifier classifier,
+									@ApiParam(value = "The URL links to a specified code generator", required = true) final @RequestBody String baseUrl) {
 		this.generatorService.registerGenerator(serviceKey, baseUrl,classifier);
 	}
 
-	@ApiOperation(value = "Deregister a Code Generator",hidden=true)
+	@ApiOperation(value = "Deregister a code generator",hidden=true)
 	@RequestMapping(value = "/deregister/{serviceKey}", method = RequestMethod.PUT)
-	public boolean deregisterGenerator(@ApiParam(value = "Service Key - Platform", required = true) final @PathVariable String serviceKey) {
+	public boolean deregisterGenerator(@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey) {
 		this.generatorService.unregisterGenerator(serviceKey);
 		return true;
 	}

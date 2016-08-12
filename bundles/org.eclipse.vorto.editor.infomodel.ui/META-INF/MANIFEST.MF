@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Information Model Editor UI (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ui;singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.xtext.ui,
@@ -23,7 +23,7 @@ Require-Bundle: org.eclipse.xtext.ui,
  org.eclipse.vorto.editor.infomodel.ide
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,
- org.eclipse.vorto.editor.infomodel.ui.internal,
- org.eclipse.vorto.editor.infomodel.ui.quickfix
+Export-Package: org.eclipse.vorto.editor.infomodel.ui.contentassist,or
+ g.eclipse.vorto.editor.infomodel.ui.internal,org.eclipse.vorto.editor
+ .infomodel.ui.quickfix
 Bundle-Activator: org.eclipse.vorto.editor.infomodel.ui.internal.InfomodelActivator

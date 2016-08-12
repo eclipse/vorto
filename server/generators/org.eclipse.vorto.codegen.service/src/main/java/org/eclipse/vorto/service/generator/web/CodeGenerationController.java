@@ -1,26 +1,42 @@
 /*******************************************************************************
- * Copyright (C) 2015 Bosch Software Innovations GmbH. All rights reserved.
+ * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
 
 package org.eclipse.vorto.service.generator.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.codegen.api.Generated;
+import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
-import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
 import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
 import org.slf4j.Logger;
@@ -81,6 +97,9 @@ public class CodeGenerationController {
 
 	@Autowired
 	private IVortoCodeGenerator vortoGenerator;
+	
+	@Autowired
+	private ServerGeneratorLookup lookupService;
 
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> generate(@PathVariable String namespace,
@@ -90,20 +109,38 @@ public class CodeGenerationController {
 		
 		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelResources);
 		
-		InformationModel infomodel = extractor.extract(new ModelId(ModelType.InformationModel, name, namespace, version));
+		Model model = extractor.extract(name);
 		
-		IGenerationResult result = vortoGenerator.generate(infomodel, resolveMappingContext(infomodel, vortoGenerator.getServiceKey()));
+		InformationModel infomodel = null;
+		
+		if (model instanceof InformationModel) {
+			infomodel = (InformationModel)model;
+		} else if (model instanceof FunctionblockModel) {
+			infomodel = Utils.wrapFunctionBlock((FunctionblockModel)model);
+		}
 				
+		IGenerationResult result = null;
+		try {
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey()));
+		} catch (Exception e) {
+			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
+			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
+			output.write(generated);
+			result = output;
+		}
+
 		return ResponseEntity.ok().contentLength(result.getContent().length)
 				.header("content-disposition", "attachment; filename = " + result.getFileName())
 				.contentType(MediaType.parseMediaType(result.getMediatype()))
 				.body(new InputStreamResource(new ByteArrayInputStream(result.getContent())));
+
 	}
 	
-	
-	private InvocationContext resolveMappingContext(InformationModel model, String targetPlatform) {
+	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
-		return new MappingZipFileExtractor(mappingResources).extract();
+		List<MappingModel> mappingModels =  new MappingZipFileExtractor(mappingResources).extract();
+		
+		return new InvocationContext(mappingModels, lookupService);
 	}
 	
 

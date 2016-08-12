@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -15,15 +15,14 @@
 package org.eclipse.vorto.codegen.examples.jsonschema.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.Param
 
 class OperationParametersValidationTemplate implements ITemplate<Operation>{
 	
-	var OperationSingleParameterValidation operationSingleParameterValidationTemplate;
+	var OperationSingleParameterValidationTemplate operationSingleParameterValidationTemplate;
 	
-	new(OperationSingleParameterValidation operationSingleParameterValidationTemplate) {
+	new(OperationSingleParameterValidationTemplate operationSingleParameterValidationTemplate) {
 		this.operationSingleParameterValidationTemplate = operationSingleParameterValidationTemplate;
 	}
 	
@@ -35,10 +34,12 @@ class OperationParametersValidationTemplate implements ITemplate<Operation>{
 				"description": "Operation Parameter Validation for «operation.name».",
 				"type": "object",
 				"properties": {
-					«FOR Param param : operation.params SEPARATOR ', '»
+					«FOR param : operation.params SEPARATOR ', '»
 						«operationSingleParameterValidationTemplate.getContent(param,invocationContext)»
 					«ENDFOR»
-				}
+				},
+				"required" : [«FOR param : operation.params SEPARATOR ', '»"«param.name»"«ENDFOR»]
+				
 			}
 		'''
 	}

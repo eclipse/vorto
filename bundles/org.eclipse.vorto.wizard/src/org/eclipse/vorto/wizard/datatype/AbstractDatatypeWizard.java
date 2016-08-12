@@ -27,7 +27,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ui.handler.ModelGenerationTask;
 import org.eclipse.vorto.codegen.ui.tasks.ProjectFileOutputter;
 import org.eclipse.vorto.core.api.model.model.ModelType;
@@ -35,8 +35,7 @@ import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.wizard.AbstractVortoWizard;
 
-public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
-		implements INewWizard {
+public abstract class AbstractDatatypeWizard extends AbstractVortoWizard implements INewWizard {
 
 	private IModelProject modelProject;
 
@@ -45,40 +44,39 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 	}
 
 	private DatatypeWizardPage iotWizardPage;
-	
+
 	private String modelFolder = "datatypes/";
 
 	private Datatype datatype;
 
 	public void addPages() {
-		iotWizardPage = new DatatypeWizardPage(datatype, "New Datatype",modelProject);
+		iotWizardPage = new DatatypeWizardPage(datatype, "New Datatype", modelProject);
 		setTitle("Create " + datatype.name().toLowerCase() + " type ");
-		setDescription("Please enter the details for creating a "
-				+ datatype.name().toLowerCase() + " model.");
+		setDescription("Please enter the details for creating a " + datatype.name().toLowerCase() + " model.");
 		addPage(iotWizardPage);
 	}
 
 	public boolean performFinish() {
-		new ModelGenerationTask(ModelType.Datatype.getExtension(), new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
-				InvocationContext.simpleInvocationContext(), new ProjectFileOutputter(this.modelProject.getProject()));
+		new ModelGenerationTask(ModelType.Datatype.getExtension(),
+				new DataTypeFileTemplate(datatype.name().toLowerCase()), modelFolder).generate(iotWizardPage,
+						InvocationContext.simpleInvocationContext(),
+						new ProjectFileOutputter(this.modelProject.getProject()));
 		openDatatypeWithDefaultEditor();
 		return true;
 	}
 
 	private void openDatatypeWithDefaultEditor() {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject project = workspace.getRoot().getProject(
-				iotWizardPage.getProjectName());
-		
+		IProject project = workspace.getRoot().getProject(iotWizardPage.getProjectName());
+
 		final IModelProject modelProject = ModelProjectFactory.getInstance().getProject(project);
 
 		final IFile modelFile = modelProject.getModelElementById(iotWizardPage.getModelId()).getModelFile();
-		
+
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
+				IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 				if (activeWindow != null) {
 					IWorkbenchPage page = activeWindow.getActivePage();
 					if (page != null) {
@@ -91,7 +89,7 @@ public abstract class AbstractDatatypeWizard extends AbstractVortoWizard
 				}
 			}
 		});
-		
+
 	}
 
 	@Override

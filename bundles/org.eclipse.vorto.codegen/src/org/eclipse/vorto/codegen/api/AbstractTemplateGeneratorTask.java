@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
-
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */

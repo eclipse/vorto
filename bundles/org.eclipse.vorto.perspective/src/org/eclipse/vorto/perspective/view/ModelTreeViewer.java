@@ -23,6 +23,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -97,7 +99,7 @@ public abstract class ModelTreeViewer {
 
 	public void populate(Collection<IModelElement> modelElements) {
 		if (!Display.getDefault().isDisposed()) {
-			 Display.getDefault().syncExec(newViewUpdateRunnable(treeViewer, modelElements));
+			Display.getDefault().syncExec(newViewUpdateRunnable(treeViewer, modelElements));
 		}
 	}
 
@@ -117,8 +119,8 @@ public abstract class ModelTreeViewer {
 	protected void openMappingWizard() {
 		IModelElement firstElement = (IModelElement) treeViewer.getStructuredSelection().getFirstElement();
 		ModelId modelId = firstElement.getId();
-		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell(), new MappingModelWizard(localModelWorkspace.getProjectBrowser().getSelectedProject(), modelId));
+		WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+				new MappingModelWizard(localModelWorkspace.getProjectBrowser().getSelectedProject(), modelId));
 		dialog.create();
 		dialog.open();
 	}
@@ -140,6 +142,19 @@ public abstract class ModelTreeViewer {
 						}
 					}
 				}
+			}
+		});
+
+		treeViewer.getControl().addFocusListener(new FocusListener() {
+
+			@Override
+			public void focusLost(FocusEvent e) {
+
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+				localModelWorkspace.setFocus(treeViewer);
 			}
 		});
 	}

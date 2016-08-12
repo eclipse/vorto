@@ -18,7 +18,7 @@ import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGenerationResult
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.SingleGenerationResult
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext
+import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.examples.markdown.tasks.MarkdownInformationModelGeneratorTask
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 

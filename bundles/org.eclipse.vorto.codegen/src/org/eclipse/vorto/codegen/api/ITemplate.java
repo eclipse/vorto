@@ -14,8 +14,6 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.api;
 
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
-
 /**
  * A {@link ICodeGeneratorTask} use generation templates which contain the
  * context specific outcome logic

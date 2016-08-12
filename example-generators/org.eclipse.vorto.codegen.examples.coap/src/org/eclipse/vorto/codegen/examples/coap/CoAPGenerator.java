@@ -21,7 +21,7 @@ import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.api.mapping.InvocationContext;
+import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientFunctionblockImplGeneratorTask;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientFunctionblockInterfaceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.coap.client.tasks.CoAPClientInformationModelGeneratorTask;

@@ -35,6 +35,7 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getParams <em>Params</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getReturnType <em>Return Type</em>}</li>
  *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#getDescription <em>Description</em>}</li>
+ *   <li>{@link org.eclipse.vorto.core.api.model.functionblock.impl.OperationImpl#isBreakable <em>Breakable</em>}</li>
  * </ul>
  *
  * @generated
@@ -99,6 +100,26 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 	 * @ordered
 	 */
 	protected String description = DESCRIPTION_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isBreakable() <em>Breakable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isBreakable()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean BREAKABLE_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isBreakable() <em>Breakable</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isBreakable()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean breakable = BREAKABLE_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -221,6 +242,27 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isBreakable() {
+		return breakable;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setBreakable(boolean newBreakable) {
+		boolean oldBreakable = breakable;
+		breakable = newBreakable;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, FunctionblockPackage.OPERATION__BREAKABLE, oldBreakable, breakable));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -248,6 +290,8 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 				return getReturnType();
 			case FunctionblockPackage.OPERATION__DESCRIPTION:
 				return getDescription();
+			case FunctionblockPackage.OPERATION__BREAKABLE:
+				return isBreakable();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -274,6 +318,9 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 			case FunctionblockPackage.OPERATION__DESCRIPTION:
 				setDescription((String)newValue);
 				return;
+			case FunctionblockPackage.OPERATION__BREAKABLE:
+				setBreakable((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -298,6 +345,9 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 			case FunctionblockPackage.OPERATION__DESCRIPTION:
 				setDescription(DESCRIPTION_EDEFAULT);
 				return;
+			case FunctionblockPackage.OPERATION__BREAKABLE:
+				setBreakable(BREAKABLE_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -318,6 +368,8 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 				return returnType != null;
 			case FunctionblockPackage.OPERATION__DESCRIPTION:
 				return DESCRIPTION_EDEFAULT == null ? description != null : !DESCRIPTION_EDEFAULT.equals(description);
+			case FunctionblockPackage.OPERATION__BREAKABLE:
+				return breakable != BREAKABLE_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -336,6 +388,8 @@ public class OperationImpl extends MinimalEObjectImpl.Container implements Opera
 		result.append(name);
 		result.append(", description: "); //$NON-NLS-1$
 		result.append(description);
+		result.append(", breakable: "); //$NON-NLS-1$
+		result.append(breakable);
 		result.append(')');
 		return result.toString();
 	}

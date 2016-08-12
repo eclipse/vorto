@@ -57,7 +57,12 @@ public class DatatypeWizardPage extends ModelBaseWizardPage {
 
 	@Override
 	public ModelId getModelId() {
-		return ModelIdFactory.newInstance(ModelType.Datatype, "com.mycompany.type",txtVersion.getText(),txtModelName.getText());
+		return getModelId(ModelType.Datatype);
+	}
+	
+	@Override
+	protected String getDefaultNamespace() {
+		return "com.mycompany.type";
 	}
 
 }
