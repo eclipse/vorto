@@ -30,7 +30,7 @@
     - title: "Defining Model Mappings"
       href: ""
       sub:
-        - title: "Model Mapping"
+        - title: "Mapping Models"
           href: "/documentation/editors/mapping-model.html"
         - title: "Defining a Data Type Mapping"
           href: "/documentation/editors/data-type-mapping.html"

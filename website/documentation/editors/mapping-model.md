@@ -5,36 +5,44 @@ title: Defining Model Mappings
 {% include base.html %}
 
 
-# Defining Model Mappings
+# Mapping Models
 
 This section details the following topics:
 
-[Model Mapping](#model-mapping)  
+[Overview](#overview)  
 
-[Defining a Data Type Mapping](./data-type-mapping.html)  
+[Usecases](#usecases)  
 
-[Defining a Function Block Mapping](./function-block-mapping.html)  
+[Defining Mapping Models](#defining-mapping-models)
 
-[Defining an Information Model Mapping](./information-model-mapping.html)  
+[Features](#features)
+
+[Illustration](#illustration)
 
 
-## Model Mapping
+## Overview
 
 Vorto allows the user to define mapping rules to map Vorto models to other target platform domain models.
 
 The primary purpose of defining model mappings in Vorto is to directly translate or map datatype/functionblock/information model descriptions from Vorto to any other IoT platforms (for example, Kura, Eclipse Smarthome). Vorto model mapping acts as a bridge between Vorto definitions and target platforms/technologies.
 
-In addition to that, the model mapping provides an option to enhance the Vorto models with additional metadata descriptions targeted for a specific platform. Thereby the code generators can leverage the expanded metadata descriptions customized for their platforms. Vorto helps to integrate with other IoT platforms through the model mapping in flexible manner. Here are few possible scenarios where model mapping can be used:
+## Usecases
+
+The model mapping provides an option to enhance the Vorto models with additional metadata descriptions targeted for a specific platform. Thereby the code generators can leverage the expanded metadata descriptions customized for their platforms. Vorto helps to integrate with other IoT platforms through the model mapping in flexible manner. Here are few possible scenarios where model mapping can be used:
 
  - Translate Vorto model definitions to understand other IoT platforms.
  - Provide additional metadata in case the Vorto model is not able to describe a specific IoT solution.
  - Provide different model mappings for multiple versions of target platforms (For example, iOS 7/8).
+
+## Defining Mapping Models
 
 Model mapping can be defined for the following:
  
 - [Datatypes](./data-type-mapping.html)
 - [Function Blocks](./function-block-mapping.html)
 - [Information Models](./information-model-mapping.html)   
+
+## Features 
 
 The model mapping contains a direct mapping of Vorto grammar descriptions to custom defined `Stereotypes` and `Attributes` specific for the target platform.
 
@@ -49,6 +57,9 @@ A simple model mapping statement from Vorto to Philips Hue looks likes below
 	...
 
 In the above mapping `philipshue` is a custom defined stereotype, `configuration` is a custom defined attribute and the value `devicetype` is the actual value which is being mapped to Philips Hue definitions. The code generators can make use of these additional metadata which could be targeted for specific IoT solutions or platforms.
+
+
+## Illustration
 
 To demonstrate the potential for model mapping, let us define a model mapping to enhance *Alexa* commands for the *AWS genertor*.
 
@@ -87,6 +98,9 @@ The following two examples definitions are given:
 		}
 	}
 
+
+![Colorlight Without Mapping]({{base}}/img/documentation/vorto_aws_without_mapping.png)
+
 By invoking the *AWS Generator* without any model mapping from Vorto Repository, it generates the following *Alexa* voice command vocabulary in the `colorlightsystemUtterances.txt` file.
 
 	setBrightness {level}
@@ -106,6 +120,10 @@ Now we define a model mapping `ColorLightMapping` to enhance the *Alexa* voice c
 		targetplatform aws
 		from ColorLight.operation.setBrightness to alexa with {command: "set brightness to {level} ; increase brightness to {level} ; decrease brightness to {level}"}
 	}
+
+
+![Colorlight With Mapping]({{base}}/img/documentation/vorto_aws_with_mapping.png)
+
 
 In the above mapping, the *Alexa* voice command is enhanced by  additional commands with `increase` and `decrease` to control the `ColorLight`. Here, `alexa` is a custom defined `Stereotypes` keyword which the *AWS Generator* interprets and makes use of the additional values defined in the model mapping. Again, `command` is a custom defined `Attribute` keyword which the *AWS generator* can understand. 
 
