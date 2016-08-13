@@ -20,7 +20,7 @@ You have implemented the code for the code generator plug-in project (refer to [
    A new Eclipse instance is started.
 3. Switch to the **Vorto** perspective.
 4. Create a new Vorto Project.
-5. Create an information model or download an existing information model from vorto repository (e.g., `XDK`) and select it.  
+5. Create a function block or an information model or download an existing model from vorto repository (e.g., `XDK`) and select it.  
    If necessary, you must do some settings for the new Eclipse environment (refer to [Setting Required Preferences]({{base}}/documentation/vorto-repository/eclipse-vorto-integration/setting-preferences-eclipse.html)).
 6. From the context menu, choose **Generate Code > HelloWorldGenerator**.  
    ![testing demo generator]({{base}}/img/documentation/vorto_invoke_HelloWorldGenerator.png)  
