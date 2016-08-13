@@ -7,4 +7,4 @@ before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSiz
 
 install: true
 script:
-  - mvn clean install -B -V
+  - mvn clean install -B -V && mvn clean install -B -V -f server/pom.xml
