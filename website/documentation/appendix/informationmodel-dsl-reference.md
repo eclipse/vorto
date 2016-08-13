@@ -16,36 +16,35 @@ This section details the following topics:
 
 Information Model DSL import function block model DSL.
 
-InformationModel:
-
-	  'namespace' qualifiedName
-	  'version' version
-      (modelReference)*
-      'infomodel' id '{'
-      'displayname' stirng
-      ('description' string)?
-      'category' category
-      'functionblocks' '{'
-        (functionblockProperty)*
-      '}'
-     ;
+    InformationModel:
+        'namespace' qualifiedName
+        'version' version
+        (modelReference)*
+        'infomodel' id '{'
+        'displayname' stirng
+        ('description' string)?
+        'category' category
+        'functionblocks' '{'
+            (functionblockProperty)*
+        '}'
+    ;
 
     category:id;
 
-	functionblockProperty: id 'as' [fbs::functionblockModel|qualifiedName]
+    functionblockProperty: id 'as' [fbs::functionblockModel|qualifiedName]
         (string)?;
 
     string:
-      '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-      "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
     ;
 
-	qualifiedName: id ('.' id)*;
+    qualifiedName: id ('.' id)*;
 
     version : int('.' int)*('-'id)?;
 
     id:
-      '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
+        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
     ;
 
 ## Information Model DSL Semantics

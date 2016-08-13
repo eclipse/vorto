@@ -127,7 +127,7 @@
     - title: "Migration Guide"
       href: "/documentation/appendix/migration-guide.html"
     - title: "Model DSL Reference"
-      href: "/documentation/appendix/datatype-dsl-reference.html"
+      href: ""
       sub:
         - title: "Data Type DSL"
           href: "/documentation/appendix/datatype-dsl-reference.html"
@@ -135,5 +135,5 @@
           href: "/documentation/appendix/functionblock-dsl-reference.html"
         - title: "Information Model DSL"
           href: "/documentation/appendix/informationmodel-dsl-reference.html"
-        - title: "Information Mapping Model DSL"
-          href: "/documentation/appendix/informationmodel-dsl-reference.html"
+        - title: "Information Model Mapping DSL"
+          href: "/documentation/appendix/mappingmodel-dsl-reference.html"
