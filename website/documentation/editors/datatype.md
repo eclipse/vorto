@@ -55,7 +55,7 @@ You have created a data type (refer to [Creating a new Data Type](#creating-a-ne
 
 **Proceed as follows**
 
-1. In the **Datatype Models** area, click the data type entity you want to edit, e.g., `Color`.  
+1. In the **Datatype Models** area, click the data type entity you want to edit, for example, `Color`.  
    The DSL editor for the file `*_Color_*.type` opens.
 2. In the DSL editor, edit the entity according to your needs.
 
