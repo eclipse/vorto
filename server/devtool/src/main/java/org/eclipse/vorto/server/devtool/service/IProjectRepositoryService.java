@@ -4,12 +4,15 @@ import java.util.ArrayList;
 
 import org.eclipse.vorto.server.devtool.exception.ProjectAlreadyExistsException;
 import org.eclipse.vorto.server.devtool.exception.ProjectNotFoundException;
+import org.eclipse.vorto.server.devtool.exception.ProjectResourceAlreadyExistsException;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 
 public interface IProjectRepositoryService {
 	
 	void checkProjectExists(String sessionId, String projectName) throws ProjectAlreadyExistsException;
+	
+	void checkResourceExists(String sessionId, String projectName, ProjectResource projectResource) throws ProjectAlreadyExistsException, ProjectResourceAlreadyExistsException, ProjectNotFoundException;
 	
 	Project createProject(String sessionId, String projectName) throws ProjectAlreadyExistsException;
 		
@@ -19,7 +22,7 @@ public interface IProjectRepositoryService {
 	
 	ArrayList<ProjectResource> getProjectResources(String sessionId, String projectName) throws ProjectNotFoundException;
 	
-	void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException;
+	void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException, ProjectResourceAlreadyExistsException;
 	
-	void deleteResource(String sessionId, String projectName, String resourceId) throws ProjectNotFoundException;
+	void deleteResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException;
 }

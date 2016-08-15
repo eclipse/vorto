@@ -9,6 +9,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.server.devtool.exception.ProjectAlreadyExistsException;
 import org.eclipse.vorto.server.devtool.exception.ProjectNotFoundException;
+import org.eclipse.vorto.server.devtool.exception.ProjectResourceAlreadyExistsException;
 import org.eclipse.vorto.server.devtool.models.Project;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.service.IProjectRepositoryService;
@@ -34,7 +35,16 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 			throw new ProjectAlreadyExistsException();
 		}
 	}	
-		
+	
+	@Override
+	public void checkResourceExists(String sessionId, String projectName, ProjectResource projectResource)
+			throws ProjectAlreadyExistsException, ProjectResourceAlreadyExistsException, ProjectNotFoundException {
+		Project project = openProject(sessionId, projectName);
+		if(project.getResourceList().contains(projectResource)){
+			throw new ProjectResourceAlreadyExistsException();
+		}
+	}
+	
 	@Override
 	public Project createProject(String sessionId, String projectName) throws ProjectAlreadyExistsException {
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector.getInstance(IWebResourceSetProvider.class);		
@@ -77,21 +87,37 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	}
 
 	@Override
-	public void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException {
+	public void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException, ProjectResourceAlreadyExistsException {
 		Project project = openProject(sessionId, projectName);
 		ArrayList<ProjectResource> resourceList = project.getResourceList();
+		if(resourceList.contains(projectResource)){
+			throw new ProjectResourceAlreadyExistsException();
+		}
 		resourceList.add(projectResource);
 	}
 
 	@Override
-	public void deleteResource(String sessionId, String projectName, String resourceId) throws ProjectNotFoundException {
+	public void deleteResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException {
 		Project project = openProject(sessionId, projectName) ;		
-		URI uri = URI.createURI(resourceId);
-		ResourceSet resourceSet = project.getResourceSet();
-		Resource resource = resourceSet.getResource(uri, true);
-		resourceSet.getResources().remove(resource);
-		ProjectResource projectResource = new ProjectResource();
-		projectResource.setResourceId(resourceId);
-		project.getResourceList().remove(projectResource);
+		ProjectResource pResource = getProjectResource(projectResource, project.getResourceList());
+		if(pResource != null){
+			String resourceId = pResource.getResourceId();
+			URI uri = URI.createURI(resourceId);
+			ResourceSet resourceSet = project.getResourceSet();
+			Resource resource = resourceSet.getResource(uri, true);
+			resourceSet.getResources().remove(resource);
+			projectResource.setResourceId(resourceId);
+			project.getResourceList().remove(projectResource);
+		}
 	}
+	
+	private ProjectResource getProjectResource(ProjectResource projectResource, ArrayList<ProjectResource> resourceList){
+		for(ProjectResource pResource : resourceList){
+			if(pResource.equals(projectResource)){
+				return pResource;
+			}
+		}
+		return null;
+	}
+
 }

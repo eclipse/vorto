@@ -65,7 +65,7 @@ define(["angular"], function(angular) {
     });
 
     $scope.$on("deleteEditor", function(event, tab) {
-      var url = './project/' + $scope.projectName + '/resources/delete/' + tab.resourceId + '/';
+      var url = './project/' + $scope.projectName + '/resources/delete/' + tab.namespace + '/' + tab.name + '/' + tab.version;
       $http.get(url).success(
         function(data, status, headers, config) {
           $scope.deleteTab(tab.index);
@@ -151,28 +151,33 @@ define(["angular"], function(angular) {
     }
 
     $scope.addEditor = function(model) {
-      $scope.counter++;
-      var tabId = $scope.counter;
-      var editorParentDivId = "xtext-editor-parent-" + tabId;
-      var editorDivId = "xtext-editor-" + tabId;
-      var tab = {
-        id: tabId,
-        editorParentDivId: editorParentDivId,
-        editorDivId: editorDivId,
-        language: model.language,
-        name: model.name,
-      };
-      $scope.tabs.push(tab);
-      $scope.selectedTabIndex = $scope.tabs.length - 1;
-      $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id'];
-      var element = angular.element(document).find('#editors');
-      element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
-      $compile(element.contents())($scope);
-      if (model.language == 'infomodel') {
-        $scope.addInfoModelEditor(editorDivId, model);
-      } else if (model.language == 'fbmodel') {
-        $scope.addFunctionBlockEditor(editorDivId, model);
-      }
+      $http.get('./project/' + $scope.projectName + '/resources/check/' + model.namespace + '/' + model.name + '/' + model.version).success(
+        function(data, status, headers, config) {
+          $scope.counter++;
+          var tabId = $scope.counter;
+          var editorParentDivId = "xtext-editor-parent-" + tabId;
+          var editorDivId = "xtext-editor-" + tabId;
+          var tab = {
+            id: tabId,
+            editorParentDivId: editorParentDivId,
+            editorDivId: editorDivId,
+            language: model.language,
+            name: model.name,
+          };
+          $scope.tabs.push(tab);
+          $scope.selectedTabIndex = $scope.tabs.length - 1;
+          $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id'];
+          var element = angular.element(document).find('#editors');
+          element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
+          $compile(element.contents())($scope);
+          if (model.language == 'infomodel') {
+            $scope.addInfoModelEditor(editorDivId, model);
+          } else if (model.language == 'fbmodel') {
+            $scope.addFunctionBlockEditor(editorDivId, model);
+          }
+        }).error(function(data, status, headers, config) {
+        window.alert('File already exists')
+      });
     }
 
 <<<<<<< 29ff6b8d2c5ee91524641f1e474159e7d3f9ea4a
@@ -342,7 +347,9 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
             "version": model.version,
             "namespace": model.namespace
           }).success(
-            function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
+            function(data, status, headers, config) {}).error(function(data, status, headers, config) {
+            window.alert('File already exists')
+          });
         });
       });
     }
@@ -368,7 +375,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           tab['resourceId'] = resourceId;
           tab['name'] = model.name;
           tab['version'] = model.version;
-          tab['namespace'] = model.namespace;          
+          tab['namespace'] = model.namespace;
           $http.post('./project/' + $scope.projectName + '/resources/create', {
             "name": model.name,
             "resourceId": resourceId,
