@@ -16,19 +16,22 @@ This section lists the steps required to upgrade the Vorto Toolset.
 **Proceed as follows**  
 
 1. Start Eclipse.
-2. In the main menu, click **Help > Install new Software...**.  
+2. Switch to the Vorto perspective and close it by doing one of the following:
+   * In the main menu, click **Window > Perspective > Close Perspective**.
+   * Right-click on the Vorto perspective icon and choose **Close** from the context menu.
+3. In the main menu, click **Help > Install new Software...**.  
    The **Install** dialog opens displaying the **Available Software**.  
-2. In the **Work with** selection list, select the entry with the *Vorto Toolset update site* URL.  
+4. In the **Work with** selection list, select the entry with the *Vorto Toolset update site* URL.  
    The **Available Software** list is updated.  
-3. In the **Available Software** list, select **Vorto**.  
+5. In the **Available Software** list, select **Vorto**.  
    All containing software parts are checked.
-4. Click **Next** to verify the installation of *Vorto Toolset* and its dependencies.  
+6. Click **Next** to verify the installation of *Vorto Toolset* and its dependencies.  
    The **Install** dialog now displays the **Install Details**.  
-5. If the toolset are up-to date the **Finish** button remains inactive. End here by clicking **Cancel**.
-5. Otherwise, click **Next**.  
+7. If the toolset are up-to date the **Finish** button remains inactive. End here by clicking **Cancel**.
+8. Otherwise, click **Next**.  
    The **Install** dialog now displays the **Review Licenses**.
-6. Select **I accept the terms of the license agreements** and click **Finish**.  
+9. Select **I accept the terms of the license agreements** and click **Finish**.  
    The software is being installed.  
-7. If the **Security Warning** dialog opens click **OK**.  
+10. If the **Security Warning** dialog opens click **OK**.  
    After the installation is complete the **Software Updates** dialog opens.  
-8. Click **Yes** to restart the Eclipse.  
+11. Click **Yes** to restart Eclipse.  
