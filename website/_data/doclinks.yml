@@ -41,12 +41,8 @@
 - title: "Code Generators"
   href: ""
   sub:
-    - title: "Code Generators Overview"
-      href: "/documentation/code-generators/codegenerators.html"
     - title: "Example Code Generators"
       href: "/documentation/code-generators/example-codegenerators.html"
-    - title: "Own Code Generators"
-      href: "/documentation/code-generators/own-codegenerators.html"
     - title: "Using Code Generators"
       href: "/documentation/code-generators/using-codegenerators.html"
 - title: "Generator Developer Guide"
