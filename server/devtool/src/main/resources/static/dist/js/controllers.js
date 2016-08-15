@@ -48,7 +48,6 @@ define(["angular"], function(angular) {
     $scope.getResources = function() {
       $http.get('./project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
-          console.log(data);
           for (i = 0; i < data.length; i++) {
             $scope.openEditor(data[i]);
           }
@@ -96,6 +95,8 @@ define(["angular"], function(angular) {
         editorDivId: editorDivId,
         language: language,
         name: resource.name,
+        version: resource.version,
+        namespace: resource.namespace,
         resourceId: resource.resourceId
       };
       $scope.tabs.push(tab);
@@ -332,9 +333,14 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
           var tab = $scope.tabs[$scope.selectedTabIndex];
           tab['resourceId'] = resourceId;
+          tab['name'] = model.name;
+          tab['version'] = model.version;
+          tab['namespace'] = model.namespace;
           $http.post('./project/' + $scope.projectName + '/resources/create', {
             "name": model.name,
-            "resourceId": resourceId
+            "resourceId": resourceId,
+            "version": model.version,
+            "namespace": model.namespace
           }).success(
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
@@ -360,9 +366,14 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
           var tab = $scope.tabs[$scope.selectedTabIndex];
           tab['resourceId'] = resourceId;
+          tab['name'] = model.name;
+          tab['version'] = model.version;
+          tab['namespace'] = model.namespace;          
           $http.post('./project/' + $scope.projectName + '/resources/create', {
             "name": model.name,
-            "resourceId": resourceId
+            "resourceId": resourceId,
+            "version": model.version,
+            "namespace": model.namespace
           }).success(
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
@@ -451,7 +462,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       var resources = [];
       $http.get('./project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
-          console.log(data);
           var modalInstance = $uibModal.open({
             animation: true,
             controller: 'OpenResourceModalController',
@@ -542,7 +552,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
         $http.get('./editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;
-            console.log(data);
           }).error(function(data, status, headers, config) {
           $scope.models = [];
         });

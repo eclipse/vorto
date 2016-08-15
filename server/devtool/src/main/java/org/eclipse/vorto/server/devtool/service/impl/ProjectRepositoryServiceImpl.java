@@ -77,12 +77,9 @@ public class ProjectRepositoryServiceImpl implements IProjectRepositoryService{
 	}
 
 	@Override
-	public void createResource(String sessionId, String projectName, String resourceName, String resourceId) throws ProjectNotFoundException {
+	public void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException {
 		Project project = openProject(sessionId, projectName);
 		ArrayList<ProjectResource> resourceList = project.getResourceList();
-		ProjectResource projectResource = new ProjectResource();
-		projectResource.setResourceId(resourceId);
-		projectResource.setName(resourceName);
 		resourceList.add(projectResource);
 	}
 

@@ -19,7 +19,7 @@ public interface IProjectRepositoryService {
 	
 	ArrayList<ProjectResource> getProjectResources(String sessionId, String projectName) throws ProjectNotFoundException;
 	
-	void createResource(String sessionId, String projectName, String resourceName, String resourceId) throws ProjectNotFoundException;
+	void createResource(String sessionId, String projectName, ProjectResource projectResource) throws ProjectNotFoundException;
 	
 	void deleteResource(String sessionId, String projectName, String resourceId) throws ProjectNotFoundException;
 }

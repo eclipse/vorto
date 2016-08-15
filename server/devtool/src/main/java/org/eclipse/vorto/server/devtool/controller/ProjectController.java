@@ -127,7 +127,7 @@ public class ProjectController {
 
 	@ApiOperation(value = "Creates a new resource in the Vorto project")
 	@RequestMapping(value = "/{projectName}/resources/create", method = RequestMethod.POST)
-	public void getProjectResourceContents(
+	public void createProjectResource(
 			@RequestBody ProjectResource projectResoure,
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
@@ -135,7 +135,7 @@ public class ProjectController {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		String sessionId = request.getSession().getId();
-		projectRepositoryService.createResource(sessionId, projectName, projectResoure.getName(), projectResoure.getResourceId());
+		projectRepositoryService.createResource(sessionId, projectName, projectResoure);
 	}
 
 	@ApiOperation(value = "Returns a list of resources in the Vorto project")

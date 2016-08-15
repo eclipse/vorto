@@ -7,7 +7,6 @@ define(["angular"], function(angular) {
       link: function(scope, elem, attrs, ctrl) {
         elem.on('blur', function(evt) {
           scope.$apply(function() {
-          	console.log("Calling request : " + elem.val());
             if (elem.val()) {
               $http.get('./project/' + elem.val() + '/check').success(
                 function(data, status, headers, config) {

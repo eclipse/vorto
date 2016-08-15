@@ -27,9 +27,8 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
     $rootScope.getRepositoryBasePath = function() {
       $http.get('./repository/basepath').success(function(data, status, headers, config) {
 		$rootScope.repoBasePath = data['basepath'];
-		console.log($rootScope.repoBasePath);		
       }).error(function(data, status, headers, config) {
-		$rootScope.repoBasePath = "/";      	
+		$rootScope.repoBasePath = "http://vorto.eclipse.org/#/";      	
       });
     }
     
