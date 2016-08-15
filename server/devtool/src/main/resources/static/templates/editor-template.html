@@ -227,7 +227,11 @@
 							<tbody>
 								<tr st-select-row="model" ng-repeat="model in displayedModels">
 									<td>{{ model.id.name }}</td>
-									<td class="action"><a class="action"><i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i></a></td>
+									<td class="action">
+										<a target="_blank" href="{{ repoBasePath }}details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
+											<i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i>
+										</a>
+									</td>
 								</tr>
 							</tbody>
 							<tfoot>

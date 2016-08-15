@@ -24,7 +24,7 @@ import com.google.gson.reflect.TypeToken;
 @Component
 public class InformationModelEditorRestClient {
 
-	@Value("${vorto.repository.base.path}")
+	@Value("${vorto.repository.rest.path}")
 	private String basePath;
 
 	public ModelResource getModel(ModelId modelId){

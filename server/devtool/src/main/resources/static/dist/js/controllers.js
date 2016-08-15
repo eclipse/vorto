@@ -542,6 +542,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
         $http.get('./editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;
+            console.log(data);
           }).error(function(data, status, headers, config) {
           $scope.models = [];
         });
@@ -624,26 +625,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.getters = {
       name: function(value) {
         return value.projectName.sort();
-      }
-    }
-
-    $scope.isProjectSelected = function() {
-      for (i = 0; i < $scope.displayedProjects.length; i++) {
-        if ($scope.displayedProjects[i]['isSelected']) {
-          $scope.selectedProject = $scope.displayedProjects[i];
-          return true;
-        }
-      }
-      $scope.selectedProject = null;
-      return false;
-    }
-
-    $scope.openProject = function() {
-      if ($scope.isProjectSelected()) {
-        $location.path('editor/' + $scope.selectedProject.projectName);
-        $location.replace();
-      } else {
-        window.alert('Please select a project first');
       }
     }
 
