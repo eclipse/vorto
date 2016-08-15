@@ -19,8 +19,8 @@ You can do the following:
 
 You can access the Vorto Repository by the following ways:
 
-* [The Vorto Repository Web interface]({{base}}/documentation/vorto-repository/web-interface/login-register.html)
-* [The Eclipse Vorto integration]({{base}}/documentation/vorto-repository/eclipse-vorto-integration/setting-preferences-eclipse.html)
+* [The Vorto Repository Web Interface]({{base}}/documentation/vorto-repository/web-interface/login-register.html)
+* [The Eclipse Vorto Integration]({{base}}/documentation/vorto-repository/eclipse-vorto-integration/setting-preferences-eclipse.html)
 * [The Vorto CLI Tool]({{base}}/documentation/vorto-repository/cli-tool/cli-tool.html)
 
 For searching and downloading information Models as well as for information on available code generators you can use the Vorto Repository without an Vorto Repository account.
