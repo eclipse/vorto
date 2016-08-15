@@ -22,7 +22,7 @@ public class ProjectResource {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public String getVersion() {
 		return version;
 	}
@@ -43,10 +43,8 @@ public class ProjectResource {
 	public boolean equals(Object obj) {
 		if (obj.getClass().equals(this.getClass())) {
 			ProjectResource projectResource = (ProjectResource) obj;
-			if (projectResource.getResourceId().equals(this.resourceId)) {
-//				if (projectResource.getName().endsWith(this.name)) {
-//					return true;
-//				}
+			if (this.name.equals(projectResource.name) && this.namespace.equals(projectResource.namespace)
+					&& this.version.equals(projectResource.version)) {
 				return true;
 			}
 		}
