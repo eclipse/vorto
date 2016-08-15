@@ -13,6 +13,10 @@ public class Project {
 	private HashSet<String> referencedResourceSet;	
 	private ArrayList<ProjectResource> resourceList;
 	
+	public Project(){
+		
+	}
+	
 	public Project(String projectName){
 		this.projectName = projectName;
 	}

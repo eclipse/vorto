@@ -1,5 +1,5 @@
 define(["angular"], function(angular) {
-  var app = angular.module('apps.controller', ['smart-table','apps.directive']);
+  var app = angular.module('apps.controller', ['smart-table', 'apps.directive']);
 
   app.controller('EditorController', function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal) {
 
@@ -16,83 +16,86 @@ define(["angular"], function(angular) {
     $scope.selectedTabIndex = 0;
     $scope.selectedTabId = 0;
     $scope.selectedEditor = null;
-    
-    $scope.showEditorBody = true;
-  	$scope.projectName;
 
-    $scope.editorTypes = [
-    	{language:'infomodel', display:'Info Model'}, 
-    	{language:'fbmodel', display:'Function Block'}
-    	];
+    $scope.showImportButton = true;
+
+    $scope.showEditorBody = true;
+    $scope.projectName;
+
+    $scope.editorTypes = [{
+      language: 'infomodel',
+      display: 'Info Model'
+    }, {
+      language: 'fbmodel',
+      display: 'Function Block'
+    }];
     $scope.models = [];
     $scope.queryFilter = "";
 
-  	$scope.openProject = function(){
-  	  $scope.projectName = $routeParams.projectName;	
-  	  $http.get('./project/open/' + $scope.projectName).success(
-  	  	function(data, status, headers, config) {
-			$scope.showEditorBody = true;
-			$scope.getResources();
-  		}).error(function(data, status, headers, config) {
-			$scope.showEditorBody = false;
-  	  });	
-  	}
+    $scope.openProject = function() {
+      $scope.projectName = $routeParams.projectName;
+      $http.get('./project/' + $scope.projectName + '/open').success(
+        function(data, status, headers, config) {
+          $scope.showEditorBody = true;
+          $scope.getResources();
+        }).error(function(data, status, headers, config) {
+        $scope.showEditorBody = false;
+      });
+    }
 
     $scope.openProject();
 
-	$scope.getResources = function() {
-  	  $http.get('./project/resources/' + $scope.projectName).success(
-  	  	function(data, status, headers, config) {
-		  console.log(data);
-		  for(i = 0 ; i < data.length ; i++){
-		  	$scope.openEditor(data[i]);
-		  }
-  		}).error(function(data, status, headers, config) {
+    $scope.getResources = function() {
+      $http.get('./project/' + $scope.projectName + '/resources').success(
+        function(data, status, headers, config) {
+          console.log(data);
+          for (i = 0; i < data.length; i++) {
+            $scope.openEditor(data[i]);
+          }
+        }).error(function(data, status, headers, config) {
 
-  	  });		
-	}
+      });
+    }
 
     $scope.$on("addTab", function(event, model) {
       $scope.addEditor(model);
     });
-    
+
     $scope.$on("describeEditor", function(event, editor) {
       $scope.openDescribeEditorModal(editor);
     });
-    
+
     $scope.$on("deleteEditor", function(event, tab) {
-		var url = './project/resource/delete/' + $scope.projectName + '/' + tab.resourceId + '/';
-        $http.get(url).success(
-	        function(data, status, headers, config) {
-				$scope.deleteTab(tab.index);	        		  	
-     		}).error(function(data, status, headers, config) {
-      			windoow.alert('Unable to delete the file');
- 	  	});
-    });    
-    
+      var url = './project/' + $scope.projectName + '/resources/delete/' + tab.resourceId + '/';
+      $http.get(url).success(
+        function(data, status, headers, config) {
+          $scope.deleteTab(tab.index);
+        }).error(function(data, status, headers, config) {
+        windoow.alert('Unable to delete the file');
+      });
+    });
+
     $scope.$on("closeProject", function(event) {
       $scope.closeProject();
     });
 
-  	$scope.closeProject = function(){
-	   $location.path('/project');
-	   $location.replace();	
-  	}
+    $scope.closeProject = function() {
+      $location.path('/project');
+      $location.replace();
+    }
 
     $scope.openEditor = function(resource) {
       $scope.counter++;
       var tabId = $scope.counter;
       var editorParentDivId = "xtext-editor-parent-" + tabId;
       var editorDivId = "xtext-editor-" + tabId;
-	  var language = $scope.getResourceLanguage(resource);
-	  var filename = resource.name + '.' + language;
+      var language = $scope.getResourceLanguage(resource);
       var tab = {
         id: tabId,
         editorParentDivId: editorParentDivId,
         editorDivId: editorDivId,
         language: language,
         name: resource.name,
-        filename: filename,
         resourceId: resource.resourceId
       };
       $scope.tabs.push(tab);
@@ -105,7 +108,7 @@ define(["angular"], function(angular) {
         $scope.openInfoModelEditor(tab);
       } else if (language == 'fbmodel') {
         $scope.openFunctionBlockEditor(tab);
-      }      
+      }
     }
 
     $scope.openInfoModelEditor = function(tab) {
@@ -121,7 +124,7 @@ define(["angular"], function(angular) {
             resourceId: tab.resourceId
           });
           $scope.editors.push(editor);
-          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];          
+          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
           $scope.search();
         });
       });
@@ -157,7 +160,6 @@ define(["angular"], function(angular) {
         editorDivId: editorDivId,
         language: model.language,
         name: model.name,
-        filename: model.filename
       };
       $scope.tabs.push(tab);
       $scope.selectedTabIndex = $scope.tabs.length - 1;
@@ -166,12 +168,13 @@ define(["angular"], function(angular) {
       element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
       $compile(element.contents())($scope);
       if (model.language == 'infomodel') {
-        $scope.addInfoModelEditor(editorDivId, model.filename);
+        $scope.addInfoModelEditor(editorDivId, model);
       } else if (model.language == 'fbmodel') {
-        $scope.addFunctionBlockEditor(editorDivId, model.filename);
+        $scope.addFunctionBlockEditor(editorDivId, model);
       }
     }
 
+<<<<<<< 29ff6b8d2c5ee91524641f1e474159e7d3f9ea4a
 <<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
 <<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b
   	$scope.getters= {
@@ -290,6 +293,28 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 =======
     $scope.addInfoModelEditor = function(parentId, filename) {
 >>>>>>> Implemented the web-editor with in memory data storage
+=======
+    $scope.generateInfoModelContent = function(model) {
+      var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
+      content += "\ninfomodel " + model.displayname + " {";
+      content += "\n\n}";
+      return content;
+    }
+
+    $scope.generateFunctionBlockContent = function(model) {
+      var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
+      content += "\nfunctionblock " + model.displayname + " {";
+      content += "\n\tconfiguration {\n\t //Please enter functionblock configuration details.\n\t}\n";
+      content += "\n\tstatus {\n\t //Please enter functionblock status details.\n\t}\n";
+      content += "\n\tfault {\n\t //Please enter functionblock fault configuration.\n\t}\n";
+      content += "\n\toperations {\n\t //Please enter functionblock operations.\n\t}\n";
+      content += "}";
+      return content;
+    }
+
+    $scope.addInfoModelEditor = function(parentId, model) {
+      var content = $scope.generateInfoModelContent(model);
+>>>>>>> Taking namespace as input while creating a new file. Added auto generation of new file content at front end. Displaying loaded while new file content is being generated
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
           editor = xtext.createEditor({
@@ -300,20 +325,24 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
             showErrorDialogs: "true",
             parent: parentId
           });
+          editor.setValue(content);
           $scope.editors.push(editor);
-          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];          
+          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
           $scope.search();
           var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
-	      var tab = $scope.tabs[$scope.selectedTabIndex];
-	      tab['resourceId'] = resourceId;
-          $http.get('./project/resource/create/' + $scope.projectName + '/' + resourceId + '/' + filename  ).success(
-            function(data, status, headers, config) {	  	
-          }).error(function(data, status, headers, config) {});
+          var tab = $scope.tabs[$scope.selectedTabIndex];
+          tab['resourceId'] = resourceId;
+          $http.post('./project/' + $scope.projectName + '/resources/create', {
+            "name": model.name,
+            "resourceId": resourceId
+          }).success(
+            function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
       });
     }
 
-    $scope.addFunctionBlockEditor = function(parentId, filename) {
+    $scope.addFunctionBlockEditor = function(parentId, model) {
+      var content = $scope.generateFunctionBlockContent(model);
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
           editor = xtext.createEditor({
@@ -324,16 +353,18 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
             showErrorDialogs: "true",
             parent: parentId
           });
+          editor.setValue(content);
           $scope.editors.push(editor);
           $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
           $scope.search();
-	      var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
-	      var tab = $scope.tabs[$scope.selectedTabIndex];
-	      tab['resourceId'] = resourceId;
-        $http.get('./project/resource/create/' + $scope.projectName + '/' + resourceId + '/' + filename  ).success(
-        function(data, status, headers, config) {	  	
-      }).error(function(data, status, headers, config) {
-     });
+          var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
+          var tab = $scope.tabs[$scope.selectedTabIndex];
+          tab['resourceId'] = resourceId;
+          $http.post('./project/' + $scope.projectName + '/resources/create', {
+            "name": model.name,
+            "resourceId": resourceId
+          }).success(
+            function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
       });
     }
@@ -378,7 +409,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 =======
 >>>>>>> Created modal to describe model before creating editor
     };
-    
+
     $scope.openDescribeEditorModal = function(editorType) {
       var modalInstance = $uibModal.open({
         animation: true,
@@ -386,7 +417,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
         templateUrl: 'templates/describe-editor-modal-template.html',
         size: 'sm',
         resolve: {
-  		editorType: editorType			
+          editorType: editorType
         }
       });
     };
@@ -398,11 +429,11 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
         templateUrl: 'templates/delete-editor-modal-template.html',
         size: 'm',
         resolve: {
-	  		tab: function(){
-	  			var tab = $scope.tabs[$scope.selectedTabIndex]
-	  			tab['index'] = index;
-	  			return tab
-	  		}
+          tab: function() {
+            var tab = $scope.tabs[$scope.selectedTabIndex]
+            tab['index'] = index;
+            return tab
+          }
         }
       });
     };
@@ -418,7 +449,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 
     $scope.openOpenResourceModal = function() {
       var resources = [];
-      $http.get('./project/resources/' + $scope.projectName).success(
+      $http.get('./project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
           console.log(data);
           var modalInstance = $uibModal.open({
@@ -427,14 +458,14 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
             templateUrl: 'templates/open-resource-modal-template.html',
             size: 'sm',
             resolve: {
-              resources: function () {
+              resources: function() {
                 return data;
+              }
             }
-          }
-        });	  	
-    	}).error(function(data, status, headers, config) {
-    	  window.alert('Failed to open resource');
-  	  });
+          });
+        }).error(function(data, status, headers, config) {
+        window.alert('Failed to open resource');
+      });
     };
 
     $scope.isModelSelected = function() {
@@ -455,7 +486,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     }
 
     $scope.isValidModel = function(editor) {
-      if(editor == null){
+      if (editor == null) {
         return false;
       }
       if (editor.xtextServices.editorContext._annotations.length !== 0) {
@@ -468,12 +499,15 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.importModel = function() {
       if ($scope.isValidModel($scope.selectedEditor)) {
         if ($scope.isModelSelected()) {
+          $scope.showImportButton = false;
           if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
             $http.get('./editor/infomodel/link/functionblock/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 $scope.selectedEditor.setValue(data);
               }).error(function(data, status, headers, config) {
               window.alert('Failed')
+            }).finally(function() {
+              $scope.showImportButton = true;
             });
           } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
             $http.get('./editor/functionblock/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
@@ -481,6 +515,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
                 editor.setValue(data);
               }).error(function(data, status, headers, config) {
               window.alert('Failed')
+            }).finally(function() {
+              $scope.showImportButton = true;
             });
           }
         } else {
@@ -532,9 +568,9 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     }
 
     $scope.predicates = ['Name'];
-    
+
     $scope.getResourceLanguage = function(resource) {
-		return resource.resourceId.split('.')[1];
+      return resource.resourceId.split('.')[1];
     }
 
   });
@@ -556,25 +592,27 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       });
     };
 
-    $scope.createProject = function(projectName){
-      $http.get('./project/new/' + projectName).success(
+    $scope.createProject = function(projectName) {
+      $http.post('./project', {
+        'projectName': projectName
+      }).success(
         function(data, status, headers, config) {
           $location.path('editor/' + projectName);
           $location.replace();
         }).error(function(data, status, headers, config) {
-          window.alert('Failed to create new Project ' + projectName)
-       });
+        window.alert('Failed to create new Project ' + projectName)
+      });
     }
 
     $scope.getProjects = function() {
-        $http.get('./project/get').success(
-          function(data, status, headers, config) {
-            $scope.projects = data;
-          }).error(function(data, status, headers, config) {
-            $scope.projects = [];
-        });
+      $http.get('./project').success(
+        function(data, status, headers, config) {
+          $scope.projects = data;
+        }).error(function(data, status, headers, config) {
+        $scope.projects = [];
+      });
     }
-    
+
     $scope.getProjects();
 
     $scope.displayedProjects = [].concat($scope.projects);
@@ -600,14 +638,14 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       return false;
     }
 
-    $scope.openProject = function(){
-      if($scope.isProjectSelected()){ 
+    $scope.openProject = function() {
+      if ($scope.isProjectSelected()) {
         $location.path('editor/' + $scope.selectedProject.projectName);
         $location.replace();
-      }else{
+      } else {
         window.alert('Please select a project first');
-      }   
-   }
+      }
+    }
 
   });
 
@@ -616,7 +654,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.selected = $scope.editorTypes[0];
 
     $scope.ok = function() {
-      $uibModalInstance.close($scope.selected.editorType);      
+      $uibModalInstance.close($scope.selected.editorType);
       $rootScope.$broadcast("describeEditor", $scope.selected);
     };
 
@@ -624,22 +662,24 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       $uibModalInstance.dismiss('cancel');
     };
   });
-  
+
   app.controller('DescribeEditorModalController', function($rootScope, $scope, $uibModalInstance, editorType) {
-	
-	$scope.modelVersionRegex = "/^\d\.\d\.\d+$/";
 
     $scope.editorType = editorType;
     $scope.model = {
       language: editorType.language,
-	  name: "",
-	  version: "",
-	  description: "",
+      name: "NewModel",
+      displayname: "NewModel",
+      namespace: "com.company",
+      version: "1.0.0",
+      description: "Model description for NewModel",
+      category: "demo"
     };
 
     $scope.ok = function() {
       $uibModalInstance.close($scope.model);
-      $scope.model.filename = $scope.model.name + "." + $scope.model.language;
+      $scope.model.displayname = $scope.model.name;
+      $scope.model.name = $scope.model.name + "." + $scope.model.language;
       $rootScope.$broadcast("addTab", $scope.model);
     };
 
@@ -649,8 +689,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
   });
 
   app.controller('DeleteEditorModalController', function($rootScope, $scope, $uibModalInstance, tab) {
-	$scope.tab = tab;
-	
+    $scope.tab = tab;
+
     $scope.ok = function() {
       $uibModalInstance.dismiss('cancel');
       $rootScope.$broadcast("deleteEditor", tab);
@@ -660,7 +700,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
       $uibModalInstance.dismiss('cancel');
     };
   });
-  
+
   app.controller('CreateProjectModalController', function($rootScope, $scope, $uibModalInstance) {
 
     $scope.projectName;
@@ -673,8 +713,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     };
-  });    
-  
+  });
+
   app.controller('CloseProjectModalController', function($rootScope, $scope, $uibModalInstance) {
     $scope.ok = function() {
       $rootScope.$broadcast("closeProject");
@@ -684,7 +724,7 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.cancel = function() {
       $uibModalInstance.dismiss('cancel');
     };
-  });      
+  });
 
   return app;
 });

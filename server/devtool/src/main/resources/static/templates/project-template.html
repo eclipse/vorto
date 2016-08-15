@@ -35,22 +35,22 @@
 								<input type="search" placeholder="Search Projects"
 									ng-model="project"
 									st-search class="search-box-open-project input-sm" />
-							    <button class="btn btn-primary btn-project" ng-click="openProject()" type="button">
-							    	Open Project
-							    </button>
 							</div>
 						</th>
 					</tr>
 					<tr>
 						<th><b>{{projects.length}} Project(s) found</b></th>
+						<th></th>
 					</tr>
 					<tr>
 						<th id="onName" st-sort="project"><a href="">Name <i class="fa fa-sort"></i></a></th>
+						<th></th>														
 					</tr>
 				</thead>
 				<tbody>
 					<tr st-select-row="project" ng-repeat="project in displayedProjects">
 						<td>{{ project.projectName }}</td>
+						<td class="action"><a class="action" href="#/editor/{{ project.projectName }}"><i class="fa fa-folder-open"></i></a></td>
 					</tr>
 				</tbody>
 				<tfoot>

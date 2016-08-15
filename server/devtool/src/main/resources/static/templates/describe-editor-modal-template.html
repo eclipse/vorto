@@ -12,19 +12,42 @@
 					<div class="describe-modal-label">
 						{{editorType.display}} Name 
 					</div>
-					<input type="text" size="37" data-ng-model="model.name" name="mName" required/> 
-					<div ng-show="describeEditorModalForm.$submitted || describeEditorModalForm.mName.$touched">
+
+					<input type="text" size="37" data-ng-model="model.name" name="mName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required/> 
+					<div ng-show="describeEditorModalForm.mName.$dirty">
 				    	<div ng-show="describeEditorModalForm.mName.$error.required">Please enter a valid model name</div>
+				    </div>
+
+					<div ng-hide="describeEditorModalForm.mName.$error.required">
+				    	<div ng-show="createProjectForm.mName.$error.pattern">
+				    		The file name must start with a capital letter and no special characters allowed
+				    	</div>
 				    </div>
 				</p>
 				<p>
 					<div class="describe-modal-label">
+						{{editorType.display}} Namespace 
+					</div>
+
+					<input type="text" size="37" data-ng-model="model.namespace" name="mNamespace" required/> 
+					<div ng-show="describeEditorModalForm.mNamespace.$dirty">
+				    	<div ng-show="describeEditorModalForm.mNamespace.$error.required">Please enter a valid model namespace</div>
+				    </div>
+				</p>	
+				<p>
+					<div class="describe-modal-label">
 						{{editorType.display}} Version 
 					</div>
+
 					<input type="text" size="37" data-ng-model="model.version" name="mVersion" ng-pattern="/^\d\.\d\.\d+$/" required/> 
-					<div ng-show="describeEditorModalForm.$submitted || describeEditorModalForm.mVersion.$touched" >
+					<div ng-show="describeEditorModalForm.mVersion.$dirty" >
 				    	<div ng-show="describeEditorModalForm.mVersion.$error.required">Please enter a version number</div>
-				    	<div ng-show="describeEditorModalForm.mVersion.$error.pattern">Version format : <MAJOR>.<MINOR>.<PATCH></div>
+				    </div>
+
+					<div ng-hide="describeEditorModalForm.mVersion.$error.required">
+				    	<div ng-show="describeEditorModalForm.mVersion.$error.pattern">
+				    		Version number format : &ltMAJOR&gt.&ltMINOR&gt.&ltPATCH&gt
+				    	</div>
 				    </div>
 				</p>
 				<p>

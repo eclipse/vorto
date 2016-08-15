@@ -177,7 +177,7 @@
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
 				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
 				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
-				        		{{tab.filename}} 
+				        		{{tab.name}} 
 				        		<span ng-click="openDeleteEditorModal($index)" class="glyphicon glyphicon-remove"></span>
 				        	</a>
 						</li>
@@ -193,7 +193,8 @@
 		<div class="col-md-1">
 			<div id="import-button-container">
 				<a>
-					<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
+					<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton" ng-show="showImportButton"></i>
+					<i class="fa fa-cog fa-spin fa-5x" ng-hide="showImportButton"></i>
 				</a>
 			</div>
 		</div>
