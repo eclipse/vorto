@@ -22,7 +22,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 @Component
-public class InformationModelEditorRestClient {
+public class DevtoolRestClient {
 
 	@Value("${vorto.repository.rest.path}")
 	private String basePath;

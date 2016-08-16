@@ -7,11 +7,6 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
 
-/**
- * 
- * @author shiv
- *
- */
 public interface IInformationModelEditorService {
 
 	String linkFunctionBlockToInformationModel(String infoModelResourceId, ModelId functionBlockModelId, ResourceSet resourceSet,

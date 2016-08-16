@@ -12,8 +12,8 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IInformationModelEditorService;
-import org.eclipse.vorto.server.devtool.utils.InformationModelEditorReferenceLinker;
-import org.eclipse.vorto.server.devtool.utils.InformationModelEditorRestClient;
+import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
+import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +21,15 @@ import org.springframework.stereotype.Service;
 public class InformationModelEditorServiceImpl implements IInformationModelEditorService {
 
 	@Autowired
-	InformationModelEditorRestClient informationModelEditorRestClient;
+	DevtoolRestClient devtoolRestClient;
 
 	@Autowired
-	InformationModelEditorReferenceLinker infomrationModelRefernceLinker;
+	DevtoolReferenceLinker devtoolReferenceLinker;
 
 	@Override
 	public String linkFunctionBlockToInformationModel(String infoModelResourceId, ModelId functionBlockModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
-		infomrationModelRefernceLinker.linkFunctionBlockToInfoModel(infoModelResourceId, functionBlockModelId,
+		devtoolReferenceLinker.linkFunctionBlockToInfoModel(infoModelResourceId, functionBlockModelId,
 				resourceSet, referencedResourceSet);
 		Resource infoModelResource = resourceSet.getResource(URI.createURI(infoModelResourceId), true);
 		try {
@@ -48,7 +48,7 @@ public class InformationModelEditorServiceImpl implements IInformationModelEdito
 
 	private List<ModelResource> searchModelByExpressionAndValidate(String expression,
 			org.eclipse.vorto.http.model.ModelType modelType) {
-		List<ModelResource> resourceList = informationModelEditorRestClient.searchByExpression(expression);
+		List<ModelResource> resourceList = devtoolRestClient.searchByExpression(expression);
 		ArrayList<ModelResource> modelResourceList = new ArrayList<ModelResource>();
 		for (ModelResource modelResource : resourceList) {
 			if (modelResource.getModelType().equals(modelType)) {

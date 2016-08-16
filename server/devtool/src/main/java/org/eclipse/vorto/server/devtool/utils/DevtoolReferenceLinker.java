@@ -23,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InformationModelEditorReferenceLinker {
+public class DevtoolReferenceLinker {
 
 	@Autowired
-	InformationModelEditorRestClient informationModelEditorRestClient;
+	DevtoolRestClient informationModelEditorRestClient;
 
 	public void linkFunctionBlockToInfoModel(String infoModelResourceId, ModelId functionBlockModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
