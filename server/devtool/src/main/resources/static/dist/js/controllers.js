@@ -553,9 +553,8 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
     $scope.search = function() {
       var filter = null;
       var modelType = null;
+      filter = $scope.queryFilter;      
       if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
-        modelType = "fbmodel";
-        filter = $scope.queryFilter + " " + modelType;
         $http.get('./editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;
@@ -563,8 +562,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           $scope.models = [];
         });
       } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
-        modelType = "Datatype";
-        filter = $scope.queryFilter + " " + modelType;
         $http.get('./editor/functionblock/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;

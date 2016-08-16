@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.server.devtool.service.IInformationModelEditorService;
+import org.eclipse.vorto.server.devtool.service.editor.InformationModelEditorServiceImpl;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +30,17 @@ import io.swagger.annotations.ApiParam;
 
 @RestController
 @RequestMapping(value = "/editor/infomodel")
-public class InformationModelEditorController implements IEditorController{
+public class InformationModelEditorController implements IEditorController {
 
 	@Autowired
 	Injector injector;
 
 	@Autowired
-	IInformationModelEditorService iInformationModelEditorService;
+	InformationModelEditorServiceImpl iInformationModelEditorService;
 
 	@ApiOperation(value = "Adds the function block to the resource set")
 	@RequestMapping(value = "/link/functionblock/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void linkEditor(
-			@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
+	public void linkEditor(@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
 			@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
 			@ApiParam(value = "Version", required = true) final @PathVariable String version,
@@ -62,8 +61,8 @@ public class InformationModelEditorController implements IEditorController{
 		HashSet<String> referencedResourceSet = (HashSet<String>) webEditorResourceSetProvider
 				.getReferencedResourcesFromSession(httpServiceContext);
 
-		String content = iInformationModelEditorService.linkFunctionBlockToInformationModel(resourceId, modelId,
-				resourceSet, referencedResourceSet);
+		String content = iInformationModelEditorService.linkModelToResource(resourceId, modelId, resourceSet,
+				referencedResourceSet);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();
@@ -78,7 +77,6 @@ public class InformationModelEditorController implements IEditorController{
 			@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 
 		Objects.requireNonNull(expression, "namespace must not be null");
-		return iInformationModelEditorService.searchFunctionBlockByExpression(expression);
-
+		return iInformationModelEditorService.searchModelByExpression(expression);
 	}
 }

@@ -14,7 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.server.devtool.service.IFunctionBlockEditorService;
+import org.eclipse.vorto.server.devtool.service.editor.FunctionBlockEditorServiceImpl;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class FunctionBlockEditorController implements IEditorController {
 	Injector injector;
 
 	@Autowired
-	IFunctionBlockEditorService iFunctionBlockEditorService;
+	FunctionBlockEditorServiceImpl functionBlockEditorService;
 
 	@ApiOperation(value = "Adds the data type to the resource set")
 	@RequestMapping(value = "/link/datatype/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
@@ -60,7 +60,7 @@ public class FunctionBlockEditorController implements IEditorController {
 		HashSet<String> referencedResourceSet = (HashSet<String>) webEditorResourceSetProvider
 				.getReferencedResourcesFromSession(httpServiceContext);
 		
-		String content = iFunctionBlockEditorService.linkDatatypeToFunctionBlock(resourceId, modelId, resourceSet, referencedResourceSet);
+		String content = functionBlockEditorService.linkModelToResource(resourceId, modelId, resourceSet, referencedResourceSet);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();
@@ -75,6 +75,6 @@ public class FunctionBlockEditorController implements IEditorController {
 			@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 
 		Objects.requireNonNull(expression, "namespace must not be null");
-		return iFunctionBlockEditorService.searchDataTypeByExpression(expression);
+		return functionBlockEditorService.searchModelByExpression(expression);
 	}	
 }
