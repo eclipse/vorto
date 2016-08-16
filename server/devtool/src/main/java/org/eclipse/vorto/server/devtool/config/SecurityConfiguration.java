@@ -39,7 +39,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			@Override
 			protected void doFilterInternal(final HttpServletRequest request, HttpServletResponse response,
 					FilterChain filterChain) throws ServletException, IOException {
-				System.out.println("Called filter for request : " + request.getPathInfo() + " " + request.getMethod());
 				filterChain.doFilter(request, response);
 			}
 		};
