@@ -27,7 +27,7 @@ You can generate code from shared information models in the Vorto Repository. Th
 1. In the Model Repository view, search for the information model you want to generate the code from by entering an appropriate search string in the **Search** entry field and clicking the **Search** button.
 2. Select the information model you want to generate code from, right-click and choose **Generate Code** from the context menu.  
    ![Generate Code Eclipse]({{base}}/img/documentation/vorto_repository_generate_code_eclipse.png)  
-   The Generator Overview dialog opens.  
+   The **Generator Overview** dialog opens.  
    ![Generate Code Eclipse Dialog]({{base}}/img/documentation/vorto_repository_generate_code_eclipse_dialog.png)  
 3. Choose the desired code generator for generating the souce code and click the corresponding **Generate** button.  
    The code is generated.
