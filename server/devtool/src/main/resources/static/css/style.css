@@ -821,12 +821,25 @@ th.action
 	width: auto;
 }
 
+<<<<<<< c96479716afff45e4fcb97a2f10c7e45762994f5
 >>>>>>> Implemented the web-editor with in memory data storage
 #import-button-container {
 	position:relative;
 	padding: 4px;
 	height: 440px;
 	width: auto;
+=======
+.center-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.center-col {
+    position: relative;
+	height: 440px
+>>>>>>> Fixed loader position shown when models are imported
 }
 
 =======

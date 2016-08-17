@@ -191,11 +191,18 @@
 		</div>
 		
 		<div class="col-md-1">
-			<div id="import-button-container">
-				<a>
-					<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton" ng-show="showImportButton"></i>
-					<i class="fa fa-cog fa-spin fa-5x" ng-hide="showImportButton"></i>
-				</a>
+			<div class="center-col">
+				<div class="center-container" ng-show="showImportButton">
+					<a>
+						<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
+					</a>
+				</div>
+				<div class="center-container" ng-hide="showImportButton">
+					<a>
+						<i class="fa fa-cog fa-spin fa-4x"></i>
+					</a>
+					<h5>Loading..</h6>
+				</div>
 			</div>
 		</div>
 	
@@ -209,7 +216,7 @@
 								<tr>
 									<th colspan="6">
 										<div class="form-inline form-group">
-											<input type="search" placeholder="Search Function Blocks"
+											<input type="search" placeholder="Search Models"
 												ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
 												st-search autofocus class="queryFilter input-sm" />
 											<a id="search" class="search-button" ng-click="search()">
