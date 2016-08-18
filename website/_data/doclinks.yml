@@ -9,6 +9,8 @@
       href: "/documentation/overview/contribution.html"
     - title: "System Requirements"
       href: "/documentation/overview/system-requirements.html"
+    - title: "Getting Started"
+      href: "/documentation/overview/getting-started.html"
 - title: "Installation"
   href: ""
   sub:
@@ -109,8 +111,6 @@
 - title: "Tutorial"
   href: ""
   sub:
-    - title: "Vorto in 5 Minutes"
-      href: "/documentation/tutorial/vortoin5minutes.html"
     - title: "Establish communication between Web app and Mqtt client "
       href: "/documentation/tutorial/mqttwithwebapp.html"
 - title: "Appendix"
