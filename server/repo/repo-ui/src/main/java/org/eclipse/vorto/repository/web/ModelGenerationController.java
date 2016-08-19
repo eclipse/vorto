@@ -17,10 +17,15 @@ package org.eclipse.vorto.repository.web;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -69,12 +74,16 @@ public class ModelGenerationController extends RepositoryController {
 							@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 							@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
 							@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
-							@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
+							final HttpServletRequest request,
+							final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
 
-		GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), serviceKey);
+		Map<String, String> requestParams = new HashMap<>();
+		request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
+		 
+		GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), serviceKey, requestParams);
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
 		response.setContentLengthLong(generatedOutput.getSize());
 		response.setContentType(APPLICATION_OCTET_STREAM);

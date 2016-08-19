@@ -29,7 +29,9 @@ x * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
 package org.eclipse.vorto.codegen.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.codegen.api.mapping.DefaultMapped;
@@ -62,22 +64,25 @@ public class InvocationContext {
 
 	private List<MappingRule> mappingRules;
 	
+	private Map<String, String> configProperties;
+	
 	private IGeneratorLookup lookupService;
 	
 	private static final IGeneratorLookup NOOP_RUNTIME = new NoopGeneratorLookup();
 	
 	private static final IVortoCodeGenerator NOOP_GEN = new NoopGenerator();
 
-	public InvocationContext(List<MappingModel> mappingModels, IGeneratorLookup generatorRuntime) {
+	public InvocationContext(List<MappingModel> mappingModels, IGeneratorLookup generatorRuntime, Map<String,String> configProperties) {
 		this.mappingRules = new ArrayList<MappingRule>();
 		for (MappingModel mappingModel : mappingModels) {
 			this.mappingRules.addAll(mappingModel.getRules());
 		}
 		this.lookupService = generatorRuntime;
+		this.configProperties = configProperties;
 	}
 
 	public static InvocationContext simpleInvocationContext() {
-		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME);
+		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME,Collections.emptyMap());
 	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
@@ -184,6 +189,10 @@ public class InvocationContext {
 		} else {
 			return gen;
 		}
+	}
+	
+	public Map<String, String> getConfigurationProperties() {
+		return Collections.unmodifiableMap(this.configProperties);
 	}
 	
     static class NoopGeneratorLookup implements IGeneratorLookup {

@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.service;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.vorto.repository.model.GeneratedOutput;
@@ -70,8 +71,9 @@ public interface IGeneratorService {
 	 * Invokes a code generator for a information model Id 
 	 * @param modelId information model Id
 	 * @param serviceKey target code generator
+	 * @param requestParams request params, can be null
 	 * @return actual generated output
 	 * @throws GenerationException if something goes wrong during code generation
 	 */
-	GeneratedOutput generate(ModelId modelId, String serviceKey);
+	GeneratedOutput generate(ModelId modelId, String serviceKey, Map<String, String> requestParams);
 }
