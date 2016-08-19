@@ -111,7 +111,7 @@
 - title: "Tutorial"
   href: ""
   sub:
-    - title: "Establish communication between Web app and Mqtt client "
+    - title: "Visualize device data with Vorto"
       href: "/documentation/tutorial/mqttwithwebapp.html"
 - title: "Appendix"
   href: ""

@@ -47,7 +47,7 @@ In this tutorial, you will create a Web user interface for an information model.
    The Web application starts.
 13. In the address bar of your browser, enter localhost:8080/webdevice.  
    The Web UI opens.
-   ![Web UI](/img/tutorials/vortoin5minutes/web-ui.png)
+   ![Web UI](/img/tutorials/vortoin5minutes/web-ui.png){:width="900px"}
 
 
 Congratulations! You have just created a Web application with the least effort with the magic of Vorto.
