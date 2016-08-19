@@ -24,6 +24,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class LWM2MGenerator implements IVortoCodeGenerator {
+	
+	private static final String CONFIG_PARAM_SKIP_CLIENT = "skipClient";
 
 	@Override
 	public IGenerationResult generate(InformationModel infomodel, InvocationContext context) {
@@ -31,7 +33,9 @@ public class LWM2MGenerator implements IVortoCodeGenerator {
 		
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
 			new FunctionBlockXmlGeneratorTask().generate(fbProperty.getType(), context, output);
-			new FunctionBlockLeshanGeneratorTask().generate(fbProperty.getType(), context, output);
+			if (context.getConfigurationProperties().getOrDefault(CONFIG_PARAM_SKIP_CLIENT, "false").equalsIgnoreCase("false")) { 
+				new FunctionBlockLeshanGeneratorTask().generate(fbProperty.getType(), context, output);
+			}
 		}
 					
 		return output;

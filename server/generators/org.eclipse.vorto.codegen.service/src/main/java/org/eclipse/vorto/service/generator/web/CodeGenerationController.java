@@ -16,9 +16,12 @@ package org.eclipse.vorto.service.generator.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.api.Generated;
@@ -102,7 +105,7 @@ public class CodeGenerationController {
 
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> generate(@PathVariable String namespace,
-			@PathVariable String name, @PathVariable String version) {
+			@PathVariable String name, @PathVariable String version, final HttpServletRequest request) {
 
 		byte[] modelResources = downloadModelWithReferences(namespace, name, version);
 		
@@ -120,7 +123,10 @@ public class CodeGenerationController {
 				
 		IGenerationResult result = null;
 		try {
-			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey()));
+			Map<String,String> requestParams = new HashMap<>();
+			request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
+			
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams));
 		} catch (Exception e) {
 			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
@@ -135,11 +141,11 @@ public class CodeGenerationController {
 
 	}
 	
-	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform) {
+	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform, Map<String, String> requestParams) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
 		List<MappingModel> mappingModels =  new MappingZipFileExtractor(mappingResources).extract();
 		
-		return new InvocationContext(mappingModels, lookupService);
+		return new InvocationContext(mappingModels, lookupService, requestParams);
 	}
 	
 

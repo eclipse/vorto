@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.vorto.repository.model.GeneratedOutput;
@@ -101,7 +103,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	}
 
 	@Override
-	public GeneratedOutput generate(ModelId modelId, String serviceKey) {
+	public GeneratedOutput generate(ModelId modelId, String serviceKey, Map<String,String> requestParams) {
 		ModelResource modelResource = modelRepositoryService.getById(modelId);
 		if (modelResource == null) {
 			throw new ModelNotFoundException("Model with the given ID does not exist",null);
@@ -117,10 +119,28 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 		generatorEntity.increaseInvocationCount();
 		this.registeredGeneratorsRepository.save(generatorEntity);
 		
-		ResponseEntity<byte[]> entity = restTemplate.getForEntity(generatorEntity.getGenerationEndpointUrl(), byte[].class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
+		ResponseEntity<byte[]> entity = restTemplate.getForEntity(generatorEntity.getGenerationEndpointUrl()+attachRequestParams(requestParams), byte[].class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		return new GeneratedOutput(entity.getBody(), extractFileNameFromHeader(entity), entity.getHeaders().getContentLength());
 	}
 	
+	private String attachRequestParams(Map<String, String> requestParams) {
+		if (requestParams.isEmpty()) {
+			return "";
+		} else {
+			StringBuilder requestUrlParams = new StringBuilder("?");
+			for (Iterator<String> iter = requestParams.keySet().iterator();iter.hasNext();) {
+				String key = iter.next();
+				requestUrlParams.append(key);
+				requestUrlParams.append("=");
+				requestUrlParams.append(requestParams.get(key));
+				if (iter.hasNext()) {
+					requestUrlParams.append("&");
+				}
+			}
+			return requestUrlParams.toString();
+		}
+	}
+
 	private String extractFileNameFromHeader(ResponseEntity<byte[]> entity) {
 		List<String> values = entity.getHeaders().get("content-disposition");
 		if (values.size() > 0) {
