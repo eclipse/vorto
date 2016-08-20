@@ -136,6 +136,6 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 	}
 
 	private InvocationContext createInvocationContext(IModelProject project, String targetPlatform) {
-		return new InvocationContext(project.getMapping(targetPlatform),lookupService,Collections.emptyMap()); //TODO: read configuration properties from Eclipse
+		return new InvocationContext(project.getMapping(targetPlatform),lookupService,Collections.<String,String>emptyMap()); //TODO: read configuration properties from Eclipse
 	}
 }

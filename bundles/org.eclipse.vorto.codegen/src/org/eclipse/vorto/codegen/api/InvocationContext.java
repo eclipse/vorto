@@ -82,7 +82,7 @@ public class InvocationContext {
 	}
 
 	public static InvocationContext simpleInvocationContext() {
-		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME,Collections.emptyMap());
+		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME,Collections.<String,String>emptyMap());
 	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
