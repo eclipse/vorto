@@ -30,7 +30,7 @@ import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup
 /**
  * Deploy this class into a servlet container to enable DSL-specific services.
  */
-@WebServlet(name = 'XtextServices', urlPatterns = '/xtext-service/*')
+@WebServlet(name = 'InformationModel XtextServices', urlPatterns = '/infomodel/xtext-service/')
 class InformationModelServlet extends XtextServlet {
 	
 	val List<ExecutorService> executorServices = newArrayList

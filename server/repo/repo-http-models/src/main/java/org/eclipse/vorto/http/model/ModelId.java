@@ -11,7 +11,6 @@
  *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
-<<<<<<< 8fce91bd96d10ca25d52d3920c7f9527391e78e2:server/repo/repo-core/src/main/java/org/eclipse/vorto/repository/model/ModelId.java
  */
 package org.eclipse.vorto.http.model;
 import java.util.Iterator;
@@ -175,4 +174,3 @@ public class ModelId {
 		return namespace + "." + name + ":" +version;
 	}	
 }
-

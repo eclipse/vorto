@@ -786,11 +786,16 @@ th.action
 
 /* Editor Start */
 
-#editor-container {
-	position:relative;
+.custom-xtext-editor {
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 	padding: 4px;
-	border: 1px solid #aaa;	
-	height: 440px;
+	border: 1px solid #aaa;
+	height: 387px;
 	width: auto;
 }
 
@@ -802,11 +807,23 @@ th.action
 	width: auto;
 }
 
-#import-button-container {
+#project-container {
 	position:relative;
 	padding: 4px;
-	height: 440px;
+	height: auto;
 	width: auto;
+}
+
+.center-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.center-col {
+    position: relative;
+	height: 440px
 }
 
 /* Editor End */
@@ -816,20 +833,68 @@ th.action
 }
 
 .import-button {
+	text-align: center;
 	font-size: 50px;
 	background: none;
 	border: none;
-	position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-	
+	margin-top: 180px;
+	margin-bottom: 180px;
 }
 
 .search-button {
 	padding: 2px;
 	font-size: 20px;
-	background: none;
 	border: none;
+}
+
+a:hover {
+	cursor: pointer; 
+	cursor: hand;
+}
+
+.nav-tabs > li > a{
+    cursor:pointer;
+}
+
+.nav-tabs li a span:hover {
+    color: red;
+    cursor:pointer;
+}
+
+.editor-ul.nav a {
+	box-shadow: none;
+    background: transparent;
+    color: #000000;
+    text-shadow: none;
+    font-weight: bold;
+}
+
+.align-left {
+	float: left;
+}
+
+.align-right {
+	float: right;
+}
+
+.project-button-container {
+	text-align: center;
+	width: auto;
+}
+
+.project-list-container {
+	height: 100%	
+    transform: translateX(50%) translateY(50%);
+}    
+
+.align-center {
+	text-align: center;
+}    
+
+.btn-project {
+	width: 150px;
+}
+
+.search-box-open-project {
+	width: 600px;
 }

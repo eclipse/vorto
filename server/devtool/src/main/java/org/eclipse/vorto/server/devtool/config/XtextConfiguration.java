@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
+import org.eclipse.vorto.editor.functionblock.web.FunctionblockServlet;
 import org.eclipse.vorto.editor.infomodel.InformationModelRuntimeModule;
 import org.eclipse.vorto.editor.infomodel.web.InformationModelServlet;
 import org.eclipse.vorto.editor.infomodel.web.InformationModelWebModule;
@@ -39,9 +40,9 @@ import com.google.inject.util.Modules;
 public class XtextConfiguration {
 
 	private final List<ExecutorService> executorServices = CollectionLiterals.<ExecutorService> newArrayList();
-	
+
 	@Bean
-	public Injector getOnjectorBean(){
+	public Injector getInjectorBean() {
 		final Provider<ExecutorService> _function = new Provider<ExecutorService>() {
 			@Override
 			public ExecutorService get() {
@@ -56,13 +57,24 @@ public class XtextConfiguration {
 			}
 		};
 		final Provider<ExecutorService> executorServiceProvider = _function;
+
+		FunctionblockStandaloneSetup.doSetup();		
 		InformationModelPackageImpl.init();
-		FunctionblockStandaloneSetup.doSetup();
-		return Guice.createInjector(Modules.override(new InformationModelRuntimeModule()).with(new InformationModelWebModule(executorServiceProvider)));
+		
+
+		return Guice.createInjector(
+				Modules.override(new InformationModelRuntimeModule())
+						.with(new InformationModelWebModule(executorServiceProvider)));
 	}
-	
+
 	@Bean
-	public ServletRegistrationBean xtextServlet() {
-		return new ServletRegistrationBean(new InformationModelServlet(), "/xtext-service/*");
+	public ServletRegistrationBean functionBlockXtextServlet() {
+		return new ServletRegistrationBean(new FunctionblockServlet(), "/functionblock/xtext-service/*");
 	}
+
+	@Bean
+	public ServletRegistrationBean informationModelXtextServlet() {
+		return new ServletRegistrationBean(new InformationModelServlet(), "/infomodel/xtext-service/*");
+	}
+
 }
