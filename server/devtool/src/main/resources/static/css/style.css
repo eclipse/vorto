@@ -363,11 +363,7 @@ ul.nav {
 }
 
 .queryFilter {
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
     width: 240px;
-=======
-    width: 327px;
->>>>>>> Devtool (#1)
 }
 
 .main .login-box .page-header .signup-box{
@@ -811,9 +807,6 @@ th.action
 	width: auto;
 }
 
-<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-=======
 #project-container {
 	position:relative;
 	padding: 4px;
@@ -821,14 +814,6 @@ th.action
 	width: auto;
 }
 
-<<<<<<< c96479716afff45e4fcb97a2f10c7e45762994f5
->>>>>>> Implemented the web-editor with in memory data storage
-#import-button-container {
-	position:relative;
-	padding: 4px;
-	height: 440px;
-	width: auto;
-=======
 .center-container {
     position: absolute;
     top: 50%;
@@ -839,18 +824,14 @@ th.action
 .center-col {
     position: relative;
 	height: 440px
->>>>>>> Fixed loader position shown when models are imported
 }
 
-=======
->>>>>>> Devtool (#1)
 /* Editor End */
 
 .st-selected{
 	background-color: #337ab7;
 }
 
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
 .import-button {
 	text-align: center;
 	font-size: 50px;
@@ -865,10 +846,6 @@ th.action
 	font-size: 20px;
 	border: none;
 }
-<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b
-=======
->>>>>>> Devtool (#1)
-=======
 
 a:hover {
 	cursor: pointer; 
@@ -891,9 +868,6 @@ a:hover {
     text-shadow: none;
     font-weight: bold;
 }
-<<<<<<< 9ccb744cb70dc2397a9fdece0b3f02fbeb322f16
->>>>>>> Created tabbed editor in devtool
-=======
 
 .align-left {
 	float: left;
@@ -902,9 +876,6 @@ a:hover {
 .align-right {
 	float: right;
 }
-<<<<<<< c33c14e98d919e49aaf799f3191a3f502d640bbd
->>>>>>> Modified the UI of add Vorto Model modal.
-=======
 
 .project-button-container {
 	text-align: center;
@@ -923,16 +894,7 @@ a:hover {
 .btn-project {
 	width: 150px;
 }
-<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
->>>>>>> Added Create and Open Project Features
-=======
 
 .search-box-open-project {
-<<<<<<< 29ff6b8d2c5ee91524641f1e474159e7d3f9ea4a
-	width: 440px;
-}
->>>>>>> Implemented the web-editor with in memory data storage
-=======
 	width: 600px;
 }
->>>>>>> Taking namespace as input while creating a new file. Added auto generation of new file content at front end. Displaying loaded while new file content is being generated

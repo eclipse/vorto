@@ -180,126 +180,6 @@ define(["angular"], function(angular) {
       });
     }
 
-<<<<<<< 29ff6b8d2c5ee91524641f1e474159e7d3f9ea4a
-<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
-<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b
-  	$scope.getters= {
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-        name: function (value) {
-	        return value.id.name.sort();
-        }
-  	 }
-  	
-  	$scope.predicates = ['Name'];
-=======
-        namespace: function (value) {
-	        return value.id.namespace.sort();
-        },
-        name: function (value) {
-	        return value.id.name.sort();
-        },
-        version: function (value) {
-	        return value.id.version.sort();
-        }
-  	 }
-  	
-  	$scope.predicates = ['Name', 'Namespace', 'Version'];
->>>>>>> Devtool (#1)
-  	
-});
-
-app.controller('FunctionblockEditorController', function($rootScope, $scope, $http, $location) {
-	
-	$scope.editor = null;
-	$scope.error = null;
-	$scope.errorMessage = null;
-	$scope.validationError = false;
-	$scope.selectedModel = null;
-	$scope.selectedModelId = null;
-	$scope.showAddFunctionBlockButton = true;
-	
-	$scope.models = [];
-  	$scope.queryFilter = "";	
-	
-	require(["webjars/ace/1.2.0/src/ace"], function() {
-				require(["xtext/xtext-ace"], function(xtext) {
-					editor = xtext.createEditor({syntaxDefinition: "xtext/mode-fbmodel", serviceUrl: "/functionblock/xtext-service"});
-				});
-			});
-	
-	$scope.isValidFunctionblock = function() {
-		if (editor.xtextServices.editorContext._annotations.length != 0) {
-			$error = "Your function block contains errors. Please correct and try again.";
-			return false;
-		}else{
-			return true;
-		}
-	}
-			
-	$scope.share = function() {
-		if ($scope.isValidFunctionblock()) {
-			// do upload and checkin REST call to Vorto Information Model Repository
-		}		
-	};
-	
-  	$scope.searchOnEnter = function(keyEvent) {
-  		if (keyEvent.keyCode === 13) {
-  			$scope.search();
-  		}
-  	};
-
-  	$scope.search = function() {
-  		var modelType = "Datatype";
-  		var filter = null;
-  		filter = $scope.queryFilter + " " + modelType ;
-  		$http.get('./editor/functionblock/search=' + filter).success(
-	      function(data, status, headers, config) {
-					$scope.models = data;
-	      }).error(function(data, status, headers, config) {
-					$scope.models = [];
-	      });
-		};
-
-	$scope.isDataTypeSelected = function() {
-		for (i = 0; i < $scope.displayedModels.length; i++) { 
-		    if($scope.displayedModels[i]['isSelected']){
-		    	$scope.selectedModel = $scope.displayedModels[i];
-		    	$scope.selectedModelId = $scope.selectedModel['id'];
-		    	return true;
-		    }
-		}
-    	$scope.selectedModel = null;
-    	$scope.selectedModelId = null;
-		return false;
-	}
-		
-	$scope.importDatatype = function() {
-		if($scope.isDataTypeSelected()){
-			if($scope.isValidFunctionblock()){
-				$scope.showAddFunctionBlockButton = false
-		  		$http.get('./editor/functionblock/link/datatype/' + editor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version'] ).success(
-		  		      function(data, status, headers, config) {
-		  				editor.setValue(data);
-		  		      }).error(function(data, status, headers, config) {
-		  		    	  window.alert('Failed')
-		  		      });
-				$scope.showAddFunctionBlockButton = true;
-			}
-			else{
-				window.alert('Your function block contains errors. Please correct and try again.');			
-			}
-		}else{
-			window.alert('Please select a function block');			
-		}
-	}
-				
-  	$scope.search();
-=======
-    $scope.addInfoModelEditor = function(parentId) {
-=======
-    $scope.addInfoModelEditor = function(parentId, filename) {
->>>>>>> Implemented the web-editor with in memory data storage
-=======
     $scope.generateInfoModelContent = function(model) {
       var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
       content += "\ninfomodel " + model.displayname + " {";
@@ -320,7 +200,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
 
     $scope.addInfoModelEditor = function(parentId, model) {
       var content = $scope.generateInfoModelContent(model);
->>>>>>> Taking namespace as input while creating a new file. Added auto generation of new file content at front end. Displaying loaded while new file content is being generated
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
           editor = xtext.createEditor({
@@ -418,14 +297,6 @@ app.controller('FunctionblockEditorController', function($rootScope, $scope, $ht
           }
         }
       });
-<<<<<<< b6c9b094e2d16aa9068c156341ebfedd562b2548
->>>>>>> Created tabbed editor in devtool
-
-      modalInstance.result.then(function(selectedItem) {
-        $scope.selected = selectedItem;
-      });
-=======
->>>>>>> Created modal to describe model before creating editor
     };
 
     $scope.openDescribeEditorModal = function(editorType) {

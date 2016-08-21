@@ -1,145 +1,3 @@
-<<<<<<< 0be9e75c6c44af4eeab8642bf134a11c01ce6d1a
-<<<<<<< 681797320fe7535bef2783a0818d98b72d22447b
-<div class="project-container" ng-hide="showEditorBody == true">
-	<div class="project-button-container">
-		 <p>
-		    <button class="btn btn-primary btn-project" ng-click="openCreateProjectModal()" type="button">Create New Project</button>
-		 </p>
-		 <p>
-		    <button class="btn btn-primary btn-project" ng-click="openOpenProjectModal()" type="button">Open Project</button>
-		 </p>
-	</div>
-</div>
-<<<<<<< c33c14e98d919e49aaf799f3191a3f502d640bbd
-<div class="row">
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-	<div class="col-md-8">
-<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b:server/devtool/src/main/resources/static/templates/infomodel-editor-template.html
-=======
-	<div class="col-md-6">
->>>>>>> Devtool (#1)
-		<div id="editor-container">
-			<div id="xtext-editor" data-editor-xtext-lang="infomodel"
-				data-editor-enable-formatting-action="true"
-				data-editor-show-error-dialogs="true"></div>
-		</div>
-=======
-		<div id="tabbed-editor-container">
-			<div role="tabpanel">
-				<ul class="nav nav-tabs editor-ul" role="tablist">
-			    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
-			        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
-			        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
-			        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
-			        		{{tab.filename}} 
-			        		<span ng-click="deleteTab($index)" class="glyphicon glyphicon-remove"></span>
-			        	</a>
-					</li>
-			        <li role="presentation">
-			        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openAddEditorModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
-			        </li>
-			    </ul>		    
-			</div>
-	        <div id="editors""></div>
-	   </div>
->>>>>>> Created tabbed editor in devtool:server/devtool/src/main/resources/static/templates/editor-template.html
-	</div>
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-	
-	<div class="col-md-1">
-		<div id="import-button-container">
-			<a>
-				<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
-			</a>
-		</div>
-	</div>
-
-	<div class="col-md-3">
-=======
-
-	<div class="col-md-6">
->>>>>>> Devtool (#1)
-		<div id="function-block-browser-container">
-			<div id="searchResult">
-				<div>
-					<table st-table="displayedModels" st-safe-src="models"
-						class="table">
-						<thead>
-							<tr>
-								<th colspan="6">
-									<div class="form-inline form-group">
-										<input type="search" placeholder="Search Function Blocks"
-											ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
-											st-search autofocus class="queryFilter input-sm" />
-<<<<<<< 7fae963b67e1e36ca814808f8a6fb281d04d8a0b:server/devtool/src/main/resources/static/templates/infomodel-editor-template.html
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-										<button id="search" class="search-button" ng-click="search()">
-											<i class="fa fa-search"></i>
-=======
-										<button id="search" type="button" class="btn btn-primary" ng-click="search()">
-											Search
-										</button>
-										<button type="button" class="btn btn-primary" ng-click="importFunctionBlock()" ng-disabed="showAddFunctionBlockButton">
-											Import Function block
->>>>>>> Devtool (#1)
-										</button>
-=======
-										<a id="search" class="search-button" ng-click="search()">
-											<i class="fa fa-search"></i>
-										</a>
->>>>>>> Created tabbed editor in devtool:server/devtool/src/main/resources/static/templates/editor-template.html
-									</div>
-								</th>
-							</tr>
-							<tr>
-								<th><b>Search Results: {{models.length}} </b></th>
-							</tr>
-							<tr>
-								<th id="onName" st-sort="id.name"><a href="">Name <i
-										class="fa fa-sort"></i></a></th>
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-								 <th class="action">Details</th>								
-=======
-								<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace
-										<i class="fa fa-sort"></i>
-								</a></th>
-								<th id="onVersion" st-sort="id.version"><a href="">Version
-										<i class="fa fa-sort"></i>
-								</a></th>
->>>>>>> Devtool (#1)
-							</tr>
-						</thead>
-						<tbody>
-							<tr st-select-row="model" ng-repeat="model in displayedModels">
-								<td>{{ model.id.name }}</td>
-<<<<<<< 096cb92a15e53dee883c6fcdaa97100e6258dbea
-<<<<<<< b3179dff921b0569bff00f05397e808255908577
-								<td class="action"><a class="action"><i class="fa fa-info-circle"></i></a></td>
-=======
-								<td>{{ model.id.namespace }}</td>
-								<td>{{ model.id.version }}</td>
->>>>>>> Devtool (#1)
-=======
-								<td class="action"><a class="action"><i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i></a></td>
->>>>>>> Added editor valid status to tab
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="6" class="text-center">
-									<div st-pagination="" st-items-by-page="itemsByPage"
-										st-displayed-pages="displayedPages"></div>
-								</td>
-							</tr>
-						</tfoot>
-					</table>
-=======
-
-<div class="editor-body" ng-show="showEditorBody == true">
-=======
-<div class="editor-body">
->>>>>>> Implemented the web-editor with in memory data storage
-=======
 <div class="error-message-body" ng-show="showEditorBody == false">
 	<h2>
 		Could not open project : {{projectName}} 
@@ -147,7 +5,6 @@
 </div>
 
 <div class="editor-body" ng-show="showEditorBody == true">
->>>>>>> Added client side validations
 	<div class="row">
 		<div class="col-md-12">
 			<div class="box box-primary">
@@ -251,7 +108,6 @@
 							</tfoot>
 						</table>
 					</div>
->>>>>>> Added Create and Open Project Features
 				</div>
 			</div>
 		</div>
