@@ -6,8 +6,10 @@
 
 	<groupId>org.eclipse.vorto.server</groupId>
 	<artifactId>devtool</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 	<packaging>war</packaging>
+	<name>Vorto Devtool</name>
+	<description>A web editor to create and edit Vorto models</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
