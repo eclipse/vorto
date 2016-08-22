@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.validation;
 
-import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelResource;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

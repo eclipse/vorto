@@ -1,0 +1,32 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Create New Vorto Project</center></h3>
+</div>
+<div>
+	<form name="createProjectForm" novalidate>
+		<div class="modal-body">
+			<div>
+				<p>
+					<div class="describe-modal-label">
+						Project Name 
+					</div>			
+					<input type="text" autofocus size="37" name="pName" data-ng-model="projectName" required ng-unique-project-name/>
+					<div ng-show="createProjectForm.pName.$dirty">
+				      <div ng-show="createProjectForm.pName.$error.required">Please enter a Project Name</div>
+				    </div>
+
+					<div ng-hide="createProjectForm.pName.$error.required">
+				    	<div ng-show="createProjectForm.pName.$error.unique">Project already exists</div>
+				    </div>
+				</p>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="align-left">
+			    <button class="btn btn-primary" type="submit" ng-click="ok()" ng-disabled="createProjectForm.$invalid">Create</button>
+			 </div>
+			<div class="align-right">
+			    <button  class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>

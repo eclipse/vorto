@@ -14,17 +14,17 @@
  */
 package org.eclipse.vorto.repository.internal.service;
 
+import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.internal.service.emf.DatatypeModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.FunctionblockModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.InformationModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.MappingModelParser;
-import org.eclipse.vorto.repository.model.ModelType;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelParserFactory {
-	
+
 	public static IModelParser getParser(String fileName) {
 		if (fileName.endsWith(ModelType.Datatype.getExtension())) {
 			return new DatatypeModelParser(fileName);
@@ -34,7 +34,7 @@ public class ModelParserFactory {
 			return new InformationModelParser(fileName);
 		} else if (fileName.endsWith(ModelType.Mapping.getExtension())) {
 			return new MappingModelParser(fileName);
-		}else {
+		} else {
 			throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");
 		}
 	}

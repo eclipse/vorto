@@ -1,10 +1,10 @@
 package org.eclipse.vorto.editor.functionblock.tests.formatter
 
 import com.google.inject.Inject
-import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl
-import org.eclipse.vorto.editor.functionblock.FunctionblockInjectorProvider
-import org.eclipse.xtext.formatting.INodeModelFormatter
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl
+import org.eclipse.vorto.editor.functionblock.tests.FunctionblockInjectorProvider
+import org.eclipse.xtext.formatting.INodeModelFormatter
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.InjectWith
 import org.eclipse.xtext.junit4.XtextRunner

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.model;
+package org.eclipse.vorto.http.model;
 
 import java.util.ArrayList;
 import java.util.Date;

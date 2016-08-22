@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.repository.model;
 
+import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelType;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
