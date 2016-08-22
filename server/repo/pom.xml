@@ -17,6 +17,7 @@
 	<modules>
 		<module>repo-core</module>
 		<module>repo-ui</module>
+		<module>repo-http-models</module>		
 	</modules>
 	
 	<properties>

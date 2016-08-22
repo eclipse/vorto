@@ -19,9 +19,9 @@ import java.util.List;
 
 import javax.jcr.PathNotFoundException;
 
+import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.service.CommentRepository;
 import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
