@@ -23,7 +23,7 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.service.IRepositoryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

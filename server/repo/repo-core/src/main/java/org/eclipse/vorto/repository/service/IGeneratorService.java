@@ -18,9 +18,9 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.model.GeneratedOutput;
 import org.eclipse.vorto.repository.model.GeneratorServiceInfo;
-import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ServiceClassifier;
 
 /**

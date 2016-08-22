@@ -14,7 +14,9 @@
  */
 package org.eclipse.vorto.repository.service;
 
-import org.eclipse.vorto.repository.model.ModelId;
+
+import org.eclipse.vorto.http.model.ModelId;
+
 
 public interface IRepositoryManager {
 	

@@ -5,10 +5,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.internal.service.utils.DependencyManager;
-import org.eclipse.vorto.repository.model.ModelId;
-import org.eclipse.vorto.repository.model.ModelResource;
-import org.eclipse.vorto.repository.model.ModelType;
 import org.junit.Before;
 import org.junit.Test;
 
