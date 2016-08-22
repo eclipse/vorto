@@ -25,11 +25,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
-import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;

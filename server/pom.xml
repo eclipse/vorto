@@ -44,6 +44,7 @@
 	<modules>
 		<module>generators</module>
 		<module>repo</module>
+		<module>devtool</module>
 	</modules>
 
 	<dependencyManagement>
