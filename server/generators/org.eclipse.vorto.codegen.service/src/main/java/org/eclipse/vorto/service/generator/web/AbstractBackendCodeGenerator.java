@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -32,8 +33,9 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = { "org.eclipse.vorto.service.generator" })
 @EnableConfigurationProperties
-public class AbstractBackendCodeGenerator {
+public abstract class AbstractBackendCodeGenerator {
 
+	@Autowired
 	private RestTemplate restTemplate;
 	
 	@Value("${vorto.service.repositoryUrl}") 
@@ -55,23 +57,33 @@ public class AbstractBackendCodeGenerator {
 	private int port;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBackendCodeGenerator.class);
-		
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		RestTemplate restTemplate = new RestTemplate();
+		configureRestTemplate(restTemplate);
+		return restTemplate;
+	}
+	
+	protected void configureRestTemplate(RestTemplate restTemplate) {
+		// can be implemented by specific generators if they need to do further configuration, such as proxy settings etc.
+	}
+	
 	@PostConstruct
 	public void start() {
-		this.restTemplate = new RestTemplate();
-		register(platformGenerator.getServiceKey());
+		registerWithRepository(platformGenerator.getServiceKey());
 	}
 	
 	@PreDestroy
 	public void shutdown() {
-		deRegister(platformGenerator.getServiceKey());
+		deRegisterFromRepository(platformGenerator.getServiceKey());
 	}
 	
-	public void register(String serviceKey){
+	public void registerWithRepository(String serviceKey){
 		final String serviceUrl = "http://"+this.serviceUrl+":"+port+contextPath+"/rest/generation";
 		LOGGER.info("Registering {} with service url {}",serviceKey,serviceUrl);
 		LOGGER.info("Repository Server Url: {}",repositoryBasePath);
-		deRegister(serviceKey);
+		deRegisterFromRepository(serviceKey);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(serviceUrl, headers);
@@ -79,7 +91,7 @@ public class AbstractBackendCodeGenerator {
 		restTemplate.put(repositoryBasePath + "/generation-router/register/{serviceKey}/{classifier}",entity,serviceKey,classifier.name());
 	}
 	
-	public void deRegister(String serviceKey){
+	public void deRegisterFromRepository(String serviceKey){
 		restTemplate.put(repositoryBasePath + "/generation-router/deregister/{serviceKey}", String.class, serviceKey);
 	}
 
