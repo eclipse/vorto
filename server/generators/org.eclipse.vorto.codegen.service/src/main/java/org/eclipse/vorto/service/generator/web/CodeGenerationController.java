@@ -85,12 +85,6 @@ public class CodeGenerationController {
 	
 	@Value("${vorto.service.classifier}")
 	private ServiceClassifier classifier;
-	
-	@Value("${server.contextPath}")
-	private String serverContextPath;
-	
-	@Value("${server.port}")
-	private int serverPort;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationController.class);
 

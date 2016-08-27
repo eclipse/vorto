@@ -32,7 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = { "org.eclipse.vorto.service.generator" })
 @EnableConfigurationProperties
-public abstract class AbstractBackendCodeGenerator {
+public abstract class AbstractBackendCodeGenerator  {
 
 	@Autowired
 	private RestTemplate restTemplate;
