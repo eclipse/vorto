@@ -20,6 +20,7 @@ import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * 
@@ -32,6 +33,11 @@ public class IOSGeneratorMicroService extends AbstractBackendCodeGenerator {
 	@Bean
 	public IVortoCodeGenerator iosGenerator() {
 		return new IOSPlatformGenerator();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 	
 	public static void main(String[] args) {

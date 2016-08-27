@@ -20,6 +20,7 @@ import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class JsonSchemaGeneratorMicroService extends AbstractBackendCodeGenerator {
@@ -27,6 +28,11 @@ public class JsonSchemaGeneratorMicroService extends AbstractBackendCodeGenerato
 	@Bean
 	public IVortoCodeGenerator jsonschemaGenerator() {
 		return new JsonschemaGenerator();
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 	
 	public static void main(String[] args) {

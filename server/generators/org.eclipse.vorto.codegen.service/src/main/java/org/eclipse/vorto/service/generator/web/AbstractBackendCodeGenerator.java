@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -57,17 +56,6 @@ public abstract class AbstractBackendCodeGenerator {
 	private int port;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBackendCodeGenerator.class);
-	
-	@Bean
-	public RestTemplate restTemplate() {
-		RestTemplate restTemplate = new RestTemplate();
-		configureRestTemplate(restTemplate);
-		return restTemplate;
-	}
-	
-	protected void configureRestTemplate(RestTemplate restTemplate) {
-		// can be implemented by specific generators if they need to do further configuration, such as proxy settings etc.
-	}
 	
 	@PostConstruct
 	public void start() {
