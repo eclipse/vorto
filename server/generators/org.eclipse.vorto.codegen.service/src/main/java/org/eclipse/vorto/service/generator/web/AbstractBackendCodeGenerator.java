@@ -50,7 +50,7 @@ public abstract class AbstractBackendCodeGenerator  {
 	private IVortoCodeGenerator platformGenerator;
 	
 	@Value("${server.host}") 
-	private String serviceUrl = "localhost";
+	private String serviceUrl;
 	
 	@Value("${server.port}") 
 	private int port;

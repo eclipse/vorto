@@ -25,7 +25,7 @@ import org.modeshape.jcr.RepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -38,12 +38,14 @@ public class JcrRepositoryFactory implements FactoryBean<Repository> {
     private static final ModeShapeEngine ENGINE = new ModeShapeEngine();
 
     private Repository repository;
+    
+    @Autowired
+    private RepositoryConfiguration repositoryConfiguration;
 
     @PostConstruct
     public void start() throws Exception {
     	LOG.debug("Starting Vorto Modeshape Repository");
         ENGINE.start();
-        RepositoryConfiguration repositoryConfiguration = RepositoryConfiguration.read(new ClassPathResource("vorto-repository-config.json").getURL());
         repository = ENGINE.deploy(repositoryConfiguration);
         ENGINE.startRepository(repositoryConfiguration.getName());
     }
