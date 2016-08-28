@@ -97,7 +97,7 @@ public class ModelGenerationController extends RepositoryController {
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
 	@RequestMapping(value = "/{classifier}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose object type to return",allowableValues="platform service key, platform documentation", required = true) @PathVariable String classifier) {
+	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose type of generator",allowableValues="platform,documentation", required = true) @PathVariable String classifier) {
 		List<GeneratorServiceInfo> generatorInfoResult = new ArrayList<>();
 		
 		for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys(ServiceClassifier.valueOf(classifier))) {
