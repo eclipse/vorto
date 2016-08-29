@@ -165,3 +165,4 @@ services:
       SERVER_CONTEXTPATH: /vorto-lwm2m
       SERVER_HOST: vorto-lwm2m-generator-host
       SERVER_PORT: "9016"
+      
