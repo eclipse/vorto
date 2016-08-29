@@ -21,8 +21,6 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
 import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
 import org.junit.Test;
