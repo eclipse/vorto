@@ -67,8 +67,4 @@ services:
       context: ./generators/org.eclipse.vorto.codegen.service.lwm2m
     image: vorto/lwm2m-generator
 
-  vorto-leshan-generator-host:
-    build:
-      context: ./generators/org.eclipse.vorto.codegen.service.leshan
-    image: vorto/leshan-generator
 
