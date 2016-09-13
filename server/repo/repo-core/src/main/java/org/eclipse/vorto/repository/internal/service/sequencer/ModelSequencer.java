@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.NamespaceRegistry;
-import javax.jcr.Node;
+import javax.jcr.Node; 
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;

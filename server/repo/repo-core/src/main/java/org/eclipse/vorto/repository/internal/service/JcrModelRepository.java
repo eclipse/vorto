@@ -30,7 +30,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.Binary;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -63,7 +62,6 @@ import org.eclipse.vorto.repository.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
-import org.eclipse.vorto.repository.service.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.service.UserRepository;
 import org.eclipse.vorto.repository.validation.IModelValidator;
 import org.eclipse.vorto.repository.validation.ValidationException;
@@ -114,7 +112,7 @@ public class JcrModelRepository implements IModelRepository {
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
-				if (currentNode.hasProperty("vorto:type") && !isMappingNode(currentNode)) {
+				if (currentNode.hasProperty("vorto:type")) {
 					try {
 						modelResources.add(createModelResource(currentNode));
 					} catch (Exception ex) {
@@ -129,10 +127,10 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	private boolean isMappingNode(Node node) throws RepositoryException {
-		return node.hasProperty("vorto:type")
-				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
-	}
+//	private boolean isMappingNode(Node node) throws RepositoryException {
+//		return node.hasProperty("vorto:type")
+//				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
+//	}
 
 	private ModelResource createModelResource(Node node) throws RepositoryException {
 		ModelResource resource = new ModelResource(ModelId.fromPath(node.getParent().getPath()),
@@ -145,7 +143,13 @@ public class JcrModelRepository implements IModelRepository {
 		}
 
 		if (node.hasProperty("vorto:references")) {
-			Value[] referenceValues = node.getProperty("vorto:references").getValues();
+			Value[] referenceValues = null;
+			try {
+				referenceValues = node.getProperty("vorto:references").getValues();
+			}catch(Exception ex) {
+				referenceValues = new Value[] {node.getProperty("vorto:references").getValue()};
+			}
+			
 			if (referenceValues != null) {
 				ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
 				for (Value referValue : referenceValues) {
@@ -164,6 +168,11 @@ public class JcrModelRepository implements IModelRepository {
 			Node referencedByFileNode = prop.getParent();
 			final ModelId referencedById = ModelId.fromPath(referencedByFileNode.getParent().getPath());
 			resource.getReferencedBy().add(referencedById);
+		}
+		
+		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
+		if (imageNodeIterator.hasNext()) {
+			resource.setHasImage(true);
 		}
 
 		return resource;
@@ -338,23 +347,6 @@ public class JcrModelRepository implements IModelRepository {
 			return null;
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
-		}
-	}
-
-	@Override
-	public void removeModel(ModelId modelId) {
-		try {
-			ModelResource modelResource = getById(modelId);
-			if (!modelResource.getReferencedBy().isEmpty()) {
-				throw new ModelReferentialIntegrityException(
-						"Cannot remove model because it is referenced by other model(s)",
-						modelResource.getReferencedBy());
-			}
-			Item item = session.getItem(modelId.getFullPath());
-			item.remove();
-			session.save();
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		}
 	}
 
