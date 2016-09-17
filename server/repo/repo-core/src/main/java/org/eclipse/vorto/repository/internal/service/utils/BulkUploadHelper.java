@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,7 +38,6 @@ import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferen
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
-import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
@@ -105,8 +103,7 @@ public class BulkUploadHelper {
 			
 			
 			if (invalidResult.isEmpty()) {
-				DependencyManager dm = new DependencyManager(parsedModels);
-				return safelyUpload(dm.getSorted());
+				return safelyUpload(parsedModels);
 			} else {
 				List<UploadModelResult> completeResult = new ArrayList<>();
 				completeResult.addAll(invalidResult);
@@ -122,7 +119,7 @@ public class BulkUploadHelper {
 	/**
 	 * @param zipFileName
 	 */
-	private List<UploadModelResult> safelyUpload(Collection<ModelResource> resources) throws Exception {
+	private List<UploadModelResult> safelyUpload(Set<ModelResource> resources) throws Exception {
 		List<UploadModelResult> result = new ArrayList<UploadModelResult>();
 		
 		for (ModelResource resource : resources) {
@@ -130,10 +127,6 @@ public class BulkUploadHelper {
 		}
 		
 		return result;
-	}
-	
-	public void checkinMultiple(List<ModelHandle> handles) {
-		
 	}
 	
 	private static String getDefaultExtractDirectory() {
