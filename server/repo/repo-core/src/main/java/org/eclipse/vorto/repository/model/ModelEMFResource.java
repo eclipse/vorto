@@ -81,6 +81,14 @@ public class ModelEMFResource extends ModelResource {
 		return baos.toByteArray();
 	}
 	
+	public byte[] toDSL() throws Exception {
+		Resource resource = model.eResource().getResourceSet().createResource(URI.createURI(model.getName()+this.modelType.getExtension()));
+		resource.getContents().add(model);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		resource.save(baos, null);
+		return baos.toByteArray();
+	}
+	
 	public boolean matchesTargetPlatform(String targetPlatform) {
 		return this.modelType == ModelType.Mapping && ((MappingModel)model).getTargetPlatform().equalsIgnoreCase(targetPlatform);
 	}

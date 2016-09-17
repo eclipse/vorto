@@ -19,6 +19,11 @@ package org.eclipse.vorto.repository.service;
  */
 public class ModelNotFoundException extends ModelRepositoryException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ModelNotFoundException(String msg, Throwable t) {
 		super(msg,t);
 	}

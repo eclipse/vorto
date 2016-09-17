@@ -112,7 +112,7 @@ public class JcrModelRepository implements IModelRepository {
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
-				if (currentNode.hasProperty("vorto:type")) {
+				if (currentNode.hasProperty("vorto:type") && !isMappingNode(currentNode)) {
 					try {
 						modelResources.add(createModelResource(currentNode));
 					} catch (Exception ex) {
@@ -127,10 +127,10 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-//	private boolean isMappingNode(Node node) throws RepositoryException {
-//		return node.hasProperty("vorto:type")
-//				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
-//	}
+	private boolean isMappingNode(Node node) throws RepositoryException {
+		return node.hasProperty("vorto:type")
+				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
+	}
 
 	private ModelResource createModelResource(Node node) throws RepositoryException {
 		ModelResource resource = new ModelResource(ModelId.fromPath(node.getParent().getPath()),
@@ -202,10 +202,7 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public UploadModelResult upload(byte[] content, String fileName) {
-		if (StringUtils.isEmpty(fileName)) {
-			return UploadModelResult.invalid(new ValidationException("Filename is invalid", null));
-		}
-		
+
 		try {
 			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
 			

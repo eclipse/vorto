@@ -17,7 +17,6 @@ import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IRepositoryManager;
 import org.eclipse.vorto.repository.service.ModelReferentialIntegrityException;
-import org.modeshape.jcr.api.JcrTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
