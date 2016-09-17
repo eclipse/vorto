@@ -19,6 +19,11 @@ package org.eclipse.vorto.repository.service;
  */
 public class FatalModelRepositoryException extends ModelRepositoryException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public FatalModelRepositoryException(String msg, Throwable cause) {
 		super(msg, cause);
 	}

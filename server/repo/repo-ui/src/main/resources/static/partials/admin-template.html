@@ -1,0 +1,27 @@
+
+<div class="row">
+	<div class="center">
+          <div class="row">
+			<div ng-if="error" class="alert alert-danger">{{error}}</div>
+		  </div>
+	      <div class="col-sm-12 main">
+				<div class="panel panel-primary">
+					<div class="panel-body">
+						<form name="fileUploadForm" class="fileUploadForm form-inline">
+							<div class="form-group">
+								<label class="control-label input-label" >Backup XML</label>
+								<input type="file" ng-model="restoreFile" name="file" id="file" accept=".xml" class="form-control" style="width:500px;">
+								<button ng-click="restore()" class="btn btn-primary">Restore</button>
+							</div>
+						</form>
+						<div class="form-group">
+							<p class="upload-spacing">With this restore, all previous content will be lost!!</p>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<a ng-href="rest/admin/content" class="pull-center"><i class="fa fa-fw fa-download"></i>Backup Repository Content</a>
+				</div>
+		 </div>
+	</div>
+</div>

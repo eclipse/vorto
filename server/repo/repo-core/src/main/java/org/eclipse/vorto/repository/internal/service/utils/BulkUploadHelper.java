@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.internal.service.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -24,11 +26,14 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
+import org.eclipse.vorto.repository.model.ModelEMFResource;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
@@ -92,7 +97,7 @@ public class BulkUploadHelper {
 			
 			
 			if (invalidResult.isEmpty()) {
-				return safelyUpload(zipFileName);
+				return safelyUpload(parsedModels);
 			} else {
 				List<UploadModelResult> completeResult = new ArrayList<>();
 				completeResult.addAll(invalidResult);
@@ -100,7 +105,7 @@ public class BulkUploadHelper {
 				return completeResult;
 			}
 
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Invalid zip file", e);
 		} finally {
 			if (zipFile != null) {
@@ -116,33 +121,32 @@ public class BulkUploadHelper {
 	/**
 	 * @param zipFileName
 	 */
-	private List<UploadModelResult> safelyUpload(final String zipFileName) {
+	private List<UploadModelResult> safelyUpload(Set<ModelResource> resources) throws Exception {
 		List<UploadModelResult> result = new ArrayList<UploadModelResult>();
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(zipFileName);
-
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
-				if (!entry.isDirectory()) {
-					result.add(this.repositoryService.upload(IOUtils.toByteArray(zipFile.getInputStream(entry)),
-							entry.getName()));
-				}
-			}
-		} catch (IOException e) {
-			throw new FatalModelRepositoryException("Invalid zip file", e);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
+		
+		for (ModelResource resource : resources) {
+			result.add(UploadModelResult.valid(createUploadHandle(((ModelEMFResource)resource).toDSL(), resource.getId().getFileName()+resource.getModelType().getExtension()), resource));
 		}
-
+		
 		return result;
+	}
+	
+	private static String getDefaultExtractDirectory() {
+		return FilenameUtils.normalize(FileUtils.getTempDirectory().getPath() + "/vorto", true);
+	}
+	
+	private String createUploadHandle(byte[] content, String fileName) {
+		try {
+			File tmpDirectory = new File(getDefaultExtractDirectory());
+			if (!tmpDirectory.exists()) {
+				tmpDirectory.mkdirs();
+			}
+			File file = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + StringUtils.getFilename(fileName)));
+			IOUtils.write(content, new FileOutputStream(file));
+			return file.getName();
+		} catch (IOException e) {
+			throw new RuntimeException("Could not create temporary file for uploaded model", e);
+		}
 	}
 	
 	private boolean isValid(String file) {

@@ -19,6 +19,11 @@ package org.eclipse.vorto.repository.service;
  */
 public abstract class ModelRepositoryException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ModelRepositoryException(String msg) {
 		super(msg);
 	}

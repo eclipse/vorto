@@ -42,12 +42,6 @@ public interface IModelRepository {
 	ModelResource getById(ModelId modelId);
 	
 	/**
-	 * 
-	 * @param modelId
-	 */
-	void removeModel(ModelId modelId);
-	
-	/**
 	 * Returns the actual model content for the given model id
 	 * @param modelId
 	 * @param content type

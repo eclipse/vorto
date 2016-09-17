@@ -173,5 +173,9 @@ public class ModelId {
 
 	public String getPrettyFormat() {	
 		return namespace + "." + name + ":" +version;
+	}
+
+	public String getFileName() {
+		return namespace.replace(".", "_")+"-"+name+"-"+version.replace(".", "_");
 	}	
 }

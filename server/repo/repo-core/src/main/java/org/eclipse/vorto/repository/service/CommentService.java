@@ -16,7 +16,7 @@ package org.eclipse.vorto.repository.service;
 
 import java.util.Date;
 import java.util.List;
-
+ 
 import javax.jcr.PathNotFoundException;
 
 import org.eclipse.vorto.repository.internal.service.CommentRepository;

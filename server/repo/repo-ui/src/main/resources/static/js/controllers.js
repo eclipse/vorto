@@ -58,6 +58,29 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
   	};
 } ]);
 
+repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+	$scope.restore = function () {
+	       $scope.restoreResult = {};
+		   $scope.resultMessage = "";
+	       $rootScope.error = "";
+	
+			 var fileToUpload = document.getElementById('file').files[0];
+			 if(fileToUpload != undefined) {
+			 	var filename = document.getElementById('file').files[0].name;
+			 	var fd = new FormData();
+        		fd.append('file', fileToUpload);
+		        $http.post('./rest/admin/content',fd, {
+		            transformRequest: angular.identity,
+		            headers: {'Content-Type': undefined}
+		        })
+     			.success(function(result){
+     				$location.path("/");
+			 	});
+			 } else {
+			 	$rootScope.error = "Choose backup to restore and click Restore.";
+			 }
+		};
+} ]);
 
 repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
 
@@ -325,7 +348,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getDocumentationGenerators();
 
 	$scope.remove = function(){
-		$http.delete('./rest/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
+		$http.delete('./rest/admin/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
 		.success(function(result){
         	$location.path('/');
         }).error(function(data, status, headers, config) {

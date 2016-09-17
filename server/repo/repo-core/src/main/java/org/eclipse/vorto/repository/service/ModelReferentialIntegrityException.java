@@ -25,6 +25,10 @@ import org.eclipse.vorto.repository.model.ModelId;
 public class ModelReferentialIntegrityException extends
 		ModelRepositoryException {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private List<ModelId> referencedBy = new ArrayList<>();
 
 	public ModelReferentialIntegrityException(String msg, List<ModelId> referencedBy) {

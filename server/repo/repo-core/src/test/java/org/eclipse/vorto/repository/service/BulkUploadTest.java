@@ -17,51 +17,23 @@ package org.eclipse.vorto.repository.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
+ 
 import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
-import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.model.UploadModelResult;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.modeshape.jcr.SingleUseAbstractTest;
 import org.springframework.core.io.ClassPathResource;
 
-public class BulkUploadTest extends SingleUseAbstractTest  {
-	
-	@InjectMocks
-	private JcrModelRepository modelRepository;
-	@Mock
-	private INotificationService notificationService;
-	@Mock
-	private UserRepository userRepository;
-	@InjectMocks
-	private ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
-	
+public class BulkUploadTest extends AbstractIntegrationTest  {
+
 	private BulkUploadHelper bulkUploadHelper;
 	
-	@Before
+	@Override
 	public void beforeEach() throws Exception {
 		super.beforeEach();
-		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
-
-		modelRepository = new JcrModelRepository();
-		modelRepository.setModelSearchUtil(modelSearchUtil);
-		modelRepository.setSession(session());
-		
 		bulkUploadHelper = new BulkUploadHelper(this.modelRepository);
-	}
-	
-	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
 	}
 	
 	@Test

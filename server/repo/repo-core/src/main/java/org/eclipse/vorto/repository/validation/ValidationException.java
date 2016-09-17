@@ -21,6 +21,11 @@ import org.eclipse.vorto.repository.model.ModelResource;
  */
 public class ValidationException extends RuntimeException {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private ModelResource modelResource = null;
 	
 	public ValidationException(String msg, ModelResource modelResource) {

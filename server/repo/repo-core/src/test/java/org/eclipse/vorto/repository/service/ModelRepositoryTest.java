@@ -18,65 +18,28 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
-import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.modeshape.test.ModeShapeSingleUseTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.Assert;
-
+ 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelRepositoryTest extends ModeShapeSingleUseTest {
-
-	@InjectMocks
-	private JcrModelRepository modelRepository;
-	@InjectMocks
-	private ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
-	@Mock
-	private INotificationService notificationService;
-	@Mock
-	private UserRepository userRepository;
-
-	public void beforeEach() throws Exception {
-		super.beforeEach();
-		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
-
-		modelRepository = new JcrModelRepository();
-
-		modelRepository.setSession(jcrSession());
-		modelRepository.createValidators();
-		modelRepository.setModelSearchUtil(modelSearchUtil);
-
-	}
-
-	@Before
-	public void initMocks() {
-		MockitoAnnotations.initMocks(this);
-	}
+public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testQueryWithEmptyExpression() {
@@ -194,27 +157,6 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest {
 	}
 
 	@Test
-	public void testDeleteUnUsedType() {
-		checkinModel("Color.type");
-		assertEquals(1, modelRepository.search("*").size());
-		modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
-		assertEquals(0, modelRepository.search("*").size());
-	}
-
-	@Test
-	public void testDeleteUsedType() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		assertEquals(2, modelRepository.search("*").size());
-		try {
-			modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
-			fail("Expected exception");
-		} catch (ModelReferentialIntegrityException ex) {
-			assertEquals(1, ex.getReferencedBy().size());
-		}
-	}
-
-	@Test
 	public void testSearchAllModels() {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
@@ -232,25 +174,7 @@ public class ModelRepositoryTest extends ModeShapeSingleUseTest {
 		assertEquals(2, modelRepository.search("color").size());
 	}
 
-	private void checkinModel(String modelName) {
-		try {
-			UploadModelResult uploadResult = modelRepository.upload(
-					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream()),
-					modelName);
-			Assert.isTrue(uploadResult.isValid(), uploadResult.getErrorMessage());
-			when(userRepository.findAll()).thenReturn(Collections.emptyList());
-			modelRepository.checkin(uploadResult.getHandleId(), "alex");
-			modelRepository.search("*");
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		} finally {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
+	
 
 	@Test
 	public void tesUploadMapping() throws IOException {

@@ -59,6 +59,7 @@
           <ul class="nav navbar-nav">
           	<li><a href="./#/">Search</a></li>
           	<li ng-show="authenticated"><a href="./#/upload">Share</a></li>
+          	<li ng-show="authority == 'ROLE_ADMIN'"><a href="./#/manage">Manage</a></li>
           	<li><a href="./#/generators">Generators</a></li>
           	<li><a href="http://www.eclipse.org/vorto">About Vorto</a></li>
           	<li><a href="./#/api">REST API</a></li>

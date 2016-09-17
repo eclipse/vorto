@@ -29,10 +29,9 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
-import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -89,21 +88,6 @@ public class ModelRepositoryController extends RepositoryController {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
 		return resource;
-	}
-	
-	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.DELETE)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@ApiOperation(value="Deletes a vorto model",hidden=true)
-	@Secured("ROLE_ADMIN")
-	public void deleteModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
-										@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
-										@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
-		Objects.requireNonNull(namespace, "namespace must not be null");
-		Objects.requireNonNull(name, "name must not be null");
-		Objects.requireNonNull(version, "version must not be null");
-		final ModelId modelId = new ModelId(name, namespace, version);
-		logger.info("getModelResource: [" + modelId.toString() + "] - Fullpath: [" + modelId.getFullPath() + "]");
-		modelRepository.removeModel(modelId);
 	}
 	
 	@ApiOperation(value = "Returns the image of a vorto model")
