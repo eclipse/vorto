@@ -12,31 +12,36 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification.message;
+package org.eclipse.vorto.repository.internal.service.notification.message;
+
+import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.vorto.repository.model.User;
+public class CheckinMessage extends AbstractMessage {
 
-public class RegistrationMessage extends AbstractMessage {
+	private ModelResource modelResource;
 	
 	private TemplateRenderer renderer;
 	
-	public RegistrationMessage(User registeredPerson) {
-		super(registeredPerson);
-		this.renderer = new TemplateRenderer("registration.ftl");
+	public CheckinMessage(User recipient, ModelResource modelResource) {
+		super(recipient);
+		this.modelResource = modelResource;
+		this.renderer = new TemplateRenderer("checkin_watch.ftl");
 	}
 
 	@Override
 	public String getSubject() {
-		return "Vorto Repository Registration";
+		return modelResource.getModelType().name()+" was added to the Vorto Repository";
 	}
 
 	@Override
 	public String getContent() {
 		Map<String,Object> ctx = new HashMap<>(1);
 		ctx.put("user", recipient);
+		ctx.put("model", modelResource);
 		try {
 			return renderer.render(ctx);
 		} catch (Exception e) {
@@ -44,4 +49,5 @@ public class RegistrationMessage extends AbstractMessage {
 			
 		}
 	}
+
 }

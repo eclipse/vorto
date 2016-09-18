@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.model;
+package org.eclipse.vorto.repository.internal.model;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -26,6 +26,9 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
+import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.ModelType;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

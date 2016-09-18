@@ -18,7 +18,7 @@ import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.repository.model.Role;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.service.UserRepository;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class LocalConfiguration {
 
 	@Autowired
-	private UserRepository userRepository;
+	private IUserRepository userRepository;
 	
 	@Autowired
 	private PasswordEncoder encoder;

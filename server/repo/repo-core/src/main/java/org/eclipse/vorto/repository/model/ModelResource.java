@@ -162,6 +162,10 @@ public class ModelResource {
 		if (targetPlatform != null && !targetPlatform.equals("")) {
 			this.supportedTargetPlatforms.add(targetPlatform);
 		}
+	}
+
+	public void addReferencedBy(ModelId id) {
+		this.referencedBy.add(id);
 	}	
 	
 }

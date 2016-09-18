@@ -12,22 +12,19 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification.message;
+package org.eclipse.vorto.repository.internal.service.validation;
 
-import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.notification.IMessage;
+import org.eclipse.vorto.repository.model.ModelResource;
 
-public abstract class AbstractMessage implements IMessage {
-
-	protected User recipient;
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
+public interface IModelValidator {
 	
-	public AbstractMessage(User recipient) {
-		this.recipient = recipient;
-	}
-	
-	@Override
-	public User getRecipient() {
-		return recipient;
-	}
-	
+	/**
+	 * Validates an uploaded model resource
+	 * @param modelResource
+	 * @throws ValidationException
+	 */
+	void validate(ModelResource modelResource) throws ValidationException;
 }

@@ -12,26 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
-
-import org.eclipse.vorto.repository.model.User;
-import org.springframework.data.repository.CrudRepository;
+package org.eclipse.vorto.repository.internal.service.notification;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public interface UserRepository extends CrudRepository<User, Long> {
-    /**
-     * finds the user by the specified email address
-     * @param email
-     * @return
-     */
-	User findByEmail(String email);
-	
+public interface INotificationService {
 	/**
-	 * Finds the user by the specified username
-	 * @param username
-	 * @return
+	 * Sends the given message using a notification channel, e.g. Email
+	 * @param message
 	 */
-    User findByUsername(String username);
+	void sendNotification(IMessage message);
 }

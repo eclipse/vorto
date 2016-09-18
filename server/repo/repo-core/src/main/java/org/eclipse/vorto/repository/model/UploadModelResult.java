@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.internal.service.validation.exception.CouldNotResolveReferenceException;
-import org.eclipse.vorto.repository.validation.ValidationException;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

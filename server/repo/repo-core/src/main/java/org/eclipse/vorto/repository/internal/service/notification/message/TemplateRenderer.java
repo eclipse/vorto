@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification.message;
+package org.eclipse.vorto.repository.internal.service.notification.message;
 
 import java.io.StringWriter;
 import java.util.Map;

@@ -19,7 +19,7 @@ import javax.validation.Valid;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.model.UserDto;
 import org.eclipse.vorto.repository.service.IRegistrationService;
-import org.eclipse.vorto.repository.service.UserRepository;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +50,7 @@ public class UserController {
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     
 	@Autowired
-	private UserRepository userRepository;
+	private IUserRepository userRepository;
 	    
     @Autowired
 	private IRegistrationService registrationService;

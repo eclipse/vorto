@@ -6,9 +6,9 @@ import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
+import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.model.UploadModelResult;
-import org.eclipse.vorto.repository.notification.INotificationService;
 import org.junit.Before;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,7 +26,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	@Mock
 	protected INotificationService notificationService;
 	@Mock
-	protected UserRepository userRepository;
+	protected IUserRepository userRepository;
 	
 	public void beforeEach() throws Exception {
 		super.beforeEach();

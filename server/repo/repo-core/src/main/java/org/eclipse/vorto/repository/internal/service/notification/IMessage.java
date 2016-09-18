@@ -12,19 +12,18 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.validation;
+package org.eclipse.vorto.repository.internal.service.notification;
 
-import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.User;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public interface IModelValidator {
+public interface IMessage {
+
+	User getRecipient();
 	
-	/**
-	 * Validates an uploaded model resource
-	 * @param modelResource
-	 * @throws ValidationException
-	 */
-	void validate(ModelResource modelResource) throws ValidationException;
+	String getSubject();
+	
+	String getContent();
 }

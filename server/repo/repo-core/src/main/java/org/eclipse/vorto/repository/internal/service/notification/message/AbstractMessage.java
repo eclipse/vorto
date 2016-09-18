@@ -12,18 +12,22 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification;
+package org.eclipse.vorto.repository.internal.service.notification.message;
 
+import org.eclipse.vorto.repository.internal.service.notification.IMessage;
 import org.eclipse.vorto.repository.model.User;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface IMessage {
+public abstract class AbstractMessage implements IMessage {
 
-	User getRecipient();
+	protected User recipient;
 	
-	String getSubject();
+	public AbstractMessage(User recipient) {
+		this.recipient = recipient;
+	}
 	
-	String getContent();
+	@Override
+	public User getRecipient() {
+		return recipient;
+	}
+	
 }

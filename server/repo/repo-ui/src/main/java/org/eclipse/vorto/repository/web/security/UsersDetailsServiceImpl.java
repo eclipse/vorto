@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.web.security;
 import javax.transaction.Transactional;
 
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.service.UserRepository;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 public class UsersDetailsServiceImpl implements UserDetailsService {
 	
 	@Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
 	
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         

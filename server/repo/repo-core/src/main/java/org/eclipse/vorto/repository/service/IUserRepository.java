@@ -12,33 +12,26 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.validation;
+package org.eclipse.vorto.repository.service;
 
-import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.User;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ValidationException extends RuntimeException {
-
+public interface IUserRepository extends CrudRepository<User, Long> {
+    /**
+     * finds the user by the specified email address
+     * @param email
+     * @return
+     */
+	User findByEmail(String email);
+	
 	/**
-	 * 
+	 * Finds the user by the specified username
+	 * @param username
+	 * @return
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private ModelResource modelResource = null;
-	
-	public ValidationException(String msg, ModelResource modelResource) {
-		super(msg);
-		this.modelResource = modelResource;
-	}
-	
-	public ValidationException(String msg, ModelResource modelResource, Throwable t) {
-		super(msg,t);
-		this.modelResource = modelResource;
-	}
-	
-	public ModelResource getModelResource() {
-		return modelResource;
-	}
+    User findByUsername(String username);
 }

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.repository.internal.service.comment;
 
 import java.util.Date;
 import java.util.List;
@@ -23,6 +23,10 @@ import org.eclipse.vorto.repository.internal.service.CommentRepository;
 import org.eclipse.vorto.repository.model.Comment;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.User;
+import org.eclipse.vorto.repository.service.ICommentService;
+import org.eclipse.vorto.repository.service.IModelRepository;
+import org.eclipse.vorto.repository.service.ModelNotFoundException;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +43,7 @@ public class CommentService implements ICommentService{
 	private CommentRepository commentRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+	private IUserRepository userRepository;
 	
 	public void createComment(Comment comment) {
 		

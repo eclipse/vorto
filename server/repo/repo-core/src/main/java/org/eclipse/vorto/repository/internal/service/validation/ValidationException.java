@@ -12,15 +12,33 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification;
+package org.eclipse.vorto.repository.internal.service.validation;
+
+import org.eclipse.vorto.repository.model.ModelResource;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public interface INotificationService {
+public class ValidationException extends RuntimeException {
+
 	/**
-	 * Sends the given message using a notification channel, e.g. Email
-	 * @param message
+	 * 
 	 */
-	void sendNotification(IMessage message);
+	private static final long serialVersionUID = 1L;
+	
+	private ModelResource modelResource = null;
+	
+	public ValidationException(String msg, ModelResource modelResource) {
+		super(msg);
+		this.modelResource = modelResource;
+	}
+	
+	public ValidationException(String msg, ModelResource modelResource, Throwable t) {
+		super(msg,t);
+		this.modelResource = modelResource;
+	}
+	
+	public ModelResource getModelResource() {
+		return modelResource;
+	}
 }

@@ -14,32 +14,36 @@
  */
 package org.eclipse.vorto.repository.internal.service.utils;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
-import org.eclipse.vorto.repository.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
+import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
+import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
-import org.eclipse.vorto.repository.validation.IModelValidator;
-import org.eclipse.vorto.repository.validation.ValidationException;
 import org.springframework.util.StringUtils;
 
 public class BulkUploadHelper {
@@ -50,7 +54,7 @@ public class BulkUploadHelper {
 		this.repositoryService = modelRepository;
 	}
 
-	public List<UploadModelResult> uploadMultiple(String zipFileName) {
+	public List<UploadModelResult> uploadMultiple(byte[] content, String zipFileName) {
 		if (!isValid(zipFileName)) {
 			throw new FatalModelRepositoryException("Filename/type is invalid", null);
 		}
@@ -60,22 +64,26 @@ public class BulkUploadHelper {
 		
 		Set<ModelResource> parsedModels = new HashSet<>();
 
-		ZipFile zipFile = null;
+		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(content));
+		ZipEntry entry = null;
+		
 		try {
-			zipFile = new ZipFile(zipFileName);
-
-			Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
+			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					final String fileName = entry.getName();
 					try {
-						parsedModels.add(ModelParserFactory.getParser(fileName).parse(zipFile.getInputStream(entry)));
+						parsedModels.add(ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(copyStream(zis,entry))));
 					} catch (ValidationException grammarProblem) {
 						invalidResult.add(UploadModelResult.invalid(grammarProblem));
 					}
 				}
+
 			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		try {
 
 			List<IModelValidator> bulkUploadValidators = constructBulkUploadValidators(parsedModels);
 
@@ -97,7 +105,8 @@ public class BulkUploadHelper {
 			
 			
 			if (invalidResult.isEmpty()) {
-				return safelyUpload(parsedModels);
+				DependencyManager dm = new DependencyManager(parsedModels);
+				return safelyUpload(dm.getSorted());
 			} else {
 				List<UploadModelResult> completeResult = new ArrayList<>();
 				completeResult.addAll(invalidResult);
@@ -107,21 +116,13 @@ public class BulkUploadHelper {
 
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Invalid zip file", e);
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-					// ignore
-				}
-			}
-		}
+		} 
 	}
 
 	/**
 	 * @param zipFileName
 	 */
-	private List<UploadModelResult> safelyUpload(Set<ModelResource> resources) throws Exception {
+	private List<UploadModelResult> safelyUpload(Collection<ModelResource> resources) throws Exception {
 		List<UploadModelResult> result = new ArrayList<UploadModelResult>();
 		
 		for (ModelResource resource : resources) {
@@ -129,6 +130,10 @@ public class BulkUploadHelper {
 		}
 		
 		return result;
+	}
+	
+	public void checkinMultiple(List<ModelHandle> handles) {
+		
 	}
 	
 	private static String getDefaultExtractDirectory() {
@@ -161,5 +166,20 @@ public class BulkUploadHelper {
 		return bulkUploadValidators;
 	}
 
+	protected static byte[] copyStream(ZipInputStream in, ZipEntry entry) throws Exception {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		int size;
+		byte[] buffer = new byte[2048];
+
+		BufferedOutputStream bos = new BufferedOutputStream(out);
+
+		while ((size = in.read(buffer, 0, buffer.length)) != -1) {
+			bos.write(buffer, 0, size);
+		}
+		bos.flush();
+		bos.close();
+		return out.toByteArray();
+	}
 
 }

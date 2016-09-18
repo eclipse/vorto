@@ -12,16 +12,18 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.repository.internal.service.signup;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
+import org.eclipse.vorto.repository.internal.service.notification.message.RegistrationMessage;
 import org.eclipse.vorto.repository.model.Role;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.model.UserDto;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.message.RegistrationMessage;
+import org.eclipse.vorto.repository.service.IRegistrationService;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +34,7 @@ import org.springframework.stereotype.Service;
 public class DefaultRegistrationService implements IRegistrationService{
 	
 	@Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
     
 	@Autowired
 	private INotificationService notificationService;

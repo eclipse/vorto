@@ -47,24 +47,24 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
+import org.eclipse.vorto.repository.internal.service.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
+import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
-import org.eclipse.vorto.repository.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
-import org.eclipse.vorto.repository.service.UserRepository;
-import org.eclipse.vorto.repository.validation.IModelValidator;
-import org.eclipse.vorto.repository.validation.ValidationException;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -83,7 +83,7 @@ public class JcrModelRepository implements IModelRepository {
 	private Session session;
 
 	@Autowired
-	private UserRepository userRepository;
+	private IUserRepository userRepository;
 
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
@@ -448,11 +448,11 @@ public class JcrModelRepository implements IModelRepository {
 		this.modelSearchUtil = modelSearchUtil;
 	}
 
-	public UserRepository getUserRepository() {
+	public IUserRepository getUserRepository() {
 		return userRepository;
 	}
 
-	public void setUserRepository(UserRepository userRepository) {
+	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 	

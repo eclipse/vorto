@@ -49,15 +49,15 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testRestoreBackup1() throws Exception {
-		this.repositoryManager.restore(new ClassPathResource("sample_models/backup1.xml").getInputStream());
+		this.repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		assertEquals(4,this.modelRepository.search("*").size());
 	}
 	
 	@Test
 	public void testRestoreBackupExistingData() throws Exception {
-		this.repositoryManager.restore(new ClassPathResource("sample_models/backup1.xml").getInputStream());
+		this.repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		assertEquals(4,this.modelRepository.search("*").size());
-		this.repositoryManager.restore(new ClassPathResource("sample_models/backup1.xml").getInputStream());
+		this.repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		assertEquals(4,this.modelRepository.search("*").size());
 		System.out.println(this.modelRepository.search("*").get(0).getId());
 	}

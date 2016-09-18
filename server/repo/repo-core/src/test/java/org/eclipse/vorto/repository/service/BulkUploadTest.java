@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.junit.Test;
@@ -39,7 +40,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadValidModels() throws IOException {
 		String fileName = "sample_models/valid-models.zip";
-		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
 		assertEquals(3, uploadResults.size());
 		verifyAllModelsAreValid(uploadResults);
 	}
@@ -47,7 +48,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadOneMissingModels() throws IOException {
 		String fileName = "sample_models/missing-models.zip";
-		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
 		assertEquals(2, uploadResults.size());
 		verifyOneModelAreMissing(uploadResults);
 	}
@@ -55,7 +56,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadInvalidModels() throws IOException {
 		String fileName = "sample_models/invalid-models.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
 		assertEquals(2,result.size());
 		assertFalse(result.get(0).isValid());
 		assertFalse(result.get(1).isValid()); 
@@ -64,7 +65,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadDifferentModelTypesWithSameId() throws Exception {
 		String fileName = "sample_models/modelsWithSameId.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
 		assertEquals(2,result.size());
 		assertFalse(result.get(1).isValid()); 	
 	}
@@ -72,7 +73,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadModelWithInvalidGrammar() throws Exception {
 		String fileName = "sample_models/modelsWithWrongGrammar.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(fromClasspath(fileName));
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
 		assertEquals(2,result.size());
 		assertFalse(result.get(0).isValid());
 		assertFalse(result.get(1).isValid()); 
@@ -93,8 +94,8 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		assertTrue(uploadResults.stream().allMatch(result -> result.getHandleId() != null));
 	}
 	
-	private String fromClasspath(String fileName) throws IOException {
-		return new ClassPathResource(fileName).getFile().getAbsolutePath();
+	private byte[] loadContentForFile(String fileName) throws IOException {
+		return IOUtils.toByteArray(new ClassPathResource(fileName).getInputStream());
 	}
 
 }

@@ -19,13 +19,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
+import org.eclipse.vorto.repository.internal.service.notification.EmailNotificationService;
+import org.eclipse.vorto.repository.internal.service.notification.message.CheckinMessage;
+import org.eclipse.vorto.repository.internal.service.notification.message.RegistrationMessage;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.notification.EmailNotificationService;
-import org.eclipse.vorto.repository.notification.message.CheckinMessage;
-import org.eclipse.vorto.repository.notification.message.RegistrationMessage;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

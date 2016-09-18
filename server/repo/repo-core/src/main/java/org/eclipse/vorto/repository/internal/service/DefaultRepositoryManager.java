@@ -1,7 +1,21 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.internal.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -39,9 +53,9 @@ public class DefaultRepositoryManager implements IRepositoryManager {
 	}
 
 	@Override
-	public void restore(InputStream inputStream) throws Exception {
+	public void restore(byte[] backup) throws Exception {
 		removeAll();
-		((org.modeshape.jcr.api.Session) session).getWorkspace().importXML("/", inputStream,
+		((org.modeshape.jcr.api.Session) session).getWorkspace().importXML("/", new ByteArrayInputStream(backup),
 				ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW);
 	}
 
