@@ -39,13 +39,16 @@ import org.eclipse.vorto.codegen.api.mapping.IMapped;
 import org.eclipse.vorto.codegen.api.mapping.NullMapped;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
 import org.eclipse.vorto.core.api.model.mapping.EntityAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.EnumAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.EnumPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
@@ -113,6 +116,20 @@ public class InvocationContext {
 		}
 		return new NullMapped<FunctionblockModel>(functionblockModel);
 	}
+	
+	public IMapped<EnumLiteral> getMappedElement(final EnumLiteral enumLiteral,
+			final String stereoType) {
+		for (MappingRule rule : mappingRules) {
+			for (Source ruleSource : rule.getSources()) {
+				if (ruleSource instanceof EnumPropertySource
+						&& EcoreUtil.equals(((EnumPropertySource) ruleSource).getProperty(), enumLiteral)
+						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
+					return new DefaultMapped<EnumLiteral>(enumLiteral, (StereoTypeTarget) rule.getTarget());
+				}
+			}
+		}
+		return new NullMapped<EnumLiteral>(enumLiteral);
+	}
 
 	private boolean matchesStereoType(final String stereoType, final StereoTypeTarget stereoTypeTarget) {
 		return stereoTypeTarget.getName().equalsIgnoreCase(stereoType);
@@ -132,6 +149,10 @@ public class InvocationContext {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				} else if (ruleSource instanceof FaultSource
 						&& EcoreUtil.equals(((FaultSource) ruleSource).getProperty(), property)
+						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
+					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
+				} else if (ruleSource instanceof EntityPropertySource
+						&& EcoreUtil.equals(((EntityPropertySource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				}
