@@ -12,23 +12,16 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.repository.resolver;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public class ModelNotFoundException extends ModelRepositoryException {
+import org.eclipse.vorto.repository.model.ModelId;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public ModelNotFoundException(String msg, Throwable t) {
-		super(msg,t);
-	}
+public interface IModelIdResolver {
 	
-	public ModelNotFoundException(String msg) {
-		super(msg);
-	}
+	/**
+	 * Tries to resolve the given platform specific id to {@link ModelId}
+	 * @param id
+	 * @return resolved model id or null
+	 */
+	ModelId resolve(String id);
 }

@@ -47,6 +47,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.internal.model.DefaultModelContent;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
 import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
 import org.eclipse.vorto.repository.internal.service.notification.message.CheckinMessage;
@@ -56,6 +57,7 @@ import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelVa
 import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
+import org.eclipse.vorto.repository.model.IModelContent;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
@@ -63,8 +65,8 @@ import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
-import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.IUserRepository;
+import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -112,7 +114,7 @@ public class JcrModelRepository implements IModelRepository {
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
-				if (currentNode.hasProperty("vorto:type") && !isMappingNode(currentNode)) {
+				if (currentNode.hasProperty("vorto:type")) {
 					try {
 						modelResources.add(createModelResource(currentNode));
 					} catch (Exception ex) {
@@ -127,10 +129,10 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	private boolean isMappingNode(Node node) throws RepositoryException {
-		return node.hasProperty("vorto:type")
-				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
-	}
+//	private boolean isMappingNode(Node node) throws RepositoryException {
+//		return node.hasProperty("vorto:type")
+//				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
+//	}
 
 	private ModelResource createModelResource(Node node) throws RepositoryException {
 		ModelResource resource = new ModelResource(ModelId.fromPath(node.getParent().getPath()),
@@ -179,19 +181,20 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public byte[] getModelContent(ModelId modelId, ContentType contentType) {
+	public IModelContent getModelContent(ModelId modelId, ContentType contentType) {
 		try {
 			Node folderNode = session.getNode(modelId.getFullPath());
 			Node fileNode = (Node) folderNode.getNodes(modelId.getName() + "*").next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
+			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName())
+					.parse(is);
+			
 			if (contentType == ContentType.XMI) {
-				ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName())
-						.parse(is);
-				return resource.toXMI();
+				return new DefaultModelContent(resource.getModel(), contentType, resource.toXMI());
 			} else {
-				return IOUtils.toByteArray(is);
+				return new DefaultModelContent(resource.getModel(), contentType, resource.toDSL());
 			}
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);

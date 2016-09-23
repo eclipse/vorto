@@ -12,23 +12,29 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.repository.model;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public class ModelNotFoundException extends ModelRepositoryException {
+import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
+
+public interface IModelContent {
 
 	/**
+	 * EMF Model object
 	 * 
+	 * @return
 	 */
-	private static final long serialVersionUID = 1L;
-
-	public ModelNotFoundException(String msg, Throwable t) {
-		super(msg,t);
-	}
+	Model getModel();
 	
-	public ModelNotFoundException(String msg) {
-		super(msg);
-	}
+	/**
+	 * format of the model content
+	 * @return
+	 */
+	ContentType getType();
+	
+	/**
+	 * actual model content value
+	 * @return
+	 */
+	byte[] getContent();
 }

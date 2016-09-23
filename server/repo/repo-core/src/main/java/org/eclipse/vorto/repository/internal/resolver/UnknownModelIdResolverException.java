@@ -12,23 +12,24 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.repository.internal.resolver;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public class ModelNotFoundException extends ModelRepositoryException {
+public class UnknownModelIdResolverException extends RuntimeException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public ModelNotFoundException(String msg, Throwable t) {
-		super(msg,t);
+	private String resolverId;
+	
+	public UnknownModelIdResolverException(String resolverId) {
+		super("Resolver with id "+resolverId+" is unknown.");
+		this.resolverId = resolverId;
 	}
 	
-	public ModelNotFoundException(String msg) {
-		super(msg);
+	public String getResolverId() {
+		return this.resolverId;
 	}
+	
 }
