@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.service;
 
 import java.util.List;
 
+import org.eclipse.vorto.repository.model.IModelContent;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.UploadModelResult;
@@ -48,7 +49,7 @@ public interface IModelRepository {
 	 * @throws ModelNotFoundException
 	 * @return
 	 */
-	byte[] getModelContent(ModelId modelId, ContentType contentType);
+	IModelContent getModelContent(ModelId modelId, ContentType contentType);
 	
 	/**
 	 * Uploads model content and validates it. If the model is valid, the returned upload handle is used

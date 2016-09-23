@@ -116,7 +116,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		checkinModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
 		byte[] content = modelRepository.getModelContent(
-				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.DSL);
+				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.DSL).getContent();
 		String actualContent = new String(content, "UTF-8");
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
 		assertEquals(expectedContent, actualContent);
@@ -127,7 +127,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		checkinModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
 		byte[] content = modelRepository.getModelContent(
-				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.XMI);
+				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.XMI).getContent();
 		String actualContent = new String(content, "UTF-8");
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.xmi").getInputStream());
 		assertEquals(expectedContent, actualContent);
@@ -220,7 +220,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 				"sample.mapping");
 		assertEquals(true, uploadResult.isValid());
 		modelRepository.checkin(uploadResult.getHandleId(), "alex");
-		assertEquals(1, modelRepository.search("*").size());
+		assertEquals(1, modelRepository.search("-Mapping").size());
 	}
 
 	@Test

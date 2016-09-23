@@ -183,7 +183,7 @@ public class ModelRepositoryController extends RepositoryController {
 	}
 	
 	private void createSingleModelContent(ModelId modelId, ContentType contentType, HttpServletResponse response) {
-		byte[] modelContent = modelRepository.getModelContent(modelId, contentType);
+		byte[] modelContent = modelRepository.getModelContent(modelId, contentType).getContent();
 		if (modelContent != null && modelContent.length > 0) {
 			final ModelResource modelResource = modelRepository.getById(modelId);
 			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource, contentType));
@@ -200,7 +200,7 @@ public class ModelRepositoryController extends RepositoryController {
 	}
 	
 	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId, ContentType contentType) throws Exception {
-		byte[] modelContent = modelRepository.getModelContent(modelId,contentType);
+		byte[] modelContent = modelRepository.getModelContent(modelId,contentType).getContent();
 		ModelResource modelResource = modelRepository.getById(modelId);
 		
 		try {
