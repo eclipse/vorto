@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/eclipse/vorto/tree/development.svg?style=svg)](https://circleci.com/gh/eclipse/vorto/tree/development)
+[![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=Issues%20In%20Progress)](http://waffle.io/eclipse/vorto)
 [![Throughput Graph](https://graphs.waffle.io/eclipse/vorto/throughput.svg)](https://waffle.io/eclipse/vorto/metrics)
 

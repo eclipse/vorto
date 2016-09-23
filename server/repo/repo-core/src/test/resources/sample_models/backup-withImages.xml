@@ -1,0 +1,1107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:mode="http://www.modeshape.org/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0"
+	xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:vorto="http://www.eclipse.org/vorto/sequencer/model/1.0"
+	xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	jcr:primaryType="mode:root" jcr:uuid="f4198cd7505d64/">
+	<jcr:system jcr:primaryType="mode:system">
+		<jcr:nodeTypes jcr:primaryType="mode:nodeTypes">
+			<nt:base jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="" jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="true" jcr:nodeTypeName="nt:base">
+				<jcr:primaryType jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COMPUTE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:primaryType" jcr:autoCreated="true" jcr:mandatory="true"></jcr:primaryType>
+				<jcr:mixinTypes jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COMPUTE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:mixinTypes" jcr:autoCreated="false" jcr:mandatory="false"></jcr:mixinTypes>
+			</nt:base>
+			<nt:unstructured jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="true" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:unstructured">
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="false" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:base" jcr:protected="false"
+					jcr:defaultPrimaryType="nt:unstructured" jcr:sameNameSiblings="true"
+					jcr:onParentVersion="VERSION" jcr:autoCreated="false"
+					jcr:mandatory="false"></_x002a_>
+			</nt:unstructured>
+			<mix:created jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:created">
+				<jcr:created jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="DATE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:created" jcr:autoCreated="false" jcr:mandatory="false"></jcr:created>
+				<jcr:createdBy jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:createdBy" jcr:autoCreated="false" jcr:mandatory="false"></jcr:createdBy>
+			</mix:created>
+			<nt:hierarchyNode jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="true" jcr:nodeTypeName="nt:hierarchyNode"></nt:hierarchyNode>
+			<nt:file jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:hierarchyNode" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:primaryItemName="jcr:content"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:file">
+				<jcr:content jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:base" jcr:protected="false"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="COPY" jcr:name="jcr:content"
+					jcr:autoCreated="false" jcr:mandatory="true"></jcr:content>
+			</nt:file>
+			<nt:linkedFile jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:hierarchyNode"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:primaryItemName="jcr:content" jcr:isAbstract="false"
+				jcr:nodeTypeName="nt:linkedFile">
+				<jcr:content jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:content" jcr:autoCreated="false" jcr:mandatory="true"></jcr:content>
+			</nt:linkedFile>
+			<nt:folder jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:hierarchyNode" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="nt:folder">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:hierarchyNode" jcr:protected="false"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="VERSION"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</nt:folder>
+			<mix:referenceable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:referenceable">
+				<jcr:uuid jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="INITIALIZE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:uuid" jcr:autoCreated="true" jcr:mandatory="true"></jcr:uuid>
+			</mix:referenceable>
+			<mix:mimeType jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:mimeType">
+				<jcr:mimeType jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:mimeType" jcr:autoCreated="false" jcr:mandatory="false"></jcr:mimeType>
+				<jcr:encoding jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:encoding" jcr:autoCreated="false" jcr:mandatory="false"></jcr:encoding>
+			</mix:mimeType>
+			<mix:lastModified jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:lastModified">
+				<jcr:lastModified jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="DATE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lastModified" jcr:autoCreated="false" jcr:mandatory="false"></jcr:lastModified>
+				<jcr:lastModifiedBy jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lastModifiedBy" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:lastModifiedBy>
+			</mix:lastModified>
+			<nt:resource jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:primaryItemName="jcr:data" jcr:isAbstract="false"
+				jcr:nodeTypeName="nt:resource">
+				<jcr:data jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="BINARY"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:data" jcr:autoCreated="false" jcr:mandatory="true"></jcr:data>
+			</nt:resource>
+			<nt:nodeType jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:nodeType">
+				<jcr:nodeTypeName jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:nodeTypeName" jcr:autoCreated="false" jcr:mandatory="true"></jcr:nodeTypeName>
+				<jcr:supertypes jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:supertypes" jcr:autoCreated="false" jcr:mandatory="false"></jcr:supertypes>
+				<jcr:isAbstract jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isAbstract" jcr:autoCreated="false" jcr:mandatory="true"></jcr:isAbstract>
+				<jcr:isMixin jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isMixin" jcr:autoCreated="false" jcr:mandatory="true"></jcr:isMixin>
+				<jcr:isQueryable jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isQueryable" jcr:autoCreated="false" jcr:mandatory="true"></jcr:isQueryable>
+				<jcr:hasOrderableChildNodes
+					jcr:primaryType="nt:propertyDefinition" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:hasOrderableChildNodes" jcr:autoCreated="false"
+					jcr:mandatory="true"></jcr:hasOrderableChildNodes>
+				<jcr:primaryItemName jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:primaryItemName" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:primaryItemName>
+				<jcr:propertyDefinition jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:propertyDefinition" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:propertyDefinition"
+					jcr:sameNameSiblings="true" jcr:onParentVersion="COPY"
+					jcr:name="jcr:propertyDefinition" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:propertyDefinition>
+				<jcr:childNodeDefinition jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:childNodeDefinition" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:childNodeDefinition"
+					jcr:sameNameSiblings="true" jcr:onParentVersion="COPY"
+					jcr:name="jcr:childNodeDefinition" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:childNodeDefinition>
+			</nt:nodeType>
+			<nt:propertyDefinition jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:propertyDefinition">
+				<jcr:name jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:name" jcr:autoCreated="false" jcr:mandatory="false"></jcr:name>
+				<jcr:autoCreated jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:autoCreated" jcr:autoCreated="false" jcr:mandatory="true"></jcr:autoCreated>
+				<jcr:mandatory jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:mandatory" jcr:autoCreated="false" jcr:mandatory="true"></jcr:mandatory>
+				<jcr:isFullTextSearchable jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isFullTextSearchable" jcr:autoCreated="false"
+					jcr:mandatory="true"></jcr:isFullTextSearchable>
+				<jcr:isQueryOrderable jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isQueryOrderable" jcr:autoCreated="false"
+					jcr:mandatory="true"></jcr:isQueryOrderable>
+				<jcr:onParentVersion jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="COPY" jcr:multiple="false" jcr:protected="true"
+					jcr:requiredType="STRING" jcr:onParentVersion="COPY"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="jcr:onParentVersion"
+					jcr:autoCreated="false" jcr:mandatory="true"></jcr:onParentVersion>
+				<jcr:protected jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:protected" jcr:autoCreated="false" jcr:mandatory="true"></jcr:protected>
+				<jcr:requiredType jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="STRING" jcr:multiple="false" jcr:protected="true"
+					jcr:requiredType="STRING" jcr:onParentVersion="COPY"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="jcr:requiredType"
+					jcr:autoCreated="false" jcr:mandatory="true"></jcr:requiredType>
+				<jcr:valueConstraints jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:valueConstraints" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:valueConstraints>
+				<jcr:availableQueryOperators
+					jcr:primaryType="nt:propertyDefinition" jcr:multiple="true"
+					jcr:protected="true" jcr:requiredType="NAME" jcr:onParentVersion="COPY"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="jcr:availableQueryOperators"
+					jcr:autoCreated="false" jcr:mandatory="true"></jcr:availableQueryOperators>
+				<jcr:defaultValues jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:defaultValues" jcr:autoCreated="false" jcr:mandatory="false"></jcr:defaultValues>
+				<jcr:multiple jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:multiple" jcr:autoCreated="false" jcr:mandatory="true"></jcr:multiple>
+			</nt:propertyDefinition>
+			<nt:childNodeDefinition jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:childNodeDefinition">
+				<jcr:name jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:name" jcr:autoCreated="false" jcr:mandatory="false"></jcr:name>
+				<jcr:autoCreated jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:autoCreated" jcr:autoCreated="false" jcr:mandatory="true"></jcr:autoCreated>
+				<jcr:mandatory jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:mandatory" jcr:autoCreated="false" jcr:mandatory="true"></jcr:mandatory>
+				<jcr:onParentVersion jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="COPY" jcr:multiple="false" jcr:protected="true"
+					jcr:requiredType="STRING" jcr:onParentVersion="COPY"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="jcr:onParentVersion"
+					jcr:autoCreated="false" jcr:mandatory="true"></jcr:onParentVersion>
+				<jcr:protected jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:protected" jcr:autoCreated="false" jcr:mandatory="true"></jcr:protected>
+				<jcr:requiredPrimaryTypes jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:requiredPrimaryTypes" jcr:autoCreated="false"
+					jcr:mandatory="true" jcr:defaultValues="nt:base"></jcr:requiredPrimaryTypes>
+				<jcr:defaultPrimaryType jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:defaultPrimaryType" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:defaultPrimaryType>
+				<jcr:sameNameSiblings jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:sameNameSiblings" jcr:autoCreated="false"
+					jcr:mandatory="true"></jcr:sameNameSiblings>
+			</nt:childNodeDefinition>
+			<nt:versionHistory jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:versionHistory">
+				<jcr:versionableUuid jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:versionableUuid" jcr:autoCreated="true"
+					jcr:mandatory="true"></jcr:versionableUuid>
+				<jcr:copiedFrom jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="WEAKREFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:copiedFrom" jcr:autoCreated="false" jcr:mandatory="false"></jcr:copiedFrom>
+				<jcr:rootVersion jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:version" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:version" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="jcr:rootVersion"
+					jcr:autoCreated="true" jcr:mandatory="true"></jcr:rootVersion>
+				<jcr:versionLabels jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:versionLabels" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:versionLabels" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="jcr:versionLabels"
+					jcr:autoCreated="true" jcr:mandatory="true"></jcr:versionLabels>
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:version" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:version" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</nt:versionHistory>
+			<nt:versionLabels jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:versionLabels">
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</nt:versionLabels>
+			<nt:version jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="nt:version">
+				<jcr:created jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="DATE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:created" jcr:autoCreated="true" jcr:mandatory="true"></jcr:created>
+				<jcr:predecessors jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="true"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:predecessors" jcr:autoCreated="false" jcr:mandatory="false"></jcr:predecessors>
+				<jcr:successors jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="true"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:successors" jcr:autoCreated="false" jcr:mandatory="false"></jcr:successors>
+				<jcr:activity jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:activity" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:activity" jcr:autoCreated="false" jcr:mandatory="false"></jcr:activity>
+				<jcr:frozenNode jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:frozenNode" jcr:protected="true"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="ABORT" jcr:name="jcr:frozenNode"
+					jcr:autoCreated="false" jcr:mandatory="false"></jcr:frozenNode>
+			</nt:version>
+			<nt:frozenNode jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="true" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:frozenNode">
+				<jcr:frozenPrimaryType jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:frozenPrimaryType" jcr:autoCreated="true"
+					jcr:mandatory="true"></jcr:frozenPrimaryType>
+				<jcr:frozenMixinTypes jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:frozenMixinTypes" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:frozenMixinTypes>
+				<jcr:frozenUuid jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:frozenUuid" jcr:autoCreated="true" jcr:mandatory="true"></jcr:frozenUuid>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:base" jcr:protected="true"
+					jcr:sameNameSiblings="true" jcr:onParentVersion="ABORT"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</nt:frozenNode>
+			<nt:versionedChild jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:versionedChild">
+				<jcr:childVersionHistory jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:versionHistory" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:childVersionHistory" jcr:autoCreated="true"
+					jcr:mandatory="true"></jcr:childVersionHistory>
+			</nt:versionedChild>
+			<nt:query jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="nt:query">
+				<jcr:statement jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:statement" jcr:autoCreated="false" jcr:mandatory="false"></jcr:statement>
+				<jcr:language jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:language" jcr:autoCreated="false" jcr:mandatory="false"></jcr:language>
+			</nt:query>
+			<nt:activity jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:activity">
+				<jcr:activityTitle jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:activityTitle" jcr:autoCreated="true" jcr:mandatory="true"></jcr:activityTitle>
+			</nt:activity>
+			<mix:simpleVersionable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:simpleVersionable">
+				<jcr:isCheckedOut jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isCheckedOut" jcr:autoCreated="true" jcr:mandatory="true"
+					jcr:defaultValues="true"></jcr:isCheckedOut>
+			</mix:simpleVersionable>
+			<mix:versionable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="mix:simpleVersionable"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mix:versionable">
+				<jcr:versionHistory jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:versionHistory" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:versionHistory" jcr:autoCreated="false"
+					jcr:mandatory="true"></jcr:versionHistory>
+				<jcr:baseVersion jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:baseVersion" jcr:autoCreated="false" jcr:mandatory="true"></jcr:baseVersion>
+				<jcr:predecessors jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="true"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:predecessors" jcr:autoCreated="false" jcr:mandatory="true"></jcr:predecessors>
+				<jcr:mergeFailed jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="ABORT" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:mergeFailed" jcr:autoCreated="false" jcr:mandatory="false"></jcr:mergeFailed>
+				<jcr:activity jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:version" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:activity" jcr:autoCreated="false" jcr:mandatory="false"></jcr:activity>
+				<jcr:configuration jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="nt:configuration" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:configuration" jcr:autoCreated="false" jcr:mandatory="false"></jcr:configuration>
+			</mix:versionable>
+			<nt:configuration jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:configuration">
+				<jcr:root jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:root" jcr:autoCreated="true" jcr:mandatory="true"></jcr:root>
+			</nt:configuration>
+			<nt:address jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="nt:address">
+				<jcr:protocol jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:protocol" jcr:autoCreated="false" jcr:mandatory="false"></jcr:protocol>
+				<jcr:host jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:host" jcr:autoCreated="false" jcr:mandatory="false"></jcr:host>
+				<jcr:port jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:port" jcr:autoCreated="false" jcr:mandatory="false"></jcr:port>
+				<jcr:repository jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:repository" jcr:autoCreated="false" jcr:mandatory="false"></jcr:repository>
+				<jcr:workspace jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:workspace" jcr:autoCreated="false" jcr:mandatory="false"></jcr:workspace>
+				<jcr:path jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="PATH"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:path" jcr:autoCreated="false" jcr:mandatory="false"></jcr:path>
+				<jcr:id jcr:primaryType="nt:propertyDefinition" jcr:multiple="false"
+					jcr:protected="false" jcr:requiredType="WEAKREFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:id" jcr:autoCreated="false" jcr:mandatory="false"></jcr:id>
+			</nt:address>
+			<nt:naturalText jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="nt:naturalText">
+				<jcr:text jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:text" jcr:autoCreated="false" jcr:mandatory="false"></jcr:text>
+				<jcr:messageId jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:messageId" jcr:autoCreated="false" jcr:mandatory="false"></jcr:messageId>
+			</nt:naturalText>
+			<mix:etag jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="" jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mix:etag">
+				<jcr:etag jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:etag" jcr:autoCreated="true" jcr:mandatory="false"></jcr:etag>
+			</mix:etag>
+			<mix:lockable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:lockable">
+				<jcr:lockOwner jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lockOwner" jcr:autoCreated="false" jcr:mandatory="false"></jcr:lockOwner>
+				<jcr:lockIsDeep jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lockIsDeep" jcr:autoCreated="false" jcr:mandatory="false"></jcr:lockIsDeep>
+			</mix:lockable>
+			<mix:lifecycle jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:lifecycle">
+				<jcr:lifecyclePolicy jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="INITIALIZE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lifecyclePolicy" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:lifecyclePolicy>
+				<jcr:currentLifecycleState
+					jcr:primaryType="nt:propertyDefinition" jcr:multiple="false"
+					jcr:protected="true" jcr:requiredType="STRING" jcr:onParentVersion="INITIALIZE"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="jcr:currentLifecycleState"
+					jcr:autoCreated="false" jcr:mandatory="false"></jcr:currentLifecycleState>
+			</mix:lifecycle>
+			<mix:managedRetention jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="mix:referenceable"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mix:managedRetention">
+				<jcr:hold jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:hold" jcr:autoCreated="false" jcr:mandatory="false"></jcr:hold>
+				<jcr:isDeep jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:isDeep" jcr:autoCreated="false" jcr:mandatory="false"></jcr:isDeep>
+				<jcr:retentionPolicy jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:retentionPolicy" jcr:autoCreated="false"
+					jcr:mandatory="false"></jcr:retentionPolicy>
+			</mix:managedRetention>
+			<mix:shareable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="mix:referenceable"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mix:shareable"></mix:shareable>
+			<mix:title jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="" jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mix:title">
+				<jcr:title jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:title" jcr:autoCreated="false" jcr:mandatory="false"></jcr:title>
+				<jcr:description jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:description" jcr:autoCreated="false" jcr:mandatory="false"></jcr:description>
+			</mix:title>
+			<mix:language jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mix:language">
+				<jcr:language jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:language" jcr:autoCreated="false" jcr:mandatory="false"></jcr:language>
+			</mix:language>
+			<mode:namespace jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:primaryItemName="mode:uri" jcr:isAbstract="false"
+				jcr:nodeTypeName="mode:namespace">
+				<mode:uri jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="VERSION" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:uri" jcr:autoCreated="false" jcr:mandatory="false"></mode:uri>
+				<mode:generated jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="VERSION" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:generated" jcr:autoCreated="false" jcr:mandatory="false"></mode:generated>
+			</mode:namespace>
+			<mode:namespaces jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:namespaces">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:namespace" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:namespace" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="VERSION" jcr:autoCreated="false"
+					jcr:mandatory="false"></_x002a_>
+			</mode:namespaces>
+			<mode:nodeTypes jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:nodeTypes">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:nodeType" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:nodeType" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="VERSION" jcr:autoCreated="false"
+					jcr:mandatory="false"></_x002a_>
+			</mode:nodeTypes>
+			<mode:lock jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:lock">
+				<mode:lockToken jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:lockToken" jcr:autoCreated="false" jcr:mandatory="false"></mode:lockToken>
+				<jcr:lockOwner jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lockOwner" jcr:autoCreated="false" jcr:mandatory="false"></jcr:lockOwner>
+				<mode:lockingSession jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:lockingSession" jcr:autoCreated="false"
+					jcr:mandatory="false"></mode:lockingSession>
+				<mode:expirationDate jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="DATE"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:expirationDate" jcr:autoCreated="false"
+					jcr:mandatory="false"></mode:expirationDate>
+				<mode:isSessionScoped jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:isSessionScoped" jcr:autoCreated="false"
+					jcr:mandatory="false"></mode:isSessionScoped>
+				<jcr:lockIsDeep jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:lockIsDeep" jcr:autoCreated="false" jcr:mandatory="false"></jcr:lockIsDeep>
+				<mode:isHeldBySession jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:isHeldBySession" jcr:autoCreated="false"
+					jcr:mandatory="false"></mode:isHeldBySession>
+				<mode:workspace jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:workspace" jcr:autoCreated="false" jcr:mandatory="false"></mode:workspace>
+			</mode:lock>
+			<mode:locks jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:locks">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:lock" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:lock" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="IGNORE" jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</mode:locks>
+			<mode:versionHistoryFolder jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:versionHistoryFolder">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:versionHistory" jcr:protected="true"
+					jcr:defaultPrimaryType="nt:versionHistory" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="IGNORE" jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:versionHistoryFolder" jcr:protected="true"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="IGNORE"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</mode:versionHistoryFolder>
+			<mode:versionStorage jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="mode:versionHistoryFolder"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:versionStorage"></mode:versionStorage>
+			<mode:repository jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:repository"></mode:repository>
+			<mode:federation jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:federation">
+				<mode:projection jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:projection" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:projection" jcr:sameNameSiblings="true"
+					jcr:onParentVersion="IGNORE" jcr:name="mode:projection"
+					jcr:autoCreated="false" jcr:mandatory="false"></mode:projection>
+			</mode:federation>
+			<mode:projection jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:projection">
+				<mode:externalNodeKey jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:externalNodeKey" jcr:autoCreated="false"
+					jcr:mandatory="true"></mode:externalNodeKey>
+				<mode:projectedNodeKey jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:projectedNodeKey" jcr:autoCreated="false"
+					jcr:mandatory="true"></mode:projectedNodeKey>
+				<mode:alias jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:alias" jcr:autoCreated="false" jcr:mandatory="true"></mode:alias>
+			</mode:projection>
+			<mode:system jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:system">
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<mode:namespaces jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:namespaces" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:namespaces" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="mode:namespaces"
+					jcr:autoCreated="true" jcr:mandatory="true"></mode:namespaces>
+				<mode:locks jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:locks" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:locks" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="mode:locks" jcr:autoCreated="true"
+					jcr:mandatory="true"></mode:locks>
+				<mode:repository jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:repository" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:repository" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="mode:repository"
+					jcr:autoCreated="true" jcr:mandatory="false"></mode:repository>
+				<mode:federation jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:federation" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:federation" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="mode:federation"
+					jcr:autoCreated="true" jcr:mandatory="false"></mode:federation>
+				<mode:indexes jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:indexes" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:indexes" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="mode:indexes"
+					jcr:autoCreated="true" jcr:mandatory="false"></mode:indexes>
+				<jcr:nodeTypes jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:nodeTypes" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:nodeTypes" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="jcr:nodeTypes"
+					jcr:autoCreated="true" jcr:mandatory="true"></jcr:nodeTypes>
+				<jcr:versionStorage jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:versionStorage" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:versionStorage" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="ABORT" jcr:name="jcr:versionStorage"
+					jcr:autoCreated="true" jcr:mandatory="true"></jcr:versionStorage>
+			</mode:system>
+			<mode:root jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="true"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:root">
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="false" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="VERSION" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="VERSION" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<jcr:system jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:system" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:system" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="IGNORE" jcr:name="jcr:system" jcr:autoCreated="true"
+					jcr:mandatory="true"></jcr:system>
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="nt:base" jcr:protected="false"
+					jcr:defaultPrimaryType="nt:unstructured" jcr:sameNameSiblings="true"
+					jcr:onParentVersion="VERSION" jcr:autoCreated="false"
+					jcr:mandatory="false"></_x002a_>
+			</mode:root>
+			<mode:resource jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:primaryItemName="jcr:data" jcr:isAbstract="false"
+				jcr:nodeTypeName="mode:resource">
+				<jcr:data jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="BINARY"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:data" jcr:autoCreated="false" jcr:mandatory="true"></jcr:data>
+			</mode:resource>
+			<mode:share jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:share">
+				<mode:sharedUuid jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="INITIALIZE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:sharedUuid" jcr:autoCreated="false" jcr:mandatory="true"></mode:sharedUuid>
+			</mode:share>
+			<mode:hashed jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mode:hashed">
+				<mode:sha1 jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:sha1" jcr:autoCreated="false" jcr:mandatory="false"></mode:sha1>
+			</mode:hashed>
+			<mode:publishArea jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="mix:title"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="true"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:publishArea"></mode:publishArea>
+			<mode:derived jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mode:derived">
+				<mode:derivedFrom jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="PATH"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:derivedFrom" jcr:autoCreated="false" jcr:mandatory="false"></mode:derivedFrom>
+				<mode:derivedAt jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="DATE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:derivedAt" jcr:autoCreated="false" jcr:mandatory="false"></mode:derivedAt>
+			</mode:derived>
+			<mode:accessControllable jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="mode:accessControllable">
+				<mode:acl jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:Acl" jcr:protected="true"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="COPY" jcr:name="mode:acl"
+					jcr:autoCreated="false" jcr:mandatory="false"></mode:acl>
+			</mode:accessControllable>
+			<mode:Acl jcr:primaryType="nt:nodeType" jcr:isQueryable="false"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:Acl">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:Permission" jcr:protected="true"
+					jcr:sameNameSiblings="false" jcr:onParentVersion="COPY"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</mode:Acl>
+			<mode:Permission jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="false" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:Permission">
+				<name jcr:primaryType="nt:propertyDefinition" jcr:multiple="false"
+					jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="name" jcr:autoCreated="false" jcr:mandatory="false"></name>
+				<privileges jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="privileges" jcr:autoCreated="false" jcr:mandatory="false"></privileges>
+			</mode:Permission>
+			<mode:indexes jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:indexes">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:indexProvider" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:indexProvider" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="IGNORE" jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</mode:indexes>
+			<mode:indexProvider jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:indexProvider">
+				<_x002a_ jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:index" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:index" jcr:sameNameSiblings="false"
+					jcr:onParentVersion="IGNORE" jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+			</mode:indexProvider>
+			<mode:index jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="nt:base" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="false" jcr:isAbstract="false" jcr:nodeTypeName="mode:index">
+				<mode:kind jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="VALUE" jcr:multiple="false" jcr:protected="true"
+					jcr:requiredType="STRING" jcr:onParentVersion="IGNORE"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="mode:kind"
+					jcr:autoCreated="false" jcr:mandatory="true"></mode:kind>
+				<mode:nodeTypeName jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:nodeTypeName" jcr:autoCreated="false" jcr:mandatory="true"
+					jcr:defaultValues="nt:base"></mode:nodeTypeName>
+				<mode:workspaces jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:workspaces" jcr:autoCreated="false" jcr:mandatory="true"
+					jcr:defaultValues="*"></mode:workspaces>
+				<mode:synchronous jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="BOOLEAN"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:synchronous" jcr:autoCreated="false" jcr:mandatory="true"
+					jcr:defaultValues="true"></mode:synchronous>
+				<jcr:description jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="STRING"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="jcr:description" jcr:autoCreated="false" jcr:mandatory="false"></jcr:description>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<_x002a_ jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="true" jcr:protected="true" jcr:requiredType="UNDEFINED"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:autoCreated="false" jcr:mandatory="false"></_x002a_>
+				<mode:indexColumn jcr:primaryType="nt:childNodeDefinition"
+					jcr:requiredPrimaryTypes="mode:indexColumn" jcr:protected="true"
+					jcr:defaultPrimaryType="mode:indexColumn" jcr:sameNameSiblings="true"
+					jcr:onParentVersion="COPY" jcr:name="mode:indexColumn"
+					jcr:autoCreated="false" jcr:mandatory="true"></mode:indexColumn>
+			</mode:index>
+			<mode:indexColumn jcr:primaryType="nt:nodeType"
+				jcr:isQueryable="true" jcr:supertypes="nt:base"
+				jcr:hasOrderableChildNodes="false" jcr:isMixin="false"
+				jcr:isAbstract="false" jcr:nodeTypeName="mode:indexColumn">
+				<mode:propertyName jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="true" jcr:requiredType="NAME"
+					jcr:onParentVersion="IGNORE" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="mode:propertyName" jcr:autoCreated="false" jcr:mandatory="true"></mode:propertyName>
+				<mode:columnTypeName jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="STRING" jcr:multiple="false" jcr:protected="true"
+					jcr:requiredType="STRING" jcr:onParentVersion="COPY"
+					jcr:availableQueryOperators="jcr.operator.equal.to" jcr:name="mode:columnTypeName"
+					jcr:autoCreated="false" jcr:mandatory="true"></mode:columnTypeName>
+			</mode:indexColumn>
+			<vorto:meta jcr:primaryType="nt:nodeType" jcr:isQueryable="true"
+				jcr:supertypes="mix:referenceable" jcr:hasOrderableChildNodes="false"
+				jcr:isMixin="true" jcr:isAbstract="false" jcr:nodeTypeName="vorto:meta">
+				<vorto:description jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:description" jcr:autoCreated="false" jcr:mandatory="false"></vorto:description>
+				<vorto:displayname jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:displayname" jcr:autoCreated="false" jcr:mandatory="false"></vorto:displayname>
+				<vorto:type jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:type" jcr:autoCreated="false" jcr:mandatory="false"></vorto:type>
+				<vorto:version jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:version" jcr:autoCreated="false" jcr:mandatory="false"></vorto:version>
+				<vorto:namespace jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:namespace" jcr:autoCreated="false" jcr:mandatory="false"></vorto:namespace>
+				<vorto:name jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:name" jcr:autoCreated="false" jcr:mandatory="false"></vorto:name>
+				<vorto:author jcr:primaryType="nt:propertyDefinition"
+					jcr:multiple="false" jcr:protected="false" jcr:requiredType="STRING"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:author" jcr:autoCreated="false" jcr:mandatory="false"></vorto:author>
+				<vorto:references jcr:primaryType="nt:propertyDefinition"
+					jcr:valueConstraints="vorto:meta" jcr:multiple="true"
+					jcr:protected="false" jcr:requiredType="REFERENCE"
+					jcr:onParentVersion="COPY" jcr:availableQueryOperators="jcr.operator.equal.to"
+					jcr:name="vorto:references" jcr:autoCreated="false" jcr:mandatory="false"></vorto:references>
+			</vorto:meta>
+		</jcr:nodeTypes>
+		<jcr:versionStorage jcr:primaryType="mode:versionStorage"></jcr:versionStorage>
+		<mode:namespaces jcr:primaryType="mode:namespaces">
+			<jcr jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.jcp.org/jcr/1.0"></jcr>
+			<nt jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.jcp.org/jcr/nt/1.0"></nt>
+			<mix jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.jcp.org/jcr/mix/1.0"></mix>
+			<sv jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.jcp.org/jcr/sv/1.0"></sv>
+			<mode jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.modeshape.org/1.0"></mode>
+			<xml jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.w3.org/XML/1998/namespace"></xml>
+			<xmlns jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.w3.org/2000/xmlns/"></xmlns>
+			<xs jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.w3.org/2001/XMLSchema"></xs>
+			<xsi jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.w3.org/2001/XMLSchema-instance"></xsi>
+			<vorto jcr:primaryType="mode:namespace" mode:generated="false"
+				mode:uri="http://www.eclipse.org/vorto/sequencer/model/1.0"></vorto>
+		</mode:namespaces>
+		<mode:locks jcr:primaryType="mode:locks"></mode:locks>
+		<mode:indexes jcr:primaryType="mode:indexes"></mode:indexes>
+		<mode:repository jcr:primaryType="mode:repository"></mode:repository>
+	</jcr:system>
+	<org jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+		jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+		<eclipse jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+			jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+			<vorto jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+				jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+				<examples jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+					jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+					<type jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+						jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+						<Color jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+							jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+							<_x0031_.0.0 jcr:primaryType="nt:folder"
+								jcr:createdBy="&lt;anonymous&gt;"
+								jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00">
+								<Color.type jcr:primaryType="nt:file" vorto:version="_x0031_.0.0"
+									jcr:uuid="_x0037__x0030__x0032__x0038_ecaf-e77d-4505-9498-1e4aade447ca"
+									vorto:author="alex" vorto:description="" vorto:type="Datatype"
+									jcr:createdBy="&lt;anonymous&gt;"
+									jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00"
+									jcr:mixinTypes="vorto:meta" vorto:displayname="Color"
+									vorto:namespace="org.eclipse.vorto.examples.type" vorto:name="Color">
+									<jcr:content jcr:primaryType="nt:resource"
+										jcr:lastModifiedBy="&lt;anonymous&gt;"
+										jcr:lastModified="_x0032__x0030__x0031__x0036_-09-12T19:38:54.561+08:00"
+										jcr:mimeType="text/plain"
+										jcr:data="bmFtZXNwYWNlIG9yZy5lY2xpcHNlLnZvcnRvLmV4YW1wbGVzLnR5cGUKdmVyc2lvbiAxLjAuMAplbnRpdHkgQ29sb3IgewoJbWFuZGF0b3J5IGNvbG9yIGFzIHN0cmluZwp9"></jcr:content>
+								</Color.type>
+							</_x0031_.0.0>
+						</Color>
+					</type>
+					<fb jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+						jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:56.428+08:00">
+						<ColorLight jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+							jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:56.428+08:00">
+							<_x0031_.0.0 jcr:primaryType="nt:folder"
+								jcr:createdBy="&lt;anonymous&gt;"
+								jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:56.428+08:00">
+								<ColorLight.fbmodel jcr:primaryType="nt:file"
+									vorto:version="_x0031_.0.0" jcr:uuid="b27e1b0a-c3a6-4b46-9280-d3ecd8571d46"
+									vorto:author="alex"
+									vorto:references="_x0037__x0030__x0032__x0038_ecaf-e77d-4505-9498-1e4aade447ca"
+									vorto:description="Function_x0020_block_x0020_model_x0020_for_x0020_ColorLight"
+									vorto:type="Functionblock" jcr:createdBy="&lt;anonymous&gt;"
+									jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:56.428+08:00"
+									jcr:mixinTypes="vorto:meta" vorto:displayname="ColorLight"
+									vorto:namespace="org.eclipse.vorto.examples.fb" vorto:name="ColorLight">
+									<jcr:content jcr:primaryType="nt:resource"
+										jcr:lastModifiedBy="&lt;anonymous&gt;"
+										jcr:lastModified="_x0032__x0030__x0031__x0036_-09-12T19:38:56.428+08:00"
+										jcr:mimeType="text/plain"
+										jcr:data="bmFtZXNwYWNlIG9yZy5lY2xpcHNlLnZvcnRvLmV4YW1wbGVzLmZiCnZlcnNpb24gMS4wLjAKZGlzcGxheW5hbWUgIkNvbG9yTGlnaHQiCmRlc2NyaXB0aW9uICJGdW5jdGlvbiBibG9jayBtb2RlbCBmb3IgQ29sb3JMaWdodCIKY2F0ZWdvcnkgZGVtbwp1c2luZyBvcmcuZWNsaXBzZS52b3J0by5leGFtcGxlcy50eXBlLkNvbG9yIDsgMS4wLjAKZnVuY3Rpb25ibG9jayBDb2xvckxpZ2h0IHsKCQoJb3BlcmF0aW9ucyB7CgkJc2V0Q29sb3IoY29sb3IgYXMgQ29sb3IpCgl9Cgp9"></jcr:content>
+								</ColorLight.fbmodel>
+							</_x0031_.0.0>
+						</ColorLight>
+					</fb>
+				</examples>
+			</vorto>
+		</eclipse>
+	</org>
+	<com jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+		jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00">
+		<mycompany jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+			jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00">
+			<fb jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+				jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00">
+				<Switcher jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+					jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00">
+					<_x0031_.0.0 jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+						jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00">
+						<Switcher.fbmodel jcr:primaryType="nt:file"
+							vorto:version="_x0031_.0.0"
+							jcr:uuid="_x0036__x0036__x0032__x0035_d1f6-6550-40ee-b166-26d8112c159f"
+							vorto:author="alex"
+							vorto:description="Switcher_x0020_switches_x0020_a_x0020_device_x0020_on_x0020_or_x0020_off"
+							vorto:type="Functionblock" jcr:createdBy="&lt;anonymous&gt;"
+							jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00"
+							jcr:mixinTypes="vorto:meta" vorto:displayname="Switcher"
+							vorto:namespace="com.mycompany.fb" vorto:name="Switcher">
+							<jcr:content jcr:primaryType="nt:resource"
+								jcr:lastModifiedBy="&lt;anonymous&gt;"
+								jcr:lastModified="_x0032__x0030__x0031__x0036_-09-12T19:38:57.679+08:00"
+								jcr:mimeType="text/plain"
+								jcr:data="bmFtZXNwYWNlIGNvbS5teWNvbXBhbnkuZmIKdmVyc2lvbiAxLjAuMApkaXNwbGF5bmFtZSAiU3dpdGNoZXIiCmRlc2NyaXB0aW9uICJTd2l0Y2hlciBzd2l0Y2hlcyBhIGRldmljZSBvbiBvciBvZmYiCmNhdGVnb3J5IGRlbW8KZnVuY3Rpb25ibG9jayBTd2l0Y2hlciB7CgkKCW9wZXJhdGlvbnMgewoJCW9uKCkKCQlvZmYoKQoJCXRvZ2dsZSgpCgl9Cgp9"></jcr:content>
+						</Switcher.fbmodel>
+					</_x0031_.0.0>
+				</Switcher>
+			</fb>
+			<HueLightStrips jcr:primaryType="nt:folder"
+				jcr:createdBy="&lt;anonymous&gt;"
+				jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:58.874+08:00">
+				<_x0031_.0.0 jcr:primaryType="nt:folder" jcr:createdBy="&lt;anonymous&gt;"
+					jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:58.874+08:00">
+					<HueLightStrips.infomodel jcr:primaryType="nt:file"
+						vorto:version="_x0031_.0.0" jcr:uuid="afdfa43c-d687-416d-b69b-24573eeef789"
+						vorto:author="alex"
+						vorto:references="_x0036__x0036__x0032__x0035_d1f6-6550-40ee-b166-26d8112c159f"
+						vorto:description="Information_x0020_model_x0020_for_x0020_HueLightStrips"
+						vorto:type="InformationModel" jcr:createdBy="&lt;anonymous&gt;"
+						jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:58.874+08:00"
+						jcr:mixinTypes="vorto:meta" vorto:displayname="HueLightStrips"
+						vorto:namespace="com.mycompany" vorto:name="HueLightStrips">
+						<jcr:content jcr:primaryType="nt:resource"
+							jcr:lastModifiedBy="&lt;anonymous&gt;"
+							jcr:lastModified="_x0032__x0030__x0031__x0036_-09-12T19:38:58.874+08:00"
+							jcr:mimeType="text/plain"
+							jcr:data="bmFtZXNwYWNlIGNvbS5teWNvbXBhbnkKdmVyc2lvbiAxLjAuMApkaXNwbGF5bmFtZSAiSHVlTGlnaHRTdHJpcHMiCmRlc2NyaXB0aW9uICJJbmZvcm1hdGlvbiBtb2RlbCBmb3IgSHVlTGlnaHRTdHJpcHMiCmNhdGVnb3J5IGRlbW8KdXNpbmcgY29tLm15Y29tcGFueS5mYi5Td2l0Y2hlciA7IDEuMC4wCgppbmZvbW9kZWwgSHVlTGlnaHRTdHJpcHMgewoJCglmdW5jdGlvbmJsb2NrcyB7CgkJc3dpdGNoZXIgYXMgU3dpdGNoZXIKCX0KfQ=="></jcr:content>
+					</HueLightStrips.infomodel>
+					<img.png jcr:primaryType="nt:file" jcr:createdBy="&lt;anonymous&gt;"
+						jcr:created="_x0032__x0030__x0031__x0036_-09-12T19:38:59.958+08:00">
+						<jcr:content jcr:primaryType="nt:resource"
+							jcr:lastModifiedBy="&lt;anonymous&gt;"
+							jcr:lastModified="_x0032__x0030__x0031__x0036_-09-12T19:38:59.958+08:00"
+							jcr:mimeType="image/png"
+							jcr:data="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"></jcr:content>
+					</img.png>
+				</_x0031_.0.0>
+			</HueLightStrips>
+		</mycompany>
+	</com>
+</jcr:root>

@@ -9,13 +9,20 @@ title: Features
 
 Vorto is characterized by the following features:
 
-* Describe device characteristics and services as Information Models with the Eclipse Vorto Toolset  
-  ![Vorto Features Models]({{base}}/img/documentation/vorto_features_models.png)
-* Share & Reuse Information Models via a centralized Vorto Repository  
-  ![Search page]({{base}}/img/documentation/vorto_repository_search.png)
-* Many Example Generators to translate Information Models into executable platform-specific code  
-  For example, LWM2M, AWS, ThingWorx, MQTT etc.  
-  ![Generators]({{base}}/img/documentation/vorto_repository_generators.png)
-* Developer API to plug-in other platform generators  
-* Command Line Interface Tool to access the Vorto Repository  
+* Describe the characteristics and functionality of devices as Information Models, share them with others and generate code with the Eclipse Vorto Toolset  
+  
+  ![Vorto Features Models]({{base}}/img/documentation/vorto_features_models.png){:width="700px"}
+  
+* Look up information models in the Vorto Repository  
+  
+  ![Search page]({{base}}/img/documentation/vorto_repository_search.png){:width="700px"}
+  
+* Integrate devices into platforms easily with the help of platform specific code generators, for example Bosch, AWS, ThingWorx, etc.  
+  
+  ![Generators]({{base}}/img/documentation/vorto_repository_generators.png){:width="700px"}
+  
+* A Command Line Interface Tool lets you explore information models, share new information models as well as generate code directly on the Vorto Repository server
+  
   ![Vorto CLI Tool]({{base}}/img/documentation/vorto_features_cli_tool.png)
+  
+* Extend Vorto with the Generator API to plug-in your own code generator and make it run both in the Eclipse Vorto Toolset and in the Vorto Repository.

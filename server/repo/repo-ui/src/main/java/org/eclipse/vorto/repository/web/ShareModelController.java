@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.repository.web;
 
 import java.io.IOException;
@@ -23,7 +23,6 @@ import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.web.model.ServerResponse;
-import org.eclipse.vorto.repository.web.utils.FileHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +66,6 @@ public class ShareModelController {
 	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
-			FileHelper.copyFileToTempLocation(file);
 			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename());
 			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
 			uploadModelResults.add(uploadModelResult);
@@ -77,7 +75,6 @@ public class ShareModelController {
 			LOGGER.error("Error upload model." + e.getStackTrace());
 			ServerResponse errorResponse = new ServerResponse("Error during upload. Try again. " + e.getMessage(),
 					false, null);
-			FileHelper.deleteUploadedFile(file);
 			return new ResponseEntity<ServerResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -87,19 +84,16 @@ public class ShareModelController {
 	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
-			FileHelper.copyFileToTempLocation(file);
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository);
 			
-			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(FileHelper.getDefaultExtractDirectory() + "/" + file.getOriginalFilename());
+			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
-			FileHelper.deleteUploadedFile(file);
 			ServerResponse serverResponse = (uploadModelResults.size() == 0)
 					? new ServerResponse("Uploaded file doesn't have any valid models.", false, uploadModelResults)
 					: new ServerResponse(constructUserResponseMessage(uploadModelResults), true, uploadModelResults);
 			return validResponse(serverResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk upload models.",e);
-			FileHelper.deleteUploadedFile(file);
 			return erroredResponse("Error during upload. Try again. " + e.getMessage());
 		}
 	}
@@ -111,7 +105,6 @@ public class ShareModelController {
 		try {
 		modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
 			ServerResponse successModelResponse = new ServerResponse("Model has been checkin successfully.",true, null);
-			FileHelper.deleteUploadedFile(handleId);
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId +  e.getStackTrace());
@@ -128,7 +121,6 @@ public class ShareModelController {
 				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());
 			}
 			ServerResponse successModelResponse = new ServerResponse("All the models has been checked in Successfully.",true, null);
-			FileHelper.deleteTempExtractFolder();
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk checkin models." + e.getStackTrace());

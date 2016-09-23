@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.repository.internal.service;
 
 import java.io.ByteArrayInputStream;
@@ -30,7 +30,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.Binary;
-import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -48,25 +47,24 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
+import org.eclipse.vorto.repository.internal.service.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
+import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
-import org.eclipse.vorto.repository.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.message.CheckinMessage;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
-import org.eclipse.vorto.repository.service.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.service.UserRepository;
-import org.eclipse.vorto.repository.validation.IModelValidator;
-import org.eclipse.vorto.repository.validation.ValidationException;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -85,7 +83,7 @@ public class JcrModelRepository implements IModelRepository {
 	private Session session;
 
 	@Autowired
-	private UserRepository userRepository;
+	private IUserRepository userRepository;
 
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
@@ -145,7 +143,13 @@ public class JcrModelRepository implements IModelRepository {
 		}
 
 		if (node.hasProperty("vorto:references")) {
-			Value[] referenceValues = node.getProperty("vorto:references").getValues();
+			Value[] referenceValues = null;
+			try {
+				referenceValues = node.getProperty("vorto:references").getValues();
+			}catch(Exception ex) {
+				referenceValues = new Value[] {node.getProperty("vorto:references").getValue()};
+			}
+			
 			if (referenceValues != null) {
 				ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
 				for (Value referValue : referenceValues) {
@@ -164,6 +168,11 @@ public class JcrModelRepository implements IModelRepository {
 			Node referencedByFileNode = prop.getParent();
 			final ModelId referencedById = ModelId.fromPath(referencedByFileNode.getParent().getPath());
 			resource.getReferencedBy().add(referencedById);
+		}
+		
+		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
+		if (imageNodeIterator.hasNext()) {
+			resource.setHasImage(true);
 		}
 
 		return resource;
@@ -193,10 +202,7 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public UploadModelResult upload(byte[] content, String fileName) {
-		if (StringUtils.isEmpty(fileName)) {
-			return UploadModelResult.invalid(new ValidationException("Filename is invalid", null));
-		}
-		
+
 		try {
 			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
 			
@@ -341,23 +347,6 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	@Override
-	public void removeModel(ModelId modelId) {
-		try {
-			ModelResource modelResource = getById(modelId);
-			if (!modelResource.getReferencedBy().isEmpty()) {
-				throw new ModelReferentialIntegrityException(
-						"Cannot remove model because it is referenced by other model(s)",
-						modelResource.getReferencedBy());
-			}
-			Item item = session.getItem(modelId.getFullPath());
-			item.remove();
-			session.save();
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Problem occured removing the model", e);
-		}
-	}
-
 	@PostConstruct
 	public void createValidators() {
 		this.validators.add(new DuplicateModelValidation(this));
@@ -459,11 +448,11 @@ public class JcrModelRepository implements IModelRepository {
 		this.modelSearchUtil = modelSearchUtil;
 	}
 
-	public UserRepository getUserRepository() {
+	public IUserRepository getUserRepository() {
 		return userRepository;
 	}
 
-	public void setUserRepository(UserRepository userRepository) {
+	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 	

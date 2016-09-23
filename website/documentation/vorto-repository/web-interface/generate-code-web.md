@@ -6,7 +6,7 @@ title: Generating Code
 
 ## Generating Code
 
-You can generate code artifacts based on an information model in the Vorto Repository for usage in specific solutions. The code generation is carried out in the Vorto Repository backend. You can choose a desired generator from a list of available generators provided in the Vorto Repository.
+You can generate code artifacts based on a function model or on an information model in the Vorto Repository for usage in specific solutions. The code generation is carried out in the Vorto Repository backend. You can choose a desired generator from a list of available generators provided in the Vorto Repository.
 
 **Prerequisites**
 

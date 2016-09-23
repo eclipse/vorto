@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.service.generator.web;
 
 import javax.annotation.PostConstruct;
@@ -32,8 +32,9 @@ import org.springframework.web.client.RestTemplate;
 
 @ComponentScan(basePackages = { "org.eclipse.vorto.service.generator" })
 @EnableConfigurationProperties
-public class AbstractBackendCodeGenerator {
+public abstract class AbstractBackendCodeGenerator  {
 
+	@Autowired
 	private RestTemplate restTemplate;
 	
 	@Value("${vorto.service.repositoryUrl}") 
@@ -49,29 +50,28 @@ public class AbstractBackendCodeGenerator {
 	private IVortoCodeGenerator platformGenerator;
 	
 	@Value("${server.host}") 
-	private String serviceUrl = "localhost";
+	private String serviceUrl;
 	
 	@Value("${server.port}") 
 	private int port;
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBackendCodeGenerator.class);
-		
+	
 	@PostConstruct
 	public void start() {
-		this.restTemplate = new RestTemplate();
-		register(platformGenerator.getServiceKey());
+		registerWithRepository(platformGenerator.getServiceKey());
 	}
 	
 	@PreDestroy
 	public void shutdown() {
-		deRegister(platformGenerator.getServiceKey());
+		deRegisterFromRepository(platformGenerator.getServiceKey());
 	}
 	
-	public void register(String serviceKey){
+	public void registerWithRepository(String serviceKey){
 		final String serviceUrl = "http://"+this.serviceUrl+":"+port+contextPath+"/rest/generation";
 		LOGGER.info("Registering {} with service url {}",serviceKey,serviceUrl);
 		LOGGER.info("Repository Server Url: {}",repositoryBasePath);
-		deRegister(serviceKey);
+		deRegisterFromRepository(serviceKey);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		HttpEntity<String> entity = new HttpEntity<String>(serviceUrl, headers);
@@ -79,7 +79,7 @@ public class AbstractBackendCodeGenerator {
 		restTemplate.put(repositoryBasePath + "/generation-router/register/{serviceKey}/{classifier}",entity,serviceKey,classifier.name());
 	}
 	
-	public void deRegister(String serviceKey){
+	public void deRegisterFromRepository(String serviceKey){
 		restTemplate.put(repositoryBasePath + "/generation-router/deregister/{serviceKey}", String.class, serviceKey);
 	}
 

@@ -1,17 +1,17 @@
-/*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.repository.internal.service.emf;
 
 import java.io.IOException;
@@ -23,12 +23,12 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
 import org.eclipse.vorto.repository.internal.service.IModelParser;
-import org.eclipse.vorto.repository.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.ModelType;
-import org.eclipse.vorto.repository.validation.ValidationException;
 import org.eclipse.xtext.linking.impl.XtextLinkingDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;

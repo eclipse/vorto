@@ -35,6 +35,10 @@ repository.config(['$routeProvider', '$httpProvider', function ($routeProvider, 
             templateUrl: "partials/signup-template.html",
             controller: 'SignUpController'
         })
+        .when('/manage', {
+            templateUrl: "partials/admin-template.html",
+            controller: 'AdminController'
+        })
         .otherwise({redirectTo: '/'});
 
         $httpProvider.defaults.headers.common["X-Requested-With"] = 'XMLHttpRequest';

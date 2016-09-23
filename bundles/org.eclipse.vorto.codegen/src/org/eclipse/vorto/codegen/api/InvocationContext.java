@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 /*******************************************************************************
 x * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
@@ -15,7 +29,9 @@ x * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
 package org.eclipse.vorto.codegen.api;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.vorto.codegen.api.mapping.DefaultMapped;
@@ -23,13 +39,16 @@ import org.eclipse.vorto.codegen.api.mapping.IMapped;
 import org.eclipse.vorto.codegen.api.mapping.NullMapped;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
 import org.eclipse.vorto.core.api.model.mapping.EntityAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.EntityPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.EnumAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.EnumPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
@@ -48,22 +67,25 @@ public class InvocationContext {
 
 	private List<MappingRule> mappingRules;
 	
+	private Map<String, String> configProperties;
+	
 	private IGeneratorLookup lookupService;
 	
 	private static final IGeneratorLookup NOOP_RUNTIME = new NoopGeneratorLookup();
 	
 	private static final IVortoCodeGenerator NOOP_GEN = new NoopGenerator();
 
-	public InvocationContext(List<MappingModel> mappingModels, IGeneratorLookup generatorRuntime) {
+	public InvocationContext(List<MappingModel> mappingModels, IGeneratorLookup generatorRuntime, Map<String,String> configProperties) {
 		this.mappingRules = new ArrayList<MappingRule>();
 		for (MappingModel mappingModel : mappingModels) {
 			this.mappingRules.addAll(mappingModel.getRules());
 		}
 		this.lookupService = generatorRuntime;
+		this.configProperties = configProperties;
 	}
 
 	public static InvocationContext simpleInvocationContext() {
-		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME);
+		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME,Collections.<String,String>emptyMap());
 	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
@@ -94,6 +116,20 @@ public class InvocationContext {
 		}
 		return new NullMapped<FunctionblockModel>(functionblockModel);
 	}
+	
+	public IMapped<EnumLiteral> getMappedElement(final EnumLiteral enumLiteral,
+			final String stereoType) {
+		for (MappingRule rule : mappingRules) {
+			for (Source ruleSource : rule.getSources()) {
+				if (ruleSource instanceof EnumPropertySource
+						&& EcoreUtil.equals(((EnumPropertySource) ruleSource).getProperty(), enumLiteral)
+						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
+					return new DefaultMapped<EnumLiteral>(enumLiteral, (StereoTypeTarget) rule.getTarget());
+				}
+			}
+		}
+		return new NullMapped<EnumLiteral>(enumLiteral);
+	}
 
 	private boolean matchesStereoType(final String stereoType, final StereoTypeTarget stereoTypeTarget) {
 		return stereoTypeTarget.getName().equalsIgnoreCase(stereoType);
@@ -113,6 +149,10 @@ public class InvocationContext {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				} else if (ruleSource instanceof FaultSource
 						&& EcoreUtil.equals(((FaultSource) ruleSource).getProperty(), property)
+						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
+					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
+				} else if (ruleSource instanceof EntityPropertySource
+						&& EcoreUtil.equals(((EntityPropertySource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				}
@@ -170,6 +210,10 @@ public class InvocationContext {
 		} else {
 			return gen;
 		}
+	}
+	
+	public Map<String, String> getConfigurationProperties() {
+		return Collections.unmodifiableMap(this.configProperties);
 	}
 	
     static class NoopGeneratorLookup implements IGeneratorLookup {

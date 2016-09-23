@@ -1,26 +1,29 @@
-/*******************************************************************************
- * Copyright (c) 2015, 2016 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
+ */
 package org.eclipse.vorto.repository.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
@@ -69,12 +72,16 @@ public class ModelGenerationController extends RepositoryController {
 							@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 							@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
 							@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
-							@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
+							final HttpServletRequest request,
+							final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
 
-		GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), serviceKey);
+		Map<String, String> requestParams = new HashMap<>();
+		request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
+		 
+		GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), serviceKey, requestParams);
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
 		response.setContentLengthLong(generatedOutput.getSize());
 		response.setContentType(APPLICATION_OCTET_STREAM);
@@ -88,7 +95,7 @@ public class ModelGenerationController extends RepositoryController {
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
 	@RequestMapping(value = "/{classifier}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose object type to return",allowableValues="platform service key, platform documentation", required = true) @PathVariable String classifier) {
+	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose type of generator",allowableValues="platform,documentation", required = true) @PathVariable String classifier) {
 		List<GeneratorServiceInfo> generatorInfoResult = new ArrayList<>();
 		
 		for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys(ServiceClassifier.valueOf(classifier))) {

@@ -1,25 +1,27 @@
-/*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
+ *
  * The Eclipse Public License is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * The Eclipse Distribution License is available at
  * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
+ *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
-
+ */
 package org.eclipse.vorto.service.generator.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.api.Generated;
@@ -83,12 +85,6 @@ public class CodeGenerationController {
 	
 	@Value("${vorto.service.classifier}")
 	private ServiceClassifier classifier;
-	
-	@Value("${server.contextPath}")
-	private String serverContextPath;
-	
-	@Value("${server.port}")
-	private int serverPort;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationController.class);
 
@@ -100,10 +96,13 @@ public class CodeGenerationController {
 	
 	@Autowired
 	private ServerGeneratorLookup lookupService;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ResponseEntity<InputStreamResource> generate(@PathVariable String namespace,
-			@PathVariable String name, @PathVariable String version) {
+			@PathVariable String name, @PathVariable String version, final HttpServletRequest request) {
 
 		byte[] modelResources = downloadModelWithReferences(namespace, name, version);
 		
@@ -121,7 +120,10 @@ public class CodeGenerationController {
 				
 		IGenerationResult result = null;
 		try {
-			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey()));
+			Map<String,String> requestParams = new HashMap<>();
+			request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
+			
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams));
 		} catch (Exception e) {
 			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
@@ -136,17 +138,16 @@ public class CodeGenerationController {
 
 	}
 	
-	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform) {
+	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform, Map<String, String> requestParams) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
 		List<MappingModel> mappingModels =  new MappingZipFileExtractor(mappingResources).extract();
 		
-		return new InvocationContext(mappingModels, lookupService);
+		return new InvocationContext(mappingModels, lookupService, requestParams);
 	}
 	
 
 	private byte[] downloadMappingModel(InformationModel model, String targetPlatform) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
 			return restTemplate.getForObject(basePath + "/model/mapping/zip/{namespace}/{name}/{version}/{targetPlatform}",
 					byte[].class, model.getNamespace(), model.getName(),model.getVersion(),targetPlatform);
 		} catch (RestClientException e) {
@@ -157,7 +158,6 @@ public class CodeGenerationController {
 
 	private byte[] downloadModelWithReferences(String namespace, String name, String version) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
 			return restTemplate.getForObject(basePath + "/model/file/{namespace}/{name}/{version}?output=DSL&includeDependencies=true",
 					byte[].class, namespace, name, version);
 		} catch (RestClientException e) {

@@ -14,15 +14,15 @@ This section details the following topics:
 ## Information Model Mapping DSL Syntax
 
     'mapping' '{'
-		  'model' [infomodel::informationModel|qualifiedName]
-	      'target' id
-	      (rule)*
+        'model' [infomodel::informationModel|qualifiedName]
+        'target' id
+        (rule)*
     '}'
     ;
 
     rule:
-      'from' informationModelElement (',' informationModelElement)*
-      'to' targetElement
+        'from' informationModelElement (',' informationModelElement)*
+        'to' targetElement
     ;
 
     informationModelElement:
@@ -31,53 +31,52 @@ This section details the following topics:
     ;
 
     functionBlockElement:
-      (
-        operationElement | configurationElement | statusElement |
-        faultElement | eventElement
-      )
+        (operationElement | configurationElement | statusElement |
+            faultElement | eventElement
+        )
     ;
 
     operationElement:
-      'operation.' [functionblock::operation]
+        'operation.' [functionblock::operation]
     ;
 
     configurationElement:
-      'configuration.' [datatype::property]
+        'configuration.' [datatype::property]
     ;
 
     statusElement:
-      'status.' [datatype::property]
+        'status.' [datatype::property]
     ;
 
     faultElement:
-      'fault.' [datatype::property
+        'fault.' [datatype::property
     ;
 
     eventElement:
-      'event.' [functionblock::event]
+        'event.' [functionblock::event]
     ;
 
     targetElement:
-      (StereoType,)*
+        (StereoType,)*
     ;
 
     stereoType:
-      id (with Attribute (',' attribute)*)
+        id (with Attribute (',' attribute)*)
     ;
 
 	qualifiedName: id ('.' id)*;
 
     attribute:
-      id ':' string
+        id ':' string
     ;
 
     id:
-       '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
+        '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*
     ;
 
     string  :
-      '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
-      "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
+        '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |
+        "'" ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|"'") )* "'"
     ;
 
 ## Information Model Mapping DSL Semantics
