@@ -20,7 +20,7 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
   	$scope.search = function() {
   		var filter = null;
   		if ($scope.modelType === 'all') {
-  			filter = $scope.queryFilter + "-Mapping";
+  			filter = $scope.queryFilter + " -Mapping";
   		} else {
   			filter = $scope.queryFilter + " -Mapping "+$scope.modelType;
   		}
