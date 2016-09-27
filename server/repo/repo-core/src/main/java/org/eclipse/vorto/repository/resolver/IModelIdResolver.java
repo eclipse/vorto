@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.resolver;
 
-import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.http.model.ModelId;
 
 public interface IModelIdResolver {
 	

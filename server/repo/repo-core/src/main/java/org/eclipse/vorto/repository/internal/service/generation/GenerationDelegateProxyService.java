@@ -23,12 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.model.GeneratedOutput;
 import org.eclipse.vorto.repository.model.Generator;
 import org.eclipse.vorto.repository.model.GeneratorServiceInfo;
-import org.eclipse.vorto.repository.model.ModelId;
-import org.eclipse.vorto.repository.model.ModelResource;
-import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.ServiceClassifier;
 import org.eclipse.vorto.repository.service.GenerationException;
 import org.eclipse.vorto.repository.service.GeneratorAlreadyExistsException;

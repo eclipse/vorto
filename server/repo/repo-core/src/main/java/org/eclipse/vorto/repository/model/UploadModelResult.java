@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.internal.service.validation.exception.CouldNotResolveReferenceException;
 

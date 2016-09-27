@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.model;
 
-import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.http.model.ModelId;
 
 /**
  * Model class to hold file handle id and associated model details.

@@ -19,8 +19,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.vorto.repository.model.ModelId;
-import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelResource;
+
+
 
 public class DependencyManager {
 

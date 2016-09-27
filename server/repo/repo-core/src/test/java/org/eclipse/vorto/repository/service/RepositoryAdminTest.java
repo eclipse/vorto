@@ -6,8 +6,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.service.DefaultRepositoryManager;
-import org.eclipse.vorto.repository.model.ModelId;
+
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
