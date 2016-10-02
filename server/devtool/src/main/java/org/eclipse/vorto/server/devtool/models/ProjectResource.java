@@ -20,6 +20,15 @@ public class ProjectResource {
 	private String name;
 	private String version;
 	private String namespace;
+	private String subType;
+	
+	public String getSubType() {
+		return subType;
+	}
+
+	public void setSubType(String subType) {
+		this.subType = subType;
+	}
 
 	public String getResourceId() {
 		return resourceId;

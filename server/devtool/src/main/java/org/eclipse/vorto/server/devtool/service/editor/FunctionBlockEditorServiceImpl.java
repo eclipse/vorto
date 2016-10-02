@@ -46,7 +46,6 @@ public class FunctionBlockEditorServiceImpl extends IEditorService {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-
 	}
 
 	public List<ModelResource> searchModelByExpression(String expression) {

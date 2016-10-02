@@ -19,6 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
+import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
+import org.eclipse.vorto.editor.datatype.web.DatatypeServlet;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.functionblock.web.FunctionblockServlet;
 import org.eclipse.vorto.editor.infomodel.InformationModelRuntimeModule;
@@ -58,6 +60,7 @@ public class XtextConfiguration {
 		};
 		final Provider<ExecutorService> executorServiceProvider = _function;
 
+		DatatypeStandaloneSetup.doSetup();
 		FunctionblockStandaloneSetup.doSetup();		
 		InformationModelPackageImpl.init();
 		
@@ -67,6 +70,11 @@ public class XtextConfiguration {
 						.with(new InformationModelWebModule(executorServiceProvider)));
 	}
 
+	@Bean
+	public ServletRegistrationBean datatyepXtextServlet() {
+		return new ServletRegistrationBean(new DatatypeServlet(), "/datatype/xtext-service/*");
+	}
+	
 	@Bean
 	public ServletRegistrationBean functionBlockXtextServlet() {
 		return new ServletRegistrationBean(new FunctionblockServlet(), "/functionblock/xtext-service/*");

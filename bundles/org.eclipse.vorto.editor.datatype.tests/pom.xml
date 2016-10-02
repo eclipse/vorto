@@ -10,7 +10,7 @@
 	<artifactId>org.eclipse.vorto.editor.datatype.tests</artifactId>
 	<packaging>eclipse-test-plugin</packaging>
 
-	<name>Data Type Editor Tests</name>
+	<name>Vorto Data Type Editor Tests</name>
 
 	<build>
 		<plugins>

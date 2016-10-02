@@ -11,8 +11,7 @@
 	<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>Function Block Editor Plugin</name>
-	<description>The designer plugin lets users create a function block
-		definition.</description>
+	<description>The designer plugin lets users create a function block definition.</description>
 
 	<properties>
 		<test.project>org.eclipse.vorto.editor.functionblock.tests</test.project>
