@@ -27,21 +27,23 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
-@RequestMapping(value = "/resolve")
-public class ModelDetailsResolver {
+@RestController
+@RequestMapping(value = "/rest/resolve")
+public class ModelResolveController {
 
 	@Autowired
 	private ModelIdResolverFactory resolverFactory;
 	
 	@RequestMapping(value = "/{serviceKey}/{id}", method = RequestMethod.GET)
-	public String resolve(@PathVariable("serviceKey") final String serviceKey, @PathVariable("id") final String id) throws Exception{
+	public ModelId resolve(@PathVariable("serviceKey") final String serviceKey, @PathVariable("id") final String id) throws Exception{
 		IModelIdResolver resolver = resolverFactory.getResolver(serviceKey);
 		
 		ModelId resolvedId = resolver.resolve(id);
+		
 		if (resolvedId != null) {
-			return "redirect:/#/details/"+resolvedId.getNamespace()+"/"+resolvedId.getName()+"/"+resolvedId.getVersion();
+			return resolvedId;
 		} else {
 			throw new ModelNotFoundException("No Model found");
 		}
