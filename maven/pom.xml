@@ -8,6 +8,19 @@
 	<description>Invokes the specified vorto code generator during a maven build process</description>
 	<packaging>maven-plugin</packaging>
 
+	<distributionManagement>
+		<repository>
+			<id>repo.eclipse.org</id>
+			<name>Project Repository - Releases</name>
+			<url>https://repo.eclipse.org/content/repositories/vorto-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>repo.eclipse.org</id>
+			<name>Project Repository - Snapshots</name>
+			<url>https://repo.eclipse.org/content/repositories/vorto-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
