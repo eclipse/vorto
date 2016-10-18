@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.service.generator.web.utils;
+package org.eclipse.vorto.server.commons;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

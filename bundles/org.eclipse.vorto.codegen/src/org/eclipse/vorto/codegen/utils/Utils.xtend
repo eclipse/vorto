@@ -33,6 +33,15 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.model.ModelFactory
+import org.eclipse.emf.common.util.BasicEList
+import org.eclipse.vorto.core.api.model.functionblock.Operation
+import org.eclipse.vorto.core.api.model.datatype.Entity
+import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.core.api.model.datatype.Type
+import org.eclipse.vorto.core.api.model.datatype.Enum
+import org.eclipse.vorto.core.api.model.functionblock.Param
+import org.eclipse.emf.common.util.EList
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 
 public class Utils {
 	def static String getReturnType(ReturnType type) {
@@ -91,25 +100,25 @@ public class Utils {
 	}
 
 	def static String getMinConstraint(Property property) {
-		if ((property.constraintRule.constraints != null) && (property.constraintRule.constraints.size > 0)) {
-			for (Constraint constraint : property.constraintRule.constraints) {
+		if ((property.constraintRule?.constraints != null) && (property.constraintRule?.constraints.size > 0)) {
+			for (Constraint constraint : property.constraintRule?.constraints) {
 				if (constraint.type == ConstraintIntervalType.MIN) {
 					return constraint.constraintValues;
 				}
 			}
-			return "";
 		}
+		return "";
 	}
 
 	def static String getMaxConstraint(Property property) {
-		if ((property.constraintRule.constraints != null) && (property.constraintRule.constraints.size > 0)) {
-			for (Constraint constraint : property.constraintRule.constraints) {
+		if ((property.constraintRule?.constraints != null) && (property.constraintRule?.constraints.size > 0)) {
+			for (Constraint constraint : property.constraintRule?.constraints) {
 				if (constraint.type == ConstraintIntervalType.MAX) {
 					return constraint.constraintValues;
 				}
 			}
-			return "";
 		}
+		return "";
 	}
 
 	def static String getMeasurementUnit(Property property) {
@@ -159,5 +168,88 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+	
+	def static EList<Entity> getReferencedEntities(FunctionBlock fb) {
+		var entities = new BasicEList<Entity>();
+		for (Type type : getReferencedTypes(fb)) {
+			if ((type instanceof Entity) && (!entities.contains(type as Entity))) {
+				entities.add(type as Entity);
+			}
+		}
+		return entities;
+	}
+
+	def static EList<Enum> getReferencedEnums(FunctionBlock fb) {
+		var enums = new BasicEList<Enum>();
+		for (Type type : getReferencedTypes(fb)) {
+			if ((type instanceof Enum) && (!enums.contains(type as Enum))) {
+				enums.add(type as Enum);
+			}
+		}
+		return enums;
+	}
+
+	def static EList<Type> getReferencedTypes(Type type) {
+		var types = new BasicEList<Type>();
+		types.add(type);
+
+		if (type instanceof Entity) {
+			var entityType = type as Entity;
+			for (Property property : entityType.getProperties()) {
+				types.addAll(getReferencedTypes(property));
+			}
+			types.add(entityType.getSuperType());
+		}
+		return types;
+	}
+
+	def static EList<Type> getReferencedTypes(Property property) {
+		var types = new BasicEList<Type>();
+		if (property.getType() instanceof ObjectPropertyType) {
+			var objectType = property.getType() as ObjectPropertyType;
+			types.add(objectType.getType());
+			if (objectType.getType() instanceof Entity) {
+				types.addAll(getReferencedTypes(objectType.getType() as Entity));
+			}
+		}
+		return types;
+	}
+
+	def static EList<Type> getReferencedTypes(FunctionBlock fb) {
+		var types = new BasicEList<Type>();
+		if (fb != null) {
+			// Analyze the status properties...
+			if (fb.getStatus() != null) {
+				for (Property property : fb.getStatus().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+			// Analyze the configuration properties...
+			if (fb.getConfiguration() != null) {
+				for (Property property : fb.getConfiguration().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+			// Analyze the fault properties...
+			if (fb.getFault() != null) {
+				for (Property property : fb.getFault().getProperties()) {
+					types.addAll(getReferencedTypes(property));
+				}
+			}
+
+			// Analyze the operation types
+			for (Operation op : fb.getOperations()) {
+				if (op.getReturnType() instanceof ReturnObjectType) {
+					types.addAll(getReferencedTypes((op.getReturnType() as ReturnObjectType).getReturnType()));
+				}
+				for (Param param : op.getParams()) {
+					if (param instanceof RefParam) {
+						types.addAll(getReferencedTypes((param as RefParam).getType()));
+					}
+				}
+			}
+		}
+		return types;
 	}
 }

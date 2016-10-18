@@ -16,8 +16,8 @@ package org.eclipse.vorto.codegen.examples.latex.tasks.template
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.utils.Utils
 
 class ReviewInformationModelTemplate implements ITemplate<InformationModel>{
 	
@@ -64,7 +64,7 @@ class ReviewInformationModelTemplate implements ITemplate<InformationModel>{
 				
 				\section{Datatype Specification}
 				«FOR fbProperty : im.properties»
-					«FOR type : ModelHelper.getReferencedEntities(fbProperty.type.functionblock)»
+					«FOR type : Utils.getReferencedEntities(fbProperty.type.functionblock)»
 						«entityTemplate.getContent(type,invocationContext)»
 					«ENDFOR»
 				«ENDFOR»

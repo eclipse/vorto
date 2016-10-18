@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.service;
+package org.eclipse.vorto.server.commons;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -21,8 +21,8 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
-import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
+import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 

@@ -12,12 +12,16 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.service.generator.web.utils;
+package org.eclipse.vorto.server.commons;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
@@ -28,7 +32,6 @@ import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-import org.springframework.util.StringUtils;
 
 import com.google.inject.Injector;
 
@@ -56,7 +59,7 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		Resource infoModelResource = null;
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
-				if (StringUtils.stripFilenameExtension(entry.getName()).equals(modelName)) {
+				if (entry.getName().indexOf(modelName) > -1) {
 					infoModelResource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
 					infoModelResource.load(new ByteArrayInputStream(copyStream(zis, entry)),
 							resourceSet.getLoadOptions());
@@ -72,6 +75,22 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 
 		EcoreUtil2.resolveAll(resourceSet);	
 		return (Model)infoModelResource.getContents().get(0);
+	}
+	
+	public List<String> list(String extension) {
+		List<String> result = new ArrayList<String>();
+		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(this.zipFile));
+		ZipEntry entry = null;
+		try {
+			while ((entry = zis.getNextEntry()) != null) {
+				if (entry.getName().endsWith(extension)) {
+					result.add(entry.getName());
+				}
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return result;
 	}
 	
 	

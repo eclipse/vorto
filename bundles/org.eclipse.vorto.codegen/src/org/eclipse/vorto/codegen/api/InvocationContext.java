@@ -80,7 +80,8 @@ public class InvocationContext {
 		for (MappingModel mappingModel : mappingModels) {
 			this.mappingRules.addAll(mappingModel.getRules());
 		}
-		this.lookupService = generatorRuntime;
+		this.lookupService = generatorRuntime != null ? generatorRuntime : NOOP_RUNTIME;
+		
 		this.configProperties = configProperties;
 	}
 

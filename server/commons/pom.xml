@@ -3,47 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>generators</artifactId>
+		<artifactId>server</artifactId>
 		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.vorto.codegen.service</artifactId>
+	<artifactId>org.eclipse.vorto.server.commons</artifactId>
 	<packaging>jar</packaging>
 
 	<dependencies>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-starter-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>log4j-over-slf4j</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-log4j</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.server.commons</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- Vorto DSL Dependencies -->
 		<dependency>
@@ -103,11 +70,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 
 	<build>

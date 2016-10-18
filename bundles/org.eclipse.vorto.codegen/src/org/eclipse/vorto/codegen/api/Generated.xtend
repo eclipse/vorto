@@ -46,4 +46,8 @@ class Generated {
 	def byte[] getContent() {
 		return content;
 	}
+	
+	def boolean isDirectory() {
+		return fileName == null;
+	}
 }
