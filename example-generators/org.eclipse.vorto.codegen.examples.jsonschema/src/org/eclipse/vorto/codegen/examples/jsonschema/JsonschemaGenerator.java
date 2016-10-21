@@ -20,12 +20,18 @@ import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.ConfigurationValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.EventValidationTask;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.FaultValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationParametersValidationTask;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.OperationReturnTypeValidationTask;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.StatusValidationTask;
+import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
+import org.eclipse.vorto.core.api.model.functionblock.Fault;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
+import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -68,6 +74,14 @@ public class JsonschemaGenerator implements IVortoCodeGenerator {
 					outputter);
 		}
 
+		Configuration configuration = fb.getConfiguration();
+		Status status = fb.getStatus();
+		Fault fault = fb.getFault();
+		
+		generateForConfiguration(configuration, targetPath, jsonFileExtension, outputter);
+		generateForStatus(status, targetPath, jsonFileExtension, outputter);
+		generateForFault(fault, targetPath, jsonFileExtension, outputter);
+
 		for (Event event : fb.getEvents()) {
 			generateForEvent(
 					event, 
@@ -75,6 +89,27 @@ public class JsonschemaGenerator implements IVortoCodeGenerator {
 					jsonFileExtension, 
 					outputter);
 		}
+	}
+
+	private void generateForConfiguration(Configuration configuration, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Configuration> generator = new ChainedCodeGeneratorTask<Configuration>();
+		generator.addTask(new ConfigurationValidationTask(jsonFileExtension, targetPath));
+		generator.generate(configuration, null, outputter);
+	}
+	
+	private void generateForFault(Fault fault, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Fault> generator = new ChainedCodeGeneratorTask<Fault>();
+		generator.addTask(new FaultValidationTask(jsonFileExtension, targetPath));
+		generator.generate(fault, null, outputter);
+	}
+	
+	private void generateForStatus(Status status, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Status> generator = new ChainedCodeGeneratorTask<Status>();
+		generator.addTask(new StatusValidationTask(jsonFileExtension, targetPath));
+		generator.generate(status, null, outputter);
 	}
 
 	public void generateForEvent(
