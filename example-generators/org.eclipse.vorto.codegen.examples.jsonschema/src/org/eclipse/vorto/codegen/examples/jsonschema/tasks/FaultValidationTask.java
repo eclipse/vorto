@@ -19,33 +19,33 @@ import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.ConstraintTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EntityValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EnumValidationTemplate;
-import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.EventValidationTemplate;
+import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.FaultValidationTemplate;
 import org.eclipse.vorto.codegen.examples.jsonschema.tasks.template.PrimitiveTypeValidationTemplate;
-import org.eclipse.vorto.core.api.model.functionblock.Event;
+import org.eclipse.vorto.core.api.model.functionblock.Fault;
 
-public class EventValidationTask extends AbstractTemplateGeneratorTask<Event> {
-	
+public class FaultValidationTask extends AbstractTemplateGeneratorTask<Fault> {
+
 	private String jsonSchemaFileExtension;
 	private String targetPath;
-	
-	public EventValidationTask(String jsonSchmaFileExtension, String targetPath) {
+
+	public FaultValidationTask(String jsonSchmaFileExtension, String targetPath) {
 		this.jsonSchemaFileExtension = jsonSchmaFileExtension;
 		this.targetPath = targetPath;
 	}
-	
+
 	@Override
-	public String getFileName(Event event) {
-		return event.getName() + jsonSchemaFileExtension;
+	public String getFileName(Fault event) {
+		return "fault" + jsonSchemaFileExtension;
 	}
 
 	@Override
-	public String getPath(Event event) {
+	public String getPath(Fault event) {
 		return targetPath;
 	}
 
 	@Override
-	public ITemplate<Event> getTemplate() {
-		return new EventValidationTemplate(
+	public ITemplate<Fault> getTemplate() {
+		return new FaultValidationTemplate(
 				new EnumValidationTemplate(), new EntityValidationTemplate(new EnumValidationTemplate(),
 						new PrimitiveTypeValidationTemplate(), new ConstraintTemplate()),
 				new PrimitiveTypeValidationTemplate(), new ConstraintTemplate());
