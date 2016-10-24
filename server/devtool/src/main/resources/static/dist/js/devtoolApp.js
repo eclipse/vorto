@@ -24,15 +24,13 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
     }
   ]).run(function($location, $http, $rootScope) {
     
-    $rootScope.getRepositoryBasePath = function() {
-      $http.get('./repository/basepath').success(function(data, status, headers, config) {
-		$rootScope.repoBasePath = data['basepath'];
-      }).error(function(data, status, headers, config) {
-		$rootScope.repoBasePath = "http://vorto.eclipse.org/#/";      	
+    $rootScope.getContext = function() {
+      $http.get('./rest/context').success(function(data, status, headers, config) {
+		$rootScope.globalContext = data;
       });
     }
     
-    $rootScope.getRepositoryBasePath();
+    $rootScope.getContext();
   });
 
   return app;

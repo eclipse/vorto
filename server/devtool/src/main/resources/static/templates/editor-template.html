@@ -92,7 +92,7 @@
 								<tr st-select-row="model" ng-repeat="model in displayedModels">
 									<td>{{ model.id.name }}</td>
 									<td class="action">
-										<a target="_blank" href="{{ repoBasePath }}details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
+										<a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
 											<i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i>
 										</a>
 									</td>

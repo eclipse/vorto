@@ -11,7 +11,7 @@ require.config({
 		"mode-pwl" : "xtext-resources/generated/mode-infomodel",
 		"ace/ext/language_tools" : "/webjars/ace/1.2.0/src/ext-language_tools",
 		"webjars/ace/1.2.0/src/ace" : "/webjars/ace/1.2.0/src/ace",
-		"xtext/xtext-ace" : "/xtext/2.9.2/xtext-ace"		
+		"xtext/xtext-ace" : "/xtext/2.9.0/xtext-ace"		
 	},
 	shim: {
 		'angular': {

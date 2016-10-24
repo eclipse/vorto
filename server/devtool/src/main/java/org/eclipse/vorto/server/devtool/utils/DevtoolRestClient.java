@@ -38,7 +38,7 @@ import com.google.gson.reflect.TypeToken;
 @Component
 public class DevtoolRestClient {
 
-	@Value("${vorto.repository.rest.path}")
+	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String basePath;
 
 	public ModelResource getModel(ModelId modelId){
@@ -52,7 +52,7 @@ public class DevtoolRestClient {
 	public String getModelFile(ModelId modelId) {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			return restTemplate.getForObject(basePath + "model/file/{namespace}/{name}/{version}?output=DSL",
+			return restTemplate.getForObject(basePath + "/rest/model/file/{namespace}/{name}/{version}?output=DSL",
 					String.class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		} catch (RestClientException e) {
 			throw new RuntimeException(e);
@@ -62,7 +62,7 @@ public class DevtoolRestClient {
 	public String getModelAsString(ModelId modelId) {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
-			return restTemplate.getForObject(basePath + "model/{namespace}/{name}/{version}", String.class,
+			return restTemplate.getForObject(basePath + "/rest/model/{namespace}/{name}/{version}", String.class,
 					modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		} catch (RestClientException e) {
 			throw new RuntimeException(e);
@@ -87,7 +87,7 @@ public class DevtoolRestClient {
 
 	public List<ModelResource> searchByExpression(String expression) {
 		RestTemplate restTemplate = new RestTemplate();
-		String results = restTemplate.getForObject(basePath + "model/query=" + expression, String.class);
+		String results = restTemplate.getForObject(basePath + "/rest/model/query=" + expression, String.class);
 		JsonElement jsonElement = new JsonParser().parse(results);
 		Gson gson = createGson();
 		List<ModelResource> modelResourceList = gson.fromJson(jsonElement, new TypeToken<List<ModelResource>>() {
