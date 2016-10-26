@@ -1,3 +1,4 @@
+
 define(["angular"], function(angular) {
   var app = angular.module('apps.controller', ['smart-table', 'apps.directive']);
 
@@ -28,6 +29,14 @@ define(["angular"], function(angular) {
     }, {
       language: 'fbmodel',
       display: 'Function Block'
+    }, {
+      language: 'type',
+      display: 'Entity',
+      subType: 'entity'
+    }, {
+      language: 'type',
+      display: 'Enum',
+      subType: 'enum'
     }];
     $scope.models = [];
     $scope.queryFilter = "";
@@ -97,7 +106,8 @@ define(["angular"], function(angular) {
         name: resource.name,
         version: resource.version,
         namespace: resource.namespace,
-        resourceId: resource.resourceId
+        resourceId: resource.resourceId,
+        subType: resource.subType
       };
       $scope.tabs.push(tab);
       $scope.selectedTabIndex = $scope.tabs.length - 1;
@@ -109,6 +119,8 @@ define(["angular"], function(angular) {
         $scope.openInfoModelEditor(tab);
       } else if (language == 'fbmodel') {
         $scope.openFunctionBlockEditor(tab);
+      } else if (language == 'type'){
+        $scope.openEntityEditor(tab);      	
       }
     }
 
@@ -149,6 +161,25 @@ define(["angular"], function(angular) {
         });
       });
     }
+    
+    $scope.openEntityEditor = function(tab) {
+      require(["webjars/ace/1.2.0/src/ace"], function() {
+        require(["xtext/xtext-ace"], function(xtext) {
+          editor = xtext.createEditor({
+            xtextLang: "type",
+            syntaxDefinition: "xtext/mode-type",
+            serviceUrl: "/datatype/xtext-service",
+            enableFormattingAction: "true",
+            showErrorDialogs: "true",
+            parent: tab.editorDivId,
+            resourceId: tab.resourceId
+          });
+          $scope.editors.push(editor);
+          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
+          $scope.search();
+        });
+      });
+    }    
 
     $scope.addEditor = function(model) {
       $http.get('./project/' + $scope.projectName + '/resources/check/' + model.namespace + '/' + model.name + '/' + model.version).success(
@@ -163,6 +194,7 @@ define(["angular"], function(angular) {
             editorDivId: editorDivId,
             language: model.language,
             name: model.name,
+            subType: model.subType
           };
           $scope.tabs.push(tab);
           $scope.selectedTabIndex = $scope.tabs.length - 1;
@@ -174,6 +206,12 @@ define(["angular"], function(angular) {
             $scope.addInfoModelEditor(editorDivId, model);
           } else if (model.language == 'fbmodel') {
             $scope.addFunctionBlockEditor(editorDivId, model);
+          } else if (model.language == 'type') {
+          	if(model.subType == 'entity'){
+	            $scope.addEntityEditor(editorDivId, model);
+	        }else if(model.subType == 'enum'){
+	            $scope.addEnumEditor(editorDivId, model);
+	        }
           }
         }).error(function(data, status, headers, config) {
         window.alert('File already exists')
@@ -195,6 +233,20 @@ define(["angular"], function(angular) {
       content += "\n\tfault {\n\t //Please enter functionblock fault configuration.\n\t}\n";
       content += "\n\toperations {\n\t //Please enter functionblock operations.\n\t}\n";
       content += "}";
+      return content;
+    }
+    
+    $scope.generateEntityContent = function(model) {
+      var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
+      content += "\nentity " + model.displayname + " {\n";
+      content += "}\n";
+      return content;
+    }
+    
+   	$scope.generateEnumContent = function(model) {
+      var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
+      content += "\nenum " + model.displayname + " {\n";
+      content += "}\n";
       return content;
     }
 
@@ -220,11 +272,13 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
+          console.log('Making post request');
           $http.post('./project/' + $scope.projectName + '/resources/create', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
-            "namespace": model.namespace
+            "namespace": model.namespace,
+            "subType": model.subType
           }).success(
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {
             window.alert('File already exists')
@@ -259,7 +313,76 @@ define(["angular"], function(angular) {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
-            "namespace": model.namespace
+            "namespace": model.namespace,
+            "subType": model.subType
+          }).success(
+            function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
+        });
+      });
+    }
+    
+    $scope.addEntityEditor = function(parentId, model) {
+      var content = $scope.generateEntityContent(model);
+      require(["webjars/ace/1.2.0/src/ace"], function() {
+        require(["xtext/xtext-ace"], function(xtext) {
+          editor = xtext.createEditor({
+            xtextLang: "type",
+            syntaxDefinition: "xtext/mode-type",
+            serviceUrl: "/datatype/xtext-service",
+            enableFormattingAction: "true",
+            showErrorDialogs: "true",
+            parent: parentId
+          });
+          editor.setValue(content);
+          $scope.editors.push(editor);
+          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
+          $scope.search();
+          var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
+          var tab = $scope.tabs[$scope.selectedTabIndex];
+          tab['resourceId'] = resourceId;
+          tab['name'] = model.name;
+          tab['version'] = model.version;
+          tab['namespace'] = model.namespace;
+          $http.post('./project/' + $scope.projectName + '/resources/create', {
+            "name": model.name,
+            "resourceId": resourceId,
+            "version": model.version,
+            "namespace": model.namespace,
+            "subType": model.subType
+          }).success(
+            function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
+        });
+      });
+    }    
+
+	$scope.addEnumEditor = function(parentId, model) {
+      var content = $scope.generateEnumContent(model);
+      require(["webjars/ace/1.2.0/src/ace"], function() {
+        require(["xtext/xtext-ace"], function(xtext) {
+          editor = xtext.createEditor({
+            xtextLang: "type",
+            syntaxDefinition: "xtext/mode-type",
+            serviceUrl: "/datatype/xtext-service",
+            enableFormattingAction: "true",
+            showErrorDialogs: "true",
+            parent: parentId
+          });
+          editor.setValue(content);
+          $scope.editors.push(editor);
+          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
+          $scope.search();
+          var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
+          var tab = $scope.tabs[$scope.selectedTabIndex];
+          tab['resourceId'] = resourceId;
+          tab['name'] = model.name;
+          tab['version'] = model.version;
+          tab['namespace'] = model.namespace;
+          $http.post('./project/' + $scope.projectName + '/resources/create', {
+            "name": model.name,
+            "resourceId": resourceId,
+            "version": model.version,
+            "namespace": model.namespace,
+             "subType": model.subType
           }).success(
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
@@ -406,6 +529,15 @@ define(["angular"], function(angular) {
             }).finally(function() {
               $scope.showImportButton = true;
             });
+          } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'type') {
+            $http.get('./editor/datatype/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+              function(data, status, headers, config) {
+                editor.setValue(data);
+              }).error(function(data, status, headers, config) {
+              window.alert('Failed')
+            }).finally(function() {
+              $scope.showImportButton = true;
+            });
           }
         } else {
           window.alert('Please select a model to import');
@@ -439,6 +571,17 @@ define(["angular"], function(angular) {
           }).error(function(data, status, headers, config) {
           $scope.models = [];
         });
+      } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'type') {
+		if($scope.tabs[$scope.selectedTabIndex]['subType'] == 'entity'){
+	        $http.get('./editor/datatype/search=' + filter).success(
+	          function(data, status, headers, config) {
+	            $scope.models = data;
+	          }).error(function(data, status, headers, config) {
+	          $scope.models = [];
+	        });
+	    }else{
+	          $scope.models = [];
+	    }
       }
     }
 
@@ -545,6 +688,7 @@ define(["angular"], function(angular) {
       $uibModalInstance.close($scope.model);
       $scope.model.displayname = $scope.model.name;
       $scope.model.name = $scope.model.name + "." + $scope.model.language;
+      $scope.model.subType = $scope.editorType.subType;
       $rootScope.$broadcast("addTab", $scope.model);
     };
 

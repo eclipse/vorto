@@ -24,6 +24,8 @@
 		<module>org.eclipse.vorto.editor.datatype</module>
 		<module>org.eclipse.vorto.editor.datatype.ui</module>
 		<module>org.eclipse.vorto.editor.datatype.tests</module>
+		<module>org.eclipse.vorto.editor.datatype.ide</module>
+		<module>org.eclipse.vorto.editor.datatype.web</module>
 
 		<module>org.eclipse.vorto.editor.functionblock</module>
 		<module>org.eclipse.vorto.editor.functionblock.ui</module>

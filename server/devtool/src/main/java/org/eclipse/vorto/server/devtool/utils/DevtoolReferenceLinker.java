@@ -40,14 +40,14 @@ import org.springframework.stereotype.Component;
 public class DevtoolReferenceLinker {
 
 	@Autowired
-	DevtoolRestClient informationModelEditorRestClient;
+	DevtoolRestClient devtoolRestClient;
 
 	public void linkFunctionBlockToInfoModel(String infoModelResourceId, ModelId functionBlockModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
 		if (!containsResource(infoModelResourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + infoModelResourceId);
 		}
-		ModelType modelType = informationModelEditorRestClient.getModelType(functionBlockModelId);
+		ModelType modelType = devtoolRestClient.getModelType(functionBlockModelId);
 		if (!modelType.equals(ModelType.Functionblock)) {
 			throw new RuntimeException("No FunctionBlock [" + functionBlockModelId.toString() + "]");
 		}
@@ -69,18 +69,31 @@ public class DevtoolReferenceLinker {
 		if (!containsResource(functionBlockResourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + functionBlockResourceId);
 		}
-		ModelType modelType = informationModelEditorRestClient.getModelType(datatypeModelId);
+		ModelType modelType = devtoolRestClient.getModelType(datatypeModelId);
 		if (!modelType.equals(ModelType.Datatype)) {
 			throw new RuntimeException("No DataType [" + datatypeModelId.toString() + "]");
 		}
 		
 		linkReferenceToModel(functionBlockResourceId, datatypeModelId, resourceSet, referencedResourceSet);
 	}
+	
+	public void linkDataTypeToDataType(String dataTypeResourceId, ModelId datatypeModelId,
+			ResourceSet resourceSet, Set<String> referencedResourceSet) {
+		if (!containsResource(dataTypeResourceId, resourceSet)) {
+			throw new RuntimeException("No resource with resourceId : " + dataTypeResourceId);
+		}
+		ModelType modelType = devtoolRestClient.getModelType(datatypeModelId);
+		if (!modelType.equals(ModelType.Datatype)) {
+			throw new RuntimeException("No DataType [" + datatypeModelId.toString() + "]");
+		}
+		
+		linkReferenceToModel(dataTypeResourceId, datatypeModelId, resourceSet, referencedResourceSet);
+	}
 
 	private void linkReferenceToModel(String modelResourceId, ModelId referenceModelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet) {
 
-		ModelType referenceModelType = informationModelEditorRestClient.getModelType(referenceModelId);
+		ModelType referenceModelType = devtoolRestClient.getModelType(referenceModelId);
 		String fileName = getFileName(referenceModelId);
 		URI uri = getURI(referenceModelId);
 
@@ -95,7 +108,7 @@ public class DevtoolReferenceLinker {
 			Resource resource = null;
 			EObject eObject = null;
 			if (!referencedResourceSet.contains(fileName)) {
-				String fileContents = informationModelEditorRestClient.getModelFile(referenceModelId);
+				String fileContents = devtoolRestClient.getModelFile(referenceModelId);
 				try {
 					resource = resourceSet.createResource(uri);
 					resource.load(new ByteArrayInputStream(fileContents.getBytes((StandardCharsets.UTF_8))),
@@ -159,7 +172,7 @@ public class DevtoolReferenceLinker {
 	}
 
 	private String getFileName(ModelId modelId) {
-		ModelType modelType = informationModelEditorRestClient.getModelType(modelId);
+		ModelType modelType = devtoolRestClient.getModelType(modelId);
 		return modelId.getNamespace().replace(".", "_") + "_" + modelId.getName() + "_"
 				+ modelId.getVersion().replace(".", "_") + modelType.getExtension();
 	}

@@ -18,7 +18,7 @@ package org.eclipse.vorto.editor.datatype.tests.formatter
 import com.google.inject.Inject
 import org.eclipse.vorto.core.api.model.datatype.Type
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl
-import org.eclipse.vorto.editor.datatype.DatatypeInjectorProvider
+import org.eclipse.vorto.editor.datatype.tests.DatatypeInjectorProvider
 import org.eclipse.xtext.formatting.INodeModelFormatter
 import org.eclipse.xtext.junit4.AbstractXtextTests
 import org.eclipse.xtext.junit4.InjectWith

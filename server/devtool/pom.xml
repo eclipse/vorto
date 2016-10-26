@@ -99,6 +99,27 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.datatype.web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.datatype.ide</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
 		</dependency>
 		<dependency>
