@@ -70,8 +70,8 @@ public class DevtoolReferenceLinker {
 			throw new RuntimeException("No resource with resourceId : " + functionBlockResourceId);
 		}
 		ModelType modelType = devtoolRestClient.getModelType(datatypeModelId);
-		if (!modelType.equals(ModelType.Datatype)) {
-			throw new RuntimeException("No DataType [" + datatypeModelId.toString() + "]");
+		if (!(modelType.equals(ModelType.Datatype) || modelType.equals(ModelType.Functionblock))) {
+			throw new RuntimeException("No DataType or FunctionBlock [" + datatypeModelId.toString() + "]");
 		}
 		
 		linkReferenceToModel(functionBlockResourceId, datatypeModelId, resourceSet, referencedResourceSet);

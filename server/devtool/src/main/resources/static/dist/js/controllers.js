@@ -1,7 +1,6 @@
-
 define(["angular"], function(angular) {
   var app = angular.module('apps.controller', ['smart-table', 'apps.directive']);
-
+  
   app.controller('EditorController', function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal) {
 
     $scope.error = null;
@@ -54,6 +53,41 @@ define(["angular"], function(angular) {
 
     $scope.openProject();
 
+    $scope.uploadProject = function() {
+      var resources = [];
+      $http.get('./project/' + $scope.projectName + '/resources').success(
+		  function(data, status, headers, config) {
+          for (i = 0; i < data.length; i++) {
+            resources.push(data[i]);
+          }
+          $http.post('./publish/upload', {
+            "projectResourceList": resources
+          }).success(
+            function(data, status, headers, config) {
+              console.log(data);
+              $scope.openPublishModal(data);
+            }).error(function(data, status, headers, config) {
+            window.alert("Failed to upload resources")
+          });
+        }).error(function(data, status, headers, config) {
+        window.alert("Failed to upload resources")
+      });
+    }
+
+    $scope.openPublishModal = function(result) {
+        var modalInstance = $uibModal.open({
+          animation: true,
+          controller: 'PublishController',
+          templateUrl: 'templates/publish-template.html',
+          size: 'lg',
+          resolve: {
+            result: function() {
+              return result;
+            }
+          }
+        });
+      };    
+    
     $scope.getResources = function() {
       $http.get('./project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
@@ -64,9 +98,9 @@ define(["angular"], function(angular) {
 
       });
     }
-
+    
     $scope.$on("addTab", function(event, model) {
-      $scope.addEditor(model);
+    	$scope.addEditor(model);
     });
 
     $scope.$on("describeEditor", function(event, editor) {
@@ -119,8 +153,8 @@ define(["angular"], function(angular) {
         $scope.openInfoModelEditor(tab);
       } else if (language == 'fbmodel') {
         $scope.openFunctionBlockEditor(tab);
-      } else if (language == 'type'){
-        $scope.openEntityEditor(tab);      	
+      } else if (language == 'type') {
+        $scope.openEntityEditor(tab);
       }
     }
 
@@ -161,7 +195,7 @@ define(["angular"], function(angular) {
         });
       });
     }
-    
+
     $scope.openEntityEditor = function(tab) {
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
@@ -179,7 +213,7 @@ define(["angular"], function(angular) {
           $scope.search();
         });
       });
-    }    
+    }
 
     $scope.addEditor = function(model) {
       $http.get('./project/' + $scope.projectName + '/resources/check/' + model.namespace + '/' + model.name + '/' + model.version).success(
@@ -207,11 +241,11 @@ define(["angular"], function(angular) {
           } else if (model.language == 'fbmodel') {
             $scope.addFunctionBlockEditor(editorDivId, model);
           } else if (model.language == 'type') {
-          	if(model.subType == 'entity'){
-	            $scope.addEntityEditor(editorDivId, model);
-	        }else if(model.subType == 'enum'){
-	            $scope.addEnumEditor(editorDivId, model);
-	        }
+            if (model.subType == 'entity') {
+              $scope.addEntityEditor(editorDivId, model);
+            } else if (model.subType == 'enum') {
+              $scope.addEnumEditor(editorDivId, model);
+            }
           }
         }).error(function(data, status, headers, config) {
         window.alert('File already exists')
@@ -235,15 +269,15 @@ define(["angular"], function(angular) {
       content += "}";
       return content;
     }
-    
+
     $scope.generateEntityContent = function(model) {
       var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
       content += "\nentity " + model.displayname + " {\n";
       content += "}\n";
       return content;
     }
-    
-   	$scope.generateEnumContent = function(model) {
+
+    $scope.generateEnumContent = function(model) {
       var content = 'namespace ' + model.namespace + '\nversion ' + model.version + '\ndisplayname "' + model.displayname + '"\ndescription "' + model.description + '"\ncategory demo';
       content += "\nenum " + model.displayname + " {\n";
       content += "}\n";
@@ -272,8 +306,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          console.log('Making post request');
-          $http.post('./project/' + $scope.projectName + '/resources/create', {
+          $http.post('./project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -309,7 +342,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources/create', {
+          $http.post('./project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -320,7 +353,7 @@ define(["angular"], function(angular) {
         });
       });
     }
-    
+
     $scope.addEntityEditor = function(parentId, model) {
       var content = $scope.generateEntityContent(model);
       require(["webjars/ace/1.2.0/src/ace"], function() {
@@ -343,7 +376,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources/create', {
+          $http.post('./project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -353,9 +386,9 @@ define(["angular"], function(angular) {
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
       });
-    }    
+    }
 
-	$scope.addEnumEditor = function(parentId, model) {
+    $scope.addEnumEditor = function(parentId, model) {
       var content = $scope.generateEnumContent(model);
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
@@ -377,12 +410,12 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources/create', {
+          $http.post('./project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
             "namespace": model.namespace,
-             "subType": model.subType
+            "subType": model.subType
           }).success(
             function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
         });
@@ -556,7 +589,7 @@ define(["angular"], function(angular) {
     $scope.search = function() {
       var filter = null;
       var modelType = null;
-      filter = $scope.queryFilter;      
+      filter = $scope.queryFilter;
       if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
         $http.get('./editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
@@ -572,16 +605,16 @@ define(["angular"], function(angular) {
           $scope.models = [];
         });
       } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'type') {
-		if($scope.tabs[$scope.selectedTabIndex]['subType'] == 'entity'){
-	        $http.get('./editor/datatype/search=' + filter).success(
-	          function(data, status, headers, config) {
-	            $scope.models = data;
-	          }).error(function(data, status, headers, config) {
-	          $scope.models = [];
-	        });
-	    }else{
-	          $scope.models = [];
-	    }
+        if ($scope.tabs[$scope.selectedTabIndex]['subType'] == 'entity') {
+          $http.get('./editor/datatype/search=' + filter).success(
+            function(data, status, headers, config) {
+              $scope.models = data;
+            }).error(function(data, status, headers, config) {
+            $scope.models = [];
+          });
+        } else {
+          $scope.models = [];
+        }
       }
     }
 
@@ -735,5 +768,139 @@ define(["angular"], function(angular) {
     };
   });
 
+  app.controller('PublishController', function( $rootScope, $scope, $uibModalInstance, $http, result) {
+	  $scope.modelCheckedIn = false;
+	  $scope.result = result;
+      $scope.modelStats = {};
+      var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;	  
+	  $scope.showResultBox = true;
+
+	 $scope.displayValidation = function(result) {
+	      $scope.stateArr = [];
+	      $scope.uploadResult = result;
+	      $scope.showCheckin = true;
+
+	      if ($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0) {
+	        angular.forEach($scope.uploadResult.obj, function(resultObject, idx) {
+	          var item = (idx == 0) ? {
+	            active: false
+	          } : {
+	            active: true
+	          };
+	          var modelType = resultObject.modelResource.modelType;
+	          switch (modelType) {
+	            case "Functionblock":
+	              fbcount++;
+	              break;
+	            case "InformationModel":
+	              infocount++;
+	              break;
+	            case "Datatype":
+	              typecount++;
+	              break;
+	            case "Mapping":
+	              mappingcount++;
+	              break;
+	          }
+	          $scope.stateArr.push(item);
+	          $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
+	        });
+	      } else {
+	        $scope.showCheckin = false;
+	      }
+
+	      $scope.modelStats = {
+	        infocount: infocount,
+	        fbcount: fbcount,
+	        typecount: typecount,
+	        mappingcount: mappingcount
+	      };
+	      $scope.isLoading = false;
+	      $scope.showResultBox = true;
+	      $scope.resultMessage = result.message;
+	    }
+	 
+	 $scope.displayValidation($scope.result);
+
+	    $scope.checkin = function(uploadResults) {
+	      $rootScope.error = "";
+	      console.log(uploadResults);
+	      if (uploadResults.length == 1) {
+	        checkinSingle(uploadResults[0].handleId);
+	      } else {
+	        checkInMultipleModels(uploadResults);
+	      }
+	    };
+
+	    checkInMultipleModels = function(uploadResults) {
+	      var validUploadHandles = [];
+	      $scope.isLoading = true;
+	      $scope.loadMessage = "Checking in... Please wait!";
+	      $scope.showResultBox = false;
+	      angular.forEach(uploadResults, function(uploadResult, idx) {
+	        if (uploadResult.valid) {
+	          var handle = {
+	            handleId: uploadResult.handleId,
+	            id: {
+	              name: uploadResult.modelResource.id.name,
+	              namespace: uploadResult.modelResource.id.namespace,
+	              version: uploadResult.modelResource.id.version
+	            }
+	          }
+	          validUploadHandles.push(handle);
+	        }
+	      });
+	      
+	      $http.put('./publish/checkInMultiple', validUploadHandles)
+	        .success(function(result) {
+	          $scope.isLoading = false;
+	          $scope.showResultBox = true;
+	          $scope.resultMessage = result.message;
+	          $scope.modelCheckedIn = true;
+	        }).error(function(data, status, headers, config) {
+	          $scope.isLoading = false;
+	          if (status == 403) {
+	            $rootScope.error = "Operation is Forbidden";
+	          } else if (status == 401) {
+	            $rootScope.error = "Unauthorized Operation";
+	          } else if (status == 400) {
+	            $rootScope.error = "Bad Request. Server Down";
+	          } else if (status == 500) {
+	            $rootScope.error = "Internal Server Error";
+	          } else {
+	            $rootScope.error = "Failed Request with response status " + status;
+	          }
+	        });
+	    };
+
+	    checkinSingle = function(handleId) {
+	      $http.put('./publish/' + handleId)
+	        .success(function(result) {
+	          $scope.showResultBox = true;
+	          $scope.resultMessage = result.message;
+	          $scope.modelCheckedIn = true;
+	        }).error(function(data, status, headers, config) {
+	          if (status == 403) {
+	            $rootScope.error = "Operation is Forbidden";
+	          } else if (status == 401) {
+	            $rootScope.error = "Unauthorized Operation";
+	          } else if (status == 400) {
+	            $rootScope.error = "Bad Request. Server Down";
+	          } else if (status == 500) {
+	            $rootScope.error = "Internal Server Error";
+	          } else {
+	            $rootScope.error = "Failed Request with response status " + status;
+	          }
+	        });
+	    };	    
+
+	    $scope.cancel = function() {
+	        $uibModalInstance.dismiss('cancel');
+	      };
+  
+  });  
+  
+  
+  
   return app;
 });

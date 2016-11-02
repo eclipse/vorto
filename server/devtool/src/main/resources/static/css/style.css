@@ -898,3 +898,169 @@ a:hover {
 .search-box-open-project {
 	width: 600px;
 }
+
+/*
+* Bulk Upload
+* -----------
+*/
+.center {
+    margin: 0 auto;
+    width: 90%;
+}
+.center-results {
+    padding-left: 8%;
+    width: 90%;
+}
+.accordion-div {
+  overflow: hidden;
+  border: 1px solid #ddd;
+  margin-bottom: 2px;
+
+}
+.input-wider {
+  width: 500px;
+}
+.upload-spacing {
+    padding-left : 75px;
+}
+
+.errorbox-spacing {
+    padding-left : 10px;
+    padding-top : 10px;
+    padding-right : 10px;
+}
+.modelresult-heading-collapsed {
+  cursor: pointer;
+  padding: 10px 20px;
+  position: relative;
+  color: #0088cc;
+  background-color: #f5f5f5;
+
+}
+
+.accordion-div:first-of-type {
+    border-color: #ddd;
+    border: 1px solid #ddd;
+}
+
+
+.modelresult-heading-collapsed .header{
+  font-size: 16px;
+  font-weight: normal;
+  margin:0px;
+}
+
+.modelresult-heading-expanded {
+  cursor: pointer;
+  padding: 10px 20px;
+  position: relative;
+  color: #0088cc;
+  background-color: #f5f5f5;
+}
+
+.modelresult-heading-expanded .header{
+  font-size: 16px;
+  font-weight: bold;
+  margin:0px;
+}
+
+.modelresult-heading-collapsed > span,
+.modelresult-heading-expanded > span {
+  position:absolute;
+  top: 25px;
+  right: 15px;
+  font-size: 20px;
+  line-height: 0px;
+}
+
+.expand-collapse-content {
+  padding: 5px;
+}
+
+.valid {
+  color: green;
+  float: right !important;
+}
+
+.invalid {
+  color: red;
+  float: right !important;
+}
+
+.box-headline {
+  color: #1774A5;
+
+}
+
+.box-subheader {
+ color: #666;
+}
+
+.tdspacing {
+    padding-left: 50px;
+}
+.tdspacing-half {
+    padding-left: 10px;
+}
+.slideExpand.ng-hide {
+  height:0;
+  transition:height 0.35s ease;
+  overflow:hidden;
+  position:relative;
+}
+
+.slideExpand {
+  height: inherit;
+  transition:height 0.35s ease;
+  overflow:hidden;
+  position:relative;
+}
+
+.slideExpand.ng-hide-remove,
+.slideExpand.ng-hide-add {
+  /* remember, the .hg-hide class is added to element
+  when the active class is added causing it to appear
+  as hidden. Therefore set the styling to display=block
+  so that the hide animation is visible */
+  display:block!important;
+}
+
+
+.slideExpand.ng-hide-add {
+  animation-name: hide;
+  -webkit-animation-name: hide;
+
+  animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+
+  animation-timing-function: ease-in;
+  -webkit-animation-timing-function: ease-in;
+}
+
+.slideExpand.ng-hide-remove {
+  animation-name: show;
+  -webkit-animation-name: show;
+
+  animation-duration: .5s;
+  -webkit-animation-duration: .5s;
+
+  animation-timing-function: ease-out;
+  -webkit-animation-timing-function: ease-out;
+}
+
+fieldset.results-border {
+    padding: 0 1.4em 1.4em 1.4em !important;
+    border: 1px groove #ddd !important;
+    margin: 0 0 1.5em 0 !important;
+    -webkit-box-shadow:  0px 0px 0px 0px #000;
+            box-shadow:  0px 0px 0px 0px #000;
+}
+
+legend.results-border {
+    font-weight: bold !important;
+    text-align: left !important;
+    font-size: 1.2em !important;
+    width:auto;
+    padding:0 10px;
+    border-bottom:none;
+}

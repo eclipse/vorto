@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.server.devtool;
 
+import java.io.File;
+
+import org.eclipse.vorto.server.devtool.utils.Constants;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -25,11 +28,24 @@ import org.springframework.context.annotation.ComponentScan;
 public class DevToolServer extends SpringBootServletInitializer {
 				
 	public static void main(String... args) {
+		createUploadZipFileDirectory();
 		SpringApplication.run(DevToolServer.class, args);
 	}
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(DevToolServer.class);
+	}
+	
+	private static void createUploadZipFileDirectory(){
+		File directory = new File(Constants.UPLOAD_ZIP_FILE_DIRECTORY);
+		if (!directory.exists()) {
+		    try{
+		    	directory.mkdir();
+		    } 
+		    catch(SecurityException se){
+
+		    }        
+		}
 	}
 }

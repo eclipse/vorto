@@ -28,7 +28,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.server.devtool.service.editor.InformationModelEditorServiceImpl;
+import org.eclipse.vorto.server.devtool.service.impl.editor.InformationModelEditorServiceImpl;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;

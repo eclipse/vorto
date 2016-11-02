@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.service.editor;
+package org.eclipse.vorto.server.devtool.service.impl.editor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,31 +24,35 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class InformationModelEditorServiceImpl extends IEditorService {
+public class FunctionBlockEditorServiceImpl extends IEditorService {
 
 	@Autowired
 	DevtoolReferenceLinker devtoolReferenceLinker;
 
-	public String linkModelToResource(String infoModelResourceId, ModelId functionBlockModelId,
+	public String linkModelToResource(String functionBlockResourceId, ModelId datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
-		devtoolReferenceLinker.linkFunctionBlockToInfoModel(infoModelResourceId, functionBlockModelId,
+		devtoolReferenceLinker.linkDataTypeToFunctionBlock(functionBlockResourceId, datatypeModelId,
 				resourceSet, referencedResourceSet);
-		Resource infoModelResource = resourceSet.getResource(URI.createURI(infoModelResourceId), true);
+		Resource functionBlockResource = resourceSet.getResource(URI.createURI(functionBlockResourceId), true);
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			infoModelResource.save(byteArrayOutputStream, null);
+			functionBlockResource.save(byteArrayOutputStream, null);
 			return byteArrayOutputStream.toString();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public List<ModelResource> searchModelByExpression(String expression) {
-		return searchModelByExpressionAndValidate(expression + org.eclipse.vorto.http.model.ModelType.Functionblock.toString(), org.eclipse.vorto.http.model.ModelType.Functionblock);
+		List<ModelResource> modelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelType.Datatype.toString() , org.eclipse.vorto.http.model.ModelType.Datatype);
+		List<ModelResource> functionBlockModelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelType.Functionblock.toString(), org.eclipse.vorto.http.model.ModelType.Functionblock);
+		modelList.addAll(functionBlockModelList);
+		return modelList;
 	}
 }

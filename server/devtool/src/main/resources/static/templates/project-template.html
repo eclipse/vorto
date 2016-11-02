@@ -48,9 +48,9 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr st-select-row="project" ng-repeat="project in displayedProjects">
+					<tr ng-repeat="project in displayedProjects">
 						<td>{{ project.projectName }}</td>
-						<td class="action"><a class="action" href="#/editor/{{ project.projectName }}"><i class="fa fa-folder-open"></i></a></td>
+						<td class="action"><a class="action" ng-href="#/editor/{{ project.projectName }}"><i class="fa fa-folder-open"></i></a> Open</td>
 					</tr>
 				</tbody>
 				<tfoot>

@@ -18,11 +18,22 @@ import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.ServerResponse;
+import org.eclipse.vorto.repository.model.ModelHandle;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -31,6 +42,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -41,14 +53,14 @@ public class DevtoolRestClient {
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String basePath;
 
-	public ModelResource getModel(ModelId modelId){
+	public ModelResource getModel(ModelId modelId) {
 		String json = getModelFile(modelId);
 		Gson gson = createGson();
 		JsonElement jsonElement = new JsonParser().parse(json);
 		ModelResource modelResource = gson.fromJson(jsonElement, ModelResource.class);
 		return modelResource;
 	}
-	
+
 	public String getModelFile(ModelId modelId) {
 		try {
 			RestTemplate restTemplate = new RestTemplate();
@@ -68,7 +80,7 @@ public class DevtoolRestClient {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	public ModelType getModelType(ModelId modelId) {
 		String modelString = getModelAsString(modelId);
 		String modelType = new JsonParser().parse(modelString).getAsJsonObject().get("modelType").getAsString();
@@ -94,8 +106,51 @@ public class DevtoolRestClient {
 		}.getType());
 		return modelResourceList;
 	}
+
+	public ResponseEntity<ServerResponse> uploadMultipleFiles(String zipFilePath){
+		RestTemplate restTemplate = new RestTemplate();
+		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+		map.add("file", new FileSystemResource(zipFilePath));
+		HttpHeaders httpHeaders = getAuthorisedHeaders();
+		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(map, httpHeaders);
+		return restTemplate.postForEntity(basePath + "/rest/secure/multiple", requestEntity, ServerResponse.class);
+	}
 	
-	private Gson createGson(){
+	public ResponseEntity<ServerResponse> checkInSingleFile(String handleId){
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders httpHeaders = getAuthorisedHeaders();
+		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(httpHeaders);
+		return restTemplate.exchange(basePath + "/rest/secure/{handleId:.+}", HttpMethod.PUT, requestEntity, ServerResponse.class, handleId);
+	}
+		
+	public ResponseEntity<ServerResponse> checkInMultipleFiles(ModelHandle[] modelHandles){
+		RestTemplate restTemplate = new RestTemplate();
+		Gson gson = new Gson();
+		String json = gson.toJson(modelHandles);
+		HttpHeaders httpHeaders = getAuthorisedHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
+		System.out.println(json);
+		HttpEntity<String> requestEntity = new HttpEntity<>(json, httpHeaders);
+		return restTemplate.exchange(basePath + "/rest/secure/checkInMultiple", HttpMethod.PUT, requestEntity, ServerResponse.class);
+//		return null;
+	}
+
+	private HttpHeaders getAuthorisedHeaders(){
+		/*
+		 * TODO
+		 * Accept username and password as parameters later
+		 */
+		String plainCreds = "testuser:testuser";
+		byte[] plainCredsBytes = plainCreds.getBytes();
+		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
+		String base64Creds = new String(base64CredsBytes);
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Basic " + base64Creds);
+		return headers;
+	}
+	
+	private Gson createGson() {
 		return new GsonBuilder().registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 			@Override
 			public Date deserialize(JsonElement json, Type type, JsonDeserializationContext context)
