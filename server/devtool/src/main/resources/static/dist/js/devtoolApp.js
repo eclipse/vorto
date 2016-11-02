@@ -9,6 +9,10 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
   app.config(['$routeProvider', '$httpProvider',
     function($routeProvider, $httpProvider) {
       $routeProvider
+		.when('/publish', {
+		   templateUrl: "templates/publish-template.html",
+		   controller: 'PublishController'
+		  })
         .when('/editor/:projectName', {
           templateUrl: "templates/editor-template.html",
           controller: 'EditorController'

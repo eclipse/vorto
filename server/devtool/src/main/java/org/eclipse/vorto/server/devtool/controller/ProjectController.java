@@ -181,7 +181,7 @@ public class ProjectController {
 	}
 
 	@ApiOperation(value = "Creates a new resource in the Vorto project")
-	@RequestMapping(value = "/{projectName}/resources/create", method = RequestMethod.POST)
+	@RequestMapping(value = "/{projectName}/resources", method = RequestMethod.POST)
 	public void createProjectResource(
 			@RequestBody ProjectResource projectResoure,
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,

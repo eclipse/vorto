@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.vorto.http.model.ServerResponse;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.IModelRepository;
-import org.eclipse.vorto.repository.web.model.ServerResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

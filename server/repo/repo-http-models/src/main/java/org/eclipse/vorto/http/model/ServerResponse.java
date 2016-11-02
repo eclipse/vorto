@@ -12,11 +12,12 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.model;
-
-import io.swagger.annotations.*;
+package org.eclipse.vorto.http.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * Generic server response type for client request.
@@ -30,7 +31,13 @@ public class ServerResponse {
 	private Boolean isSuccess = null;
 	private Object obj = null;
 
-
+	/*
+	 * Dummy constructor needed by ResponseEntity for JSON parsing of http response 
+	 */
+	public ServerResponse() {
+		
+	}
+		
 	public ServerResponse(String message, Boolean isSuccess, Object obj) {
 		this.message = message;
 		this.isSuccess = isSuccess;

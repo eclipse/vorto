@@ -1,4 +1,4 @@
-package org.eclipse.vorto.server.devtool.service.editor;
+package org.eclipse.vorto.server.devtool.service.impl.editor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +10,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
