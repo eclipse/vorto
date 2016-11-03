@@ -24,8 +24,9 @@ import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.http.model.ServerResponse;
 import org.eclipse.vorto.repository.model.ModelHandle;
+import org.eclipse.vorto.server.devtool.web.controller.publisher.FileMessageResource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -33,7 +34,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -42,7 +42,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -52,6 +51,15 @@ public class DevtoolRestClient {
 
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String basePath;
+	
+	@Value("${vorto.repository.username}")
+	private String repositoryUser;
+	
+	@Value("${vorto.repository.password}")
+	private String repositoryPassword;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	public ModelResource getModel(ModelId modelId) {
 		String json = getModelFile(modelId);
@@ -63,7 +71,6 @@ public class DevtoolRestClient {
 
 	public String getModelFile(ModelId modelId) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
 			return restTemplate.getForObject(basePath + "/rest/model/file/{namespace}/{name}/{version}?output=DSL",
 					String.class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		} catch (RestClientException e) {
@@ -73,7 +80,6 @@ public class DevtoolRestClient {
 
 	public String getModelAsString(ModelId modelId) {
 		try {
-			RestTemplate restTemplate = new RestTemplate();
 			return restTemplate.getForObject(basePath + "/rest/model/{namespace}/{name}/{version}", String.class,
 					modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		} catch (RestClientException e) {
@@ -98,7 +104,6 @@ public class DevtoolRestClient {
 	}
 
 	public List<ModelResource> searchByExpression(String expression) {
-		RestTemplate restTemplate = new RestTemplate();
 		String results = restTemplate.getForObject(basePath + "/rest/model/query=" + expression, String.class);
 		JsonElement jsonElement = new JsonParser().parse(results);
 		Gson gson = createGson();
@@ -107,10 +112,9 @@ public class DevtoolRestClient {
 		return modelResourceList;
 	}
 
-	public ResponseEntity<ServerResponse> uploadMultipleFiles(String zipFilePath){
-		RestTemplate restTemplate = new RestTemplate();
+	public ResponseEntity<ServerResponse> uploadMultipleFiles(final String fileName, byte[] multipleFileContent){
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-		map.add("file", new FileSystemResource(zipFilePath));
+		map.add("file", new FileMessageResource(multipleFileContent, fileName));
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(map, httpHeaders);
@@ -118,14 +122,12 @@ public class DevtoolRestClient {
 	}
 	
 	public ResponseEntity<ServerResponse> checkInSingleFile(String handleId){
-		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(httpHeaders);
 		return restTemplate.exchange(basePath + "/rest/secure/{handleId:.+}", HttpMethod.PUT, requestEntity, ServerResponse.class, handleId);
 	}
 		
 	public ResponseEntity<ServerResponse> checkInMultipleFiles(ModelHandle[] modelHandles){
-		RestTemplate restTemplate = new RestTemplate();
 		Gson gson = new Gson();
 		String json = gson.toJson(modelHandles);
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
@@ -141,7 +143,7 @@ public class DevtoolRestClient {
 		 * TODO
 		 * Accept username and password as parameters later
 		 */
-		String plainCreds = "testuser:testuser";
+		String plainCreds = repositoryUser+":"+repositoryPassword;
 		byte[] plainCredsBytes = plainCreds.getBytes();
 		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
 		String base64Creds = new String(base64CredsBytes);

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.controller;
+package org.eclipse.vorto.server.devtool.web.controller;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -53,30 +53,12 @@ public class ProjectController {
 	@Autowired
 	IProjectRepositoryService projectRepositoryService;
 
-	@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Project not found")
-	@ExceptionHandler(ProjectNotFoundException.class)
-	public void handleProjectNotFoundException() {
-
-	}
-
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Project already exists")
-	@ExceptionHandler(ProjectAlreadyExistsException.class)
-	public void handleProjectAlreadyExistsException() {
-
-	}
-	
-	@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Resource already exists")
-	@ExceptionHandler(ProjectResourceAlreadyExistsException.class)
-	public void handleProjectResourceAlreadyExistsException() {
-
-	}
-
 	@ApiOperation(value = "Checks whether a Vorto project already exists")
 	@RequestMapping(value = "/{projectName}/check", method = RequestMethod.GET)
 	public void checkProjectExists(
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectAlreadyExistsException {
+			throws ProjectAlreadyExistsException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 
@@ -84,7 +66,7 @@ public class ProjectController {
 
 		projectRepositoryService.checkProjectExists(sessionId, projectName);
 	}
-	
+
 	@ApiOperation(value = "Checks whether a resource exists within the Vorto project")
 	@RequestMapping(value = "/{projectName}/resources/check/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void checkResourceExists(
@@ -93,19 +75,19 @@ public class ProjectController {
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
 			@ApiParam(value = "Version", required = true) final @PathVariable String version,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectNotFoundException, ProjectAlreadyExistsException, ProjectResourceAlreadyExistsException {
+			throws ProjectNotFoundException, ProjectAlreadyExistsException, ProjectResourceAlreadyExistsException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "namespace must not be null");
-		Objects.requireNonNull(version, "namespace must not be null");		
+		Objects.requireNonNull(version, "namespace must not be null");
 		String sessionId = request.getSession().getId();
-		
+
 		ProjectResource projectResource = new ProjectResource();
 		projectResource.setName(name);
 		projectResource.setNamespace(namespace);
 		projectResource.setVersion(version);
-		
+
 		projectRepositoryService.checkResourceExists(sessionId, projectName, projectResource);
 	}
 
@@ -113,8 +95,8 @@ public class ProjectController {
 	@RequestMapping(method = RequestMethod.POST)
 	public void createProject(@RequestBody Project project,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectAlreadyExistsException {
-			
+			throws ProjectAlreadyExistsException {
+
 		Objects.requireNonNull(project.getProjectName(), "projectName must not be null");
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
@@ -133,7 +115,7 @@ public class ProjectController {
 	@RequestMapping(value = "/{projectName}/open", method = RequestMethod.GET)
 	public void openProject(@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectNotFoundException {
+			throws ProjectNotFoundException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 
@@ -164,29 +146,28 @@ public class ProjectController {
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
 			@ApiParam(value = "Version", required = true) final @PathVariable String version,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectNotFoundException {
+			throws ProjectNotFoundException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "namespace must not be null");
-		Objects.requireNonNull(version, "namespace must not be null");		
+		Objects.requireNonNull(version, "namespace must not be null");
 		String sessionId = request.getSession().getId();
-		
+
 		ProjectResource projectResource = new ProjectResource();
 		projectResource.setName(name);
 		projectResource.setNamespace(namespace);
 		projectResource.setVersion(version);
-		
+
 		projectRepositoryService.deleteResource(sessionId, projectName, projectResource);
 	}
 
 	@ApiOperation(value = "Creates a new resource in the Vorto project")
 	@RequestMapping(value = "/{projectName}/resources", method = RequestMethod.POST)
-	public void createProjectResource(
-			@RequestBody ProjectResource projectResoure,
+	public void createProjectResource(@RequestBody ProjectResource projectResoure,
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectNotFoundException, ProjectResourceAlreadyExistsException {
+			throws ProjectNotFoundException, ProjectResourceAlreadyExistsException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		String sessionId = request.getSession().getId();
@@ -198,11 +179,29 @@ public class ProjectController {
 	public ArrayList<ProjectResource> getResources(
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request)
-					throws ProjectNotFoundException {
+			throws ProjectNotFoundException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 
 		String sessionId = request.getSession().getId();
 		return projectRepositoryService.getProjectResources(sessionId, projectName);
+	}
+
+	@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Project not found")
+	@ExceptionHandler(ProjectNotFoundException.class)
+	public void handleProjectNotFoundException() {
+
+	}
+
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Project already exists")
+	@ExceptionHandler(ProjectAlreadyExistsException.class)
+	public void handleProjectAlreadyExistsException() {
+
+	}
+
+	@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Resource already exists")
+	@ExceptionHandler(ProjectResourceAlreadyExistsException.class)
+	public void handleProjectResourceAlreadyExistsException() {
+
 	}
 }
