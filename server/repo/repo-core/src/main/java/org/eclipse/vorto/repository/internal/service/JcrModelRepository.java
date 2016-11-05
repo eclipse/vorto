@@ -429,4 +429,14 @@ public class JcrModelRepository implements IModelRepository {
 	public void setNotificationService(INotificationService notificationService) {
 		this.notificationService = notificationService;
 	}
+
+	public ITemporaryStorage getUploadStorage() {
+		return uploadStorage;
+	}
+
+	public void setUploadStorage(ITemporaryStorage uploadStorage) {
+		this.uploadStorage = uploadStorage;
+	}
+	
+	
 }

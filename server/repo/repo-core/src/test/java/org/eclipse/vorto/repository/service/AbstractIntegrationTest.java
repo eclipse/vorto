@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collections;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.JcrModelRepository;
 import org.eclipse.vorto.repository.internal.service.notification.INotificationService;
 import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
@@ -33,7 +34,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
 
 		modelRepository = new JcrModelRepository();
-
+		modelRepository.setUploadStorage(new InMemoryTemporaryStorage());
 		modelRepository.setSession(jcrSession());
 		modelRepository.createValidators();
 		modelRepository.setModelSearchUtil(modelSearchUtil);
