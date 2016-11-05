@@ -34,7 +34,7 @@ class HashMapResourceHandler implements IServerResourceHandler {
 	override get(String resourceId, IServiceContext serviceContext) throws IOException {
 		try {
 			val resourceSet = resourceSetProvider.get(resourceId, serviceContext);
-			val uri = URI.createFileURI(resourceId);
+			val uri = URI.createURI(resourceId);
 			val resource = resourceSet.getResource(uri, true) as XtextResource
 			return documentProvider.get(resourceId, serviceContext) => [
 				setInput(resource)

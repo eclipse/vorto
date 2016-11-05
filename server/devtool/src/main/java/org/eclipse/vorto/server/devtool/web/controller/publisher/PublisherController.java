@@ -15,7 +15,6 @@
 package org.eclipse.vorto.server.devtool.web.controller.publisher;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -30,7 +29,6 @@ import org.eclipse.vorto.http.model.ServerResponse;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.models.ProjectResourceListWrapper;
-import org.eclipse.vorto.server.devtool.utils.Constants;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
@@ -78,8 +76,7 @@ public class PublisherController {
 		}
 		byte[] zipFileContent = createZipFileContent(projectResourceListWrapper.getProjectResourceList(), resourceList);
 		
-		final String fileName = Constants.UPLOAD_ZIP_FILE_DIRECTORY + File.separator
-				+ Long.toString(System.currentTimeMillis()) + ".zip";
+		final String fileName = Long.toString(System.currentTimeMillis()) + ".zip";
 		return devtoolRestClient.uploadMultipleFiles(fileName,zipFileContent);
 	}
 

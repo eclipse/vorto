@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Override
 	public void beforeEach() throws Exception {
 		super.beforeEach();
-		bulkUploadHelper = new BulkUploadHelper(this.modelRepository);
+		bulkUploadHelper = new BulkUploadHelper(this.modelRepository, new InMemoryTemporaryStorage());
 	}
 	
 	@Test

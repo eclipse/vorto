@@ -1,4 +1,4 @@
-package org.eclipse.vorto.server.devtool.controller.session;
+package org.eclipse.vorto.server.devtool.web;
 
 import org.springframework.stereotype.Component;
 

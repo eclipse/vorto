@@ -16,6 +16,8 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
+import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
+import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.RESTAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,6 +42,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.stereotype.Service;
 
 import com.google.common.base.Predicate;
 
@@ -54,10 +59,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @EnableSwagger2
 @EnableJpaRepositories
+@EnableScheduling
 public class VortoRepository {
 
 	public static void main(String[] args) {
 		SpringApplication.run(VortoRepository.class, args);
+	}
+	
+	@Bean
+	public ITemporaryStorage createTempStorage() {
+		return new InMemoryTemporaryStorage();
 	}
 
 	@Bean
@@ -135,5 +146,18 @@ public class VortoRepository {
 		public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 		}
+	}
+	
+	@Service
+	public static class ScheduleTask {
+	
+		@Autowired
+		private ITemporaryStorage storage;
+	
+		@Scheduled(fixedRate = 1000 * 60 * 60)
+		public void clearExpiredStorageItems() {
+			this.storage.clearExpired();
+		}
+	
 	}
 }

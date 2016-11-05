@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.eclipse.vorto.http.model.ServerResponse;
+import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
@@ -59,6 +60,9 @@ public class ShareModelController {
 	@Autowired
 	private IModelRepository modelRepository;
 	
+	@Autowired
+	private ITemporaryStorage uploadStorage;
+	
 	private UploadModelResult uploadModelResult;
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
@@ -84,7 +88,7 @@ public class ShareModelController {
 	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
-			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository);
+			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);
 			
 			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
@@ -107,7 +111,7 @@ public class ShareModelController {
 			ServerResponse successModelResponse = new ServerResponse("Model has been checkin successfully.",true, null);
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
-			LOGGER.error("Error checkin model. " + handleId +  e.getStackTrace());
+			LOGGER.error("Error checkin model. " + handleId, e);
 			return erroredResponse("Error during checkin. Try again. " + e.getMessage());
 		}
 	}
@@ -123,7 +127,7 @@ public class ShareModelController {
 			ServerResponse successModelResponse = new ServerResponse("All the models has been checked in Successfully.",true, null);
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
-			LOGGER.error("Error bulk checkin models." + e.getStackTrace());
+			LOGGER.error("Error bulk checkin models.", e);
 			return erroredResponse("Error during checkin. Try again. " + e.getMessage());
 		}
 	}
