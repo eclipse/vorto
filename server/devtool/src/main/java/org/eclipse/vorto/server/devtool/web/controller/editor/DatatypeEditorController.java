@@ -1,18 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
- *   
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
- *   
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
- *******************************************************************************/
-package org.eclipse.vorto.server.devtool.controller.editor;
+package org.eclipse.vorto.server.devtool.web.controller.editor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -28,7 +14,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.server.devtool.service.impl.editor.InformationModelEditorServiceImpl;
+import org.eclipse.vorto.server.devtool.service.impl.editor.DatatypeEditorServiceImpl;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +29,17 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/editor/infomodel")
-public class InformationModelEditorController implements IEditorController {
+@RequestMapping(value = "/editor/datatype")
+public class DatatypeEditorController {
 
 	@Autowired
 	Injector injector;
 
 	@Autowired
-	InformationModelEditorServiceImpl iInformationModelEditorService;
-
-	@ApiOperation(value = "Adds the function block to the resource set")
-	@RequestMapping(value = "/link/functionblock/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
+	DatatypeEditorServiceImpl datatypeEditorServiceImpl;
+	
+	@ApiOperation(value = "Adds the data type to the resource set")
+	@RequestMapping(value = "/link/datatype/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void linkEditor(@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
 			@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,
@@ -67,16 +53,14 @@ public class InformationModelEditorController implements IEditorController {
 		Objects.requireNonNull(version, "version must not be null");
 
 		ModelId modelId = new ModelId(name, namespace, version);
-
+		
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
-		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
-				.getInstance(IWebResourceSetProvider.class);
+		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector.getInstance(IWebResourceSetProvider.class);
 		ResourceSet resourceSet = webEditorResourceSetProvider.getResourceSetFromSession(httpServiceContext);
 		HashSet<String> referencedResourceSet = (HashSet<String>) webEditorResourceSetProvider
 				.getReferencedResourcesFromSession(httpServiceContext);
-
-		String content = iInformationModelEditorService.linkModelToResource(resourceId, modelId, resourceSet,
-				referencedResourceSet);
+		
+		String content = datatypeEditorServiceImpl.linkModelToResource(resourceId, modelId, resourceSet, referencedResourceSet);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();
@@ -84,13 +68,12 @@ public class InformationModelEditorController implements IEditorController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-
+	
 	@ApiOperation(value = "")
 	@RequestMapping(value = "/search={expression:.*}", method = RequestMethod.GET)
 	public List<ModelResource> searchByExpression(
 			@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
-
 		Objects.requireNonNull(expression, "namespace must not be null");
-		return iInformationModelEditorService.searchModelByExpression(expression);
-	}
+		return datatypeEditorServiceImpl.searchModelByExpression(expression);
+	}	
 }

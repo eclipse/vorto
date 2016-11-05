@@ -15,10 +15,6 @@
 package org.eclipse.vorto.repository.internal.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,6 +23,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.jcr.Binary;
@@ -43,8 +40,6 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.http.model.ModelId;
@@ -69,8 +64,6 @@ import org.eclipse.vorto.repository.service.IUserRepository;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-
 
 /**
  * Implementation of the repository using JCR
@@ -81,6 +74,7 @@ import org.springframework.util.StringUtils;
 @Service
 public class JcrModelRepository implements IModelRepository {
 
+	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
 	@Autowired
 	private Session session;
 
@@ -92,7 +86,10 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private INotificationService notificationService;
-	
+
+	@Autowired
+	private ITemporaryStorage uploadStorage;
+
 	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
 
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
@@ -129,11 +126,6 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-//	private boolean isMappingNode(Node node) throws RepositoryException {
-//		return node.hasProperty("vorto:type")
-//				&& ModelType.valueOf(node.getProperty("vorto:type").getString()) == ModelType.Mapping;
-//	}
-
 	private ModelResource createModelResource(Node node) throws RepositoryException {
 		ModelResource resource = new ModelResource(ModelId.fromPath(node.getParent().getPath()),
 				ModelType.valueOf(node.getProperty("vorto:type").getString()));
@@ -148,10 +140,10 @@ public class JcrModelRepository implements IModelRepository {
 			Value[] referenceValues = null;
 			try {
 				referenceValues = node.getProperty("vorto:references").getValues();
-			}catch(Exception ex) {
-				referenceValues = new Value[] {node.getProperty("vorto:references").getValue()};
+			} catch (Exception ex) {
+				referenceValues = new Value[] { node.getProperty("vorto:references").getValue() };
 			}
-			
+
 			if (referenceValues != null) {
 				ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
 				for (Value referValue : referenceValues) {
@@ -171,7 +163,7 @@ public class JcrModelRepository implements IModelRepository {
 			final ModelId referencedById = ModelId.fromPath(referencedByFileNode.getParent().getPath());
 			resource.getReferencedBy().add(referencedById);
 		}
-		
+
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
 		if (imageNodeIterator.hasNext()) {
 			resource.setHasImage(true);
@@ -188,9 +180,8 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
-			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName())
-					.parse(is);
-			
+			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
+
 			if (contentType == ContentType.XMI) {
 				return new DefaultModelContent(resource.getModel(), contentType, resource.toXMI());
 			} else {
@@ -208,72 +199,44 @@ public class JcrModelRepository implements IModelRepository {
 
 		try {
 			ModelResource resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
-			
+
 			List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
 			for (IModelValidator validator : validators) {
 				try {
 					validator.validate(resource);
-				} catch(ValidationException validationException) {
+				} catch (ValidationException validationException) {
 					validationExceptions.add(validationException);
 				}
 			}
-			
+
 			if (validationExceptions.size() <= 0) {
-				return UploadModelResult.valid(createUploadHandle(resource.getId(), content, fileName), resource);
+				return UploadModelResult.valid(createUploadHandle(content, resource.getModelType()), resource);
 			} else {
-				return UploadModelResult.invalid(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
+				return UploadModelResult
+						.invalid(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
 			}
-		} catch(ValidationException e) {
+		} catch (ValidationException e) {
 			return UploadModelResult.invalid(e);
 		}
 	}
 
-	@Override
-	public void checkin(String handleId, final String author) {
-		String absoluteHandleId = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + handleId)).getAbsolutePath();
-		final ModelResource resource = parseModelResource(absoluteHandleId);
-		checkinModel(absoluteHandleId, resource, author);			
-	}
-	
-	private static String getDefaultExtractDirectory() {
-		return FilenameUtils.normalize(FileUtils.getTempDirectory().getPath() + "/vorto", true);
-	}
-	
-	private String createUploadHandle(ModelId id, byte[] content, String fileName) {
-		try {
-			File tmpDirectory = new File(getDefaultExtractDirectory());
-			if (!tmpDirectory.exists()) {
-				tmpDirectory.mkdirs();
-			}
-			File file = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + StringUtils.getFilename(fileName)));
-			IOUtils.write(content, new FileOutputStream(file));
-			logger.debug("Created temporary file for upload : " + file.getName());
-			return file.getName();
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create temporary file for uploaded model", e);
-		}
+	private String createUploadHandle(byte[] content, ModelType type) {
+		final String handleId = UUID.randomUUID().toString() + type.getExtension();
+		return this.uploadStorage.store(handleId, content, TTL_TEMP_STORAGE_INSECONDS).getKey();
 	}
 
-	private ModelResource parseModelResource(String handleId) {
-		InputStream contentAsStream;
-		File uploadedFile;
-		try {
-			uploadedFile = new File(handleId);
-			logger.info("Found temporary file for handleId : " + uploadedFile.getName());
-			contentAsStream = new FileInputStream(uploadedFile);
-		} catch (FileNotFoundException e) {
-			throw new ModelNotFoundException("Could not find uploaded model with the specified handle" + handleId, e);
+	@Override
+	public void checkin(String handleId, String author) {
+		StorageItem uploadedItem = this.uploadStorage.get(handleId);
+		
+		if (uploadedItem == null) {
+			throw new IllegalArgumentException("No model found for handleId '" + handleId + "'");
 		}
-			final ModelResource resource = ModelParserFactory.getParser(uploadedFile.getName()).parse(contentAsStream);
-		return resource;
-		}
-			
-	private void checkinModel(String handleId, ModelResource resource, String author) {
-		final File uploadedFile = new File(handleId);
-		byte[] content;
+
+		final ModelResource resource = ModelParserFactory.getParser(handleId)
+				.parse(new ByteArrayInputStream((byte[])uploadedItem.getValue()));
+
 		try {
-			content = IOUtils.toByteArray(new FileInputStream(uploadedFile));
-			logger.info("Checkin for " + resource.getId().getPrettyFormat() + " was approved. Proceeding with checkin...");
 			Node folderNode = createNodeForModelId(resource.getId());
 			Node fileNode = folderNode.addNode(resource.getId().getName() + resource.getModelType().getExtension(),
 					"nt:file");
@@ -281,18 +244,18 @@ public class JcrModelRepository implements IModelRepository {
 			fileNode.addMixin("mix:referenceable");
 			fileNode.setProperty("vorto:author", author);
 			Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream((byte[])uploadedItem.getValue()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
-			logger.info("Checkin successful." + handleId);
-			FileUtils.deleteQuietly(uploadedFile);
+			logger.info("Checkin successful");
+			this.uploadStorage.remove(handleId);
 			// Email Notification
 			notifyWatchers(resource, author);
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new FatalModelRepositoryException("Problem checking in uploaded model" + handleId, e);
+			logger.error("Error checking in model", e);
+			throw new FatalModelRepositoryException("Problem checking in uploaded model" + resource.getId(), e);
 		}
-		}
+	}
 
 	private void notifyWatchers(ModelResource resource, String author) {
 		resource.setAuthor(author);
@@ -442,7 +405,7 @@ public class JcrModelRepository implements IModelRepository {
 		}
 		return null;
 	}
-	
+
 	public ModelSearchUtil getModelSearchUtil() {
 		return modelSearchUtil;
 	}
@@ -458,7 +421,7 @@ public class JcrModelRepository implements IModelRepository {
 	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-	
+
 	public INotificationService getNotificationService() {
 		return notificationService;
 	}

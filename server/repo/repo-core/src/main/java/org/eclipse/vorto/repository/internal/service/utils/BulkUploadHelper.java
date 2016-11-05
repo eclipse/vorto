@@ -17,30 +17,26 @@ package org.eclipse.vorto.repository.internal.service.utils;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferencesValidation;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
-import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
@@ -48,10 +44,15 @@ import org.springframework.util.StringUtils;
 
 public class BulkUploadHelper {
 
-	private IModelRepository repositoryService;
+	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
 	
-	public BulkUploadHelper(IModelRepository modelRepository) {
+	private IModelRepository repositoryService;
+
+	private ITemporaryStorage uploadStorage;
+	
+	public BulkUploadHelper(IModelRepository modelRepository, ITemporaryStorage storage) {
 		this.repositoryService = modelRepository;
+		this.uploadStorage = storage;
 	}
 
 	public List<UploadModelResult> uploadMultiple(byte[] content, String zipFileName) {
@@ -126,32 +127,15 @@ public class BulkUploadHelper {
 		List<UploadModelResult> result = new ArrayList<UploadModelResult>();
 		
 		for (ModelResource resource : resources) {
-			result.add(UploadModelResult.valid(createUploadHandle(((ModelEMFResource)resource).toDSL(), resource.getId().getFileName()+resource.getModelType().getExtension()), resource));
+			result.add(UploadModelResult.valid(createUploadHandle(((ModelEMFResource)resource).toDSL(),resource.getModelType()), resource));
 		}
 		
 		return result;
 	}
 	
-	public void checkinMultiple(List<ModelHandle> handles) {
-		
-	}
-	
-	private static String getDefaultExtractDirectory() {
-		return FilenameUtils.normalize(FileUtils.getTempDirectory().getPath() + "/vorto", true);
-	}
-	
-	private String createUploadHandle(byte[] content, String fileName) {
-		try {
-			File tmpDirectory = new File(getDefaultExtractDirectory());
-			if (!tmpDirectory.exists()) {
-				tmpDirectory.mkdirs();
-			}
-			File file = new File(FilenameUtils.normalize(getDefaultExtractDirectory() + "/" + StringUtils.getFilename(fileName)));
-			IOUtils.write(content, new FileOutputStream(file));
-			return file.getName();
-		} catch (IOException e) {
-			throw new RuntimeException("Could not create temporary file for uploaded model", e);
-		}
+	private String createUploadHandle(byte[] content, ModelType type) {
+		final String handleId = UUID.randomUUID().toString() + type.getExtension();
+		return this.uploadStorage.store(handleId, content, TTL_TEMP_STORAGE_INSECONDS).getKey();
 	}
 	
 	private boolean isValid(String file) {

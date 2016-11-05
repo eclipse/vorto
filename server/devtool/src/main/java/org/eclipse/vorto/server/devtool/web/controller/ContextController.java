@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.controller;
+package org.eclipse.vorto.server.devtool.web.controller;
 
 import org.eclipse.vorto.server.devtool.models.GlobalContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/rest/context")
-public class RepositoryController {
+public class ContextController {
 
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;

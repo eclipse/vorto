@@ -12,20 +12,21 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.controller.editor;
+package org.eclipse.vorto.server.devtool.web.controller.publisher;
 
-import java.util.List;
+import org.springframework.core.io.ByteArrayResource;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+public class FileMessageResource extends ByteArrayResource {
 
-import org.eclipse.vorto.http.model.ModelResource;
+    private final String filename;
 
-public interface IEditorController {
+    public FileMessageResource(final byte[] byteArray, final String filename) {
+        super(byteArray);
+        this.filename = filename;
+    }
 
-	public void linkEditor(String resourceId, String namespace, String name, String version, HttpServletRequest request,
-			HttpServletResponse response);
-
-	List<ModelResource> searchByExpression(String expression);
-
+    @Override
+    public String getFilename() {
+        return filename;
+    }
 }

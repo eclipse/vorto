@@ -114,7 +114,6 @@ public class DevtoolReferenceLinker {
 					resource.load(new ByteArrayInputStream(fileContents.getBytes((StandardCharsets.UTF_8))),
 							resourceSet.getLoadOptions());
 					referencedResourceSet.add(fileName);
-					System.out.println(resourceSet);
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}

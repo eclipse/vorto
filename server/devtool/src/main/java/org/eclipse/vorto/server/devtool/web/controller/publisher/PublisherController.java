@@ -1,8 +1,20 @@
-package org.eclipse.vorto.server.devtool.controller.publisher;
+/*******************************************************************************
+ * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *   
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *   
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ *******************************************************************************/
+package org.eclipse.vorto.server.devtool.web.controller.publisher;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -17,7 +29,6 @@ import org.eclipse.vorto.http.model.ServerResponse;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.models.ProjectResourceListWrapper;
-import org.eclipse.vorto.server.devtool.utils.Constants;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
@@ -63,11 +74,10 @@ public class PublisherController {
 			Resource resource = resourceSet.getResource(URI.createURI(projectResource.getResourceId()), true);
 			resourceList.add(resource);
 		}
-		String zipFilePath = createZipFile(projectResourceListWrapper.getProjectResourceList(), resourceList);
-		ResponseEntity<ServerResponse> response =  devtoolRestClient.uploadMultipleFiles(zipFilePath);
-		File zipFile = new File(zipFilePath);
-		zipFile.delete();
-		return response;
+		byte[] zipFileContent = createZipFileContent(projectResourceListWrapper.getProjectResourceList(), resourceList);
+		
+		final String fileName = Long.toString(System.currentTimeMillis()) + ".zip";
+		return devtoolRestClient.uploadMultipleFiles(fileName,zipFileContent);
 	}
 
 	@ApiOperation(value = "Checks in single model to the vorto repository")
@@ -84,12 +94,10 @@ public class PublisherController {
 				return devtoolRestClient.checkInMultipleFiles(modelHandles);
 	}
 
-	private String createZipFile(ArrayList<ProjectResource> projectResourceList, ArrayList<Resource> resourceList) {
-		String zipFile = Constants.UPLOAD_ZIP_FILE_DIRECTORY + File.separator
-				+ Long.toString(System.currentTimeMillis()) + ".zip";
+	private byte[] createZipFileContent(ArrayList<ProjectResource> projectResourceList, ArrayList<Resource> resourceList) {
 		try {
-			FileOutputStream fileOutputStream = new FileOutputStream(zipFile);
-			ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zipOutputStream = new ZipOutputStream(baos);
 			for (int index = 0; index < projectResourceList.size(); index++) {
 				zipOutputStream.putNextEntry(new ZipEntry(projectResourceList.get(index).getName()));
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -99,7 +107,7 @@ public class PublisherController {
 				zipOutputStream.closeEntry();
 			}
 			zipOutputStream.close();
-			return zipFile;
+			return baos.toByteArray();
 		} catch (Exception ex) {
 			return null;
 		}
