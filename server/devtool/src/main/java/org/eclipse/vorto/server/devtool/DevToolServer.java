@@ -14,14 +14,27 @@
  */
 package org.eclipse.vorto.server.devtool;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+@Configuration
 @SpringBootApplication
-@ComponentScan(basePackages = {"org.eclipse.vorto.server.devtool"})
+@EnableJpaRepositories
 public class DevToolServer extends SpringBootServletInitializer {
 				
 	public static void main(String... args) {
@@ -31,5 +44,40 @@ public class DevToolServer extends SpringBootServletInitializer {
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(DevToolServer.class);
+	}
+	
+	@Bean
+	public static PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder(11);
+	}
+
+	@Configuration
+	@EnableWebSecurity
+	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+		@Autowired
+		private UserDetailsService userDetailsService;
+
+		@Autowired
+		private PasswordEncoder passwordEncoder;
+
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers("/webjars/**").antMatchers("/dist/**").antMatchers("/css/**").antMatchers("/index.html");
+		}
+		
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.authorizeRequests().antMatchers("/rest/context/user","/project/**","/editor/**","/publish/**").authenticated().and()
+					.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/index.html");
+			http.formLogin().loginProcessingUrl("/j_spring_security_check");
+			http.csrf().disable();
+
+		}
+
+		@Autowired
+		public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		}
 	}
 }

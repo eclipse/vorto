@@ -366,6 +366,15 @@ ul.nav {
     width: 240px;
 }
 
+.login-box {
+     margin: 5% auto;
+     width: 360px;
+     border-radius:5px; 
+     border:1px solid #ccc;
+     padding:50px;
+     background: #f5f6f7; 
+}
+
 .main .login-box .page-header .signup-box{
     margin-top: -20px;
 }

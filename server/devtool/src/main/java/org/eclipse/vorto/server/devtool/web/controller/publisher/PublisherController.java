@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/publish")
+@RequestMapping(value = "/rest/publish")
 public class PublisherController {
 
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")

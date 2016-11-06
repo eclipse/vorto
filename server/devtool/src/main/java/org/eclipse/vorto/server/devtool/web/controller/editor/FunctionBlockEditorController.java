@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/editor/functionblock")
+@RequestMapping(value = "/rest/editor/functionblock")
 public class FunctionBlockEditorController implements IEditorController {
 
 	@Autowired

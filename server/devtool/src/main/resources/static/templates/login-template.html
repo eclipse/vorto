@@ -1,0 +1,33 @@
+<div class="login-box">
+<div class="page-header">
+	<h2>Sign in</h2>
+</div>
+	
+	<div>			
+	      <form class="form-signin">
+	        
+	        <span ng-if="error" class="help-block login-form-main-message ">Authentication failed!</span>
+	        	        
+	        <label for="inputUsername" class="sr-only">Username</label>
+	       	<div class="left-inner-addon">
+    			<i class="fa fa-user"></i>
+	        	<input type="text" id="inputUsername" class="form-control" placeholder="Username" ng-model="credentials.username" required autofocus>
+			</div>
+			
+			<label for="inputPassword" class="sr-only">Password</label>
+	       	<div class="left-inner-addon">
+				<i class="fa fa-key"></i>
+	       	 	<input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="credentials.password" required>
+			</div>
+	      
+	      	<br/>
+	        
+	        <button class="btn btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
+	       	<div id="signup">
+		       	<br/>
+		       		<h3>New to Vorto? <a href="#/signup">Register</a></h3>
+	       		 <br/>
+       		 </div>     	
+	      </form>		
+	</div>
+</div>

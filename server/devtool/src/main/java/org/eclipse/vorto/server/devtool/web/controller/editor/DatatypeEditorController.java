@@ -29,7 +29,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/editor/datatype")
+@RequestMapping(value = "/rest/editor/datatype")
 public class DatatypeEditorController {
 
 	@Autowired

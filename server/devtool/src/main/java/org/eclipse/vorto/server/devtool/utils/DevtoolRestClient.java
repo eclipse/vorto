@@ -32,6 +32,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClientException;
@@ -51,12 +52,6 @@ public class DevtoolRestClient {
 
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String basePath;
-	
-	@Value("${vorto.repository.username}")
-	private String repositoryUser;
-	
-	@Value("${vorto.repository.password}")
-	private String repositoryPassword;
 	
 	@Autowired
 	private RestTemplate restTemplate;
@@ -139,11 +134,9 @@ public class DevtoolRestClient {
 	}
 
 	private HttpHeaders getAuthorisedHeaders(){
-		/*
-		 * TODO
-		 * Accept username and password as parameters later
-		 */
-		String plainCreds = repositoryUser+":"+repositoryPassword;
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		String password = (String)SecurityContextHolder.getContext().getAuthentication().getCredentials();
+		String plainCreds = username+":"+password;
 		byte[] plainCredsBytes = plainCreds.getBytes();
 		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
 		String base64Creds = new String(base64CredsBytes);

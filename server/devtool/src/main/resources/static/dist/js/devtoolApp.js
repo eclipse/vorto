@@ -21,6 +21,10 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
           templateUrl: "templates/project-template.html",
           controller: 'ProjectController'
         })
+        .when('/login', {
+          templateUrl: "templates/login-template.html",
+          controller: 'LoginController'
+        })
         .otherwise({
           redirectTo: '/project'
         });
@@ -35,6 +39,43 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
     }
     
     $rootScope.getContext();
+    
+	 	$rootScope.$on("$locationChangeStart", function(event, next, current) {
+			$rootScope.error = false;
+	 		if($location.path() !== "/login" && $rootScope.authenticated === false) {
+	 			$location.path('/login');
+	 		}
+	    });
+
+		$rootScope.user = [];
+		$rootScope.getUser = function() {
+			$http.get('rest/context/user').success(
+	      		function(data, status, headers, config) {
+	      			if (data.name != null) {
+                    	$rootScope.user = data.name;
+                    	$rootScope.authenticated = true;
+                    	$rootScope.authority = data.role;
+                    	$location.path("/project");
+                    } else {
+                    	$location.path("/login");
+                    }
+	      		}).error(function(data, status, headers, config) {
+					$rootScope.authenticated = false;
+					$location.path("login");
+	    		});
+		};
+
+		$rootScope.getUser();
+
+		$rootScope.logout = function() {
+			$http.post('logout', {}).success(function() {
+				$rootScope.authenticated = false;
+				$location.path("/login");
+			}).error(function(data) {
+				$location.path("/login");
+				$rootScope.authenticated = false;
+			});
+		};
   });
 
   return app;

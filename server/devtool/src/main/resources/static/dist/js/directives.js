@@ -8,7 +8,7 @@ define(["angular"], function(angular) {
         elem.on('blur', function(evt) {
           scope.$apply(function() {
             if (elem.val()) {
-              $http.get('./project/' + elem.val() + '/check').success(
+              $http.get('./rest/project/' + elem.val() + '/check').success(
                 function(data, status, headers, config) {
                   ctrl.$setValidity('unique', true);
                 }).error(function(data, status, headers, config) {

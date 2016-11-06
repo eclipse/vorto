@@ -17,11 +17,18 @@ package org.eclipse.vorto.server.devtool.config;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
+import javax.annotation.PostConstruct;
+
+import org.eclipse.vorto.server.devtool.models.Role;
+import org.eclipse.vorto.server.devtool.models.User;
+import org.eclipse.vorto.server.devtool.service.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -33,6 +40,12 @@ public class RestTemplateConfigLocal {
 
 	@Value("${http.proxyPort}")
 	private String proxyPort;
+	
+	@Autowired
+	private IUserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Bean
 	public RestTemplate restTemplate() {
@@ -45,5 +58,26 @@ public class RestTemplateConfigLocal {
 		} else {
 			return new RestTemplate();
 		}
+	}
+
+	
+	@PostConstruct
+	public void setUpTestUser() {
+		User admin = new User();
+		
+		admin.setUsername("admin".toLowerCase());
+		admin.setPassword( encoder.encode("admin"));
+		admin.setHasWatchOnRepository(false);
+		admin.setEmail("alexander.edelmann@bosch-si.com");
+		admin.setRoles(Role.ADMIN);
+			
+		userRepository.save(admin);
+		
+		User user = new User();
+		user.setUsername("testuser");
+		user.setPassword(encoder.encode("testuser"));
+		user.setRoles(Role.USER);
+		
+		userRepository.save(user);
 	}
 }

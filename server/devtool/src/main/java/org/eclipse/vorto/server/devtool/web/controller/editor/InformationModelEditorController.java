@@ -43,7 +43,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@RequestMapping(value = "/editor/infomodel")
+@RequestMapping(value = "/rest/editor/infomodel")
 public class InformationModelEditorController implements IEditorController {
 
 	@Autowired

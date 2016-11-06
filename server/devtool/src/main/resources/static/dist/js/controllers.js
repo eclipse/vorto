@@ -1,6 +1,53 @@
 define(["angular"], function(angular) {
   var app = angular.module('apps.controller', ['smart-table', 'apps.directive']);
   
+app.controller('LoginController', ['$scope', '$rootScope', '$location', '$http',
+
+    function($scope, $rootScope, $location, $http) {
+
+    var authenticate = function(credentials, callback) {
+        $http.get('rest/context/user').success(function(data) {
+            if (data.name) {	
+                $rootScope.authenticated = true;
+                $rootScope.user = data.name;
+                $rootScope.error = false;
+                $location.path("/project");
+            } else {
+                $rootScope.authenticated = false;
+            }
+            callback && callback();
+        }).error(function(data) {
+            $rootScope.authenticated = false;
+            callback && callback();
+        });
+    }
+
+    authenticate();
+    $scope.credentials = {};
+    $scope.login = function() {
+    	$http.post('/j_spring_security_check',$.param($scope.credentials), {
+    		headers : {
+    			"content-type" : "application/x-www-form-urlencoded"
+    		}
+    	}).success(function(data) {
+    		authenticate(function() {
+    			if ($rootScope.authenticated) {
+    				$scope.error = false;
+    				console.log("authenticated, redirecting to project overview");
+    				$location.path("project");
+    			} else {
+    				$scope.error = true;
+    				
+    			}
+    		});
+    	}).error(function(data) {    		
+    		$scope.error = true;
+    		$rootScope.authenticated = false;
+    	})
+    };
+
+}]);
+  
   app.controller('EditorController', function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal) {
 
     $scope.error = null;
@@ -42,7 +89,7 @@ define(["angular"], function(angular) {
 
     $scope.openProject = function() {
       $scope.projectName = $routeParams.projectName;
-      $http.get('./project/' + $scope.projectName + '/open').success(
+      $http.get('./rest/project/' + $scope.projectName + '/open').success(
         function(data, status, headers, config) {
           $scope.showEditorBody = true;
           $scope.getResources();
@@ -55,12 +102,12 @@ define(["angular"], function(angular) {
 
     $scope.uploadProject = function() {
       var resources = [];
-      $http.get('./project/' + $scope.projectName + '/resources').success(
+      $http.get('./rest/project/' + $scope.projectName + '/resources').success(
 		  function(data, status, headers, config) {
           for (i = 0; i < data.length; i++) {
             resources.push(data[i]);
           }
-          $http.post('./publish/upload', {
+          $http.post('./rest/publish/upload', {
             "projectResourceList": resources
           }).success(
             function(data, status, headers, config) {
@@ -89,7 +136,7 @@ define(["angular"], function(angular) {
       };    
     
     $scope.getResources = function() {
-      $http.get('./project/' + $scope.projectName + '/resources').success(
+      $http.get('./rest/project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
           for (i = 0; i < data.length; i++) {
             $scope.openEditor(data[i]);
@@ -108,7 +155,7 @@ define(["angular"], function(angular) {
     });
 
     $scope.$on("deleteEditor", function(event, tab) {
-      var url = './project/' + $scope.projectName + '/resources/delete/' + tab.namespace + '/' + tab.name + '/' + tab.version;
+      var url = './rest/project/' + $scope.projectName + '/resources/delete/' + tab.namespace + '/' + tab.name + '/' + tab.version;
       $http.get(url).success(
         function(data, status, headers, config) {
           $scope.deleteTab(tab.index);
@@ -216,7 +263,7 @@ define(["angular"], function(angular) {
     }
 
     $scope.addEditor = function(model) {
-      $http.get('./project/' + $scope.projectName + '/resources/check/' + model.namespace + '/' + model.name + '/' + model.version).success(
+      $http.get('./rest/project/' + $scope.projectName + '/resources/check/' + model.namespace + '/' + model.name + '/' + model.version).success(
         function(data, status, headers, config) {
           $scope.counter++;
           var tabId = $scope.counter;
@@ -306,7 +353,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources', {
+          $http.post('./rest/project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -342,7 +389,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources', {
+          $http.post('./rest/project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -376,7 +423,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources', {
+          $http.post('./rest/project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -410,7 +457,7 @@ define(["angular"], function(angular) {
           tab['name'] = model.name;
           tab['version'] = model.version;
           tab['namespace'] = model.namespace;
-          $http.post('./project/' + $scope.projectName + '/resources', {
+          $http.post('./rest/project/' + $scope.projectName + '/resources', {
             "name": model.name,
             "resourceId": resourceId,
             "version": model.version,
@@ -494,7 +541,7 @@ define(["angular"], function(angular) {
 
     $scope.openOpenResourceModal = function() {
       var resources = [];
-      $http.get('./project/' + $scope.projectName + '/resources').success(
+      $http.get('./rest/project/' + $scope.projectName + '/resources').success(
         function(data, status, headers, config) {
           var modalInstance = $uibModal.open({
             animation: true,
@@ -545,7 +592,7 @@ define(["angular"], function(angular) {
         if ($scope.isModelSelected()) {
           $scope.showImportButton = false;
           if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
-            $http.get('./editor/infomodel/link/functionblock/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+            $http.get('./rest/editor/infomodel/link/functionblock/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 $scope.selectedEditor.setValue(data);
               }).error(function(data, status, headers, config) {
@@ -554,7 +601,7 @@ define(["angular"], function(angular) {
               $scope.showImportButton = true;
             });
           } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
-            $http.get('./editor/functionblock/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+            $http.get('./rest/editor/functionblock/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 editor.setValue(data);
               }).error(function(data, status, headers, config) {
@@ -563,7 +610,7 @@ define(["angular"], function(angular) {
               $scope.showImportButton = true;
             });
           } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'type') {
-            $http.get('./editor/datatype/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
+            $http.get('./rest/editor/datatype/link/datatype/' + $scope.selectedEditor.xtextServices.validationService._encodedResourceId + '/' + $scope.selectedModelId['namespace'] + '/' + $scope.selectedModelId['name'] + '/' + $scope.selectedModelId['version']).success(
               function(data, status, headers, config) {
                 editor.setValue(data);
               }).error(function(data, status, headers, config) {
@@ -591,14 +638,14 @@ define(["angular"], function(angular) {
       var modelType = null;
       filter = $scope.queryFilter;
       if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'infomodel') {
-        $http.get('./editor/infomodel/search=' + filter).success(
+        $http.get('./rest/editor/infomodel/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;
           }).error(function(data, status, headers, config) {
           $scope.models = [];
         });
       } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'fbmodel') {
-        $http.get('./editor/functionblock/search=' + filter).success(
+        $http.get('./rest/editor/functionblock/search=' + filter).success(
           function(data, status, headers, config) {
             $scope.models = data;
           }).error(function(data, status, headers, config) {
@@ -606,7 +653,7 @@ define(["angular"], function(angular) {
         });
       } else if ($scope.tabs[$scope.selectedTabIndex]['language'] == 'type') {
         if ($scope.tabs[$scope.selectedTabIndex]['subType'] == 'entity') {
-          $http.get('./editor/datatype/search=' + filter).success(
+          $http.get('./rest/editor/datatype/search=' + filter).success(
             function(data, status, headers, config) {
               $scope.models = data;
             }).error(function(data, status, headers, config) {
@@ -654,7 +701,7 @@ define(["angular"], function(angular) {
     };
 
     $scope.createProject = function(projectName) {
-      $http.post('./project', {
+      $http.post('./rest/project', {
         'projectName': projectName
       }).success(
         function(data, status, headers, config) {
@@ -666,7 +713,7 @@ define(["angular"], function(angular) {
     }
 
     $scope.getProjects = function() {
-      $http.get('./project').success(
+      $http.get('./rest/project').success(
         function(data, status, headers, config) {
           $scope.projects = data;
         }).error(function(data, status, headers, config) {
@@ -851,7 +898,7 @@ define(["angular"], function(angular) {
 	        }
 	      });
 	      
-	      $http.put('./publish/checkInMultiple', validUploadHandles)
+	      $http.put('./rest/publish/checkInMultiple', validUploadHandles)
 	        .success(function(result) {
 	          $scope.isLoading = false;
 	          $scope.showResultBox = true;
@@ -874,7 +921,7 @@ define(["angular"], function(angular) {
 	    };
 
 	    checkinSingle = function(handleId) {
-	      $http.put('./publish/' + handleId)
+	      $http.put('./rest/publish/' + handleId)
 	        .success(function(result) {
 	          $scope.showResultBox = true;
 	          $scope.resultMessage = result.message;
