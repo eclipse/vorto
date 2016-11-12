@@ -27,7 +27,11 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-8">
+		<div class="col-md-2 col-box">
+			<div js-tree="treeConfig" ng-model="projectResources" tree="treeInstance" tree-events-obj="treeEventsObj"></div>
+		</div>
+
+		<div class="col-md-7 col-box">
 			<div id="tabbed-editor-container">
 				<div role="tabpanel">
 					<ul class="nav nav-tabs editor-ul" role="tablist">
@@ -35,8 +39,8 @@
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
 				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
 				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
-				        		{{tab.name}} 
-				        		<span ng-click="openDeleteEditorModal($index)" class="glyphicon glyphicon-remove"></span>
+				        		{{tab.filename}} 
+				        		<span ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></span>
 				        	</a>
 						</li>
 				        <li role="presentation">
@@ -47,67 +51,68 @@
 		        <div id="editors""></div>
 		   </div>
 		</div>
-		
-		<div class="col-md-1">
-			<div class="center-col">
-				<div class="center-container" ng-show="showImportButton">
-					<a>
-						<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
-					</a>
-				</div>
-				<div class="center-container" ng-hide="showImportButton">
-					<a>
-						<i class="fa fa-cog fa-spin fa-4x"></i>
-					</a>
-					<h5>Loading..</h5>
-				</div>
+			
+		<div class="col-md-3 col-box">		
+			<div class="col-md-1 col-box">
+				<div class="center-col">
+					<div class="center-container" ng-show="showImportButton">
+						<a>
+							<i class="fa fa-angle-double-left import-button" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"></i>
+						</a>
+					</div>
+					<div class="center-container" ng-hide="showImportButton">
+						<a>
+							<i class="fa fa-cog fa-spin fa-2x"></i>
+						</a>
+					</div>
+				</div>	
 			</div>
-		</div>
-	
-		<div class="col-md-3">
-			<div id="function-block-browser-container">
-				<div id="searchResult">
-					<div>
-						<table st-table="displayedModels" st-safe-src="models"
-							class="table">
-							<thead>
-								<tr>
-									<th colspan="6">
-										<div class="form-inline form-group">
-											<input type="search" placeholder="Search Models"
-												ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
-												st-search autofocus class="queryFilter input-sm" />
-											<a id="search" class="search-button" ng-click="search()">
-												<i class="fa fa-search"></i>
+
+			<div class="col-md-11 col-box">
+				<div id="function-block-browser-container">
+					<div id="searchResult">
+						<div>
+							<table st-table="displayedModels" st-safe-src="models"
+								class="table">
+								<thead>
+									<tr>
+										<th colspan="2">
+											<div class="form-inline form-group">
+												<input type="search" placeholder="Search Models"
+													ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
+													st-search autofocus class="queryFilter input-sm" />
+												<a id="search" class="search-button" ng-click="search()">
+													<i class="fa fa-search"></i>
+												</a>
+											</div>
+										</th>
+									</tr>
+									<tr>
+										<th id="onName" st-sort="id.name"><a href="">Name <i
+												class="fa fa-sort"></i></a></th>
+										 <th class="action">Details</th>								
+									</tr>
+								</thead>
+								<tbody>
+									<tr st-select-row="model" ng-repeat="model in displayedModels">
+										<td>{{ model.id.name }}</td>
+										<td class="action">
+											<a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
+												<i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i>
 											</a>
-										</div>
-									</th>
-								</tr>
-								<tr>
-									<th id="onName" st-sort="id.name"><a href="">Name <i
-											class="fa fa-sort"></i></a></th>
-									 <th class="action">Details</th>								
-								</tr>
-							</thead>
-							<tbody>
-								<tr st-select-row="model" ng-repeat="model in displayedModels">
-									<td>{{ model.id.name }}</td>
-									<td class="action">
-										<a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
-											<i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i>
-										</a>
-									</td>
-								</tr>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td colspan="6" class="text-center">
-										<div st-pagination="" st-items-by-page="itemsByPage"
-											st-displayed-pages="displayedPages"></div>
-									</td>
-								</tr>
-							</tfoot>
-						</table>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="2" class="text-center">
+											<div st-pagination="" st-items-by-page="itemsByPage"
+												st-displayed-pages="displayedPages"></div>
+										</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

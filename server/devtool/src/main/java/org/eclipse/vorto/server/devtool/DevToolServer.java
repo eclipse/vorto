@@ -63,7 +63,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-			web.ignoring().antMatchers("/webjars/**").antMatchers("/dist/**").antMatchers("/css/**").antMatchers("/index.html");
+			web.ignoring().antMatchers("/webjars/**").antMatchers("/dist/**").antMatchers("/css/**").antMatchers("/images/**").antMatchers("/index.html");
 		}
 		
 		@Override

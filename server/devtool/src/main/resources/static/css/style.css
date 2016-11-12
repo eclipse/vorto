@@ -363,7 +363,7 @@ ul.nav {
 }
 
 .queryFilter {
-    width: 240px;
+    width: 220px;
 }
 
 .login-box {
@@ -832,7 +832,8 @@ th.action
 
 .center-col {
     position: relative;
-	height: 440px
+	height: 440px;
+    width: 16px;
 }
 
 /* Editor End */
@@ -906,6 +907,10 @@ a:hover {
 
 .search-box-open-project {
 	width: 600px;
+}
+
+.col-box {
+    padding: 0 5px 0 5px;
 }
 
 /*
