@@ -1,6 +1,6 @@
-define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-aria", "angular-bootstrap", "angular-bootstrap-templates", "smart-table", "controllers", "directives", "jquery"], function(angular) {
+define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-aria", "angular-bootstrap", "angular-bootstrap-templates", "smart-table", "controllers", "directives", "jquery", "ngJsTree"], function(angular) {
 
-  var app = angular.module('devtoolApp', ['ngRoute', 'apps.controller', 'apps.directive', 'ngAnimate', 'ui.bootstrap', 'ui.bootstrap.tpls']);
+  var app = angular.module('devtoolApp', ['ngRoute', 'apps.controller', 'apps.directive', 'ngAnimate', 'ui.bootstrap', 'ui.bootstrap.tpls', 'ngJsTree']);
 
   app.bootstrap = function() {
     angular.bootstrap(document, ['devtoolApp']);

@@ -53,7 +53,7 @@ public class FunctionBlockEditorController implements IEditorController {
 	FunctionBlockEditorServiceImpl functionBlockEditorService;
 
 	@ApiOperation(value = "Adds the data type to the resource set")
-	@RequestMapping(value = "/link/datatype/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
+	@RequestMapping(value = "/link/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void linkEditor(@ApiParam(value = "ResourceId", required = true) final @PathVariable String resourceId,
 			@ApiParam(value = "Namespace", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "Name", required = true) final @PathVariable String name,

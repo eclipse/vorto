@@ -135,7 +135,7 @@ public class DevtoolRestClient {
 
 	private HttpHeaders getAuthorisedHeaders(){
 		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		String password = (String)SecurityContextHolder.getContext().getAuthentication().getCredentials();
+		String password = (String)SecurityContextHolder.getContext().getAuthentication().getCredentials();		
 		String plainCreds = username+":"+password;
 		byte[] plainCredsBytes = plainCreds.getBytes();
 		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
