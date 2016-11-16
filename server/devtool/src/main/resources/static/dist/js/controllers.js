@@ -297,7 +297,9 @@ define(["angular"], function(angular) {
       var url = './rest/project/' + $scope.projectName + '/resources/delete/' + tab.namespace + '/' + tab.name + '/' + tab.version;
       $http.get(url).success(
         function(data, status, headers, config) {
-          $scope.closeTab(tab.index);
+          if(tab.index > -1){
+              $scope.closeTab(tab.index);        	  
+          }
           $scope.removeResource(tab);
         }).error(function(data, status, headers, config) {
         windoow.alert('Unable to delete the file');
@@ -444,7 +446,6 @@ define(["angular"], function(angular) {
           }).success(
             function(data, status, headers, config) {
             	$scope.addResource(tab);
-            	console.log($scope.projectResources);
             }).error(function(data, status, headers, config) {
             	window.alert('Failed to create file')
           });
@@ -464,6 +465,8 @@ define(["angular"], function(angular) {
       $scope.editors.splice(index, 1);
       if($scope.editors.length > 0){
     	  $scope.selectTab($scope.editors.length - 1);
+      }else{
+    	  $scope.models = []
       }
     }
 
