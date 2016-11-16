@@ -37,9 +37,9 @@
 					<ul class="nav nav-tabs editor-ul" role="tablist">
 				    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
-				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="isValidEditorTab($index)" style="color:green;"></i>
-				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-hide="isValidEditorTab($index)" style="color:red;"></i>
-				        		{{tab.filename}} 
+				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="tab.status == valid" style="color:green;"></i>
+				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-show="tab.status == invalid" style="color:red;"></i>
+				        		{{tab.filename}}
 				        		<span ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></span>
 				        	</a>
 						</li>
