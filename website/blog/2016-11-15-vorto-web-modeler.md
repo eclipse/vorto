@@ -78,5 +78,5 @@ Currently, the Vorto Web Modeler is in alpha release level and its naive. It lac
 ### Feedback...
 If this topic interests you, I would encourage you to provide feedback or participate in technical discussions in [Vorto Forums](http://eclipse.org/forums/eclipse.vorto).
 
-You can try @ ![Vorto Web Modeler demo](https://nagavijays.github.io/vorto-web-modeler/)
-The sourcecode can be found ![Vorto Web Modeler Source](https://github.com/nagavijays/vorto-web-modeler)
+You can try @ [Vorto Web Modeler demo](https://nagavijays.github.io/vorto-web-modeler/)
+The sourcecode can be found [Vorto Web Modeler Source](https://github.com/nagavijays/vorto-web-modeler)
