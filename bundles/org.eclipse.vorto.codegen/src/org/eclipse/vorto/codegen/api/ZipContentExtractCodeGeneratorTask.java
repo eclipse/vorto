@@ -18,10 +18,17 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.SoftReference;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.eclipse.vorto.core.api.model.model.ModelId;
+import org.xml.sax.SAXException;
 
 /**
  * 
@@ -29,15 +36,22 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
  *
  */
 public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<ModelId> {
+	
+	private static final String MAVEN_POM = "pom.xml";
+	private static final String ECLIPSE_PROJECT = ".project";
+	private static final String[] PATH = new String[]{"projectDescription", "name"};
 
 	private byte[] zipContent;
 	
 	private boolean isMavenContent = false;
-
+	private String eclipseProjectName = null;
+	private final EclipseProjectParserHandler handler = new EclipseProjectParserHandler(PATH);
+	private SoftReference<SAXParser> parser = null;
+	
 	public ZipContentExtractCodeGeneratorTask(byte[] zipContent) {
 		this.zipContent = zipContent;
 	}
-
+	
 	@Override
 	public void generate(ModelId infoModelId,InvocationContext context, IGeneratedWriter outputter) {
 		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipContent));
@@ -61,7 +75,7 @@ public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<Mo
 					
 					outputter.write(new Generated(fileName,folderName,new String(copyStream(zis),"utf-8")));
 					
-					if (fileName.equalsIgnoreCase("pom.xml")) {
+					if (fileName.equalsIgnoreCase(MAVEN_POM)) {
 						this.isMavenContent = true;
 					}
 				}
@@ -79,7 +93,7 @@ public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<Mo
 		}
 	}
 	
-	private byte[] copyStream(ZipInputStream in) throws Exception {
+	private byte[] copyStream(InputStream in) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		int size;
@@ -98,4 +112,52 @@ public class ZipContentExtractCodeGeneratorTask implements ICodeGeneratorTask<Mo
 	public boolean isMavenContent() {
 		return this.isMavenContent;
 	}
+	
+	/**
+	 * If the ZIP content to be processed contains an Eclipse project (a file
+	 * named /.project), returns the name of the Eclipse project extracted from
+	 * the file
+	 * 
+	 * @return the name of the Eclipse project contained in the ZIP file, or
+	 *         null if there is no .project file or there was an error parsing
+	 *         .project
+	 */
+	public String getEclipseProjectName() {
+		return this.eclipseProjectName;
+	}
+	
+	/**
+	 * Parse the generated ZIP file to check it for existing Eclipse project
+	 * components or Maven POM XMLs
+	 * 
+	 * @see {@link #isMavenContent()} {@link #getEclipseProjectName()}
+	 */
+	public void preprocess() {
+		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(zipContent));
+		try {
+			ZipEntry ze = null;
+			while ((ze = zis.getNextEntry()) != null) {
+				String name = ze.getName();
+				int mPos = name.length() - MAVEN_POM.length() -1;
+				int ePos = name.length() - ECLIPSE_PROJECT.length() -1;
+				if (MAVEN_POM.equals(name) || (mPos > 0 && (name.charAt(mPos) == '/' || name.charAt(mPos) == '\\'))) {
+					this.isMavenContent = true;
+				} else if (ECLIPSE_PROJECT.equals(name)
+						|| (ePos > 0 && (name.charAt(mPos) == '/' || name.charAt(ePos) == '\\'))) {
+					if (parser == null || parser.get() == null) {
+						parser = new SoftReference<>(SAXParserFactory.newInstance().newSAXParser());
+					}
+					parser.get().parse(zis, handler);
+					eclipseProjectName = handler.getValue();
+					handler.reset();
+				}
+			}
+		} catch (IOException|SAXException e) {
+			//TODO: do we need to log this?
+		} catch (ParserConfigurationException e1) {
+			//can not happen
+		}
+	}
+	
+
 }
