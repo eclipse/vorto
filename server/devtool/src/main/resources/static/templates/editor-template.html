@@ -13,7 +13,7 @@
 						<b>{{projectName}}</b>
 						<div class="align-right">
 							 <button class="btn btn-primary" type="button" ng-click="uploadProject()">Share <i class="fa fa-upload" aria-hidden="true"></i></button>
-							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Save and Close <span class="glyphicon glyphicon-remove"></span </button>							 
+							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Save and Close <span class="glyphicon glyphicon-remove"></span></button>							 
 						</div>
 					</h3>
 				</div>
@@ -81,8 +81,11 @@
 												<input type="search" placeholder="Search Models"
 													ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
 													st-search autofocus class="queryFilter input-sm" />
-												<a id="search" class="search-button" ng-click="search()">
+												<a id="search" class="search-button" ng-click="search()" ng-show="showSearchButton">
 													<i class="fa fa-search"></i>
+												</a>
+												<a ng-hide="showSearchButton">
+													<i class="fa fa-spinner fa-spin fa-2x"></i>
 												</a>
 											</div>
 										</th>

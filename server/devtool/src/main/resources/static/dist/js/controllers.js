@@ -65,6 +65,7 @@ define(["angular"], function(angular) {
     $scope.selectedEditor = null;
 
     $scope.showImportButton = true;
+    $scope.showSearchButton = true;
 
     $scope.showEditorBody = true;
     $scope.projectName;
@@ -367,7 +368,8 @@ define(["angular"], function(angular) {
           });
           $scope.editors.push(editor);
           $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
-          $scope.search();
+          $scope.$apply();
+          $scope.clearSearch();
         });
       });
     }
@@ -451,7 +453,7 @@ define(["angular"], function(angular) {
           });
           $scope.editors.push(editor);
           $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
-          $scope.search();
+          $scope.clearSearch();
           var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
           var tab = $scope.tabs[$scope.selectedTabIndex];
           tab['resourceId'] = resourceId;
@@ -498,7 +500,7 @@ define(["angular"], function(angular) {
       $scope.selectedTabIndex = index;
       $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id']
       $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
-      $scope.search();
+      $scope.clearSearch();
     }
 
     $scope.getTabIndex = function(tab) {
@@ -682,6 +684,11 @@ define(["angular"], function(angular) {
       }
     };
 
+    $scope.clearSearch = function() {
+    	$scope.queryFilter = "";
+    	$scope.models = [];
+    }
+    
     $scope.search = function() {
       var filter = null;
       var modelType = null;
@@ -691,11 +698,14 @@ define(["angular"], function(angular) {
         $scope.models = [];
         return;
       }
+      $scope.showSearchButton = false;
       $http.get($scope.editorConfig[language].searchUrl + filter).success(
         function(data, status, headers, config) {
           $scope.models = data;
         }).error(function(data, status, headers, config) {
         $scope.models = [];
+      }).finally(function(){
+          $scope.showSearchButton = true;
       });
     }
 
