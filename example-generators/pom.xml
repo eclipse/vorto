@@ -20,7 +20,6 @@
 		<module>org.eclipse.vorto.codegen.examples.mqtt</module>
 		<module>org.eclipse.vorto.codegen.examples.webui</module>
 		<module>org.eclipse.vorto.codegen.examples.markdown</module>
-		<module>org.eclipse.vorto.codegen.examples.bosch</module>
 		<module>org.eclipse.vorto.codegen.examples.ios</module>
 		<module>org.eclipse.vorto.codegen.examples.latex</module>
 		<module>org.eclipse.vorto.codegen.examples.jsonschema</module>

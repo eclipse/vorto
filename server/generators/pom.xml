@@ -17,7 +17,6 @@
 		<module>org.eclipse.vorto.codegen.service.javabean</module>
 		<module>org.eclipse.vorto.codegen.service.ios</module>
 		<module>org.eclipse.vorto.codegen.service.webdevice</module>
-		<module>org.eclipse.vorto.codegen.service.bosch</module>
 		<module>org.eclipse.vorto.codegen.service.mqtt</module>
 		<module>org.eclipse.vorto.codegen.service.thingworx</module>
 		<module>org.eclipse.vorto.codegen.service.markdown</module>
