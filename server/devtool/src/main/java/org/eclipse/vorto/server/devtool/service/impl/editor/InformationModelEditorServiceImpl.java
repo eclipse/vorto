@@ -50,6 +50,6 @@ public class InformationModelEditorServiceImpl extends IEditorService {
 	}
 	
 	public List<ModelResource> searchModelByExpression(String expression) {
-		return searchModelByExpressionAndValidate(expression + org.eclipse.vorto.http.model.ModelType.Functionblock.toString(), org.eclipse.vorto.http.model.ModelType.Functionblock);
+		return searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelType.Functionblock.toString(), org.eclipse.vorto.http.model.ModelType.Functionblock);
 	}
 }
