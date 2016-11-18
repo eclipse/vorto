@@ -20,13 +20,13 @@
 		<module>org.eclipse.vorto.codegen.examples.mqtt</module>
 		<module>org.eclipse.vorto.codegen.examples.webui</module>
 		<module>org.eclipse.vorto.codegen.examples.markdown</module>
-		<module>org.eclipse.vorto.codegen.examples.bosch</module>
 		<module>org.eclipse.vorto.codegen.examples.ios</module>
 		<module>org.eclipse.vorto.codegen.examples.latex</module>
 		<module>org.eclipse.vorto.codegen.examples.jsonschema</module>
 		<module>org.eclipse.vorto.codegen.examples.coap</module>
 		<module>org.eclipse.vorto.codegen.examples.aws</module>
 		<module>org.eclipse.vorto.codegen.examples.lwm2m</module>
+		<module>org.eclipse.vorto.codegen.examples.prosystfi</module>
   </modules>
   
 </project>

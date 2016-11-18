@@ -41,6 +41,13 @@ import org.eclipse.vorto.codegen.ui.context.IGeneratorProjectContext;
  * 
  */
 public class EclipseProjectGenerator<Context> {
+	
+	/**
+	 * An invocation context configuration property. If this property is set in
+	 * the configuration context, and its value is "true", Eclipse project
+	 * configuration tasks will not be executed.
+	 */
+	public static final String SKIP_PROJECT_CONFIGURATION = "skip.project.cfg";
 
 	private ConfigurationContainer configuration;
 
@@ -104,8 +111,10 @@ public class EclipseProjectGenerator<Context> {
 				for (ICodeGeneratorTask<Context> task : tasks) {
 					task.generate(context,invocationContext, new ProjectFileOutputter(project));
 				}
-
-				configuration.configure(project);
+				
+				if (! Boolean.valueOf(invocationContext.getConfigurationProperties().get(SKIP_PROJECT_CONFIGURATION))) {
+					configuration.configure(project);
+				}
 
 			} catch (CoreException e) {
 				throw new RuntimeException(e);

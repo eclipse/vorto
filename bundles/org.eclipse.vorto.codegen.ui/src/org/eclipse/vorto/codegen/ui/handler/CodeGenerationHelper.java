@@ -14,11 +14,14 @@
  */
 package org.eclipse.vorto.codegen.ui.handler;
 
+import java.util.Collections;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.SingleFileContentCodeGeneratorTask;
@@ -31,16 +34,33 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
 public class CodeGenerationHelper {
 	
 	public static void createEclipseProject(ModelId modelId, String serviceKey, IGenerationResult generatedResult) {
-		EclipseProjectGenerator<ModelId> generator = new EclipseProjectGenerator<>(modelId.getName()+"_"+serviceKey+"_generated");
-		ZipContentExtractCodeGeneratorTask zipContentTask = new ZipContentExtractCodeGeneratorTask(generatedResult.getContent());
+		byte[] generated = generatedResult.getContent();
+		ICodeGeneratorTask<ModelId> task = null;
+		String name = modelId.getName()+"_"+serviceKey+"_generated";
+		boolean containsEclipseProject = false;
+		boolean generateMaven = false;
 		if (generatedResult.getFileName().endsWith(".zip")) {
-			generator.addTask(zipContentTask);
+			ZipContentExtractCodeGeneratorTask tmp = new ZipContentExtractCodeGeneratorTask(generated);
+			tmp.preprocess();
+			if (tmp.getEclipseProjectName() != null) {
+				name = tmp.getEclipseProjectName();
+				containsEclipseProject = true;
+			} else {
+				generateMaven = tmp.isMavenContent();
+			}
+			task = tmp;
 		} else {
-			generator.addTask(new SingleFileContentCodeGeneratorTask(generatedResult.getFileName(),generatedResult.getContent()));
+			task = new SingleFileContentCodeGeneratorTask(generatedResult.getFileName(),generated);
 		}
-		generator.generate(modelId,InvocationContext.simpleInvocationContext(), new NullProgressMonitor());
-		
-		if (zipContentTask.isMavenContent()) {
+		EclipseProjectGenerator<ModelId> generator = new EclipseProjectGenerator<>(name);
+		generator.addTask(task);
+		generator.generate(modelId,
+				containsEclipseProject
+						? InvocationContext.simpleInvocationContext(Collections.singletonMap(
+								EclipseProjectGenerator.SKIP_PROJECT_CONFIGURATION, Boolean.TRUE.toString()))
+						: InvocationContext.simpleInvocationContext(),
+				new NullProgressMonitor());		
+		if (generateMaven) {
 			createMavenProjectFromGeneratedCode(generator);
 		}
 	}

@@ -88,6 +88,10 @@ public class InvocationContext {
 	public static InvocationContext simpleInvocationContext() {
 		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME,Collections.<String,String>emptyMap());
 	}
+	
+	public static InvocationContext simpleInvocationContext(Map<String, String> configProperties) {
+		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME, configProperties);
+	}
 
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
 			final String stereoType) {
