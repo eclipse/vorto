@@ -54,7 +54,7 @@ public interface IMessageDisplay {
 	 * Insert a line break in the display
 	 */
 	void displayNewLine();
-
+	
 	/**
 	 * Clear current display
 	 */
