@@ -65,29 +65,43 @@ public class JsonschemaGenerator implements IVortoCodeGenerator {
 			String targetPath, 
 			String jsonFileExtension,
 			IGeneratedWriter outputter) {
-		
-		for (Operation op : fb.getOperations()) {
-			generateForOperation(
-					op, 
-					targetPath,
-					jsonFileExtension, 
-					outputter);
+		if (fb == null) {
+			throw new RuntimeException("fb is null");
 		}
-
-		Configuration configuration = fb.getConfiguration();
-		Status status = fb.getStatus();
-		Fault fault = fb.getFault();
 		
-		generateForConfiguration(configuration, targetPath, jsonFileExtension, outputter);
-		generateForStatus(status, targetPath, jsonFileExtension, outputter);
-		generateForFault(fault, targetPath, jsonFileExtension, outputter);
-
-		for (Event event : fb.getEvents()) {
-			generateForEvent(
-					event, 
-					targetPath, 
-					jsonFileExtension, 
-					outputter);
+		if (fb.getOperations() != null) {
+			for (Operation op : fb.getOperations()) {
+				generateForOperation(
+						op, 
+						targetPath,
+						jsonFileExtension, 
+						outputter);
+			}
+		}
+		
+		Configuration configuration = fb.getConfiguration();
+		if (configuration != null) {
+			generateForConfiguration(configuration, targetPath, jsonFileExtension, outputter);
+		}
+		
+		Status status = fb.getStatus();
+		if (status != null) {
+			generateForStatus(status, targetPath, jsonFileExtension, outputter);
+		}
+		
+		Fault fault = fb.getFault();
+		if (fault != null) {
+			generateForFault(fault, targetPath, jsonFileExtension, outputter);
+		}
+		
+		if (fb.getEvents() != null) {
+			for (Event event : fb.getEvents()) {
+				generateForEvent(
+						event, 
+						targetPath, 
+						jsonFileExtension, 
+						outputter);
+			}
 		}
 	}
 
