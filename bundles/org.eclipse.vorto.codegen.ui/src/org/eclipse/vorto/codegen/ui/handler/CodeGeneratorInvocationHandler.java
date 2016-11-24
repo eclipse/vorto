@@ -113,7 +113,9 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 			InformationModel infoModel = (InformationModel) model;
 			for (FunctionblockProperty property : infoModel.getProperties()) {
 				// for syntax and parsing errors
-				if (property.getType().eResource().getErrors().size() > 0) {
+				if (property.getType() != null && property.getType().eResource() != null && 
+						property.getType().eResource().getErrors() != null && 
+						property.getType().eResource().getErrors().size() > 0) {
 					return false;
 				}
 
