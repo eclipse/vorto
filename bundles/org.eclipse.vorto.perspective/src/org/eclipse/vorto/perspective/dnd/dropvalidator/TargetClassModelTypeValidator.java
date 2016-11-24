@@ -16,6 +16,7 @@ package org.eclipse.vorto.perspective.dnd.dropvalidator;
 
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.ModelResource;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.perspective.dnd.IDropValidator;
 
 /**
@@ -37,8 +38,12 @@ public class TargetClassModelTypeValidator implements IDropValidator {
 		if (droppedObject instanceof ModelResource && targetClass.isInstance(receivingModelElement)) {
 			ModelResource model = (ModelResource) droppedObject;
 			return model.getId().getModelType() == modelType;
+		} else {
+			if (!targetClass.isInstance(receivingModelElement)) {
+				MessageDisplayFactory.getMessageDisplay().displayError("Please create a Project first before dropping models from the repository.");
+			}
+			return false;
 		}
-		return false;
 	}
 
 }
