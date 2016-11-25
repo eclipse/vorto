@@ -72,6 +72,10 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
          final List<Object> lwm2mObjects = lwm2m.getObject();
 
          final FunctionBlock functionblock = model.getFunctionblock();
+         
+         if (functionblock == null) {
+        	 throw new RuntimeException("This model has no function block.");
+         }
 
          final Object lwm2mObject = new Object();
          lwm2mObject.setObjectType( "MODefinition" ); // waiting for Issue in
@@ -236,13 +240,13 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
       item.setUnits( mappingRule.getAttributeValue(ATTRIBUTE_UNITS, "")  );
    }
 
-   private void checkResourceIdConflictAndFillSet( final Item item ) {
-      if( !resourceIdSet.isEmpty() && resourceIdSet.contains( item ) ) {
+   private void checkResourceIdConflictAndFillSet(final Item item) {
+      if (!resourceIdSet.isEmpty() && resourceIdSet.contains(item)) {
          final String errMsg = "Resource ID <" + item.getID() + "> conflict for <" + item.getName() + ">"
-            + STR_ABORT_GENERATOR;
-         throw new IllegalArgumentException( errMsg );
+		    + STR_ABORT_GENERATOR;
+		 throw new IllegalArgumentException(errMsg);
       }
-      resourceIdSet.add( item );
+	  resourceIdSet.add(item);
    }
 
    private void handleProperties( final Object lwm2mObject, final EList<Property> properties, final String operation, final InvocationContext context) {
@@ -347,7 +351,7 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
    private void handleMappingRulesForProperties( final Object lwm2mObject, final Property property, final Item item, final InvocationContext context) {
       final IMapped<Property> propertyMapping = context.getMappedElement(property, STEREOTYPE_RESOURCE);
       
-      item.setID(Short.parseShort(propertyMapping.getAttributeValue(ATTRIBUTE_ID, "0")));
+      item.setID(Short.parseShort(propertyMapping.getAttributeValue(ATTRIBUTE_ID, Integer.toString(resourceIdSet.size()))));
       item.setUnits(propertyMapping.getAttributeValue(ATTRIBUTE_UNITS, ""));
       item.setOperations(propertyMapping.getAttributeValue(ATTRIBUTE_OPERATIONS, item.getOperations()));
    }
