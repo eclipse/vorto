@@ -22,7 +22,7 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public interface GeneratorLookupRepository extends CrudRepository<Generator, Long> {
+public interface IGeneratorLookupRepository extends CrudRepository<Generator, Long> {
 	
 	/**
 	 * finds all generators by the specific generator service key
