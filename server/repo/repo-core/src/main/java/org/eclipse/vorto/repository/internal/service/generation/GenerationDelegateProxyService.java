@@ -51,7 +51,7 @@ import org.springframework.web.client.RestTemplate;
 public class GenerationDelegateProxyService implements IGeneratorService {
 	
 	@Autowired
-	private GeneratorLookupRepository registeredGeneratorsRepository;
+	private IGeneratorLookupRepository registeredGeneratorsRepository;
 	
 	@Autowired
 	private IModelRepository modelRepositoryService;
