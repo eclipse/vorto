@@ -69,7 +69,7 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 						menuMgr.add(generatorMenuMgr);
 						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
 						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
-						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_obj.gif"),treeViewer.getLocalModelWorkspace()) {
 							@Override
 							public void doAction() {
 								openMappingWizard();
@@ -78,7 +78,7 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 					}
 				}
 
-				manager.add(new ProjectAction("New Functionblock", ImageUtil.getImage("add_exc.gif"),
+				manager.add(new ProjectAction("New Functionblock", ImageUtil.getImage("add_obj.gif"),
 						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
