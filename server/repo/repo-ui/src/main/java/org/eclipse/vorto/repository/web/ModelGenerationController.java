@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -80,12 +81,15 @@ public class ModelGenerationController extends RepositoryController {
 
 		Map<String, String> requestParams = new HashMap<>();
 		request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
-		 
-		GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), serviceKey, requestParams);
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
-		response.setContentLengthLong(generatedOutput.getSize());
-		response.setContentType(APPLICATION_OCTET_STREAM);
+		
 		try {
+			System.out.println("-erle- : " + URLDecoder.decode(serviceKey, "utf-8"));
+			
+			GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), URLDecoder.decode(serviceKey, "utf-8"), requestParams);
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
+			response.setContentLengthLong(generatedOutput.getSize());
+			response.setContentType(APPLICATION_OCTET_STREAM);
+		
 			IOUtils.copy(new ByteArrayInputStream(generatedOutput.getContent()), response.getOutputStream());
 			response.flushBuffer();
 		} catch (IOException e) {

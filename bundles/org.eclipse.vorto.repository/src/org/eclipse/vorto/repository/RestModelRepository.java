@@ -193,7 +193,8 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	public Attachment generateCode(ModelId model, String serviceKey) {
 		try {
 			String url = "generation-router/" + model.getNamespace() + "/" + model.getName() + "/" + model.getVersion()
-					+ "/" + serviceKey;
+					+ "/" + URLEncoder.encode(serviceKey, "utf-8");
+			System.out.println("-erle- : " +  url);
 			Attachment result = httpClient.executeGetAttachment(url);
 			return result;
 		} catch (RepositoryException e) {
