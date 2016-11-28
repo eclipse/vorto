@@ -83,8 +83,6 @@ public class ModelGenerationController extends RepositoryController {
 		request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
 		
 		try {
-			System.out.println("-erle- : " + URLDecoder.decode(serviceKey, "utf-8"));
-			
 			GeneratedOutput generatedOutput = generatorService.generate(new ModelId(name,namespace,version), URLDecoder.decode(serviceKey, "utf-8"), requestParams);
 			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
 			response.setContentLengthLong(generatedOutput.getSize());
