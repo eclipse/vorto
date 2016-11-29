@@ -70,7 +70,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					if (model.getId().getModelType() == ModelType.Datatype) {
 						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
 						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));
-						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_exc.gif"),treeViewer.getLocalModelWorkspace()) {
+						menuMgr.add(new ProjectAction("New Mapping Model",ImageUtil.getImage("add_obj.gif"),treeViewer.getLocalModelWorkspace()) {
 							@Override
 							public void doAction() {
 								openMappingWizard();
@@ -79,7 +79,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					}
 				}
 
-				manager.add(new ProjectAction("New Entity", ImageUtil.getImage("add_exc.gif"),
+				manager.add(new ProjectAction("New Entity", ImageUtil.getImage("add_obj.gif"),
 						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
@@ -93,7 +93,7 @@ public class DatatypeTreeViewer extends ModelTreeViewer {
 					}
 				});
 
-				manager.add(new ProjectAction("New Enum", ImageUtil.getImage("add_exc.gif"),
+				manager.add(new ProjectAction("New Enum", ImageUtil.getImage("add_obj.gif"),
 						treeViewer.getLocalModelWorkspace()) {
 					@Override
 					public void doAction() {
