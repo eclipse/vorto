@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +42,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -97,7 +99,9 @@ public class ModelGenerationController extends RepositoryController {
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
 	@RequestMapping(value = "/{classifier}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
-	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(@ApiParam(value = "Choose type of generator",allowableValues="platform,documentation", required = true) @PathVariable String classifier) {
+	public Collection<GeneratorServiceInfo> getRegisteredGeneratorServices(
+			@ApiParam(value = "Choose type of generator", allowableValues="platform,documentation", required = true) @PathVariable String classifier,
+			@ApiParam(value = "Prioritize results with given tag", allowableValues="any given tags", required = false) @RequestParam(value = "orderBy", required=false, defaultValue="production") String orderBy) {
 		List<GeneratorServiceInfo> generatorInfoResult = new ArrayList<>();
 		
 		for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys(ServiceClassifier.valueOf(classifier))) {
@@ -107,8 +111,32 @@ public class ModelGenerationController extends RepositoryController {
 				LOGGER.warn("Generator " + serviceKey+" appears to be offline or not deployed. Skipping...");
 			}
 		}
-
+		
+		generatorInfoResult.sort((genInfo1, genInfo2) -> {
+			if (contains(genInfo1.getTags(), orderBy) ^ contains(genInfo2.getTags(), orderBy)) {
+				if (contains(genInfo1.getTags(), orderBy)) {
+					return -1;
+				} else {
+					return 1;
+				}
+			}
+			
+			return genInfo1.getName().compareTo(genInfo2.getName());
+		});
+		
 		return generatorInfoResult;
+	}
+	
+	private boolean contains(String[] tags, String tag) {
+		if (tags != null) {
+			for(String _tag : tags) {
+				if (_tag.equals(tag)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 		
 	@ApiOperation(value = "Returns the rank of code generators by usage")

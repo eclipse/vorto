@@ -23,6 +23,7 @@ public class GeneratorServiceInfo {
 	private String image32x32;
 	private String image144x144;
 	private ServiceClassifier classifier;
+	private String[] tags;
 	private GeneratorRating rating;
 	private String generatorInfoUrl;
 		
@@ -91,5 +92,10 @@ public class GeneratorServiceInfo {
 	public void setGeneratorInfoUrl(String generatorInfoUrl) {
 		this.generatorInfoUrl = generatorInfoUrl;
 	}
-	
+	public String[] getTags() {
+		return tags;
+	}
+	public void setTags(String[] tags) {
+		this.tags = tags;
+	}
 }
