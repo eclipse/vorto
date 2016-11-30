@@ -18,6 +18,7 @@
 		</license>
 	</licenses>
 	<modules>
+		<module>framework</module>
 		<module>bundles</module>
 		<module>example-generators</module>
 		<module>features</module>
@@ -69,7 +70,7 @@
 			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
 		<repository>
-			<id>Xtext Update Site</id>
+			<id>XtextUpdateSite</id>
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
 		</repository>

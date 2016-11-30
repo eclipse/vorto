@@ -8,8 +8,10 @@ import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
@@ -25,7 +27,8 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 		STATUS, CONFIGURATION	
 	}
 	
-	override generate(InformationModel model, InvocationContext invocationContext) {
+	override generate(InformationModel model, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		var zipOutput = new GenerationResultZip(model,getServiceKey());
 		new JSONGeneratorTask().generate(model,invocationContext,zipOutput);
 		return zipOutput;
