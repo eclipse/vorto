@@ -29,57 +29,78 @@ public class GeneratorServiceInfo {
 	private String image32x32;
 	private String image144x144;
 	private ServiceClassifier classifier;
-		
+	private String[] tags;
+
 	public String getKey() {
 		return key;
 	}
+
 	public void setKey(String key) {
 		this.key = key;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getCreator() {
 		return creator;
 	}
+
 	public void setCreator(String creator) {
 		this.creator = creator;
 	}
+
 	public String getDocumentationUrl() {
 		return documentationUrl;
 	}
+
 	public void setDocumentationUrl(String documentationUrl) {
 		this.documentationUrl = documentationUrl;
 	}
+
 	public String getImage32x32() {
 		return image32x32;
 	}
+
 	public void setImage32x32(String image32x32) {
 		this.image32x32 = image32x32;
 	}
+
 	public String getImage144x144() {
 		return image144x144;
 	}
+
 	public void setImage144x144(String image144x144) {
 		this.image144x144 = image144x144;
 	}
+
 	public ServiceClassifier getClassifier() {
 		return classifier;
 	}
+
 	public void setClassifier(ServiceClassifier classifier) {
 		this.classifier = classifier;
 	}
-	
-	
-	
-	
+
+	public String[] getTags() {
+		return tags;
+	}
+
+	public void setTags(String[] tags) {
+		this.tags = tags;
+	}
+
 }
