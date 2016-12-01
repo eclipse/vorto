@@ -40,7 +40,7 @@
 
 
 	<build>
-		<finalName>vorto-webdevice</finalName>
+		<finalName>vorto-prosyst</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
