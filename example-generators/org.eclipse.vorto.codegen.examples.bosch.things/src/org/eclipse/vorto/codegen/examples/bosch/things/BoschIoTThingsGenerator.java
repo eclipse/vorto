@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.codegen.examples.bosch.things;
 
+import java.util.Collections;
+
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
@@ -34,6 +36,9 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+
+import com.google.common.collect.ImmutableMap;
 
 public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
@@ -48,8 +53,12 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
 		for (FunctionblockProperty fbp : infomodel.getProperties()) {
 			FunctionBlock fb = fbp.getType().getFunctionblock();
+			
+			InvocationContext context = invocationContextFrom(getModelId(fbp));
+			
 			generateForFunctionblock(
 					fb,  
+					context,
 					TARGET_PATH + "/" 
 							+ fbp.getType().getNamespace() + "."
 							+ fbp.getType().getName() + "_"
@@ -59,9 +68,18 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		}
 		return zipOutputter;
 	}
+	
+	private InvocationContext invocationContextFrom(String modelId) {
+		return new InvocationContext(Collections.<MappingModel>emptyList(), null, ImmutableMap.of("modelId", modelId));
+	}
+
+	private String getModelId(FunctionblockProperty fbp) {
+		return fbp.getType().getNamespace() + "." + fbp.getType().getName() + ":" + fbp.getType().getVersion();
+	}
 
 	public void generateForFunctionblock(
 			FunctionBlock fb, 
+			InvocationContext context,
 			String targetPath, 
 			String jsonFileExtension,
 			IGeneratedWriter outputter) {
@@ -73,6 +91,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 			for (Operation op : fb.getOperations()) {
 				generateForOperation(
 						op, 
+						context,
 						targetPath,
 						jsonFileExtension, 
 						outputter);
@@ -81,23 +100,24 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		
 		Configuration configuration = fb.getConfiguration();
 		if (configuration != null) {
-			generateForConfiguration(configuration, targetPath, jsonFileExtension, outputter);
+			generateForConfiguration(configuration, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		Status status = fb.getStatus();
 		if (status != null) {
-			generateForStatus(status, targetPath, jsonFileExtension, outputter);
+			generateForStatus(status, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		Fault fault = fb.getFault();
 		if (fault != null) {
-			generateForFault(fault, targetPath, jsonFileExtension, outputter);
+			generateForFault(fault, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		if (fb.getEvents() != null) {
 			for (Event event : fb.getEvents()) {
 				generateForEvent(
 						event, 
+						context,
 						targetPath, 
 						jsonFileExtension, 
 						outputter);
@@ -105,45 +125,47 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		}
 	}
 
-	private void generateForConfiguration(Configuration configuration, String targetPath, String jsonFileExtension,
+	private void generateForConfiguration(Configuration configuration, InvocationContext context, String targetPath, String jsonFileExtension,
 			IGeneratedWriter outputter) {
 		ChainedCodeGeneratorTask<Configuration> generator = new ChainedCodeGeneratorTask<Configuration>();
 		generator.addTask(new ConfigurationValidationTask(jsonFileExtension, targetPath));
-		generator.generate(configuration, null, outputter);
+		generator.generate(configuration, context, outputter);
 	}
 	
-	private void generateForFault(Fault fault, String targetPath, String jsonFileExtension,
+	private void generateForFault(Fault fault, InvocationContext context, String targetPath, String jsonFileExtension,
 			IGeneratedWriter outputter) {
 		ChainedCodeGeneratorTask<Fault> generator = new ChainedCodeGeneratorTask<Fault>();
 		generator.addTask(new FaultValidationTask(jsonFileExtension, targetPath));
-		generator.generate(fault, null, outputter);
+		generator.generate(fault, context, outputter);
 	}
 	
-	private void generateForStatus(Status status, String targetPath, String jsonFileExtension,
+	private void generateForStatus(Status status, InvocationContext context, String targetPath, String jsonFileExtension,
 			IGeneratedWriter outputter) {
 		ChainedCodeGeneratorTask<Status> generator = new ChainedCodeGeneratorTask<Status>();
 		generator.addTask(new StatusValidationTask(jsonFileExtension, targetPath));
-		generator.generate(status, null, outputter);
+		generator.generate(status, context, outputter);
 	}
 
 	public void generateForEvent(
 			Event event, 
+			InvocationContext context, 
 			String targetPath, 
 			String jsonFileExtension, 
 			IGeneratedWriter outputter) 
 	{
 		ChainedCodeGeneratorTask<Event> generator = new ChainedCodeGeneratorTask<Event>();
 		generator.addTask(new EventValidationTask(jsonFileExtension, targetPath));
-		generator.generate(event, null, outputter);
+		generator.generate(event, context, outputter);
 	}
 
 	public void generateForOperation(Operation op,
+			InvocationContext context, 
 			String targetPath, String jsonFileExtension, IGeneratedWriter outputter) 
 	{
 		ChainedCodeGeneratorTask<Operation> generator = new ChainedCodeGeneratorTask<Operation>();
 		generator.addTask(new OperationParametersValidationTask(jsonFileExtension, targetPath));
 		generator.addTask(new OperationReturnTypeValidationTask(jsonFileExtension, targetPath));
-		generator.generate(op, null, outputter);
+		generator.generate(op, context, outputter);
 	}
 
 	@Override
