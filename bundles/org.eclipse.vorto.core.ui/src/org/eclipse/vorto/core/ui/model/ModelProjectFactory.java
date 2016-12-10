@@ -86,7 +86,9 @@ public class ModelProjectFactory {
 	private IModelElement getModelElementSelection(IStructuredSelection selection) {
 		Object firstElement = selection.getFirstElement();
 		if (firstElement instanceof IModelElement) {
-			return (IModelElement) firstElement;
+			IModelElement modelElement = (IModelElement) firstElement;
+			modelElement.reload();
+			return modelElement;
 		} else {
 			throw new IllegalStateException("Could not retrieve Model Project from selection");
 		}

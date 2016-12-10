@@ -101,4 +101,6 @@ public interface IModelElement {
 	 */
 	void save();
 
+	void reload();
+
 }

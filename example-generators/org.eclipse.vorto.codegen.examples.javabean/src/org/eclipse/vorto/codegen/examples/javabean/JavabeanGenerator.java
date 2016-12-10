@@ -29,7 +29,6 @@ import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockImplGe
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockInterfaceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockStatusGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.template.PomFileTemplate;
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;

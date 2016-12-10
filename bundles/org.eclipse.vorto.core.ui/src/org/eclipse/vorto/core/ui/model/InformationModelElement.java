@@ -40,11 +40,13 @@ public class InformationModelElement extends AbstractModelElement {
 	private Collection<Resource.Diagnostic> diagnostics;
 	
 	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Functionblock };
+	
+	private IModelParser modelParser = null;
 
 	public InformationModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
-		// this.model = modelParser.parseModel(modelFile, InformationModel.class);
+		this.modelParser = modelParser;
 		ParseModelResult<InformationModel> parseResult = modelParser.parseModelWithError(modelFile, InformationModel.class);
 		this.model = parseResult.getModel();
 		this.diagnostics = parseResult.getErrors();
@@ -134,6 +136,13 @@ public class InformationModelElement extends AbstractModelElement {
 			variableName += ++i;
 		}
 		return variableName;
+	}
+	
+	@Override
+	public void reload() {
+		ParseModelResult<InformationModel> parseResult = modelParser.parseModelWithError(modelFile, InformationModel.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
 
 	@Override

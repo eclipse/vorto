@@ -20,7 +20,6 @@ import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.AppScriptFileTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationMainTemplate;
@@ -39,7 +38,6 @@ import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

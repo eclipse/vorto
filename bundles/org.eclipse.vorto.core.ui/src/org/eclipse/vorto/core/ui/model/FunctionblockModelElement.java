@@ -33,10 +33,13 @@ public class FunctionblockModelElement extends AbstractModelElement {
 	private Collection<Resource.Diagnostic> diagnostics;
 	
 	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Datatype, ModelType.Functionblock };
+	
+	private IModelParser modelParser;
 
 	public FunctionblockModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
+		this.modelParser = modelParser;
 		//this.model = modelParser.parseModel(modelFile, FunctionblockModel.class);
 		ParseModelResult<FunctionblockModel> parseResult = modelParser.parseModelWithError(modelFile, FunctionblockModel.class);
 		this.model = parseResult.getModel();
@@ -102,6 +105,13 @@ public class FunctionblockModelElement extends AbstractModelElement {
 		} else if (!modelFile.equals(other.modelFile))
 			return false;
 		return true;
+	}
+
+	@Override
+	public void reload() {
+		ParseModelResult<FunctionblockModel> parseResult = modelParser.parseModelWithError(modelFile, FunctionblockModel.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
 
 	
