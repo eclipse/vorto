@@ -25,7 +25,6 @@ import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper;
 import org.eclipse.vorto.codegen.prosystfi.tasks.FunctionalItemGeneratorTask;
 import org.eclipse.vorto.codegen.prosystfi.tasks.FunctionalItemImplGeneratorTask;
 import org.eclipse.vorto.codegen.prosystfi.tasks.JavaClassGeneratorTask;

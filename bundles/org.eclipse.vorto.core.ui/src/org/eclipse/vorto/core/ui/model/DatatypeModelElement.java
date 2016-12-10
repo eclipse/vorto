@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Type;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.parser.IModelParser;
@@ -36,9 +37,12 @@ public class DatatypeModelElement extends AbstractModelElement {
 	
 	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Datatype };
 
+	private IModelParser modelParser;
+	
 	public DatatypeModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
+		this.modelParser = modelParser;
 		ParseModelResult<Type> parseResult = modelParser.parseModelWithError(modelFile, Type.class);
 		this.model = parseResult.getModel();
 		this.diagnostics = parseResult.getErrors();
@@ -81,6 +85,13 @@ public class DatatypeModelElement extends AbstractModelElement {
 	protected ModelType[] getPossibleReferenceTypes() {
 		return possibleReferenceTypes;
 	}
+	
+	@Override
+	public void reload() {
+		ParseModelResult<Type> parseResult = modelParser.parseModelWithError(modelFile, Type.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
+	}
 
 	@Override
 	public int hashCode() {
@@ -112,6 +123,4 @@ public class DatatypeModelElement extends AbstractModelElement {
 			return false;
 		return true;
 	}
-
-	
 }

@@ -18,6 +18,7 @@ import java.util.Collection;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
@@ -33,11 +34,13 @@ public class MappingModelElement extends AbstractModelElement {
 	private Collection<Resource.Diagnostic> diagnostics; 
 	
 	private ModelType[] possibleReferenceTypes = new ModelType[] { ModelType.Datatype };
+	
+	private IModelParser modelParser = null;
 
 	public MappingModelElement(IModelProject modelProject, IFile modelFile, IModelParser modelParser) {
 		super(modelProject);
 		this.modelFile = modelFile;
-		//this.model = modelParser.parseModel(modelFile, MappingModel.class);
+		this.modelParser = modelParser;
 		ParseModelResult<MappingModel> parseResult = modelParser.parseModelWithError(modelFile, MappingModel.class);
 		this.model = parseResult.getModel();
 		this.diagnostics = parseResult.getErrors();
@@ -71,6 +74,13 @@ public class MappingModelElement extends AbstractModelElement {
 	@Override
 	protected ModelType[] getPossibleReferenceTypes() {
 		return possibleReferenceTypes;
+	}
+	
+	@Override
+	public void reload() {
+		ParseModelResult<MappingModel> parseResult = modelParser.parseModelWithError(modelFile, MappingModel.class);
+		this.model = parseResult.getModel();
+		this.diagnostics = parseResult.getErrors();
 	}
 
 }

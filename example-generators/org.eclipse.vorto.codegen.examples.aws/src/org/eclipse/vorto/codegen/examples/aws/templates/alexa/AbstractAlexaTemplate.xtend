@@ -43,6 +43,8 @@ abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> 
 				} else {
 					return false;
 				}
+		} else if (param instanceof RefParam && (param as RefParam).type instanceof Enum ) {
+			return true;
 		} else {
 			return false;
 		}
@@ -57,7 +59,7 @@ abstract class AbstractAlexaTemplate implements IFileTemplate<InformationModel> 
 				return "AMAZON.DATE";
 			}
 		} else if(param instanceof RefParam  && (param as RefParam).type instanceof Enum) {
-			return "AMAZON.LIST_OF_SIGNS"
+			return (param as RefParam).type.name
 		}
 		
 		return null;
