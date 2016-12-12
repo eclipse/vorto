@@ -38,7 +38,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
 	public static final String JSON_SCHEMA_FILE_EXTENSION 	= ".schema.json";
-	public static final String TARGET_PATH 					= "json";
+	public static final String TARGET_PATH 					= "feature";
 
 	public IGenerationResult generate(InformationModel infomodel,
 			InvocationContext invocationContext) {
@@ -53,9 +53,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 					fb,  
 					invocationContext,
 					TARGET_PATH + "/" 
-							+ fbp.getType().getNamespace() + "."
-							+ fbp.getType().getName() + "_"
-							+ fbp.getType().getVersion(),
+							+ fbp.getName(),
 					JSON_SCHEMA_FILE_EXTENSION,
 					zipOutputter);
 		}
@@ -77,7 +75,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 				generateForOperation(
 						op, 
 						context,
-						targetPath,
+						targetPath + "/operations",
 						jsonFileExtension, 
 						outputter);
 			}
@@ -85,17 +83,17 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		
 		Configuration configuration = fb.getConfiguration();
 		if (configuration != null) {
-			generateForConfiguration(configuration, context, targetPath, jsonFileExtension, outputter);
+			generateForConfiguration(configuration, context, targetPath + "/configuration", jsonFileExtension, outputter);
 		}
 		
 		Status status = fb.getStatus();
 		if (status != null) {
-			generateForStatus(status, context, targetPath, jsonFileExtension, outputter);
+			generateForStatus(status, context, targetPath + "/status", jsonFileExtension, outputter);
 		}
 		
 		Fault fault = fb.getFault();
 		if (fault != null) {
-			generateForFault(fault, context, targetPath, jsonFileExtension, outputter);
+			generateForFault(fault, context, targetPath + "/fault", jsonFileExtension, outputter);
 		}
 		
 		if (fb.getEvents() != null) {
@@ -103,7 +101,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 				generateForEvent(
 						event, 
 						context,
-						targetPath, 
+						targetPath + "/events", 
 						jsonFileExtension, 
 						outputter);
 			}
