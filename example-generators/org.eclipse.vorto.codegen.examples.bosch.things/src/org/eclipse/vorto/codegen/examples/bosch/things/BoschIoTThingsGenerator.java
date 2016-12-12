@@ -54,11 +54,9 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		for (FunctionblockProperty fbp : infomodel.getProperties()) {
 			FunctionBlock fb = fbp.getType().getFunctionblock();
 			
-			InvocationContext context = invocationContextFrom(getModelId(fbp));
-			
 			generateForFunctionblock(
 					fb,  
-					context,
+					invocationContext,
 					TARGET_PATH + "/" 
 							+ fbp.getType().getNamespace() + "."
 							+ fbp.getType().getName() + "_"
@@ -67,14 +65,6 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 					zipOutputter);
 		}
 		return zipOutputter;
-	}
-	
-	private InvocationContext invocationContextFrom(String modelId) {
-		return new InvocationContext(Collections.<MappingModel>emptyList(), null, ImmutableMap.of("modelId", modelId));
-	}
-
-	private String getModelId(FunctionblockProperty fbp) {
-		return fbp.getType().getNamespace() + "." + fbp.getType().getName() + ":" + fbp.getType().getVersion();
 	}
 
 	public void generateForFunctionblock(
