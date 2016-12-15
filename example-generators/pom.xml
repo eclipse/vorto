@@ -27,9 +27,6 @@
 		<module>org.eclipse.vorto.codegen.examples.aws</module>
 		<module>org.eclipse.vorto.codegen.examples.lwm2m</module>
 		<module>org.eclipse.vorto.codegen.examples.prosystfi</module>
-		<module>
-			../bundles/org.eclipse.vorto.codegen.templates.java
-		</module>
   </modules>
   
 </project>
