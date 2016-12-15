@@ -15,6 +15,6 @@ Here are some pictures from this event. Slides and Videos of all presentations w
 <a href="{{ $base}}/img/news/IoTDeveloperDays/IoTSeminarAgenda.png" rel="prettyPhoto" title="IoT Developer Days Seminar Agenda">
 <img src="{{ $base}}/img/news/IoTDeveloperDays/IoTSeminarAgenda.png" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
 </a>
-<a href="{{ $base}}/img/news/IoTDeveloperDays/IMG_0439.jpg" rel="prettyPhoto" title="Vorto Presentation">
-<img src="{{ $base}}/img/news/IoTDeveloperDays/IMG_0439.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
+<a href="{{ $base}}/img/news/IoTDeveloperDays/IMG_0439.JPG" rel="prettyPhoto" title="Vorto Presentation">
+<img src="{{ $base}}/img/news/IoTDeveloperDays/IMG_0439.JPG" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
 </a>
