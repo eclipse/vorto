@@ -15,7 +15,8 @@
 package org.eclipse.vorto.core.ui;
 
 import java.io.IOException;
-
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,6 +24,7 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -92,7 +94,9 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 			public void run() {
 				if (msg == null)
 					return;
-				if (!displayConsoleView()) {
+				
+				IViewPart consoleViewPart = displayConsoleView();
+				if (consoleViewPart == null) {
 					MessageDialog.openError(PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getShell(), "Error",
 							msg);
@@ -120,6 +124,11 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 				try {
 					getNewMessageConsoleStream(msgKind).write(msgWithMarker);
 					getNewMessageConsoleStream(msgKind).write('\n');
+					
+					if (msgKind == MSG_KIND.ERROR) {
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().activate(consoleViewPart);
+					}
+					
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -209,23 +218,24 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 		println(SEPERATOR, MSG_KIND.INFO);
 	}
 
-	private boolean displayConsoleView() {
+	public IViewPart displayConsoleView() {
 		try {
 			IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow();
 			if (activeWorkbenchWindow != null) {
 				IWorkbenchPage activePage = activeWorkbenchWindow
 						.getActivePage();
-				if (activePage != null)
-					activePage.showView(IConsoleConstants.ID_CONSOLE_VIEW,
+				if (activePage != null) {
+					return activePage.showView(IConsoleConstants.ID_CONSOLE_VIEW,
 							null, IWorkbenchPage.VIEW_VISIBLE);
+				}
 			}
 
 		} catch (PartInitException partEx) {
-			return false;
+			throw new RuntimeException("Cannot open console view");
 		}
-
-		return true;
+		
+		return null;
 	}
 
 	public IOConsoleOutputStream getNewMessageConsoleStream(MSG_KIND msgKind) {

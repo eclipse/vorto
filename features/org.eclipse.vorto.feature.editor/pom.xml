@@ -8,7 +8,7 @@
 		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.vorto.feature.vorto.editor</artifactId>
+	<artifactId>org.eclipse.vorto.feature.editor</artifactId>
 	<packaging>eclipse-feature</packaging>
 
 	<build>
