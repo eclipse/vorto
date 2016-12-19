@@ -70,11 +70,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
-		<repository>
-			<id>XtextUpdateSite</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>XtextUpdateSite</id> -->
+<!-- 			<layout>p2</layout> -->
+<!-- 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url> -->
+<!-- 		</repository> -->
 	</repositories>
 
 	<build>
