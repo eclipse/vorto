@@ -26,7 +26,7 @@ public interface ITemplate<Element> {
 	/**
 	 * gets the generation template for the specified context
 	 * 
-	 * @param element
+	 * @param element the information model element to be converted by the template
 	 * @param context
 	 * @return generated content for the specified context
 	 */

@@ -20,6 +20,12 @@ package org.eclipse.vorto.codegen.api;
  *
  */
 public enum ServiceClassifier {
+	/**
+	 * classifies a generator to be documentation related
+	 */
 	documentation,
+	/**
+	 * classifies a generator to be platform related
+	 */
 	platform
 }

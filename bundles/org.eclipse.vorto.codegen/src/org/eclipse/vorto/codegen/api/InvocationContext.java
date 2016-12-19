@@ -93,6 +93,12 @@ public class InvocationContext {
 		return new InvocationContext(new ArrayList<MappingModel>(), NOOP_RUNTIME, configProperties);
 	}
 
+	/**
+	 * Finds the mapped element by a stereotype for a given information model
+	 * @param informationModel
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<InformationModel> getMappedElement(final InformationModel informationModel,
 			final String stereoType) {
 		for (MappingRule rule : mappingRules) {
@@ -107,6 +113,12 @@ public class InvocationContext {
 		return new NullMapped<InformationModel>(informationModel);
 	}
 
+	/**
+	 * Finds the mapped element by a stereotype for a given functionblock model
+	 * @param functionblockModel
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<FunctionblockModel> getMappedElement(final FunctionblockModel functionblockModel,
 			final String stereoType) {
 		for (MappingRule rule : mappingRules) {
@@ -122,6 +134,12 @@ public class InvocationContext {
 		return new NullMapped<FunctionblockModel>(functionblockModel);
 	}
 	
+	/**
+	 * Finds the mapped element by a stereotype for a given enumeration literal
+	 * @param enumLiteral
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<EnumLiteral> getMappedElement(final EnumLiteral enumLiteral,
 			final String stereoType) {
 		for (MappingRule rule : mappingRules) {
@@ -140,6 +158,12 @@ public class InvocationContext {
 		return stereoTypeTarget.getName().equalsIgnoreCase(stereoType);
 	}
 
+	/**
+	 * Finds the mapped element by a stereotype for a given property
+	 * @param property
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<Property> getMappedElement(final Property property, final String stereoType) {
 
 		for (MappingRule rule : mappingRules) {
@@ -167,6 +191,12 @@ public class InvocationContext {
 		return new NullMapped<Property>(property);
 	}
 
+	/**
+	 * Finds the mapped element by a stereotype for a given operation
+	 * @param operation
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<Operation> getMappedElement(final Operation operation, final String stereoType) {
 		for (MappingRule rule : mappingRules) {
 			for (Source ruleSource : rule.getSources()) {
@@ -181,6 +211,12 @@ public class InvocationContext {
 		return new NullMapped<Operation>(operation);
 	}
 
+	/**
+	 * Finds the mapped element by a stereotype for a given model attribute
+	 * @param operation
+	 * @param stereoType
+	 * @return mapped element
+	 */
 	public IMapped<ModelAttribute> getMappedModelAttribute(final Model model, final ModelAttribute attribute,
 			final String stereoType) {
 		for (MappingRule rule : mappingRules) {
@@ -208,6 +244,11 @@ public class InvocationContext {
 		return new NullMapped<ModelAttribute>(attribute);
 	}
 	
+	/**
+	 * Finds and returns a registered code generator by its service key
+	 * @param key
+	 * @return code generator, never null
+	 */
 	public IVortoCodeGenerator lookupGenerator(String key) {
 		IVortoCodeGenerator gen =  this.lookupService.lookupByKey(key);
 		if (gen == null) {
@@ -217,6 +258,10 @@ public class InvocationContext {
 		}
 	}
 	
+	/**
+	 * Configuration Properties that have been passed in to the code generator
+	 * @return
+	 */
 	public Map<String, String> getConfigurationProperties() {
 		return Collections.unmodifiableMap(this.configProperties);
 	}

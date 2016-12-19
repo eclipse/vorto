@@ -16,7 +16,7 @@ complex IoT solution, were you set off by integrating with heterogeneous technol
 <!--more-->
 
 ### Introducing
-Vorto 2.0 Visual Web Modeling Tool is an attempt to solve the problems by abstracting 
+Vorto Visual Web Modeling Tool is an attempt to solve the problems by abstracting 
 nitty-gritty details about getting you to know upfront about any specific technologies/platforms/devices 
 for building your IoT solution. Before getting into further details, were you aware of [Vorto](http://www.eclipse.org/vorto/) 
 and [Vorto's philosophy](http://www.eclipse.org/vorto/overview/vorto_overview.html)? 
@@ -27,7 +27,7 @@ Hmmm.... So, now I believe you understand what is Vorto is all about. If you are
 ### Web.. Web.. Web.. Everywhere...
 
 How to address these issues? What are the common skills that exist with all these different group of people. What’s the easiest way that everyone can understand, use and master it easily?
-Vorto 2.0 Visual Web Modeling Tool is a genuine attempt to answer some of these questions.
+Vorto Visual Web Modeling Tool is a genuine attempt to answer some of these questions.
 
 Here are the features of Vorto Web Modeler Dashboard,
 
@@ -63,7 +63,7 @@ Just to give you a background, the idea was conceptualized with lot of inspirati
 Most of the tools involve complex to setup, requires lot of learning to understand the designing, 
 too much granular level of designing or its just general purpose application development.
 Most of the tools are meant to be used as Visual programming tool. 
-Whereas Vorto 2.0 Web Modeler tool stands out by not focussing on visual programming but rather visual modeling.
+Whereas Vorto Web Modeler tool stands out by not focussing on visual programming but rather visual modeling.
 The idea of the Vorto Web modeler tool is to abstract lot of details and 
 make it simple system level modeling without focussing granular too many design details or state machine modeling. 
 The modeling sets the foundation to build necessary software building blocks and build IoT solution quickly for different scenarios. 
