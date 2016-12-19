@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Helper Generator Task that is able to execute many generator tasks for the same model element
+ * 
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ChainedCodeGeneratorTask<Element> implements ICodeGeneratorTask<Element> {

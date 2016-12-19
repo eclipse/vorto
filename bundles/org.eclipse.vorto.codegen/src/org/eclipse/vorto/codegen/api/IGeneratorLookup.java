@@ -15,5 +15,10 @@
 package org.eclipse.vorto.codegen.api;
 
 public interface IGeneratorLookup {
+	/**
+	 * Looks up a registered code generator in the platform by its service key
+	 * @param key
+	 * @return
+	 */
 	IVortoCodeGenerator lookupByKey(String key);
 }

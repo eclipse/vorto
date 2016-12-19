@@ -34,7 +34,7 @@ public interface IVortoCodeGenerator {
 	IGenerationResult generate(InformationModel model, InvocationContext context) throws Exception;
 	
 	/**
-	 * 
+	 * Unique service key of the generator. This key correlates to the mapping model service key identifier.
 	 * @return
 	 */
 	String getServiceKey();

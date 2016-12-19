@@ -14,8 +14,6 @@
  */
 package org.eclipse.vorto.codegen.examples.bosch.things;
 
-import java.util.Collections;
-
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
@@ -36,9 +34,6 @@ import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Status;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
-import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-
-import com.google.common.collect.ImmutableMap;
 
 public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
@@ -160,7 +155,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "jsonschema";
+		return "boschiotthings";
 	}
 
 }
