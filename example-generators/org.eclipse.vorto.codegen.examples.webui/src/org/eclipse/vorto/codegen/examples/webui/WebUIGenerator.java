@@ -18,8 +18,10 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.AppScriptFileTemplate;
 import org.eclipse.vorto.codegen.examples.webui.tasks.templates.ApplicationMainTemplate;
@@ -43,9 +45,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class WebUIGenerator implements IVortoCodeGenerator {
-			
+
 	@Override
-	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) throws Exception {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		for (FunctionblockProperty property : context.getProperties()) {			
@@ -69,7 +72,7 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ReadmeTemplate()));
 		generator.generate(context, invocationContext, outputter);
 				
-		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext);
+		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext, monitor);
 		
 		return GenerationResultBuilder.from(outputter).append(javaResult).build();
 	}
