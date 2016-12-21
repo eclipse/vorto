@@ -19,8 +19,10 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockConfigurationGeneratorTask;
@@ -61,7 +63,8 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 	public static final String STATUS_SUFFIX = "Status";
 	public static final String FAULT_SUFFIX = "Fault";
 
-	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,getServiceKey());
 		

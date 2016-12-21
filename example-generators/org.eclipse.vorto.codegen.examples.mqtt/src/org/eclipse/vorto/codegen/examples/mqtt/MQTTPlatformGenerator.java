@@ -33,8 +33,10 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.examples.mqtt.templates.IClientHandlerTemplate;
 import org.eclipse.vorto.codegen.examples.mqtt.templates.MqttConfigurationTemplate;
@@ -52,7 +54,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class MQTTPlatformGenerator implements IVortoCodeGenerator {
 		
 	@Override
-	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) throws Exception {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		for (FunctionblockProperty property : context.getProperties()) {			
 			ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
@@ -65,7 +68,7 @@ public class MQTTPlatformGenerator implements IVortoCodeGenerator {
 			generator.generate(property.getType(),invocationContext, outputter);
 		}
 		
-		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext);
+		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext, monitor);
 		
 		return GenerationResultBuilder.from(outputter).append(javaResult).build();
 
