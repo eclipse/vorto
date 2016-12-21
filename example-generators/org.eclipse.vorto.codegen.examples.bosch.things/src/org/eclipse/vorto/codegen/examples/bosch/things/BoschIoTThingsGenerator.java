@@ -18,8 +18,10 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ConfigurationValidationTask;
 import org.eclipse.vorto.codegen.examples.bosch.things.tasks.EventValidationTask;
 import org.eclipse.vorto.codegen.examples.bosch.things.tasks.FaultValidationTask;
@@ -41,7 +43,8 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 	public static final String TARGET_PATH 					= "json";
 
 	public IGenerationResult generate(InformationModel infomodel,
-			InvocationContext invocationContext) {
+			InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,
 				getServiceKey());
