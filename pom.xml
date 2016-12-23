@@ -17,6 +17,39 @@
 			<url>http://www.eclipse.org/legal/epl-v10.html</url>
 		</license>
 	</licenses>
+
+	<scm>
+		<developerConnection>scm:git:https://github.com/eclipse/vorto.git</developerConnection>
+		<url>https://github.com/eclipse/vorto</url>
+		<tag>HEAD</tag>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/eclipse/vorto/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<id>aedelmann</id>
+			<name>Alexander Edelmann</name>
+			<email>alexander.edelmann@bosch-si.com</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>OlafWeinmann</id>
+			<name>Olaf Weinmann</name>
+			<email>olaf.weinmann@bosch-si.com</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+	</developers>
+	
 	<modules>
 		<module>bundles</module>
 		<module>example-generators</module>
@@ -63,14 +96,6 @@
 			<url>https://repo.eclipse.org/content/repositories/snapshots/</url>
 			<snapshots>
 				<enabled>true</enabled>
-			</snapshots>
-		</repository>
-		<repository>
-			<id>milestone</id>
-			<name>Milestone releases</name>
-			<url>http://maven.eclipse.org/milestone</url>
-			<snapshots>
-				<enabled>false</enabled>
 			</snapshots>
 		</repository>
 	</repositories>
