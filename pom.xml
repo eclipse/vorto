@@ -35,15 +35,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>repo.eclipse.org</id>
-			<name>Project Repository - Releases</name>
-			<url>https://repo.eclipse.org/content/repositories/vorto-releases/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		 
 		<snapshotRepository>
-			<id>repo.eclipse.org</id>
-			<name>Project Repository - Snapshots</name>
-			<url>https://repo.eclipse.org/content/repositories/vorto-snapshots/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -521,8 +518,8 @@
 									<goal>jar</goal>
 								</goals>
 								<configuration>
-				                    <additionalparam>-Xdoclint:none</additionalparam>
-				                </configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -546,25 +543,15 @@
 								</goals>
 							</execution>
 						</executions>
-				    </plugin>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
 		<profile>
 			<id>with-maven-central-release</id>
-			<distributionManagement>
-				<repository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-				</repository>
-				<snapshotRepository>
-		            <id>ossrh</id>
-				    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-				</snapshotRepository>
-			</distributionManagement>
 			<build>
 				<plugins>
-					 <plugin>
+					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 						<version>1.6.7</version>
@@ -587,8 +574,8 @@
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 				</repository>
 				<snapshotRepository>
-		            <id>ossrh</id>
-				    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</snapshotRepository>
 			</distributionManagement>
 			<build>
@@ -617,8 +604,8 @@
 									<goal>jar</goal>
 								</goals>
 								<configuration>
-				                    <additionalparam>-Xdoclint:none</additionalparam>
-				                </configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -635,8 +622,8 @@
 								</goals>
 							</execution>
 						</executions>
-				    </plugin>
-				    <plugin>
+					</plugin>
+					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 						<version>1.6.7</version>
