@@ -3,7 +3,6 @@ server:
   contextPath: /infomodelrepository
   
 spring:
-  profiles: mysql
   datasource:
     testWhileIdle: true
     timeBetweenEvictionRunsMillis: 60000
