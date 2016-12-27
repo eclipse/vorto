@@ -26,15 +26,9 @@ import org.eclipse.vorto.repository.model.IModelContent;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 
-/**
- * The LWM2M Resolver resolves a function block model id by a given LWM2M object identifier defined in the function block mappings.
- * 
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- *
- */
-public class Lwm2mObjectIdResolver extends AbstractResolver {
-	
-	public Lwm2mObjectIdResolver(IModelRepository repository, String serviceKey) {
+public class BlueToothUUIDResolver extends AbstractResolver {
+
+	public BlueToothUUIDResolver(IModelRepository repository, String serviceKey) {
 		super(repository,serviceKey);
 	}
 		
@@ -42,15 +36,14 @@ public class Lwm2mObjectIdResolver extends AbstractResolver {
 	protected ModelId doResolve(ModelResource mappingModelResource, String id) {
 		IModelContent content = this.repository.getModelContent(mappingModelResource.getId(), ContentType.DSL);
 		MappingModel mappingModel = (MappingModel)content.getModel();
-		Optional<MappingRule> objectRule = mappingModel.getRules().stream().filter(rule -> rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equals("Object")).findFirst();							
+		Optional<MappingRule> objectRule = mappingModel.getRules().stream().filter(rule -> rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equals("DeviceInfoProfile")).findFirst();							
 		
 		if (objectRule.isPresent()) {
-			Optional<Attribute> objectIdAttribute = ((StereoTypeTarget)objectRule.get().getTarget()).getAttributes().stream().filter(attribute -> attribute.getName().equals("ObjectID")).findFirst();
+			Optional<Attribute> objectIdAttribute = ((StereoTypeTarget)objectRule.get().getTarget()).getAttributes().stream().filter(attribute -> attribute.getName().equals("modelNumber")).findFirst();
 			if (objectIdAttribute.isPresent() && objectIdAttribute.get().getValue().equals(id)) {
 				return ModelId.fromReference(mappingModel.getReferences().get(0));
 			}
 		}
 		return null;
 	}
-
 }
