@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -26,11 +27,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.AbstractModelDto;
+import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
+import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,10 +52,10 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/find", description="Find useful vorto models")
+@Api(value="/find", description="Find information models")
 @RestController
 @RequestMapping(value = "/rest/model")
-public class ModelRepositoryController extends RepositoryController {
+public class ModelRepositoryController extends AbstractRepositoryController {
 
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String XMI = ".xmi";
@@ -65,16 +69,16 @@ public class ModelRepositoryController extends RepositoryController {
 
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
-	public List<ModelResource> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) {
+	public List<ModelResourceDto> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) {
 		List<ModelResource> modelResources = modelRepository.search(expression);
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
-		return modelResources;
+		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource)).collect(Collectors.toList());
 	}
-
+	
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public ModelResource getModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+	public ModelResourceDto getModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 											@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 											@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
@@ -87,7 +91,19 @@ public class ModelRepositoryController extends RepositoryController {
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
-		return resource;
+		return ModelDtoFactory.createDto(resource);
+	}
+	
+	@ApiOperation(value = "Returns the model content")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
+	public AbstractModelDto getModelContent(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
+		
+		byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
+		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
+		return ModelDtoFactory.createResource(extractor.extract(name));
 	}
 	
 	@ApiOperation(value = "Returns the image of a vorto model")
@@ -149,15 +165,22 @@ public class ModelRepositoryController extends RepositoryController {
 		final ContentType contentType = outputType;
 
 		if (includeDependencies) {
-			createZipWithAllDependencies(modelId, contentType, response);
+			byte[] zipContent = createZipWithAllDependencies(modelId, contentType);
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
+					+ modelId.getName() + "_" + modelId.getVersion() + ".zip");
+			response.setContentType(APPLICATION_OCTET_STREAM);
+			try {
+				IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
+				response.flushBuffer();
+			} catch (IOException e) {
+				throw new RuntimeException("Error copying file.", e);
+			}
 		} else {
 			createSingleModelContent(modelId,contentType, response);
 		}
-		
-		
 	}
-	
-	private void createZipWithAllDependencies(ModelId modelId, ContentType contentType, HttpServletResponse response) {
+			
+	private byte[] createZipWithAllDependencies(ModelId modelId, ContentType contentType) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 		
@@ -167,15 +190,7 @@ public class ModelRepositoryController extends RepositoryController {
 			zos.close();
 			baos.close();
 			
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
-					+ modelId.getName() + "_" + modelId.getVersion() + ".zip");
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
+			return baos.toByteArray();
 			
 		} catch(Exception ex) {
 			throw new RuntimeException(ex);

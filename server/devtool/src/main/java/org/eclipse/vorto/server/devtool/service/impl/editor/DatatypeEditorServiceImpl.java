@@ -22,8 +22,8 @@ import java.util.Set;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.http.model.ModelIdDto;
+import org.eclipse.vorto.http.model.ModelResourceDto;
 import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class DatatypeEditorServiceImpl extends IEditorService {
 	DevtoolReferenceLinker devtoolReferenceLinker;
 
 	@Override
-	public String linkModelToResource(String datatypeResourceId, ModelId datatypeModelId, ResourceSet resourceSet,
+	public String linkModelToResource(String datatypeResourceId, ModelIdDto datatypeModelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet) {
 		devtoolReferenceLinker.linkDataTypeToFunctionBlock(datatypeResourceId, datatypeModelId,
 				resourceSet, referencedResourceSet);
@@ -51,8 +51,8 @@ public class DatatypeEditorServiceImpl extends IEditorService {
 	}
 
 	@Override
-	public List<ModelResource> searchModelByExpression(String expression) {
-		List<ModelResource> modelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelType.Datatype.toString() , org.eclipse.vorto.http.model.ModelType.Datatype);
+	public List<ModelResourceDto> searchModelByExpression(String expression) {
+		List<ModelResourceDto> modelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelTypeDto.Datatype.toString() , org.eclipse.vorto.http.model.ModelTypeDto.Datatype);
 		return modelList;
 	}
 	

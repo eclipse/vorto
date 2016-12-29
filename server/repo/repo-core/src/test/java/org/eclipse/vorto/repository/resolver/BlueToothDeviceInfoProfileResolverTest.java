@@ -17,8 +17,8 @@ package org.eclipse.vorto.repository.resolver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.resolver.BlueToothUUIDResolver;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
 import org.junit.Test;
  

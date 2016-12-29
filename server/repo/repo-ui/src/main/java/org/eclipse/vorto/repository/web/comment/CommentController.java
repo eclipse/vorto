@@ -18,8 +18,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.model.Comment;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.service.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

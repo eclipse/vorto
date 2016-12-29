@@ -19,10 +19,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.model.IModelContent;
+import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.resolver.IModelIdResolver;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;

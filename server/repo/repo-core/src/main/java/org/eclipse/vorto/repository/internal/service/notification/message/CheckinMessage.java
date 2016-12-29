@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.internal.service.notification.message;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.vorto.http.model.ModelResource;
+import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.model.User;
 
 public class CheckinMessage extends AbstractMessage {

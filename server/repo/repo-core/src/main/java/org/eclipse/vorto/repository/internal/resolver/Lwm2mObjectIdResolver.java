@@ -20,9 +20,9 @@ import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.repository.model.IModelContent;
+import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 
@@ -47,7 +47,7 @@ public class Lwm2mObjectIdResolver extends AbstractResolver {
 		if (objectRule.isPresent()) {
 			Optional<Attribute> objectIdAttribute = ((StereoTypeTarget)objectRule.get().getTarget()).getAttributes().stream().filter(attribute -> attribute.getName().equals("ObjectID")).findFirst();
 			if (objectIdAttribute.isPresent() && objectIdAttribute.get().getValue().equals(id)) {
-				return ModelId.fromReference(mappingModel.getReferences().get(0));
+				return ModelId.fromReference(mappingModel.getReferences().get(0).getImportedNamespace(),mappingModel.getReferences().get(0).getVersion());
 			}
 		}
 		return null;

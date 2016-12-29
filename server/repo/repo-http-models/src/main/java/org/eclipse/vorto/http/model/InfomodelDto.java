@@ -12,18 +12,25 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.http.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
+public class InfomodelDto extends AbstractModelDto {
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface ICommentService {
-		
-    public void createComment(Comment comment) throws Exception;
-    public List<Comment> getCommentsforModelId(ModelId modelId);
+	public InfomodelDto(ModelIdDto modelId, ModelTypeDto modelType) {
+		super(modelId, modelType);
+	}
+
+	private List<ModelPropertyDto> functionblocks = new ArrayList<ModelPropertyDto>();
+	
+	public List<ModelPropertyDto> getFunctionblocks() {
+		return functionblocks;
+	}
+
+	public void setFunctionblocks(List<ModelPropertyDto> functionblocks) {
+		this.functionblocks = functionblocks;
+	}
+
 }

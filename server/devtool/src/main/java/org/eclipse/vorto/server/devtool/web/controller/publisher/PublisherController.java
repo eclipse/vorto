@@ -25,7 +25,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
-import org.eclipse.vorto.http.model.ServerResponse;
+import org.eclipse.vorto.http.model.ServerResponseDto;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.server.devtool.models.ProjectResource;
 import org.eclipse.vorto.server.devtool.models.ProjectResourceListWrapper;
@@ -61,7 +61,7 @@ public class PublisherController {
 
 	@ApiOperation(value = "Uploads models to the vorto repository for validation")
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadModels(
+	public ResponseEntity<ServerResponseDto> uploadModels(
 			@RequestBody ProjectResourceListWrapper projectResourceListWrapper,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
@@ -82,14 +82,14 @@ public class PublisherController {
 
 	@ApiOperation(value = "Checks in single model to the vorto repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkin(
+	public ResponseEntity<ServerResponseDto> checkin(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 			return devtoolRestClient.checkInSingleFile(handleId);
 	}
 
 	@ApiOperation(value = "Checks in multiple models to the vorto repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkInMultiple(
+	public ResponseEntity<ServerResponseDto> checkInMultiple(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @RequestBody ModelHandle[] modelHandles) {
 				return devtoolRestClient.checkInMultipleFiles(modelHandles);
 	}

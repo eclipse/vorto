@@ -12,18 +12,28 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.http.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
+public class ModelEventDto {
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface ICommentService {
-		
-    public void createComment(Comment comment) throws Exception;
-    public List<Comment> getCommentsforModelId(ModelId modelId);
+	private String name;
+	private List<ModelPropertyDto> properties = new ArrayList<ModelPropertyDto>();
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public List<ModelPropertyDto> getProperties() {
+		return properties;
+	}
+	public void setProperties(List<ModelPropertyDto> properties) {
+		this.properties = properties;
+	}
+	
+	
 }
