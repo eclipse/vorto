@@ -18,8 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.resolver.Lwm2mObjectIdResolver;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
 import org.junit.Test;
  

@@ -23,7 +23,8 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelIdDto;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.service.IRepositoryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -36,7 +37,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/rest/admin")
-public class AdminController extends RepositoryController {
+public class AdminController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IRepositoryManager repositoryManager;

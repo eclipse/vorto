@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.http.model.ServerResponse;
+import org.eclipse.vorto.http.model.ModelIdDto;
+import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.http.model.ServerResponseDto;
 import org.eclipse.vorto.repository.model.ModelHandle;
 import org.eclipse.vorto.server.devtool.web.controller.publisher.FileMessageResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,15 +56,15 @@ public class DevtoolRestClient {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public ModelResource getModel(ModelId modelId) {
+	public ModelResourceDto getModel(ModelIdDto modelId) {
 		String json = getModelFile(modelId);
 		Gson gson = createGson();
 		JsonElement jsonElement = new JsonParser().parse(json);
-		ModelResource modelResource = gson.fromJson(jsonElement, ModelResource.class);
+		ModelResourceDto modelResource = gson.fromJson(jsonElement, ModelResourceDto.class);
 		return modelResource;
 	}
 
-	public String getModelFile(ModelId modelId) {
+	public String getModelFile(ModelIdDto modelId) {
 		try {
 			return restTemplate.getForObject(basePath + "/rest/model/file/{namespace}/{name}/{version}?output=DSL",
 					String.class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
@@ -73,7 +73,7 @@ public class DevtoolRestClient {
 		}
 	}
 
-	public String getModelAsString(ModelId modelId) {
+	public String getModelAsString(ModelIdDto modelId) {
 		try {
 			return restTemplate.getForObject(basePath + "/rest/model/{namespace}/{name}/{version}", String.class,
 					modelId.getNamespace(), modelId.getName(), modelId.getVersion());
@@ -82,7 +82,7 @@ public class DevtoolRestClient {
 		}
 	}
 
-	public ModelType getModelType(ModelId modelId) {
+	public ModelType getModelType(ModelIdDto modelId) {
 		String modelString = getModelAsString(modelId);
 		String modelType = new JsonParser().parse(modelString).getAsJsonObject().get("modelType").getAsString();
 		if (modelType.equalsIgnoreCase(ModelType.Datatype.toString())) {
@@ -98,38 +98,38 @@ public class DevtoolRestClient {
 		}
 	}
 
-	public List<ModelResource> searchByExpression(String expression) {
+	public List<ModelResourceDto> searchByExpression(String expression) {
 		String results = restTemplate.getForObject(basePath + "/rest/model/query=" + expression, String.class);
 		JsonElement jsonElement = new JsonParser().parse(results);
 		Gson gson = createGson();
-		List<ModelResource> modelResourceList = gson.fromJson(jsonElement, new TypeToken<List<ModelResource>>() {
+		List<ModelResourceDto> modelResourceList = gson.fromJson(jsonElement, new TypeToken<List<ModelResourceDto>>() {
 		}.getType());
 		return modelResourceList;
 	}
 
-	public ResponseEntity<ServerResponse> uploadMultipleFiles(final String fileName, byte[] multipleFileContent){
+	public ResponseEntity<ServerResponseDto> uploadMultipleFiles(final String fileName, byte[] multipleFileContent){
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", new FileMessageResource(multipleFileContent, fileName));
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(map, httpHeaders);
-		return restTemplate.postForEntity(basePath + "/rest/secure/multiple", requestEntity, ServerResponse.class);
+		return restTemplate.postForEntity(basePath + "/rest/secure/multiple", requestEntity, ServerResponseDto.class);
 	}
 	
-	public ResponseEntity<ServerResponse> checkInSingleFile(String handleId){
+	public ResponseEntity<ServerResponseDto> checkInSingleFile(String handleId){
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(httpHeaders);
-		return restTemplate.exchange(basePath + "/rest/secure/{handleId:.+}", HttpMethod.PUT, requestEntity, ServerResponse.class, handleId);
+		return restTemplate.exchange(basePath + "/rest/secure/{handleId:.+}", HttpMethod.PUT, requestEntity, ServerResponseDto.class, handleId);
 	}
 		
-	public ResponseEntity<ServerResponse> checkInMultipleFiles(ModelHandle[] modelHandles){
+	public ResponseEntity<ServerResponseDto> checkInMultipleFiles(ModelHandle[] modelHandles){
 		Gson gson = new Gson();
 		String json = gson.toJson(modelHandles);
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		System.out.println(json);
 		HttpEntity<String> requestEntity = new HttpEntity<>(json, httpHeaders);
-		return restTemplate.exchange(basePath + "/rest/secure/checkInMultiple", HttpMethod.PUT, requestEntity, ServerResponse.class);
+		return restTemplate.exchange(basePath + "/rest/secure/checkInMultiple", HttpMethod.PUT, requestEntity, ServerResponseDto.class);
 //		return null;
 	}
 

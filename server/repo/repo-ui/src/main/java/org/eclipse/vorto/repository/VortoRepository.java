@@ -82,6 +82,7 @@ public class VortoRepository {
 	private Predicate<String> paths() {
 		return or(	PathSelectors.regex("/rest/secure.*"),
 					PathSelectors.regex("/rest/model.*"),
+					PathSelectors.regex("/rest/resolver.*"),
 					PathSelectors.regex("/rest/generation-router.*"));
 	}
 

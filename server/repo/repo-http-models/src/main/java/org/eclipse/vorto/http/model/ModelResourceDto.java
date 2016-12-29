@@ -21,74 +21,26 @@ import java.util.List;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelResource {
-	
-	protected ModelId id;
-	
-	protected ModelType modelType;
-	protected String displayName;
-	protected String description;
+public class ModelResourceDto extends AbstractModelDto {
+		
 	protected String author;
 	protected Date creationDate;
 	protected boolean hasImage = false;
-	
-	protected List<ModelId> references = new ArrayList<>();
-	
-	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
+		
+	protected List<ModelIdDto> referencedBy = new ArrayList<ModelIdDto>();
 	
 	protected List<String> supportedTargetPlatforms = new ArrayList<String>();
 	
-	public ModelResource(ModelId modelId,ModelType modelType) {
-		this.id = modelId;
-		this.modelType = modelType;
-	}
-
-	public ModelId getId() {
-		return id;
-	}
-
-	public void setId(ModelId id) {
-		this.id = id;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public List<ModelId> getReferences() {
-		return references;
-	}
-
-	public void setReferences(List<ModelId> references) {
-		this.references = references;
+	public ModelResourceDto(ModelIdDto modelId,ModelTypeDto modelType) {
+		super(modelId,modelType);
 	}
 	
-	public List<ModelId> getReferencedBy() {
+	public List<ModelIdDto> getReferencedBy() {
 		return referencedBy;
 	}
 
-	public void setReferencedBy(List<ModelId> referencedBy) {
+	public void setReferencedBy(List<ModelIdDto> referencedBy) {
 		this.referencedBy = referencedBy;
-	}
-
-	public ModelType getModelType() {
-		return modelType;
-	}
-
-	public void setModelType(ModelType modelType) {
-		this.modelType = modelType;
 	}
 
 	public String getAuthor() {
@@ -147,7 +99,7 @@ public class ModelResource {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ModelResource other = (ModelResource) obj;
+		ModelResourceDto other = (ModelResourceDto) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -164,7 +116,7 @@ public class ModelResource {
 		}
 	}
 
-	public void addReferencedBy(ModelId id) {
+	public void addReferencedBy(ModelIdDto id) {
 		this.referencedBy.add(id);
 	}	
 	

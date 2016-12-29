@@ -20,15 +20,15 @@ import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.NamespaceRegistry;
-import javax.jcr.Node; 
+import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.eclipse.vorto.http.model.ModelId;
-import org.eclipse.vorto.http.model.ModelResource;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.utils.ModelReferencesHelper;
+import org.eclipse.vorto.repository.model.ModelId;
+import org.eclipse.vorto.repository.model.ModelResource;
 import org.modeshape.common.util.CheckArg;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.modeshape.jcr.api.sequencer.Sequencer;

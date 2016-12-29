@@ -14,9 +14,10 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelIdDto;
 import org.eclipse.vorto.repository.internal.resolver.ModelIdResolverFactory;
 import org.eclipse.vorto.repository.internal.resolver.UnknownModelIdResolverException;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.resolver.IModelIdResolver;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +29,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 @RestController
 @RequestMapping(value = "/rest/resolver")
+@Api(value="/resolve", description="Resolve information models by mapped platform attributes")
 public class ModelResolveController {
 
 	@Autowired
 	private ModelIdResolverFactory resolverFactory;
 	
+	@ApiOperation(value = "Resolves a vorto model by a platform specific object identifier, defined in model mappings")
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "Resolver not found for specified generator service key")})
 	@RequestMapping(value = "/{serviceKey}/{id}", method = RequestMethod.GET)
-	public ModelId resolve(@PathVariable("serviceKey") final String serviceKey, @PathVariable("id") final String id) throws Exception{
+	public ModelIdDto resolve(@ApiParam(value = "Generator service key, e.g. LWM2M", required = true) @PathVariable("serviceKey") final String serviceKey, @ApiParam(value = "Platform specific id defined in mappings", required = true) @PathVariable("id") final String id) throws Exception{
 		IModelIdResolver resolver = resolverFactory.getResolver(serviceKey);
 		
 		ModelId resolvedId = resolver.resolve(id);
 		
 		if (resolvedId != null) {
-			return resolvedId;
+			return ModelDtoFactory.createDto(resolvedId);
 		} else {
 			throw new ModelNotFoundException("No Model found");
 		}

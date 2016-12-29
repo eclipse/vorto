@@ -12,18 +12,40 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.http.model;
 
-import java.util.List;
+public class ReturnTypeDto {
 
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
+	private boolean isMultiple = false;
+	
+	private boolean isPrimitive = false;
+	
+	private Object type = null;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface ICommentService {
-		
-    public void createComment(Comment comment) throws Exception;
-    public List<Comment> getCommentsforModelId(ModelId modelId);
+	public boolean isMultiple() {
+		return isMultiple;
+	}
+
+	public void setMultiple(boolean isMultiple) {
+		this.isMultiple = isMultiple;
+	}
+
+	public Object getType() {
+		return type;
+	}
+
+	public void setType(Object type) {
+		this.type = type;
+	}
+
+	public boolean isPrimitive() {
+		return isPrimitive;
+	}
+
+	public void setPrimitive(boolean isPrimitive) {
+		this.isPrimitive = isPrimitive;
+	}
+	
+	
+	
 }

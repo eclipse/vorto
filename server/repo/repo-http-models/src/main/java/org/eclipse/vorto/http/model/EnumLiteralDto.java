@@ -12,18 +12,31 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.http.model;
 
-import java.util.List;
+public class EnumLiteralDto {
 
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
+	private String name;
+	private String description;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface ICommentService {
-		
-    public void createComment(Comment comment) throws Exception;
-    public List<Comment> getCommentsforModelId(ModelId modelId);
+	public EnumLiteralDto(String name, String description) {
+		super();
+		this.name = name;
+		this.description = description;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	
 }

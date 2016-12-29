@@ -12,18 +12,26 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.service;
+package org.eclipse.vorto.http.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.model.ModelId;
+public class EnumModelDto extends AbstractModelDto {
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface ICommentService {
-		
-    public void createComment(Comment comment) throws Exception;
-    public List<Comment> getCommentsforModelId(ModelId modelId);
+	private List<EnumLiteralDto> literals = new ArrayList<EnumLiteralDto>();
+	
+	public EnumModelDto(ModelIdDto modelId, ModelTypeDto modelType) {
+		super(modelId, modelType);
+	}
+
+	public List<EnumLiteralDto> getLiterals() {
+		return literals;
+	}
+
+	public void setLiterals(List<EnumLiteralDto> literals) {
+		this.literals = literals;
+	}
+	
+	
 }
