@@ -17,7 +17,7 @@ package org.eclipse.vorto.http.model;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelIdDto {
+public class ModelIdDto implements IReferenceType {
 	private String name;
 	private String namespace;
 	private String version;
@@ -30,6 +30,17 @@ public class ModelIdDto {
 		this.name = name;
 		this.namespace = namespace.toLowerCase();
 		this.version = version;
+	}
+	
+	public static ModelIdDto fromReference(String qualifiedName, String version) {
+		String name = qualifiedName.substring(qualifiedName.lastIndexOf(".")+1);
+		String namespace = qualifiedName.substring(0,qualifiedName.lastIndexOf("."));
+		return new ModelIdDto(name,namespace,version);
+	}
+	
+	public static ModelIdDto fromPrettyFormat(String prettyFormat) {
+		final int versionIndex = prettyFormat.indexOf(":");
+		return ModelIdDto.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
 	}
 					
 	public String getName() {

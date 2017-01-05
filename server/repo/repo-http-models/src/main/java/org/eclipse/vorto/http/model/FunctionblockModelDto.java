@@ -86,6 +86,13 @@ public class FunctionblockModelDto extends AbstractModelDto {
 	public void setOperations(List<OperationDto> operations) {
 		this.operations = operations;
 	}
+
+	@Override
+	public String toString() {
+		return "FunctionblockModelDto [configurationProperties=" + configurationProperties + ", statusProperties="
+				+ statusProperties + ", faultProperties=" + faultProperties + ", events=" + events + ", operations="
+				+ operations + "]";
+	}
 	
 	
 

@@ -34,6 +34,11 @@ public class ModelEventDto {
 	public void setProperties(List<ModelPropertyDto> properties) {
 		this.properties = properties;
 	}
+	@Override
+	public String toString() {
+		return "ModelEventDto [name=" + name + ", properties=" + properties + "]";
+	}
+	
 	
 	
 }

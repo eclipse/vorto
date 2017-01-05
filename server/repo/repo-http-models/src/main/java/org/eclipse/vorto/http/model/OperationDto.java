@@ -67,6 +67,12 @@ public class OperationDto {
 	public void setParams(List<ParamDto> params) {
 		this.params = params;
 	}
+
+	@Override
+	public String toString() {
+		return "OperationDto [name=" + name + ", description=" + description + ", isBreakable=" + isBreakable
+				+ ", result=" + result + ", params=" + params + "]";
+	}
 	
 	
 }

@@ -20,7 +20,7 @@ public class ReturnTypeDto {
 	
 	private boolean isPrimitive = false;
 	
-	private Object type = null;
+	private IReferenceType type = null;
 
 	public boolean isMultiple() {
 		return isMultiple;
@@ -30,11 +30,11 @@ public class ReturnTypeDto {
 		this.isMultiple = isMultiple;
 	}
 
-	public Object getType() {
+	public IReferenceType getType() {
 		return type;
 	}
 
-	public void setType(Object type) {
+	public void setType(IReferenceType type) {
 		this.type = type;
 	}
 
@@ -44,6 +44,11 @@ public class ReturnTypeDto {
 
 	public void setPrimitive(boolean isPrimitive) {
 		this.isPrimitive = isPrimitive;
+	}
+
+	@Override
+	public String toString() {
+		return "ReturnTypeDto [isMultiple=" + isMultiple + ", isPrimitive=" + isPrimitive + ", type=" + type + "]";
 	}
 	
 	

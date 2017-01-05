@@ -24,7 +24,7 @@ public class ParamDto {
 	
 	private boolean isPrimitive = false;
 	
-	private Object type;
+	private IReferenceType type;
 
 	public boolean isMultiple() {
 		return isMultiple;
@@ -58,12 +58,18 @@ public class ParamDto {
 		this.isPrimitive = isPrimitive;
 	}
 
-	public Object getType() {
+	public IReferenceType getType() {
 		return type;
 	}
 
-	public void setType(Object type) {
+	public void setType(IReferenceType type) {
 		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		return "ParamDto [isMultiple=" + isMultiple + ", name=" + name + ", description=" + description
+				+ ", isPrimitive=" + isPrimitive + ", type=" + type + "]";
 	}
 	
 	

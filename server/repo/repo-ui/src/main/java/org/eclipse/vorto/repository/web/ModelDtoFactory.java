@@ -20,6 +20,7 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
+import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
@@ -45,6 +46,7 @@ import org.eclipse.vorto.http.model.ModelResourceDto;
 import org.eclipse.vorto.http.model.ModelTypeDto;
 import org.eclipse.vorto.http.model.OperationDto;
 import org.eclipse.vorto.http.model.ParamDto;
+import org.eclipse.vorto.http.model.PrimitiveTypeDto;
 import org.eclipse.vorto.http.model.ReturnTypeDto;
 import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ModelResource;
@@ -147,7 +149,8 @@ public class ModelDtoFactory {
 			returnType.setMultiple(o.getReturnType().isMultiplicity());
 			if (o.getReturnType() instanceof ReturnPrimitiveType) {
 				returnType.setPrimitive(true);
-				returnType.setType(((ReturnPrimitiveType)o.getReturnType()).getReturnType());
+				PrimitiveType pt = ((ReturnPrimitiveType)o.getReturnType()).getReturnType();
+				returnType.setType(PrimitiveTypeDto.valueOf(pt.name()));
 			} else {
 				returnType.setPrimitive(false);
 				returnType.setType(createModelId(((ReturnObjectType)o.getReturnType()).getReturnType()));
@@ -164,7 +167,8 @@ public class ModelDtoFactory {
 		param.setName(p.getName());
 		if (p instanceof PrimitiveParam) {			
 			param.setPrimitive(true);
-			param.setType(((PrimitiveParam)p).getType());
+			PrimitiveType pt = ((PrimitiveParam)p).getType();
+			param.setType(PrimitiveTypeDto.valueOf(pt.name()));
 		} else {
 			param.setPrimitive(false);
 			param.setType(createModelId(((RefParam)p).getType()));
@@ -177,7 +181,6 @@ public class ModelDtoFactory {
 		ModelPropertyDto p = new ModelPropertyDto();
 		p.setDescription(property.getDescription());
 		p.setName(property.getName());
-		p.setPrimitive(false);
 		p.setType(createModelId(property.getType()));
 		return p;
 	}
@@ -189,10 +192,9 @@ public class ModelDtoFactory {
 		p.setMultiple(property.isMultiplicity());
 		p.setName(property.getName());
 		if (property.getType() instanceof PrimitivePropertyType) {
-			p.setPrimitive(true);
-			p.setType(((PrimitivePropertyType)property.getType()).getType());
+			PrimitiveType pt = ((PrimitivePropertyType)property.getType()).getType();
+			p.setType(PrimitiveTypeDto.valueOf(pt.name()));
 		} else {
-			p.setPrimitive(false);
 			p.setType(createModelId(((ObjectPropertyType)property.getType()).getType()));
 		}
 		return p;

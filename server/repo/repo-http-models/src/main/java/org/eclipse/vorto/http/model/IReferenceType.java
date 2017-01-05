@@ -14,30 +14,6 @@
  */
 package org.eclipse.vorto.http.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class InfomodelDto extends AbstractModelDto {
-
-	public InfomodelDto(ModelIdDto modelId, ModelTypeDto modelType) {
-		super(modelId, modelType);
-	}
-
-	private List<ModelPropertyDto> functionblocks = new ArrayList<ModelPropertyDto>();
-	
-	public List<ModelPropertyDto> getFunctionblocks() {
-		return functionblocks;
-	}
-
-	public void setFunctionblocks(List<ModelPropertyDto> functionblocks) {
-		this.functionblocks = functionblocks;
-	}
-
-	@Override
-	public String toString() {
-		return "InfomodelDto [functionblocks=" + functionblocks + "]";
-	}
-	
-	
+public interface IReferenceType {
 
 }

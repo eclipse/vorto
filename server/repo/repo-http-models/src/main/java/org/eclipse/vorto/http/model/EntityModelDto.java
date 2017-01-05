@@ -32,6 +32,11 @@ public class EntityModelDto extends AbstractModelDto {
 	public void setProperties(List<ModelPropertyDto> properties) {
 		this.properties = properties;
 	}
+
+	@Override
+	public String toString() {
+		return "EntityModelDto [properties=" + properties + "]";
+	}
 	
 	
 

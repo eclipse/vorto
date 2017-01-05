@@ -22,10 +22,7 @@ public class ModelPropertyDto {
 	private boolean isMultiple = false;
 	private String description;
 	
-	private Object type = null;
-	
-	private boolean isPrimitive = true;
-	
+	private IReferenceType type = null;
 			
 	public boolean isMandatory() {
 		return isMandatory;
@@ -51,20 +48,16 @@ public class ModelPropertyDto {
 		this.description = description;
 	}
 
-	public Object getType() {
+	public IReferenceType getType() {
 		return type;
 	}
 
-	public void setType(Object type) {
+	public void setType(IReferenceType type) {
 		this.type = type;
 	}
 
 	public boolean isPrimitive() {
-		return isPrimitive;
-	}
-
-	public void setPrimitive(boolean isPrimitive) {
-		this.isPrimitive = isPrimitive;
+		return type instanceof PrimitiveTypeDto;
 	}
 
 	public boolean isMultiple() {
@@ -73,6 +66,12 @@ public class ModelPropertyDto {
 
 	public void setMultiple(boolean isMultiple) {
 		this.isMultiple = isMultiple;
+	}
+
+	@Override
+	public String toString() {
+		return "ModelPropertyDto [isMandatory=" + isMandatory + ", name=" + name + ", isMultiple=" + isMultiple
+				+ ", description=" + description + ", type=" + type + ", isPrimitive=" + isPrimitive() + "]";
 	}
 	
 	
