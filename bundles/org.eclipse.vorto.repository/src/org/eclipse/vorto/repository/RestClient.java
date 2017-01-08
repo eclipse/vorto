@@ -57,7 +57,6 @@ public class RestClient {
 		this.connectionInfo = connectionInfo;
 	}
 
-	@SuppressWarnings("restriction")
 	public <Result> Result executeGet(String query, final Function<String, Result> responseConverter)
 			throws ClientProtocolException, IOException {
 		ProxyConfiguration proxyProvider = getProxyConfiguration();
@@ -75,7 +74,6 @@ public class RestClient {
 		});
 	}
 	
-	@SuppressWarnings("restriction")
 	public Attachment executeGetAttachment(String query) throws ClientProtocolException, IOException {
 		ProxyConfiguration proxyProvider = getProxyConfiguration();
 		
@@ -97,7 +95,6 @@ public class RestClient {
 		});
 	}
 
-	@SuppressWarnings("restriction")
 	public <Result> Result executePost(String query, HttpEntity content,
 			final Function<String, Result> responseConverter) throws ClientProtocolException, IOException {
 		ProxyConfiguration proxyProvider = getProxyConfiguration();
@@ -121,7 +118,6 @@ public class RestClient {
 		});
 	}
 
-	@SuppressWarnings("restriction")
 	public void executePut(String query) throws ClientProtocolException, IOException {
 		ProxyConfiguration proxyProvider = getProxyConfiguration();
 		
@@ -147,7 +143,6 @@ public class RestClient {
 		IProxyService proxyService = getProxyService();
 		IProxyData[] proxyDataForHost = proxyService.select(java.net.URI.create(connectionInfo.getUrl()));
 		
-		@SuppressWarnings("restriction")
 		CredentialsProvider credsProvider = new BasicCredentialsProvider();
 		RequestConfig.Builder configBuilder = RequestConfig.custom();
 		

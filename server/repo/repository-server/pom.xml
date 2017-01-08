@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>repo</artifactId>
+		<version>0.9.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>repository-server</artifactId>
+	<packaging>jar</packaging>
+
+	<description>Vorto Model Repository UI</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.server.commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+			<version>3.7.0</version>
+		</dependency>
+
+		<!-- Vorto DSL Dependencies -->
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtext</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtext.xbase</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>asm</artifactId>
+					<groupId>org.ow2.asm</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!--Java Content Repository API -->
+		<dependency>
+			<groupId>javax.jcr</groupId>
+			<artifactId>jcr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-sequencer-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-jcr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-jcr-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-unit-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Email -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+		</dependency>
+
+		<!-- Spring Boot dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+		</dependency>
+
+		<!-- Testing -->
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.subethamail</groupId>
+			<artifactId>subethasmtp</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Swagger -->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-models</artifactId>
+			<version>1.5.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.3.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-models</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-swagger-ui</artifactId>
+			<version>0.2.7</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>jquery</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>bootstrap-less-only</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>angular</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Database -->
+
+	</dependencies>
+
+	<build>
+		<finalName>infomodelrepository</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.eclipse.vorto.repository.VortoRepository</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
