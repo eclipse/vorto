@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="org.eclipse.vorto.vortonature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.eclipse.vorto.core.ui.model.nature.VortoProjectNature">
+         </run>
+      </runtime>
+   </extension>
+      
+   <!-- Default menu contributions -->
+   
+  <extension
+        point="org.eclipse.core.expressions.propertyTesters">
+     <propertyTester
+           class="org.eclipse.vorto.core.ui.model.nature.ProjectNaturePropertyTester"
+           id="ProjectNaturePropertyTester"
+           namespace="org.eclipse.vorto.editor.ui.propertytester"
+           properties="checkProjectNature"
+           type="org.eclipse.core.resources.IResource">
+     </propertyTester>
+  </extension> 
+
+</plugin>

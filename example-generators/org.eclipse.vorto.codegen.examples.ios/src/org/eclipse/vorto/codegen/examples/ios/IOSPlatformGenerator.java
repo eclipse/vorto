@@ -19,8 +19,10 @@ import org.eclipse.vorto.codegen.api.DatatypeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.api.mapping.IMapped;
 import org.eclipse.vorto.codegen.examples.ios.templates.CoreBluetoothDetectionTemplate;
 import org.eclipse.vorto.codegen.examples.ios.templates.DeviceServiceTemplate;
@@ -36,7 +38,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class IOSPlatformGenerator implements IVortoCodeGenerator {
 	
 	@Override
-	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext) {
+	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
 		generator.addTask(new DatatypeGeneratorTask(new EntityClassTemplate(), new EnumClassTemplate()));

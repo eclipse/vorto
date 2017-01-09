@@ -23,8 +23,10 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.prosystfi.tasks.FunctionalItemGeneratorTask;
 import org.eclipse.vorto.codegen.prosystfi.tasks.FunctionalItemImplGeneratorTask;
 import org.eclipse.vorto.codegen.prosystfi.tasks.JavaClassGeneratorTask;
@@ -52,7 +54,8 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 	public static final String SETTER_PREFIX = "set";
 
 	@Override
-	public IGenerationResult generate(InformationModel infomodel, InvocationContext ctx) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext ctx,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
 		Set<EObject> visited = new HashSet<>();
 		Set<String> exports = new HashSet<>();

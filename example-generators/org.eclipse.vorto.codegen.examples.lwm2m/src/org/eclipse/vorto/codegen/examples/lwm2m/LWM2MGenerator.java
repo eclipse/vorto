@@ -16,8 +16,10 @@ package org.eclipse.vorto.codegen.examples.lwm2m;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockLeshanGeneratorTask;
 import org.eclipse.vorto.codegen.examples.lwm2m.tasks.FunctionBlockXmlGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
@@ -28,7 +30,8 @@ public class LWM2MGenerator implements IVortoCodeGenerator {
 	private static final String CONFIG_PARAM_SKIP_CLIENT = "skipClient";
 
 	@Override
-	public IGenerationResult generate(InformationModel infomodel, InvocationContext context) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		GenerationResultZip output = new GenerationResultZip(infomodel,getServiceKey());
 		
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
