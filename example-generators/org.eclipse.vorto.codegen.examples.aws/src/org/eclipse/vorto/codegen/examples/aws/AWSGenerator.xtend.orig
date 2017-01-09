@@ -17,11 +17,11 @@ package org.eclipse.vorto.codegen.examples.aws
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
-<<<<<<< HEAD
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
+<<<<<<< HEAD
 =======
->>>>>>> development
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
+>>>>>>> 01fab8f51a14d6fa9d0d24e27cbbe5a756aec12a
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
