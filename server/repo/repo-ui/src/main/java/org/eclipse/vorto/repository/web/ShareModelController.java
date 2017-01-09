@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.eclipse.vorto.http.model.ServerResponse;
+import org.eclipse.vorto.http.model.ServerResponseDto;
 import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.model.ModelHandle;
@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiParam;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/share", description="Share your vorto models")
+@Api(value="/share", description="Upload information models")
 @RestController
 @RequestMapping(value = "/rest/secure")
 public class ShareModelController {
@@ -67,34 +67,34 @@ public class ShareModelController {
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ServerResponseDto> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
 			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename());
 			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
 			uploadModelResults.add(uploadModelResult);
 			String message = "Uploaded model " + file.getOriginalFilename() + (uploadModelResult.isValid() ? " is valid to check in." : " has errors. Cannot check in.") ;
-			return validResponse(new ServerResponse(message,true, uploadModelResults));
+			return validResponse(new ServerResponseDto(message,true, uploadModelResults));
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
-			ServerResponse errorResponse = new ServerResponse("Error during upload. Try again. " + e.getMessage(),
+			ServerResponseDto errorResponse = new ServerResponseDto("Error during upload. Try again. " + e.getMessage(),
 					false, null);
-			return new ResponseEntity<ServerResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<ServerResponseDto>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@ApiOperation(value = "Upload and validate multiple vorto models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<ServerResponseDto> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);
 			
 			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
-			ServerResponse serverResponse = (uploadModelResults.size() == 0)
-					? new ServerResponse("Uploaded file doesn't have any valid models.", false, uploadModelResults)
-					: new ServerResponse(constructUserResponseMessage(uploadModelResults), true, uploadModelResults);
+			ServerResponseDto serverResponse = (uploadModelResults.size() == 0)
+					? new ServerResponseDto("Uploaded file doesn't have any valid models.", false, uploadModelResults)
+					: new ServerResponseDto(constructUserResponseMessage(uploadModelResults), true, uploadModelResults);
 			return validResponse(serverResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk upload models.",e);
@@ -102,13 +102,13 @@ public class ShareModelController {
 		}
 	}
 
-	@ApiOperation(value = "Checkin an uploaded vorto model into the vorto repository")
+	@ApiOperation(value = "Checkin an uploaded vorto model into the repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
+	public ResponseEntity<ServerResponseDto> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
 		modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
-			ServerResponse successModelResponse = new ServerResponse("Model has been checkin successfully.",true, null);
+			ServerResponseDto successModelResponse = new ServerResponseDto("Model has been checkin successfully.",true, null);
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
@@ -116,15 +116,15 @@ public class ShareModelController {
 		}
 	}
 	
-	@ApiOperation(value = "Checkin multiple uploaded vorto models into the vorto repository")
+	@ApiOperation(value = "Checkin multiple uploaded vorto models into the  repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
+	public ResponseEntity<ServerResponseDto> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
 		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
 				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());
 			}
-			ServerResponse successModelResponse = new ServerResponse("All the models has been checked in Successfully.",true, null);
+			ServerResponseDto successModelResponse = new ServerResponseDto("All the models has been checked in Successfully.",true, null);
 			return validResponse(successModelResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk checkin models.", e);
@@ -132,14 +132,14 @@ public class ShareModelController {
 		}
 	}
 
-	private ResponseEntity<ServerResponse> validResponse(ServerResponse successModelResponse) {
-		return new ResponseEntity<ServerResponse>(successModelResponse, HttpStatus.OK);
+	private ResponseEntity<ServerResponseDto> validResponse(ServerResponseDto successModelResponse) {
+		return new ResponseEntity<ServerResponseDto>(successModelResponse, HttpStatus.OK);
 	}
 
-	private ResponseEntity<ServerResponse> erroredResponse(String errorMessage) {
-		ServerResponse errorResponse = new ServerResponse("Error during checkin. Try again. " + errorMessage,
+	private ResponseEntity<ServerResponseDto> erroredResponse(String errorMessage) {
+		ServerResponseDto errorResponse = new ServerResponseDto("Error during checkin. Try again. " + errorMessage,
 				false, null);
-		return new ResponseEntity<ServerResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<ServerResponseDto>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	private String constructUserResponseMessage(List<UploadModelResult> uploadModelResults) {

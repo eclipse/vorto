@@ -16,8 +16,8 @@ package org.eclipse.vorto.repository.service;
 
 import java.util.List;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.model.Comment;
+import org.eclipse.vorto.repository.model.ModelId;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

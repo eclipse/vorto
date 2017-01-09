@@ -30,6 +30,9 @@ public class ModelIdResolverFactory {
 	@Autowired
 	private IModelRepository repository;
 	
+	private static final String LWM2M_SERVICEKEY = "lwm2m";
+	private static final String BT_SERVICEKEY = "bluetooth";
+	
 	private Map<String, IModelIdResolver> resolvers = new HashMap<>();
 
 	public IModelIdResolver getResolver(String serviceKey) {
@@ -41,6 +44,7 @@ public class ModelIdResolverFactory {
 	
 	@PostConstruct
 	public void initResolvers() {
-		resolvers.put("lwm2m", new Lwm2mObjectIdResolver(repository));
+		resolvers.put(LWM2M_SERVICEKEY, new Lwm2mObjectIdResolver(repository,LWM2M_SERVICEKEY));
+		resolvers.put(BT_SERVICEKEY, new BlueToothUUIDResolver(repository,BT_SERVICEKEY));
 	}
 }

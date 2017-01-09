@@ -17,7 +17,7 @@ package org.eclipse.vorto.http.model;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public enum ModelType {
+public enum ModelTypeDto {
 	Functionblock(".fbmodel"),
 	InformationModel(".infomodel"),
 	Datatype(".type"),
@@ -25,7 +25,7 @@ public enum ModelType {
 	
 	private String extension;
 	
-	ModelType(String extension) {
+	ModelTypeDto(String extension) {
 		this.extension = extension;
 	}
 	
@@ -33,16 +33,16 @@ public enum ModelType {
 		return extension;
 	}
 	
-	public static ModelType fromFileName(String fileName) {
+	public static ModelTypeDto fromFileName(String fileName) {
 		String type = fileName.substring(fileName.lastIndexOf("."));
-		if (type.equals(ModelType.Functionblock.getExtension())) {
-			return ModelType.Functionblock;
-		} else if (type.equals(ModelType.InformationModel.getExtension())) {
-			return ModelType.InformationModel;
-		} else if (type.equals(ModelType.Datatype.getExtension())) {
-			return ModelType.Datatype;
-		} else if (type.equals(ModelType.Mapping.getExtension())) {
-			return ModelType.Mapping;
+		if (type.equals(ModelTypeDto.Functionblock.getExtension())) {
+			return ModelTypeDto.Functionblock;
+		} else if (type.equals(ModelTypeDto.InformationModel.getExtension())) {
+			return ModelTypeDto.InformationModel;
+		} else if (type.equals(ModelTypeDto.Datatype.getExtension())) {
+			return ModelTypeDto.Datatype;
+		} else if (type.equals(ModelTypeDto.Mapping.getExtension())) {
+			return ModelTypeDto.Mapping;
 		} else {
 			throw new IllegalArgumentException(fileName);
 		}

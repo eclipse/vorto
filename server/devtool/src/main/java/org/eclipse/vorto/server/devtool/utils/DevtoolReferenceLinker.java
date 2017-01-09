@@ -32,7 +32,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.http.model.ModelId;
+import org.eclipse.vorto.http.model.ModelIdDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +42,7 @@ public class DevtoolReferenceLinker {
 	@Autowired
 	DevtoolRestClient devtoolRestClient;
 
-	public void linkFunctionBlockToInfoModel(String infoModelResourceId, ModelId functionBlockModelId,
+	public void linkFunctionBlockToInfoModel(String infoModelResourceId, ModelIdDto functionBlockModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
 		if (!containsResource(infoModelResourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + infoModelResourceId);
@@ -64,7 +64,7 @@ public class DevtoolReferenceLinker {
 		referencedResource.getContents().add(eObject);
 	}
 
-	public void linkDataTypeToFunctionBlock(String functionBlockResourceId, ModelId datatypeModelId,
+	public void linkDataTypeToFunctionBlock(String functionBlockResourceId, ModelIdDto datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
 		if (!containsResource(functionBlockResourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + functionBlockResourceId);
@@ -77,7 +77,7 @@ public class DevtoolReferenceLinker {
 		linkReferenceToModel(functionBlockResourceId, datatypeModelId, resourceSet, referencedResourceSet);
 	}
 	
-	public void linkDataTypeToDataType(String dataTypeResourceId, ModelId datatypeModelId,
+	public void linkDataTypeToDataType(String dataTypeResourceId, ModelIdDto datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
 		if (!containsResource(dataTypeResourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + dataTypeResourceId);
@@ -90,7 +90,7 @@ public class DevtoolReferenceLinker {
 		linkReferenceToModel(dataTypeResourceId, datatypeModelId, resourceSet, referencedResourceSet);
 	}
 
-	private void linkReferenceToModel(String modelResourceId, ModelId referenceModelId, ResourceSet resourceSet,
+	private void linkReferenceToModel(String modelResourceId, ModelIdDto referenceModelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet) {
 
 		ModelType referenceModelType = devtoolRestClient.getModelType(referenceModelId);
@@ -170,13 +170,13 @@ public class DevtoolReferenceLinker {
 		return variableName;
 	}
 
-	private String getFileName(ModelId modelId) {
+	private String getFileName(ModelIdDto modelId) {
 		ModelType modelType = devtoolRestClient.getModelType(modelId);
 		return modelId.getNamespace().replace(".", "_") + "_" + modelId.getName() + "_"
 				+ modelId.getVersion().replace(".", "_") + modelType.getExtension();
 	}
 
-	private URI getURI(ModelId modelId) {
+	private URI getURI(ModelIdDto modelId) {
 		URI uri = URI.createURI("fake:/" + getFileName(modelId));
 		return uri;
 	}

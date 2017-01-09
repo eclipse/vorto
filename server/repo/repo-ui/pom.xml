@@ -24,6 +24,12 @@
 			<artifactId>repo-http-models</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.server.commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 
 		<!-- Spring Boot dependencies -->
 		<dependency>

@@ -27,8 +27,6 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.eclipse.vorto.http.model.ModelResource;
-import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
 import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
@@ -37,6 +35,8 @@ import org.eclipse.vorto.repository.internal.service.validation.BulkModelReferen
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
+import org.eclipse.vorto.repository.model.ModelResource;
+import org.eclipse.vorto.repository.model.ModelType;
 import org.eclipse.vorto.repository.model.UploadModelResult;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;

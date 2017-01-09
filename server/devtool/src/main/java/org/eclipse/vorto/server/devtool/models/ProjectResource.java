@@ -14,7 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.models;
 
-import org.eclipse.vorto.http.model.ModelType;
+import org.eclipse.vorto.http.model.ModelTypeDto;
 
 public class ProjectResource {
 
@@ -23,7 +23,7 @@ public class ProjectResource {
 	private String version;
 	private String namespace;
 	private String subType;
-	private ModelType modelType;
+	private ModelTypeDto modelType;
 	
 	public String getSubType() {
 		return subType;
@@ -65,11 +65,11 @@ public class ProjectResource {
 		this.namespace = namespace;
 	}
 		
-	public ModelType getModelType() {
+	public ModelTypeDto getModelType() {
 		return modelType;
 	}
 
-	public void setModelType(ModelType modelType) {
+	public void setModelType(ModelTypeDto modelType) {
 		this.modelType = modelType;
 	}
 

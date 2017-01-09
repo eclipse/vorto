@@ -14,11 +14,11 @@
  */
 package org.eclipse.vorto.repository.internal.service;
 
-import org.eclipse.vorto.http.model.ModelType;
 import org.eclipse.vorto.repository.internal.service.emf.DatatypeModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.FunctionblockModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.InformationModelParser;
 import org.eclipse.vorto.repository.internal.service.emf.MappingModelParser;
+import org.eclipse.vorto.repository.model.ModelType;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

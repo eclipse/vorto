@@ -14,18 +14,12 @@
  */
 package org.eclipse.vorto.http.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * Generic server response type for client request.
  * @author Nagavijay Sivakumar - Robert Bosch (SEA) Pte. Ltd.
  *
  */
-@ApiModel(description = "Generic server response type for client request.")
-public class ServerResponse {
+public class ServerResponseDto {
 
 	private String message = null;
 	private Boolean isSuccess = null;
@@ -34,11 +28,11 @@ public class ServerResponse {
 	/*
 	 * Dummy constructor needed by ResponseEntity for JSON parsing of http response 
 	 */
-	public ServerResponse() {
+	public ServerResponseDto() {
 		
 	}
 		
-	public ServerResponse(String message, Boolean isSuccess, Object obj) {
+	public ServerResponseDto(String message, Boolean isSuccess, Object obj) {
 		this.message = message;
 		this.isSuccess = isSuccess;
 		this.obj = obj;
@@ -47,8 +41,6 @@ public class ServerResponse {
 	/**
 	 * Status message returned from server about request.
 	 **/
-	@ApiModelProperty(value = "Status message returned from server about request.")
-	@JsonProperty("message")
 	public String getMessage() {
 		return message;
 	}
@@ -61,8 +53,6 @@ public class ServerResponse {
 	 * Boolean flag to denote server status about request. true if the request
 	 * is successful or false otherwise.
 	 **/
-	@ApiModelProperty(value = "Boolean flag to denote server status about request. true if the request is successful or false otherwise.")
-	@JsonProperty("isSuccess")
 	public Boolean getIsSuccess() {
 		return isSuccess;
 	}
@@ -76,8 +66,6 @@ public class ServerResponse {
 	 * about request. Typically used for UI and returned as Map(key, value)
 	 * format.
 	 **/
-	@ApiModelProperty(value = "Generic object which may optionally used for providing additional details about request. Typically used for UI and returned as Map(key, value) format.")
-	@JsonProperty("obj")
 	public Object getObj() {
 		return obj;
 	}

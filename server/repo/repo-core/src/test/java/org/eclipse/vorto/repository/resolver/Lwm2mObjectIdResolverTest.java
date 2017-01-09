@@ -18,8 +18,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.resolver.Lwm2mObjectIdResolver;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
 import org.junit.Test;
  
@@ -30,7 +30,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 		checkinModel("lwm2m/ColorLight.fbmodel");
 		checkinModel("lwm2m/ColorLight_lwm2m.mapping");
 		
-		Lwm2mObjectIdResolver lwm2mResolver = new Lwm2mObjectIdResolver(this.modelRepository);
+		Lwm2mObjectIdResolver lwm2mResolver = new Lwm2mObjectIdResolver(this.modelRepository,"lwm2m");
 		assertEquals(new ModelId("ColorLight", "com.mycompany.fb", "1.0.0"),lwm2mResolver.resolve("2"));
 		
 		assertNotNull(this.modelRepository.getById(lwm2mResolver.resolve("2")));
@@ -41,7 +41,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 		checkinModel("lwm2m/ColorLight.fbmodel");
 		checkinModel("lwm2m/ColorLight_lwm2m.mapping");
 		
-		Lwm2mObjectIdResolver lwm2mResolver = new Lwm2mObjectIdResolver(this.modelRepository);
+		Lwm2mObjectIdResolver lwm2mResolver = new Lwm2mObjectIdResolver(this.modelRepository,"lwm2m");
 		assertNull(lwm2mResolver.resolve("3"));
 	}
 }

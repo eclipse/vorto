@@ -12,11 +12,9 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.http.model;
+package org.eclipse.vorto.repository.model;
 import java.util.Iterator;
 import java.util.StringTokenizer;
-
-import org.eclipse.vorto.core.api.model.model.ModelReference;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -36,10 +34,6 @@ public class ModelId {
 		this.name = name;
 		this.namespace = namespace.toLowerCase();
 		this.version = version;
-	}
-	
-	public static ModelId fromReference(ModelReference reference) {
-		return fromReference(reference.getImportedNamespace(),reference.getVersion());
 	}
 	
 	public static ModelId fromReference(String qualifiedName, String version) {

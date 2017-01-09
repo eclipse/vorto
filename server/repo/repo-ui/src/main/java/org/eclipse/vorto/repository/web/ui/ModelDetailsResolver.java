@@ -14,9 +14,9 @@
  */
 package org.eclipse.vorto.repository.web.ui;
 
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.internal.resolver.ModelIdResolverFactory;
 import org.eclipse.vorto.repository.internal.resolver.UnknownModelIdResolverException;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.resolver.IModelIdResolver;
 import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

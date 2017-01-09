@@ -20,7 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-public abstract class RepositoryController {
+public abstract class AbstractRepositoryController {
 
 	@ResponseStatus(value=HttpStatus.NOT_FOUND, reason = "Model not found.")  // 404
     @ExceptionHandler(ModelNotFoundException.class)

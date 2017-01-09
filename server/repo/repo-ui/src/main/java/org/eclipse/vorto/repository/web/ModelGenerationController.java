@@ -23,15 +23,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.http.model.ModelId;
 import org.eclipse.vorto.repository.model.GeneratedOutput;
 import org.eclipse.vorto.repository.model.GeneratorServiceInfo;
+import org.eclipse.vorto.repository.model.ModelId;
 import org.eclipse.vorto.repository.model.ServiceClassifier;
 import org.eclipse.vorto.repository.service.IGeneratorService;
 import org.slf4j.Logger;
@@ -54,10 +53,10 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/generate", description="Generate code from vorto models")
+@Api(value="/generate", description="Generate code from information models")
 @RestController
 @RequestMapping(value = "/rest/generation-router")
-public class ModelGenerationController extends RepositoryController {
+public class ModelGenerationController extends AbstractRepositoryController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
