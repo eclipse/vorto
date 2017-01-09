@@ -17,8 +17,10 @@ package org.eclipse.vorto.codegen.examples.latex;
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.latex.tasks.LatexInformationModelGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -28,7 +30,8 @@ public class LatexGenerator implements IVortoCodeGenerator {
 	public static final String LATEX_FILE_EXTENSION 	= ".tex";
 	public static final String LATEX_TARGET_PATH 		= "latex";
 
-	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext) {
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,getServiceKey());
 		

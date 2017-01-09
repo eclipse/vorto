@@ -18,6 +18,7 @@
 		</license>
 	</licenses>
 	<modules>
+		<module>framework</module>
 		<module>bundles</module>
 		<module>example-generators</module>
 		<module>features</module>
@@ -28,22 +29,19 @@
 	<properties>
 		<tycho-version>0.20.0</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<xtext.version>2.9.0</xtext.version>
+		<xtext.version>2.10.0</xtext.version>
 		<jdk.version>1.7</jdk.version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 	</properties>
 
 	<distributionManagement>
 		<repository>
-			<id>repo.eclipse.org</id>
-			<name>Project Repository - Releases</name>
-			<url>https://repo.eclipse.org/content/repositories/vorto-releases/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
-		 
 		<snapshotRepository>
-			<id>repo.eclipse.org</id>
-			<name>Project Repository - Snapshots</name>
-			<url>https://repo.eclipse.org/content/repositories/vorto-snapshots/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -69,11 +67,11 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/releases/mars</url>
 		</repository>
-		<repository>
-			<id>Xtext Update Site</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>XtextUpdateSite</id> -->
+<!-- 			<layout>p2</layout> -->
+<!-- 			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/</url> -->
+<!-- 		</repository> -->
 	</repositories>
 
 	<build>
@@ -487,6 +485,88 @@
 			</build>
 		</profile>
 		<profile>
+			<id>with-sources</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>with-javadoc</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.4</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>with-gpg-signing</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>with-maven-central-release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<!-- For deployment to Maven central -->
 			<id>maven-central-release</id>
 			<distributionManagement>
@@ -495,8 +575,8 @@
 					<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 				</repository>
 				<snapshotRepository>
-		            <id>ossrh</id>
-				    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+					<id>ossrh</id>
+					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 				</snapshotRepository>
 			</distributionManagement>
 			<build>
@@ -524,6 +604,9 @@
 								<goals>
 									<goal>jar</goal>
 								</goals>
+								<configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -540,8 +623,8 @@
 								</goals>
 							</execution>
 						</executions>
-				    </plugin>
-				    <plugin>
+					</plugin>
+					<plugin>
 						<groupId>org.sonatype.plugins</groupId>
 						<artifactId>nexus-staging-maven-plugin</artifactId>
 						<version>1.6.7</version>
@@ -549,7 +632,7 @@
 						<configuration>
 							<serverId>ossrh</serverId>
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+							<autoReleaseAfterClose>false</autoReleaseAfterClose>
 						</configuration>
 					</plugin>
 				</plugins>

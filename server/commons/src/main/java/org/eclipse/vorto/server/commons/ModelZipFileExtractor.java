@@ -59,14 +59,11 @@ public class ModelZipFileExtractor extends AbstractZipFileExtractor {
 		Resource infoModelResource = null;
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
-				if (entry.getName().indexOf(modelName) > -1) {
-					infoModelResource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
-					infoModelResource.load(new ByteArrayInputStream(copyStream(zis, entry)),
-							resourceSet.getLoadOptions());
-				} else {
-					Resource resource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
-					resource.load(new ByteArrayInputStream(copyStream(zis, entry)), resourceSet.getLoadOptions());
-
+				Resource resource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
+				resource.load(new ByteArrayInputStream(copyStream(zis, entry)), resourceSet.getLoadOptions());
+				
+				if (((Model) resource.getContents().get(0)).getName().equals(modelName)) {
+					infoModelResource = resource;
 				}
 			}
 		} catch (Exception ex) {
