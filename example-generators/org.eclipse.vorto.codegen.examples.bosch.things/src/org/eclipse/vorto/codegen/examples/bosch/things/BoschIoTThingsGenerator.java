@@ -49,8 +49,12 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 			FunctionBlock fb = fbp.getType().getFunctionblock();
 			
 			generateForFunctionblock(
-					fb, invocationContext,
-					TARGET_PATH + "/" + fbp.getType().getNamespace() + "." + fbp.getType().getName() + "_" + fbp.getType().getVersion(),
+					fb,  
+					invocationContext,
+					TARGET_PATH + "/" 
+							+ fbp.getType().getNamespace() + "."
+							+ fbp.getType().getName() + "_"
+							+ fbp.getType().getVersion(),
 					JSON_SCHEMA_FILE_EXTENSION,
 					zipOutputter);
 		}
@@ -68,51 +72,85 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 			throw new RuntimeException("fb is null");
 		}
 		
-		String stateTargetPath = targetPath + "/state";
-		String operationTargetPath = targetPath + "/operations";
-		String eventTargetPath = targetPath + "/events";
+		if (fb.getOperations() != null) {
+			for (Operation op : fb.getOperations()) {
+				generateForOperation(
+						op, 
+						context,
+						targetPath,
+						jsonFileExtension, 
+						outputter);
+			}
+		}
 		
 		Configuration configuration = fb.getConfiguration();
 		if (configuration != null) {
-			generateTask(configuration, context, outputter, ValidationTaskFactory.getConfigurationValidationTask(jsonFileExt, stateTargetPath));
+			generateForConfiguration(configuration, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		Status status = fb.getStatus();
 		if (status != null) {
-			generateTask(status, context, outputter, ValidationTaskFactory.getStatusValidationTask(jsonFileExt, stateTargetPath));
+			generateForStatus(status, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		Fault fault = fb.getFault();
 		if (fault != null) {
-			generateTask(fault, context, outputter, ValidationTaskFactory.getFaultValidationTask(jsonFileExt, stateTargetPath));
-		}
-		
-		if (configuration != null || status != null || fault != null) {
-			generateTask(fb, context, outputter, ValidationTaskFactory.getStateValidationTask(jsonFileExt, stateTargetPath));
+			generateForFault(fault, context, targetPath, jsonFileExtension, outputter);
 		}
 		
 		if (fb.getEvents() != null) {
 			for (Event event : fb.getEvents()) {
-				generateTask(event, context, outputter, ValidationTaskFactory.getEventValidationTask(jsonFileExt, eventTargetPath));
-			}
-		}
-		
-		if (fb.getOperations() != null) {
-			for (Operation op : fb.getOperations()) {
-				generateTask(op, context, outputter, 
-						ValidationTaskFactory.getOperationParametersValidationTask(jsonFileExt, operationTargetPath),
-						ValidationTaskFactory.getOperationReturnTypeValidationTask(jsonFileExt, operationTargetPath));
+				generateForEvent(
+						event, 
+						context,
+						targetPath, 
+						jsonFileExtension, 
+						outputter);
 			}
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private <K> void generateTask(K element, InvocationContext context, IGeneratedWriter outputter, ICodeGeneratorTask<K>... tasks) {
-		ChainedCodeGeneratorTask<K> generator = new ChainedCodeGeneratorTask<K>();
-		for(ICodeGeneratorTask<K> task : tasks) {
-			generator.addTask(task);
-		}
-		generator.generate(element, context, outputter);
+	private void generateForConfiguration(Configuration configuration, InvocationContext context, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Configuration> generator = new ChainedCodeGeneratorTask<Configuration>();
+		generator.addTask(new ConfigurationValidationTask(jsonFileExtension, targetPath));
+		generator.generate(configuration, context, outputter);
+	}
+	
+	private void generateForFault(Fault fault, InvocationContext context, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Fault> generator = new ChainedCodeGeneratorTask<Fault>();
+		generator.addTask(new FaultValidationTask(jsonFileExtension, targetPath));
+		generator.generate(fault, context, outputter);
+	}
+	
+	private void generateForStatus(Status status, InvocationContext context, String targetPath, String jsonFileExtension,
+			IGeneratedWriter outputter) {
+		ChainedCodeGeneratorTask<Status> generator = new ChainedCodeGeneratorTask<Status>();
+		generator.addTask(new StatusValidationTask(jsonFileExtension, targetPath));
+		generator.generate(status, context, outputter);
+	}
+
+	public void generateForEvent(
+			Event event, 
+			InvocationContext context, 
+			String targetPath, 
+			String jsonFileExtension, 
+			IGeneratedWriter outputter) 
+	{
+		ChainedCodeGeneratorTask<Event> generator = new ChainedCodeGeneratorTask<Event>();
+		generator.addTask(new EventValidationTask(jsonFileExtension, targetPath));
+		generator.generate(event, context, outputter);
+	}
+
+	public void generateForOperation(Operation op,
+			InvocationContext context, 
+			String targetPath, String jsonFileExtension, IGeneratedWriter outputter) 
+	{
+		ChainedCodeGeneratorTask<Operation> generator = new ChainedCodeGeneratorTask<Operation>();
+		generator.addTask(new OperationParametersValidationTask(jsonFileExtension, targetPath));
+		generator.addTask(new OperationReturnTypeValidationTask(jsonFileExtension, targetPath));
+		generator.generate(op, context, outputter);
 	}
 
 	@Override

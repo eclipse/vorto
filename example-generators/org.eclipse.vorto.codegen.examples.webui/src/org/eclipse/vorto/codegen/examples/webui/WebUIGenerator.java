@@ -81,4 +81,5 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 	public String getServiceKey() {
 		return "webui";
 	}
+
 }
