@@ -1,0 +1,13 @@
+namespace com.mycompany
+version 1.0.0
+displayname "ColorLight IM"
+description "Information model for Color Light IM"
+category demo
+using com.mycompany.fb.ColorLight ; 1.0.0
+
+infomodel ColorLightIM {
+	
+	functionblocks {
+		colorLight as ColorLight
+	}
+}
