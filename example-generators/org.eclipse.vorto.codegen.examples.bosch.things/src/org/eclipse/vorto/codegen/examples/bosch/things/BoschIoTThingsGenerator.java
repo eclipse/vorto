@@ -39,8 +39,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 	public IGenerationResult generate(InformationModel infomodel,
 			InvocationContext invocationContext) {
 
-		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel,
-				getServiceKey());
+		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
 
 		for (FunctionblockProperty fbp : infomodel.getProperties()) {
 			FunctionBlock fb = fbp.getType().getFunctionblock();
