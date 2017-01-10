@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.api.generation.ServiceClassifier;

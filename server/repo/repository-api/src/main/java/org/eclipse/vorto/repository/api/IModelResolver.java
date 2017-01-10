@@ -20,5 +20,10 @@ import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 
 public interface IModelResolver {
 
+	/**
+	 * Resolves a model for the given query
+	 * @param query containing criteria for resolving the model
+	 * @return model info or null, if no model can be found for the given query
+	 */
 	CompletableFuture<ModelInfo> resolve(ResolveQuery query);
 }

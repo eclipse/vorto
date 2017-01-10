@@ -10,7 +10,6 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 import org.eclipse.vorto.repository.model.IModelContent;
-import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
 import org.springframework.stereotype.Service;
 

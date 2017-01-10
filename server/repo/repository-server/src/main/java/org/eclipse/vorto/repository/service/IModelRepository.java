@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.model.IModelContent;
 

@@ -45,6 +45,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.internal.model.DefaultModelContent;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
@@ -62,7 +63,6 @@ import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.service.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IUserRepository;
-import org.eclipse.vorto.repository.service.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

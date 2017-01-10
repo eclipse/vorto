@@ -14,8 +14,8 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import org.eclipse.vorto.repository.service.GenerationException;
-import org.eclipse.vorto.repository.service.ModelNotFoundException;
+import org.eclipse.vorto.repository.api.exception.GenerationException;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
