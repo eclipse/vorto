@@ -20,11 +20,11 @@ import java.util.Collections;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 
 public class UploadResult {
-	String handleId;
-	String errorMessage;
-	boolean valid;
-	ModelResource modelResource;
-	Collection<ModelId> unresolvedReferences = Collections.emptyList();
+	private String handleId;
+	private String errorMessage;
+	private boolean valid;
+	private ModelResource modelResource;
+	private Collection<ModelId> unresolvedReferences = Collections.emptyList();
 
 	public UploadResult() {
 

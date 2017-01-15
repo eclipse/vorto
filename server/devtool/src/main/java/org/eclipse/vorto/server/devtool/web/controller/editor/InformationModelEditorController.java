@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
-import org.eclipse.vorto.http.model.ModelIdDto;
-import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.server.devtool.service.impl.editor.InformationModelEditorServiceImpl;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
@@ -66,7 +66,7 @@ public class InformationModelEditorController implements IEditorController {
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
 
-		ModelIdDto modelId = new ModelIdDto(name, namespace, version);
+		ModelId modelId = new ModelId(name, namespace, version);
 
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
@@ -87,7 +87,7 @@ public class InformationModelEditorController implements IEditorController {
 
 	@ApiOperation(value = "")
 	@RequestMapping(value = "/search={expression:.*}", method = RequestMethod.GET)
-	public List<ModelResourceDto> searchByExpression(
+	public List<ModelInfo> searchByExpression(
 			@ApiParam(value = "Search expression", required = true) @PathVariable String expression) {
 
 		Objects.requireNonNull(expression, "namespace must not be null");
