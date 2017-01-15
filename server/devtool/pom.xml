@@ -52,7 +52,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repo-http-models</artifactId>
+			<artifactId>repository-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -99,7 +99,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repo-http-models</artifactId>
+			<artifactId>repository-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

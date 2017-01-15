@@ -19,13 +19,13 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.repository.api.ModelInfo;
 
 public interface IEditorController {
 
 	public void linkEditor(String resourceId, String namespace, String name, String version, HttpServletRequest request,
 			HttpServletResponse response);
 
-	List<ModelResourceDto> searchByExpression(String expression);
+	List<ModelInfo> searchByExpression(String expression);
 
 }

@@ -22,8 +22,9 @@ import java.util.Set;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.vorto.http.model.ModelIdDto;
-import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class FunctionBlockEditorServiceImpl extends IEditorService {
 	@Autowired
 	DevtoolReferenceLinker devtoolReferenceLinker;
 
-	public String linkModelToResource(String functionBlockResourceId, ModelIdDto datatypeModelId,
+	public String linkModelToResource(String functionBlockResourceId, ModelId datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
 		devtoolReferenceLinker.linkDataTypeToFunctionBlock(functionBlockResourceId, datatypeModelId,
 				resourceSet, referencedResourceSet);
@@ -49,9 +50,9 @@ public class FunctionBlockEditorServiceImpl extends IEditorService {
 		}
 	}
 
-	public List<ModelResourceDto> searchModelByExpression(String expression) {
-		List<ModelResourceDto> modelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelTypeDto.Datatype.toString() , org.eclipse.vorto.http.model.ModelTypeDto.Datatype);
-		List<ModelResourceDto> functionBlockModelList = searchModelByExpressionAndValidate(expression + " " + org.eclipse.vorto.http.model.ModelTypeDto.Functionblock.toString(), org.eclipse.vorto.http.model.ModelTypeDto.Functionblock);
+	public List<ModelInfo> searchModelByExpression(String expression) {
+		List<ModelInfo> modelList = searchModelByExpressionAndValidate(expression + " " + ModelType.Datatype.toString() , ModelType.Datatype);
+		List<ModelInfo> functionBlockModelList = searchModelByExpressionAndValidate(expression + " " + ModelType.Functionblock.toString(), ModelType.Functionblock);
 		modelList.addAll(functionBlockModelList);
 		return modelList;
 	}

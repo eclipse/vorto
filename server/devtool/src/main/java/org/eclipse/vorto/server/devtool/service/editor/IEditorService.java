@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.vorto.http.model.ModelIdDto;
-import org.eclipse.vorto.http.model.ModelResourceDto;
+import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,17 +32,17 @@ public abstract class IEditorService {
 	@Autowired
 	DevtoolRestClient devtoolRestClient;
 	
-	public abstract String linkModelToResource(String infoModelResourceId, ModelIdDto modelId, ResourceSet resourceSet,
+	public abstract String linkModelToResource(String infoModelResourceId, ModelId modelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet);
 
-	public abstract List<ModelResourceDto> searchModelByExpression(String expression);
+	public abstract List<ModelInfo> searchModelByExpression(String expression);
 	
-	protected final List<ModelResourceDto> searchModelByExpressionAndValidate(String expression,
-			org.eclipse.vorto.http.model.ModelTypeDto modelType) {
-		List<ModelResourceDto> resourceList = devtoolRestClient.searchByExpression(expression);
-		ArrayList<ModelResourceDto> modelResourceList = new ArrayList<ModelResourceDto>();
-		for (ModelResourceDto modelResource : resourceList) {
-			if (modelResource.getModelType().equals(modelType)) {
+	protected final List<ModelInfo> searchModelByExpressionAndValidate(String expression,
+			ModelType modelType) {
+		List<ModelInfo> resourceList = devtoolRestClient.searchByExpression(expression);
+		ArrayList<ModelInfo> modelResourceList = new ArrayList<ModelInfo>();
+		for (ModelInfo modelResource : resourceList) {
+			if (modelResource.getType().equals(modelType)) {
 				modelResourceList.add(modelResource);
 			}
 		}
