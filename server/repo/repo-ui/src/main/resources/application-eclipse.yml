@@ -1,9 +1,0 @@
-server:
-  port: 8080
-  contextPath: /infomodelrepository
-  
-mail:
-  smtp:
-    host: localhost
-    port: 25
-  from: vorto-dev@eclipse.org

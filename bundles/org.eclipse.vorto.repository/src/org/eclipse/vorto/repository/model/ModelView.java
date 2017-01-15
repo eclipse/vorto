@@ -22,7 +22,7 @@ import org.eclipse.vorto.core.api.model.model.ModelType;
 
 public class ModelView {
 	private ModelId id = null;
-	private ModelType modelType = null;
+	private ModelType type = null;
 	private String description = null;
 	private String displayName = null;
 	private List<ModelId> references = new ArrayList<>();
@@ -33,11 +33,11 @@ public class ModelView {
 		this.id = id;
 	}
 
-	public ModelType getModelType() {
-		return modelType;
+	public ModelType getType() {
+		return type;
 	}
-	public void setModelType(ModelType modelType) {
-		this.modelType = modelType;
+	public void setType(ModelType type) {
+		this.type = type;
 	}
 	public String getDescription() {
 		return description;

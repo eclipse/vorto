@@ -27,7 +27,7 @@ import com.google.common.base.Function;
 public class ModelViewToModelResource implements Function<ModelView, ModelResource> {
 
 	public ModelResource apply(ModelView input) {
-		ModelId modelId = ModelIdFactory.newInstance(input.getModelType(), input.getId().getNamespace(), input.getId()
+		ModelId modelId = ModelIdFactory.newInstance(input.getType(), input.getId().getNamespace(), input.getId()
 				.getVersion(), input.getId().getName());
 		return new ModelResource(modelId, input.getDescription(), input.getDisplayName(), transformReferences(input,
 				input.getReferences()));
@@ -35,7 +35,7 @@ public class ModelViewToModelResource implements Function<ModelView, ModelResour
 
 	private List<ModelId> transformReferences(ModelView modelView, List<ModelId> references) {
 		for (ModelId modelId : references) {
-			modelId.setModelType(getReferenceModelType(modelView.getModelType()));
+			modelId.setModelType(getReferenceModelType(modelView.getType()));
 		}
 		return references;
 	}

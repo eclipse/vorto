@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.repository;
 
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
