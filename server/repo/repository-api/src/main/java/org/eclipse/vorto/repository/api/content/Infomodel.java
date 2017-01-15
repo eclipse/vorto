@@ -22,12 +22,13 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelType;
 
 public class Infomodel extends AbstractModel {
+	
+	private List<ModelProperty> functionblocks = new ArrayList<ModelProperty>();
+
 
 	public Infomodel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
 	}
-
-	private List<ModelProperty> functionblocks = new ArrayList<ModelProperty>();
 	
 	public List<ModelProperty> getFunctionblocks() {
 		return functionblocks;

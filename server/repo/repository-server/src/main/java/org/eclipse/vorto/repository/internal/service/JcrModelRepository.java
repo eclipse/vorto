@@ -96,7 +96,8 @@ public class JcrModelRepository implements IModelRepository {
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
 	@Override
-	public List<ModelInfo> search(String queryExpression) {
+	public List<ModelInfo> search(final String expression) {
+		String queryExpression = expression;
 		if (queryExpression == null || queryExpression.isEmpty()) {
 			queryExpression = "*";
 		}

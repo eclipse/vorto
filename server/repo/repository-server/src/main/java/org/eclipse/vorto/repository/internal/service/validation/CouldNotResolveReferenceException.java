@@ -26,7 +26,7 @@ public class CouldNotResolveReferenceException extends ValidationException {
 	private List<ModelId> missingReferences;
 	
 	public CouldNotResolveReferenceException(ModelInfo resource, List<ModelId> missingReferences) {
-		super(createErrorMessage(resource, missingReferences), resource);
+		super(createErrorMessage(missingReferences), resource);
 		this.missingReferences = Objects.requireNonNull(missingReferences);
 		if (missingReferences.size() <= 0) {
 			throw new IllegalArgumentException("Trying to create a CouldNotResolveReferenceException with empty missingReferences."); 
@@ -37,8 +37,7 @@ public class CouldNotResolveReferenceException extends ValidationException {
 		return missingReferences;
 	}
 	
-	private static String createErrorMessage(ModelInfo resource,
-			List<ModelId> missingReferences) {
+	private static String createErrorMessage(List<ModelId> missingReferences) {
 		if (missingReferences.size() > 1) {
 			return "Cannot resolve multiple references.";
 		} else {

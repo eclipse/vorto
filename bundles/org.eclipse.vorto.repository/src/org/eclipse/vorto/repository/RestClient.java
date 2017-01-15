@@ -207,8 +207,8 @@ public class RestClient {
 	}
 	
 	private class ProxyConfiguration {
-		RequestConfig requestConfig;
-		CredentialsProvider credentialsProvider;
+		private RequestConfig requestConfig;
+		private CredentialsProvider credentialsProvider;
 		
 		public ProxyConfiguration(RequestConfig requestConfig,
 				CredentialsProvider credentialsProvider) {

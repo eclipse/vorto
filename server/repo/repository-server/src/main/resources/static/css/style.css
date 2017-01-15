@@ -309,7 +309,6 @@ select {
 .project-selection {
     float:left;
     margin-left:15px;
-   <!-- margin-bottom:25px; -->
 }
 
 .table>tbody>tr {

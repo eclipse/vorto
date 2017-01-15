@@ -128,8 +128,8 @@ public class ModelDropListener extends ViewerDropAdapter {
 	}
 
 	private class DropSourceValidatorAndAction {
-		IDropValidator validator;
-		IDropAction action;
+		private IDropValidator validator;
+		private IDropAction action;
 
 		public DropSourceValidatorAndAction(IDropValidator validator, IDropAction action) {
 			this.validator = validator;

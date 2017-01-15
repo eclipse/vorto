@@ -22,12 +22,12 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelType;
 
 public class EntityModel extends AbstractModel {
+	
+	private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 
 	public EntityModel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
 	}
-
-	private List<ModelProperty> properties = new ArrayList<ModelProperty>();
 		
 	public List<ModelProperty> getProperties() {
 		return properties;
