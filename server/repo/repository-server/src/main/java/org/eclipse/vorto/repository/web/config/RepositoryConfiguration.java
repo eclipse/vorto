@@ -14,18 +14,18 @@
  */
 package org.eclipse.vorto.repository.web.config;
 
-import org.modeshape.jcr.RepositoryConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 
 @Configuration
-@Profile("cloud")
-public class CloudConfiguration {
+public class RepositoryConfiguration {
 
+	@Value("${repo.configFile}")
+	private String repositoryConfigFile = null;
 	@Bean
-	public RepositoryConfiguration repoConfiguration() throws Exception {
-		return RepositoryConfiguration.read(new ClassPathResource("vorto-repository-config-h2.json").getURL());
+	public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
+		return org.modeshape.jcr.RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
 	}
 }

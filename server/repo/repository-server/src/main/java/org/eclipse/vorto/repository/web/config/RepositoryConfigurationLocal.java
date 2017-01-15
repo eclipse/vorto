@@ -19,18 +19,15 @@ import javax.annotation.PostConstruct;
 import org.eclipse.vorto.repository.model.Role;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.service.IUserRepository;
-import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @Profile("local")
-public class LocalConfiguration {
-
+public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.web.config.RepositoryConfiguration {
+	
 	@Autowired
 	private IUserRepository userRepository;
 	
@@ -55,10 +52,5 @@ public class LocalConfiguration {
 		user.setRoles(Role.USER);
 		
 		userRepository.save(user);
-	}
-	
-	@Bean
-	public RepositoryConfiguration repoConfiguration() throws Exception {
-		return RepositoryConfiguration.read(new ClassPathResource("vorto-repository-config-file.json").getURL());
 	}
 }
