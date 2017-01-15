@@ -14,33 +14,42 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-import java.util.ArrayList;
-import java.util.List;
+public class BooleanAttributeProperty implements IPropertyAttribute {
 
-import org.eclipse.vorto.repository.api.AbstractModel;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
-
-public class EntityModel extends AbstractModel {
-
-	public EntityModel(ModelId modelId, ModelType modelType) {
-		super(modelId, modelType);
+	private BooleanAttributePropertyType type;
+	
+	private boolean value;
+	
+	public BooleanAttributeProperty(BooleanAttributePropertyType type, boolean value) {
+		super();
+		this.type = type;
+		this.value = value;
 	}
-
-	private List<ModelProperty> properties = new ArrayList<ModelProperty>();
+	
+	public BooleanAttributeProperty() {
 		
-	public List<ModelProperty> getProperties() {
-		return properties;
 	}
 
-	public void setProperties(List<ModelProperty> properties) {
-		this.properties = properties;
+	public BooleanAttributePropertyType getType() {
+		return type;
+	}
+
+	public void setType(BooleanAttributePropertyType type) {
+		this.type = type;
+	}
+
+	public boolean isValue() {
+		return value;
+	}
+
+	public void setValue(boolean value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "EntityModelDto [properties=" + properties + "]";
+		return "BooleanAttributeProperty [type=" + type + ", value=" + value + "]";
 	}
-
+	
 	
 }

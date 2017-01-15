@@ -41,6 +41,12 @@ public class EnumModel extends AbstractModel {
 	public ModelType getType() {
 		return ModelType.Datatype;
 	}
+
+	@Override
+	public String toString() {
+		return "EnumModel [literals=" + literals + ", id=" + id + ", type=" + type + ", displayName=" + displayName
+				+ ", description=" + description + ", references=" + references + "]";
+	}
 	
 	
 }

@@ -14,33 +14,38 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-import java.util.ArrayList;
-import java.util.List;
+public class EnumAttributeProperty implements IPropertyAttribute {
 
-import org.eclipse.vorto.repository.api.AbstractModel;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
-
-public class EntityModel extends AbstractModel {
-
-	public EntityModel(ModelId modelId, ModelType modelType) {
-		super(modelId, modelType);
+	private EnumAttributePropertyType type;
+	private EnumLiteral value;
+	
+	public EnumAttributeProperty(EnumAttributePropertyType type, EnumLiteral value) {
+		super();
+		this.type = type;
+		this.value = value;
 	}
-
-	private List<ModelProperty> properties = new ArrayList<ModelProperty>();
+	
+	public EnumAttributeProperty() {
 		
-	public List<ModelProperty> getProperties() {
-		return properties;
 	}
-
-	public void setProperties(List<ModelProperty> properties) {
-		this.properties = properties;
+	
+	public EnumAttributePropertyType getType() {
+		return type;
+	}
+	public void setType(EnumAttributePropertyType type) {
+		this.type = type;
+	}
+	public EnumLiteral getValue() {
+		return value;
+	}
+	public void setValue(EnumLiteral value) {
+		this.value = value;
 	}
 
 	@Override
 	public String toString() {
-		return "EntityModelDto [properties=" + properties + "]";
+		return "EnumAttributeProperty [type=" + type + ", value=" + value + "]";
 	}
-
+	
 	
 }

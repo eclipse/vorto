@@ -14,12 +14,6 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-public class Param extends AbstractProperty {
+public interface IPropertyAttribute {
 
-	@Override
-	public String toString() {
-		return "Param [isMandatory=" + isMandatory + ", name=" + name + ", isMultiple=" + isMultiple + ", description="
-				+ description + ", type=" + type + ", constraints=" + constraints + "]";
-	}
-	
 }

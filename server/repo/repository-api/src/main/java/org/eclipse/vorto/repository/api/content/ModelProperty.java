@@ -14,67 +14,28 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-public class ModelProperty {
+import java.util.ArrayList;
+import java.util.List;
 
-	private boolean isMandatory = true;
-	private String name;
+public class ModelProperty extends AbstractProperty {
 	
-	private boolean isMultiple = false;
-	private String description;
-	
-	private IReferenceType type = null;
-			
-	public boolean isMandatory() {
-		return isMandatory;
+	private List<IPropertyAttribute> attributes = new ArrayList<IPropertyAttribute>();
+
+	public List<IPropertyAttribute> getAttributes() {
+		return attributes;
 	}
 
-	public void setMandatory(boolean isMandatory) {
-		this.isMandatory = isMandatory;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public IReferenceType getType() {
-		return type;
-	}
-
-	public void setType(IReferenceType type) {
-		this.type = type;
-	}
-
-	public boolean isPrimitive() {
-		return type instanceof PrimitiveType;
-	}
-
-	public boolean isMultiple() {
-		return isMultiple;
-	}
-
-	public void setMultiple(boolean isMultiple) {
-		this.isMultiple = isMultiple;
+	public void setAttributes(List<IPropertyAttribute> attributes) {
+		this.attributes = attributes;
 	}
 
 	@Override
 	public String toString() {
-		return "ModelPropertyDto [isMandatory=" + isMandatory + ", name=" + name + ", isMultiple=" + isMultiple
-				+ ", description=" + description + ", type=" + type + ", isPrimitive=" + isPrimitive() + "]";
+		return "ModelProperty [attributes=" + attributes + ", isMandatory=" + isMandatory + ", name=" + name
+				+ ", isMultiple=" + isMultiple + ", description=" + description + ", type=" + type + ", constraints="
+				+ constraints + "]";
 	}
 	
-	
-	
+
 	
 }

@@ -14,33 +14,44 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Constraint {
 
-import org.eclipse.vorto.repository.api.AbstractModel;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
+	private ConstraintType type;
+	
+	private String value;
 
-public class EntityModel extends AbstractModel {
-
-	public EntityModel(ModelId modelId, ModelType modelType) {
-		super(modelId, modelType);
+	public Constraint(ConstraintType type, String value) {
+		this.type = type;
+		this.value = value;
 	}
-
-	private List<ModelProperty> properties = new ArrayList<ModelProperty>();
+	
+	public Constraint() {
 		
-	public List<ModelProperty> getProperties() {
-		return properties;
+	}
+	
+	public ConstraintType getType() {
+		return type;
 	}
 
-	public void setProperties(List<ModelProperty> properties) {
-		this.properties = properties;
+	public void setType(ConstraintType type) {
+		this.type = type;
 	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 
 	@Override
 	public String toString() {
-		return "EntityModelDto [properties=" + properties + "]";
+		return "Constraint [type=" + type + ", value=" + value + "]";
 	}
-
+	
+	
+	
 	
 }

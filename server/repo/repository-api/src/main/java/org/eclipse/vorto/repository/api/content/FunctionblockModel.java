@@ -75,8 +75,6 @@ public class FunctionblockModel extends AbstractModel {
 		return events;
 	}
 
-
-
 	public void setEvents(List<ModelEvent> events) {
 		this.events = events;
 	}

@@ -14,12 +14,8 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-public class Param extends AbstractProperty {
-
-	@Override
-	public String toString() {
-		return "Param [isMandatory=" + isMandatory + ", name=" + name + ", isMultiple=" + isMultiple + ", description="
-				+ description + ", type=" + type + ", constraints=" + constraints + "]";
-	}
-	
+public enum BooleanAttributePropertyType {
+	READABLE,
+	WRITABLE,
+	EVENTABLE
 }
