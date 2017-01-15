@@ -12,7 +12,7 @@ before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSiz
 
 install: true
 script:
-  - mvn clean install -DskipTests -f server/pom.xml
+  - mvn clean install -f server/pom.xml
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
