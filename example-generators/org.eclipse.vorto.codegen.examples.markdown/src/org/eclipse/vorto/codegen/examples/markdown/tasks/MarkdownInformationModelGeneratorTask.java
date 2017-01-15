@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.codegen.examples.markdown.tasks;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.examples.markdown.templates.MarkdownEntityTemplate;
@@ -37,7 +36,7 @@ public class MarkdownInformationModelGeneratorTask extends
 	
 	@Override
 	public String getFileName(InformationModel im) {
-		return StringUtils.capitalize(im.getName()) + markdownFileExtension;
+		return im.getName() + markdownFileExtension;
 	}
 	
 	@Override

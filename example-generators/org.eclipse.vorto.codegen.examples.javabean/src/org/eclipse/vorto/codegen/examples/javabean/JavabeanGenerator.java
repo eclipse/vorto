@@ -29,7 +29,7 @@ import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockImplGe
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockInterfaceGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.JavaFunctionblockStatusGeneratorTask;
 import org.eclipse.vorto.codegen.examples.javabean.tasks.template.PomFileTemplate;
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper;
+import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
@@ -69,10 +69,10 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 			this.generateForFunctionBlock(infomodel, fbp.getType(), zipOutputter);
 
 			FunctionBlock fb = fbp.getType().getFunctionblock();
-			for (Entity entity : ModelHelper.getReferencedEntities(fb)) {
+			for (Entity entity : Utils.getReferencedEntities(fb)) {
 				generateForEntity(infomodel, entity, zipOutputter);
 			}
-			for (Enum en : ModelHelper.getReferencedEnums(fb)) {
+			for (Enum en : Utils.getReferencedEnums(fb)) {
 				generateForEnum(infomodel, en, zipOutputter);
 			}
 		}

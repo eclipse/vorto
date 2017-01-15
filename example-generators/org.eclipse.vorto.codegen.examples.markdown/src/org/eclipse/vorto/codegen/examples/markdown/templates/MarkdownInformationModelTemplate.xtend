@@ -16,8 +16,8 @@ package org.eclipse.vorto.codegen.examples.markdown.templates
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.codegen.utils.Utils
 
 class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 	
@@ -61,14 +61,14 @@ class MarkdownInformationModelTemplate implements ITemplate<InformationModel>{
 			
 			# Entities
 			«FOR fbProperty : im.properties»
-				«FOR type : ModelHelper.getReferencedEntities(fbProperty.type.functionblock)»
+				«FOR type : Utils.getReferencedEntities(fbProperty.type.functionblock)»
 					«entityTemplate.getContent(type,invocationContext)»
 				«ENDFOR»
 			«ENDFOR»
 			
 			# Enums
 			«FOR fbProperty : im.properties»
-				«FOR type : ModelHelper.getReferencedEnums(fbProperty.type.functionblock)»
+				«FOR type : Utils.getReferencedEnums(fbProperty.type.functionblock)»
 					«enumTemplate.getContent(type,invocationContext)»
 				«ENDFOR»
 			«ENDFOR»

@@ -11,12 +11,12 @@
 	<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
 	<packaging>eclipse-plugin</packaging>
 	<name>Data Type Editor Plugin</name>
-	<description>The designer plugin lets users create a function block
-		definition.</description>
+	<description>The designer plugin lets users create a datatype.</description>
 
 	<properties>
 		<test.project>org.eclipse.vorto.editor.datatype.tests</test.project>
 	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -40,7 +40,7 @@
 							-p
 						</argument>
 						<argument>
-							runtimeProject=/${project.basedir}
+							rootPath=/${project.basedir}/..
 						</argument>
 					</arguments>
 				</configuration>
@@ -65,6 +65,47 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets combine.children="append">
+						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.datatype/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ide/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ui/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.web/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.tests/src-gen/</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+						<fileset>
+							<directory>${basedir}/model/generated/</directory>
+						</fileset>
+					</filesets>
+				</configuration>
 			</plugin>
 		</plugins>
 		<pluginManagement>

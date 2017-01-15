@@ -58,7 +58,11 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 	}
 	
 	protected def getDefaultCommand(Operation operation) {
-		'''«FOR param : operation.params BEFORE '{' SEPARATOR ' ' AFTER '}'»«IF isAlexaSupportedParamType(param)»«param.name»«ENDIF»«ENDFOR»'''
+		if (operation.params != null && operation.params.length > 0) {
+			'''«FOR param : operation.params BEFORE '{' SEPARATOR ' ' AFTER '}'»«IF isAlexaSupportedParamType(param)»«param.name»«ENDIF»«ENDFOR»'''
+		} else {
+			return operation.name
+		}
 	}
 	
 	protected def getDefaultCommand(Property property) {

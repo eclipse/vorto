@@ -16,10 +16,10 @@ package org.eclipse.vorto.core.api.repository;
 
 public class Attachment {
 	
-	String filename;
-	long length;
-	String type;
-	byte[] content;
+	private String filename;
+	private long length;
+	private String type;
+	private byte[] content;
 	
 	public Attachment(String filename, long length, String type, byte[] content) {
 		this.filename = filename;

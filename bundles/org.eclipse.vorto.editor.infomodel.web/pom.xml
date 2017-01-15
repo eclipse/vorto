@@ -67,9 +67,20 @@
 	</build>
 
 	<dependencies>
+		<!-- http://mvnrepository.com/artifact/org.springframework/spring-web -->
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.web</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -101,21 +112,6 @@
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>${xtext.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>requirejs</artifactId>
-			<version>2.1.15</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>2.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>ace</artifactId>
-			<version>1.2.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>

@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository;
 
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
@@ -76,11 +77,14 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	@Override
 	public List<ModelResource> search(String expression) {
 		try {
-			String searchExpr = expression;
+			String searchExpr = null;
 			if (Strings.isNullOrEmpty(expression)) {
-				searchExpr = "*";
+				searchExpr = "-Mapping";
+			} else {
+				searchExpr = expression + " -Mapping";
 			}
-			List<ModelView> result = httpClient.executeGet("model/query=" + searchExpr, searchResultConverter);
+			searchExpr = searchExpr.replaceAll(" ", "%20");
+			List<ModelView> result = httpClient.executeGet(("model/query=" + searchExpr), searchResultConverter);
 
 			// Convert the searchResult in result to return type
 			return Lists.transform(result, modelViewToModelResource);
@@ -188,7 +192,7 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	public Attachment generateCode(ModelId model, String serviceKey) {
 		try {
 			String url = "generation-router/" + model.getNamespace() + "/" + model.getName() + "/" + model.getVersion()
-					+ "/" + serviceKey;
+					+ "/" + URLEncoder.encode(serviceKey, "utf-8");
 			Attachment result = httpClient.executeGetAttachment(url);
 			return result;
 		} catch (RepositoryException e) {

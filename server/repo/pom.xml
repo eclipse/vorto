@@ -15,8 +15,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>repo-core</module>
-		<module>repo-ui</module>
+		<module>repository-server</module>
+		<module>repository-api</module>		
 	</modules>
 	
 	<properties>

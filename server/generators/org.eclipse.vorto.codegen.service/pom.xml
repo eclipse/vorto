@@ -38,6 +38,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.server.commons</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Vorto DSL Dependencies -->
 		<dependency>

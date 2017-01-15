@@ -14,19 +14,10 @@
  */
 package org.eclipse.vorto.codegen.examples.templates.java.utils;
 
-import org.eclipse.emf.common.util.BasicEList;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.vorto.core.api.model.datatype.Entity;
-import org.eclipse.vorto.core.api.model.datatype.Enum;
-import org.eclipse.vorto.core.api.model.datatype.Type;
-import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
-import org.eclipse.vorto.core.api.model.functionblock.Param;
-import org.eclipse.vorto.core.api.model.functionblock.RefParam;
-import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
-import org.eclipse.vorto.core.api.model.functionblock.Event;
 
 public class ModelHelper {
 	private static final String GETTER_PREFIX = "get";
@@ -71,88 +62,5 @@ public class ModelHelper {
 			}
 		}
 		return null;
-	}
-
-	public static EList<Entity> getReferencedEntities(FunctionBlock fb) {
-		EList<Entity> entities = new BasicEList<Entity>();
-		for (Type type : getReferencedTypes(fb)) {
-			if ((type instanceof Entity) && (!entities.contains((Entity) type))) {
-				entities.add((Entity) type);
-			}
-		}
-		return entities;
-	}
-
-	public static EList<Enum> getReferencedEnums(FunctionBlock fb) {
-		EList<Enum> enums = new BasicEList<Enum>();
-		for (Type type : getReferencedTypes(fb)) {
-			if ((type instanceof Enum) && (!enums.contains((Enum) type))) {
-				enums.add((Enum) type);
-			}
-		}
-		return enums;
-	}
-
-	public static EList<Type> getReferencedTypes(Type type) {
-		EList<Type> types = new BasicEList<Type>();
-		types.add(type);
-
-		if (type instanceof Entity) {
-			Entity entityType = (Entity) type;
-			for (Property property : entityType.getProperties()) {
-				types.addAll(getReferencedTypes(property));
-			}
-			types.add(entityType.getSuperType());
-		}
-		return types;
-	}
-
-	public static EList<Type> getReferencedTypes(Property property) {
-		EList<Type> types = new BasicEList<Type>();
-		if (property.getType() instanceof ObjectPropertyType) {
-			ObjectPropertyType objectType = (ObjectPropertyType) property.getType();
-			types.add(objectType.getType());
-			if (objectType.getType() instanceof Entity) {
-				types.addAll(getReferencedTypes((Entity) objectType.getType()));
-			}
-		}
-		return types;
-	}
-
-	public static EList<Type> getReferencedTypes(FunctionBlock fb) {
-		EList<Type> types = new BasicEList<Type>();
-		if (fb != null) {
-			// Analyze the status properties...
-			if (fb.getStatus() != null) {
-				for (Property property : fb.getStatus().getProperties()) {
-					types.addAll(getReferencedTypes(property));
-				}
-			}
-			// Analyze the configuration properties...
-			if (fb.getConfiguration() != null) {
-				for (Property property : fb.getConfiguration().getProperties()) {
-					types.addAll(getReferencedTypes(property));
-				}
-			}
-			// Analyze the fault properties...
-			if (fb.getFault() != null) {
-				for (Property property : fb.getFault().getProperties()) {
-					types.addAll(getReferencedTypes(property));
-				}
-			}
-
-			// Analyze the operation types
-			for (Operation op : fb.getOperations()) {
-				if (op.getReturnType() instanceof ReturnObjectType) {
-					types.addAll(getReferencedTypes(((ReturnObjectType) op.getReturnType()).getReturnType()));
-				}
-				for (Param param : op.getParams()) {
-					if (param instanceof RefParam) {
-						types.addAll(getReferencedTypes(((RefParam)param).getType()));
-					}
-				}
-			}
-		}
-		return types;
 	}
 }

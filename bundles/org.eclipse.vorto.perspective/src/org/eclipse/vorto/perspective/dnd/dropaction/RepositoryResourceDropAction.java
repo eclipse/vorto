@@ -49,7 +49,6 @@ public class RepositoryResourceDropAction implements IDropAction<IModelProject,M
 		Objects.requireNonNull(receivingModelElement, "receivingModelElement shouldn't be null.");
 		Objects.requireNonNull(modelResource, "droppedObject shouldn't be null.");
 
-
 		return downloadAndSaveModel(receivingModelElement, modelResource.getId());
 	}
 	

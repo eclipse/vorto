@@ -8,9 +8,9 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.vorto.editor.mapping.ui,
  org.eclipse.xtext.junit4,
  org.eclipse.vorto.core,
- org.eclipse.xtext,
- org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtext.xbase.junit,
  org.eclipse.vorto.editor.mapping,
+ org.eclipse.xtext.xbase.lib,
  org.eclipse.core.runtime,
  org.eclipse.ui.workbench;resolution:=optional,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional

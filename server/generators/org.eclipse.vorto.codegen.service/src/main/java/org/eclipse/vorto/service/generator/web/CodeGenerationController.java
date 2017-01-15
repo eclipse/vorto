@@ -39,8 +39,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.service.generator.web.utils.MappingZipFileExtractor;
-import org.eclipse.vorto.service.generator.web.utils.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
+import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,6 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class CodeGenerationController {
 	
-	
 	@Value("${vorto.service.name}") 
 	private String serviceName;
 	
@@ -86,6 +85,9 @@ public class CodeGenerationController {
 	@Value("${vorto.service.classifier}")
 	private ServiceClassifier classifier;
 
+	@Value("${vorto.service.tags:#{null}}")
+	private String[] tags;
+	
 	private static final Logger LOGGER = LoggerFactory.getLogger(CodeGenerationController.class);
 
 	@Value("${vorto.service.repositoryUrl}")
@@ -177,6 +179,7 @@ public class CodeGenerationController {
 		serviceInfo.setKey(this.vortoGenerator.getServiceKey());
 		serviceInfo.setName(serviceName);
 		serviceInfo.setClassifier(classifier);
+		serviceInfo.setTags(tags);
 		return serviceInfo;
 	}
 	

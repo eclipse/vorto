@@ -45,7 +45,7 @@ import org.eclipse.vorto.codegen.examples.coap.server.templates.JsonTransformerT
 import org.eclipse.vorto.codegen.examples.coap.server.templates.LinkTemplate;
 import org.eclipse.vorto.codegen.examples.coap.server.templates.ResourceTemplate;
 import org.eclipse.vorto.codegen.examples.coap.server.templates.URIAnalyzerTemplate;
-import org.eclipse.vorto.codegen.examples.templates.java.utils.ModelHelper;
+import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
@@ -179,10 +179,10 @@ public class CoAPGenerator implements IVortoCodeGenerator {
 		for (FunctionblockProperty fbp : infomodel.getProperties()) {
 			
 			FunctionBlock fb = fbp.getType().getFunctionblock();
-			for (Entity entity : ModelHelper.getReferencedEntities(fb)) {
+			for (Entity entity : Utils.getReferencedEntities(fb)) {
 				generateForEntity(entity, zipOutputter);
 			}
-			for (Enum en : ModelHelper.getReferencedEnums(fb)) {
+			for (Enum en : Utils.getReferencedEnums(fb)) {
 				generateForEnum(en, zipOutputter);
 			}
 			
@@ -311,10 +311,10 @@ public class CoAPGenerator implements IVortoCodeGenerator {
 			this.generateForFunctionBlock(fbp.getType(), zipOutputter);
 
 			FunctionBlock fb = fbp.getType().getFunctionblock();
-			for (Entity entity : ModelHelper.getReferencedEntities(fb)) {
+			for (Entity entity : Utils.getReferencedEntities(fb)) {
 				generateForEntity(entity, zipOutputter);
 			}
-			for (Enum en : ModelHelper.getReferencedEnums(fb)) {
+			for (Enum en : Utils.getReferencedEnums(fb)) {
 				generateForEnum(en, zipOutputter);
 			}
 			

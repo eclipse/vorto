@@ -20,6 +20,7 @@ import java.util.Collections;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.Diagnostician;
@@ -113,7 +114,9 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 			InformationModel infoModel = (InformationModel) model;
 			for (FunctionblockProperty property : infoModel.getProperties()) {
 				// for syntax and parsing errors
-				if (property.getType().eResource().getErrors().size() > 0) {
+				if (property.getType() != null && property.getType().eResource() != null && 
+						property.getType().eResource().getErrors() != null && 
+						property.getType().eResource().getErrors().size() > 0) {
 					return false;
 				}
 

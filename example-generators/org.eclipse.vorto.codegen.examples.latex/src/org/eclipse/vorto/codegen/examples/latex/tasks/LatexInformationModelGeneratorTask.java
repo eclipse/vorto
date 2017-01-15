@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.codegen.examples.latex.tasks;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.examples.latex.tasks.template.LatexComplexPropertyTemplate;
@@ -31,18 +30,18 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class LatexInformationModelGeneratorTask extends
 	AbstractTemplateGeneratorTask<InformationModel> {
 	
-	private String markdownFileExtension;
+	private String latexFileExtension;
 	private String targetPath;
 	
-	public LatexInformationModelGeneratorTask (String markdownFileExtension, 
+	public LatexInformationModelGeneratorTask (String latexFileExtension, 
 			String targetPath) {
-		this.markdownFileExtension = markdownFileExtension;
+		this.latexFileExtension = latexFileExtension;
 		this.targetPath = targetPath;
 	}
 	
 	@Override
 	public String getFileName(InformationModel im) {
-		return StringUtils.capitalize(im.getName()) + markdownFileExtension;
+		return im.getName() + latexFileExtension;
 	}
 	
 	@Override
