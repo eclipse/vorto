@@ -21,7 +21,7 @@ import org.eclipse.xtext.naming.QualifiedName;
 public class QualifiedNameWithVersionProvider extends
 		DefaultDeclarativeQualifiedNameProvider {
 
-	QualifiedName qualifiedName(Model e) {
+	public QualifiedName qualifiedName(Model e) {
 		QualifiedName namespace = getConverter().toQualifiedName(
 				e.getNamespace());
 		return QualifiedName.create(namespace.getSegments())

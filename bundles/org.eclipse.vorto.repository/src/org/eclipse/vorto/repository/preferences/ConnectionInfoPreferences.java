@@ -20,9 +20,9 @@ import org.eclipse.vorto.repository.ConnectionInfo;
 
 public class ConnectionInfoPreferences implements ConnectionInfo, MutableConnectionInfo {
 	
-    static final String P_REMOTE_REPO_URL = "org.eclipse.vorto.preferences.repo.url";
-	static final String P_USER_REPO = "org.eclipse.vorto.preferences.repo.user";
-	static final String P_PASS_REPO = "org.eclipse.vorto.preferences.repo.pass";
+    public static final String P_REMOTE_REPO_URL = "org.eclipse.vorto.preferences.repo.url";
+    public static final String P_USER_REPO = "org.eclipse.vorto.preferences.repo.user";
+    public static final String P_PASS_REPO = "org.eclipse.vorto.preferences.repo.pass";
 
 	private IPreferenceStore preferences;
 	

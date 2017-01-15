@@ -95,8 +95,9 @@ public class XtextResourceModelParser implements IModelParser {
 		switch (diagnostic.getSeverity()) {
 		  case Diagnostic.ERROR:
 			  return Collections2.transform(diagnostic.getChildren(), emfDiagnosticToResourceDiagnostic);
+		  default:
+			  return Collections.emptyList();
 		}
-		return Collections.emptyList();
 	}
 	
 	private static Function<Diagnostic, Resource.Diagnostic> emfDiagnosticToResourceDiagnostic = new Function<Diagnostic, Resource.Diagnostic>() {

@@ -213,6 +213,8 @@ public class ProjectSelectionViewPart extends ViewPart implements ILocalModelWor
 						projectSelectionViewer.setSelection(new StructuredSelection(project), true);
 					}
 					break;
+				default :
+					// ?
 				}
 			}
 		});
