@@ -5,11 +5,11 @@ Vorto Code Generators convert an Information Model into executable code that is 
 Available Generators:
 
  - [Bosch-ProSyst Generator](org.eclipse.vorto.codegen.service.prosystfi/Readme.md)
+ - [Bosch-Things Generator](org.eclipse.vorto.codegen.service.bosch.things/Readme.md)
  - [Amazon Web Services Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
  - [CoAP Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
  - [IOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
  - [Javabean Generator](org.eclipse.vorto.codegen.service.javabean/Readme.md)
- - [JSON Schema Generator](org.eclipse.vorto.codegen.service.jsonschema/Readme.md)
  - [Latex Generator](org.eclipse.vorto.codegen.service.latex/Readme.md)
  - [LWM2M Generator](org.eclipse.vorto.codegen.service.lwm2m/Readme.md)
  - [Markdown Generator](org.eclipse.vorto.codegen.service.markdown/Readme.md)
