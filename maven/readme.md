@@ -9,7 +9,7 @@ For example, the following snippet invokes the Latex Generator for all informati
 			<plugin>
 				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>vorto-maven-plugin</artifactId>
-				<version>0.9.0-SNAPSHOT</version>
+				<version>${vorto.version}</version>
 				<configuration>
 					<generatorClass>org.eclipse.vorto.codegen.examples.latex.LatexGenerator</generatorClass>
 					<outputPath>${project.basedir}/src-gen</outputPath>
@@ -18,7 +18,7 @@ For example, the following snippet invokes the Latex Generator for all informati
 					<dependency>
 						<groupId>org.eclipse.vorto</groupId>
 						<artifactId>org.eclipse.vorto.codegen.examples.latex</artifactId>
-						<version>${project.version}</version>
+						<version>${vorto.version}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -40,8 +40,7 @@ Here is what you have to do:
 1. Install pdflatex for your OS
 2. Add the following pom.xml to your Vorto project:
 
-	<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<project>
 		<modelVersion>4.0.0</modelVersion>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>example</artifactId>
@@ -64,7 +63,7 @@ Here is what you have to do:
 				<plugin>
 					<groupId>org.eclipse.vorto</groupId>
 					<artifactId>vorto-maven-plugin</artifactId>
-					<version>0.9.0-SNAPSHOT</version>
+					<version>${vorto.version}</version>
 					<configuration>
 						<generatorClass>org.eclipse.vorto.codegen.examples.latex.LatexGenerator</generatorClass>
 						<outputPath>${project.basedir}/src/site</outputPath>
@@ -73,7 +72,7 @@ Here is what you have to do:
 						<dependency>
 							<groupId>org.eclipse.vorto</groupId>
 							<artifactId>org.eclipse.vorto.codegen.examples.latex</artifactId>
-							<version>${project.version}</version>
+							<version>${vorto.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
