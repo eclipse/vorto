@@ -8,11 +8,23 @@ services:
 
 jdk: oraclejdk8
 
+addons:
+  sonarqube:
+    token:
+      secure: $SONAR_TOKEN
+    branches:
+      - sonar
+
 before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
 
 install: true
 script:
-  - mvn clean install -f server/pom.xml
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -f server/pom.xml
+
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then

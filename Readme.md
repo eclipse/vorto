@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
-[![Stories in Progress](https://badge.waffle.io/eclipse/vorto.svg?label=in%20progress&title=Issues%20In%20Progress)](http://waffle.io/eclipse/vorto)
-[![Throughput Graph](https://graphs.waffle.io/eclipse/vorto/throughput.svg)](https://waffle.io/eclipse/vorto/metrics)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto:server:sonar)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
 
 # Getting started with Vorto
 
