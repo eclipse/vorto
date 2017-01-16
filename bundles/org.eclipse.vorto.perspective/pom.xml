@@ -19,7 +19,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>bundles</artifactId>
-		<version>0.9.0-SNAPSHOT</version>
+		<version>0.9.0</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.perspective</artifactId>
