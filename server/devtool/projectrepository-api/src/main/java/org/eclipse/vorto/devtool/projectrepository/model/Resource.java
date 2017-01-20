@@ -31,7 +31,6 @@ public abstract class Resource {
     private String path;
     private Date creationDate;
     private Date lastModified;
-    private String author;
     private String version;
     private String[] tags;
     private Map<String,String> properties = new HashMap<String, String>();
@@ -117,9 +116,6 @@ public abstract class Resource {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
-        if (this.properties.containsKey(META_PROPERTY_AUTHOR)) {
-        	this.author = this.properties.get(META_PROPERTY_AUTHOR);
-        }
     }
 
     /**
@@ -130,7 +126,7 @@ public abstract class Resource {
 	@Override
 	public String toString() {
 		return "Resource [name=" + name + ", path=" + path + ", creationDate=" + creationDate + ", lastModified="
-				+ lastModified + ", author=" + author + ", version=" + version + ", tags=" + Arrays.toString(tags)
+				+ lastModified + ", author=" + getAuthor() + ", version=" + version + ", tags=" + Arrays.toString(tags)
 				+ "]";
 	}
     

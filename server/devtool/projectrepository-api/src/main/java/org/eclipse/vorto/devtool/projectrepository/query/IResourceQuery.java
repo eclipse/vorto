@@ -93,15 +93,6 @@ public interface IResourceQuery {
     IResourceQuery type(ResourceType type);
 
     /**
-     * finds all resources that are created at the given date.
-     *
-     * @param   date
-     *
-     * @return  new {@link IResourceQuery}
-     */
-    IResourceQuery creationDate(Date date);
-
-    /**
      * finds all resources which were last modified on the specific date.
      *
      * @param   date
@@ -109,6 +100,15 @@ public interface IResourceQuery {
      * @return  {@link IResourceQuery}
      */
     IResourceQuery lastModified(Date date);
+    
+    /**
+     * finds all resources with the given property
+     * 
+     * @param propertyName name of the property
+     * @param propertyValue value of the property
+     * @return {@link IResourceQuery}
+     */
+    IResourceQuery property(String propertyName, String propertyValue);
 
     /**
      * Executes the query and fetches all resources which match the criteria

@@ -24,7 +24,7 @@ import java.util.Map;
  * {@link FileUploadHandle}.
  *
  */
-public class UploadHandle implements Serializable {
+public abstract class UploadHandle {
 
     /** The serial version UID. */
     private String path;

@@ -78,11 +78,6 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 	}
 
 	@Override
-	public IResourceQuery creationDate(Date date) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public IResourceQuery name(String name) {
 		TextFilter tf = new TextFilter();
 		tf.setKey("name");
@@ -103,6 +98,16 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 
 		return this;
 	}
+	
+	@Override
+	public IResourceQuery property(String propertyName, String propertyValue) {
+		TextFilter tf = new TextFilter();
+		tf.setKey("property");
+		tf.setText(propertyValue);
+		tf.setWhereCondition("/.[properties[@name = '"+propertyName+"'] = '?']");
+		addFilter(tf);
+		return this;
+	}
 
 	@Override
 	public IResourceQuery version(String version) {
@@ -121,7 +126,7 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Resource createResource(File file) {
 		Resource resource;
 		String parentPath = FilenameUtils.normalize(file.getParent());

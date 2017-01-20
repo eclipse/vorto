@@ -50,7 +50,6 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	protected String projectsDirectory = null;
 
     public  static final String META_PROPERTY_FILENAME = ".meta.props";
-
     public  static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
 
 	private static final Logger log = LoggerFactory.getLogger(ProjectRepositoryServiceFS.class);
@@ -109,7 +108,6 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	@Override
 	public ResourceQueryFS createQuery() {
 		log.info("Creating ResourceQuery");
-
 		return new ResourceQueryFS(projectsDirectory);
 	}
 
@@ -156,7 +154,6 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		for (UploadHandle handle : handles) {
 			handle.setPath(projectsDirectory + File.separator
 					+ handle.getPath());
-			deleteNullContent(handle);
             if (!(handle instanceof ProjectUploadHandle))  {
 			    checkProjectExists(handle.getPath());
             }
@@ -259,12 +256,6 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
             File createdFile = null;
 			FileUploadHandle fileContent = (FileUploadHandle) content;
 
-			if (fileContent.getContent() == null) {
-				fileContent = new FileUploadHandle(content.getPath(),
-						"".getBytes(), null);
-                fileContent.setProperties(content.getProperties());
-			}
-
 			if (new File(fileContent.getPath()).exists()) {
                 createdFile = updateFile(fileContent);
 			} else {
@@ -340,22 +331,6 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		}
 
         return file;
-	}
-
-	private UploadHandle[] deleteNullContent(UploadHandle... handle) {
-
-		for (int no = 0; no < handle.length; ++no) {
-
-			if (handle[no] instanceof FileUploadHandle) {
-
-				if (((FileUploadHandle) handle[no])
-						.getContent() == null)
-					handle[no] = new FileUploadHandle(
-							handle[no].getPath(), "".getBytes(), null);
-			}
-		}
-
-		return handle;
 	}
 }
 

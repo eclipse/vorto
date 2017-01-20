@@ -20,17 +20,20 @@ package org.eclipse.vorto.devtool.projectrepository.model;
  */
 public class FileUploadHandle extends UploadHandle {
 
-	/** The serial version UID. */
-	private static final long serialVersionUID = 834074933237698916L;
-
 	private byte[] content;
 
 	private String encoding;
 
-	public FileUploadHandle(String filePath, byte[] content, String encoding) {
-		super(filePath);
+	public FileUploadHandle(FolderResource folder, String fileName, byte[] content, String encoding) {
+		super(folder.getPath() + "/" + fileName);
 		this.content = content;
 		this.encoding = encoding;
+	}
+	
+	public FileUploadHandle(FolderResource folder, String fileName, byte[] content) {
+		super(folder.getPath() + "/" + fileName);
+		this.content = content;
+		this.encoding = "utf-8";
 	}
 
 	public byte[] getContent() {

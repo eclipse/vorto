@@ -20,11 +20,8 @@ package org.eclipse.vorto.devtool.projectrepository.model;
  */
 public class FolderUploadHandle extends UploadHandle {
 
-	/** The serial version UID. */
-	private static final long serialVersionUID = -8556445352980197501L;
-
-	public FolderUploadHandle(String path) {
-		super(path);
+	public FolderUploadHandle(FolderResource folder, String folderName) {
+		super(folder.getPath() + "/" + folderName);
 	}
 
 }
