@@ -63,7 +63,9 @@ public class RepositoryClientBuilder {
 	}
 	
 	public IModelResolver buildModelResolverClient() {
-		return new DefaultModelResolver(buildHttpClient(), buildRequestContext());
+		HttpClient client = buildHttpClient();
+		RequestContext context = buildRequestContext();
+		return new DefaultModelResolver(client, context, new DefaultModelRepository(client, context));
 	}
 	
 	private HttpClient buildHttpClient() {
