@@ -25,5 +25,5 @@ public interface IModelResolver {
 	 * @param query containing criteria for resolving the model
 	 * @return model info or null, if no model can be found for the given query
 	 */
-	CompletableFuture<ModelInfo> resolve(ResolveQuery query);
+	CompletableFuture<ModelId> resolve(ResolveQuery query);
 }
