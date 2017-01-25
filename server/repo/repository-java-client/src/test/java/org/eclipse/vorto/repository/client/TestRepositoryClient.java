@@ -18,31 +18,36 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.IModelGeneration;
 import org.eclipse.vorto.repository.api.IModelRepository;
+import org.eclipse.vorto.repository.api.IModelResolver;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelQueryBuilder;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
+import org.eclipse.vorto.repository.api.resolver.BluetoothQuery;
 import org.junit.Rule;
 import org.junit.Test;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.google.gson.Gson;
 
 import oeg.eclipse.vorto.repository.client.RepositoryClientBuilder;
 
 public class TestRepositoryClient {
 
+	private static final int TEST_PORT = 6666;
+	
 	@Rule
-	public WireMockRule rule = new WireMockRule(options().port(2345));
+	public WireMockRule rule = new WireMockRule(options().port(TEST_PORT));
 	
 	@Test
 	public void testOnMockedServer() {
 		try {
-			setupSearchServer();
+			setupMockServer();
 		
 			RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder()
-				.setBaseUrl("http://localhost:2345");
+				.setBaseUrl("http://localhost:" + TEST_PORT);
 		
 			IModelRepository modelRepo = builder.buildModelRepositoryClient();
 			
@@ -63,10 +68,10 @@ public class TestRepositoryClient {
 			
 			// test getContent
 			FunctionblockModel fbModel = modelRepo.getContent(demoFb, FunctionblockModel.class).get();
-			assertNotNull(modelInfo);
-			assertEquals(fbModel.getId().getNamespace(), "com.mycompany.fb");
-			assertEquals(fbModel.getId().getName(), "DemoFunctionBlock");
-			assertEquals(fbModel.getId().getVersion(), "1.0.0");
+			assertNotNull(fbModel);
+			assertEquals("com.mycompany.fb", fbModel.getId().getNamespace());
+			assertEquals("DemoFunctionBlock", fbModel.getId().getName());
+			assertEquals("1.0.0", fbModel.getId().getVersion());
 			System.out.println(fbModel);
 			
 			IModelGeneration modelGen = builder.buildModelGenerationClient();
@@ -89,6 +94,15 @@ public class TestRepositoryClient {
 			assertEquals("generated.zip", generatedOutput.getFileName());
 			assertEquals(45926, generatedOutput.getContent().length);
 			
+			IModelResolver modelResolver = builder.buildModelResolverClient();
+			
+			// test resolve
+			ModelInfo btModelInfo = modelResolver.resolve(new BluetoothQuery("001")).get();
+			assertNotNull(btModelInfo);
+			assertEquals("com.mycompany.fb", btModelInfo.getId().getNamespace());
+			assertEquals("DemoFunctionBlock", btModelInfo.getId().getName());
+			assertEquals("1.0.0", btModelInfo.getId().getVersion());
+			
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 			fail("Call failed.");
@@ -96,7 +110,7 @@ public class TestRepositoryClient {
 		
 	}
 	
-	private void setupSearchServer() {
+	private void setupMockServer() {
 		try {
 			stubFor(get(urlEqualTo("/rest/model/query=*"))
 			        .willReturn(aResponse()
@@ -125,6 +139,13 @@ public class TestRepositoryClient {
 			            .withHeader("Content-Length", "45926")
 			            .withHeader("content-disposition", "attachment; filename = generated.zip")
 			            .withBody(loadBytes("generated.zip"))));
+			
+			Gson gson = new Gson();
+			
+			stubFor(get(urlEqualTo("/rest/resolver/bluetooth/DeviceInfoProfile/modelNumber/001"))
+			        .willReturn(aResponse()
+			            .withHeader("Content-Type", "application/json")
+			            .withBody(gson.toJson(new ModelId("DemoFunctionBlock", "com.mycompany.fb", "1.0.0")))));
 			
 		} catch (IOException e) {
 			e.printStackTrace();
