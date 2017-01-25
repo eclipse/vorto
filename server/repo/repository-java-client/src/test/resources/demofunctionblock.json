@@ -1,0 +1,37 @@
+{
+    "id": {
+      "name": "DemoFunctionBlock",
+      "namespace": "com.mycompany.fb",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "DemoFunctionBlock",
+    "description": "Function block model for DemoFunctionBlock",
+    "references": [
+      {
+        "name": "DemoEntity",
+        "namespace": "com.mycompany.type",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.type.DemoEntity:1.0.0"
+      },
+      {
+        "name": "DemoEnum",
+        "namespace": "com.mycompany.type",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.type.DemoEnum:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2016-11-28T07:57:06.333+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "DemoInformationModel",
+        "namespace": "com.mycompany.informationmodels",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.informationmodels.DemoInformationModel:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  }

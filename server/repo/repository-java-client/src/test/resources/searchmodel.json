@@ -1,0 +1,514 @@
+[
+  {
+    "id": {
+      "name": "DemoFunctionBlock",
+      "namespace": "com.mycompany.fb",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "DemoFunctionBlock",
+    "description": "Function block model for DemoFunctionBlock",
+    "references": [
+      {
+        "name": "DemoEntity",
+        "namespace": "com.mycompany.type",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.type.DemoEntity:1.0.0"
+      },
+      {
+        "name": "DemoEnum",
+        "namespace": "com.mycompany.type",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.type.DemoEnum:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2016-11-28T07:57:06.333+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "DemoInformationModel",
+        "namespace": "com.mycompany.informationmodels",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.informationmodels.DemoInformationModel:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "NewFunctionBlock",
+      "namespace": "com.mycompany.fb",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.fb.NewFunctionBlock:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "NewFunctionBlock",
+    "description": "Function block model for NewFunctionBlock",
+    "references": [
+      {
+        "name": "NewEntity",
+        "namespace": "com.mycompany.type",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.type.NewEntity:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2017-01-18T06:50:38.228+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "NewInfomodel",
+        "namespace": "com.mycompany.informationmodels",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.informationmodels.NewInfomodel:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "DemoInformationModel",
+      "namespace": "com.mycompany.informationmodels",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.informationmodels.DemoInformationModel:1.0.0"
+    },
+    "type": "InformationModel",
+    "displayName": "DemoInformationModel",
+    "description": "Information model for DemoInformationModel",
+    "references": [
+      {
+        "name": "DemoFunctionBlock",
+        "namespace": "com.mycompany.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2016-11-28T07:57:10.699+0000",
+    "hasImage": false,
+    "referencedBy": [],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "NewInfomodel",
+      "namespace": "com.mycompany.informationmodels",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.informationmodels.NewInfomodel:1.0.0"
+    },
+    "type": "InformationModel",
+    "displayName": "NewInfomodel",
+    "description": "Information model for NewInfomodel",
+    "references": [
+      {
+        "name": "NewFunctionBlock",
+        "namespace": "com.mycompany.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.fb.NewFunctionBlock:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2017-01-18T06:50:43.652+0000",
+    "hasImage": false,
+    "referencedBy": [],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "DemoEntity",
+      "namespace": "com.mycompany.type",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.type.DemoEntity:1.0.0"
+    },
+    "type": "Datatype",
+    "displayName": "DemoEntity",
+    "description": "Type for DemoEntity",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-11-28T07:56:55.317+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "DemoFunctionBlock",
+        "namespace": "com.mycompany.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "NewEntity",
+      "namespace": "com.mycompany.type",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.type.NewEntity:1.0.0"
+    },
+    "type": "Datatype",
+    "displayName": "NewEntity",
+    "description": "Type for NewEntity",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2017-01-18T06:50:32.453+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "NewFunctionBlock",
+        "namespace": "com.mycompany.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.fb.NewFunctionBlock:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "DemoEnum",
+      "namespace": "com.mycompany.type",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.type.DemoEnum:1.0.0"
+    },
+    "type": "Datatype",
+    "displayName": "DemoEnum",
+    "description": "Type for DemoEnum",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-11-28T07:57:00.803+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "DemoFunctionBlock",
+        "namespace": "com.mycompany.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "LightControl",
+      "namespace": "com.bosch.fb.devices",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.devices.LightControl:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "LightControl",
+    "description": "Function block model for LightControl according IPSO Smart Objects",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:28.187+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "Gyroscope",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.Gyroscope:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "Gyroscope",
+    "description": "Function block model for Gyroscope",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:40.005+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "Barometer",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.Barometer:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "Barometer",
+    "description": "Function block model for Barometer",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:36.222+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "Magnetometer",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.Magnetometer:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "Magnetometer",
+    "description": "Function block model for Magnetometer according IPSO Smart Objects",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:52.007+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "Accelerometer",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.Accelerometer:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "Accelerometer",
+    "description": "Function block model for Accelerometer according IPSO Smart Objects",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:31.874+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "TemperatureSensor",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.TemperatureSensor:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "TemperatureSensor",
+    "description": "Function block model for TemperatureSensor",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:55.276+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "HumiditySensor",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.HumiditySensor:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "HumiditySensor",
+    "description": "Function block model for HumiditySensor according IPSO Smart Objects",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:44.300+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "LightSensor",
+      "namespace": "com.bosch.fb.sensors",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.fb.sensors.LightSensor:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "LightSensor",
+    "description": "Function block model for IlluminanceSensor according IPSO Smart Objects",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:48.364+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "XDK",
+      "namespace": "com.bosch.demo.xdk",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+    },
+    "type": "InformationModel",
+    "displayName": "XDK",
+    "description": "Information model for XDK",
+    "references": [
+      {
+        "name": "Accelerometer",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.Accelerometer:1.0.0"
+      },
+      {
+        "name": "Gyroscope",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.Gyroscope:1.0.0"
+      },
+      {
+        "name": "HumiditySensor",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.HumiditySensor:1.0.0"
+      },
+      {
+        "name": "Magnetometer",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.Magnetometer:1.0.0"
+      },
+      {
+        "name": "Barometer",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.Barometer:1.0.0"
+      },
+      {
+        "name": "TemperatureSensor",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.TemperatureSensor:1.0.0"
+      },
+      {
+        "name": "LightSensor",
+        "namespace": "com.bosch.fb.sensors",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.sensors.LightSensor:1.0.0"
+      },
+      {
+        "name": "LightControl",
+        "namespace": "com.bosch.fb.devices",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.fb.devices.LightControl:1.0.0"
+      },
+      {
+        "name": "XDKSensorDevice",
+        "namespace": "com.bosch.demo.xdk.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.fb.XDKSensorDevice:1.0.0"
+      },
+      {
+        "name": "AlertNotification",
+        "namespace": "com.bosch.demo.xdk.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.fb.AlertNotification:1.0.0"
+      },
+      {
+        "name": "XDKSensorDevice",
+        "namespace": "com.bosch.demo.xdk.fb",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.fb.XDKSensorDevice:1.0.0"
+      }
+    ],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:45:04.140+0000",
+    "hasImage": false,
+    "referencedBy": [],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "AlertNotification",
+      "namespace": "com.bosch.demo.xdk.fb",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.demo.xdk.fb.AlertNotification:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "AlertNotification",
+    "description": "Function block model for AlertNotification",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:18.520+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  },
+  {
+    "id": {
+      "name": "XDKSensorDevice",
+      "namespace": "com.bosch.demo.xdk.fb",
+      "version": "1.0.0",
+      "prettyFormat": "com.bosch.demo.xdk.fb.XDKSensorDevice:1.0.0"
+    },
+    "type": "Functionblock",
+    "displayName": "XDKSensorDevice",
+    "description": "Function block model for XDKSensor",
+    "references": [],
+    "author": "admin",
+    "creationDate": "2016-12-07T06:44:23.922+0000",
+    "hasImage": false,
+    "referencedBy": [
+      {
+        "name": "XDK",
+        "namespace": "com.bosch.demo.xdk",
+        "version": "1.0.0",
+        "prettyFormat": "com.bosch.demo.xdk.XDK:1.0.0"
+      }
+    ],
+    "supportedTargetPlatforms": []
+  }
+]
