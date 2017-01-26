@@ -11,6 +11,10 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
+import org.eclipse.vorto.repository.api.content.EnumAttributeProperty;
+import org.eclipse.vorto.repository.api.content.EnumAttributePropertyType;
+import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
 import org.eclipse.vorto.repository.api.content.IReferenceType;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 
@@ -37,6 +41,16 @@ public class ImplementationBase {
 						return PrimitiveType.valueOf(jsonElement.getAsString());
 					}
 					return context.deserialize(jsonElement, ModelId.class);
+				}
+			})
+			.registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
+				public IPropertyAttribute deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
+						throws JsonParseException {
+					if (jsonElement.getAsJsonObject().get("type").getAsString().equals(EnumAttributePropertyType.MEASUREMENT_UNIT.toString())) {
+						return context.deserialize(jsonElement, EnumAttributeProperty.class);
+					} else {
+						return context.deserialize(jsonElement, BooleanAttributeProperty.class);
+					}
 				}
 			})
 			.create();
