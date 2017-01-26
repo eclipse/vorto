@@ -46,10 +46,10 @@ public class ImplementationBase {
 			.registerTypeAdapter(IPropertyAttribute.class, new JsonDeserializer<IPropertyAttribute>() {
 				public IPropertyAttribute deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
 						throws JsonParseException {
-					if (jsonElement.getAsJsonObject().get("type").getAsString().equals(EnumAttributePropertyType.MEASUREMENT_UNIT.toString())) {
-						return context.deserialize(jsonElement, EnumAttributeProperty.class);
-					} else {
+					if (jsonElement.getAsJsonObject().get("value").isJsonPrimitive()) {
 						return context.deserialize(jsonElement, BooleanAttributeProperty.class);
+					} else {
+						return context.deserialize(jsonElement, EnumAttributeProperty.class);
 					}
 				}
 			})
