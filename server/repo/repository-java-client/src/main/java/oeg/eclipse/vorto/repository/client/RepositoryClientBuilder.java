@@ -1,12 +1,8 @@
 package oeg.eclipse.vorto.repository.client;
 
 import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.vorto.repository.api.IModelGeneration;
 import org.eclipse.vorto.repository.api.IModelRepository;
@@ -20,8 +16,6 @@ public class RepositoryClientBuilder {
 	private String baseUrl;
 	private String proxyHost;
 	private int proxyPort = 8080;
-	private String proxyUsername;
-	private String proxyPassword;
 	
 	public static RepositoryClientBuilder newBuilder() {
 		return new RepositoryClientBuilder();
@@ -43,16 +37,6 @@ public class RepositoryClientBuilder {
 		this.proxyPort = proxyPort;
 		return this;
 	}
-
-	public RepositoryClientBuilder setProxyUsername(String proxyUsername) {
-		this.proxyUsername = proxyUsername;
-		return this;
-	}
-
-	public RepositoryClientBuilder setProxyPassword(String proxyPassword) {
-		this.proxyPassword = proxyPassword;
-		return this;
-	}
 	
 	public IModelGeneration buildModelGenerationClient() {
 		return new DefaultModelGeneration(buildHttpClient(), buildRequestContext());
@@ -69,13 +53,7 @@ public class RepositoryClientBuilder {
 	}
 	
 	private HttpClient buildHttpClient() {
-		if (hasProxy()) {
-			CredentialsProvider credsProvider = new BasicCredentialsProvider();
-			credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort), new UsernamePasswordCredentials(proxyUsername, proxyPassword));
-			return HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build();
-		} else {
-			return HttpClients.createDefault();
-		}
+		return HttpClients.createDefault();
 	}
 	
 	private RequestContext buildRequestContext() {
