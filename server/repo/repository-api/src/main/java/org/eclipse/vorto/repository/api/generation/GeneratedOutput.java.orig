@@ -13,8 +13,11 @@
  * Bosch Software Innovations GmbH - Please refer to git log
  */
 package org.eclipse.vorto.repository.api.generation;
+<<<<<<< HEAD:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratedOutput.java
+=======
 
 import java.util.Arrays;
+>>>>>>> development:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratedOutput.java
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

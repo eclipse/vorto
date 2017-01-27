@@ -24,15 +24,9 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 <<<<<<< HEAD
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ConfigurationValidationTask;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.EventValidationTask;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.FaultValidationTask;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.OperationParametersValidationTask;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.OperationReturnTypeValidationTask;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.StatusValidationTask;
 =======
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ValidationTaskFactory;
 >>>>>>> development
+import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ValidationTaskFactory;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.Fault;

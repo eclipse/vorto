@@ -26,50 +26,38 @@ public class FunctionblockModel extends AbstractModel {
 	private List<ModelProperty> configurationProperties = new ArrayList<>();
 	private List<ModelProperty> statusProperties = new ArrayList<>();
 	private List<ModelProperty> faultProperties = new ArrayList<>();
-	private List<ModelEvent> events = new ArrayList<>(); 
-	
+	private List<ModelEvent> events = new ArrayList<>();
+
 	private List<Operation> operations = new ArrayList<>();
-	
+
 	public FunctionblockModel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
-		
-	}	
+
+	}
 
 	public List<ModelProperty> getConfigurationProperties() {
 		return configurationProperties;
 	}
 
-
-
 	public void setConfigurationProperties(List<ModelProperty> configurationProperties) {
 		this.configurationProperties = configurationProperties;
 	}
-
-
 
 	public List<ModelProperty> getStatusProperties() {
 		return statusProperties;
 	}
 
-
-
 	public void setStatusProperties(List<ModelProperty> statusProperties) {
 		this.statusProperties = statusProperties;
 	}
-
-
 
 	public List<ModelProperty> getFaultProperties() {
 		return faultProperties;
 	}
 
-
-
 	public void setFaultProperties(List<ModelProperty> faultProperties) {
 		this.faultProperties = faultProperties;
 	}
-
-
 
 	public List<ModelEvent> getEvents() {
 		return events;
@@ -78,8 +66,6 @@ public class FunctionblockModel extends AbstractModel {
 	public void setEvents(List<ModelEvent> events) {
 		this.events = events;
 	}
-
-
 
 	public List<Operation> getOperations() {
 		return operations;

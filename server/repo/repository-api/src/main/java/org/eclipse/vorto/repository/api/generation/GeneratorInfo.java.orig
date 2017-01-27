@@ -14,8 +14,11 @@
  */
 package org.eclipse.vorto.repository.api.generation;
 
+<<<<<<< HEAD:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
+=======
 import java.util.Arrays;
 
+>>>>>>> development:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
 public class GeneratorInfo {
 	private String key;
 	private String name;
@@ -28,7 +31,11 @@ public class GeneratorInfo {
 	private String[] tags;
 	private GeneratorRating rating;
 	private String infoUrl;
+<<<<<<< HEAD:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
+		
+=======
 
+>>>>>>> development:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
 	public String getKey() {
 		return key;
 	}
@@ -104,11 +111,17 @@ public class GeneratorInfo {
 	public void performRating(int invocationCount) {
 		this.rating = GeneratorRating.performRating(invocationCount);
 	}
+<<<<<<< HEAD:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
+	public String getInfoUrl() {
+		return infoUrl;
+	}
+=======
 
 	public String getInfoUrl() {
 		return infoUrl;
 	}
 
+>>>>>>> development:server/repo/repository-api/src/main/java/org/eclipse/vorto/repository/api/generation/GeneratorInfo.java
 	public void setInfoUrl(String generatorInfoUrl) {
 		this.infoUrl = generatorInfoUrl;
 	}
