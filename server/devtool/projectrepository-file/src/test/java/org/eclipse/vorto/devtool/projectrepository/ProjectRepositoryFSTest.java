@@ -383,7 +383,6 @@ public class ProjectRepositoryFSTest {
 		createTestProject(name);
 
 		Resource resource = repoService.createQuery().nameLike(name).singleResult();
-				.singleResult();
 
 		assertEquals(resource.getName(), name);
 	}
@@ -520,7 +519,7 @@ public class ProjectRepositoryFSTest {
 
 	private void createTestFile(FolderResource resource, String path, String author) {
 		FileUploadHandle handle = new FileUploadHandle(resource, path, "content".getBytes(), null);
-				"content".getBytes(), null);
+
 		handle.setProperty(Resource.META_PROPERTY_AUTHOR, author);
 		repoService.uploadResource("someComment", handle);
 	}
