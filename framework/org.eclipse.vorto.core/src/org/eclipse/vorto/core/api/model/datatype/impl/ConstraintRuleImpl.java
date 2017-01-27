@@ -99,6 +99,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 		switch (featureID) {
 			case DatatypePackage.CONSTRAINT_RULE__CONSTRAINTS:
 				return ((InternalEList<?>)getConstraints()).basicRemove(otherEnd, msgs);
+			default: //do nothing
+			    break;
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -113,6 +115,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 		switch (featureID) {
 			case DatatypePackage.CONSTRAINT_RULE__CONSTRAINTS:
 				return getConstraints();
+			default: //do nothing
+			    break;
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -130,8 +134,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 				getConstraints().clear();
 				getConstraints().addAll((Collection<? extends Constraint>)newValue);
 				return;
-			default:
-				//?
+			default: //do nothing
+			    break;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -147,6 +151,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 			case DatatypePackage.CONSTRAINT_RULE__CONSTRAINTS:
 				getConstraints().clear();
 				return;
+			default: //do nothing
+			    break;
 		}
 		super.eUnset(featureID);
 	}
@@ -161,6 +167,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 		switch (featureID) {
 			case DatatypePackage.CONSTRAINT_RULE__CONSTRAINTS:
 				return constraints != null && !constraints.isEmpty();
+			default: //do nothing
+			    break;
 		}
 		return super.eIsSet(featureID);
 	}
