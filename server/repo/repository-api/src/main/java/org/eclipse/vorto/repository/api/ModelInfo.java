@@ -22,19 +22,19 @@ import java.util.List;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelInfo extends AbstractModel {
-		
+
 	protected String author;
 	protected Date creationDate;
 	protected boolean hasImage = false;
-		
+
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
-	
+
 	protected List<String> supportedTargetPlatforms = new ArrayList<String>();
-	
-	public ModelInfo(ModelId modelId,ModelType modelType) {
-		super(modelId,modelType);
+
+	public ModelInfo(ModelId modelId, ModelType modelType) {
+		super(modelId, modelType);
 	}
-	
+
 	public List<ModelId> getReferencedBy() {
 		return referencedBy;
 	}
@@ -58,7 +58,7 @@ public class ModelInfo extends AbstractModel {
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
-	
+
 	public List<String> getSupportedTargetPlatforms() {
 		return supportedTargetPlatforms;
 	}
@@ -66,28 +66,26 @@ public class ModelInfo extends AbstractModel {
 	public void setSupportedTargetPlatforms(List<String> supportedTargetPlatforms) {
 		this.supportedTargetPlatforms = supportedTargetPlatforms;
 	}
-	
+
 	public boolean isHasImage() {
 		return hasImage;
 	}
 
 	public void setHasImage(boolean hasImage) {
 		this.hasImage = hasImage;
-	}	
-	
-	
+	}
+
 	@Override
 	public String toString() {
 		return "ModelResource [id=" + id + ", modelType=" + type + "]";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
 
@@ -105,9 +103,8 @@ public class ModelInfo extends AbstractModel {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (type != other.type)
-			return false;
-		return true;
+
+		return (type == other.type);
 	}
 
 	public void addTargetPlatform(String targetPlatform) {
@@ -118,6 +115,6 @@ public class ModelInfo extends AbstractModel {
 
 	public void addReferencedBy(ModelId id) {
 		this.referencedBy.add(id);
-	}	
-	
+	}
+
 }

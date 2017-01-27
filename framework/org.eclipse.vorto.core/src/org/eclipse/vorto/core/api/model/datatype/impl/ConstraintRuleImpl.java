@@ -130,6 +130,8 @@ public class ConstraintRuleImpl extends MinimalEObjectImpl.Container implements 
 				getConstraints().clear();
 				getConstraints().addAll((Collection<? extends Constraint>)newValue);
 				return;
+			default:
+				//?
 		}
 		super.eSet(featureID, newValue);
 	}

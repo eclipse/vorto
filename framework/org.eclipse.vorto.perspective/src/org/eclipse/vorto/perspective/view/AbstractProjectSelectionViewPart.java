@@ -67,12 +67,14 @@ import org.eclipse.vorto.perspective.util.NullModelProject;
 import org.eclipse.vorto.perspective.view.ILocalModelWorkspace.IModelProjectBrowser;
 import org.eclipse.vorto.wizard.AbstractProjectWizardPage;
 
-public abstract class AbstractProjectSelectionViewPart extends ViewPart implements ILocalModelWorkspace, IModelProjectBrowser {
+public abstract class AbstractProjectSelectionViewPart extends ViewPart
+		implements ILocalModelWorkspace, IModelProjectBrowser {
 
-	//public static final String PROJECT_SELECT_VIEW_ID = "org.eclipse.vorto.perspective.view.ProjectSelectionViewPart";
+	// public static final String PROJECT_SELECT_VIEW_ID =
+	// "org.eclipse.vorto.perspective.view.ProjectSelectionViewPart";
 
 	protected ComboViewer projectSelectionViewer;
-	
+
 	protected MultipleSelectionProvider multipleSelectionProvider;
 
 	private IModelProject selectedProject = null;
@@ -85,19 +87,24 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 	private IResourceChangeListener removeProjectListener = null;
 	private IResourceChangeListener errorDiagnosticsListener = null;
 
-//	public AbstractProjectSelectionViewPart() {
-//	}
-//	
-	
+	// public AbstractProjectSelectionViewPart() {
+	// }
+	//
+
 	protected abstract ModelTreeViewer getDataTypeTreeViewer(Composite modelPanel);
+
 	protected abstract ModelTreeViewer getFunctionblockTreeViewer(Composite modelPanel);
+
 	protected abstract ModelTreeViewer getInfomodelTreeViewer(Composite modelPanel);
-	
+
 	protected abstract String getViewerText();
+
 	protected abstract String getAddToolTipText();
+
 	protected abstract String getDeleteToolTipText();
-	
+
 	protected abstract INewWizard getProjectWizard();
+
 	/**
 	 * Create contents of the view part.
 	 * 
@@ -151,16 +158,15 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 		datatypeTreeViewer = getDataTypeTreeViewer(modelPanel);
 		functionBlockTreeViewer = getFunctionblockTreeViewer(modelPanel);
 		infoModelTreeViewer = getInfomodelTreeViewer(modelPanel);
-		
+
 		multipleSelectionProvider = new MultipleSelectionProvider();
 		getSite().setSelectionProvider(multipleSelectionProvider);
-		
+
 		if (!modelProjects.isEmpty()) {
 			setSelectedProject(modelProjects.iterator().next());
 		}
 
-	}	
-
+	}
 
 	protected void hookListeners() {
 		addWorkspaceChangeEventListenr();
@@ -175,7 +181,7 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 		workspace.addResourceChangeListener(errorDiagnosticsListener, IResourceChangeEvent.POST_CHANGE);
 		workspace.addResourceChangeListener(removeModelListener, IResourceChangeEvent.POST_CHANGE);
 	}
-	
+
 	private Runnable newRefreshCurrentProjectRunnable() {
 		return new Runnable() {
 			public void run() {
@@ -224,7 +230,7 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 						projectSelectionViewer.setSelection(new StructuredSelection(project), true);
 					}
 					break;
-				default :
+				default:
 					// ?
 				}
 			}
@@ -248,6 +254,8 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 						}
 					}
 					break;
+				default:
+					// ?
 				}
 			}
 		});
