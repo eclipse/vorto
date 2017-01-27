@@ -24,11 +24,11 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
  * in the client and server.
  */
 public class UploadResultView {
-	String handleId;
-	String errorMessage;
-	boolean valid;
-	ModelView modelResource;
-	Collection<ModelId> unresolvedReferences = Collections.emptyList();
+	private String handleId;
+	private String errorMessage;
+	private boolean valid;
+	private ModelView modelResource;
+	private Collection<ModelId> unresolvedReferences = Collections.emptyList();
 
 	public UploadResultView() {
 

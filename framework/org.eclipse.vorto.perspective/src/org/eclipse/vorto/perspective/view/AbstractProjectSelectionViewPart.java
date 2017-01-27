@@ -224,6 +224,8 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart implemen
 						projectSelectionViewer.setSelection(new StructuredSelection(project), true);
 					}
 					break;
+				default :
+					// ?
 				}
 			}
 		});

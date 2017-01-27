@@ -214,7 +214,7 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 				public void partDeactivated(IWorkbenchPart part) {}
 				public void partOpened(IWorkbenchPart part) {}
 				public void partClosed(IWorkbenchPart part) {
-					if (part == editor) {
+					if (part.equals(editor)) {
 						if (file.delete()) {
 							page.removePartListener(this);
 						}
