@@ -80,7 +80,7 @@
             point="org.eclipse.core.resources.natures">
          <runtime>
             <run
-                  class="org.eclipse.vorto.core.model.nature.VortoProjectNature">
+                  class="org.eclipse.vorto.core.ui.model.nature.VortoProjectNature">
             </run>
          </runtime>
       </extension>  
