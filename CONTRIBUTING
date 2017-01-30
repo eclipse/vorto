@@ -27,13 +27,13 @@ Before your contribution can be accepted by the project, you need to create and 
 Search for bugs:
 ----------------
 
-This project uses Bugzilla to track ongoing development and issues.
+This project uses Github Issues to track ongoing development and issues.
 
-- https://bugs.eclipse.org/bugs/buglist.cgi?product=Vorto
+- https://github.com/eclipse/vorto/issues
 
 Create a new bug:
 -----------------
 
 Be sure to search for existing bugs before you create another one. Remember that contributions are always welcome!
 
-- https://bugs.eclipse.org/bugs/enter_bug.cgi?product=Vorto
+- https://github.com/eclipse/vorto/issues/new
