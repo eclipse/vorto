@@ -119,6 +119,6 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "ProSyst FunctionalItem Generator";
+		return "prosyst";
 	}
 }
