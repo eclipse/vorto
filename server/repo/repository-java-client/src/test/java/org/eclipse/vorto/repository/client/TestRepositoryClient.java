@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
+
 package org.eclipse.vorto.repository.client;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -32,14 +47,37 @@ import org.junit.Test;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.google.gson.Gson;
 
-import oeg.eclipse.vorto.repository.client.RepositoryClientBuilder;
-
 public class TestRepositoryClient {
 
 	private static final int TEST_PORT = 6666;
 	
 	@Rule
 	public WireMockRule rule = new WireMockRule(options().port(TEST_PORT));
+	
+	/*
+	 * This is for testing a real server
+	 * 
+	@Test
+	public void testOnBics() {
+		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder()
+				.setBaseUrl("http://vortorepo.apps.bosch-iot-cloud.com")
+				//.setBaseUrl("http://localhost:8080/infomodelrepository");
+				.setProxyHost("rb-proxy-apac.bosch.com")
+				.setProxyPort(8080);
+		
+		IModelRepository modelRepo = builder.buildModelRepositoryClient();
+		
+		Collection<ModelInfo> models;
+		try {
+			models = modelRepo.search(new ModelQueryBuilder().type(ModelType.Functionblock).freeText("Incline").build()).get();
+			assertTrue(models.size() > 0);
+			models.stream().forEach(modelInfo -> System.out.println(modelInfo));
+		} catch (InterruptedException | ExecutionException e) {
+			fail();
+			e.printStackTrace();
+		}
+	}
+	*/
 	
 	@Test
 	public void testOnMockedServer() {

@@ -14,11 +14,6 @@
  */
 package org.eclipse.vorto.repository.api;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import org.eclipse.vorto.repository.api.exception.ModelQueryException;
-
 public class ModelQueryBuilder {
 
 	private StringBuilder expression = new StringBuilder();
@@ -50,10 +45,6 @@ public class ModelQueryBuilder {
 	}
 	
 	public ModelQuery build() {
-		try {
-			return new ModelQuery(URLEncoder.encode(this.expression.toString().trim() ,"utf-8"));
-		} catch (UnsupportedEncodingException e) {
-			throw new ModelQueryException("Error encoding the query", e);
-		}
+		return new ModelQuery(this.expression.toString());
 	}
 }

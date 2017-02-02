@@ -1,5 +1,22 @@
 package org.eclipse.vorto.repository.api.impl;
 
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
@@ -10,6 +27,7 @@ import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelQuery;
+import org.eclipse.vorto.repository.api.exception.ModelQueryException;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -21,7 +39,16 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 
 	@Override
 	public CompletableFuture<Collection<ModelInfo>> search(ModelQuery query) {
-		String url = String.format("%s/rest/model/query=%s", getRequestContext().getBaseUrl(), query.getExpression());
+		String expression = "*";
+		if (query.getExpression() != null) {
+			try {
+				expression = URLEncoder.encode(query.getExpression().trim(), "utf-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new ModelQueryException("Error encoding the query", e);
+			}
+		}
+		
+		String url = String.format("%s/rest/model/query=%s", getRequestContext().getBaseUrl(), expression);
 		return requestAndTransform(url, transformToType(new TypeToken<ArrayList<ModelInfo>>() {}.getType()));
 	}
 
