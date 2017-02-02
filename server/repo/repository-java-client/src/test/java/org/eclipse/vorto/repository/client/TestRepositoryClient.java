@@ -60,10 +60,7 @@ public class TestRepositoryClient {
 	@Test
 	public void testOnBics() {
 		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder()
-				.setBaseUrl("http://vortorepo.apps.bosch-iot-cloud.com")
-				//.setBaseUrl("http://localhost:8080/infomodelrepository");
-				.setProxyHost("rb-proxy-apac.bosch.com")
-				.setProxyPort(8080);
+				.setBaseUrl("http://localhost:8080/infomodelrepository");
 		
 		IModelRepository modelRepo = builder.buildModelRepositoryClient();
 		
