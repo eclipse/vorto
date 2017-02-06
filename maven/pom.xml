@@ -6,6 +6,7 @@
 	<version>0.9.0</version>
 	<name>Vorto Maven Generator Plugin</name>
 	<description>Invokes the specified vorto code generator during a maven build process</description>
+	<url>http://www.eclipse.org/vorto</url>
 	<packaging>maven-plugin</packaging>
 
 	<distributionManagement>

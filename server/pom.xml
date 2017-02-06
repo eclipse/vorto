@@ -8,7 +8,10 @@
 	<artifactId>server</artifactId>
 	<version>0.9.0</version>
 
-	<name>Vorto Server</name>
+	<name>Eclipse Vorto Repository</name>
+    <description>Eclipse Vorto Repository manages Information Models</description>
+
+    <url>http://www.eclipse.org/vorto</url>
 
 	<packaging>pom</packaging>
 
