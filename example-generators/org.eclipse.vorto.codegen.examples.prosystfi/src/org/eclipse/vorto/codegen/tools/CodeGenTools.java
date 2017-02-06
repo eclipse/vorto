@@ -30,14 +30,14 @@ public class CodeGenTools {
 	private static final String SETTER_PREFIX = "set";
 	
 	public static boolean isGetter(Operation operation, FunctionBlock fb) {
-		if (operation.getName().substring(0, GETTER_PREFIX.length()).equalsIgnoreCase(GETTER_PREFIX)) {
+		if (operation.getName().length() >= GETTER_PREFIX.length() && operation.getName().substring(0, GETTER_PREFIX.length()).equalsIgnoreCase(GETTER_PREFIX)) {
 			return true;
 		}
 		return false;
 	}
 	
 	public static boolean isSetter(Operation operation, FunctionBlock fb) {
-		if (operation.getName().substring(0, SETTER_PREFIX.length()).equalsIgnoreCase(SETTER_PREFIX)) {
+		if (operation.getName().length() >= SETTER_PREFIX.length() && operation.getName().substring(0, SETTER_PREFIX.length()).equalsIgnoreCase(SETTER_PREFIX)) {
 			return true;
 		}
 		return false;

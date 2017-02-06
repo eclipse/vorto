@@ -45,6 +45,6 @@ public class ModelQueryBuilder {
 	}
 	
 	public ModelQuery build() {
-		return new ModelQuery(this.expression.toString().trim());
+		return new ModelQuery(this.expression.toString());
 	}
 }

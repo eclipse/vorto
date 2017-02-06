@@ -17,6 +17,8 @@ package org.eclipse.vorto.repository.web;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -68,8 +70,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
-	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) {
-		List<ModelInfo> modelResources = modelRepository.search(expression);
+	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) throws UnsupportedEncodingException {
+		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
 		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource)).collect(Collectors.toList());
 	}
