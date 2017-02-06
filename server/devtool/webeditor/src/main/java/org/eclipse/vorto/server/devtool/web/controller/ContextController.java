@@ -21,7 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.server.devtool.models.GlobalContext;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,12 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest/context")
 public class ContextController {
 
-	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
-	private String repositoryBasePath;
-
+	@Autowired
+	private GlobalContext globalContext;
+	
 	@RequestMapping(method = RequestMethod.GET)
 	public GlobalContext getGlobalContext() {
-		return new GlobalContext(this.repositoryBasePath);
+		return globalContext;
 	}
 
 	@RequestMapping(value = { "/user" }, method = RequestMethod.GET)

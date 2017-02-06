@@ -12,20 +12,28 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.web.controller.editor;
+package org.eclipse.vorto.server.devtool.service;
 
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
+import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.server.devtool.models.ModelResource;
 
-public interface IEditorController {
+public interface IProjectService {
+			
+	ProjectResource createProject(String projectName, String author);
+			
+	List<Resource> getProjects(String author);	
+	
+	List<Resource> getProjectResources(String projectName);
+	
+	Resource createProjectResource(String projectName, ModelResource modelResource);
 
-	public void linkEditor(String resourceId, String namespace, String name, String version, HttpServletRequest request,
-			HttpServletResponse response);
-
-	List<ModelInfo> searchByExpression(String expression);
-
+	Resource getReferencedResource(ModelInfo modelInfo);
+	
+	Resource checkResourceExists(Resource resource);
+	
+	void deleteResource(String projectName, String resourceId);
 }

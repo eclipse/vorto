@@ -14,31 +14,37 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
+import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.repository.api.ModelType;
 
-public class ProjectResource {
+public class ModelResource extends FileResource {
 
-	private String resourceId;
 	private String name;
 	private String version;
 	private String namespace;
-	private String subType;
+	private String modelSubType;
 	private ModelType modelType;
-	
-	public String getSubType() {
-		return subType;
+	private String filename;
+	private String description;
+
+	public String getFilename() {
+		return filename;
 	}
 
-	public void setSubType(String subType) {
-		this.subType = subType;
+	public void setFilename(String filename) {
+		this.filename = filename;
 	}
 
-	public String getResourceId() {
-		return resourceId;
+	public String getModelSubType() {
+		return modelSubType;
 	}
 
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
+	public void setSubType(String modelSubType) {
+		this.modelSubType = modelSubType;
 	}
 
 	public String getName() {
@@ -64,7 +70,7 @@ public class ProjectResource {
 	public void setNamespace(String namespace) {
 		this.namespace = namespace;
 	}
-		
+
 	public ModelType getModelType() {
 		return modelType;
 	}
@@ -73,15 +79,33 @@ public class ProjectResource {
 		this.modelType = modelType;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj.getClass().equals(this.getClass())) {
-			ProjectResource projectResource = (ProjectResource) obj;
+			ModelResource projectResource = (ModelResource) obj;
 			if (this.name.equals(projectResource.name) && this.namespace.equals(projectResource.namespace)
 					&& this.version.equals(projectResource.version)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public Map<String, String> getProperties() {
+		HashMap<String, String> properties = (HashMap<String, String>) super.getProperties();
+		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE, this.namespace);
+		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_NAME, this.name);
+		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_VERSION, this.version);
+		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_MODEL_TYPE, this.modelType.toString());
+		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_MODEL_SUB_TYPE, this.modelSubType);
+		return properties;
 	}
 }

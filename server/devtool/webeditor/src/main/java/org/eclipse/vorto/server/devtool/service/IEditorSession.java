@@ -12,19 +12,9 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.server.devtool.models;
+package org.eclipse.vorto.server.devtool.service;
 
-import java.util.ArrayList;
+public interface IEditorSession {
 
-public class ProjectResourceListWrapper {
-	
-	private ArrayList<ProjectResource> projectResourceList;
-
-	public ArrayList<ProjectResource> getProjectResourceList() {
-		return projectResourceList;
-	}
-
-	public void setProjectResourceList(ArrayList<ProjectResource> projectResourceList) {
-		this.projectResourceList = projectResourceList;
-	}	
+	String getUser();
 }

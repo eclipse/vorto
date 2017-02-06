@@ -16,6 +16,8 @@ package org.eclipse.vorto.server.devtool.config;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
 import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
+import org.eclipse.vorto.server.devtool.models.GlobalContext;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,6 +27,15 @@ import org.springframework.web.client.RestTemplate;
 @Profile("cloud")
 public class EditorConfigurationCloud {
 
+	@Value("${project.repository.path}")
+	private String projectRepositoryPath;
+	
+	@Value("${reference.repository}")
+	private String referenceRepository;
+		
+	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
+	private String repositoryBasePath;
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
@@ -32,6 +43,12 @@ public class EditorConfigurationCloud {
 	
 	@Bean
 	public IProjectRepositoryService projectRepositoryService() {
-		return new ProjectRepositoryServiceFS("projects");
+		return new ProjectRepositoryServiceFS(projectRepositoryPath);
 	}
+	
+	@Bean
+	public GlobalContext getGlobalContext(){
+		return new GlobalContext(repositoryBasePath, referenceRepository);
+	}
+
 }

@@ -55,7 +55,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 	@EnableWebSecurity
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-		@Autowired
+		@Autowired 
 		private UserDetailsService userDetailsService;
 
 		@Autowired
@@ -77,7 +77,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 
 		@Autowired
 		public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+			auth.eraseCredentials(false).userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
 		}
 	}
 }

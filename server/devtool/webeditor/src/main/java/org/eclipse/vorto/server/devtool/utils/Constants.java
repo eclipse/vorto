@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2017 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -12,20 +12,16 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.service;
+package org.eclipse.vorto.server.devtool.utils;
 
-import java.util.ArrayList;
-
-import org.eclipse.vorto.server.devtool.models.Project;
-
-public interface IProjectRespositoryDAO {
+public class Constants {
+			
+	public static final String MESSAGE_RESOURCE_CREATED = "resource created";
 	
-	void createProject(Project project, String sessionId);
+	public static final String MESSAGE_RESOURCE_ALREADY_EXISTS = "resource already exists";	
 	
-	boolean projectExists(String projectName, String sessionId);
+	public static final String MESSAGE_RESOURCE_DOES_NOT_EXIST = "resource does not exist";	
 	
-	Project openProject(String projectName, String sessionId);
+	public static final String VORTO_REPOSITORY_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 	
-	ArrayList<Project> getProjects(String sessionId);
-
 }

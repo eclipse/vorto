@@ -14,19 +14,21 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.service.impl.editor;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
-import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
+import org.eclipse.vorto.server.devtool.models.ModelResource;
+import org.eclipse.vorto.server.devtool.service.IEditorService;
+import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
+import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,23 +36,46 @@ import org.springframework.stereotype.Service;
 public class InformationModelEditorServiceImpl extends IEditorService {
 
 	@Autowired
-	private DevtoolReferenceLinker devtoolReferenceLinker;
+	private DevtoolUtils devtoolUtils;
 
-	public String linkModelToResource(String infoModelResourceId, ModelId functionBlockModelId,
-			ResourceSet resourceSet, Set<String> referencedResourceSet) {
-		devtoolReferenceLinker.linkFunctionBlockToInfoModel(infoModelResourceId, functionBlockModelId,
-				resourceSet, referencedResourceSet);
-		Resource infoModelResource = resourceSet.getResource(URI.createURI(infoModelResourceId), true);
-		try {
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			infoModelResource.save(byteArrayOutputStream, null);
-			return byteArrayOutputStream.toString();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
+	@Autowired
+	private DevtoolRestClient devtoolRestClient;
+
 	public List<ModelInfo> searchModelByExpression(String expression) {
-		return searchModelByExpressionAndValidate(expression + " " + ModelType.Functionblock.toString(), ModelType.Functionblock);
+		ArrayList<org.eclipse.vorto.repository.api.ModelType> modelTypeList = new ArrayList<>();
+		modelTypeList.add(org.eclipse.vorto.repository.api.ModelType.Functionblock);
+		List<ModelInfo> modelList = searchModelByExpressionAndValidate(expression, modelTypeList);
+		return modelList;
+	}
+
+	@Override
+	public String generateFileContent(ModelResource modelResource) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("namespace ").append(modelResource.getNamespace()).append("\nversion ")
+				.append(modelResource.getVersion()).append("\ndisplayname \"").append(modelResource.getName())
+				.append("\"\ndescription \"").append(modelResource.getDescription()).append("\"\ncategory demo")
+				.append("\ninfomodel ").append(modelResource.getName()).append(" {\n\n").append("}\n");
+		return stringBuilder.toString();
+	}
+
+	@Override
+	public ModelInfo getAndValidateModelInfo(ModelId modelId) {
+		ModelInfo modelInfo = devtoolRestClient.getModel(modelId);
+		if (!(devtoolUtils.getModelType(modelInfo) == ModelType.Functionblock)) {
+			throw new RuntimeException("No FunctionBlock [" + modelId.toString() + "]");
+		}
+		return modelInfo;
+	}
+
+	@Override
+	public void updateVariableNames(String targetResourceId, String referenceResourceId, ResourceSet resourceSet) {
+		Resource targetResource = resourceSet.getResource(devtoolUtils.getResourceURI(targetResourceId), true);
+		InformationModel informationModel = (InformationModel) targetResource.getContents().get(0);
+		Resource referencedResource = resourceSet.getResource(devtoolUtils.getResourceURI(referenceResourceId), true);
+		EObject eObject = referencedResource.getContents().get(0);
+		FunctionblockModel funtionblockModel = (FunctionblockModel) eObject;
+		informationModel.getProperties().add(
+				devtoolUtils.createFunctionblockProperty(funtionblockModel, devtoolUtils.getVariableNames(informationModel.getProperties())));
+		referencedResource.getContents().add(eObject);		
 	}
 }
