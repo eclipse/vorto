@@ -40,7 +40,7 @@
 							-p
 						</argument>
 						<argument>
-							runtimeProject=/${project.basedir}
+							rootPath=/${project.basedir}/..
 						</argument>
 					</arguments>
 				</configuration>
@@ -54,6 +54,17 @@
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>org.eclipse.xtext.xbase</artifactId>
 						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.vorto</groupId>
+						<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
+						<version>${project.version}</version>
+						<exclusions>
+							<exclusion>
+								<groupId>p2.eclipse-plugin</groupId>
+								<artifactId>*</artifactId>
+							</exclusion>
+						</exclusions>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.vorto</groupId>

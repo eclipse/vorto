@@ -41,6 +41,7 @@
 
 		<module>org.eclipse.vorto.editor.mapping</module>
 		<module>org.eclipse.vorto.editor.mapping.ui</module>
+		<module>org.eclipse.vorto.editor.mapping.ide</module>
 		<module>org.eclipse.vorto.editor.mapping.tests</module>
 
 		<module>org.eclipse.vorto.codegen</module>
