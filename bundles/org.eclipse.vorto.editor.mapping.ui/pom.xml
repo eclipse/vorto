@@ -11,7 +11,7 @@
 	<artifactId>org.eclipse.vorto.editor.mapping.ui</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>Data Type Designer UI</name>
+	<name>Mapping Designer UI</name>
 	
 	<build>
 		<plugins>
