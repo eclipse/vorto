@@ -18,9 +18,10 @@ public interface ITemporaryStorage {
 
 	/**
 	 * stores the given model content and returns a handleId
-	 * @param content
-	 * @param modelType
-	 * @return
+	 * @param key
+	 * @param value
+	 * @param timeToLiveSeconds
+	 * @return the stored item
 	 */
 	StorageItem store(String key, Object value, long timeToLiveSeconds);
 	

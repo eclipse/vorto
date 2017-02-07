@@ -39,7 +39,7 @@ public class ModelIdHelper {
 	/**
 	 * Example path: /org/eclipse/vorto/color/1.0.0/
 	 * @param path
-	 * @return
+	 * @return the model id
 	 */
 	public static ModelId fromPath(String path) {
 		String[] pathFragments = path.substring(1).split("/");
