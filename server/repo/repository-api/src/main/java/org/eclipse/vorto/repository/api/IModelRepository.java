@@ -52,7 +52,7 @@ public interface IModelRepository {
 	
 	/**
 	 * Creates a new model query builder as a helper for searching models via {@link IModelRepository#search(ModelQuery)} 
-	 * @return
+	 * @return the model query builder
 	 */
 	static ModelQueryBuilder newQuery() {
 		return new ModelQueryBuilder();

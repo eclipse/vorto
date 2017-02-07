@@ -32,29 +32,29 @@ public interface IModelRepository {
 	/**
 	 * Searches model resources for the given expression
 	 * @param queryExpression
-	 * @return
+	 * @return the list of models
 	 */
 	List<ModelInfo> search(String queryExpression);
 	
 	/**
 	 * Gets a model resource for the given model id
 	 * @param modelId
-	 * @return
+	 * @return the model information
 	 */
 	ModelInfo getById(ModelId modelId);
 	
 	/**
 	 * Returns the actual model content for the given model id
 	 * @param modelId
-	 * @param content type
+	 * @param contentType
 	 * @throws ModelNotFoundException
-	 * @return
+	 * @return the model content
 	 */
 	IModelContent getModelContent(ModelId modelId, ContentType contentType);
 	
 	/**
 	 * Uploads model content and validates it. If the model is valid, the returned upload handle is used
-	 * to checkin the model into the repository via {@link IModelRepository#checkin(String)}}
+	 * to checkin the model into the repository via {@link IModelRepository#checkin(String, String)}}
 	 * 
 	 * @param content to validate
 	 * @param fileName
@@ -63,12 +63,10 @@ public interface IModelRepository {
 	UploadModelResult upload(byte[] content, String fileName);
 	
 	/**
-	 * @pre {@link UploadModelResult#isValid() == true}}
-	 * 
-	 * @post model was stored in persistence layer. Notifications were sent out to watchers. 
+	 * model was stored in persistence layer. Notifications were sent out to watchers. 
 	 * 
 	 * Checks in a new model into the repository
-	 * @param uploadHandle
+	 * @param handleId
 	 * @param author
 	 */
 	void checkin(String handleId, String author);
@@ -83,7 +81,7 @@ public interface IModelRepository {
 	/**
 	 * 
 	 * @param modelId
-	 * @return
+	 * @return the model image
 	 */
 	byte[] getModelImage(ModelId modelId);
 	
@@ -91,7 +89,7 @@ public interface IModelRepository {
 	 * Gets all mapping model resources for the given modelId
 	 * @param modelId
 	 * @param targetPlatform
-	 * @return
+	 * @return the list of models
 	 */
 	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform);
 		

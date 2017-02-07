@@ -107,7 +107,7 @@ public class ModelSearchUtil {
 	 * applicable on this query.
 	 * 
 	 * @param queryExpression
-	 * @return {@link SearchStrategy}
+	 * @return the search strategy to be used
 	 */
 	public SearchStrategy getSearchStrategy(String queryExpression) {
 		searchCriteriaParameterMap.clear();
@@ -144,7 +144,7 @@ public class ModelSearchUtil {
 	 * 'Color')</i></b>
 	 * 
 	 * @param queryExpression
-	 * @return
+	 * @return the query
 	 */
 	public String getJCRStatementQuery(String queryExpression) {
 		if (getSearchStrategy(queryExpression) == SearchStrategy.FULL_TEXT) {
@@ -195,7 +195,7 @@ public class ModelSearchUtil {
 	 * This search query is built using the filters and their parameters
 	 * specified in the original query expression.
 	 * 
-	 * @return
+	 * @return the string query
 	 */
 	private String buildJCRSearchQuery() {
 		StringBuilder stringBuilder = new StringBuilder();
