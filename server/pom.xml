@@ -12,6 +12,40 @@
     <description>Eclipse Vorto Repository manages Information Models</description>
 
     <url>http://www.eclipse.org/vorto</url>
+    
+    <licenses>
+		<license>
+			<name>Eclipse Public License</name>
+			<url>http://www.eclipse.org/legal/epl-v10.html</url>
+		</license>
+	</licenses>
+	
+	<scm>
+		<developerConnection>scm:git:https://github.com/eclipse/vorto.git</developerConnection>
+		<url>https://github.com/eclipse/vorto</url>
+		<tag>HEAD</tag>
+	</scm>
+	
+	<developers>
+		<developer>
+			<id>aedelmann</id>
+			<name>Alexander Edelmann</name>
+			<email>alexander.edelmann@bosch-si.com</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>OlafWeinmann</id>
+			<name>Olaf Weinmann</name>
+			<email>olaf.weinmann@bosch-si.com</email>
+			<roles>
+				<role>Lead</role>
+				<role>Committer</role>
+			</roles>
+		</developer>
+	</developers>
 
 	<packaging>pom</packaging>
 
@@ -222,6 +256,29 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>with-javadoc</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.4</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<additionalparam>-Xdoclint:none</additionalparam>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
