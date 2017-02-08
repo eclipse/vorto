@@ -23,7 +23,6 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.examples.bosch.things.tasks.EventValidationTask;
 import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ValidationTaskFactory;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;

@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.examples.aws
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
+import org.eclipse.vorto.codegen.api.IGeneratedWriter
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
