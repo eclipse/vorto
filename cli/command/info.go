@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
-	"time"
 
 	"github.com/eclipse/vorto/client/cli/config"
 	"github.com/eclipse/vorto/client/cli/errorMessages"
@@ -72,7 +71,7 @@ func (this *InfoCommand) Execute() error {
 			return errorMessages.ERR_MODEL_NOT_EXIST
 		}
 
-		t := time.Unix(model.CreatedOn, 0)
+		//t := time.Unix(model.CreatedOn, 0)
 		//		fmt.Println(t.Local())            // 2012-04-13 12:02:57 +0800 CST
 		//		fmt.Println(t.Local().Unix()) // 1334289777
 		//		fmt.Println(t.UTC()) // 2012-04-13 04:02:57 +0000 UTC
@@ -88,7 +87,7 @@ func (this *InfoCommand) Execute() error {
 		fmt.Println("Display Name 	:", model.DisplayName)
 		fmt.Println("Namespace 	:", model.Id.Namespace)
 		fmt.Println("Version 	:", model.Id.Version)
-		fmt.Println("Created On 	:", t.UTC())
+		fmt.Println("Created On 	:", model.CreatedOn.UTC())
 		fmt.Println("Created By 	:", model.CreatedBy)
 
 		fmt.Println("References:")
