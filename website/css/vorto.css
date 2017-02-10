@@ -325,8 +325,8 @@ footer {
   opacity: 0.8;
   color:  #003151;
   font-size: 4em;
-  left: 325px;
-  top: 125px;
+  left: 825px;
+  top: 115px;
 
 }
 
@@ -344,7 +344,7 @@ opacity: 1;
     opacity: 0.8;
     outline: medium none;
     position: absolute;
-    left: 325px;
+    left: 320px;
     z-index: 100;
     top: 125px;
 }
@@ -375,9 +375,9 @@ opacity: 1;
     opacity: 0.8;
     outline: medium none;
     position: absolute;
-    left: 800px;
+    left: 275px;
     z-index: 100;
-    top: 125px;
+    top: 150px;
 }
 /*community*/
 .team {
@@ -733,4 +733,11 @@ table tr:hover td {
 }
 #tbltext{
     color: #000000;
+}
+.jumbotron {
+  text-align: center;
+  background-color: transparent;
+  overflow: hidden;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }

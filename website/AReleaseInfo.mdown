@@ -1,0 +1,51 @@
+---
+layout: default
+date : "2017-02-10T11:08:19+08:00"
+series : "homepagetop"
+animatestyle: "fadeInDown"
+style: "team"
+fadeduration: "4"
+releaseinfo: "yes"
+---
+<div class="jumbotron">
+ <h1>Vorto Release 0.9!</h1>
+ <p class="lead">We are happy to announce the release of Eclipse <b>Vorto 0.9</b>. It is available on <a href="https://github.com/eclipse/vorto" target="_blank">Github</a>.</p><br>
+ <div class="row">
+ <div class="col-lg-3">
+ <img class="wow fadeInDown" src="{{ base }}/img/Vorto_toolset_icon.png">
+ </div>
+ <div class="col-lg-3">
+ <img class="wow fadeInDown" src="{{ base }}/img/Vorto_repository_icon.png">
+ </div>
+ <div class="col-lg-3">
+ <img class="wow fadeInDown" src="{{ base }}/img/Code_generator_API_icon.png">
+ </div>
+ <div class="col-lg-3">
+ <img class="wow fadeInDown" src="{{ base }}/img/Example_Code_Generators_icon.png">
+ </div>
+ </div>
+ <div class="row">
+ <div class="col-lg-3">
+ <p class="wow fadeInDown"><b>Vorto Toolset</b></p>
+ </div>
+ <div class="col-lg-3">
+ <p class="wow fadeInDown"> <b>Vorto Repository</b></p>
+ </div>
+ <div class="col-lg-3">
+ <p class="wow fadeInDown"><b>Code Generator API</b></p>
+ </div>
+ <div class="col-lg-3">
+ <p class="wow fadeInDown"><b>Example Code Generators</b></p>
+ </div>
+ </div>
+ <br>
+ <div class="row">
+  <div class="col-lg-6">
+  <p><a class="vbtn wow fadeInDown" href="{{ base }}/downloads/index.html" role="button">Download</a></p>   
+  </div>
+  <div class="col-lg-6">
+  <p><a class="vbtn wow fadeInDown" href="{{ base }}/news/index.html" role="button">Release details</a></p>   
+  </div>
+  </div>    
+ </div>
+

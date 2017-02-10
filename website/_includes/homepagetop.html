@@ -3,7 +3,9 @@
   {% if main.series == 'homepagetop' %}
   {% capture thecycle %}{% cycle 'odd', 'even' %}{% endcapture %}
   <div class="box">
-    {% if thecycle == 'odd' %}
+  
+    {% if thecycle == 'even' %}
+
           <img class="box-img img-responsive pull-right wow {{ main.animatestyle}} zoom1" src="{{ base }}/img/{{ main.imagename}}">
 
      {% if main.videourl %}
@@ -19,6 +21,9 @@
         {% endif %}
 
     {% else %}
+    {% if main.releaseinfo == 'yes' %}
+    
+    {% else %}
       <img class="box-img img-responsive pull-left wow fadeInLeft zoom1" src="{{ base }}/img/{{ main.imagename}}">
         {% if main.videourl %}
         <div class="{{ main.style }}">
@@ -28,8 +33,9 @@
         </div>
       {% endif %}
     {% endif %}
+    {% endif %}
     {% if main.fadeduration %}
-      <div class="wow {{ main.fadestyle}}" data-wow-duration="{{ main.fadeduration}}s">
+      <div class="wow {{ main.fadestyle}}" data-wow-duration="{{ main.fadeduration}}">
     {% else %}
       <div class="wow {{ main.fadestyle}}">
 

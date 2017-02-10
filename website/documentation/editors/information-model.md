@@ -18,7 +18,7 @@ This section details the following topics:
 
 Information models represent the capabilities of a particular type of device entirety. An information model contains one or more function blocks.
 
-<div class="thumb1">
+<div class="thumb5">
 <a title="Defining a Information Model" data-rel="prettyPhoto" href="https://youtu.be/MJI74NuYTw4&width=1500&height=1000" rel="prettyPhoto" >
 <img src="{{ $base}}/img/documentation/defineinfo.jpg"  class="box-img img-responsive zoom1">
 <i class="fa fa-play-circle fa-5 play-icon"></i>

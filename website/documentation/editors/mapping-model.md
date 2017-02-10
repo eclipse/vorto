@@ -150,7 +150,7 @@ With this model mapping the *AWS Generator* generates the file `colorlightsystem
 
 As you can see, the Vorto model mapping definition greatly enhances the capabilities of any platform, in this case the AWS Alexa platform.
 
-<div class="thumb1">
+<div class="thumb5">
 <a title="Defining a new Mapping" data-rel="prettyPhoto" href="https://youtu.be/C5c5tTFwG0U&width=1500&height=1000" rel="prettyPhoto" >
 <img src="{{ $base}}/img/documentation/defineinfomap.jpg"  class="box-img img-responsive zoom1">
 <i class="fa fa-play-circle fa-5 play-icon"></i>
