@@ -116,6 +116,11 @@
 - title: "Appendix"
   href: ""
   sub:
+    - title: "Release Notes"
+      href: ""
+      sub:
+        - title: "0.9.x"
+          href: "/documentation/appendix/releasenotes/0.9.x.html"
     - title: "Troubleshooting"
       href: "/documentation/appendix/troubleshooting.html"
     - title: "Uninstallation"
