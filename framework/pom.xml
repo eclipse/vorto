@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>org.eclipse.vorto.parent</artifactId>
+		<version>0.9.0-SNAPSHOT</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>framework</artifactId>
+
+	<name>Eclipse Vorto Framework</name>
+
+	<packaging>pom</packaging>
+
+	<modules>
+
+	<module>org.eclipse.vorto.codegen</module>
+	<module>org.eclipse.vorto.codegen.ui</module>
+	<module>org.eclipse.vorto.core</module>
+	
+	<module>org.eclipse.vorto.core.ui</module>
+	<module>org.eclipse.vorto.editor</module>
+	<module>org.eclipse.vorto.editor.ui</module>
+	<module>org.eclipse.vorto.editor.web</module>
+	<module>org.eclipse.vorto.perspective</module>
+	<module>org.eclipse.vorto.repository</module>
+	<module>org.eclipse.vorto.wizard</module>
+	</modules>
+
+</project>

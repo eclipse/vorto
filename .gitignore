@@ -13,3 +13,4 @@ bin/
 .classpath
 .project
 generated-sources
+*.orig

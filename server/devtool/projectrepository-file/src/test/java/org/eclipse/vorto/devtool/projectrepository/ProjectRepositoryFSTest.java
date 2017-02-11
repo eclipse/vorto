@@ -53,9 +53,9 @@ import org.junit.Test;
 public class ProjectRepositoryFSTest {
 
 	protected IProjectRepositoryService repoService;
-	
-	static String projectsDirectory;
-	
+
+	private static String projectsDirectory;
+
 	@Before
 	public void setUp() {
 		this.repoService = new ProjectRepositoryServiceFS("projects");
@@ -382,8 +382,7 @@ public class ProjectRepositoryFSTest {
 		String name = "queryNameLikeTest";
 		createTestProject(name);
 
-		Resource resource = repoService.createQuery().nameLike(name)
-				.singleResult();
+		Resource resource = repoService.createQuery().nameLike(name).singleResult();
 
 		assertEquals(resource.getName(), name);
 	}
@@ -519,8 +518,8 @@ public class ProjectRepositoryFSTest {
 	}
 
 	private void createTestFile(FolderResource resource, String path, String author) {
-		FileUploadHandle handle = new FileUploadHandle(resource,path,
-				"content".getBytes(), null);
+		FileUploadHandle handle = new FileUploadHandle(resource, path, "content".getBytes(), null);
+
 		handle.setProperty(Resource.META_PROPERTY_AUTHOR, author);
 		repoService.uploadResource("someComment", handle);
 	}

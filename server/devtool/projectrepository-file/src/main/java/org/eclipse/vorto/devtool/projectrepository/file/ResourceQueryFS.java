@@ -104,7 +104,7 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 		TextFilter tf = new TextFilter();
 		tf.setKey("property");
 		tf.setText(propertyValue);
-		tf.setWhereCondition("/.[properties[@name = '"+propertyName+"'] = '?']");
+		tf.setWhereCondition("/.[properties[@name = '" + propertyName + "'] = '?']");
 		addFilter(tf);
 		return this;
 	}
@@ -130,11 +130,11 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 	public Resource createResource(File file) {
 		Resource resource;
 		String parentPath = FilenameUtils.normalize(file.getParent());
-        Properties props = new Properties();
-        File metaFile;
+		Properties props = new Properties();
+		File metaFile;
 		if (file.isDirectory() && parentPath.equals(rootDirectory)) {
 			resource = new ProjectResource();
-            metaFile = new File(file, ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
+			metaFile = new File(file, ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
 		} else if (file.isDirectory()) {
 			resource = new FolderResource();
             metaFile = new File(file, ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
@@ -143,22 +143,23 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
             metaFile = new File(file.getParentFile(), "."+file.getName()+ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
 		}
 
-        try {
-            props.loadFromXML(new FileInputStream(metaFile));
-        }catch (Exception ex) {
-            ;
-        }
+		try {
+			props.loadFromXML(new FileInputStream(metaFile));
+		} catch (Exception ex) {
+			// Nothing to do here.
+		}
 
 		String resourcePath = file.getPath()
 				.replace(rootDirectory + File.separator, "")
 				.replace(File.separator, "/");
 		resource.setPath(resourcePath);
 		resource.setName(file.getName());
-        if (props.containsKey((ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE)))  {
-            resource.setCreationDate(new Date(Long.parseLong((String)props.get(ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))));
-        }
+		if (props.containsKey((ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))) {
+			resource.setCreationDate(new Date(
+					Long.parseLong((String) props.get(ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))));
+		}
 		resource.setLastModified(new Date(file.lastModified()));
-        resource.setProperties(new HashMap(props));
+		resource.setProperties(new HashMap(props));
 		return resource;
 	}
 
@@ -186,11 +187,11 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 
 	private File[] listFileTree() {
 		File[] files = new File(rootDirectory).listFiles(new FileFilter() {
-            @Override
-            public boolean accept(File file) {
-                return !file.getName().contains(ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
-            }
-        });
+			@Override
+			public boolean accept(File file) {
+				return !file.getName().contains(ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
+			}
+		});
 
 		for (File file : files) {
 			getChildren(file);
@@ -206,11 +207,11 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 		if (file.isDirectory()) {
 
 			for (File child : file.listFiles(new FileFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return !file.getName().contains(ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
-                }
-            })) {
+				@Override
+				public boolean accept(File file) {
+					return !file.getName().contains(ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
+				}
+			})) {
 				getChildren(child);
 			}
 		}

@@ -19,8 +19,10 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.examples.bosch.things.tasks.ValidationTaskFactory;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
@@ -37,7 +39,8 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 	public static final String TARGET_PATH 					= "feature";
 
 	public IGenerationResult generate(InformationModel infomodel,
-			InvocationContext invocationContext) {
+			InvocationContext invocationContext,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
 

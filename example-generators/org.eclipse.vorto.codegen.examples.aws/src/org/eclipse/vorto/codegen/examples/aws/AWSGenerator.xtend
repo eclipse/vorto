@@ -18,8 +18,10 @@ import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaIndentSchemaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaSkillLambdaTemplate
 import org.eclipse.vorto.codegen.examples.aws.templates.alexa.AlexaSlotTypeTemplate
@@ -35,7 +37,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
  */
 class AWSGenerator implements IVortoCodeGenerator {
 
-	override generate(InformationModel infomodel, InvocationContext context) {
+	override generate(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		var chainedGenerators = new ChainedCodeGeneratorTask<InformationModel>();
 		

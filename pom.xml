@@ -51,11 +51,13 @@
 	</developers>
 	
 	<modules>
-		<module>bundles</module>
+		
 		<module>example-generators</module>
 		<module>features</module>
 		<module>products</module>
 		<module>targetplatform</module>
+		<module>bundles</module>
+		<module>framework</module>
 	</modules>
 
 	<properties>
