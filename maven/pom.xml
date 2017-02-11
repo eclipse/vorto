@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>vorto-maven-plugin</artifactId>
-	<version>0.9.0-SNAPSHOT</version>
+	<version>0.10.0-SNAPSHOT</version>
 	<name>Vorto Maven Generator Plugin</name>
 	<description>Invokes the specified vorto code generator during a maven build process</description>
 	<packaging>maven-plugin</packaging>

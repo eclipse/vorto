@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.eclipse.vorto</groupId>
     <artifactId>repo</artifactId>
-    <version>0.9.0-SNAPSHOT</version>
+    <version>0.10.0-SNAPSHOT</version>
   </parent>
   
   <artifactId>repository-java-client</artifactId>
@@ -13,7 +13,7 @@
   	<dependency>
   		<groupId>org.eclipse.vorto</groupId>
     	<artifactId>repository-api</artifactId>
-    	<version>0.9.0-SNAPSHOT</version>
+    	<version>0.10.0-SNAPSHOT</version>
   	</dependency>
   	
   	<dependency>

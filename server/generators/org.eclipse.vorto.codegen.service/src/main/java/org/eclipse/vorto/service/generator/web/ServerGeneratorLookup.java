@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IGeneratorLookup;
+import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
+import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,8 +57,23 @@ public class ServerGeneratorLookup implements IGeneratorLookup {
 			this.key = key;
 		}
 		
+		private String extractFileNameFromHeader(ResponseEntity<byte[]> entity) {
+			List<String> values = entity.getHeaders().get("content-disposition");
+			if (values.size() > 0) {
+				int indexOfFileNameStart = values.get(0).indexOf("=");
+				return values.get(0).substring(indexOfFileNameStart+1);
+			}
+			return "generated.output";
+		}
+
 		@Override
-		public IGenerationResult generate(InformationModel model, InvocationContext context) throws Exception {
+		public String getServiceKey() {
+			return key;
+		}
+
+		@Override
+		public IGenerationResult generate(InformationModel model, InvocationContext context,
+				IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 			restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 			ResponseEntity<byte[]> entity = restTemplate.getForEntity(basePath+"/generation-router/{namespace}/{name}/{version}/{serviceKey}", byte[].class,model.getNamespace(),model.getName(),model.getVersion(),key);
 			return new IGenerationResult() {
@@ -76,20 +93,6 @@ public class ServerGeneratorLookup implements IGeneratorLookup {
 					return entity.getBody();
 				}
 			};
-		}
-		
-		private String extractFileNameFromHeader(ResponseEntity<byte[]> entity) {
-			List<String> values = entity.getHeaders().get("content-disposition");
-			if (values.size() > 0) {
-				int indexOfFileNameStart = values.get(0).indexOf("=");
-				return values.get(0).substring(indexOfFileNameStart+1);
-			}
-			return "generated.output";
-		}
-
-		@Override
-		public String getServiceKey() {
-			return key;
 		}
 		
 	}

@@ -125,7 +125,7 @@ public class CodeGenerationController {
 			Map<String,String> requestParams = new HashMap<>();
 			request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
 			
-			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams));
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams),null);
 		} catch (Exception e) {
 			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());

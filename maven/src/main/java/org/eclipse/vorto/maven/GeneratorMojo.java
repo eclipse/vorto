@@ -76,7 +76,7 @@ public class GeneratorMojo extends AbstractMojo {
 			for (String fileName : extractor.list(ModelType.InformationModel.getExtension())) {
 				InformationModel model = (InformationModel)extractor.extract(fileName);
 				IVortoCodeGenerator codeGenerator = (IVortoCodeGenerator)Class.forName(generatorClass).newInstance();
-				IGenerationResult result = codeGenerator.generate(model, new InvocationContext(mappingsExtractor.extract(),null, new HashMap<String, String>()));
+				IGenerationResult result = codeGenerator.generate(model, new InvocationContext(mappingsExtractor.extract(),null, new HashMap<String, String>()),null);
 				if (result.getMediatype().equalsIgnoreCase("application/zip")) {
 					final ZipContentExtractCodeGeneratorTask task = new ZipContentExtractCodeGeneratorTask(result.getContent());
 					task.generate(null, InvocationContext.simpleInvocationContext(),new IGeneratedWriter() {

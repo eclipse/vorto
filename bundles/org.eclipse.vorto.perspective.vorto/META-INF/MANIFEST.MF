@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Vorto
 Bundle-SymbolicName: org.eclipse.vorto.perspective.vorto;singleton:=true
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 0.10.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui.workbench,
@@ -23,8 +23,8 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.functionblock,
  org.eclipse.vorto.editor.infomodel
-Export-Package: org.eclipse.vorto.perspective.vorto.dnd.dropvalidation,
- org.eclipse.vorto.perspective.vorto.view
+Export-Package: org.eclipse.vorto.perspective.vorto.dnd.dropvalidation
+ ,org.eclipse.vorto.perspective.vorto.view
 Import-Package: org.eclipse.vorto.perspective.vorto.view,
  org.eclipse.core.filesystem,
  org.eclipse.debug.core.sourcelookup.containers,
