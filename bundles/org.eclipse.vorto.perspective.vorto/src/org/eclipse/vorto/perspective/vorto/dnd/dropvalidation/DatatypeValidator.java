@@ -17,6 +17,7 @@ package org.eclipse.vorto.perspective.vorto.dnd.dropvalidation;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.dnd.dropvalidator.TargetClassSourceClassValidator;
 
@@ -30,13 +31,19 @@ public class DatatypeValidator extends TargetClassSourceClassValidator {
 	public boolean allow(Object receivingModelElement, Object droppedObject) {
 		if (receivingModelElement instanceof IModelElement && droppedObject instanceof IModelElement) {
 			boolean entityDroppedToEnum = entityDroppedToEnum(((IModelElement)receivingModelElement).getModel(), ((IModelElement) droppedObject).getModel());
-			return super.allow(receivingModelElement, droppedObject) && !entityDroppedToEnum;
+			boolean enumDroppedToEnum = enumDroppedToEnum(((IModelElement)receivingModelElement).getModel(), ((IModelElement) droppedObject).getModel());
+			return super.allow(receivingModelElement, droppedObject) && !entityDroppedToEnum && !enumDroppedToEnum;
 		} else {
+			MessageDisplayFactory.getMessageDisplay().displayError("You cannot drop an Entity or Enum into an Enum");
 			return false;
 		}
 	}
 
 	private boolean entityDroppedToEnum(Model targetModel, Model droppedModel) {
 		return targetModel instanceof Enum && droppedModel instanceof Entity;
+	}
+	
+	private boolean enumDroppedToEnum(Model targetModel, Model droppedModel) {
+		return targetModel instanceof Enum && droppedModel instanceof Enum;
 	}
 }

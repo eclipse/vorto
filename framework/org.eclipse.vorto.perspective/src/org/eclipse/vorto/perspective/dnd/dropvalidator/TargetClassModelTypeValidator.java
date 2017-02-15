@@ -39,7 +39,7 @@ public class TargetClassModelTypeValidator implements IDropValidator {
 			ModelResource model = (ModelResource) droppedObject;
 			return model.getId().getModelType() == modelType;
 		} else {
-			if (!targetClass.isInstance(receivingModelElement)) {
+			if (droppedObject instanceof ModelResource && !targetClass.isInstance(receivingModelElement)) {
 				MessageDisplayFactory.getMessageDisplay().displayError("Please create a Project first before dropping models from the repository.");
 			}
 			return false;
