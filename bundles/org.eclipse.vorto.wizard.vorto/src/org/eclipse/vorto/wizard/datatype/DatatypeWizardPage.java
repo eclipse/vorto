@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.wizard.datatype;
 
-import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
@@ -55,10 +54,10 @@ public class DatatypeWizardPage extends ModelBaseWizardPage {
 	}
 
 	@Override
-	public ModelId getModelId() {
-		return getModelId(ModelType.Datatype);
+	protected ModelType getModelType() {
+		return ModelType.Datatype;
 	}
-	
+
 	@Override
 	protected String getDefaultNamespace() {
 		return "com.mycompany.type";
