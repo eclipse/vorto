@@ -62,15 +62,16 @@ public class GenerationResultZip implements IGeneratedWriter, IGenerationResult 
 	}
 	
 	private String cleanDirectoryPath(String outputDirectory) {
+		String _outputDirectory = outputDirectory;
 		if (outputDirectory.charAt(outputDirectory.length()-1) == '/') {
-			outputDirectory = outputDirectory.substring(0, outputDirectory.length()-1);
+			_outputDirectory = outputDirectory.substring(0, outputDirectory.length()-1);
 		}
 		
-		if (outputDirectory.charAt(0) == '/') {
-			outputDirectory = outputDirectory.substring(1);
+		if (_outputDirectory.charAt(0) == '/') {
+			_outputDirectory = _outputDirectory.substring(1);
 		}
 		
-		return outputDirectory;
+		return _outputDirectory;
 	}
 	
 	@Override

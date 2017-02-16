@@ -47,10 +47,10 @@ import io.swagger.annotations.ApiParam;
 public class DatatypeEditorController {
 
 	@Autowired
-	Injector injector;
+	private Injector injector;
 
 	@Autowired
-	DatatypeEditorServiceImpl datatypeEditorServiceImpl;
+	private DatatypeEditorServiceImpl datatypeEditorServiceImpl;
 	
 	@ApiOperation(value = "Adds the data type to the resource set")
 	@RequestMapping(value = "/link/{resourceId}/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)

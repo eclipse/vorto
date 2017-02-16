@@ -50,10 +50,10 @@ import io.swagger.annotations.ApiParam;
 public class ProjectController {
 
 	@Autowired
-	Injector injector;
+	private Injector injector;
 
 	@Autowired
-	IEditorProjectService projectRepositoryService;
+	private IEditorProjectService projectRepositoryService;
 	
 	@Autowired
 	private IEditorSession editorSession;
@@ -104,11 +104,11 @@ public class ProjectController {
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
 				.getInstance(IWebResourceSetProvider.class);
 
-		project = projectRepositoryService.createProject(editorSession.getUser(), project.getProjectName());
+		Project _project = projectRepositoryService.createProject(editorSession.getUser(), project.getProjectName());
 
-		webEditorResourceSetProvider.setSessionResourceSet(httpServiceContext, project.getResourceSet());
+		webEditorResourceSetProvider.setSessionResourceSet(httpServiceContext, _project.getResourceSet());
 		webEditorResourceSetProvider.setSessionRefencedResourceSet(httpServiceContext,
-				project.getReferencedResourceSet());
+				_project.getReferencedResourceSet());
 	}
 
 	@ApiOperation(value = "Opens an existing Vorto project")

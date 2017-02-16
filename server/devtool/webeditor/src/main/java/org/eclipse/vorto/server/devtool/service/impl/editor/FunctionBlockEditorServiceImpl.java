@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 public class FunctionBlockEditorServiceImpl extends IEditorService {
 
 	@Autowired
-	DevtoolReferenceLinker devtoolReferenceLinker;
+	private DevtoolReferenceLinker devtoolReferenceLinker;
 
 	public String linkModelToResource(String functionBlockResourceId, ModelId datatypeModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {

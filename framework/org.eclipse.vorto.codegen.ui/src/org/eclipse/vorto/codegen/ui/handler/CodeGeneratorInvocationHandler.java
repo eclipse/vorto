@@ -139,8 +139,9 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 		switch (diagnostic.getSeverity()) {
 		case Diagnostic.ERROR:
 			return diagnostic.getChildren();
+		default:
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
 	}
 
 	private InvocationContext createInvocationContext(IModelProject project, String targetPlatform) {

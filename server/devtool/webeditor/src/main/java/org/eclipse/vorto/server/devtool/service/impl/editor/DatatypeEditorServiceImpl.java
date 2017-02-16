@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 public class DatatypeEditorServiceImpl extends IEditorService {
 
 	@Autowired
-	DevtoolReferenceLinker devtoolReferenceLinker;
+	private DevtoolReferenceLinker devtoolReferenceLinker;
 
 	@Override
 	public String linkModelToResource(String datatypeResourceId, ModelId datatypeModelId, ResourceSet resourceSet,
