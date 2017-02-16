@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 public class TaskParameter {
 
-	HashMap<String, Object> map = new HashMap<>();
+	private HashMap<String, Object> map = new HashMap<>();
 
 	public void add(String string, Object param) {
 		map.put(string, param);

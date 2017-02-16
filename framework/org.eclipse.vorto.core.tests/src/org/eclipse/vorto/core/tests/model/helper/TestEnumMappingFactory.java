@@ -22,7 +22,7 @@ import org.eclipse.vorto.core.api.model.mapping.MappingFactory;
 import org.eclipse.vorto.core.api.model.mapping.ModelAttribute;
 
 public class TestEnumMappingFactory {
-	static org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
+	private static org.eclipse.vorto.core.api.model.datatype.Enum enumType = TestEnumFactory.createEnum();
 
 	public static EnumMappingModel createEnumMappingModel() {
 		EnumMappingModel mappingModel = MappingFactory.eINSTANCE.createEnumMappingModel();
@@ -53,7 +53,7 @@ public class TestEnumMappingFactory {
 		return rule;
 	}
 
-	static EnumPropertySource createEnumElementSourceElement() {
+	private static EnumPropertySource createEnumElementSourceElement() {
 		EnumPropertySource source = MappingFactory.eINSTANCE.createEnumPropertySource();
 		source.setModel(enumType);
 		source.setProperty(enumType.getEnums().get(0));

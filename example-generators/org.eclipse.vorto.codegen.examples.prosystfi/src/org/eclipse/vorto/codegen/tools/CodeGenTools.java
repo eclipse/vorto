@@ -30,41 +30,26 @@ public class CodeGenTools {
 	private static final String SETTER_PREFIX = "set";
 	
 	public static boolean isGetter(Operation operation, FunctionBlock fb) {
-		if (operation.getName().length() >= GETTER_PREFIX.length() && operation.getName().substring(0, GETTER_PREFIX.length()).equalsIgnoreCase(GETTER_PREFIX)) {
-			return true;
-		}
-		return false;
+		return operation.getName().length() >= GETTER_PREFIX.length() && operation.getName().substring(0, GETTER_PREFIX.length()).equalsIgnoreCase(GETTER_PREFIX);
 	}
 	
 	public static boolean isSetter(Operation operation, FunctionBlock fb) {
-		if (operation.getName().length() >= SETTER_PREFIX.length() && operation.getName().substring(0, SETTER_PREFIX.length()).equalsIgnoreCase(SETTER_PREFIX)) {
-			return true;
-		}
-		return false;
+		return operation.getName().length() >= SETTER_PREFIX.length() && operation.getName().substring(0, SETTER_PREFIX.length()).equalsIgnoreCase(SETTER_PREFIX);
 	}
 	
 	
 	public static boolean isReadable(Property property, FunctionBlock fb) {
 		String getterName = GETTER_PREFIX + property.getName();
-		if (findOperationByName(getterName,fb) != null) {
-			return true;
-		}
-		return false;
+		return findOperationByName(getterName,fb) != null;
 	}
 	
 	public static boolean isWritable(Property property, FunctionBlock fb) {
 		String setterName = SETTER_PREFIX +  property.getName();
-		if (findOperationByName(setterName,fb) != null) {
-			return true;
-		}
-		return false;
+		return findOperationByName(setterName,fb) != null;
 	}
 	
 	public static boolean isEventable(Property property, FunctionBlock fb) {
-		if (findEventByName(property.getName(), fb) !=null) {
-			return true;
-		}
-		return false;
+		return findEventByName(property.getName(), fb) !=null;
 	}
 	
 	public static Operation findOperationByName(String operationName, FunctionBlock fb) {

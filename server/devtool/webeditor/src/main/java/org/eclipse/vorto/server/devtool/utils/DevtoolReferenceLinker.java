@@ -40,7 +40,7 @@ import org.springframework.stereotype.Component;
 public class DevtoolReferenceLinker {
 
 	@Autowired
-	DevtoolRestClient devtoolRestClient;
+	private DevtoolRestClient devtoolRestClient;
 
 	public void linkFunctionBlockToInfoModel(String infoModelResourceId, ModelId functionBlockModelId,
 			ResourceSet resourceSet, Set<String> referencedResourceSet) {
@@ -128,12 +128,7 @@ public class DevtoolReferenceLinker {
 
 	private boolean containsResource(String resourceId, ResourceSet resourceSet) {
 		URI uri = URI.createURI(resourceId);
-		Resource resource = resourceSet.getResource(uri, true);
-		if (resource == null) {
-			return false;
-		} else {
-			return true;
-		}
+		return resourceSet.getResource(uri, true) != null;
 	}
 
 	private boolean containsModelReference(Model model, ModelReference reference) {

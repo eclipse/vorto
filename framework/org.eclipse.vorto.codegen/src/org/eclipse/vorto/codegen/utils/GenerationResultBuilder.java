@@ -21,7 +21,7 @@ import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
 
 public class GenerationResultBuilder {
 
-	IGenerationResult result;
+	private IGenerationResult result;
 	
 	private GenerationResultBuilder(IGenerationResult result) {
 		this.result = result;

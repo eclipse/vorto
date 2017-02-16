@@ -26,11 +26,11 @@ class EclipseProjectParserHandler extends DefaultHandler {
 		}
 	}
 	
-	String getValue() {
+	public String getValue() {
 		return value;
 	}
 	
-	void reset() {
+	public void reset() {
 		value = null;
 		location = -1;
 	}

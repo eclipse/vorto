@@ -182,10 +182,10 @@ public class GeneratorWizardPage extends WizardPage implements
 
 	private void setDirectoryToWorkspaceField(String selectedDirectory)
 			throws IOException {
-		selectedDirectory = StringUtils.replace(selectedDirectory, "\\", "/");
+		String _selectedDirectory = StringUtils.replace(selectedDirectory, "\\", "/");
 
-		if (selectedDirectory != null) {
-			workspaceLocation = selectedDirectory;
+		if (_selectedDirectory != null) {
+			workspaceLocation = _selectedDirectory;
 			updateWorkspaceLocationField(workspaceLocation);
 			dialogChanged();
 		}

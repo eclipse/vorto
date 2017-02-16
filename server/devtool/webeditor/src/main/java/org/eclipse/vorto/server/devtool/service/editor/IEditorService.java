@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 public abstract class IEditorService {
 
 	@Autowired
-	DevtoolRestClient devtoolRestClient;
+	private DevtoolRestClient devtoolRestClient;
 	
 	public abstract String linkModelToResource(String infoModelResourceId, ModelId modelId, ResourceSet resourceSet,
 			Set<String> referencedResourceSet);

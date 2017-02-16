@@ -50,14 +50,16 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 	}
 
 	private static final String PLUGIN_ID = "org.eclipse.vorto.vortonature";
+	
 	private static DefaultMessageDisplay fDefault = null;
 	private String fTitle = null;
 	private static MessageConsole fMessageConsole = null;
-	private static Color warningColor;
-	private static Color infoColor;
-	private static Color errorColor;
-	private static Color successColor;
-	private static final String SEPERATOR = "------------------------------------------------------------------------";
+	private Color warningColor;
+	private Color infoColor;
+	private Color errorColor;
+	private Color successColor;
+	
+	private final static String SEPERATOR = "------------------------------------------------------------------------";
 
 	private DefaultMessageDisplay(String messageTitle) {
 		// fDefault = this;
@@ -285,10 +287,6 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 	@Override
 	public void displayError(Throwable cause) {
 		this.showStatus(new Status(IStatus.ERROR, PLUGIN_ID, cause.getMessage(), cause));
-			
-//		StringWriter sw = new StringWriter();
-//		cause.printStackTrace(new PrintWriter(sw));
-//		this.println(sw.toString(), MSG_KIND.ERROR);
 	}
 
 	@Override
