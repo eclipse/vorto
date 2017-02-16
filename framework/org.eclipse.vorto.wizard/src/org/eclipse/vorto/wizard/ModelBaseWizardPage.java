@@ -16,7 +16,6 @@ package org.eclipse.vorto.wizard;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -196,8 +195,8 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	}
 	
 	public class ValidationResult {
-		boolean isValid;
-		String errorMessage;
+		public boolean isValid;
+		public String errorMessage;
 	}
 	
 	protected ValidationResult valid() {
@@ -209,7 +208,7 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	protected ValidationResult invalid(String errorMessage) {
 		ValidationResult result = new ValidationResult();
 		result.isValid = false;
-		result.errorMessage = errorMessage.toString();
+		result.errorMessage = errorMessage;
 		return  result; 
 	}
 
