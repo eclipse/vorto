@@ -14,6 +14,10 @@
  */
 package org.eclipse.vorto.wizard;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.swt.SWT;
@@ -124,54 +128,89 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 	}
 
 	protected boolean validateProject() {
-		boolean result = true;
-		
-		result &= checkModelName(txtModelName.getText());
-		result &= checkNamespace(txtNamespace.getText());
-		result &= checkVersion(txtVersion.getText());
-
+		for(Validator validator : getValidators(getModelId())) {
+			ValidationResult result = validator.validate();
+			if (!result.isValid) {
+				setErrorMessage(result.errorMessage);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	protected Collection<Validator> getValidators(final ModelId id) {
+		Collection<Validator> validators = new ArrayList<Validator>();
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (Strings.nullToEmpty(id.getNamespace()).trim().isEmpty()) {
+					return invalid("Model namespace must not be empty.");
+				}
+				return valid();
+			}
+		});
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (Strings.nullToEmpty(id.getName()).trim().isEmpty()) {
+					return invalid("Model name must not be empty.");
+				}
+				return valid();
+			}
+		});
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (checkForRegexPattern(id.getName(), false, MODEL_NAME_REGEX)) {
+					return invalid("Model name should start with a capital letter and must not contain any special characters.");
+				}
+				return valid();
+			}
+		});
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (Strings.nullToEmpty(id.getVersion()).trim().isEmpty()) {
+					return invalid("Model version must not be empty.");
+				}
+				return valid();
+			}
+		});
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (checkForRegexPattern(id.getVersion(), false, VERSION_REGEX)) {
+					return invalid("Model version should follow pattern <MAJOR>.<MINOR>.<PATCH>");
+				}
+				return valid();
+			}
+		});
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				if (getModelProject().exists(id)) {
+					return invalid("Project already contains model with the same model ID.");
+				}
+				return valid();
+			}
+		});
+		return validators;
+	}
+	
+	public interface Validator {
+		ValidationResult validate();
+	}
+	
+	public class ValidationResult {
+		boolean isValid;
+		String errorMessage;
+	}
+	
+	protected ValidationResult valid() {
+		ValidationResult result = new ValidationResult();
+		result.isValid = true;
 		return result;
 	}
 	
-	private boolean checkNamespace(String nameSpace) {
-		if (Strings.nullToEmpty(nameSpace).trim().isEmpty()) {
-			setErrorMessage("Model namespace must not be empty.");
-			return false;
-		}
-		
-		/*
-		if (checkForRegexPattern(nameSpace, false, MODEL_NAME_REGEX)) {
-			setErrorMessage("Model namespace should start with a capital letter and must not contain any special characters.");
-			return false;
-		}*/
-		
-		return true;
-	}
-
-	protected boolean checkModelName(String modelName) {
-		if (Strings.nullToEmpty(modelName).trim().isEmpty()) {
-			setErrorMessage("Model name must not be empty.");
-			return false;
-		}
-		
-		if (checkForRegexPattern(modelName, false, MODEL_NAME_REGEX)) {
-			setErrorMessage("Model name should start with a capital letter and must not contain any special characters.");
-			return false;
-		}
-		return true;
-	}
-
-	protected boolean checkVersion(String version) {
-		if (Strings.nullToEmpty(version).trim().isEmpty()) {
-			setErrorMessage("Model version must not be empty.");
-			return false;
-		}
-		
-		if (checkForRegexPattern(version, false, VERSION_REGEX)) {
-			setErrorMessage("Model version should follow pattern <MAJOR>.<MINOR>.<PATCH>");
-			return false;
-		}
-		return true;
+	protected ValidationResult invalid(String errorMessage) {
+		ValidationResult result = new ValidationResult();
+		result.isValid = false;
+		result.errorMessage = errorMessage.toString();
+		return  result; 
 	}
 
 	protected void modelNameChanged() {
@@ -205,9 +244,11 @@ public abstract class ModelBaseWizardPage extends AbstractWizardPage  implements
 		return txtDescription.getText();
 	}
 	
-	protected ModelId getModelId(ModelType modelType) {
-		return ModelIdFactory.newInstance(modelType, txtNamespace.getText(), txtVersion.getText(), txtModelName.getText());
+	public ModelId getModelId() {
+		return ModelIdFactory.newInstance(getModelType(), txtNamespace.getText(), txtVersion.getText(), txtModelName.getText());
 	}
+	
+	protected abstract ModelType getModelType();
 	
 	protected void decorate(Composite parent) {};
 

@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.wizard.mapping;
 
+import java.util.Collection;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -21,6 +23,8 @@ import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.wizard.ModelBaseWizardPage;
+
+import com.google.common.base.Strings;
 
 public class MappingModellWizardPage extends ModelBaseWizardPage {
 
@@ -44,23 +48,20 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 		txtPlatform.setText(getDefaultTargetPlatform());
 	}
 
-	@Override
-	protected boolean validateProject() {
-		boolean result = super.validateProject();
-		String platform = txtPlatform.getText();
-
-		result &= !ifModelExist(getModelId(), "Mapping model already exists");
-		result &= validateStrExist(platform, "Target Platform must be provided.");
-		return result;
-	}
-
-	private boolean ifModelExist(ModelId modelId, String errorMessage) {
-		if (getModelProject().exists(modelId)) {
-			setErrorMessage(errorMessage);
-			return true;
-		}
-
-		return false;
+	protected Collection<Validator> getValidators(final ModelId id) {
+		Collection<Validator> validators = super.getValidators(id);
+		
+		validators.add(new Validator() {
+			public ValidationResult validate() {
+				String platform = txtPlatform.getText();
+				if (Strings.isNullOrEmpty(platform)) {
+					return invalid("Target Platform must be provided.");
+				}
+				return valid();
+			}
+		});
+		
+		return validators;
 	}
 
 	protected String getTargetPlatform() {
@@ -102,8 +103,8 @@ public class MappingModellWizardPage extends ModelBaseWizardPage {
 	}
 
 	@Override
-	public ModelId getModelId() {
-		return getModelId(ModelType.Mapping);
+	protected ModelType getModelType() {
+		return ModelType.Mapping;
 	}
 
 }
