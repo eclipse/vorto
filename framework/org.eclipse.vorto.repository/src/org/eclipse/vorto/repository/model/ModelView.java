@@ -26,9 +26,12 @@ public class ModelView {
 	private String description = null;
 	private String displayName = null;
 	private List<ModelId> references = new ArrayList<>();
+	private List<ModelId> referencedBy = new ArrayList<>();
+
 	public ModelId getId() {
 		return id;
 	}
+
 	public void setId(ModelId id) {
 		this.id = id;
 	}
@@ -36,27 +39,36 @@ public class ModelView {
 	public ModelType getType() {
 		return type;
 	}
+
 	public void setType(ModelType type) {
 		this.type = type;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getDisplayName() {
 		return displayName;
 	}
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
+
 	public List<ModelId> getReferences() {
 		return references;
 	}
+
 	public void setReferences(List<ModelId> references) {
 		this.references = references;
 	}
-	
-	
+
+	public List<ModelId> getReferencedBy() {
+		return referencedBy;
+	}
 }

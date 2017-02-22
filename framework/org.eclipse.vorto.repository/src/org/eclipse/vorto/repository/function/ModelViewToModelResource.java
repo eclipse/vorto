@@ -30,7 +30,7 @@ public class ModelViewToModelResource implements Function<ModelView, ModelResour
 		ModelId modelId = ModelIdFactory.newInstance(input.getType(), input.getId().getNamespace(), input.getId()
 				.getVersion(), input.getId().getName());
 		return new ModelResource(modelId, input.getDescription(), input.getDisplayName(), transformReferences(input,
-				input.getReferences()));
+				input.getReferences()), input.getReferencedBy());
 	}
 
 	private List<ModelId> transformReferences(ModelView modelView, List<ModelId> references) {

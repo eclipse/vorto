@@ -26,6 +26,7 @@ public class ModelResource {
 	private String description;
 	private String displayName;
 	private List<ModelId> references;
+	private List<ModelId> referencedBy;
 
 	public ModelResource(ModelId id, String description, String displayName,
 			List<ModelId> references) {
@@ -33,6 +34,12 @@ public class ModelResource {
 		this.description = description;
 		this.displayName = displayName;
 		this.references = references;
+	}
+	
+	public ModelResource(ModelId id, String description, String displayName,
+			List<ModelId> references, List<ModelId> referencedBy) {
+		this(id, description, displayName, references);
+		this.referencedBy = referencedBy;
 	}
 
 	/**
@@ -69,11 +76,19 @@ public class ModelResource {
 	public List<ModelId> getReferences() {
 		return references;
 	}
+	
+	/**
+	 * 
+	 * @return all models that references this model
+	 */
+	public List<ModelId> getReferencedBy() {
+		return referencedBy;
+	}
 
 	@Override
 	public String toString() {
 		return "ModelResource [id=" + id + ", description=" + description
-				+ ", displayName=" + displayName + ", references=" + references
-				+ "]";
+				+ ", displayName=" + displayName + ", references=" + references 
+				+ ", referencedBy=" + referencedBy + "]";
 	}
 }

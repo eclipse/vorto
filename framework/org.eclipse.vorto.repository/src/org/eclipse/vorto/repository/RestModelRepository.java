@@ -116,7 +116,6 @@ public class RestModelRepository extends Observable implements IModelRepository 
 	@Override
 	public ModelResource getModel(ModelId modelId) {
 		Objects.requireNonNull(modelId, "modelId should not be null");
-		Objects.requireNonNull(modelId.getModelType(), "modelType should not be null");
 		Objects.requireNonNull(modelId.getName(), "name should not be null");
 		Objects.requireNonNull(modelId.getNamespace(), "namespace should not be null");
 		Objects.requireNonNull(modelId.getVersion(), "version should not be null");
