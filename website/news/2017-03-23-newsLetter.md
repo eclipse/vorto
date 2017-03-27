@@ -1,6 +1,6 @@
 ---
 layout: news
-title: Vorto Newsletter as published in Eclipse
+title: Device Abstraction with Vorto
 date: 2017-03-23
 section: news
 ---
