@@ -12,10 +12,10 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" href="{{base}}/index.html">Eclipse Vorto</a>
+						<a class="navbar-brand" href="{{base}}/index.html"><img class="img-responsive" src="{{base}}/img/vorto.png"></a>
 				</div>
 				<div class="collapse navbar-collapse wow fadeIn" id="navbar-collapse" data-wow-delay="0.2s">
-						<ul class="nav navbar-nav pull-right">
+						<ul class="nav navbar-nav pull-left">
 							{% for menu in site.data.menus %}
 								<li {% if page.path contains menu.url %} class ="active"{% endif %}>
 									{% if menu.url contains 'https://' or menu.url contains 'http://' %}
