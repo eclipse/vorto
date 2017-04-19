@@ -230,7 +230,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
    checkinSingle = function (handleId) {
         $http.put('./rest/secure/'+handleId)
         .success(function(result){
-          //$location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
+          // $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
           $scope.showResultBox = true;
 	      $scope.resultMessage = result.message;
         }).error(function(data, status, headers, config) {
@@ -357,8 +357,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	}
 
 	/*
-		Start - Handling Comments
-	*/
+     * Start - Handling Comments
+     */
 	$scope.comments = null;
 	$authority		= $rootScope.authority;
 
@@ -422,8 +422,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	}
 
 	/*
-		Stop - Handling Comments
-	*/
+     * Stop - Handling Comments
+     */
 
 
 }]);
@@ -500,7 +500,17 @@ repositoryControllers.controller('AuthenticateController', ['$scope', '$rootScop
 /*
  * TODO -
  */
-repositoryControllers.controller('SignUpController', [ '$location', '$scope','$http', function ($location,$scope,$http) {
+repositoryControllers.controller('SignUpController', [ '$location', '$scope','$http', '$routeParams', function ($location,$scope, $http, $routeParams) {
+
+	$scope.user = {}; 
+	if ($routeParams.email) {
+		$scope.user.email = $routeParams.email;
+		$scope.user.emailCon = $routeParams.email;
+		$scope.user.username = $routeParams.username;
+		$scope.user.emailReadonly = true;
+	} else {
+		$scope.user.emailReadonly = false;
+	}
 
 	$scope.emailAddressExists = false;
 	$scope.usernameExists = false;
@@ -538,10 +548,12 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
 		$http.post('./rest/users/unique/email', user.email , {
             headers: {'Content-Type': "application/json"}
         }).success(
-  		      function(data, status, headers, config) {
+  		  	function(data, status, headers, config) {
   		    	  $scope.emailAddressExists = data;
-  		      }).error(function(data, status, headers, config) {
-  		      	 });
+  		    })
+  		      
+  		  .error(function(data, status, headers, config) {
+  		    });
 	}
 
 	$scope.usernameAlreadyExists = function(user){
@@ -559,8 +571,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
      * create new user
      */
 	$scope.register = function(user) {
-
-		var userData = {
+	    var userData = {
                 "firstName":user.firstName,
                 "lastName":user.lastName,
                 "email":user.email,
@@ -572,7 +583,11 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
                 headers: {'Content-Type': "application/json"}
             })
             .success( function(data, status, headers, config) {
-
+            	if ($scope.user.emailReadonly == true) {
+            	    $location.path('/');
+            	} else {
+            	    $('#signup').modal('show');
+            	}
             }).error(function(data, status, headers, config) {
 
     	    });
