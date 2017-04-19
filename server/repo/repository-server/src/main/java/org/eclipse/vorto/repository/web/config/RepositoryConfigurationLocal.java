@@ -16,16 +16,20 @@ package org.eclipse.vorto.repository.web.config;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.catalina.connector.Connector;
 import org.eclipse.vorto.repository.model.Role;
 import org.eclipse.vorto.repository.model.User;
+import org.eclipse.vorto.repository.security.eidp.EidpUtils;
 import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
 @Configuration
-@Profile("local")
+@Profile({"local", "local-https"})
 public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.web.config.RepositoryConfiguration {
 	
 	@Autowired
@@ -36,21 +40,33 @@ public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.w
 	
 	@PostConstruct
 	public void setUpTestUser() {
-		User admin = new User();
-		
-		admin.setUsername("admin".toLowerCase());
-		admin.setPassword( encoder.encode("admin"));
-		admin.setHasWatchOnRepository(false);
-		admin.setEmail("alexander.edelmann@bosch-si.com");
-		admin.setRoles(Role.ADMIN);
-			
-		userRepository.save(admin);
-		
+		userRepository.save(newUser("admin", encoder.encode("admin"), false, "alexander.edelmann@bosch-si.com", Role.ADMIN));
+		userRepository.save(newUser("testuser", encoder.encode("testuser"), false, "erleczars.mantos@bosch-si.com", Role.USER));
+	}
+	
+	private User newUser(String username, String password, boolean hasWatchOnRepo, String email, Role role) {
 		User user = new User();
-		user.setUsername("testuser");
-		user.setPassword(encoder.encode("testuser"));
-		user.setRoles(Role.USER);
 		
-		userRepository.save(user);
+		user.setUsername(username);
+		user.setPassword(encoder.encode(password));
+		user.setHasWatchOnRepository(hasWatchOnRepo);
+		user.setEmail(email);
+		user.setRoles(role);
+		
+		return user;
+	}
+	
+	@Bean
+	public AccessTokenProvider accessTokenProvider() {
+		return EidpUtils.accessTokenProvider();
+	}
+	
+	@Bean
+	public Connector redirectingConnector() {
+		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+		connector.setScheme("http");
+		connector.setPort(8080);
+		connector.setRedirectPort(8443);
+		return connector;
 	}
 }
