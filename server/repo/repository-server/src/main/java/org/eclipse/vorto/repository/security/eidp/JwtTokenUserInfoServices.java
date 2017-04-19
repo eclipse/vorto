@@ -22,6 +22,7 @@ public class JwtTokenUserInfoServices extends UserInfoTokenServices {
 	private Interceptor interceptor;
 	private OAuth2RestOperations restTemplate;
 	private String clientId;
+	private Gson gson = new Gson();
 	
 	public JwtTokenUserInfoServices(String userInfoEndpointUrl, String clientId) {
 		super(userInfoEndpointUrl, clientId);
@@ -63,8 +64,6 @@ public class JwtTokenUserInfoServices extends UserInfoTokenServices {
 		
 		return new OAuth2Authentication(request, authToken);
 	}
-	
-	private Gson gson = new Gson();
 	
 	private Map<String, String> getMap(String accessToken) {
 		String[] jwtParts = accessToken.split("\\.");

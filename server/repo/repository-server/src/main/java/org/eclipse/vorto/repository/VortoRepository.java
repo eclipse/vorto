@@ -54,6 +54,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableScheduling
 public class VortoRepository {
 
+	@Autowired
+	private Connector redirectingConnector;
+	
 	public static void main(String[] args) {
 		SpringApplication.run(VortoRepository.class, args);
 	}
@@ -107,9 +110,7 @@ public class VortoRepository {
 	
 	/*
 	 * Redirect HTTP to HTTPS
-	 */
-	@Autowired
-	private Connector redirectingConnector; 
+	 */ 
 	
 	@Bean
 	public EmbeddedServletContainerFactory servletContainer() {

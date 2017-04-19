@@ -50,6 +50,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private OAuth2ClientContext oauth2ClientContext;
+	
+	@Autowired
+	private EidpResourceDetails eidp;
+	
+	@Autowired
+	private AccessTokenProvider accessTokenProvider;
+	
+	@Autowired
+	private IsEidpUserRegisteredInterceptor eidpInterceptor;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -102,18 +114,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	  registration.setOrder(-100);
 	  return registration;
 	}
-	
-	@Autowired
-	OAuth2ClientContext oauth2ClientContext;
-	
-	@Autowired
-	private EidpResourceDetails eidp;
-	
-	@Autowired
-	private AccessTokenProvider accessTokenProvider;
-	
-	@Autowired
-	private IsEidpUserRegisteredInterceptor eidpInterceptor;
 	
 	private Filter ssoFilter() {
 		OAuth2ClientAuthenticationProcessingFilter eidpFilter = new OAuth2ClientAuthenticationProcessingFilter("/eidp/login");
