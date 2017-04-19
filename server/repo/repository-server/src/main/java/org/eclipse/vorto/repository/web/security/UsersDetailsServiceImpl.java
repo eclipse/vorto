@@ -19,7 +19,6 @@ import javax.transaction.Transactional;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,20 +41,8 @@ public class UsersDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("No user found with username: "+ username);
         }
-        
-        boolean enabled = true;
-        boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
                
-        return  new org.springframework.security.core.userdetails.User(
-        		  user.getUsername(), 
-        		  user.getPassword(),
-        		  enabled, 
-        		  accountNonExpired,
-        		  credentialsNonExpired, 
-        		  accountNonLocked,
-        		  AuthorityUtils.createAuthorityList("ROLE_"+user.getRole().toString()));
+        return new VortoUser(user);
     }
 
 }
