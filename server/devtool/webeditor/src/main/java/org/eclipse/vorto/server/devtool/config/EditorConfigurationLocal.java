@@ -20,9 +20,12 @@ import java.net.Proxy;
 import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
+import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
+import org.eclipse.vorto.server.devtool.models.GlobalContext;
 import org.eclipse.vorto.server.devtool.models.Role;
 import org.eclipse.vorto.server.devtool.models.User;
+import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,17 +46,37 @@ public class EditorConfigurationLocal {
 	@Value("${http.proxyPort}")
 	private String proxyPort;
 	
+	@Value("${project.repository.path}")
+	private String projectRepositoryPath;
+	
+	@Value("${reference.repository}")
+	private String referenceRepository;
+	
+	@Value("${reference.repository.author}")
+	private String referenceRepositoryAuthor;
+	
+	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
+	private String repositoryBasePath;
+		
 	@Autowired
 	private IUserRepository userRepository;
 	
 	@Autowired
 	private PasswordEncoder encoder;
 	
+	@Autowired
+	private IProjectService projectService;
+	
 	@Bean
 	public IProjectRepositoryService projectRepositoryService() {
-		return new ProjectRepositoryServiceFS("projects");
+		return new ProjectRepositoryServiceFS(projectRepositoryPath);
 	}
 
+	@Bean
+	public GlobalContext getGlobalContext(){
+		return new GlobalContext(repositoryBasePath, referenceRepository);
+	}
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		if (!"".equals(proxyHost) && !"".equals(proxyPort)) {
@@ -66,8 +89,7 @@ public class EditorConfigurationLocal {
 			return new RestTemplate();
 		}
 	}
-	
-	
+			
 	@PostConstruct
 	public void setUpTestUser() {
 		User admin = new User();
@@ -86,5 +108,14 @@ public class EditorConfigurationLocal {
 		user.setRoles(Role.USER);
 		
 		userRepository.save(user);
+	}
+	
+	@PostConstruct
+	public void setUpReferencedResourceDirectory() {
+		try{
+			projectService.createProject(referenceRepository, referenceRepositoryAuthor);
+		}catch(ResourceAlreadyExistsError resourceAlreadyExistsError){
+			
+		}
 	}
 }

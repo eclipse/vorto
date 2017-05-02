@@ -75,6 +75,19 @@
 			<artifactId>org.eclipse.xtend.lib</artifactId>
 			<version>${xtext.version}</version>
 		</dependency>
+		
+			<!-- Project Repository Storage -->
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>projectrepository-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>projectrepository-file</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

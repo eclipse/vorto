@@ -18,11 +18,12 @@
  */
 package org.eclipse.vorto.editor.infomodel.web
 
+import org.eclipse.vorto.editor.web.resource.ContentTypeProvider
+import org.eclipse.vorto.editor.web.resource.FileResourceHandler
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
 import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
-import org.eclipse.vorto.editor.web.resource.HashMapResourceHandler
 
 /**
  * Use this class to register additional components to be used within the web application.
@@ -35,6 +36,10 @@ class InformationModelWebModule extends AbstractInformationModelWebModule {
 	}
 	
 	def Class<? extends IServerResourceHandler> bindIServerResourceHandler() {
-		return HashMapResourceHandler;
+		return FileResourceHandler;
+	}
+
+	override bindIContentTypeProvider() {
+		return ContentTypeProvider
 	}
 }

@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.devtool.projectrepository.model;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -47,7 +47,6 @@ require.config({
 });
 require(['jquery'], function($) {
 	$(document).ready(function() {
-		console.log('Ready');
 		require(['devtoolApp'],function(app) {
 			app.bootstrap();
 		})

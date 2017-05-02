@@ -12,8 +12,33 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.exception;
+package org.eclipse.vorto.server.devtool.http.request;
 
-public class ProjectAlreadyExistsException extends Exception {
+import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 
+public class Response {
+
+	private String message;
+	private Resource resource;
+	
+	public Response(String message, Resource resource){
+		this.message = message;
+		this.resource = resource;
+	}
+	
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
 }

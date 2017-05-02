@@ -25,7 +25,7 @@ public class Project {
 	private String sessionId; //change this later to author or login id
 	private ResourceSet resourceSet;
 	private HashSet<String> referencedResourceSet;	
-	private ArrayList<ProjectResource> resourceList;
+	private ArrayList<ModelResource> resourceList;
 	
 	public Project(){
 		
@@ -67,11 +67,11 @@ public class Project {
 		this.referencedResourceSet = referencedResourceSet;
 	}
 
-	public ArrayList<ProjectResource> getResourceList() {
+	public ArrayList<ModelResource> getResourceList() {
 		return resourceList;
 	}
 
-	public void setResourceList(ArrayList<ProjectResource> resourceList) {
+	public void setResourceList(ArrayList<ModelResource> resourceList) {
 		this.resourceList = resourceList;
 	}		
 }
