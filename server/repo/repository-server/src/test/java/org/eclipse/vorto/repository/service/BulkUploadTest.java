@@ -14,10 +14,8 @@
  */
 package org.eclipse.vorto.repository.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
- 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -82,6 +80,46 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		assertEquals("Accelerometer",result.get(0).getModelResource().getId().getName());
 		assertEquals("0.0.1",result.get(0).getModelResource().getId().getVersion());
 	}
+	/*
+	 * Steps: Upload an information model to the vorto repository
+	 * Expected Result: The formating of the DSL should be readable.
+	 */
+	@Test
+	public void ToDotestUploadValidModelsCheckFormat() throws Exception {
+		
+		fail("To check formatting of the uploaded models Model preview");
+		
+	}
+	/*
+	 * Steps: Upload a model of acceptable file size
+	 * Expected Result: Model should be uploaded successfully
+	 */
+	@Test
+	public void ToDotestUploadValidModelsAcceptableFileSize() throws Exception {
+		
+		fail("To check the acceptable file size of uploaded models missing");
+		
+	}
+	/*
+	 * Steps: Upload a model file of unacceptable file size
+	 * Expected Result: Model should not be allowed to be uploaded. An error message should be displayed that the uploaded file size is unacceptable.
+	 */
+	@Test
+	public void ToDotestUploadValidModelsInvalidFileSize() throws Exception {
+		
+		fail("Test cases for checking the invalid filesize of uploaded models missing");
+		
+	}
+	/*
+	 * Steps: Upload a virus infected file (test file from EICAR http://www.eicar.org/86-0-Intended-use.html)
+	 * Expected Result: Uploading of infected file should not be allowed.
+	 */
+	@Test
+	public void ToDotestUploadingVirusInfectedFile() throws Exception {
+		fail("To test uploading of Virus infected file ");
+		
+	}
+	
 	
 	private void verifyOneModelAreMissing(List<UploadModelResult> uploadResults) {
 		assertEquals(false, uploadResults.stream().allMatch(result -> result.isValid()));
