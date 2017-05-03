@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UserSignUpTest {
@@ -19,6 +20,7 @@ public class UserSignUpTest {
 	 * Steps: Leave the email field blank and click on Sign UP
 	 * Expected Result: Sign Up button should be disabled
 	 */
+	@Ignore
 	@Test
 	public void ToDotestMandatorySignUpEmail() {
 		
@@ -28,6 +30,7 @@ public class UserSignUpTest {
 	 * Steps: Enter .email@test.com in the email field
 	 * Expected Result: Email should not be accepted. Leading dot in address is not allowed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail1() {
 		
@@ -37,6 +40,7 @@ public class UserSignUpTest {
 	 * Steps: Enter email.@test.com in the email field
 	 * Expected Result: Email should not be accepted. Trailing dot in address is not allowed. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail2() {
 		
@@ -46,6 +50,7 @@ public class UserSignUpTest {
 	 * Steps: Enter email..email@test.com  in the email field
 	 * Expected Result: Email should not be accepted. Multiple dots in address is not allowed. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail3() {
 		
@@ -55,6 +60,7 @@ public class UserSignUpTest {
 	 * Steps: Enter あいうえお@test.com  in the email field
 	 * Expected Result: Email should not be accepted. Unicode characters in address is not allowed. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail4() {
 		
@@ -64,6 +70,7 @@ public class UserSignUpTest {
 	 * Steps: Enter email@test  in the email field
 	 * Expected Result: Email should not be accepted. Missing .com/.net/.org in address. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail5() {
 		
@@ -73,6 +80,7 @@ public class UserSignUpTest {
 	 * Steps: Enter email@test.web  in the email field
 	 * Expected Result: Email should not be accepted. .web is not valid address. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail6() {
 		
@@ -82,6 +90,7 @@ public class UserSignUpTest {
 	 * Steps: Enter email@test..com  in the email field
 	 * Expected Result: Email should not be accepted. Double dots in the email field. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidSignUpEmail7() {
 		
@@ -91,6 +100,7 @@ public class UserSignUpTest {
 	 * Steps: Enter valid email in the email field. Enter the same email address in the email confirmation field
 	 * Expected Result: Email should be accepted in email and the confirmation fields.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestMatchingSignUpEmail() {
 		
@@ -101,6 +111,7 @@ public class UserSignUpTest {
 	 * Expected Result: Email should not be accepted in the confirmation field. 
 	 * A validation message that email ids do not match should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestMisMatchingSignUpEmail() {
 		
@@ -110,6 +121,7 @@ public class UserSignUpTest {
 	 * Steps: Enter valid username >=5 e.g. testuser
 	 * Expected Result: Username should be accepted
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidUsername() {
 		
@@ -119,6 +131,7 @@ public class UserSignUpTest {
 	 * Steps: Enter Invalid Username with length < 5 e.g. test
 	 * Expected Result: Username should not be accepted. Validation message that the username is too short should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestInValidUsername() {
 		
@@ -128,6 +141,7 @@ public class UserSignUpTest {
 	 * Steps: Enter valid password with length >= 6 e.g. test123
 	 * Expected Result: Password should be accepted.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestValidPassword() {
 		
@@ -137,6 +151,7 @@ public class UserSignUpTest {
 	 * Steps: Enter Invalid password with length < 6 e.g. test1
 	 * Expected Result: Password should not be accepted.Validation message that the password is too short should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestInValidPassword() {
 		
@@ -146,6 +161,7 @@ public class UserSignUpTest {
 	 * Steps: Enter different passwords in the password and the password confirmation fields
 	 * Expected Result: Password should not be accepted.Validation message that the password do not match should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestMismatchPassword() {
 		
@@ -155,6 +171,7 @@ public class UserSignUpTest {
 	 * Steps: Enter an email address that exists in the system
 	 * Expected Result: Email should not be accepted.Validation message that the email address already exists in the system should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestExistingEmail() {
 		
@@ -164,6 +181,7 @@ public class UserSignUpTest {
 	 * Steps: Enter a username that exists in the system
 	 * Expected Result: Password should not be accepted.Validation message that the password is too short should be displayed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestExistingUser() {
 		

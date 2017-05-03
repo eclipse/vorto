@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class GeneratorsTest {
@@ -20,6 +21,7 @@ public class GeneratorsTest {
 	 * Steps: Register a new generator with serviceKey, baseUrl and classifier
 	 * Expected Result: A new Vorto Generator should be registered successfully. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestRegisterGenerator1() {
 		
@@ -29,6 +31,7 @@ public class GeneratorsTest {
 	 * Steps: Register a generator with duplicate serviceKey, baseUrl and classifier
 	 * Expected Result: GeneratorAlreadyExistsException is thrown, coz, serviceKey already exists. 
 	 */
+	@Ignore
 	@Test
 	public void ToDotestRegisterGenerator2() {
 		
@@ -38,15 +41,17 @@ public class GeneratorsTest {
 	 * Steps: Unregister a generator based on the provided serviceKey
 	 * Expected Result: The generator with the specific serviceKey is unregistered successfully. 
 	 */
+	@Ignore
 	@Test
-	public void ToDotestUnregisteraGenerator(String serviceKey) {		
+	public void ToDotestUnregisteraGenerator() {		
 		fail("To test unregistration of a generator with a specific serviceKey");
 	}
 	/*
 	 * To test that unregistered generators will not be able to generate code from Information models. 
 	 */
+	@Ignore
 	@Test
-	public void ToDotestUnregisteredGeneratorCannotGenerateCode(String serviceKey) {		
+	public void ToDotestUnregisteredGeneratorCannotGenerateCode() {		
 		fail("To test unregistered generator will not be able to generate code");
 	}
 }

@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.resolver.LWM2MQuery;
 import org.eclipse.vorto.repository.internal.resolver.DefaultResolver;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
+import org.junit.Ignore;
 import org.junit.Test;
  
 public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
@@ -42,6 +43,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 	 * Steps: Specify an invalid objectId.
 	 * Expected Result: No object should be returned.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestResolveForNonExistingObjectId() {
 		fail("Negative test case not included");
@@ -59,6 +61,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 	 * Steps: Specify invalid resource Id
 	 * Expected Result: No resource should be returned.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestResolveInvalidResourceId() {
 		fail("Uploading invalid model cases are not included");

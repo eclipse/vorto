@@ -23,6 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -84,6 +85,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 * Steps: Upload an information model to the vorto repository
 	 * Expected Result: The formating of the DSL should be readable.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestUploadValidModelsCheckFormat() throws Exception {
 		
@@ -94,6 +96,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 * Steps: Upload a model of acceptable file size
 	 * Expected Result: Model should be uploaded successfully
 	 */
+	@Ignore
 	@Test
 	public void ToDotestUploadValidModelsAcceptableFileSize() throws Exception {
 		
@@ -104,6 +107,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 * Steps: Upload a model file of unacceptable file size
 	 * Expected Result: Model should not be allowed to be uploaded. An error message should be displayed that the uploaded file size is unacceptable.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestUploadValidModelsInvalidFileSize() throws Exception {
 		
@@ -114,6 +118,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 * Steps: Upload a virus infected file (test file from EICAR http://www.eicar.org/86-0-Intended-use.html)
 	 * Expected Result: Uploading of infected file should not be allowed.
 	 */
+	@Ignore
 	@Test
 	public void ToDotestUploadingVirusInfectedFile() throws Exception {
 		fail("To test uploading of Virus infected file ");
