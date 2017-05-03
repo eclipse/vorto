@@ -2,20 +2,10 @@ package org.eclipse.vorto.repository.service;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class GeneratorsTest {
-
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	/*
 	 * Steps: Register a new generator with serviceKey, baseUrl and classifier
@@ -23,7 +13,7 @@ public class GeneratorsTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestRegisterGenerator1() {
+	public void toDotestRegisterGenerator1() {
 		
 		fail("To test registering a new generator");
 	}
@@ -33,7 +23,7 @@ public class GeneratorsTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestRegisterGenerator2() {
+	public void toDotestRegisterGenerator2() {
 		
 		fail("To test registering a new generator");
 	}
@@ -43,7 +33,7 @@ public class GeneratorsTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUnregisteraGenerator() {		
+	public void toDotestUnregisteraGenerator() {		
 		fail("To test unregistration of a generator with a specific serviceKey");
 	}
 	/*
@@ -51,7 +41,7 @@ public class GeneratorsTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUnregisteredGeneratorCannotGenerateCode() {		
+	public void toDotestUnregisteredGeneratorCannotGenerateCode() {		
 		fail("To test unregistered generator will not be able to generate code");
 	}
 }

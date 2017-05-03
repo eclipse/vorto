@@ -46,7 +46,7 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
 	 */
 	@Ignore
 	@Test
-	public void ToDotestResolveInfoModelByInvalidDeviceInfoProfileSerialNo() {
+	public void toDotestResolveInfoModelByInvalidDeviceInfoProfileSerialNo() {
 		fail("Negative test case for invalid serial number is not included");
 	}
 }

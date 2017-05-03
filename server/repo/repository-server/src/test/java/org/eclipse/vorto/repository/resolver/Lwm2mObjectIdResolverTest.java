@@ -45,7 +45,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestResolveForNonExistingObjectId() {
+	public void toDotestResolveForNonExistingObjectId() {
 		fail("Negative test case not included");
 	}
 	@Test
@@ -63,7 +63,7 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestResolveInvalidResourceId() {
+	public void toDotestResolveInvalidResourceId() {
 		fail("Uploading invalid model cases are not included");
 	
 	}

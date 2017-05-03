@@ -87,7 +87,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUploadValidModelsCheckFormat() throws Exception {
+	public void toDotestUploadValidModelsCheckFormat() throws Exception {
 		
 		fail("To check formatting of the uploaded models Model preview");
 		
@@ -98,7 +98,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUploadValidModelsAcceptableFileSize() throws Exception {
+	public void toDotestUploadValidModelsAcceptableFileSize() throws Exception {
 		
 		fail("To check the acceptable file size of uploaded models missing");
 		
@@ -109,7 +109,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUploadValidModelsInvalidFileSize() throws Exception {
+	public void toDotestUploadValidModelsInvalidFileSize() throws Exception {
 		
 		fail("Test cases for checking the invalid filesize of uploaded models missing");
 		
@@ -120,7 +120,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestUploadingVirusInfectedFile() throws Exception {
+	public void toDotestUploadingVirusInfectedFile() throws Exception {
 		fail("To test uploading of Virus infected file ");
 		
 	}

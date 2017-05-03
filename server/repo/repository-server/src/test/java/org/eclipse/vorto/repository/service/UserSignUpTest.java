@@ -1,28 +1,18 @@
 package org.eclipse.vorto.repository.service;
 
 import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class UserSignUpTest {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
 	/*
 	 * Steps: Leave the email field blank and click on Sign UP
 	 * Expected Result: Sign Up button should be disabled
 	 */
 	@Ignore
 	@Test
-	public void ToDotestMandatorySignUpEmail() {
+	public void toDotestMandatorySignUpEmail() {
 		
 		fail("To test that email field cannot be empty in the SignUp screen");
 	}
@@ -32,7 +22,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail1() {
+	public void toDotestValidSignUpEmail1() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -42,7 +32,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail2() {
+	public void toDotestValidSignUpEmail2() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -52,7 +42,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail3() {
+	public void toDotestValidSignUpEmail3() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -62,7 +52,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail4() {
+	public void toDotestValidSignUpEmail4() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -72,7 +62,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail5() {
+	public void toDotestValidSignUpEmail5() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -82,7 +72,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail6() {
+	public void toDotestValidSignUpEmail6() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -92,7 +82,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidSignUpEmail7() {
+	public void toDotestValidSignUpEmail7() {
 		
 		fail("To test that only valid email formats are accepted.");
 	}
@@ -102,7 +92,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestMatchingSignUpEmail() {
+	public void toDotestMatchingSignUpEmail() {
 		
 		fail("Tests for matching email field value missing");
 	}
@@ -113,7 +103,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestMisMatchingSignUpEmail() {
+	public void toDotestMisMatchingSignUpEmail() {
 		
 		fail("Tests for mismatching email field value missing");
 	}
@@ -123,7 +113,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidUsername() {
+	public void toDotestValidUsername() {
 		
 		fail("Tests for valid username missing");
 	}
@@ -133,7 +123,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestInValidUsername() {
+	public void toDotestInValidUsername() {
 		
 		fail("Tests for Invalid username missing");
 	}
@@ -143,7 +133,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestValidPassword() {
+	public void toDotestValidPassword() {
 		
 		fail("Tests for valid password missing");
 	}
@@ -153,7 +143,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestInValidPassword() {
+	public void toDotestInValidPassword() {
 		
 		fail("Tests for Invalid password missing");
 	}
@@ -163,7 +153,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestMismatchPassword() {
+	public void toDotestMismatchPassword() {
 		
 		fail("Tests for password mismatch is missing");
 	}
@@ -173,7 +163,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestExistingEmail() {
+	public void toDotestExistingEmail() {
 		
 		fail("Tests for duplicate email missing");
 	}
@@ -183,7 +173,7 @@ public class UserSignUpTest {
 	 */
 	@Ignore
 	@Test
-	public void ToDotestExistingUser() {
+	public void toDotestExistingUser() {
 		
 		fail("Tests for duplicate username missing");
 	}
