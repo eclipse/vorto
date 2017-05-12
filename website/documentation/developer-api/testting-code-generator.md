@@ -28,4 +28,4 @@ You have implemented the code for the code generator plug-in project (refer to [
    ![testing demo generator]({{base}}/img/documentation/vorto_HelloWorldGenerator_result.png)
 7. Open the file `sample.txt`, it shows "Hello world from information model XDK !".
 
-This example code generator is provided for you to understand code generator easier. There are already some predefined code generators included in our code base, please see the list [here](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md). 
+This code generator is provided for you to understand code generator easier. There are already some predefined code generators included in our code base, please see the list [here](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md). 

@@ -13,5 +13,5 @@ We can proudly announce that Eclipse Vorto 0.4 Milestone 1 is available on <a hr
 It features the following core functionality:
 
 * A simple Information Model language to define devices with their properties and services
-* Example Code Generators that create platform - specific representations from information models
+* Code Generators that create platform - specific representations from information models
 * Information Model Repository that allows you to search and download models from a web-based interface
