@@ -90,7 +90,9 @@ public class PublisherController {
 		}
 		byte[] zipFileContent = createZipFileContent(resourceMap);
 		final String fileName = Long.toString(System.currentTimeMillis()) + ".zip";
-		return devtoolRestClient.uploadMultipleFiles(fileName, zipFileContent);
+		ResponseEntity<ServerResponse> responseEntity = devtoolRestClient.uploadMultipleFiles(fileName, zipFileContent);
+		System.out.println(responseEntity);
+		return responseEntity;
 	}
 
 	@ApiOperation(value = "Checks in single model to the vorto repository")

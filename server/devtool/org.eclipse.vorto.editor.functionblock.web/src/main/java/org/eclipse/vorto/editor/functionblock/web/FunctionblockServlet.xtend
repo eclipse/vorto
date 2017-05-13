@@ -43,6 +43,5 @@ class FunctionblockServlet extends XtextServlet {
 		executorServices.forEach[shutdown()]
 		executorServices.clear()
 		super.destroy()
-	}
-	
+	}	
 }

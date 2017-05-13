@@ -12,7 +12,7 @@
 					<h3 class="box-title">
 						<b>{{projectName}}</b>
 						<div class="align-right">
-							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="showSaveButton == true">Save <span class="fa fa-floppy-o"></span></button>							 
+							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true">Save <span class="fa fa-floppy-o"></span></button>							 
 							 <button class="btn btn-primary" type="button" ng-click="uploadProject()">Publish <i class="fa fa-upload" aria-hidden="true"></i></button>
 							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Exit <span class="glyphicon glyphicon-remove"></span></button>							 
 						</div>
@@ -54,7 +54,7 @@
 		   </div>
 		</div>
 			
-		<div class="col-md-3 col-box">		
+		<div class="col-md-3 col-box" ng-show="isEditorOpen == true">		
 			<div class="col-md-1 col-box">
 				<div class="center-col">
 					<div class="center-container" ng-show="showImportButton">
@@ -93,9 +93,12 @@
 										</th>
 									</tr>
 									<tr>
-										<th id="onName" st-sort="id.name"><a href="">Name <i
-												class="fa fa-sort"></i></a></th>
-										 <th class="action">Details</th>								
+										<th id="onName" st-sort="id.name">
+											<a href="">Name <i class="fa fa-sort"></i></a>
+										</th>
+										 <th class="action">
+										 	Details
+										</th>								
 									</tr>
 								</thead>
 								<tbody>

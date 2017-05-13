@@ -76,19 +76,24 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	}
 
 	@Override
-	public Resource createProjectResource(String projectName, ModelResource modelResource) {
+	public Resource createProjectResource(String projectName, String author, ModelResource modelResource) {
 		IResourceQuery resourceQuery = getResourceQuery(projectName, modelResource);
 		List<Resource> list = resourceQuery.list();
 
 		if (list.isEmpty()) {
 			String fileContent = devtoolUtils.generateFileContent(modelResource);
-			FileUploadHandle fileUploadHandle = getFileUploadHandle(projectName, fileContent, editorSession.getUser(),
+			FileUploadHandle fileUploadHandle = getFileUploadHandle(projectName, fileContent, author,
 					modelResource);
 			projectRepositoryService.uploadResource(null, fileUploadHandle);
 			return resourceQuery.list().get(0);
 		} else {
 			throw new ResourceAlreadyExistsError(Constants.MESSAGE_RESOURCE_ALREADY_EXISTS);
 		}
+	}
+	
+	@Override
+	public Resource createProjectResource(String projectName, ModelResource modelResource) {
+		return createProjectResource(projectName, editorSession.getUser(), modelResource);
 	}
 
 	@Override
@@ -155,4 +160,5 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 		fileUploadHandle.setProperties(properties);
 		return fileUploadHandle;
 	}
+
 }
