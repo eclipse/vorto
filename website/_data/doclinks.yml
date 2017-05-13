@@ -43,8 +43,8 @@
 - title: "Code Generators"
   href: ""
   sub:
-    - title: "Example Code Generators"
-      href: "/documentation/code-generators/example-codegenerators.html"
+    - title: "Vorto Code Generators"
+      href: "/documentation/code-generators/vorto-codegenerators.html"
     - title: "Using Code Generators"
       href: "/documentation/code-generators/using-codegenerators.html"
 - title: "Generator Developer Guide"
