@@ -1,7 +1,8 @@
 server:
-  host: localhost
-  port: 8081
-  contextPath: /generatorgateway
+  host: 
+  port: 
+  contextPath: 
+  serviceUrl: http://generator-gateway.apps.bosch-iot-cloud.com
   
 vorto:
-  serverUrl: http://localhost:8080/infomodelrepository
+  serverUrl: https://thingtype-dev.apps.bosch-iot-cloud.com

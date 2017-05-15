@@ -45,11 +45,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen</artifactId>
-		</dependency>
-		
-		<dependency>
 	        <groupId>org.apache.httpcomponents</groupId>
 	        <artifactId>httpclient</artifactId>
     	</dependency>
@@ -64,6 +59,16 @@
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.server.commons</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
 		</dependency>
 		
 		<!-- Generators -->
@@ -139,6 +144,14 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<!-- Generator dependencies -->
+		
+		<!-- COaP dependency -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -146,6 +159,24 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.eclipse.vorto.codegen.gateway.Gateway</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

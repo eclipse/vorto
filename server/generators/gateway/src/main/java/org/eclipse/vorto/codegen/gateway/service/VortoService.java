@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
+
 import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -16,8 +18,11 @@ import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
+import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
@@ -31,8 +36,6 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-
-import com.google.common.base.Strings;
 
 @Component
 public class VortoService {
@@ -89,7 +92,7 @@ public class VortoService {
 	
 	private String urlForModel(String namespace, String name, String version) {
 		return String.format("%s/rest/model/file/%s/%s/%s?output=DSL&includeDependencies=true", 
-				env.vortoServerUrl, namespace, name, version);
+				env.getVortoRepoUrl(), namespace, name, version);
 	}
 	
 	private Optional<InformationModel> toInformationModel(Model model) {
@@ -115,7 +118,7 @@ public class VortoService {
 	
 	private String urlForMapping(String targetPlatform, String namespace, String name, String version) {
 		return String.format("%s/rest/model/mapping/zip/%s/%s/%s/%s", 
-				env.vortoServerUrl, namespace, name, version, targetPlatform);
+				env.getVortoRepoUrl(), namespace, name, version, targetPlatform);
 	}
 	
 	private Optional<byte[]> downloadUrl(String url) {
@@ -126,21 +129,24 @@ public class VortoService {
 			
 			return Optional.of(restTemplate.getForObject(url, byte[].class));
 		} catch (RestClientException e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error downloading the URL [" + url + "]", e);
 			return Optional.empty();
 		}
 	}
 	
 	public void register(Generator generator) {
 		deregister(generator);
-		LOGGER.info("Registering Generator[" + generator.getInstance().getServiceKey() + "]");
-		restTemplate.put(env.vortoServerUrl + "/rest/generation-router/register/{serviceKey}/{classifier}", getEntity(getServiceUrl(generator)), 
+		String serviceUrl = getServiceUrl(generator);
+		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/generation-router/register/%s/%s]", 
+				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey(), 
+				generator.getInfo().getClassifier().name()));
+		restTemplate.put(env.getVortoRepoUrl() + "/rest/generation-router/register/{serviceKey}/{classifier}", getEntity(serviceUrl), 
 				generator.getInstance().getServiceKey(), generator.getInfo().getClassifier().name());
 	}
 	
 	public void deregister(Generator generator) {
 		LOGGER.info("Deregistering Generator[" + generator.getInstance().getServiceKey() + "]");
-		restTemplate.put(env.vortoServerUrl + "/rest/generation-router/deregister/{serviceKey}", String.class, generator.getInstance().getServiceKey());
+		restTemplate.put(env.getVortoRepoUrl() + "/rest/generation-router/deregister/{serviceKey}", String.class, generator.getInstance().getServiceKey());
 	}
 	
 	private HttpEntity<String> getEntity(String serviceUrl) {
@@ -150,7 +156,13 @@ public class VortoService {
 	}
 	
 	private String getServiceUrl(Generator generator) {
-		return String.format("http://%s:%d%s/rest/generators/%s/generate", env.serverHost, env.serverPort, Strings.nullToEmpty(env.serverContextPath).trim(), 
-				generator.getInstance().getServiceKey());
+		return String.format("%s/rest/generators/%s/generate", env.getAppServiceUrl(), generator.getInstance().getServiceKey());
+	}
+	
+	@PostConstruct
+	public void init() {
+		DatatypePackageImpl.init();
+		FunctionblockPackageImpl.init();
+		InformationModelPackageImpl.init();
 	}
 }
