@@ -20,7 +20,7 @@ For the use of the Vorto Toolset the following software requirements must be met
 <table class="table table-bordered">
 <tbody>
   <tr>
-    <td><i class="fa fa-info-circle info-note"></td>
+    <td><i class="fa fa-info-circle info-note"></i></td>
     <td>To avoid using a wrong Java version, you can set the required Java version as a preference in the <code>eclipse.ini</code> file:
     <code><br />
       -vmargs<br />
@@ -34,7 +34,7 @@ For the use of the Vorto Toolset the following software requirements must be met
 <table class="table table-bordered">
 <tbody>
   <tr>
-    <td><i class="fa fa-info-circle info-note"></td>
+    <td><i class="fa fa-info-circle info-note"></i></td>
     <td>Your operating system, Java installation and Eclipse installation must <strong>all</strong> have either 32bit or 64bit architecture!<br />
     If necessary, you can align the path to the correct Java version as a preference in the <code>eclipse.ini</code> file, e.g.:
     <code><br />
@@ -49,7 +49,7 @@ For the use of the Vorto Toolset the following software requirements must be met
 <table class="table table-bordered">
 <tbody>
   <tr>
-    <td><i class="fa fa-info-circle info-note"></td>
+    <td><i class="fa fa-info-circle info-note"></i></td>
     <td>Validity period will endure at the most as long as the version of infrastructure software of third party manufacturers defined in this document (Operating Systems, Java, etc.) is publicly and officially supported. We support the most recent patch releases of the respective software product version.</td>
   </tr>
  </tbody>
