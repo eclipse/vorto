@@ -21,12 +21,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
+import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.WrongUploadHandleTypeError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
@@ -120,7 +121,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		resource.setPath(projectsDirectory + File.separator
 				+ FilenameUtils.normalize(resource.getPath()));
 		
-		String arr[] = resource.getPath().split(File.separator);
+		String arr[] = resource.getPath().split(Pattern.quote(File.separator));
 		String folder = arr[arr.length-2];
 		File file = new File(resource.getPath());		
 		File metaPropertyFile = new File(projectsDirectory + File.separator + FilenameUtils.normalize( folder + File.separator + "." +  resource.getName() + META_PROPERTY_FILENAME));
