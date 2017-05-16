@@ -12,11 +12,13 @@ import org.springframework.stereotype.Component;
 @Profile("local")
 public class SecurityConfigLocal {
 	
+	private static final String LOCALHOST = "localhost";
+
 	@PostConstruct
 	public void ignoreHostnameVerification() {
 		HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
 			public boolean verify(String hostname, SSLSession sslSession) {
-				if (hostname.equals("localhost")) {
+				if (hostname.equals(LOCALHOST)) {
 					return true;
 				}
 				return false;

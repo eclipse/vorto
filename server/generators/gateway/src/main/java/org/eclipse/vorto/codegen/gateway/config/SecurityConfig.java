@@ -23,7 +23,11 @@ public class SecurityConfig {
 		SSLContext ctx = null;
         TrustManager[] trustAllCerts = new X509TrustManager[]{new X509TrustManager(){
             public X509Certificate[] getAcceptedIssuers(){return null;}
+            
+            // Do nothing
             public void checkClientTrusted(X509Certificate[] certs, String authType){}
+            
+            // Do nothing
             public void checkServerTrusted(X509Certificate[] certs, String authType){}
         }};
         
