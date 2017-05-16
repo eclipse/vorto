@@ -37,7 +37,7 @@ Workflow {
         			enabled = true
 		        }
 		        web = {
-		        	enabled = true
+		        	enabled = false
 		        }
 		        runtimeTest = {
 		        	enabled = true
@@ -77,8 +77,8 @@ Workflow {
     			framework = "Ace"
 		        generateHtmlExample=false
 		        generateJettyLauncher=false
-		        generateServlet=true
-		        generateJsHighlighting=true		        
+		        generateServlet=false
+		        generateJsHighlighting=false		        
     		}
 		}
 	}
