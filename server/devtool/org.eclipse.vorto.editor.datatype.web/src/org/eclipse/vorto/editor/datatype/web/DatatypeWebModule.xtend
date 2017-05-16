@@ -18,11 +18,28 @@
  */
 package org.eclipse.vorto.editor.datatype.web
 
+import org.eclipse.vorto.editor.web.resource.ContentTypeProvider
+import org.eclipse.vorto.editor.web.resource.FileResourceHandler
+import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
+import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
 
 /**
  * Use this class to register additional components to be used within the web application.
  */
 @FinalFieldsConstructor
 class DatatypeWebModule extends AbstractDatatypeWebModule {
+	
+	def Class<? extends IWebResourceSetProvider> bindIWebResourceSetProvider() {
+		return WebEditorResourceSetProvider
+	}
+
+	def Class<? extends IServerResourceHandler> bindIServerResourceHandler() {
+		return FileResourceHandler;
+	}
+
+	override bindIContentTypeProvider() {
+		return ContentTypeProvider
+	}
 }
