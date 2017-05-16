@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
+import org.eclipse.vorto.codegen.gateway.exception.GeneratorCreationException;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 
 public class Generator {
@@ -18,7 +19,7 @@ public class Generator {
 			IVortoCodeGenerator instance = generatorClass.newInstance(); 
 			return new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance), instance);
 		} catch (Exception e) {
-			throw new RuntimeException("Error in instantiating Generator", e);
+			throw new GeneratorCreationException("Error in instantiating Generator", e);
 		}
 	}
 	
