@@ -20,11 +20,10 @@
 	<module>org.eclipse.vorto.codegen</module>
 	<module>org.eclipse.vorto.codegen.ui</module>
 	<module>org.eclipse.vorto.core</module>
-	
+
 	<module>org.eclipse.vorto.core.ui</module>
 	<module>org.eclipse.vorto.editor</module>
 	<module>org.eclipse.vorto.editor.ui</module>
-	<module>org.eclipse.vorto.editor.web</module>
 	<module>org.eclipse.vorto.perspective</module>
 	<module>org.eclipse.vorto.repository</module>
 	<module>org.eclipse.vorto.wizard</module>

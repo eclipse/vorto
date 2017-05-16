@@ -28,7 +28,7 @@ import org.eclipse.xtext.web.servlet.XtextServlet
 /**
  * Deploy this class into a servlet container to enable DSL-specific services.
  */
-@WebServlet(name = 'Functionblock XtextServices', urlPatterns = '/funcitonblock/xtext-service/')
+@WebServlet(name = 'XtextServices', urlPatterns = '/xtext-service/*')
 class FunctionblockServlet extends XtextServlet {
 	
 	val List<ExecutorService> executorServices = newArrayList

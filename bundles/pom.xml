@@ -22,17 +22,14 @@
 	<module>org.eclipse.vorto.editor.datatype.ide</module>
 	<module>org.eclipse.vorto.editor.datatype.tests</module>
 	<module>org.eclipse.vorto.editor.datatype.ui</module>
-	<module>org.eclipse.vorto.editor.datatype.web</module>
 	<module>org.eclipse.vorto.editor.functionblock</module>
 	<module>org.eclipse.vorto.editor.functionblock.ide</module>
 	<module>org.eclipse.vorto.editor.functionblock.tests</module>
 	<module>org.eclipse.vorto.editor.functionblock.ui</module>
-	<module>org.eclipse.vorto.editor.functionblock.web</module>
 	<module>org.eclipse.vorto.editor.infomodel</module>
 	<module>org.eclipse.vorto.editor.infomodel.ide</module>
 	<module>org.eclipse.vorto.editor.infomodel.tests</module>
 	<module>org.eclipse.vorto.editor.infomodel.ui</module>
-	<module>org.eclipse.vorto.editor.infomodel.web</module>
 	<module>org.eclipse.vorto.editor.mapping</module>
 	<module>org.eclipse.vorto.editor.mapping.tests</module>
 	<module>org.eclipse.vorto.editor.mapping.ui</module>

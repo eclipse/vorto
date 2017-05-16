@@ -18,31 +18,27 @@
  */
 package org.eclipse.vorto.editor.infomodel.web
 
+import com.google.inject.Guice
+import com.google.inject.Injector
 import com.google.inject.Provider
-import java.util.List
+import com.google.inject.util.Modules
 import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import javax.servlet.annotation.WebServlet
-import org.eclipse.xtext.web.servlet.XtextServlet
+import org.eclipse.vorto.editor.infomodel.InformationModelRuntimeModule
+import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup
+import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 
 /**
- * Deploy this class into a servlet container to enable DSL-specific services.
+ * Initialization support for running Xtext languages in web applications.
  */
-@WebServlet(name = 'XtextServices', urlPatterns = '/xtext-service/*')
-class InformationModelServlet extends XtextServlet {
+@FinalFieldsConstructor
+class InformationModelWebSetup extends InformationModelStandaloneSetup {
 	
-	val List<ExecutorService> executorServices = newArrayList
+	val Provider<ExecutorService> executorServiceProvider;
 	
-	override init() {
-		super.init()
-		val Provider<ExecutorService> executorServiceProvider = [Executors.newCachedThreadPool => [executorServices += it]]
-		new InformationModelWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration()
-	}
-	
-	override destroy() {
-		executorServices.forEach[shutdown()]
-		executorServices.clear()
-		super.destroy()
+	override Injector createInjector() {
+		val runtimeModule = new InformationModelRuntimeModule()
+		val webModule = new InformationModelWebModule(executorServiceProvider)
+		return Guice.createInjector(Modules.override(runtimeModule).with(webModule))
 	}
 	
 }

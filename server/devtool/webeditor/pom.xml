@@ -12,7 +12,7 @@
 
 	<artifactId>webeditor</artifactId>
 	<packaging>jar</packaging>
-	<name>Vorto Web Editor</name>
+	<name>Vorto Devtool</name>
 	<description>A web editor to describe devices using information models and share them with the Vorto Repository</description>
 
 	<build>
