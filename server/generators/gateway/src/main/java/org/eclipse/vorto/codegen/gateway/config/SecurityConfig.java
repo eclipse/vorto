@@ -9,10 +9,14 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class SecurityConfig {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
 
 	@PostConstruct
 	public void ignoreSSLCertificateVerification() {
@@ -22,11 +26,12 @@ public class SecurityConfig {
             public void checkClientTrusted(X509Certificate[] certs, String authType){}
             public void checkServerTrusted(X509Certificate[] certs, String authType){}
         }};
+        
         try {
             ctx = SSLContext.getInstance("SSL");
             ctx.init(null, trustAllCerts, null);
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
-        	e.printStackTrace();
+        	LOGGER.error("Error in ignoring SSL Ceritificate Verification", e);
         }
 
         SSLContext.setDefault(ctx);

@@ -13,6 +13,7 @@ import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
 import org.eclipse.vorto.codegen.gateway.exception.NotFoundException;
+import org.eclipse.vorto.codegen.gateway.exception.PropertyLoadingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -52,7 +53,7 @@ public class GatewayUtils {
 			serviceInfo.setTags(properties.getProperty(VORTO_SERVICE_TAGS,"").split(","));
 			
 		} catch (IOException e) {
-			throw new RuntimeException("Error in loading configFile to Properties", e);
+			throw new PropertyLoadingException("Error in loading configFile to Properties", e);
 		}
 		
 		return serviceInfo;
