@@ -37,6 +37,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.google.common.base.Throwables;
+
 @Component
 public class VortoService {
 	
@@ -69,10 +71,10 @@ public class VortoService {
 		try {
 			return generator.generate(model, invocationContext, null);
 		} catch(Exception e) {
-			LOGGER.error(String.format("error Exception on generating [%s.%s:%s] for key[%s]", 
+			LOGGER.error(String.format("Exception on generating [%s.%s:%s] for key[%s]", 
 					model.getNamespace(), model.getName(), model.getVersion(), generator.getServiceKey()), e);
 			GenerationResultZip output = new GenerationResultZip(model, generator.getServiceKey());
-			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
+			Generated generated = new Generated("generation_error.log", "/generated", Throwables.getStackTraceAsString(e));
 			output.write(generated);
 			return output;
 		}
