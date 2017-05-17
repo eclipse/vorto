@@ -1,14 +1,5 @@
 package org.eclipse.vorto.codegen.gateway.config;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.X509Certificate;
-
-import javax.annotation.PostConstruct;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,6 +9,7 @@ public class SecurityConfig {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(SecurityConfig.class);
 
+	/*
 	@PostConstruct
 	public void ignoreSSLCertificateVerification() {
 		SSLContext ctx = null;
@@ -41,5 +33,5 @@ public class SecurityConfig {
         }
 
         SSLContext.setDefault(ctx);
-	}
+	}*/
 }
