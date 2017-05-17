@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>gateway</module>
 		<module>org.eclipse.vorto.codegen.service</module>
 		<module>org.eclipse.vorto.codegen.service.javabean</module>
 		<module>org.eclipse.vorto.codegen.service.ios</module>
