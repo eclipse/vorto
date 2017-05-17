@@ -9,37 +9,37 @@
    <feature url="features/org.eclipse.vorto.feature.codegen.mqtt_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.codegen.mqtt" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </feature>
-   <bundle id="org.eclipse.vorto.codegen.examples.aws" version="0.10.0.qualifier">
+   <feature url="features/org.eclipse.vorto.feature.codegen.webui_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.codegen.webui" version="0.10.0.qualifier">
+      <category name="Vorto Code Generators"/>
+   </feature>
+   <bundle id="org.eclipse.vorto.codegen.aws" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.bosch.things" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.bosch.things" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.coap" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.coap" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.ios" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.ios" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.javabean" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.javabean" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.latex" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.latex" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.lwm2m" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.lwm2m" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.markdown" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.markdown" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.prosystfi" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.prosystfi" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.thingworx" version="0.10.0.qualifier">
-      <category name="Vorto Code Generators"/>
-   </bundle>
-   <bundle id="org.eclipse.vorto.codegen.examples.webui" version="0.10.0.qualifier">
+   <bundle id="org.eclipse.vorto.codegen.thingworx" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
    <category-def name="Vorto" label="Vorto"/>

@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.javabean</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.javabean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -30,7 +30,6 @@
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

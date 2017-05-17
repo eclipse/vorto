@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.latex</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.latex</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

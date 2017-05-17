@@ -39,20 +39,11 @@
 				<role>Committer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>OlafWeinmann</id>
-			<name>Olaf Weinmann</name>
-			<email>olaf.weinmann@bosch-si.com</email>
-			<roles>
-				<role>Lead</role>
-				<role>Committer</role>
-			</roles>
-		</developer>
 	</developers>
 	
 	<modules>
 		
-		<module>example-generators</module>
+		<module>generators</module>
 		<module>features</module>
 		<module>products</module>
 		<module>targetplatform</module>
