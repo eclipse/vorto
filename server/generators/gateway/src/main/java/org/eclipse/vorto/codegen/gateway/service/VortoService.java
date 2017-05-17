@@ -52,9 +52,7 @@ public class VortoService {
 	private RestTemplate restTemplate;
 	
 	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Generating for Platform [%s] and Model [%s.%s:%s]", key, namespace, name, version);
-		}
+		LOGGER.info(String.format("Generating for Platform [%s] and Model [%s.%s:%s]", key, namespace, name, version));
 		
 		Generator generator = repo.get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
 		
@@ -71,6 +69,8 @@ public class VortoService {
 		try {
 			return generator.generate(model, invocationContext, null);
 		} catch(Exception e) {
+			LOGGER.error(String.format("error Exception on generating [%s.%s:%s] for key[%s]", 
+					model.getNamespace(), model.getName(), model.getVersion(), generator.getServiceKey()), e);
 			GenerationResultZip output = new GenerationResultZip(model, generator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
 			output.write(generated);

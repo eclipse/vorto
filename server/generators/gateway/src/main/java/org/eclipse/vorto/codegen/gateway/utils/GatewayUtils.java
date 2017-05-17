@@ -1,10 +1,12 @@
 package org.eclipse.vorto.codegen.gateway.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,9 +16,12 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
 import org.eclipse.vorto.codegen.gateway.exception.NotFoundException;
 import org.eclipse.vorto.codegen.gateway.exception.PropertyLoadingException;
+import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StreamUtils;
 
@@ -59,11 +64,23 @@ public class GatewayUtils {
 		return serviceInfo;
 	};
 	
-	public static String encodeToBase64(String image) {
+	public static String encodeToBase64(String filename) {
+		InputStream ioStream = null;
 		try {
-			return Base64Utils.encodeToString(StreamUtils.copyToByteArray(new ClassPathResource(image).getInputStream()));
+			ioStream = new ClassPathResource(filename).getInputStream();
+		} catch(IOException e) {
+			try {
+				ioStream = new FileSystemResource(filename).getInputStream();
+			} catch(IOException e2) {
+				LOGGER.error("Cannot convert '" + filename + "' to either a ClassPathResource or FileSystemResource", e2);
+				return null;
+			}
+		}
+		
+		try {
+			return Base64Utils.encodeToString(StreamUtils.copyToByteArray(ioStream));
 		} catch(IOException ex) {
-			LOGGER.error("Could not encode image {}", image, ex);
+			LOGGER.error("Could not encode image " + filename, ex);
 			return null;
 		}
 	}
@@ -76,5 +93,20 @@ public class GatewayUtils {
 	
 	public static Supplier<NotFoundException> notFound(String subject) {
 		return () -> new NotFoundException(subject + " Not Found.");
+	}
+	
+	public static Consumer<Generator> checkEnvModifications(Environment env) {
+		return gen -> {
+			String img32ModificationProperty = String.format("vorto.service.%s.image32x32", gen.getInstance().getServiceKey());
+			if (env.containsProperty(img32ModificationProperty)) {
+				LOGGER.info(String.format("Overriding 32x32 image for %s with %s", gen.getInstance().getServiceKey(), env.getProperty(img32ModificationProperty)));
+				gen.getInfo().setImage32x32(encodeToBase64(env.getProperty(img32ModificationProperty)));
+			}
+			String img144ModificationProperty = String.format("vorto.service.%s.image144x144", gen.getInstance().getServiceKey());
+			if (env.containsProperty(img144ModificationProperty)) {
+				LOGGER.info(String.format("Overriding 144x144 image for %s with %s", gen.getInstance().getServiceKey(), env.getProperty(img144ModificationProperty)));
+				gen.getInfo().setImage144x144(encodeToBase64(env.getProperty(img144ModificationProperty)));
+			}
+		};
 	}
 }

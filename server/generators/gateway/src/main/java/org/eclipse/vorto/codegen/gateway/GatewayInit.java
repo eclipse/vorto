@@ -16,18 +16,23 @@ import org.eclipse.vorto.codegen.examples.webui.WebUIGenerator;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
+import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 @Component
-public class GatewayInit implements ApplicationRunner {
+public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GatewayInit.class);
+	
+	private Environment env;
 	
 	@Autowired
 	private GeneratorRepository generatorRepo;
@@ -52,6 +57,8 @@ public class GatewayInit implements ApplicationRunner {
 			generatorRepo.add(Generator.create("/generators/thingworx.properties", ThingWorxCodeGenerator.class));
 			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class));
 			
+			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
+			
 			generatorRepo.list().stream().forEach(vorto::register);
 			
 		} catch(RuntimeException e) {
@@ -64,4 +71,8 @@ public class GatewayInit implements ApplicationRunner {
 		generatorRepo.list().stream().forEach(vorto::deregister);
 	}
 
+	@Override
+	public void setEnvironment(Environment env) {
+		this.env = env;
+	}
 }
