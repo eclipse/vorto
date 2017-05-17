@@ -22,7 +22,7 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
+import org.eclipse.vorto.codegen.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.codegen.webui.tasks.templates.AppScriptFileTemplate;
 import org.eclipse.vorto.codegen.webui.tasks.templates.ApplicationMainTemplate;

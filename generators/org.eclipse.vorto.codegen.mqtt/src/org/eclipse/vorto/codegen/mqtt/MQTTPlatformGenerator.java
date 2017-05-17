@@ -28,7 +28,6 @@ package org.eclipse.vorto.codegen.mqtt;
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
 
-
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
@@ -37,7 +36,7 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.examples.javabean.JavabeanGenerator;
+import org.eclipse.vorto.codegen.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.mqtt.templates.IClientHandlerTemplate;
 import org.eclipse.vorto.codegen.mqtt.templates.MqttConfigurationTemplate;
 import org.eclipse.vorto.codegen.mqtt.templates.PomTemplate;
@@ -52,28 +51,29 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  *
  */
 public class MQTTPlatformGenerator implements IVortoCodeGenerator {
-		
+
 	@Override
 	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
-		for (FunctionblockProperty property : context.getProperties()) {			
+		GenerationResultZip outputter = new GenerationResultZip(context, getServiceKey());
+		for (FunctionblockProperty property : context.getProperties()) {
 			ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
-			
+
 			if (property.getType().getFunctionblock().getStatus() != null) {
 				generator.addTask(new GeneratorTaskFromFileTemplate<>(new IClientHandlerTemplate()));
 				generator.addTask(new GeneratorTaskFromFileTemplate<>(new MqttConfigurationTemplate()));
 			}
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
-			generator.generate(property.getType(),invocationContext, outputter);
+			generator.generate(property.getType(), invocationContext, outputter);
 		}
-		
-		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context, invocationContext, monitor);
-		
+
+		IGenerationResult javaResult = invocationContext.lookupGenerator(JavabeanGenerator.KEY).generate(context,
+				invocationContext, monitor);
+
 		return GenerationResultBuilder.from(outputter).append(javaResult).build();
 
 	}
-	
+
 	@Override
 	public String getServiceKey() {
 		return "mqtt";
