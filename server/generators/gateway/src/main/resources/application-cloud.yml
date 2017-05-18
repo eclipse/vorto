@@ -2,7 +2,7 @@ server:
   host: 
   port: 
   contextPath: 
-  serviceUrl: http://generator-gateway.apps.bosch-iot-cloud.com
+  serviceUrl: 
   
 vorto:
-  serverUrl: https://thingtype-dev.apps.bosch-iot-cloud.com
+  serverUrl: 

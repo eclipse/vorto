@@ -12,7 +12,7 @@ import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
-import org.eclipse.vorto.codegen.gateway.config.Environment;
+import org.eclipse.vorto.codegen.gateway.config.EnvironmentConfig;
 import org.eclipse.vorto.codegen.gateway.exception.NotFoundException;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
@@ -45,7 +45,7 @@ public class VortoService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(VortoService.class);
 	
 	@Autowired
-	private Environment env;
+	private EnvironmentConfig env;
 	
 	@Autowired
 	private GeneratorRepository repo;
