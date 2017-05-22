@@ -131,7 +131,7 @@ def parseFunctionBlockModel(LWM2M, projectName, namespace, version):
                     name = parseID(Item.find('Name').text.lower())
                     sb += '\t\t' + name + '() '
 
-                    itemId = Item.get('ID')
+                    # itemId = Item.get('ID')
                     desc = parseDescr(Item.find('Description').text)
                     sb += ' \"' + desc + '\"\n'
 
@@ -156,7 +156,7 @@ def parseFunctionBlockModel(LWM2M, projectName, namespace, version):
 
 
 # Start ############################ parseFunctionBlockMapping()
-def parseFunctionBlockMapping(LWM2M, projectName, namespace, version, license):
+def parseFunctionBlockMapping(LWM2M, projectName, namespace, version, license_text):
     for Object in LWM2M:
         #namespace = 'com.ipso.smartobjects'
         namespace = namespace
@@ -190,7 +190,7 @@ def parseFunctionBlockMapping(LWM2M, projectName, namespace, version, license):
             sb += 'Description2: \"\"' + ', '
         else:
             sb += 'Description2: \"' + objDescr + '\", '
-        sb += 'License: \"%s' % parseDescr(license) + '\"'
+        sb += 'License: \"%s' % parseDescr(license_text) + '\"'
         sb += '}\n\n'
 
 
