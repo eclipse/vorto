@@ -18,7 +18,7 @@ Vorto is characterized by the following features:
   ![Search page]({{base}}/img/documentation/vorto_repository_search.png){:width="700px"}
   
 * Integrate devices into platforms easily with the help of platform specific **code generators**, for example Bosch, AWS, ThingWorx, etc. 
-Many example code generators illustrate the many possibilities of how code generators can be effectively used. They can also be taken as a code reference to implement your own generator with the Generator API. 
+Many code generators illustrate the many possibilities of how code generators can be effectively used. They can also be taken as a code reference to implement your own generator with the Generator API. 
   
   ![Generators]({{base}}/img/documentation/vorto_repository_generators.png){:width="700px"}
   

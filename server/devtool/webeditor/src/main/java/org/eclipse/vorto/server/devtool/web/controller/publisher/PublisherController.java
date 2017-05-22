@@ -15,21 +15,23 @@
 package org.eclipse.vorto.server.devtool.web.controller.publisher;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
 import org.eclipse.vorto.repository.api.upload.ServerResponse;
-import org.eclipse.vorto.server.devtool.models.ProjectResource;
-import org.eclipse.vorto.server.devtool.models.ProjectResourceListWrapper;
+import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
+import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,58 +52,71 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/rest/publish")
 public class PublisherController {
 
-	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
+	@Value("${vorto.repository.base.path}")
 	private String repositoryBasePath;
 
 	@Autowired
-	Injector injector;
+	private Injector injector;
 
 	@Autowired
-	DevtoolRestClient devtoolRestClient;
+	private DevtoolRestClient devtoolRestClient;
+
+	@Autowired
+	private IProjectService projectService;
+
+	@Autowired
+	private DevtoolUtils devtoolUtils;
 
 	@ApiOperation(value = "Uploads models to the vorto repository for validation")
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
+	@RequestMapping(value = "/{projectName}/validate", method = RequestMethod.GET)
 	public ResponseEntity<ServerResponse> uploadModels(
-			@RequestBody ProjectResourceListWrapper projectResourceListWrapper,
+			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
 				.getInstance(IWebResourceSetProvider.class);
 		ResourceSet resourceSet = webEditorResourceSetProvider.getResourceSetFromSession(httpServiceContext);
-		ArrayList<Resource> resourceList = new ArrayList<Resource>();
-		for (ProjectResource projectResource : projectResourceListWrapper.getProjectResourceList()) {
-			Resource resource = resourceSet.getResource(URI.createURI(projectResource.getResourceId()), true);
-			resourceList.add(resource);
+
+		List<org.eclipse.vorto.devtool.projectrepository.model.Resource> projectResources = projectService
+				.getProjectResources(projectName);
+
+		HashMap<String, Resource> resourceMap = new HashMap<>();
+
+		for (org.eclipse.vorto.devtool.projectrepository.model.Resource resource : projectResources) {
+			String resourceId = resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID);
+			Resource xtextResource = resourceSet.getResource(devtoolUtils.getResourceURI(resourceId), true);
+			resourceMap.put(resourceId, xtextResource);
 		}
-		byte[] zipFileContent = createZipFileContent(projectResourceListWrapper.getProjectResourceList(), resourceList);
-		
+		byte[] zipFileContent = createZipFileContent(resourceMap);
 		final String fileName = Long.toString(System.currentTimeMillis()) + ".zip";
-		return devtoolRestClient.uploadMultipleFiles(fileName,zipFileContent);
+		return devtoolRestClient.uploadMultipleFiles(fileName, zipFileContent);
 	}
 
 	@ApiOperation(value = "Checks in single model to the vorto repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
 	public ResponseEntity<ServerResponse> checkin(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
-			return devtoolRestClient.checkInSingleFile(handleId);
+		return devtoolRestClient.checkInSingleFile(handleId);
 	}
 
 	@ApiOperation(value = "Checks in multiple models to the vorto repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
 	public ResponseEntity<ServerResponse> checkInMultiple(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @RequestBody ModelHandle[] modelHandles) {
-				return devtoolRestClient.checkInMultipleFiles(modelHandles);
+		return devtoolRestClient.checkInMultipleFiles(modelHandles);
 	}
 
-	private byte[] createZipFileContent(ArrayList<ProjectResource> projectResourceList, ArrayList<Resource> resourceList) {
+	private byte[] createZipFileContent(HashMap<String, Resource> resourceMap) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipOutputStream zipOutputStream = new ZipOutputStream(baos);
-			for (int index = 0; index < projectResourceList.size(); index++) {
-				zipOutputStream.putNextEntry(new ZipEntry(projectResourceList.get(index).getName()));
+			ZipOutputStream zipOutputStream = new ZipOutputStream(baos);			
+			Iterator<String> iterator = resourceMap.keySet().iterator();			
+			while(iterator.hasNext()){
+				String resourceName = iterator.next();
+				zipOutputStream.putNextEntry(new ZipEntry(resourceName));
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				Resource resource = resourceList.get(index);
+				Resource resource = resourceMap.get(resourceName);
 				resource.save(byteArrayOutputStream, null);
 				zipOutputStream.write(byteArrayOutputStream.toByteArray());
 				zipOutputStream.closeEntry();

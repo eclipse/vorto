@@ -18,7 +18,10 @@ public class GlobalContext {
 
 	public String repositoryBasePath = null;
 	
-	public GlobalContext(String repositoryBasePath) {
+	public String referenceRepository = null;
+	
+	public GlobalContext(String repositoryBasePath, String referenceRepository) {
 		this.repositoryBasePath = repositoryBasePath;
+		this.referenceRepository = referenceRepository;
 	}
 }

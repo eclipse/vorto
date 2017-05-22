@@ -21,12 +21,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
+import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.WrongUploadHandleTypeError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
@@ -49,8 +50,8 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
 	protected String projectsDirectory = null;
 
-    public  static final String META_PROPERTY_FILENAME = ".meta.props";
-    public  static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
+    public static final String META_PROPERTY_FILENAME = ".meta.props";
+    public static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
 
 	private static final Logger log = LoggerFactory.getLogger(ProjectRepositoryServiceFS.class);
 
@@ -119,9 +120,13 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 				+ resource.getPath());
 		resource.setPath(projectsDirectory + File.separator
 				+ FilenameUtils.normalize(resource.getPath()));
-
-		File file = new File(resource.getPath());
+		
+		String arr[] = resource.getPath().split(Pattern.quote(File.separator));
+		String folder = arr[arr.length-2];
+		File file = new File(resource.getPath());		
+		File metaPropertyFile = new File(projectsDirectory + File.separator + FilenameUtils.normalize( folder + File.separator + "." +  resource.getName() + META_PROPERTY_FILENAME));
 		FileUtils.deleteQuietly(file);
+		FileUtils.deleteQuietly(metaPropertyFile);
 		log.info("Resource deleted. (Name : " + resource.getName() + "; Path: "
 				+ resource.getPath() + ")");
 	}

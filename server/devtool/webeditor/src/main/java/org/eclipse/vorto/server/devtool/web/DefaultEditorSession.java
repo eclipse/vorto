@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.server.devtool.web;
 
+import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

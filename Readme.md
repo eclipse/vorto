@@ -5,7 +5,9 @@
 
 # Getting started with Vorto
 
-[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Convert the Information Models into executable code with the help of Vorto Code Generators. 
+[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Information Models can be converted into executable source code with the help of Vorto Code Generators. 
+
+Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 
 # Vorto Toolset
 

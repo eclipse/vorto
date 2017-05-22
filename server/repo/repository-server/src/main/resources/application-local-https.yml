@@ -1,0 +1,31 @@
+server:
+  port: 8443
+  contextPath: /infomodelrepository
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-password: Vorto123!
+    keyStoreType: jks
+    keyAlias: vorto-selfsigned
+    
+eidp:
+  oauth2:
+    client:
+      clientId: 
+      clientSecret: 
+      accessTokenUri: 
+      userAuthorizationUri: 
+      clientAuthenticationScheme: 
+      resource: 
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: 
+      preferTokenInfo: true
+
+mail:
+  smtp:
+    host: localhost
+    port: 25
+  from: vorto-dev@eclipse.org

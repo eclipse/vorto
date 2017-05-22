@@ -14,50 +14,6 @@
 	<br/>
   <!--  ng-submit="register(user)" -->
     <form name="form" >
-        
-        <!--  
-          
-        <div class="form-group" ng-class="{  
-				        				 	'has-error has-feedback': 		form.firstName.$error.minlength ||
-				        													form.firstName.$error.maxlength	}">
-            <label 	for="firstName">First name</label>
-            <input 	type="text" 
-            		name="firstName" 
-            		class="form-control" 
-            		ng-model="user.firstName"
-         		    ng-minlength="2" 
-       				ng-maxlength="20" />
-			<span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.firstName.$error.minlength &&
-				        														!form.firstName.$error.maxlength"></span>
-			
-			<span class="glyphicon glyphicon-remove form-control-feedback" ng-show="form.firstName.$error.minlength ||
-				        															form.firstName.$error.maxlength"></span>
-		  	
-            <span ng-show="form.firstName.$error.minlength" class="help-block signup-form-main-message">First name is too short min. 2 char</span>
-            <span ng-show="form.firstName.$error.maxlength" class="help-block signup-form-main-message">First name is too long max. 20 chars</span>       
-        </div>
-        
-        
-        <div class="form-group" ng-class="{ 
-											'has-error has-feedback': 		form.lastName.$error.minlength ||
-																			form.lastName.$error.maxlength	}">
-            <label 	for="lastName">Last name</label>
-            <input 	type="text" 
-            		name="lastName" 
-            		class="form-control" 
-            		ng-model="user.lastName"
-            		ng-minlength="2" 
-       				ng-maxlength="20" />
-			<span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.lastName.$error.minlength &&
-																				!form.lastName.$error.maxlength"></span>
-		  	
-			<span class="glyphicon glyphicon-remove form-control-feedback" ng-show="form.lastName.$error.minlength &&
-																					form.lastName.$error.maxlength"></span>
-		  	
-            <span ng-show="form.lastName.$error.minlength" class="help-block signup-form-main-message">Last name is too short min. 2 chars</span>
-            <span ng-show="form.lastName.$error.maxlength" class="help-block signup-form-main-message">Last name is too long max. 20 chars</span>
-        </div>
-        -->
         <!-- emailName -->              	
         <div class="form-group" ng-class="{ 'has-success has-feedback': 	!form.email.$error.required &&
 																			!form.email.$error.email && 
@@ -73,6 +29,7 @@
             		class="form-control" 
             		ng-model="user.email"
             		ng-blur="checkEmailAlreadyExists(user)"
+            		ng-readonly="user.emailReadonly"
             		required />
             <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.email.$error.required &&
 																				!form.email.$error.email && 
@@ -97,6 +54,7 @@
                		name="emailCon"
             		class="form-control" 
             		ng-model="user.emailCon"
+            		ng-readonly="user.emailReadonly"
             		email-check="email"  
             		required />            		
             <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.emailCon.$error.emailmatch"></span>
@@ -199,8 +157,7 @@
             <button type="submit"
             		ng-disabled="form.$invalid || vm.dataLoading || emailAddressExists || usernameExists" 
             		class="btn btn-primary" 
-            		data-toggle="modal" 
-            		data-target="#signup" ng-click="register(user)">Sign up</button>
+            		ng-click="register(user)">Sign up</button>
             <a href="#/login" class="btn btn-link">Cancel</a>            			
         </div>
         

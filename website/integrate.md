@@ -13,4 +13,4 @@ animatestyle: "slideInLeft"
 releaseinfo: "no"
 ---
 
-Code generators allow <b>Solution developers</b> to create information model based code artifacts that can be employed in specific solutions. Vorto provides wizards supporting the creation of new code generators. Example code generators are also part of the Vorto project.
+Code generators allow <b>Solution developers</b> to create information model based code artifacts that can be employed in specific solutions. Vorto provides wizards supporting the creation of new code generators.

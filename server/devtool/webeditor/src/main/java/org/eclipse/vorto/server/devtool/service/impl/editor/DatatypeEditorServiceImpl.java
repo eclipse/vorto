@@ -14,19 +14,17 @@
  */
 package org.eclipse.vorto.server.devtool.service.impl.editor;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.server.devtool.service.editor.IEditorService;
-import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
+import org.eclipse.vorto.server.devtool.models.ModelResource;
+import org.eclipse.vorto.server.devtool.service.IEditorService;
+import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
+import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,27 +32,42 @@ import org.springframework.stereotype.Service;
 public class DatatypeEditorServiceImpl extends IEditorService {
 
 	@Autowired
-	private DevtoolReferenceLinker devtoolReferenceLinker;
-
-	@Override
-	public String linkModelToResource(String datatypeResourceId, ModelId datatypeModelId, ResourceSet resourceSet,
-			Set<String> referencedResourceSet) {
-		devtoolReferenceLinker.linkDataTypeToFunctionBlock(datatypeResourceId, datatypeModelId,
-				resourceSet, referencedResourceSet);
-		Resource dataTypeResource = resourceSet.getResource(URI.createURI(datatypeResourceId), true);
-		try {
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-			dataTypeResource.save(byteArrayOutputStream, null);
-			return byteArrayOutputStream.toString();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
+	private DevtoolUtils devtoolUtils;
+	
+	@Autowired
+	private DevtoolRestClient devtoolRestClient;
+		
 	@Override
 	public List<ModelInfo> searchModelByExpression(String expression) {
-		List<ModelInfo> modelList = searchModelByExpressionAndValidate(expression + " " + ModelType.Datatype.toString() , ModelType.Datatype);
+		ArrayList<org.eclipse.vorto.repository.api.ModelType> modelTypeList = new ArrayList<>();
+		modelTypeList.add(org.eclipse.vorto.repository.api.ModelType.Datatype);
+		List<ModelInfo> modelList = searchModelByExpressionAndValidate(expression, modelTypeList);
 		return modelList;
 	}
-	
+
+	@Override
+	public String generateFileContent(ModelResource modelResource) {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("namespace ").append(modelResource.getNamespace()).append("\nversion ")
+				.append(modelResource.getVersion()).append("\ndisplayname \"").append(modelResource.getName())
+				.append("\"\ndescription \"").append(modelResource.getDescription()).append("\"\ncategory demo")
+				.append("\n").append(modelResource.getModelSubType()).append(" ").append(modelResource.getName())
+				.append(" {\n").append("\n}\n");
+		return stringBuilder.toString();
+	}
+
+	@Override
+	public ModelInfo getAndValidateModelInfo(ModelId modelId) {
+		ModelInfo modelInfo = devtoolRestClient.getModel(modelId);
+		if (devtoolUtils.getModelType(modelInfo) != ModelType.Datatype) {
+			throw new RuntimeException("No DataType [" + modelId.toString() + "]");
+		}
+		return modelInfo;
+	}
+
+	@Override
+	public void updateVariableNames(String targetResourceId, String referenceResourceId, ResourceSet resourceSet) {
+		return;		
+	}
+
 }

@@ -18,11 +18,15 @@ a:hover {
     text-decoration: none;
 }
 
-.navbar-inverse .navbar-brand {
+.navbar-inverse .navbar-brand  {
     font-size: 48px;
-    font-weight: bold;
-    padding-top:10px;
+    font-weight: bold;   
     color: #fff;
+    padding-top:10px;
+}
+.navbar-inverse .navbar-brand >img {
+     height: 40px;
+     display: inline-block;
 }
 
 /*scroll stuff*/
@@ -32,11 +36,20 @@ a:hover {
      transition: height 0.3s;
 }
 
-.navbar-lp .navbar-brand {
-    font-size:65px;
+.navbar-lp .navbar-brand > img {
+    /*font-size:65px;
     font-weight: bold;
     padding-top:40px;
-    color: #fff;
+    color: #fff;*/
+    display: inline-block;
+    line-height: 150px;
+    float: left;
+     height: 190px;
+     -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    -ms-transition: all 0.3s;
+    -o-transition: all 0.3s;
+    transition: all 0.3s;
 }
 
 .navbar-lp .navbar-nav {
@@ -58,8 +71,36 @@ a:hover {
     -moz-transition: all 0.3s;
     transition: all 0.3s;
 }
+.navbar-lp.scroll .navbar-brand >img
+{
 
+    position: relative;
+     height: 70px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
 .navbar-lp.scroll .navbar-nav {
+    padding-top:0px;
+}
+
+.navbar-lp.scroll-bg .navbar-brand
+{
+    font-size: 48px;
+    padding-top:10px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.navbar-lp.scroll-bg .navbar-brand >img
+{
+    position: relative;
+    height: 40px;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+}
+.navbar-lp.scroll-bg .navbar-nav {
     padding-top:0px;
 }
 
@@ -215,6 +256,13 @@ footer {
     .navbar-inverse .navbar-brand {
         font-size: 65px;
         padding-top: 20px;
+    }
+    .navbar-inverse .navbar-brand > img{
+        display: block;
+        float: none;
+        margin: 0 auto;
+        height: 100px;
+        line-height: 100px;
     }
     .tagline h1 {
         font-size: 45px;
@@ -394,8 +442,8 @@ opacity: 1;
 
 .team:hover {
     background: -moz-linear-gradient(center top , rgba(176, 196, 222, 1) 0%, rgba(255, 255, 255, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
-	background: linear-gradient(center top , rgba(176, 196, 222, 1) 0%, rgba(255, 255, 255, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
-	background: -webkit-linear-gradient(center top , rgba(176, 196, 222, 1) 0%, rgba(255, 255, 255, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  background: linear-gradient(center top , rgba(176, 196, 222, 1) 0%, rgba(255, 255, 255, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  background: -webkit-linear-gradient(center top , rgba(176, 196, 222, 1) 0%, rgba(255, 255, 255, 1) 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
     border-radius: 4px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), 0 1px 0 rgba(0, 0, 0, 0.1) inset;
     border: 0px solid #3300CC;
@@ -590,7 +638,7 @@ table {
 }
 table th {
     background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #B0C4DE, #B0C4DE) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) linear-gradient(center top , #B0C4DE, #B0C4DE) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(center top , #B0C4DE, #B0C4DE) repeat scroll 0 0;
     background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #B0C4DE, #B0C4DE) repeat scroll 0 0;
     border-bottom: 1px solid #c0c0c0;
     border-top: 1px solid #e0e0e0;
@@ -608,8 +656,8 @@ table td:first-child {
 }
 table td {
   background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #fbfbfb, #fafafa) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) linear-gradient(center top , #fbfbfb, #fafafa) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #fbfbfb, #fafafa) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(center top , #fbfbfb, #fafafa) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #fbfbfb, #fafafa) repeat scroll 0 0;
   border-bottom: 1px solid #e0e0e0;
   border-left: 1px solid #e0e0e0;
   border-top: 1px solid #f0f0f0;
@@ -617,8 +665,8 @@ table td {
 }
 table tr.even td {
   background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #f8f8f8, #f6f6f6) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) linear-gradient(center top , #f8f8f8, #f6f6f6) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #f8f8f8, #f6f6f6) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(center top , #f8f8f8, #f6f6f6) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #f8f8f8, #f6f6f6) repeat scroll 0 0;
 }
 table tr:last-child td {
     border-bottom: 0 none;
@@ -631,8 +679,8 @@ table tr:last-child td:last-child {
 }
 table tr:hover td {
   background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , #f2f2f2, #f0f0f0) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) linear-gradient(center top , #f2f2f2, #f0f0f0) repeat scroll 0 0;
-	background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #f2f2f2, #f0f0f0) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) linear-gradient(center top , #f2f2f2, #f0f0f0) repeat scroll 0 0;
+  background: rgba(0, 0, 0, 0) -webkit-linear-gradient(center top , #f2f2f2, #f0f0f0) repeat scroll 0 0;
 }
 #zoo table {
     margin: 0;

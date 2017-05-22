@@ -12,8 +12,9 @@
 					<h3 class="box-title">
 						<b>{{projectName}}</b>
 						<div class="align-right">
-							 <button class="btn btn-primary" type="button" ng-click="uploadProject()">Share <i class="fa fa-upload" aria-hidden="true"></i></button>
-							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Save and Close <span class="glyphicon glyphicon-remove"></span></button>							 
+							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="showSaveButton == true">Save <span class="fa fa-floppy-o"></span></button>							 
+							 <button class="btn btn-primary" type="button" ng-click="uploadProject()">Publish <i class="fa fa-upload" aria-hidden="true"></i></button>
+							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Exit <span class="glyphicon glyphicon-remove"></span></button>							 
 						</div>
 					</h3>
 				</div>
@@ -22,13 +23,16 @@
 					<i class="fa fa-edit"></i> Describe your Vorto Model
 					<br>	
 					<i>Hint: Press Ctrl + Space for Content Assist</i>
+					<br>
+					<i>Hint: Press Ctrl + S to Save</i>
 				</p>
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-2 col-box">
-			<div js-tree="treeConfig" ng-model="projectResources" tree="treeInstance" tree-events-obj="treeEventsObj"></div>
+			<div js-tree="treeConfig" ng-model="projectResources" tree="treeInstance" tree-events="copy_node:copyNodeCallback;create_node:createNodeCallback">
+			</div>
 		</div>
 
 		<div class="col-md-7 col-box">
@@ -37,8 +41,6 @@
 					<ul class="nav nav-tabs editor-ul" role="tablist">
 				    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
-				        		<i class="fa fa-check-circle" aria-hidden="true" ng-show="tab.status == valid" style="color:green;"></i>
-				        		<i class="fa fa-exclamation-circle" aria-hidden="true" ng-show="tab.status == invalid" style="color:red;"></i>
 				        		{{tab.filename}}
 				        		<span ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></span>
 				        	</a>
@@ -48,7 +50,7 @@
 				        </li>
 				    </ul>		    
 				</div>
-		        <div id="editors""></div>
+		        <div id="editors"></div>
 		   </div>
 		</div>
 			
@@ -85,7 +87,7 @@
 													<i class="fa fa-search"></i>
 												</a>
 												<a ng-hide="showSearchButton">
-													<i class="fa fa-spinner fa-spin fa-2x"></i>
+													<i class="fa fa-cog fa-spin fa-2x"></i>
 												</a>
 											</div>
 										</th>
@@ -98,6 +100,15 @@
 								</thead>
 								<tbody>
 									<tr st-select-row="model" ng-repeat="model in displayedModels">
+					                	<td ng-show="model.type === 'InformationModel'">
+			              					<img src="images/im.png"/>
+			              				</td>
+			              				<td ng-show="model.type === 'Functionblock'">
+						              		<img src="images/fb.png"/>
+							            </td>
+							            <td ng-show="model.type === 'Datatype'">
+						              		<img src="images/dt.png"/>
+							            </td>
 										<td>{{ model.id.name }}</td>
 										<td class="action">
 											<a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">

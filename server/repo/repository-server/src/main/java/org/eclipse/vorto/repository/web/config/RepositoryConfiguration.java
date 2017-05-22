@@ -14,18 +14,36 @@
  */
 package org.eclipse.vorto.repository.web.config;
 
+import org.apache.catalina.connector.Connector;
+import org.eclipse.vorto.repository.security.eidp.EidpUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
 @Configuration
 public class RepositoryConfiguration {
 
 	@Value("${repo.configFile}")
 	private String repositoryConfigFile = null;
+	
 	@Bean
 	public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
 		return org.modeshape.jcr.RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
+	}
+	
+	@Bean
+	public AccessTokenProvider accessTokenProvider() {
+		return EidpUtils.accessTokenProvider();
+	}
+	
+	@Bean
+	public Connector redirectingConnector() {
+		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+		connector.setScheme("http");
+		connector.setPort(80);
+		connector.setRedirectPort(443);
+		return connector;
 	}
 }
