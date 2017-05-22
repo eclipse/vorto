@@ -40,7 +40,6 @@ def stripParanthesis(sb):
         return sb;
     else:
         startIdx =  sb.index("(")
-        endIdx = sb.index(")")
         return sb[:startIdx].strip()
 
 # End ############################ stripParanthesis()
@@ -56,20 +55,20 @@ def removeNumberPrefix(sb):
 # End ############################## removeNumberPrefix()
 
 # Start ############################ parseType()
-def parseType(type):
-    if type == "string":
+def parseType(dataType):
+    if dataType == "string":
         return "string"
-    if type == "float":
+    if dataType == "float":
         return "float"
-    if type == "integer":
+    if dataType == "integer":
         return "int"
-    if type == "opaque":
+    if dataType == "opaque":
         return "byte"
-    if type == "time":
+    if dataType == "time":
         return "dateTime"
-    if type == "boolean":
+    if dataType == "boolean":
         return "boolean"
-    if type == "objlnk":
+    if dataType == "objlnk":
         return "string"
     return "ERROR"
 # End ############################ parseType()
@@ -84,7 +83,7 @@ def parseFunctionBlockModel(LWM2M, projectName, namespace, version):
         sb += 'displayname \"' + objname + '\"\n'
 
         desc1 = parseDescr(Object.find('Description1').text)
-        objId = parseID(Object.find('ObjectID').text)
+        # objId = parseID(Object.find('ObjectID').text)
         sb += 'description \"' + desc1 + '\"\n'
 
         category = 'SmartObject'
@@ -118,7 +117,7 @@ def parseFunctionBlockModel(LWM2M, projectName, namespace, version):
                 if operations == 'RW':
                     sb += ' ' + primType + ' with { readable: true, writable: true}'
 
-                itemId = Item.get('ID')
+                # itemId = Item.get('ID')
                 desc = parseDescr(Item.find('Description').text)
                 sb += ' \"' + desc + '\"\n'
 
@@ -250,7 +249,7 @@ def parseFunctionBlockMapping(LWM2M, projectName, namespace, version, license):
 
 # Start ############################ parseXMLFiles()
 
-def parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE):
+def parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE_TEXT):
     for filename in os.listdir(XML_PATH):
         if not filename.endswith('.xml'): continue
         fullname = os.path.join(XML_PATH, filename)
@@ -262,7 +261,7 @@ def parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE):
         parseFunctionBlockModel(LWM2M, PROJECT_NAME, NAMESPACE, VERSION)
 
         # Create corresponding LWM2M mapping files
-        parseFunctionBlockMapping(LWM2M, PROJECT_NAME, NAMESPACE, VERSION, LICENSE)
+        parseFunctionBlockMapping(LWM2M, PROJECT_NAME, NAMESPACE, VERSION, LICENSE_TEXT)
 
 # End ############################ parseXMLFiles()
 
@@ -272,7 +271,7 @@ XML_PATH = 'xmls/ipso/'
 PROJECT_NAME = 'IPSO'
 NAMESPACE = 'com.ipso.smartobjects'
 VERSION = '0.0.1'
-LICENSE = """
+LICENSE_TEXT = """
 FILE INFORMATION
 
 LEGAL DISCLAIMER
@@ -310,11 +309,11 @@ LEGAL DISCLAIMER
   http://www.openmobilealliance.org/ipr.html
 """
 
-parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE)
+parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE_TEXT)
 
 XML_PATH = 'xmls/lwm2m/'
 PROJECT_NAME = 'LWM2M'
 NAMESPACE = 'org.oma.lwm2m'
 
-parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE)
+parseXMLFiles(XML_PATH, PROJECT_NAME, NAMESPACE, VERSION, LICENSE_TEXT)
 
