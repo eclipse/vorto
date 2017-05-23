@@ -50,7 +50,7 @@ public class GatewayUtils {
 		Objects.requireNonNull(configFile);
 		Objects.requireNonNull(generator);
 		
-		Properties properties = getProperties(configFile).orElseThrow(notFound(String.format("ConfigFile [%]", configFile)));
+		Properties properties = getProperties(configFile).orElseThrow(notFound(String.format("ConfigFile [%s]", configFile)));
 		
 		GeneratorServiceInfo serviceInfo = new GeneratorServiceInfo();
 		
