@@ -2,7 +2,6 @@ package org.eclipse.vorto.codegen.gateway.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
