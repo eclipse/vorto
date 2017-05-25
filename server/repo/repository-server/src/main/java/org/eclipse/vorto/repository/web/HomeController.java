@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.repository.web.security.VortoUser;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,6 +41,12 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 public class HomeController {
 
+	@Value("${github.oauth2.enabled}")
+	private boolean githubEnabled;
+	
+	@Value("${eidp.oauth2.enabled}")
+	private boolean eidpEnabled;
+	
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Returns the currently logged in User")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized"), 
@@ -69,6 +76,15 @@ public class HomeController {
 		}
 		
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
-	}		
+	}
 	
+	@RequestMapping(value ={ "/context" }, method = RequestMethod.GET)
+	public Map<String, String> globalContext() {
+		Map<String, String> map = new LinkedHashMap<>();
+		
+		map.put("githubEnabled", Boolean.toString(githubEnabled));
+		map.put("eidpEnabled", Boolean.toString(eidpEnabled));
+		
+		return map;
+	}
 }

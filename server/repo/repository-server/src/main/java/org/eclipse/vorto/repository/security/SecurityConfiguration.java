@@ -1,5 +1,7 @@
 package org.eclipse.vorto.repository.security;
 
+import java.util.Arrays;
+
 import javax.servlet.Filter;
 
 import org.eclipse.vorto.repository.security.eidp.EidpOAuth2RestTemplate;
@@ -28,12 +30,15 @@ import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
+import org.springframework.security.oauth2.client.resource.OAuth2ProtectedResourceDetails;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
+import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.web.filter.CompositeFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -58,10 +63,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private EidpResourceDetails eidp;
 	
 	@Autowired
+	private AuthorizationCodeResourceDetails github;
+	
+	@Autowired
 	private AccessTokenProvider accessTokenProvider;
 	
 	@Autowired
 	private IsEidpUserRegisteredInterceptor eidpInterceptor;
+	
+	@Autowired
+	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -116,22 +127,45 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter ssoFilter() {
-		OAuth2ClientAuthenticationProcessingFilter eidpFilter = new OAuth2ClientAuthenticationProcessingFilter("/eidp/login");
-		OAuth2RestTemplate restTemplate = new EidpOAuth2RestTemplate(eidp, oauth2ClientContext);
-		eidpFilter.setRestTemplate(restTemplate);
-		
-		UserInfoTokenServices tokenServices = new JwtTokenUserInfoServices(null, eidp.getClientId(), eidpInterceptor);
-		tokenServices.setRestTemplate(restTemplate);
-		eidpFilter.setTokenServices(tokenServices);
-		
+		CompositeFilter filter = new CompositeFilter();
+		filter.setFilters(Arrays.asList(githubFilter(), eidpFilter()));
+		return filter;
+	}
+	
+	private Filter githubFilter() {
+		return newSsoFilter("/github/login", github, interceptedUserInfoTokenServices, accessTokenProvider, 
+				new OAuth2RestTemplate(github, oauth2ClientContext));		
+	}
+	
+	private Filter eidpFilter() {
+		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId(), eidpInterceptor);
+		return newSsoFilter("/eidp/login", eidp, tokenService, accessTokenProvider, 
+				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
+	}
+	
+	private Filter newSsoFilter(String defaultFilterProcessesUrl, OAuth2ProtectedResourceDetails resource, 
+			UserInfoTokenServices tokenService, AccessTokenProvider accessTokenProvider,
+			OAuth2RestTemplate restTemplate) {
 		restTemplate.setAccessTokenProvider(accessTokenProvider);
 		
-		return eidpFilter;
+		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(defaultFilterProcessesUrl);
+		
+		tokenService.setRestTemplate(restTemplate);
+		filter.setRestTemplate(restTemplate);
+		filter.setTokenServices(tokenService);
+		
+		return filter;
 	}
 	
 	@Bean
 	@ConfigurationProperties("eidp.oauth2.client")
 	public EidpResourceDetails eidp() {
 		return new EidpResourceDetails();
+	}
+	
+	@Bean
+	@ConfigurationProperties("github.oauth2.client")
+	public AuthorizationCodeResourceDetails github() {
+		return new AuthorizationCodeResourceDetails();
 	}
 }
