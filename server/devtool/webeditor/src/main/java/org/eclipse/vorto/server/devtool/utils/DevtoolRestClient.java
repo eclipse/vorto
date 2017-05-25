@@ -47,10 +47,10 @@ public class DevtoolRestClient {
 
 	@Value("${vorto.repository.base.path}")
 	private String basePath;
-
+	
 	@Autowired
 	private RestTemplate restTemplate;
-	
+
 	private Gson gson = createGson();
 
 	public ModelInfo getModel(ModelId modelId) {

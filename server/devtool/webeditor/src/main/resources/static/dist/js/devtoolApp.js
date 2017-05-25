@@ -1,6 +1,6 @@
-define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-aria", "angular-bootstrap", "angular-bootstrap-templates", "smart-table", "controllers", "directives", "jquery", "ngJsTree"], function(angular) {
+define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-aria", "angular-bootstrap", "angular-bootstrap-templates", "smart-table", "controllers", "directives", "jquery", "ngJsTree", "angular-toastr"], function(angular) {
 
-  var app = angular.module('devtoolApp', ['ngRoute', 'apps.controller', 'apps.directive', 'ngAnimate', 'ui.bootstrap', 'ui.bootstrap.tpls', 'ngJsTree']);
+  var app = angular.module('devtoolApp', ['ngRoute', 'apps.controller', 'apps.directive', 'ngAnimate', 'ui.bootstrap', 'ui.bootstrap.tpls', 'ngJsTree', 'toastr']);
 
   app.bootstrap = function() {
     angular.bootstrap(document, ['devtoolApp']);
@@ -28,7 +28,6 @@ define("devtoolApp", ["angular", "angular-route", "angular-animate", "angular-ar
         .otherwise({
           redirectTo: '/project'
         });
-
     }
   ]).run(function($location, $http, $rootScope) {
     

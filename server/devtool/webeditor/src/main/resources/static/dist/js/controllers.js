@@ -48,7 +48,7 @@ define(["angular"], function(angular) {
     }
   ]);
 
-  app.controller("EditorController", function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal) {
+  app.controller("EditorController", function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal, toastr) {
 
     $scope.error = null;
     $scope.errorMessage = null;
@@ -66,7 +66,7 @@ define(["angular"], function(angular) {
 
     $scope.showImportButton = true;
     $scope.showSearchButton = true;
-    $scope.showSaveButton = false;
+    $scope.isEditorOpen = false;
 
     $scope.showEditorBody = true;
     $scope.projectName;
@@ -179,43 +179,43 @@ define(["angular"], function(angular) {
         multiple: false,
         animation: true,
         worker: true,
-        check_callback:  function (op, node, par, pos, more) {
-          if(!$scope.showSaveButton){
-        	  return false;
-          }	
-          if(op === "move_node" || op === "copy_node"){
-        	  var parentId = parseInt(par.id);
-        	  var temp = {};
-        	  for(var i = 0 ; i < $scope.projectResources.length ; i++){
-        		  if($scope.projectResources[i]["id"] == parentId){
-        			  temp = $scope.projectResources[i];
-        		  }
-        	  }
-        	  var parent = $scope.tabs[$scope.selectedTabIndex];
-        	  if(parent.name != temp.name || parent.version != temp.version || parent.namespace != temp.namespace){
-        		  return false;
-        	  }
-        	  if(node.type == "infomodel"){
-        		  return false;
-        	  }else if(node.type == "fbmodel" && (par.type == "infomodel" || par.type == "fbmodel")){
-        		  more.origin.settings.dnd.always_copy = true;
-        		  return true;
-        	  }else if(node.type == "entity" && par.type == "fbmodel"){
-        		  more.origin.settings.dnd.always_copy = true;
-        		  return true;
-        	  }else if(node.type == "enum" && (par.type == "fbmodel" || par.type == "entity")){
-        		  more.origin.settings.dnd.always_copy = true;
-        		  return true;
-        	  }else{
-        		  return false;
-        	  }
+        check_callback: function(op, node, par, pos, more) {
+          if (!$scope.isEditorOpen) {
+            return false;
+          }
+          if (op === "move_node" || op === "copy_node") {
+            var parentId = parseInt(par.id);
+            var temp = {};
+            for (var i = 0; i < $scope.projectResources.length; i++) {
+              if ($scope.projectResources[i]["id"] == parentId) {
+                temp = $scope.projectResources[i];
+              }
+            }
+            var parent = $scope.tabs[$scope.selectedTabIndex];
+            if (parent.name != temp.name || parent.version != temp.version || parent.namespace != temp.namespace) {
+              return false;
+            }
+            if (node.type == "infomodel") {
+              return false;
+            } else if (node.type == "fbmodel" && (par.type == "infomodel" || par.type == "fbmodel")) {
+              more.origin.settings.dnd.always_copy = true;
+              return true;
+            } else if (node.type == "entity" && par.type == "fbmodel") {
+              more.origin.settings.dnd.always_copy = true;
+              return true;
+            } else if (node.type == "enum" && (par.type == "fbmodel" || par.type == "entity")) {
+              more.origin.settings.dnd.always_copy = true;
+              return true;
+            } else {
+              return false;
+            }
           }
           return true;
         }
       },
       types: {
         project: {
-            valid_children: ["infomodel","fbmodel","enum","entity"]
+          valid_children: ["infomodel", "fbmodel", "enum", "entity"]
         },
         infomodel: {
           icon: "/images/im.png",
@@ -231,7 +231,7 @@ define(["angular"], function(angular) {
         },
         entity: {
           icon: "/images/ent.png",
-          valid_children: ["enum"]        	  
+          valid_children: ["enum"]
         }
       },
       contextmenu: {
@@ -242,19 +242,19 @@ define(["angular"], function(angular) {
     };
 
     $scope.copyNodeCallback = function(op, node) {
-        $scope.openResourceTree($scope.projectResources);
-        $scope.$apply();
-    	var arr = $scope.projectResources.filter(function(resource){
-    		return resource["id"] == node["original"]["id"];
-    	});
-    	var referenceResourceId = arr[0]["resourceId"];
-    	arr = $scope.projectResources.filter(function(resource){
-    		return resource["id"] == node["parent"];
-    	});
-    	var targetResourceId = arr[0]["resourceId"];
-    	$scope.referenceResource(targetResourceId, referenceResourceId);
+      $scope.openResourceTree($scope.projectResources);
+      $scope.$apply();
+      var arr = $scope.projectResources.filter(function(resource) {
+        return resource["id"] == node["original"]["id"];
+      });
+      var referenceResourceId = arr[0]["resourceId"];
+      arr = $scope.projectResources.filter(function(resource) {
+        return resource["id"] == node["parent"];
+      });
+      var targetResourceId = arr[0]["resourceId"];
+      $scope.referenceResource(targetResourceId, referenceResourceId);
     };
-    
+
     $scope.openProject = function() {
       $scope.projectName = $routeParams.projectName;
       $http.get("./rest/project/" + $scope.projectName + "/open").success(
@@ -270,13 +270,32 @@ define(["angular"], function(angular) {
     $scope.openProject();
 
     $scope.uploadProject = function() {
-      var resources = [];
-      $http.get("./rest/publish/" + $scope.projectName + "/validate").success(
-        function(data, status, headers, config) {
-          $scope.openPublishModal(data);
-        }).error(function(data, status, headers, config) {
-        window.alert("Failed to upload resources")
-      });
+      var unsavedFiles = []
+      for (var i = 0; i < $scope.editors.length; i++) {
+        if ($scope.editors[i].xtextServices.editorContext._dirty) {
+          unsavedFiles.push($scope.tabs[i]["filename"]);
+        }
+      }
+      if (unsavedFiles.length < 1) {
+        $http.get("./rest/publish/" + $scope.projectName + "/validate").success(
+          function(data, status, headers, config) {
+            $scope.openPublishModal(data);
+          }).error(function(data, status, headers, config) {
+          window.alert("Failed to upload resources")
+        });
+      } else {
+        var modalInstance = $uibModal.open({
+          animation: true,
+          controller: "UnsavedFilesModalController",
+          templateUrl: "templates/unsaved-files-modal-template.html",
+          size: "sm",
+          resolve: {
+            unsavedFiles: function() {
+              return unsavedFiles;
+            }
+          }
+        });
+      }
     }
 
     $scope.openPublishModal = function(result) {
@@ -477,7 +496,7 @@ define(["angular"], function(angular) {
           $scope.editors.push(editor);
           $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
           $scope.clearSearch();
-          $scope.showSaveButton = true;
+          $scope.isEditorOpen = true;
           $scope.$apply();
         });
       });
@@ -547,7 +566,7 @@ define(["angular"], function(angular) {
           tab["status"] = $scope.valid;
           $scope.addResource(tab);
           $scope.selectTab($scope.selectedTabIndex);
-          $scope.showSaveButton = true;
+          $scope.isEditorOpen = true;
           $scope.$apply();
         });
       });
@@ -576,7 +595,7 @@ define(["angular"], function(angular) {
         $scope.selectTab($scope.editors.length - 1);
       } else {
         $scope.models = []
-        $scope.showSaveButton = false;
+        $scope.isEditorOpen = false;
       }
     }
 
@@ -766,28 +785,28 @@ define(["angular"], function(angular) {
         window.alert("Your Vorto Model contains errors. Please correct and try again.");
       }
     }
-    
+
     $scope.referenceResource = function(targetResourceId, referenceResourceId) {
-        if ($scope.isValidModel($scope.selectedEditor)) {
-            $scope.showImportButton = false;
-            var language = $scope.tabs[$scope.selectedTabIndex]["language"];
-            var editor = $scope.selectedEditor;
-            var modelId = $scope.selectedModelId;
-            $http.post($scope.editorConfig[language].referenceModelUrl, {
-            	"targetResourceId": targetResourceId,
-            	"referenceResourceId": referenceResourceId
-            }).success(
-              function(data, status, headers, config) {
-                editor.setValue(data);
-              }).error(function(data, status, headers, config) {
-              window.alert("Failed")
-            }).finally(function() {
-              $scope.showImportButton = true;
-            });          
-        } else {
-          window.alert("Your Vorto Model contains errors. Please correct and try again.");
-        }
-      }    
+      if ($scope.isValidModel($scope.selectedEditor)) {
+        $scope.showImportButton = false;
+        var language = $scope.tabs[$scope.selectedTabIndex]["language"];
+        var editor = $scope.selectedEditor;
+        var modelId = $scope.selectedModelId;
+        $http.post($scope.editorConfig[language].referenceModelUrl, {
+          "targetResourceId": targetResourceId,
+          "referenceResourceId": referenceResourceId
+        }).success(
+          function(data, status, headers, config) {
+            editor.setValue(data);
+          }).error(function(data, status, headers, config) {
+          window.alert("Failed")
+        }).finally(function() {
+          $scope.showImportButton = true;
+        });
+      } else {
+        window.alert("Your Vorto Model contains errors. Please correct and try again.");
+      }
+    }
 
     $scope.searchOnEnter = function(keyEvent) {
       if (keyEvent.keyCode === 13) {
@@ -983,6 +1002,15 @@ define(["angular"], function(angular) {
       $uibModalInstance.dismiss("cancel");
     };
   });
+  
+  app.controller("UnsavedFilesModalController", function($rootScope, $scope, $uibModalInstance, unsavedFiles) {
+	    $scope.unsavedFiles = unsavedFiles;
+	    $scope.showUnsavedFiles = unsavedFiles.length > 0;
+
+	    $scope.close = function() {
+	      $uibModalInstance.dismiss("cancel");
+	    };
+	  });
 
   app.controller("CloseEditorModalController", function($rootScope, $scope, $uibModalInstance, index) {
     $scope.index = index;

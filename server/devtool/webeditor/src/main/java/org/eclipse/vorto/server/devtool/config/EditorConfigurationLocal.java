@@ -20,12 +20,10 @@ import java.net.Proxy;
 import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
 import org.eclipse.vorto.server.devtool.models.GlobalContext;
 import org.eclipse.vorto.server.devtool.models.Role;
 import org.eclipse.vorto.server.devtool.models.User;
-import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,10 +49,7 @@ public class EditorConfigurationLocal {
 	
 	@Value("${reference.repository}")
 	private String referenceRepository;
-	
-	@Value("${reference.repository.author}")
-	private String referenceRepositoryAuthor;
-	
+		
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;
 		
@@ -63,9 +58,17 @@ public class EditorConfigurationLocal {
 	
 	@Autowired
 	private PasswordEncoder encoder;
-	
-	@Autowired
-	private IProjectService projectService;
+		
+	static {
+		javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(new javax.net.ssl.HostnameVerifier() {
+			public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
+				if (hostname.equals("localhost")) {
+					return true;
+				}
+				return false;
+			}
+		});
+	}
 	
 	@Bean
 	public IProjectRepositoryService projectRepositoryService() {
@@ -108,14 +111,5 @@ public class EditorConfigurationLocal {
 		user.setRoles(Role.USER);
 		
 		userRepository.save(user);
-	}
-	
-	@PostConstruct
-	public void setUpReferencedResourceDirectory() {
-		try{
-			projectService.createProject(referenceRepository, referenceRepositoryAuthor);
-		}catch(ResourceAlreadyExistsError resourceAlreadyExistsError){
-			
-		}
 	}
 }

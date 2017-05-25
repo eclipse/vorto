@@ -776,7 +776,7 @@ th.action
  } 
  
  
- /* Search - Start */
+/* Search - Start */
  
 	#onType a:hover, #onType a:active {
 		color: #3a5a82;
@@ -791,7 +791,7 @@ th.action
 		color: #3a5a82;
 	}
  
- /* Search - End */
+/* Search - End */
 
 /* Editor Start */
 
@@ -1077,4 +1077,90 @@ legend.results-border {
     width:auto;
     padding:0 10px;
     border-bottom:none;
+}
+
+/*
+* Bulk Upload End
+* ----------------
+*/
+
+/*
+* Login Start
+* -----------
+*/
+
+.login-form-main-message {
+  color: red;
+}
+	
+.left-inner-addon {
+    position: relative;
+
+}
+
+.left-inner-addon input {
+    padding-left: 30px;   
+}
+
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+
+/*
+* Login End
+* -----------
+*/
+ 
+/*
+* Signup Start
+* --------------
+*/
+ 
+#signup {
+	text-align:center;
+}
+
+.signup-form-main-message {
+  color: red;
+}
+	
+.left-inner-addon {
+    position: relative;
+}
+
+.left-inner-addon input {
+    padding-left: 30px;    
+}
+
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+	
+.right-inner-addon {
+    position: relative;
+}
+
+.right-inner-addon input {
+    padding-right: 30px;    
+}
+
+.right-inner-addon i {
+    position: absolute;
+    right: 0px;
+    padding: 10px 12px;
+    pointer-events: none;
+} 	
+ 
+/*
+* Signup End
+* -----------
+*/
+
+sup {
+    vertical-align: super;
+    font-size: small;
 }
