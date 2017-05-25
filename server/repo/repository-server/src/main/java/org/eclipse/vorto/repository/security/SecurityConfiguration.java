@@ -133,18 +133,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter githubFilter() {
-		return newSsoFilter("/github/login", github, interceptedUserInfoTokenServices, accessTokenProvider, 
+		return newSsoFilter("/github/login", interceptedUserInfoTokenServices, accessTokenProvider, 
 				new OAuth2RestTemplate(github, oauth2ClientContext));		
 	}
 	
 	private Filter eidpFilter() {
 		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId(), eidpInterceptor);
-		return newSsoFilter("/eidp/login", eidp, tokenService, accessTokenProvider, 
+		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
 	}
 	
-	private Filter newSsoFilter(String defaultFilterProcessesUrl, OAuth2ProtectedResourceDetails resource, 
-			UserInfoTokenServices tokenService, AccessTokenProvider accessTokenProvider,
+	private Filter newSsoFilter(String defaultFilterProcessesUrl, UserInfoTokenServices tokenService, AccessTokenProvider accessTokenProvider,
 			OAuth2RestTemplate restTemplate) {
 		restTemplate.setAccessTokenProvider(accessTokenProvider);
 		

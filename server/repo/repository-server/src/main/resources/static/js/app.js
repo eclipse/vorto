@@ -70,11 +70,10 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     
     $rootScope.context = {};
     $rootScope.getContext = function() {
-    	$http.get("context").success(function(data, status, headers, config) {
-    		console.log(JSON.stringify(data));
-    		$rootScope.context = data;
+        $http.get("context").success(function(data, status, headers, config) {
+            $rootScope.context = data;
         }).error(function(data, status, headers, config) {
-        	$rootScope.context = {};
+            $rootScope.context = {};
         });
     };
     
