@@ -133,12 +133,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter githubFilter() {
-<<<<<<< HEAD
 		return newSsoFilter("/github/login", github, interceptedUserInfoTokenServices, accessTokenProvider, 
-=======
-		UserInfoTokenServices tokenService = new UserInfoTokenServices(githubUserInfoUri, github.getClientId());
-		return newSsoFilter("/github/login", github, tokenService, accessTokenProvider, 
->>>>>>> f4fd731876d1991d4a4819929106602b6432ffb3
 				new OAuth2RestTemplate(github, oauth2ClientContext));		
 	}
 	
