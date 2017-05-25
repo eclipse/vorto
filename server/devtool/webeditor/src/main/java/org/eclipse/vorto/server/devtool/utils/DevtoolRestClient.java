@@ -20,7 +20,6 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
 import org.eclipse.vorto.repository.api.upload.ServerResponse;
 import org.eclipse.vorto.server.devtool.web.controller.publisher.FileMessageResource;
@@ -49,9 +48,6 @@ public class DevtoolRestClient {
 	@Value("${vorto.repository.base.path}")
 	private String basePath;
 	
-	@Value("${localhost}")
-	private String localhost;
-
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -62,15 +58,6 @@ public class DevtoolRestClient {
 		JsonElement jsonElement = new JsonParser().parse(json);
 		ModelInfo modelInfo = gson.fromJson(jsonElement, ModelInfo.class);
 		return modelInfo;
-	}
-
-	public String getResource(String resourceId, ModelType modelType) {
-		try {
-			String path = Constants.MODELTYPE_SERVLET_MAP.get(modelType);
-			return restTemplate.getForObject(localhost + path + "/xtext-service/load?resource=" + resourceId, String.class);
-		} catch (RestClientException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	public String getModelFile(ModelId modelId) {

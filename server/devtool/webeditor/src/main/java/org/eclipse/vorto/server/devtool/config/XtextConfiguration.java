@@ -15,7 +15,6 @@
 package org.eclipse.vorto.server.devtool.config;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.annotation.PostConstruct;
 
@@ -24,9 +23,13 @@ import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.editor.datatype.DatatypeRuntimeModule;
 import org.eclipse.vorto.editor.datatype.web.DatatypeServlet;
 import org.eclipse.vorto.editor.datatype.web.DatatypeWebModule;
+import org.eclipse.vorto.editor.datatype.web.DatatypeWebSetup;
 import org.eclipse.vorto.editor.functionblock.web.FunctionblockServlet;
+import org.eclipse.vorto.editor.functionblock.web.FunctionblockWebSetup;
 import org.eclipse.vorto.editor.infomodel.web.InformationModelServlet;
+import org.eclipse.vorto.editor.infomodel.web.InformationModelWebSetup;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
+import org.eclipse.vorto.server.devtool.utils.ExecutorServiceProviderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
@@ -43,33 +46,34 @@ public class XtextConfiguration {
 
 	@Autowired
 	private IProjectService projectService;
-	
+
 	@Value("${reference.repository.author}")
 	private String referenceRepositoryAuthor;
-	
+
 	@Value("${reference.repository}")
 	private String referenceRepository;
-	
+
 	public XtextConfiguration() {
 		registerEditorEMFModels();
+		initEditorWebModules();
 	}
 
 	private void registerEditorEMFModels() {
 		InformationModelPackageImpl.init();
 	}
-	
+
+	private void initEditorWebModules() {
+		Provider<ExecutorService> executorServiceProvider = ExecutorServiceProviderFactory.getExecutorServiceProvider();
+		new InformationModelWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration();
+		new FunctionblockWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration();
+		new DatatypeWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration();
+	}
+
 	@Bean
 	public Injector getInjectorBean() {
-		ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
-		Provider<ExecutorService> executorServiceProvider = new Provider<ExecutorService>() {
-			@Override
-			public ExecutorService get() {
-				return cachedThreadPool;
-			}
-		};
-
-		return Guice.createInjector(Modules.override(new DatatypeRuntimeModule())
-				.with(new DatatypeWebModule(executorServiceProvider)));
+		Provider<ExecutorService> executorServiceProvider = ExecutorServiceProviderFactory.getExecutorServiceProvider();
+		return Guice.createInjector(
+				Modules.override(new DatatypeRuntimeModule()).with(new DatatypeWebModule(executorServiceProvider)));
 	}
 
 	@Bean
@@ -86,13 +90,13 @@ public class XtextConfiguration {
 	public ServletRegistrationBean informationModelXtextServlet() {
 		return new ServletRegistrationBean(new InformationModelServlet(), "/infomodel/xtext-service/*");
 	}
-	
+
 	@PostConstruct
 	public void setUpReferencedResourceDirectory() {
-		try{
+		try {
 			projectService.createProject(referenceRepository, referenceRepositoryAuthor);
-		}catch(ResourceAlreadyExistsError resourceAlreadyExistsError){
-			
+		} catch (ResourceAlreadyExistsError resourceAlreadyExistsError) {
+
 		}
 	}
 }

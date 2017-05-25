@@ -18,10 +18,6 @@
  */
 package org.eclipse.vorto.editor.datatype.web
 
-import com.google.inject.Provider
-import java.util.List
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 import javax.servlet.annotation.WebServlet
 import org.eclipse.xtext.web.servlet.XtextServlet
 
@@ -30,19 +26,5 @@ import org.eclipse.xtext.web.servlet.XtextServlet
  */
 @WebServlet(name = 'Datatype XtextServices', urlPatterns = '/datatype/xtext-service/*')
 class DatatypeServlet extends XtextServlet {
-	
-	val List<ExecutorService> executorServices = newArrayList
-	
-	override init() {
-		super.init()
-		val Provider<ExecutorService> executorServiceProvider = [Executors.newCachedThreadPool => [executorServices += it]]
-		new DatatypeWebSetup(executorServiceProvider).createInjectorAndDoEMFRegistration()
-	}
-	
-	override destroy() {
-		executorServices.forEach[shutdown()]
-		executorServices.clear()
-		super.destroy()
-	}
-	
+		
 }

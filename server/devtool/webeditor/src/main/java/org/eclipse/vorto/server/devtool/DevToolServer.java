@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.server.devtool;
 
-import org.eclipse.vorto.server.devtool.service.IServletInitializerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,16 +37,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableJpaRepositories
 public class DevToolServer extends SpringBootServletInitializer {
 
-	private static IServletInitializerService serveletInitializerService;
-
 	public static void main(String... args) {
 		SpringApplication.run(DevToolServer.class, args);
-		serveletInitializerService.initializeXtextServlets();
-	}
-
-	@Autowired
-	public void setXtextServletInitializer(IServletInitializerService serveletInitializerService) {
-		DevToolServer.serveletInitializerService = serveletInitializerService;
 	}
 
 	@Override
