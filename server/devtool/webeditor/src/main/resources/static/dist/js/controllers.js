@@ -897,10 +897,23 @@ define(["angular"], function(angular) {
       $http.get("./rest/project").success(
         function(data, status, headers, config) {
           $scope.projects = data;
+          $scope.projectsMatrix = $scope.listToMatrix(data, 6);
         }).error(function(data, status, headers, config) {
         $scope.projects = [];
       });
     }
+    
+    $scope.listToMatrix = function(list, n) {
+		    var grid = [], i = 0, x = list.length, col, row = -1;
+		    for (var i = 0; i < x; i++) {
+		        col = i % n;
+		        if (col === 0) {
+		            grid[++row] = [];
+		        }
+		        grid[row][col] = list[i];
+		    }
+	    	return grid;
+		};
 
     $scope.getProjects();
 
