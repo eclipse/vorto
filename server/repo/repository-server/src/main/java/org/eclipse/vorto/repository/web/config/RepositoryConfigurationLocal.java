@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository.web.config;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.catalina.connector.Connector;
 import org.eclipse.vorto.repository.model.Role;
 import org.eclipse.vorto.repository.model.User;
 import org.eclipse.vorto.repository.security.eidp.EidpUtils;
@@ -59,14 +58,5 @@ public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.w
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
 		return EidpUtils.accessTokenProvider();
-	}
-	
-	@Bean
-	public Connector redirectingConnector() {
-		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
-		connector.setScheme("http");
-		connector.setPort(8080);
-		connector.setRedirectPort(8443);
-		return connector;
 	}
 }

@@ -16,17 +16,11 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
-import org.apache.catalina.Context;
-import org.apache.catalina.connector.Connector;
-import org.apache.tomcat.util.descriptor.web.SecurityCollection;
-import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
 import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -53,9 +47,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableJpaRepositories
 @EnableScheduling
 public class VortoRepository {
-
-	@Autowired
-	private Connector redirectingConnector;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(VortoRepository.class, args);
@@ -106,26 +97,5 @@ public class VortoRepository {
 		public void clearExpiredStorageItems() {
 			this.storage.clearExpired();
 		}
-	}
-	
-	/*
-	 * Redirect HTTP to HTTPS
-	 */ 
-	
-	@Bean
-	public EmbeddedServletContainerFactory servletContainer() {
-		TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory() {
-			@Override
-		    protected void postProcessContext(Context context) {
-		        SecurityConstraint securityConstraint = new SecurityConstraint();
-		        securityConstraint.setUserConstraint("CONFIDENTIAL");
-		        SecurityCollection collection = new SecurityCollection();
-		        collection.addPattern("/*");
-		        securityConstraint.addCollection(collection);
-		        context.addConstraint(securityConstraint);
-		    }
-		};
-		tomcat.addAdditionalTomcatConnectors(redirectingConnector);
-		return tomcat;
 	}
 }
