@@ -1,55 +1,11 @@
 define(["angular"], function(angular) {
-  var app = angular.module("apps.controller", ["smart-table", "apps.directive"]);
+  angular
+    .module("apps.controller")
+    .controller("EditorController", EditorController);
 
-  app.controller("LoginController", ["$scope", "$rootScope", "$location", "$http",
+  EditorController.$inject = ["$rootScope", "$scope", "$location", "$routeParams", "$http", "$compile", "$uibModal", "toastr", "ShareDataService"]
 
-    function($scope, $rootScope, $location, $http) {
-
-      var authenticate = function(credentials, callback) {
-        $http.get("rest/context/user").success(function(data) {
-          if (data.name) {
-            $rootScope.authenticated = true;
-            $rootScope.user = data.name;
-            $rootScope.error = false;
-            $location.path("/project");
-          } else {
-            $rootScope.authenticated = false;
-          }
-          callback && callback();
-        }).error(function(data) {
-          $rootScope.authenticated = false;
-          callback && callback();
-        });
-      }
-
-      authenticate();
-      $scope.credentials = {};
-      $scope.login = function() {
-        $http.post("/j_spring_security_check", $.param($scope.credentials), {
-          headers: {
-            "content-type": "application/x-www-form-urlencoded"
-          }
-        }).success(function(data) {
-          authenticate(function() {
-            if ($rootScope.authenticated) {
-              $scope.error = false;
-              console.log("authenticated, redirecting to project overview");
-              $location.path("project");
-            } else {
-              $scope.error = true;
-            }
-          });
-        }).error(function(data) {
-          $scope.error = true;
-          $rootScope.authenticated = false;
-        })
-      };
-
-    }
-  ]);
-
-  app.controller("EditorController", function($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal, toastr) {
-
+  function EditorController($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal, toastr, ShareDataService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -155,7 +111,9 @@ define(["angular"], function(angular) {
         deleteResource: {
           label: "Delete",
           action: function() {
-            $scope.openDeleteEditorModal(node.original);
+            var tab = node.original;
+            tab.index = $scope.getTabIndex(tab);
+            $scope.openDeleteEditorModal(tab);
           }
         },
         addResource: {
@@ -270,45 +228,32 @@ define(["angular"], function(angular) {
     $scope.openProject();
 
     $scope.uploadProject = function() {
-      var unsavedFiles = []
-      for (var i = 0; i < $scope.editors.length; i++) {
-        if ($scope.editors[i].xtextServices.editorContext._dirty) {
-          unsavedFiles.push($scope.tabs[i]["filename"]);
-        }
-      }
+      var unsavedFiles = $scope.getUnsavedFiles();
       if (unsavedFiles.length < 1) {
         $http.get("./rest/publish/" + $scope.projectName + "/validate").success(
           function(data, status, headers, config) {
             $scope.openPublishModal(data);
           }).error(function(data, status, headers, config) {
-          window.alert("Failed to upload resources")
+            window.alert("Failed to upload resources")
         });
       } else {
-        var modalInstance = $uibModal.open({
+        ShareDataService.setUnsavedFiles(unsavedFiles);
+        $uibModal.open({
           animation: true,
-          controller: "UnsavedFilesModalController",
-          templateUrl: "templates/unsaved-files-modal-template.html",
-          size: "sm",
-          resolve: {
-            unsavedFiles: function() {
-              return unsavedFiles;
-            }
-          }
+          controller: "UnsavedEditorFilesController",
+          templateUrl: "templates/editor/unsaved-files-modal-template.html",
+          size: "sm"
         });
       }
     }
 
     $scope.openPublishModal = function(result) {
-      var modalInstance = $uibModal.open({
+      ShareDataService.setPublishResult(result);
+      $uibModal.open({
         animation: true,
         controller: "PublishController",
-        templateUrl: "templates/publish-template.html",
-        size: "lg",
-        resolve: {
-          result: function() {
-            return result;
-          }
-        }
+        templateUrl: "templates/publish/publish-template.html",
+        size: "lg"
       });
     };
 
@@ -321,7 +266,7 @@ define(["angular"], function(angular) {
             $scope.loadResourceAtServer(resource);
           }
         }).error(function(data, status, headers, config) {
-        windoow.alert("Unable to delete the file");
+          windoow.alert("Unable to delete the file");
       });
     }
 
@@ -422,7 +367,7 @@ define(["angular"], function(angular) {
           });
 
         }).error(function(data, status, headers, config) {
-        windoow.alert("Unable to delete the file");
+          windoow.alert("Unable to delete the file");
       });
     });
 
@@ -627,116 +572,58 @@ define(["angular"], function(angular) {
     }
 
     $scope.openCloseEditorModal = function(index) {
-      var modalInstance = $uibModal.open({
+      ShareDataService.setCloseEditorIndex(index);
+      $uibModal.open({
         animation: true,
-        controller: "CloseEditorModalController",
-        templateUrl: "templates/close-editor-modal-template.html",
-        size: "sm",
-        resolve: {
-          index: function() {
-            return index;
-          }
-        }
+        controller: "CloseEditorController",
+        templateUrl: "templates/editor/close-editor-modal-template.html",
+        size: "sm"
       });
     };
 
     $scope.openAddEditorModal = function() {
-      var modalInstance = $uibModal.open({
+      ShareDataService.setAddEditorTypes($scope.editorTypes);
+      $uibModal.open({
         animation: true,
-        controller: "AddEditorModalController",
-        templateUrl: "templates/add-editor-modal-template.html",
-        size: "sm",
-        resolve: {
-          editorTypes: function() {
-            return $scope.editorTypes;
-          }
-        }
+        controller: "AddEditorController",
+        templateUrl: "templates/editor/add-editor-modal-template.html",
+        size: "sm"
       });
     };
 
     $scope.openDescribeEditorModal = function(editorType) {
-      var modalInstance = $uibModal.open({
+      ShareDataService.setDescribeEditorType(editorType);
+      $uibModal.open({
         animation: true,
-        controller: "DescribeEditorModalController",
-        templateUrl: "templates/describe-editor-modal-template.html",
-        size: "sm",
-        resolve: {
-          editorType: editorType
-        }
-      });
-    };
-
-
-    $scope.openDescribeEditorModal = function(editorType) {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "DescribeEditorModalController",
-        templateUrl: "templates/describe-editor-modal-template.html",
-        size: "sm",
-        resolve: {
-          editorType: editorType
-        }
+        controller: "DescribeEditorController",
+        templateUrl: "templates/editor/describe-editor-modal-template.html",
+        size: "sm"
       });
     };
 
     $scope.openDeleteEditorModal = function(tab) {
-      var modalInstance = $uibModal.open({
+      ShareDataService.setDeleteEditorTab(tab);
+      $uibModal.open({
         animation: true,
-        controller: "DeleteEditorModalController",
-        templateUrl: "templates/delete-editor-modal-template.html",
-        size: "m",
-        resolve: {
-          tab: function() {
-            var index = $scope.getTabIndex(tab);
-            tab["index"] = index;
-            return tab
-          }
-        }
+        controller: "DeleteEditorController",
+        templateUrl: "templates/editor/delete-editor-modal-template.html",
+        size: "m"
       });
     };
 
     $scope.openCloseProjectModal = function() {
-      var unsavedFiles = []
-      for (i = 0; i < $scope.editors.length; i++) {
-        if ($scope.editors[i].xtextServices.editorContext._dirty) {
-          unsavedFiles.push($scope.tabs[i]["filename"]);
-        }
-      }
+      var unsavedFiles = $scope.getUnsavedFiles();
       if (unsavedFiles.length < 1) {
         $rootScope.$broadcast("closeProject");
       } else {
-        var modalInstance = $uibModal.open({
+        ShareDataService.setUnsavedFiles(unsavedFiles);
+        $uibModal.open({
           animation: true,
-          controller: "CloseProjectModalController",
-          templateUrl: "templates/close-project-modal-template.html",
-          size: "sm",
-          resolve: {
-            unsavedFiles: function() {
-              return unsavedFiles;
-            }
-          }
+          controller: "CloseProjectController",
+          templateUrl: "templates/project/close-project-modal-template.html",
+          size: "sm"
         });
       }
-    };
-
-    $scope.openOpenResourceModal = function() {
-      var resources = [];
-      $http.get("./rest/project/" + $scope.projectName + "/resources").success(
-        function(data, status, headers, config) {
-          var modalInstance = $uibModal.open({
-            animation: true,
-            controller: "OpenResourceModalController",
-            templateUrl: "templates/open-resource-modal-template.html",
-            size: "sm",
-            resolve: {
-              resources: function() {
-                return data;
-              }
-            }
-          });
-        }).error(function(data, status, headers, config) {
-        window.alert("Failed to open resource");
-      });
     };
 
     $scope.isModelSelected = function() {
@@ -809,12 +696,12 @@ define(["angular"], function(angular) {
           function(data, status, headers, config) {
             editor.setValue(data);
           }).error(function(data, status, headers, config) {
-          window.alert("Failed")
+            window.alert("Failed")
         }).finally(function() {
-          $scope.showImportButton = true;
+            $scope.showImportButton = true;
         });
       } else {
-        window.alert("Your Vorto Model contains errors. Please correct and try again.");
+          window.alert("Your Vorto Model contains errors. Please correct and try again.");
       }
     }
 
@@ -868,327 +755,14 @@ define(["angular"], function(angular) {
       return filename.split(".")[1];
     }
 
-  });
-
-  app.controller("ProjectController", function($rootScope, $scope, $location, $http, $uibModal) {
-    $scope.selectedProject = null;
-    $scope.projects = [];
-    $scope.topRow = [];
-    var gridSize = 6;
-
-    $scope.$on("createProject", function(event, projectName) {
-      $scope.createProject(projectName);
-    });
-
-    $scope.openCreateProjectModal = function() {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "CreateProjectModalController",
-        templateUrl: "templates/create-project-modal-template.html",
-        size: "sm"
-      });
-    };
-
-    $scope.createProject = function(projectName) {
-      $http.post("./rest/project", {
-        "name": projectName
-      }).success(
-        function(data, status, headers, config) {
-          if (data.message === "resource already exists") {
-            window.alert("Project " + projectName + " already exsits")
-          } else {
-            $location.path("editor/" + projectName);
-            $location.replace();
-          }
-        }).error(function(data, status, headers, config) {
-        window.alert("Failed to create new Project " + projectName)
-      });
-    }
-
-    $scope.getProjects = function() {
-      $http.get("./rest/project").success(
-        function(data, status, headers, config) {
-          $scope.projects = data;
-          $scope.topRow = data.splice(0, gridSize);
-          $scope.projectsMatrix = $scope.listToMatrix(data, 6);
-        }).error(function(data, status, headers, config) {
-        $scope.projects = [];
-      });
-    }
-
-    $scope.listToMatrix = function(list, n) {
-		    var grid = [], i = 0, x = list.length, col, row = -1;
-		    for (var i = 0; i < x; i++) {
-		        col = i % n;
-		        if (col === 0) {
-		            grid[++row] = [];
-		        }
-		        grid[row][col] = list[i];
-		    }
-	    	return grid;
-		};
-
-    $scope.getProjects();
-
-    $scope.displayedProjects = [].concat($scope.projects);
-    $scope.itemsByPage = 10;
-    $scope.displayedPages = ($scope.projects.length / 2);
-
-    $scope.predicates = ["Name"]
-
-    $scope.getters = {
-      name: function(value) {
-        return value.name.sort();
-      }
-    }
-
-  });
-
-  app.controller("AddEditorModalController", function($rootScope, $scope, $uibModalInstance, editorTypes) {
-    $scope.editorTypes = editorTypes;
-    $scope.selected = $scope.editorTypes[0];
-
-    $scope.ok = function() {
-      $uibModalInstance.close($scope.selected.editorType);
-      $rootScope.$broadcast("describeEditor", $scope.selected);
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("DescribeEditorModalController", function($rootScope, $scope, $uibModalInstance, editorType) {
-
-    $scope.editorType = editorType;
-    $scope.model = {
-      modelType: editorType.modelType,
-      language: editorType.language,
-      name: editorType.displayname,
-      displayname: editorType.displayname,
-      namespace: "com.company",
-      version: "1.0.0",
-      description: "Model description for " + editorType.displayname,
-      category: "demo"
-    };
-
-    $scope.ok = function() {
-      $uibModalInstance.close($scope.model);
-      $scope.model.displayname = $scope.model.name;
-      $scope.model.name = $scope.model.name;
-      $scope.model.filename = $scope.model.name + "." + $scope.model.language;
-      $scope.model.modelSubType = $scope.editorType.modelSubType;
-      $scope.model.modelType = $scope.editorType.modelType;
-      $rootScope.$broadcast("addTab", $scope.model);
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("DeleteEditorModalController", function($rootScope, $scope, $uibModalInstance, tab) {
-    $scope.tab = tab;
-
-    $scope.ok = function() {
-      $uibModalInstance.dismiss("cancel");
-      $rootScope.$broadcast("deleteEditor", tab);
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("CreateProjectModalController", function($rootScope, $scope, $uibModalInstance) {
-
-    $scope.projectName;
-
-    $scope.ok = function() {
-      $uibModalInstance.close($scope.model);
-      $rootScope.$broadcast("createProject", $scope.projectName);
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("CloseProjectModalController", function($rootScope, $scope, $uibModalInstance, unsavedFiles) {
-    $scope.unsavedFiles = unsavedFiles;
-    $scope.showUnsavedFiles = unsavedFiles.length > 0;
-
-    $scope.yes = function() {
-      $rootScope.$broadcast("closeProject", true);
-      $uibModalInstance.dismiss("cancel");
-    };
-
-    $scope.no = function() {
-      $rootScope.$broadcast("closeProject", false);
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("UnsavedFilesModalController", function($rootScope, $scope, $uibModalInstance, unsavedFiles) {
-	    $scope.unsavedFiles = unsavedFiles;
-	    $scope.showUnsavedFiles = unsavedFiles.length > 0;
-
-	    $scope.close = function() {
-	      $uibModalInstance.dismiss("cancel");
-	    };
-	  });
-
-  app.controller("CloseEditorModalController", function($rootScope, $scope, $uibModalInstance, index) {
-    $scope.index = index;
-
-    $scope.no = function() {
-      $rootScope.$broadcast("closeEditor", $scope.index, false);
-      $uibModalInstance.dismiss("cancel");
-    };
-
-    $scope.yes = function() {
-      $rootScope.$broadcast("closeEditor", $scope.index, true);
-      $uibModalInstance.dismiss("cancel");
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-  });
-
-  app.controller("PublishController", function($rootScope, $scope, $uibModalInstance, $http, result) {
-    $scope.modelCheckedIn = false;
-    $scope.result = result;
-    $scope.modelStats = {};
-    var infocount = 0,
-      fbcount = 0,
-      typecount = 0,
-      mappingcount = 0;
-    $scope.showResultBox = true;
-
-    $scope.displayValidation = function(result) {
-      $scope.stateArr = [];
-      $scope.uploadResult = result;
-      $scope.showCheckin = true;
-
-      if ($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0) {
-        angular.forEach($scope.uploadResult.obj, function(resultObject, idx) {
-          var item = (idx == 0) ? {
-            active: false
-          } : {
-            active: true
-          };
-          var modelType = resultObject.modelResource.modelType;
-          switch (modelType) {
-            case "Functionblock":
-              fbcount++;
-              break;
-            case "InformationModel":
-              infocount++;
-              break;
-            case "Datatype":
-              typecount++;
-              break;
-            case "Mapping":
-              mappingcount++;
-              break;
-          }
-          $scope.stateArr.push(item);
-          $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
-        });
-      } else {
-        $scope.showCheckin = false;
-      }
-
-      $scope.modelStats = {
-        infocount: infocount,
-        fbcount: fbcount,
-        typecount: typecount,
-        mappingcount: mappingcount
-      };
-      $scope.isLoading = false;
-      $scope.showResultBox = true;
-      $scope.resultMessage = result.message;
-    }
-
-    $scope.displayValidation($scope.result);
-
-    $scope.checkin = function(uploadResults) {
-      $rootScope.error = "";
-      if (uploadResults.length == 1) {
-        checkinSingle(uploadResults[0].handleId);
-      } else {
-        checkInMultipleModels(uploadResults);
-      }
-    };
-
-    checkInMultipleModels = function(uploadResults) {
-      var validUploadHandles = [];
-      $scope.isLoading = true;
-      $scope.loadMessage = "Checking in... Please wait!";
-      $scope.showResultBox = false;
-      angular.forEach(uploadResults, function(uploadResult, idx) {
-        if (uploadResult.valid) {
-          var handle = {
-            handleId: uploadResult.handleId,
-            id: {
-              name: uploadResult.modelResource.id.name,
-              namespace: uploadResult.modelResource.id.namespace,
-              version: uploadResult.modelResource.id.version
-            }
-          }
-          validUploadHandles.push(handle);
+    $scope.getUnsavedFiles = function() {
+      var unsavedFiles = [];
+      for (var i = 0; i < $scope.editors.length; i++) {
+        if ($scope.editors[i].xtextServices.editorContext._dirty) {
+          unsavedFiles.push($scope.tabs[i]["filename"]);
         }
-      });
-
-      $http.put("./rest/publish/checkInMultiple", validUploadHandles)
-        .success(function(result) {
-          $scope.isLoading = false;
-          $scope.showResultBox = true;
-          $scope.resultMessage = result.message;
-          $scope.modelCheckedIn = true;
-        }).error(function(data, status, headers, config) {
-          $scope.isLoading = false;
-          if (status == 403) {
-            $rootScope.error = "Operation is Forbidden";
-          } else if (status == 401) {
-            $rootScope.error = "Unauthorized Operation";
-          } else if (status == 400) {
-            $rootScope.error = "Bad Request. Server Down";
-          } else if (status == 500) {
-            $rootScope.error = "Internal Server Error";
-          } else {
-            $rootScope.error = "Failed Request with response status " + status;
-          }
-        });
-    };
-
-    checkinSingle = function(handleId) {
-      $http.put("./rest/publish/" + handleId)
-        .success(function(result) {
-          $scope.showResultBox = true;
-          $scope.resultMessage = result.message;
-          $scope.modelCheckedIn = true;
-        }).error(function(data, status, headers, config) {
-          if (status == 403) {
-            $rootScope.error = "Operation is Forbidden";
-          } else if (status == 401) {
-            $rootScope.error = "Unauthorized Operation";
-          } else if (status == 400) {
-            $rootScope.error = "Bad Request. Server Down";
-          } else if (status == 500) {
-            $rootScope.error = "Internal Server Error";
-          } else {
-            $rootScope.error = "Failed Request with response status " + status;
-          }
-        });
-    };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
-
-  });
-
-  return app;
+      }
+      return unsavedFiles;
+    }
+  }
 });

@@ -12,13 +12,13 @@
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
 
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/webjars/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
-	<link href="/webjars/jstree/3.2.1/themes/default/style.min.css" rel="stylesheet">
-	<link href="/webjars/angular-toastr/2.1.1/angular-toastr.min.css" rel="stylesheet">
+    <link href="/webjars/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
+    <link href="/webjars/jstree/3.2.1/themes/default/style.min.css" rel="stylesheet">
+    <link href="/webjars/angular-toastr/2.1.1/angular-toastr.min.css" rel="stylesheet">
 
-	<link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
-	<link rel="stylesheet" type="text/css" href="css/ace-custom.css"/>
-	<link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="css/ace-custom.css"/>
+    <link rel="stylesheet" type="text/css" href="css/style.css"/>
 
     <script src="webjars/requirejs/2.1.15/require.min.js" data-main="dist/js/main.js"></script>
 
@@ -39,9 +39,9 @@
           </ul>
           <div ng-show="authenticated" id="navbar-right" class="navbar-right">
             <ul class="nav navbar-nav">
-				<li ng-show="authenticated"><a id="userWelcome">Welcome, {{user}}</a></li>
-				<li ng-show="authenticated"><a href="#" ng-click="logout()"><i class="fa fa-sign-out"></i> Log Out</a></li>
-				<li ng-show="!authenticated"><a href="#/login"><i class="fa fa-sign-in"></i> Login</a></li>
+        			<li ng-show="authenticated"><a id="userWelcome">Welcome, {{user}}</a></li>
+        			<li ng-show="authenticated"><a href="#" ng-click="logout()"><i class="fa fa-sign-out"></i> Log Out</a></li>
+        			<li ng-show="!authenticated"><a href="#/login"><i class="fa fa-sign-in"></i> Login</a></li>
             </ul>
           </div>
         </div>
@@ -53,7 +53,7 @@
 	        <div class="col-sm-12 main">
 	        	<div class="row" ng-view></div>
 	    	</div>
-        </div>
+      </div>
     </div>
   </body>
 </html>

@@ -3,10 +3,10 @@
 <legend class="results-border">Upload Results</legend>
 	<div class="row">
 		<div ng-show="showResultBox">
-			  <div class="col-xs-3">Information models : {{modelStats.infocount}}</div>
-			  <div class="col-xs-3">Functionblocks: {{modelStats.fbcount}}</div>
-			  <div class="col-xs-3">Datatypes: {{modelStats.typecount}}</div>
-				<div class="col-xs-3">Mapping:{{modelStats.mappingcount}} </div>
+			  <div class="col-xs-3">Information models : {{infoModelCount}}</div>
+			  <div class="col-xs-3">Functionblocks: {{fbModelCount}}</div>
+			  <div class="col-xs-3">Datatypes: {{typeCount}}</div>
+				<div class="col-xs-3">Mapping:{{mappingCount}} </div>
 		</div>
 	</div>
 </div>
@@ -72,7 +72,7 @@
 		 </div>
 	</div>
 	<div ng-show="modelCheckedIn">
-		<center>	
+		<center>
 		    <button class="btn btn-primary" type="button" ng-click="cancel()">Complete</button>
 		</center>
 	</div>
