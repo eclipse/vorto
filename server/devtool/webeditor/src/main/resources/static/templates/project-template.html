@@ -1,33 +1,76 @@
 <div class="row">
-	<div class="box box-default">
-			<div class="box-header with-border">
-				<h3 class="box-title">Projects</h3>
-				<div class="box-tools pull-right">
-					<button class="btn btn-primary btn-project" ng-click="openCreateProjectModal()" type="button">Create Project</button>
-				</div>
-				<div class="box-body" ng-show="things.length == 0">
-				You have no projects yet. <a href="#" ng-click="openCreateProjectModal()">Create a new Project</a>
+	<div class="col-md-12">
+		<div class="box box-default">
+			<div class="align-center">
+
+				<div class="box box-primary">
+					<div class="box-body">
+						<div class="col-md-12">
+
+
+							<div class="row">
+
+								<div class="col-md-2">
+									<a ng-click="openCreateProjectModal()">
+		            		<div class="tiny-box" id="tinyBox:new">
+											<div class="absolute-center">
+												<div>
+			                		<span class="tiny-box-icon">
+														<i width="32px" height="32px" class="fa fa-plus" aria-hidden="true"></i>
+													</span>
+			               			<div class="tiny-box-name">
+														<span>New</span>
+													</div>
+												</div>
+			               	</div>
+										</div>
+	               	</a>
+								</div>
+
+					 	 		<div class="col-md-2" ng-repeat="project in topRow">
+	              	<a href="#/editor/{{ project.name }}">
+		            		<div class="tiny-box" id="tinyBox:{{project.name}}">
+	                		<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="/images/vorto-icon.png"/>
+											</span>
+	               			<div class="tiny-box-name">
+												<span>{{project.name}}</span>
+											</div>
+	               			<div class="tiny-box-number">
+												<span>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button>
+												</span>
+											</div>
+		               	</div>
+	               	</a>
+	        			</div>
+
+					 	 	</div>
+
+					 		<div class="row" ng-repeat="row in projectsMatrix">
+					 	 		<div class="col-md-2" ng-repeat="project in row">
+	              	<a href="#/editor/{{ project.name }}">
+		            		<div class="tiny-box" id="tinyBox:{{project.name}}">
+	                		<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="/images/vorto-icon.png"/>
+											</span>
+	               			<div class="tiny-box-name">
+												<span>{{project.name}}</span>
+											</div>
+	               			<div class="tiny-box-number">
+												<span>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button>
+												</span>
+											</div>
+		               	</div>
+	               	</a>
+	        			</div>
+					 	 	</div>
+
+					 	</div>
+					</div>
 				</div>
 			</div>
-			<div class="box-body" ng-show="projects.length > 0">
-				<div class="col-md-12">
-			 		<div class="row" ng-repeat="row in projectsMatrix">
-			 	 		<div class="col-md-2" ng-repeat="project in row">
-		            		<!--box-->
-		                	<a href="#/editor/{{ project.name }}">
-			            		<div class="tiny-box" id="tinyBox:{{project.name}}">
-			                		<span class="tiny-box-icon"><img width="32px" height="32px" ng-src="/images/vorto-icon.png"/></span>
-			               			<div class="tiny-box-name"><span>{{project.name}}</span></div>
-			               			<div class="tiny-box-number"><span><button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button></span></div>	
-			                 	</div>
-		                 	</a>				                 	
-		            		<!--box end-->	
-            			</div>
-			 	 	</div> 
-			 	 	<!--row end-->
-			 	</div>
-			</div>
-			<!-- /.box-body -->
 		</div>
-		<!-- /.box -->
+	</div>
 </div>

@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
@@ -29,6 +30,8 @@ import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.Constants;
+import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
+import org.eclipse.vorto.server.devtool.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,7 +52,13 @@ public class ProjectController {
 	
 	@Autowired
 	private IEditorSession editorSession;
-		
+	
+	@Autowired
+	private DevtoolReferenceLinker devtoolReferenceLinker;
+	
+	@Autowired
+	private WebUtils webUtils;
+			
 	@Value("${reference.repository}")
 	private String referenceRepository;
 			
@@ -142,6 +151,8 @@ public class ProjectController {
 		if(projectName.equals(referenceRepository)){
 			return;
 		}
-		projectService.deleteResource(projectName, deleteResourceRequest.getResourceId());		
+		ResourceSet resourceSet = webUtils.getResourceSet(request);
+		devtoolReferenceLinker.removeResourceFromResourceSet(deleteResourceRequest.getResourceId(), resourceSet);
+		projectService.deleteResource(projectName, deleteResourceRequest.getResourceId());
 	}	
 }

@@ -416,12 +416,22 @@ define(["angular"], function(angular) {
             $scope.closeTab(tab.index);
           }
           $scope.removeResource(tab);
+          $scope.editors.forEach(function(editor){
+            var content = editor.getValue();
+            editor.setValue(content);
+          });
+
         }).error(function(data, status, headers, config) {
         windoow.alert("Unable to delete the file");
       });
     });
 
-    $scope.$on("closeProject", function(event) {
+    $scope.$on("closeProject", function(event, save) {
+      if(save){
+        $scope.editors.forEach(function(editor){
+          editor.xtextServices.saveResource();
+        });
+      }
       $scope.closeProject();
     });
 
@@ -863,6 +873,8 @@ define(["angular"], function(angular) {
   app.controller("ProjectController", function($rootScope, $scope, $location, $http, $uibModal) {
     $scope.selectedProject = null;
     $scope.projects = [];
+    $scope.topRow = [];
+    var gridSize = 6;
 
     $scope.$on("createProject", function(event, projectName) {
       $scope.createProject(projectName);
@@ -897,12 +909,13 @@ define(["angular"], function(angular) {
       $http.get("./rest/project").success(
         function(data, status, headers, config) {
           $scope.projects = data;
+          $scope.topRow = data.splice(0, gridSize);
           $scope.projectsMatrix = $scope.listToMatrix(data, 6);
         }).error(function(data, status, headers, config) {
         $scope.projects = [];
       });
     }
-    
+
     $scope.listToMatrix = function(list, n) {
 		    var grid = [], i = 0, x = list.length, col, row = -1;
 		    for (var i = 0; i < x; i++) {
@@ -1006,16 +1019,16 @@ define(["angular"], function(angular) {
     $scope.showUnsavedFiles = unsavedFiles.length > 0;
 
     $scope.yes = function() {
-      $rootScope.$broadcast("closeProject");
+      $rootScope.$broadcast("closeProject", true);
       $uibModalInstance.dismiss("cancel");
     };
 
     $scope.no = function() {
-      $rootScope.$broadcast("closeProject");
+      $rootScope.$broadcast("closeProject", false);
       $uibModalInstance.dismiss("cancel");
     };
   });
-  
+
   app.controller("UnsavedFilesModalController", function($rootScope, $scope, $uibModalInstance, unsavedFiles) {
 	    $scope.unsavedFiles = unsavedFiles;
 	    $scope.showUnsavedFiles = unsavedFiles.length > 0;

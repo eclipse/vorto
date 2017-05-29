@@ -61,7 +61,7 @@ ul.nav p {
 }
 
 .navbar-inverse .navbar-brand {
-  font-weight: bold; 
+  font-weight: bold;
   padding-top:10px;
   color: #fff;
 }
@@ -96,7 +96,7 @@ ul.nav p {
 }
 
 .navbar-inverse .navbar-brand, .navbar-inverse .navbar-nav>li>a {
-    text-shadow: 0 -1px 0 rgba(0,0,0,0); 
+    text-shadow: 0 -1px 0 rgba(0,0,0,0);
 }
 
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.open>a {
@@ -152,7 +152,7 @@ ul.nav p {
 }
 
  .btn-primary {
-    background-color: rgb(0, 129, 199); 
+    background-color: rgb(0, 129, 199);
     background-image: -moz-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* FF3.6+ */
     background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 129, 199, 1)), color-stop(100%, rgba(0, 73, 134, 1))); /* Chrome,Safari4+ */
     background-image: -webkit-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* Chrome10+,Safari5.1+ */
@@ -172,7 +172,7 @@ ul.nav p {
     color: #fff;
     background-color: #286090;
     border-color: rgba(0,0,0,0);
-    background-color: rgb(0, 73, 134); 
+    background-color: rgb(0, 73, 134);
 }
 
 .btn-success {
@@ -194,7 +194,7 @@ ul.nav p {
 .btn-success.active,
 .open > .dropdown-toggle.btn-success {
     border-color: rgba(0,0,0,0);
-    background-color: #208020; 
+    background-color: #208020;
 }
 
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:focus, .dropdown-menu>.active>a:hover {
@@ -267,7 +267,7 @@ ul.nav p {
 .panel-primary>.panel-heading {
     color: #fff;
     background: linear-gradient(to bottom, #179edd 0%,#117eb1 100%);
-    background-image: -moz-linear-gradient(to bottom, #179edd 0%,#117eb1 100%); 
+    background-image: -moz-linear-gradient(to bottom, #179edd 0%,#117eb1 100%);
     border-color: #337ab7;
     box-shadow: 3px 3px 0px 0px rgba(30, 103, 157, 0.95);
 }
@@ -349,7 +349,7 @@ ul.nav {
 }
 
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
-    background-color: rgba(0,0,0,0); 
+    background-color: rgba(0,0,0,0);
 }
 
 @media (max-width: 768px){
@@ -369,10 +369,10 @@ ul.nav {
 .login-box {
      margin: 5% auto;
      width: 360px;
-     border-radius:5px; 
+     border-radius:5px;
      border:1px solid #ccc;
      padding:50px;
-     background: #f5f6f7; 
+     background: #f5f6f7;
 }
 
 .main .login-box .page-header .signup-box{
@@ -409,7 +409,7 @@ ul.nav {
 }
 
 .rating {
-    unicode-bidi:bidi-override; 
+    unicode-bidi:bidi-override;
     direction:ltr;
 }
 .rating span.star {
@@ -432,8 +432,8 @@ ul.nav {
     padding-right:5px;
     color:#999999;
 }
-span.star.filled:before{ 
-    color:#ffe400; 
+span.star.filled:before{
+    color:#ffe400;
     content:"\f005";
 }
 
@@ -752,7 +752,7 @@ th.action
 
 @media (max-width: 1150px) {
 .modelGen.text-center {
-    text-align: left; 
+    text-align: left;
 }
 }
 
@@ -773,11 +773,11 @@ th.action
 #searchResult table td:nth-child(7) {
     display: none;
  }
- } 
- 
- 
+ }
+
+
 /* Search - Start */
- 
+
 	#onType a:hover, #onType a:active {
 		color: #3a5a82;
 	}
@@ -790,7 +790,7 @@ th.action
 	#onVersion a:hover, #onVersion a:active {
 		color: #3a5a82;
 	}
- 
+
 /* Search - End */
 
 /* Editor Start */
@@ -811,7 +811,7 @@ th.action
 #function-block-browser-container {
 	position:relative;
 	padding: 4px;
-	border: 1px solid #aaa;	
+	border: 1px solid #aaa;
 	height: 440px;
 	width: auto;
 }
@@ -858,7 +858,7 @@ th.action
 }
 
 a:hover {
-	cursor: pointer; 
+	cursor: pointer;
 	cursor: hand;
 }
 
@@ -893,13 +893,13 @@ a:hover {
 }
 
 .project-list-container {
-	height: 100%	
+	height: 100%
     transform: translateX(50%) translateY(50%);
-}    
+}
 
 .align-center {
 	text-align: center;
-}    
+}
 
 .btn-project {
 	width: 150px;
@@ -1092,14 +1092,14 @@ legend.results-border {
 .login-form-main-message {
   color: red;
 }
-	
+
 .left-inner-addon {
     position: relative;
 
 }
 
 .left-inner-addon input {
-    padding-left: 30px;   
+    padding-left: 30px;
 }
 
 .left-inner-addon i {
@@ -1112,12 +1112,12 @@ legend.results-border {
 * Login End
 * -----------
 */
- 
+
 /*
 * Signup Start
 * --------------
 */
- 
+
 #signup {
 	text-align:center;
 }
@@ -1125,13 +1125,13 @@ legend.results-border {
 .signup-form-main-message {
   color: red;
 }
-	
+
 .left-inner-addon {
     position: relative;
 }
 
 .left-inner-addon input {
-    padding-left: 30px;    
+    padding-left: 30px;
 }
 
 .left-inner-addon i {
@@ -1139,13 +1139,13 @@ legend.results-border {
     padding: 10px 12px;
     pointer-events: none;
 }
-	
+
 .right-inner-addon {
     position: relative;
 }
 
 .right-inner-addon input {
-    padding-right: 30px;    
+    padding-right: 30px;
 }
 
 .right-inner-addon i {
@@ -1153,8 +1153,8 @@ legend.results-border {
     right: 0px;
     padding: 10px 12px;
     pointer-events: none;
-} 	
- 
+}
+
 /*
 * Signup End
 * -----------
@@ -1207,3 +1207,9 @@ sup {
   vertical-align: middle;
   line-height: 0.9em;
   color: #005691; }
+
+.absolute-center {
+  top: 50%;
+  transform: translateY(-50%);
+  position: relative;
+}
