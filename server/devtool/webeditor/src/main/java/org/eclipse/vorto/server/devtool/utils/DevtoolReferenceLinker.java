@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.utils;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -53,6 +54,26 @@ public class DevtoolReferenceLinker {
 		return resourceSet.getResource(uri, true) != null;
 	}
 
+	public void removeResourceFromResourceSet(String resourceId, ResourceSet resourceSet){
+		URI uri = devtoolUtils.getResourceURI(resourceId);
+		EList<Resource> resourceList = resourceSet.getResources();
+		int removeIndex = -1;
+		for(int index = 0 ; index < resourceList.size() ; index++){
+			if(resourceList.get(index).getURI().equals(uri)){
+				removeIndex = index;
+				break;
+			}
+		}
+		if(removeIndex > -1){
+			resourceList.remove(removeIndex);
+		}		
+	}
+	
+	public void resetResourceSet(ResourceSet resourceSet){
+		EList<Resource> resourceList = resourceSet.getResources();
+		resourceList.clear();
+	}
+	
 	private boolean containsModelReference(Model model, ModelReference reference) {
 		for (ModelReference ref : model.getReferences()) {
 			if (ref.getImportedNamespace().equals(reference.getImportedNamespace())) {

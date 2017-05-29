@@ -10,10 +10,10 @@
 			<div>
 				<p>
 					<div class="describe-modal-label">
-						{{editorType.display}} Name 
+						{{editorType.display}} Name
 					</div>
 
-					<input type="text" size="37" data-ng-model="model.name" name="mName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required/> 
+					<input type="text" size="37" data-ng-model="model.name" name="mName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required/>
 					<div ng-show="describeEditorModalForm.mName.$dirty">
 				    	<div ng-show="describeEditorModalForm.mName.$error.required">Please enter a valid model name</div>
 				    </div>
@@ -26,20 +26,20 @@
 				</p>
 				<p>
 					<div class="describe-modal-label">
-						{{editorType.display}} Namespace 
+						{{editorType.display}} Namespace
 					</div>
 
-					<input type="text" size="37" data-ng-model="model.namespace" name="mNamespace" required/> 
+					<input type="text" size="37" data-ng-model="model.namespace" name="mNamespace" required/>
 					<div ng-show="describeEditorModalForm.mNamespace.$dirty">
 				    	<div ng-show="describeEditorModalForm.mNamespace.$error.required">Please enter a valid model namespace</div>
 				    </div>
-				</p>	
+				</p>
 				<p>
 					<div class="describe-modal-label">
-						{{editorType.display}} Version 
+						{{editorType.display}} Version
 					</div>
 
-					<input type="text" size="37" data-ng-model="model.version" name="mVersion" ng-pattern="/^\d\.\d\.\d+$/" required/> 
+					<input type="text" size="37" data-ng-model="model.version" name="mVersion" ng-pattern="/^\d\.\d\.\d+$/" required/>
 					<div ng-show="describeEditorModalForm.mVersion.$dirty" >
 				    	<div ng-show="describeEditorModalForm.mVersion.$error.required">Please enter a version number</div>
 				    </div>
@@ -52,19 +52,19 @@
 				</p>
 				<p>
 					<div class="describe-modal-label">
-						{{editorType.display}} Description 
-					</div>			
-					<textarea rows="4" cols="35" data-ng-model="model.description"/> 
+						{{editorType.display}} Description
+					</div>
+					<textarea rows="4" cols="35" data-ng-model="model.description"/>
 				</p>
 			</div>
 		</div>
 		<div class="modal-footer">
-			<div class="align-left">
+			<div class="align-right">
 			    <button class="btn btn-primary" type="button" type="submit" ng-click="ok()" ng-disabled="describeEditorModalForm.$invalid">Create</button>
 			 </div>
-			<div class="align-right">
+			<div class="align-left">
 			    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
 			</div>
 		</div>
 	</form>
-</div>	
+</div>
