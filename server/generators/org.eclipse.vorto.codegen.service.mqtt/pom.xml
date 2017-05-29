@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.mqtt</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.mqtt</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

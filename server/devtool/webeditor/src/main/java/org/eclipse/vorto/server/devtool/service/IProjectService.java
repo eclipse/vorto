@@ -30,6 +30,8 @@ public interface IProjectService {
 	List<Resource> getProjectResources(String projectName);
 	
 	Resource createProjectResource(String projectName, ModelResource modelResource);
+	
+	Resource createProjectResource(String projectName, String author, ModelResource modelResource);
 
 	Resource getReferencedResource(ModelInfo modelInfo);
 	

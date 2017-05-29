@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
-import org.eclipse.vorto.codegen.gateway.config.Environment;
+import org.eclipse.vorto.codegen.gateway.config.EnvironmentConfig;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Generators {
 	
 	@Autowired
-	private Environment env;
+	private EnvironmentConfig env;
 	
 	@Autowired
 	private VortoService vorto;

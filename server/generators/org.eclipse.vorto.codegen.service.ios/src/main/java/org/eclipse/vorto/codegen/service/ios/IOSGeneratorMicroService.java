@@ -15,7 +15,7 @@
 package org.eclipse.vorto.codegen.service.ios;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.examples.ios.IOSPlatformGenerator;
+import org.eclipse.vorto.codegen.ios.IOSPlatformGenerator;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

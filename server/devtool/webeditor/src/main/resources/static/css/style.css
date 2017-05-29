@@ -776,7 +776,7 @@ th.action
  } 
  
  
- /* Search - Start */
+/* Search - Start */
  
 	#onType a:hover, #onType a:active {
 		color: #3a5a82;
@@ -791,7 +791,7 @@ th.action
 		color: #3a5a82;
 	}
  
- /* Search - End */
+/* Search - End */
 
 /* Editor Start */
 
@@ -1078,3 +1078,132 @@ legend.results-border {
     padding:0 10px;
     border-bottom:none;
 }
+
+/*
+* Bulk Upload End
+* ----------------
+*/
+
+/*
+* Login Start
+* -----------
+*/
+
+.login-form-main-message {
+  color: red;
+}
+	
+.left-inner-addon {
+    position: relative;
+
+}
+
+.left-inner-addon input {
+    padding-left: 30px;   
+}
+
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+
+/*
+* Login End
+* -----------
+*/
+ 
+/*
+* Signup Start
+* --------------
+*/
+ 
+#signup {
+	text-align:center;
+}
+
+.signup-form-main-message {
+  color: red;
+}
+	
+.left-inner-addon {
+    position: relative;
+}
+
+.left-inner-addon input {
+    padding-left: 30px;    
+}
+
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+	
+.right-inner-addon {
+    position: relative;
+}
+
+.right-inner-addon input {
+    padding-right: 30px;    
+}
+
+.right-inner-addon i {
+    position: absolute;
+    right: 0px;
+    padding: 10px 12px;
+    pointer-events: none;
+} 	
+ 
+/*
+* Signup End
+* -----------
+*/
+
+sup {
+    vertical-align: super;
+    font-size: small;
+}
+
+/*
+ * Component: Info Box
+ * -------------------
+ */
+.tiny-box {
+  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 0px 5px;
+  color: #333;
+  margin: 5px auto;
+  min-height: 114px;
+  background: #fff;
+  height: 160px;
+  width: 154px;
+  text-align: center; }
+
+.tiny-box-icon {
+  height: 80px;
+  width: 90px;
+  text-align: center;
+  font-size: 45px;
+  line-height: 70px;
+  background-color: transparent !important; }
+
+.tiny-box:hover, .tiny-box.selected {
+  border: 4px solid #c2e1f5;
+  cursor: pointer; }
+
+.tiny-box-name, .tiny-box-number {
+  margin: 0px 5px 0px;
+  height: 30px; }
+
+.tiny-box-name span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0.9em;
+  font-weight: 600; }
+
+.tiny-box-number span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 0.9em;
+  color: #005691; }

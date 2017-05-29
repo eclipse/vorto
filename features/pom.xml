@@ -23,5 +23,6 @@
 		<module>org.eclipse.vorto.feature.editor</module>
 		<module>org.eclipse.vorto.feature.repository</module>
 		<module>org.eclipse.vorto.feature.codegen.mqtt</module>
+		<module>org.eclipse.vorto.feature.codegen.webui</module>
 	</modules>
 </project>

@@ -36,7 +36,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @SpringBootApplication
 @EnableJpaRepositories
 public class DevToolServer extends SpringBootServletInitializer {
-				
+
 	public static void main(String... args) {
 		SpringApplication.run(DevToolServer.class, args);
 	}
@@ -45,7 +45,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
 		return application.sources(DevToolServer.class);
 	}
-	
+
 	@Bean
 	public static PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(11);
@@ -55,7 +55,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 	@EnableWebSecurity
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-		@Autowired 
+		@Autowired
 		private UserDetailsService userDetailsService;
 
 		@Autowired
@@ -63,13 +63,15 @@ public class DevToolServer extends SpringBootServletInitializer {
 
 		@Override
 		public void configure(WebSecurity web) throws Exception {
-			web.ignoring().antMatchers("/webjars/**").antMatchers("/dist/**").antMatchers("/css/**").antMatchers("/images/**").antMatchers("/index.html");
+			web.ignoring().antMatchers("/webjars/**").antMatchers("/dist/**").antMatchers("/css/**")
+					.antMatchers("/images/**").antMatchers("/index.html");
 		}
-		
+
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/rest/context/user","/project/**","/editor/**","/publish/**").authenticated().and()
-					.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/index.html");
+			http.authorizeRequests().antMatchers("/rest/context/user", "/project/**", "/editor/**", "/publish/**")
+					.authenticated().and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+					.logoutSuccessUrl("/index.html");
 			http.formLogin().loginProcessingUrl("/j_spring_security_check");
 			http.csrf().disable();
 

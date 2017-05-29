@@ -687,6 +687,20 @@ span.star.filled:before{
 }
 }
 
+@media (min-width: 800px){
+.adv2 {
+    margin-top: 50px;
+    width: 200px;
+    height: 200px;
+    position: absolute;
+    left: +450px;
+    -webkit-animation: slide 1s forwards;
+    -webkit-animation-delay: 1s;
+    animation: slide 0.5s forwards;
+    animation-delay: 1s;
+}
+}
+
 @-webkit-keyframes slide {
     100% { left: 0px; }
 }

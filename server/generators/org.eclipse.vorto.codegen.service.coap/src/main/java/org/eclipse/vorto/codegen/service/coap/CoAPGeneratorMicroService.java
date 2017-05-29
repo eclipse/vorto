@@ -15,7 +15,7 @@
 package org.eclipse.vorto.codegen.service.coap;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
-import org.eclipse.vorto.codegen.examples.coap.CoAPGenerator;
+import org.eclipse.vorto.codegen.coap.CoAPGenerator;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -74,73 +74,73 @@
 		<!-- Generators -->
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.aws</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.aws</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.bosch.things</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.bosch.things</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.coap</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.coap</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.ios</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.ios</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.javabean</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.javabean</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.latex</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.latex</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.lwm2m</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.lwm2m</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.markdown</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.markdown</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.mqtt</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.mqtt</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.prosystfi</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.prosystfi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.thingworx</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.thingworx</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.webui</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.webui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

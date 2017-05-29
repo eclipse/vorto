@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.lwm2m</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.lwm2m</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

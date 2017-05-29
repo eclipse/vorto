@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ThingWorx Code Generator (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.codegen.thingworx;singleton:=true
+Bundle-Version: 0.10.0.qualifier
+Require-Bundle: org.eclipse.vorto.core,
+ org.eclipse.core.runtime,
+ org.eclipse.vorto.codegen,
+ org.eclipse.xtend.lib
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: ThingWorx, a PTC Business
+Import-Package: org.eclipse.vorto.editor.infomodel
+Bundle-ClassPath: lib/jackson-core-2.6.2.jar,
+ .

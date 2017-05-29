@@ -17,7 +17,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.markdown</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.markdown</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto LWM2M Generator (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.codegen.lwm2m;singleton:=true
+Bundle-Version: 0.10.0.qualifier
+Require-Bundle: org.eclipse.vorto.core,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro,
+ org.eclipse.vorto.codegen
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.lwm2m
+Bundle-ClassPath: .
+Bundle-Vendor: Eclipse.org/Vorto

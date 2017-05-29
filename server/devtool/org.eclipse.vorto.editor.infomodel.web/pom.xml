@@ -4,67 +4,13 @@
 
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>bundles</artifactId>
+		<artifactId>devtool</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.editor.infomodel.web</artifactId>
 
 	<name>Information Model Editor Plugin Web</name>
-
-	<build>
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-					<exclude>**/*.xtend</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.xtend</groupId>
-				<artifactId>xtend-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<warSourceDirectory>WebRoot</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>add-source</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>add-source</goal>
-							<goal>add-resource</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>src-gen</source>
-							</sources>
-							<resources>
-								<resource>
-									<directory>src-gen</directory>
-									<excludes>
-										<exclude>**/*.java</exclude>
-									</excludes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<!-- http://mvnrepository.com/artifact/org.springframework/spring-web -->
@@ -126,4 +72,17 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

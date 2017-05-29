@@ -15,13 +15,14 @@
 package org.eclipse.vorto.server.devtool.utils;
 
 public class Constants {
-			
+
+	public static final String DOT = ".";
+
 	public static final String MESSAGE_RESOURCE_CREATED = "resource created";
-	
-	public static final String MESSAGE_RESOURCE_ALREADY_EXISTS = "resource already exists";	
-	
-	public static final String MESSAGE_RESOURCE_DOES_NOT_EXIST = "resource does not exist";	
-	
+
+	public static final String MESSAGE_RESOURCE_ALREADY_EXISTS = "resource already exists";
+
+	public static final String MESSAGE_RESOURCE_DOES_NOT_EXIST = "resource does not exist";
+
 	public static final String VORTO_REPOSITORY_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-	
 }

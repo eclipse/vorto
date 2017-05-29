@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.bosch.things</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.bosch.things</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

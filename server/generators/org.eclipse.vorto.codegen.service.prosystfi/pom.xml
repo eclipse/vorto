@@ -23,7 +23,7 @@
 		</dependency>				
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.examples.prosystfi</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.prosystfi</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

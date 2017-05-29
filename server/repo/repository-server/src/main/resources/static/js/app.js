@@ -67,6 +67,17 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     };
 
     $rootScope.getUser();
+    
+    $rootScope.context = {};
+    $rootScope.getContext = function() {
+        $http.get("context").success(function(data, status, headers, config) {
+            $rootScope.context = data;
+        }).error(function(data, status, headers, config) {
+            $rootScope.context = {};
+        });
+    };
+    
+    $rootScope.getContext();
 
     $rootScope.logout = function() {
         $http.post("logout", {}).success(function() {

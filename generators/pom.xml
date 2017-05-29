@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="MACROMAN"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <parent>
+    <groupId>org.eclipse.vorto</groupId>
+    <artifactId>org.eclipse.vorto.parent</artifactId>
+    <version>0.10.0-SNAPSHOT</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>generators</artifactId>
+  
+  <name>Eclipse Vorto Code Generators</name>
+
+  <packaging>pom</packaging>
+
+  <modules>
+		<module>org.eclipse.vorto.codegen.thingworx</module>
+		<module>org.eclipse.vorto.codegen.javabean</module>
+		<module>org.eclipse.vorto.codegen.mqtt</module>
+		<module>org.eclipse.vorto.codegen.webui</module>
+		<module>org.eclipse.vorto.codegen.markdown</module>
+		<module>org.eclipse.vorto.codegen.ios</module>
+		<module>org.eclipse.vorto.codegen.latex</module>
+		<module>org.eclipse.vorto.codegen.bosch.things</module>
+		<module>org.eclipse.vorto.codegen.coap</module>
+		<module>org.eclipse.vorto.codegen.aws</module>
+		<module>org.eclipse.vorto.codegen.lwm2m</module>
+		<module>org.eclipse.vorto.codegen.prosystfi</module>
+  </modules>
+  
+</project>

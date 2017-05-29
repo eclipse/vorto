@@ -1,70 +1,33 @@
 <div class="row">
-	<div class="col-md-3">
-	</div>
-	<div class="col-md-6">
-		<div class="align-center">
-			<div class="box box-primary">
-				<div class="box-header">
-					<h2 class="box-title">
-						Create a New Vorto Project
-					</h2>
+	<div class="box box-default">
+			<div class="box-header with-border">
+				<h3 class="box-title">Projects</h3>
+				<div class="box-tools pull-right">
+					<button class="btn btn-primary btn-project" ng-click="openCreateProjectModal()" type="button">Create Project</button>
+				</div>
+				<div class="box-body" ng-show="things.length == 0">
+				You have no projects yet. <a href="#" ng-click="openCreateProjectModal()">Create a new Project</a>
 				</div>
 			</div>
-			<button class="btn btn-primary btn-project" ng-click="openCreateProjectModal()" type="button">
-				Create Project
-			</button>
+			<div class="box-body" ng-show="projects.length > 0">
+				<div class="col-md-12">
+			 		<div class="row" ng-repeat="row in projectsMatrix">
+			 	 		<div class="col-md-2" ng-repeat="project in row">
+		            		<!--box-->
+		                	<a href="#/editor/{{ project.name }}">
+			            		<div class="tiny-box" id="tinyBox:{{project.name}}">
+			                		<span class="tiny-box-icon"><img width="32px" height="32px" ng-src="/images/vorto-icon.png"/></span>
+			               			<div class="tiny-box-name"><span>{{project.name}}</span></div>
+			               			<div class="tiny-box-number"><span><button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button></span></div>	
+			                 	</div>
+		                 	</a>				                 	
+		            		<!--box end-->	
+            			</div>
+			 	 	</div> 
+			 	 	<!--row end-->
+			 	</div>
+			</div>
+			<!-- /.box-body -->
 		</div>
-		<div>
-			<hr></hr>
-		</div>
-		<div id="project-list-container">
-			<div class="align-center">
-				<div class="box box-primary">
-					<div class="box-header">
-						<h2 class="box-title">
-							Open an Existing Vorto Project
-						</h2>
-					</div>
-				</div>
-			</div>		
-			<table st-table="displayedProjects" st-safe-src="projects" class="table">
-				<thead>
-					<tr>
-						<th colspan="6">
-							<div class="form-inline form-group">
-								<input type="search" placeholder="Search Projects"
-									ng-model="project"
-									st-search class="search-box-open-project input-sm" />
-							</div>
-						</th>
-					</tr>
-					<tr>
-						<th><b>{{projects.length}} Project(s) found</b></th>
-						<th></th>
-					</tr>
-					<tr>
-						<th id="onName" st-sort="project"><a href="">Name <i class="fa fa-sort"></i></a></th>
-						<th></th>														
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="project in displayedProjects">
-						<td>{{ project.name }}</td>
-						<td class="action"><a class="action" ng-href="#/editor/{{ project.name }}"><i class="fa fa-folder-open"></i></a> Open</td>
-					</tr>
-				</tbody>
-				<tfoot>
-					<tr>
-						<td colspan="6" class="text-center">
-							<div st-pagination="" st-items-by-page="itemsByPage"
-								st-displayed-pages="displayedPages"></div>
-						</td>
-					</tr>
-				</tfoot>
-			</table>
-		</div>
-	</div>
-
-	<div class="col-md-3">
-	</div>
-</div>		
+		<!-- /.box -->
+</div>
