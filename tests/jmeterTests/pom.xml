@@ -26,10 +26,6 @@
 					<jmeter.save.saveservice.thread_name>true</jmeter.save.saveservice.thread_name>
 					<jmeter.save.saveservice.time>true</jmeter.save.saveservice.time>
 					</propertiesUser>
-					 <proxyConfig>
-                            <host>rb-proxy-apac.bosch.com</host>
-                            <port>8080</port>
-                        </proxyConfig>
                 </configuration>
                 <executions>
                     <execution>
