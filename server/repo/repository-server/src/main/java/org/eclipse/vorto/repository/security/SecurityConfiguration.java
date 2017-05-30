@@ -34,6 +34,7 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
@@ -87,6 +88,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.and()
 				.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class)
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+				.addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
 				.csrf()
 					.csrfTokenRepository(csrfTokenRepository())
 			.and()
@@ -123,6 +125,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	  registration.setFilter(filter);
 	  registration.setOrder(-100);
 	  return registration;
+	}
+	
+	private Filter bearerTokenFilter() {
+		return new AuthorizationTokenFilter(interceptedUserInfoTokenServices);
 	}
 	
 	private Filter ssoFilter() {
