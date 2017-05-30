@@ -1,7 +1,5 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("LoginController", LoginController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("LoginController", LoginController);
 
   LoginController.$inject = ["$rootScope", "$scope", "$location", "$http"]
 

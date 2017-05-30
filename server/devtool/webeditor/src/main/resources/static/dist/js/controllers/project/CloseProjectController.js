@@ -1,9 +1,9 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("CloseProjectController", CloseProjectController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("CloseProjectController", CloseProjectController);
 
-  CloseProjectController.$inject = ["$rootScope", "$scope", "$uibModalInstance", "ShareDataService"]
+  CloseProjectController.$inject = [
+    "$rootScope", "$scope", "$uibModalInstance", "ShareDataService"
+  ]
 
   function CloseProjectController($rootScope, $scope, $uibModalInstance, ShareDataService) {
     $scope.unsavedFiles = ShareDataService.getUnsavedFiles();

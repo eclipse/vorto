@@ -1,19 +1,20 @@
-require([
-  '../js/controllers/init/AppController',
+define([
+  '../init/AppController',
 
-  '../js/controllers/login/LoginController',
-  '../js/controllers/publish/PublishController',
+  '../login/LoginController',
 
-  '../js/controllers/project/CreateProjectController',
-  '../js/controllers/project/ProjectController',
-  '../js/controllers/project/CloseProjectController',
+  '../publish/PublishController',
 
-  '../js/controllers/editor/AddEditorController',
-  '../js/controllers/editor/DescribeEditorController',
-  '../js/controllers/editor/EditorController',
-  '../js/controllers/editor/DeleteEditorController',
-  '../js/controllers/editor/CloseEditorController',
-  '../js/controllers/editor/UnsavedEditorFilesController'
+  '../project/CreateProjectController',
+  '../project/ProjectController',
+  '../project/CloseProjectController',
+
+  '../editor/AddEditorController',
+  '../editor/DescribeEditorController',
+  '../editor/EditorController',
+  '../editor/DeleteEditorController',
+  '../editor/CloseEditorController',
+  '../editor/UnsavedEditorFilesController'
 ], function () {
 
 });

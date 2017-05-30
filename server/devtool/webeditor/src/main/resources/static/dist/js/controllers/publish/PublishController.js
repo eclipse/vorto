@@ -1,11 +1,12 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("PublishController", PublishController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("PublishController", PublishController);
 
-  PublishController.$inject = ["$rootScope", "$scope", "$uibModalInstance", "$http", "ShareDataService"]
+  PublishController.$inject = [
+    "$rootScope", "$scope", "$uibModalInstance",
+    "ShareDataService", "PublishDataService"
+  ]
 
-  function PublishController($rootScope, $scope, $uibModalInstance, $http, ShareDataService) {
+  function PublishController($rootScope, $scope, $uibModalInstance, ShareDataService, PublishDataService) {
     $scope.modelCheckedIn = false;
     $scope.result = ShareDataService.getPublishResult();
     $scope.infoModelCount = 0;
@@ -46,7 +47,7 @@ define(["angular"], function(angular) {
           $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
         });
       } else {
-        $scope.showCheckin = false;
+          $scope.showCheckin = false;
       }
 
       $scope.isLoading = false;
@@ -84,13 +85,15 @@ define(["angular"], function(angular) {
         }
       });
 
-      $http.put("./rest/publish/checkInMultiple", validUploadHandles)
-        .success(function(result) {
+      var params = {uploadHandles: validUploadHandles};
+      PublishDataService.checkInMultiple(params)
+        .then(function(result) {
           $scope.isLoading = false;
           $scope.showResultBox = true;
           $scope.resultMessage = result.message;
           $scope.modelCheckedIn = true;
-        }).error(function(data, status, headers, config) {
+        }).catch(function(error) {
+          var status = error.status;
           $scope.isLoading = false;
           if (status == 403) {
             $rootScope.error = "Operation is Forbidden";
@@ -107,12 +110,14 @@ define(["angular"], function(angular) {
     };
 
     checkinSingle = function(handleId) {
-      $http.put("./rest/publish/" + handleId)
-        .success(function(result) {
+      var params = {handleId: handleId};
+      PublishDataService.checkInSingle(params)
+        .then(function(result) {
           $scope.showResultBox = true;
           $scope.resultMessage = result.message;
           $scope.modelCheckedIn = true;
-        }).error(function(data, status, headers, config) {
+        }).catch(function(error) {
+          var status = error.status;
           if (status == 403) {
             $rootScope.error = "Operation is Forbidden";
           } else if (status == 401) {

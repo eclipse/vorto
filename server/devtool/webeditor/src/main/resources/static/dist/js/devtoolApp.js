@@ -1,102 +1,103 @@
 define("devtoolApp", [
   "angular",
+  "angular-aria",
   "angular-route",
+  "angular-toastr",
   "angular-animate",
-  "angular-aria", "angular-bootstrap",
+  "angular-bootstrap",
   "angular-bootstrap-templates",
-  "smart-table",
   "jquery",
   "ngJsTree",
-  "angular-toastr",
-  "directives/init/AppDirectiveLoader",
-  "services/init/AppServiceLoader",
+  "smart-table",
   "controllers/init/AppControllerLoader",
+  "directives/init/AppDirectiveLoader",
+  "services/init/AppServiceLoader"
 ], function(angular) {
 
-  var app = angular.module('devtoolApp', [
-    'ngRoute',
-    'apps.directive',
-    'apps.service',
-    'apps.controller',
-    'ngAnimate',
-    'ui.bootstrap',
-    'ui.bootstrap.tpls',
-    'ngJsTree',
-    'toastr'
+  var app = angular.module("devtoolApp", [
+    "ngRoute",
+    "ngAnimate",
+    "ui.bootstrap",
+    "ui.bootstrap.tpls",
+    "ngJsTree",
+    "toastr",
+    "apps.controller",
+    "apps.directive",
+    "apps.service",
   ]);
 
   app.bootstrap = function() {
-    angular.bootstrap(document, ['devtoolApp']);
+    angular.bootstrap(document, ["devtoolApp"]);
   };
 
-  app.config(['$routeProvider', '$httpProvider',
+  app.config(["$routeProvider", "$httpProvider",
     function($routeProvider, $httpProvider) {
       $routeProvider
-    		.when('/publish', {
-    		   templateUrl: "templates/publish/publish-template.html",
-    		   controller: 'PublishController'
-    		  })
-        .when('/editor/:projectName', {
+        .when("/publish", {
+          templateUrl: "templates/publish/publish-template.html",
+          controller: "PublishController"
+        })
+        .when("/editor/:projectName", {
           templateUrl: "templates/editor/editor-template.html",
-          controller: 'EditorController'
+          controller: "EditorController"
         })
-        .when('/project', {
+        .when("/project", {
           templateUrl: "templates/project/project-template.html",
-          controller: 'ProjectController'
+          controller: "ProjectController"
         })
-        .when('/login', {
+        .when("/login", {
           templateUrl: "templates/login/login-template.html",
-          controller: 'LoginController'
+          controller: "LoginController"
         })
         .otherwise({
-          redirectTo: '/project'
+          redirectTo: "/project"
         });
     }
   ]).run(function($location, $http, $rootScope) {
 
     $rootScope.getContext = function() {
-      $http.get('./rest/context').success(function(data, status, headers, config) {
-		      $rootScope.globalContext = data;
+      $http.get("./rest/context").success(function(data, status, headers, config) {
+        $rootScope.globalContext = data;
       });
     }
 
     $rootScope.getContext();
 
-	 	$rootScope.$on("$locationChangeStart", function(event, next, current) {
-			$rootScope.error = false;
-	 		if($location.path() !== "/login" && $rootScope.authenticated === false) {
-	 			$location.path('/login');
-	 		}
+    $rootScope.$on("$locationChangeStart", function(event, next, current) {
+      $rootScope.error = false;
+      if ($location.path() !== "/login" && $rootScope.authenticated === false) {
+        $location.path("/login");
+      }
     });
 
-		$rootScope.user = [];
-		$rootScope.getUser = function() {
-  		$http.get('rest/context/user').success(function(data, status, headers, config) {
-  			if (data.name != null) {
-        	$rootScope.user = data.name;
-        	$rootScope.authenticated = true;
-        	$rootScope.authority = data.role;
-        	$location.path("/project");
+    $rootScope.user = [];
+    $rootScope.getUser = function() {
+      $http.get("rest/context/user").success(function(data, status, headers, config) {
+        if (data.name != null) {
+          $rootScope.user = data.name;
+          $rootScope.authenticated = true;
+          $rootScope.authority = data.role;
+          $location.path("/project");
         } else {
-        	$location.path("/login");
+          $location.path("/login");
         }
-  		}).error(function(data, status, headers, config) {
-  			$rootScope.authenticated = false;
-  			$location.path("login");
-  		});
-		};
+      }).error(function(data, status, headers, config) {
+        $rootScope.authenticated = false;
+        $location.path("login");
+      });
+    };
 
-		$rootScope.getUser();
+    $rootScope.getUser();
 
-		$rootScope.logout = function() {
-			$http.post('logout', {}).success(function() {
-				$rootScope.authenticated = false;
-				$location.path("/login");
-			}).error(function(data) {
-				$location.path("/login");
-				$rootScope.authenticated = false;
-			});
-		};
+    $rootScope.logout = function() {
+      $http.post("logout", {}).success(function() {
+        $rootScope.authenticated = false;
+        $location.path("/login");
+      }).error(function(data) {
+        $location.path("/login");
+        $rootScope.authenticated = false;
+      });
+    };
   });
 
   return app;

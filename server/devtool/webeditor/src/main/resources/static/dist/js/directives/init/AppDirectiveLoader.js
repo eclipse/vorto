@@ -1,7 +1,7 @@
-require([
-  '../js/directives/init/AppDirective',
+define([
+  '../init/AppDirective',
 
-  '../js/directives/project/UniqueProjectNameDirective'
+  '../project/UniqueProjectNameDirective'
 
 ], function () {
 

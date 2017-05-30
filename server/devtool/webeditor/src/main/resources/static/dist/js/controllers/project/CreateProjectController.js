@@ -1,7 +1,5 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("CreateProjectController", CreateProjectController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("CreateProjectController", CreateProjectController);
 
   CreateProjectController.$inject = ["$rootScope", "$scope", "$uibModalInstance"]
 

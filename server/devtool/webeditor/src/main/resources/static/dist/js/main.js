@@ -14,13 +14,7 @@ require.config({
 		"xtext/xtext-ace" : "/xtext/2.9.0/xtext-ace",
 		"jstree" : "/webjars/jstree/3.2.1/jstree.min",
 		"ngJsTree": "/webjars/ng-js-tree/0.0.6/dist/ngJsTree.min",
-		"angular-toastr" : "/webjars/angular-toastr/2.1.1/angular-toastr.tpls.min",
-		"AppControllerLoader": "/dist/js/controllers/init/AppControllerLoader.js",
-		"AppController": "/dist/js/controllers/init/AppController.js",
-		"AppServiceLoader": "/dist/js/services/init/AppServiceLoader.js",
-		"AppService": "/dist/js/services/init/AppService.js",
-		"AppDirectiveLoader": "/dist/js/directives/init/AppDirectiveLoader.js",
-		"AppDirective": "/dist/js/directives/init/AppDirective.js",
+		"angular-toastr" : "/webjars/angular-toastr/2.1.1/angular-toastr.tpls.min"
 	},
 	shim: {
 		'angular': {
@@ -52,18 +46,6 @@ require.config({
 		},
 		'angular-toastr' : {
 			deps: ["angular", "angular-animate"]
-		},
-		'AppControllerLoader' : {
-			deps: ["angular", "AppController"]
-		},
-		'AppDirectiveLoader' : {
-			deps: ["angular", "AppDirective"]
-		},
-		'AppServiceLoader' : {
-			deps: ["angular", "AppService"]
-		},
-		'AppController' : {
-			deps: ["AppService", "AppDirective"]
 		}
 	}
 });

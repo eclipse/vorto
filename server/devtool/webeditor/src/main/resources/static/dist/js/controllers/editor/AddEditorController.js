@@ -1,9 +1,9 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("AddEditorController", AddEditorController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("AddEditorController", AddEditorController);
 
-  AddEditorController.$inject = ["$rootScope", "$scope", "$uibModalInstance", "ShareDataService"]
+  AddEditorController.$inject = [
+    "$rootScope", "$scope", "$uibModalInstance", "ShareDataService"
+  ]
 
   function AddEditorController($rootScope, $scope, $uibModalInstance, ShareDataService) {
     $scope.editorTypes = ShareDataService.getAddEditorTypes();

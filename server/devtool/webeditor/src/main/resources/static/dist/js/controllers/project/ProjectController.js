@@ -1,11 +1,11 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("ProjectController", ProjectController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("ProjectController", ProjectController);
 
-  ProjectController.$inject = ["$rootScope", "$scope", "$location", "$http", "$uibModal"]
+  ProjectController.$inject = [
+    "$rootScope", "$scope", "$location", "$http", "$uibModal", "ProjectDataService"
+  ]
 
-  function ProjectController($rootScope, $scope, $location, $http, $uibModal) {
+  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService) {
     $scope.selectedProject = null;
     $scope.projects = [];
     $scope.topRow = [];
@@ -25,27 +25,25 @@ define(["angular"], function(angular) {
     };
 
     $scope.createProject = function(projectName) {
-      $http.post("./rest/project", {
-        "name": projectName
-      }).success(
-        function(data, status, headers, config) {
-          if (data.message === "resource already exists") {
-            window.alert("Project " + projectName + " already exsits")
-          } else {
-            $location.path("editor/" + projectName);
-            $location.replace();
-          }
-        }).error(function(data, status, headers, config) {
+      var project = {name: projectName};
+      var params = {project: project};
+      ProjectDataService.createProject(params).then(function(data){
+        if (data.message === "resource already exists") {
+          window.alert("Project " + projectName + " already exsits")
+        } else {
+          $location.path("editor/" + projectName);
+          $location.replace();
+        }
+      }).catch(function(error){
           window.alert("Failed to create new Project " + projectName)
       });
     }
 
     $scope.getProjects = function() {
-      $http.get("./rest/project").success(
-        function(data, status, headers, config) {
-          $scope.topRow = data.splice(0, gridSize);
-          $scope.projectsMatrix = $scope.listToMatrix(data, gridSize);
-        }).error(function(data, status, headers, config) {
+      ProjectDataService.getProjects().then(function(data){
+        $scope.topRow = data.splice(0, gridSize);
+        $scope.projectsMatrix = $scope.listToMatrix(data, gridSize);
+      }).catch(function(error){
           $scope.projects = [];
       });
     }
@@ -63,17 +61,5 @@ define(["angular"], function(angular) {
     };
 
     $scope.getProjects();
-
-    $scope.displayedProjects = [].concat($scope.projects);
-    $scope.itemsByPage = 10;
-    $scope.displayedPages = ($scope.projects.length / 2);
-
-    $scope.predicates = ["Name"]
-
-    $scope.getters = {
-      name: function(value) {
-        return value.name.sort();
-      }
-    }
   }
 });

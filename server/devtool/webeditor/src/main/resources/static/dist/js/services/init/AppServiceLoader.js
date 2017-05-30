@@ -1,7 +1,13 @@
-require([
-  '../js/services/init/AppService',
+define([
+  '../init/AppService',
 
-  '../js/services/shared/ShareDataService'
+  '../data/editor/EditorDataService',
+
+  '../data/project/ProjectDataService',
+
+  '../data/publish/PublishDataService',
+
+  '../shared/ShareDataService'
 ], function () {
 
 });

@@ -1,7 +1,5 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.directive")
-    .controller("ngUniqueProjectName", UniqueProjectNameDirective);
+define(["../init/AppDirective"], function(directives) {
+  directives.directive("ngUniqueProjectName", UniqueProjectNameDirective);
 
   UniqueProjectNameDirective.$inject = ["$http", "$scope"]
 

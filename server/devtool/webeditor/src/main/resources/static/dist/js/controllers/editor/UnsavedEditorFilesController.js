@@ -1,9 +1,9 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("UnsavedEditorFilesController", UnsavedEditorFilesController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("UnsavedEditorFilesController", UnsavedEditorFilesController);
 
-  UnsavedEditorFilesController.$inject = ["$rootScope", "$scope", "$uibModalInstance", "ShareDataService"]
+  UnsavedEditorFilesController.$inject = [
+    "$rootScope", "$scope", "$uibModalInstance", "ShareDataService"
+  ]
 
   function UnsavedEditorFilesController($rootScope, $scope, $uibModalInstance, ShareDataService) {
     $scope.unsavedFiles = ShareDataService.getUnsavedFiles();

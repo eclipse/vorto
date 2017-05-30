@@ -1,7 +1,5 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.service")
-    .factory("ShareDataService", ShareDataService);
+define(["../init/AppService"], function(services) {
+  services.factory("ShareDataService", ShareDataService);
 
   function ShareDataService() {
     var addEditorTypes;

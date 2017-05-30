@@ -1,11 +1,13 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("EditorController", EditorController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("EditorController", EditorController);
 
-  EditorController.$inject = ["$rootScope", "$scope", "$location", "$routeParams", "$http", "$compile", "$uibModal", "toastr", "ShareDataService"]
+  EditorController.$inject = [
+    "$rootScope", "$scope", "$location", "$routeParams", "$compile",
+    "$uibModal", "toastr", "ShareDataService", "ProjectDataService",
+    "EditorDataService", "PublishDataService"
+  ]
 
-  function EditorController($rootScope, $scope, $location, $routeParams, $http, $compile, $uibModal, toastr, ShareDataService) {
+  function EditorController($rootScope, $scope, $location, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -63,33 +65,15 @@ define(["angular"], function(angular) {
     $scope.editorConfig = {
       infomodel: {
         syntaxDefinition: "xtext/mode-infomodel",
-        serviceUrl: "/infomodel/xtext-service",
-        searchUrl: "./rest/editor/infomodel/search=",
-        importModelUrl: "./rest/editor/infomodel/link/model",
-        referenceModelUrl: "./rest/editor/infomodel/link/resource",
-        updateUrl: "/infomodel/xtext-service/update?resource=",
-        validateUrl: "./infomodel/xtext-service/validate?resource=",
-        loadUrl: "./infomodel/xtext-service/load?resource="
+        serviceUrl: "/infomodel/xtext-service"
       },
       fbmodel: {
         syntaxDefinition: "xtext/mode-fbmodel",
-        serviceUrl: "/functionblock/xtext-service",
-        searchUrl: "./rest/editor/functionblock/search=",
-        importModelUrl: "./rest/editor/functionblock/link/model",
-        referenceModelUrl: "./rest/editor/functionblock/link/resource",
-        updateUrl: "./functionblock/xtext-service/update?resource=",
-        validateUrl: "./functionblock/xtext-service/validate?resource=",
-        loadUrl: "./functionblock/xtext-service/load?resource="
+        serviceUrl: "/functionblock/xtext-service"
       },
       type: {
         syntaxDefinition: "xtext/mode-type",
-        serviceUrl: "/datatype/xtext-service",
-        searchUrl: "./rest/editor/datatype/search=",
-        importModelUrl: "./rest/editor/datatype/link/model",
-        referenceModelUrl: "./rest/editor/datatype/link/resource",
-        updateUrl: "/datatype/xtext-service/update?resource=",
-        validateUrl: "./datatype/xtext-service/validate?resource=",
-        loadUrl: "./datatype/xtext-service/load?resource="
+        serviceUrl: "/datatype/xtext-service"
       }
     }
 
@@ -145,7 +129,7 @@ define(["angular"], function(angular) {
             var parentId = parseInt(par.id);
             var temp = {};
             for (var i = 0; i < $scope.projectResources.length; i++) {
-              if ($scope.projectResources[i]["id"] == parentId) {
+              if ($scope.projectResources[i]["id"] === parentId) {
                 temp = $scope.projectResources[i];
               }
             }
@@ -155,13 +139,13 @@ define(["angular"], function(angular) {
             }
             if (node.type == "infomodel") {
               return false;
-            } else if (node.type == "fbmodel" && (par.type == "infomodel" || par.type == "fbmodel")) {
+            } else if (node.type === "fbmodel" && (par.type === "infomodel" || par.type === "fbmodel")) {
               more.origin.settings.dnd.always_copy = true;
               return true;
-            } else if (node.type == "entity" && par.type == "fbmodel") {
+            } else if (node.type === "entity" && par.type === "fbmodel") {
               more.origin.settings.dnd.always_copy = true;
               return true;
-            } else if (node.type == "enum" && (par.type == "fbmodel" || par.type == "entity")) {
+            } else if (node.type === "enum" && (par.type === "fbmodel" || par.type === "entity")) {
               more.origin.settings.dnd.always_copy = true;
               return true;
             } else {
@@ -203,11 +187,11 @@ define(["angular"], function(angular) {
       $scope.openResourceTree($scope.projectResources);
       $scope.$apply();
       var arr = $scope.projectResources.filter(function(resource) {
-        return resource["id"] == node["original"]["id"];
+        return resource["id"] === node["original"]["id"];
       });
       var referenceResourceId = arr[0]["resourceId"];
       arr = $scope.projectResources.filter(function(resource) {
-        return resource["id"] == node["parent"];
+        return resource["id"] === node["parent"];
       });
       var targetResourceId = arr[0]["resourceId"];
       $scope.referenceResource(targetResourceId, referenceResourceId);
@@ -215,12 +199,12 @@ define(["angular"], function(angular) {
 
     $scope.openProject = function() {
       $scope.projectName = $routeParams.projectName;
-      $http.get("./rest/project/" + $scope.projectName + "/open").success(
-        function(data, status, headers, config) {
-          $scope.showEditorBody = true;
-          $scope.getResources();
-          $scope.getReferences();
-        }).error(function(data, status, headers, config) {
+      var params = {projectName: $scope.projectName};
+      ProjectDataService.openProject(params).then(function(data){
+        $scope.showEditorBody = true;
+        $scope.getResources();
+        $scope.getReferences();
+      }).catch(function(error){
         $scope.showEditorBody = false;
       });
     }
@@ -230,11 +214,11 @@ define(["angular"], function(angular) {
     $scope.uploadProject = function() {
       var unsavedFiles = $scope.getUnsavedFiles();
       if (unsavedFiles.length < 1) {
-        $http.get("./rest/publish/" + $scope.projectName + "/validate").success(
-          function(data, status, headers, config) {
-            $scope.openPublishModal(data);
-          }).error(function(data, status, headers, config) {
-            window.alert("Failed to upload resources")
+        var params = {projectName: $scope.projectName};
+        PublishDataService.validateProject(params).then(function(data){
+          $scope.openPublishModal(data);
+        }).catch(function(error){
+          window.alert("Failed to upload resources");
         });
       } else {
         ShareDataService.setUnsavedFiles(unsavedFiles);
@@ -258,41 +242,38 @@ define(["angular"], function(angular) {
     };
 
     $scope.getReferences = function() {
-      var url = "./rest/project/" + $rootScope.globalContext.referenceRepository + "/resources";
-      $http.get(url).success(
-        function(data, status, headers, config) {
-          for (i = 0; i < data.length; i++) {
-            var resource = $scope.getResourceObject(data[i]);
-            $scope.loadResourceAtServer(resource);
-          }
-        }).error(function(data, status, headers, config) {
-          windoow.alert("Unable to delete the file");
+      var params = {projectName: $rootScope.globalContext.referenceRepository};
+      ProjectDataService.getProjectResources(params).then(function(responses){
+        responses.forEach(function(response){
+          var resource = $scope.getResourceObject(response);
+          $scope.loadResourceAtServer(resource);
+        });
+      }).catch(function(error){
+          window.alert("Unable to delete the file");
       });
     }
 
     $scope.getResources = function() {
-      $http.get("./rest/project/" + $scope.projectName + "/resources").success(
-        function(data, status, headers, config) {
-          var resources = [];
-          var rootNode = {
-            id: $scope.rootParentId,
-            parent: "#",
-            text: $scope.projectName,
-            state: {
-              opened: true
-            },
-            type: "project"
-          };
-          var temp = {};
-          resources.push(rootNode);
-          for (i = 0; i < data.length; i++) {
-            var resource = $scope.getResourceObject(data[i]);
-            $scope.loadResource(resource);
-            resources.push(resource);
-          }
-          $scope.openResourceTree(resources);
-        }).error(function(data, status, headers, config) {
-
+      var params = {projectName: $scope.projectName};
+      ProjectDataService.getProjectResources(params).then(function(data){
+        var resources = [];
+        var rootNode = {
+          id: $scope.rootParentId,
+          parent: "#",
+          text: $scope.projectName,
+          state: {
+            opened: true
+          },
+          type: "project"
+        };
+        var temp = {};
+        resources.push(rootNode);
+        for (i = 0; i < data.length; i++) {
+          var resource = $scope.getResourceObject(data[i]);
+          $scope.loadResource(resource);
+          resources.push(resource);
+        }
+        $scope.openResourceTree(resources);
       });
     }
 
@@ -337,7 +318,7 @@ define(["angular"], function(angular) {
         if (temp.name === resource.name && temp.namespace === resource.namespace && temp.version === resource.version) {
           $scope.projectResources.splice(i, 1);
           $scope.treeConfig.version++;
-          return
+          return;
         }
       }
     }
@@ -351,22 +332,17 @@ define(["angular"], function(angular) {
     });
 
     $scope.$on("deleteEditor", function(event, tab) {
-      var url = "./rest/project/" + $scope.projectName + "/delete";
-      $http.post(url, {
-        "projectName": $scope.projectName,
-        "resourceId": tab["resourceId"]
-      }).success(
-        function(data, status, headers, config) {
-          if (tab.index > -1) {
-            $scope.closeTab(tab.index);
-          }
-          $scope.removeResource(tab);
-          $scope.editors.forEach(function(editor){
-            var content = editor.getValue();
-            editor.setValue(content);
-          });
-
-        }).error(function(data, status, headers, config) {
+      var params = {projectName: $scope.projectName, resourceId: tab.resourceId};
+      ProjectDataService.deleteResource(params).then(function(data){
+        if (tab.index > -1) {
+          $scope.closeTab(tab.index);
+        }
+        $scope.removeResource(tab);
+        $scope.editors.forEach(function(editor){
+          var content = editor.getValue();
+          editor.setValue(content);
+        });
+      }).catch(function(error){
           windoow.alert("Unable to delete the file");
       });
     });
@@ -394,8 +370,7 @@ define(["angular"], function(angular) {
     }
 
     $scope.loadResourceAtServer = function(resource) {
-      $http.get($scope.editorConfig[resource.language]["loadUrl"] + resource["resourceId"]).success(
-        function(data, status, headers, config) {}).error(function(data, status, headers, config) {});
+      EditorDataService.loadResource(resource);
     }
 
     $scope.saveResource = function() {
@@ -438,7 +413,7 @@ define(["angular"], function(angular) {
     $scope.openXtextEditor = function(tab) {
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
-          editor = xtext.createEditor({
+          var editor = xtext.createEditor({
             xtextLang: tab.language,
             syntaxDefinition: $scope.editorConfig[tab.language].syntaxDefinition,
             serviceUrl: $scope.editorConfig[tab.language].serviceUrl,
@@ -458,43 +433,44 @@ define(["angular"], function(angular) {
     }
 
     $scope.addEditor = function(model) {
-      $http.post("./rest/project/" + $scope.projectName + "/resources", {
-        "name": model.name,
-        "version": model.version,
-        "namespace": model.namespace,
-        "filename": model.filename,
-        "modelSubType": model.modelSubType,
-        "modelType": model.modelType,
-        "description": model.description
-      }).success(
-        function(data, status, headers, config) {
-          if (data.message == "resource already exists") {
-            window.alert("File already exists")
+      var resource = {
+        name: model.name,
+        version: model.version,
+        namespace: model.namespace,
+        filename: model.filename,
+        modelSubType: model.modelSubType,
+        modelType: model.modelType,
+        description: model.description
+      };
+      var params = {projectName: $scope.projectName, resource: resource};
+      ProjectDataService.createProjectResource(params).then(function(data){
+        if (data.message === "resource already exists") {
+          window.alert("File already exists");
+        } else {
+          $scope.counter++;
+          var tabId = $scope.counter;
+          var editorParentDivId = "xtext-editor-parent-" + tabId;
+          var editorDivId = "xtext-editor-" + tabId;
+          model.resourceId = data.resource.properties["resourceId"];
+          var tab = model;
+          tab.id = tabId;
+          tab.editorParentDivId = editorParentDivId;
+          tab.editorDivId = editorDivId;
+          if (tab.modelSubType != "") {
+            tab.type = tab.modelSubType;
           } else {
-            $scope.counter++;
-            var tabId = $scope.counter;
-            var editorParentDivId = "xtext-editor-parent-" + tabId;
-            var editorDivId = "xtext-editor-" + tabId;
-            model.resourceId = data.resource.properties["resourceId"];
-            var tab = model;
-            tab.id = tabId;
-            tab.editorParentDivId = editorParentDivId;
-            tab.editorDivId = editorDivId;
-            if (tab.modelSubType != "") {
-              tab.type = tab.modelSubType;
-            } else {
-              tab.type = tab.language;
-            }
-            $scope.tabs.push(tab);
-            $scope.selectedTabIndex = $scope.tabs.length - 1;
-            $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id'];
-            var element = angular.element(document).find('#editors');
-            element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
-            $compile(element.contents())($scope);
-            $scope.addXtextEditor(editorDivId, model);
+            tab.type = tab.language;
           }
-        }).error(function(data, status, headers, config) {
-        window.alert("File already exists")
+          $scope.tabs.push(tab);
+          $scope.selectedTabIndex = $scope.tabs.length - 1;
+          $scope.selectedTabId = $scope.tabs[$scope.selectedTabIndex]['id'];
+          var element = angular.element(document).find('#editors');
+          element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
+          $compile(element.contents())($scope);
+          $scope.addXtextEditor(editorDivId, model);
+        }
+      }).catch(function(error){
+        window.alert("File already exists");
       });
     }
 
@@ -549,7 +525,7 @@ define(["angular"], function(angular) {
       if ($scope.editors.length > 0) {
         $scope.selectTab($scope.editors.length - 1);
       } else {
-        $scope.models = []
+        $scope.models = [];
         $scope.isEditorOpen = false;
       }
     }
@@ -644,10 +620,10 @@ define(["angular"], function(angular) {
     }
 
     $scope.isValidModel = function(editor) {
-      if (editor == null) {
+      if (editor === null) {
         return false;
       }
-      if (editor.xtextServices.editorContext._annotations.length !== 0) {
+      if (editor.xtextServices.editorContext._annotations.length !=== 0) {
         return false;
       } else {
         return true;
@@ -661,19 +637,20 @@ define(["angular"], function(angular) {
           var language = $scope.tabs[$scope.selectedTabIndex]["language"];
           var editor = $scope.selectedEditor;
           var modelId = $scope.selectedModelId;
-          $http.post($scope.editorConfig[language].importModelUrl, {
-            "modelName": modelId["name"],
-            "modelNamespace": modelId["namespace"],
-            "modelVersion": modelId["version"],
-            "projectName": $scope.projectName,
-            "resourceId": editor.xtextServices.validationService._encodedResourceId
-          }).success(
-            function(data, status, headers, config) {
+          var importModelRequest = {
+            modelName: modelId["name"],
+            modelNamespace: modelId["namespace"],
+            modelVersion: modelId["version"],
+            projectName: $scope.projectName,
+            resourceId: editor.xtextServices.validationService._encodedResourceId
+          }
+          var params = {language: language, importModelRequest: importModelRequest};
+          EditorDataService.importModel(params).then(function(data){
               editor.setValue(data);
-            }).error(function(data, status, headers, config) {
-            window.alert("Failed")
-          }).finally(function() {
-            $scope.showImportButton = true;
+              $scope.showImportButton = true;
+          }).catch(function(error){
+              window.alert("Failed");
+              $scope.showImportButton = true;
           });
         } else {
           window.alert("Please select a model to import");
@@ -689,19 +666,18 @@ define(["angular"], function(angular) {
         var language = $scope.tabs[$scope.selectedTabIndex]["language"];
         var editor = $scope.selectedEditor;
         var modelId = $scope.selectedModelId;
-        $http.post($scope.editorConfig[language].referenceModelUrl, {
-          "targetResourceId": targetResourceId,
-          "referenceResourceId": referenceResourceId
-        }).success(
-          function(data, status, headers, config) {
-            editor.setValue(data);
-          }).error(function(data, status, headers, config) {
-            window.alert("Failed")
-        }).finally(function() {
-            $scope.showImportButton = true;
+        var referenceResourceRequest = {
+          targetResourceId: targetResourceId,
+          referenceResourceId: referenceResourceId
+        };
+        var params = {language: language, referenceResourceRequest: referenceResourceRequest};
+        EditorDataService.referenceResource(params).then(function(data){
+          editor.setValue(data);
+        }).catch(function(error){
+          window.alert("Failed");
         });
       } else {
-          window.alert("Your Vorto Model contains errors. Please correct and try again.");
+        window.alert("Your Vorto Model contains errors. Please correct and try again.");
       }
     }
 
@@ -717,10 +693,8 @@ define(["angular"], function(angular) {
     }
 
     $scope.search = function() {
-      var filter = null;
-      var modelType = null;
-      filter = $scope.queryFilter;
-      if ($scope.tabs[$scope.selectedTabIndex] == undefined) {
+      var filter = $scope.queryFilter;
+      if ($scope.tabs[$scope.selectedTabIndex] === undefined) {
         return;
       }
       var language = $scope.tabs[$scope.selectedTabIndex]["language"];
@@ -728,13 +702,13 @@ define(["angular"], function(angular) {
         $scope.models = [];
         return;
       }
+      var params = {language: language, filter: filter};
       $scope.showSearchButton = false;
-      $http.get($scope.editorConfig[language].searchUrl + filter).success(
-        function(data, status, headers, config) {
-          $scope.models = data;
-        }).error(function(data, status, headers, config) {
+      EditorDataService.searchRepository(params).then(function(data){
+        $scope.models = data;
+        $scope.showSearchButton = true;
+      }).catch(function(error){
         $scope.models = [];
-      }).finally(function() {
         $scope.showSearchButton = true;
       });
     }

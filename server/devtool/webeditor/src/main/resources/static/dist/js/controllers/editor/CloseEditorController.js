@@ -1,9 +1,9 @@
-define(["angular"], function(angular) {
-  angular
-    .module("apps.controller")
-    .controller("CloseEditorController", CloseEditorController);
+define(["../init/AppController"], function(controllers) {
+  controllers.controller("CloseEditorController", CloseEditorController);
 
-  CloseEditorController.$inject = ["$rootScope", "$scope", "$uibModalInstance", "ShareDataService"]
+  CloseEditorController.$inject = [
+    "$rootScope", "$scope", "$uibModalInstance", "ShareDataService"
+  ]
 
   function CloseEditorController($rootScope, $scope, $uibModalInstance, ShareDataService) {
     $scope.index = ShareDataService.getCloseEditorIndex();
