@@ -29,12 +29,15 @@ public class InterceptedUserInfoTokenServices extends UserInfoTokenServices {
 	public OAuth2Authentication loadAuthentication(String accessToken)
 			throws AuthenticationException, InvalidTokenException {
 		OAuth2Authentication auth = super.loadAuthentication(accessToken);
-		Map<String, Object> userDetails = ((Map<String, Object>) auth.getUserAuthentication().getDetails());
 		
-		if (userRepository.findByEmail((String) userDetails.get("email")) == null) {
-			userDetails.put("isRegistered", "false");
-		} else {
-			userDetails.put("isRegistered", "true");
+		if (auth != null) {
+			Map<String, Object> userDetails = ((Map<String, Object>) auth.getUserAuthentication().getDetails());
+			
+			if (userRepository.findByEmail((String) userDetails.get("email")) == null) {
+				userDetails.put("isRegistered", "false");
+			} else {
+				userDetails.put("isRegistered", "true");
+			}
 		}
 		
 		return auth;
