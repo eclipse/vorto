@@ -7,7 +7,8 @@ define([
 
   '../data/publish/PublishDataService',
 
-  '../shared/ShareDataService'
+  '../common/ShareDataService',
+  '../common/ToastrService'
 ], function () {
 
 });

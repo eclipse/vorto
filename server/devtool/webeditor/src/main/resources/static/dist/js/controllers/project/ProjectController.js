@@ -2,10 +2,11 @@ define(["../init/AppController"], function(controllers) {
   controllers.controller("ProjectController", ProjectController);
 
   ProjectController.$inject = [
-    "$rootScope", "$scope", "$location", "$http", "$uibModal", "ProjectDataService"
+    "$rootScope", "$scope", "$location", "$http", "$uibModal",
+    "ProjectDataService", "ToastrService"
   ]
 
-  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService) {
+  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService, ToastrService) {
     $scope.selectedProject = null;
     $scope.projects = [];
     $scope.topRow = [];
@@ -29,7 +30,9 @@ define(["../init/AppController"], function(controllers) {
       var params = {project: project};
       ProjectDataService.createProject(params).then(function(data){
         if (data.message === "resource already exists") {
-          window.alert("Project " + projectName + " already exsits")
+          var message = "Project " + projectName + " already exsits";
+          var params = {message: message};
+          ToastrService.createErrorToast(params);
         } else {
           $location.path("editor/" + projectName);
           $location.replace();
