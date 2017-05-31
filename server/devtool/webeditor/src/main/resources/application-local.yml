@@ -1,0 +1,14 @@
+server:
+  port: 9080
+
+github:
+  client:
+    clientId: 
+    clientSecret: 
+    accessTokenUri: https://github.com/login/oauth/access_token
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientAuthenticationScheme: form
+    scope:
+      - user
+  resource:
+    userInfoUri: https://api.github.com/user

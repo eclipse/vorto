@@ -17,7 +17,6 @@ package org.eclipse.vorto.server.devtool.utils;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
@@ -30,7 +29,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClientException;
@@ -114,14 +116,17 @@ public class DevtoolRestClient {
 	}
 
 	private HttpHeaders getAuthorisedHeaders() {
-		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		String password = (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-		String plainCreds = username + ":" + password;
-		byte[] plainCredsBytes = plainCreds.getBytes();
-		byte[] base64CredsBytes = Base64.encodeBase64(plainCredsBytes);
-		String base64Creds = new String(base64CredsBytes);
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Basic " + base64Creds);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth instanceof OAuth2Authentication) {
+            Object details = auth.getDetails();
+            if (details instanceof OAuth2AuthenticationDetails) {
+                OAuth2AuthenticationDetails oauth = (OAuth2AuthenticationDetails) details;
+                headers.add("Authorization", "Bearer " + oauth.getTokenValue());
+            }
+        }
+
 		return headers;
 	}
 
