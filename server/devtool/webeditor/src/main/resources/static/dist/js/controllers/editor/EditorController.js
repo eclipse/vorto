@@ -4,10 +4,10 @@ define(["../init/AppController"], function(controllers) {
   EditorController.$inject = [
     "$rootScope", "$scope", "$location", "$routeParams", "$compile",
     "$uibModal", "toastr", "ShareDataService", "ProjectDataService",
-    "EditorDataService", "PublishDataService"
+    "EditorDataService", "PublishDataService", "ToastrService"
   ]
 
-  function EditorController($rootScope, $scope, $location, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService) {
+  function EditorController($rootScope, $scope, $location, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -218,7 +218,9 @@ define(["../init/AppController"], function(controllers) {
         PublishDataService.validateProject(params).then(function(data){
           $scope.openPublishModal(data);
         }).catch(function(error){
-          window.alert("Failed to upload resources");
+          var message = "Failed to upload resources";
+          var params = {message: message};
+          ToastrService.createErrorToast(params);
         });
       } else {
         ShareDataService.setUnsavedFiles(unsavedFiles);
@@ -248,8 +250,6 @@ define(["../init/AppController"], function(controllers) {
           var resource = $scope.getResourceObject(response);
           $scope.loadResourceAtServer(resource);
         });
-      }).catch(function(error){
-          window.alert("Unable to delete the file");
       });
     }
 
@@ -343,7 +343,9 @@ define(["../init/AppController"], function(controllers) {
           editor.setValue(content);
         });
       }).catch(function(error){
-          windoow.alert("Unable to delete the file");
+        var message = "Unable to delete file";
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
       });
     });
 
@@ -445,7 +447,9 @@ define(["../init/AppController"], function(controllers) {
       var params = {projectName: $scope.projectName, resource: resource};
       ProjectDataService.createProjectResource(params).then(function(data){
         if (data.message === "resource already exists") {
-          window.alert("File already exists");
+          var message = resource.filename + " already exists";
+          var params = {message: message};
+          ToastrService.createErrorToast(params);
         } else {
           $scope.counter++;
           var tabId = $scope.counter;
@@ -470,7 +474,9 @@ define(["../init/AppController"], function(controllers) {
           $scope.addXtextEditor(editorDivId, model);
         }
       }).catch(function(error){
-        window.alert("File already exists");
+        var message = resource.filename + " already exists";
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
       });
     }
 
@@ -623,7 +629,7 @@ define(["../init/AppController"], function(controllers) {
       if (editor === null) {
         return false;
       }
-      if (editor.xtextServices.editorContext._annotations.length !=== 0) {
+      if (editor.xtextServices.editorContext._annotations.length !== 0) {
         return false;
       } else {
         return true;
@@ -649,14 +655,22 @@ define(["../init/AppController"], function(controllers) {
               editor.setValue(data);
               $scope.showImportButton = true;
           }).catch(function(error){
-              window.alert("Failed");
+              var message = "Failed to import model";
+              var params = {message: message};
+              ToastrService.createErrorToast(params);
               $scope.showImportButton = true;
           });
         } else {
-          window.alert("Please select a model to import");
+            var message = "Please select a model to import";
+            var params = {message: message};
+            ToastrService.createWarningToast(params);
+            $scope.showImportButton = true;
         }
       } else {
-        window.alert("Your Vorto Model contains errors. Please correct and try again.");
+          var message = "Your Vorto Model contains errors. Please correct and try again.";
+          var params = {message: message};
+          ToastrService.createWarningToast(params);
+          $scope.showImportButton = true;
       }
     }
 
@@ -674,10 +688,14 @@ define(["../init/AppController"], function(controllers) {
         EditorDataService.referenceResource(params).then(function(data){
           editor.setValue(data);
         }).catch(function(error){
-          window.alert("Failed");
+          var message = "Failed to reference resource";
+          var params = {message: message};
+          ToastrService.createErrorToast(params);
         });
       } else {
-        window.alert("Your Vorto Model contains errors. Please correct and try again.");
+        var message = "Your Vorto Model contains errors. Please correct and try again.";
+        var params = {message: message};
+        ToastrService.createWarningToast(params);
       }
     }
 

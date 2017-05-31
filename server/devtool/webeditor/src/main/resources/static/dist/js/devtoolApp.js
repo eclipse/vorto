@@ -9,6 +9,7 @@ define("devtoolApp", [
   "jquery",
   "ngJsTree",
   "smart-table",
+  "config/init/AppConfigLoader",
   "controllers/init/AppControllerLoader",
   "directives/init/AppDirectiveLoader",
   "services/init/AppServiceLoader"
@@ -21,6 +22,7 @@ define("devtoolApp", [
     "ui.bootstrap.tpls",
     "ngJsTree",
     "toastr",
+    "apps.config",
     "apps.controller",
     "apps.directive",
     "apps.service",
