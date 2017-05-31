@@ -35,7 +35,7 @@ public class LWM2MGenerator implements IVortoCodeGenerator {
 		GenerationResultZip output = new GenerationResultZip(infomodel,getServiceKey());
 		
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
-			new FunctionBlockXmlGeneratorTask().generate(fbProperty.getType(), context, output);
+			// new FunctionBlockXmlGeneratorTask().generate(fbProperty.getType(), context, output);
 			if (context.getConfigurationProperties().getOrDefault(CONFIG_PARAM_SKIP_CLIENT, "false").equalsIgnoreCase("false")) { 
 				new FunctionBlockLeshanGeneratorTask().generate(fbProperty.getType(), context, output);
 			}
