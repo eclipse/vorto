@@ -26,6 +26,9 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
+					    <configuration>
+						    <addResources>true</addResources>
+					    </configuration>
 					</execution>
 				</executions>
 			</plugin>
