@@ -5,8 +5,8 @@ vorto:
       path: https://localhost:8443/infomodelrepository
       
 http:
-  proxyHost: localhost
-  proxyPort: 8080
+  proxyHost:
+  proxyPort:
 
 server:
   port: 9443

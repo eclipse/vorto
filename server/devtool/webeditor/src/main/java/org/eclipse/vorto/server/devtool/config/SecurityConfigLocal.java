@@ -43,7 +43,7 @@ public class SecurityConfigLocal extends AbstractSecurityConfiguration {
 
 	@Value("${http.proxyPort}")
 	private String proxyPort;
-	
+
 	@Override
 	protected Filter ssoFilter() {
 		CompositeFilter filter = new CompositeFilter();
@@ -52,20 +52,23 @@ public class SecurityConfigLocal extends AbstractSecurityConfiguration {
 		OAuth2ClientAuthenticationProcessingFilter githubFilter = new OAuth2ClientAuthenticationProcessingFilter(
 				"/login/github");
 		OAuth2RestTemplate githubTemplate = new OAuth2RestTemplate(github(), oauth2ClientContext);
-		
-		SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-		InetSocketAddress address = new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort));
-		Proxy proxy = new Proxy(Proxy.Type.HTTP, address);
-		factory.setProxy(proxy);
-		githubTemplate.setRequestFactory(factory);
+
 		AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider = new AuthorizationCodeAccessTokenProvider();
-		authorizationCodeAccessTokenProvider.setRequestFactory(factory);
-		
+		if (!"".equals(proxyHost) && !"".equals(proxyPort)) {
+			SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+			InetSocketAddress address = new InetSocketAddress(proxyHost, Integer.parseInt(proxyPort));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP, address);
+			factory.setProxy(proxy);
+			githubTemplate.setRequestFactory(factory);
+			authorizationCodeAccessTokenProvider.setRequestFactory(factory);
+		}
+
 		AccessTokenProvider accessTokenProvider = new AccessTokenProviderChain(
-		Arrays.<AccessTokenProvider> asList(authorizationCodeAccessTokenProvider));
+				Arrays.<AccessTokenProvider>asList(authorizationCodeAccessTokenProvider));
 		githubTemplate.setAccessTokenProvider(accessTokenProvider);
 		githubFilter.setRestTemplate(githubTemplate);
-		UserInfoTokenServices tokenServices = new UserInfoTokenServices(githubResource().getUserInfoUri(), github().getClientId());
+		UserInfoTokenServices tokenServices = new UserInfoTokenServices(githubResource().getUserInfoUri(),
+				github().getClientId());
 		tokenServices.setRestTemplate(githubTemplate);
 		githubFilter.setTokenServices(tokenServices);
 		filters.add(githubFilter);
