@@ -62,12 +62,12 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "Not found"), 
 							@ApiResponse(code = 200, message = "OK")})
 	@RequestMapping(method = RequestMethod.GET,
-					value = "/users/{username}")
+					value = "/users/{username:.+}")
 	public ResponseEntity<User> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
-		LOGGER.debug("User INFO: ", userRepository.findByUsername(username));
+		LOGGER.debug("User {} - {} ", username, userRepository.findByUsername(username));
 		
-		return new ResponseEntity<User>(userRepository.findByUsername(username.toLowerCase()), HttpStatus.OK);
+		return new ResponseEntity<User>(userRepository.findByUsername(username), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Creates a new User")
@@ -101,7 +101,7 @@ public class UserController {
 		
 		user.setFirstName(userDto.getFirstName());
 		user.setLastName(userDto.getLastName());
-		user.setUsername(userDto.getUsername().toLowerCase());
+		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
 		user.setHasWatchOnRepository(userDto.getHasWatchOnRepository());
 		
@@ -135,7 +135,7 @@ public class UserController {
     	
     	boolean userExists = false;
 		
-    	if (userRepository.findByUsername(username.toLowerCase()) == null){
+    	if (userRepository.findByUsername(username) == null){
 			userExists = false;
 		} else {
 			
