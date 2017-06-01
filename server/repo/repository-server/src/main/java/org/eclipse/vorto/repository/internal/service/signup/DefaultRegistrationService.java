@@ -53,7 +53,7 @@ public class DefaultRegistrationService implements IRegistrationService{
 		
 		user.setFirstName(userDto.getFirstName());
 		user.setLastName(userDto.getLastName());
-		user.setUsername(userDto.getUsername().toLowerCase());
+		user.setUsername(userDto.getUsername());
 		user.setPassword(userDto.getPassword());
 		user.setHasWatchOnRepository(false);
 		user.setEmail(userDto.getEmail());
