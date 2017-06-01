@@ -135,8 +135,14 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	@Override
 	public void deleteResource(String projectName, String resourceId) {
+		deleteResource(projectName, editorSession.getUser(), resourceId);
+	}
+	
+	@Override
+	public void deleteResource(String projectName, String author, String resourceId) {
 		IResourceQuery resourceQuery = projectRepositoryService.createQuery().pathLike(projectName)
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId);
+				.property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId)
+				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author);
 		Resource resource = resourceQuery.singleResult();
 		projectRepositoryService.deleteResource(resource);
 	}

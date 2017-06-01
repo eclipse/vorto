@@ -187,11 +187,11 @@ define(["../init/AppController"], function(controllers) {
       $scope.openResourceTree($scope.projectResources);
       $scope.$apply();
       var arr = $scope.projectResources.filter(function(resource) {
-        return resource["id"] === node["original"]["id"];
+        return resource["id"] == node["original"]["id"];
       });
       var referenceResourceId = arr[0]["resourceId"];
       arr = $scope.projectResources.filter(function(resource) {
-        return resource["id"] === node["parent"];
+        return resource["id"] == node["parent"];
       });
       var targetResourceId = arr[0]["resourceId"];
       $scope.referenceResource(targetResourceId, referenceResourceId);
@@ -333,7 +333,7 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.$on("deleteEditor", function(event, tab) {
       var params = {projectName: $scope.projectName, resourceId: tab.resourceId};
-      ProjectDataService.deleteResource(params).then(function(data){
+      ProjectDataService.deleteProjectResource(params).then(function(data){
         if (tab.index > -1) {
           $scope.closeTab(tab.index);
         }
@@ -362,6 +362,10 @@ define(["../init/AppController"], function(controllers) {
       if (save) {
         var editor = $scope.editors[index];
         editor.xtextServices.saveResource();
+        var tab = $scope.tabs[index];
+        var message = "Resource " + tab.filename + " saved";
+        var params = {message: message};
+        ToastrService.createSuccessToast(params);
       }
       $scope.closeEditor(index);
     });
@@ -377,6 +381,10 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.saveResource = function() {
       var editor = $scope.editors[$scope.selectedTabIndex];
+      var tab = $scope.tabs[$scope.selectedTabIndex];
+      var message = "Resource " + tab.filename + " saved";
+      var params = {message: message};
+      ToastrService.createSuccessToast(params);
       editor.xtextServices.saveResource();
     }
 
@@ -676,7 +684,6 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.referenceResource = function(targetResourceId, referenceResourceId) {
       if ($scope.isValidModel($scope.selectedEditor)) {
-        $scope.showImportButton = false;
         var language = $scope.tabs[$scope.selectedTabIndex]["language"];
         var editor = $scope.selectedEditor;
         var modelId = $scope.selectedModelId;
@@ -725,9 +732,17 @@ define(["../init/AppController"], function(controllers) {
       EditorDataService.searchRepository(params).then(function(data){
         $scope.models = data;
         $scope.showSearchButton = true;
+        if(data.length == 0) {
+          var message = "No models found for filter " + filter + " in the Vorto repository";
+          var params = {message: message};
+          ToastrService.createWarningToast(params);
+        }
       }).catch(function(error){
         $scope.models = [];
         $scope.showSearchButton = true;
+        var message = "Failed to get search for models with filter " + filter;
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
       });
     }
 
