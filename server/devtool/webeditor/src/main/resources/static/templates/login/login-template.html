@@ -1,6 +1,6 @@
 <div class="login-box">
 	<div class="page-header">
-		<h2>Sign in to Vorto</h2>
+		<h2>Sign in</h2>
 	</div>
 			
 	<div>
@@ -9,60 +9,4 @@
 		</a>
 	</div>
 	<hr>
-	<div>			
-	      <form class="form-signin">
-	        
-	        <span ng-if="error" class="help-block login-form-main-message ">Authentication failed!</span>
-	        	        
-	        <label for="inputUsername" class="sr-only">Username</label>
-	       	<div class="left-inner-addon">
-    			<i class="fa fa-user"></i>
-	        	<input type="text" id="inputUsername" class="form-control" placeholder="Username" ng-model="credentials.username" required autofocus>
-			</div>
-			
-			<label for="inputPassword" class="sr-only">Password</label>
-	       	<div class="left-inner-addon">
-				<i class="fa fa-key"></i>
-	       	 	<input type="password" id="inputPassword" class="form-control" placeholder="Password" ng-model="credentials.password" required>
-			</div>
-	      
-	      	<br/>
-	        
-	        <button class="btn btn-primary btn-block" type="submit" ng-click="login()">Sign in</button>
-	       <!--   
-	        <br/>
-	       		<a href="" style="margin-left:auto; margin-right:auto;" data-toggle="modal" data-target="#forgotPassword">Forgot your Password?</a>
-	       	<br/>
-	       	-->
-	       	<div id="signup">
-		       	<br/>
-		       		<h3>New to Vorto? <a href="#/signup">Sign Up</a></h3>
-	       		 <br/>
-       		 </div>     	
-	      </form>		
-	</div>
-</div>
-
-
-<!-- Modal -->
-<div id="forgotPassword" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header" style="background-color:#3a5a82; color:white;">
-        <button type="button" class="close" data-dismiss="modal" style="color:white;">&times;</button>
-        <h4 class="modal-title"><b>Forgot Password</b></h4>
-      </div>
-      <div class="modal-body">
-        <p>Enter your Email-Adress <br/></p>
-	    <input type="email" id="email" class="form-control" placeholder="Email" ng-model="user.email" required autofocus>
-      </div>
-      <div class="modal-footer">
-       	<button type="button" class="btn btn-success" ng-click="sendPassword()">Send Password</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-
-  </div>
 </div>

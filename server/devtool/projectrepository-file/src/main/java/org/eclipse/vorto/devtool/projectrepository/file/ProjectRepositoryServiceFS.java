@@ -65,7 +65,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	}
 	
 	private static void createProjectsDirectory(String projectsDirectory) {
-		File projectsFolder = new File(projectsDirectory);
+		File projectsFolder = new File(System.getProperty("user.dir")+File.separator+projectsDirectory);
 
 		if (!projectsFolder.exists()) {
 			projectsFolder.mkdirs();

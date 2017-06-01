@@ -42,7 +42,7 @@ class FileResourceHandler implements IServerResourceHandler {
 	@Inject 
 	private IEncodingProvider encodingProvider
 
-	private String projectRepositoryPath = "../devtool-project-repository";
+	private String projectRepositoryPath = "devtool-project-repository";
 	
 	private IProjectRepositoryService projectRepositoryService = new ProjectRepositoryServiceFS(projectRepositoryPath);
 			

@@ -15,8 +15,6 @@
 package org.eclipse.vorto.server.devtool.config;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -26,18 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.web.OrderedHttpPutFormContentFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.filter.OAuth2ClientAuthenticationProcessingFilter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
@@ -45,15 +39,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.web.filter.CompositeFilter;
 
-@Configuration
 @EnableOAuth2Client
 @Order(6)
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public abstract class AbstractSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private OAuth2ClientContext oauth2ClientContext;
+	protected OAuth2ClientContext oauth2ClientContext;
 	
 	@Bean
 	public OrderedHttpPutFormContentFilter httpPutFormContentFilter() {
@@ -103,20 +95,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new ResourceServerProperties();
 	}
 
-	private Filter ssoFilter() {
-		CompositeFilter filter = new CompositeFilter();
-		List<Filter> filters = new ArrayList<>();
-
-		OAuth2ClientAuthenticationProcessingFilter githubFilter = new OAuth2ClientAuthenticationProcessingFilter(
-				"/login/github");
-		OAuth2RestTemplate githubTemplate = new OAuth2RestTemplate(github(), oauth2ClientContext);
-		githubFilter.setRestTemplate(githubTemplate);
-		UserInfoTokenServices tokenServices = new UserInfoTokenServices(githubResource().getUserInfoUri(), github().getClientId());
-		tokenServices.setRestTemplate(githubTemplate);
-		githubFilter.setTokenServices(tokenServices);
-		filters.add(githubFilter);
-
-		filter.setFilters(filters);
-		return filter;
-	}
+	protected abstract Filter ssoFilter();
 }
