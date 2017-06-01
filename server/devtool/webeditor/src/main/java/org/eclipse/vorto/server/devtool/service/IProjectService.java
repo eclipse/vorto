@@ -38,4 +38,6 @@ public interface IProjectService {
 	Resource checkResourceExists(Resource resource);
 	
 	void deleteResource(String projectName, String resourceId);
+	
+	void deleteResource(String projectName, String author, String resourceId);
 }
