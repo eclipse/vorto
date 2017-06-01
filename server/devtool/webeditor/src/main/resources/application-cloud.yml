@@ -1,20 +1,14 @@
-
 vorto:
   repository:
     base:
-      path: https://localhost:8443/infomodelrepository
+      path: http://vorto.eclipse.org
       
 http:
-  proxyHost: localhost
-  proxyPort: 8080
+  proxyHost:
+  proxyPort:
 
 server:
-  port: 9443
-  ssl:
-    key-store: classpath:keystore.jks
-    key-store-password: Vorto123!
-    keyStoreType: jks
-    keyAlias: vorto-selfsigned
+  port: 9080
   
 github:
   client:

@@ -11,8 +11,8 @@ github:
   oauth2:
     enabled: true
     client:
-      clientId: 
-      clientSecret: 
+      clientId: ${github_clientid}
+      clientSecret: ${github_secret}
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       clientAuthenticationScheme: form

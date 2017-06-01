@@ -92,6 +92,11 @@ public class EditorConfigurationLocal {
 			return new RestTemplate();
 		}
 	}
+	
+	@Bean(name = "DevClient")
+	public RestTemplate devClientTemplate() {
+		return new RestTemplate();
+	}
 			
 	@PostConstruct
 	public void setUpTestUser() {

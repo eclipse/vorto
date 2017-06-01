@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.api.upload.ModelHandle;
 import org.eclipse.vorto.repository.api.upload.ServerResponse;
 import org.eclipse.vorto.server.devtool.web.controller.publisher.FileMessageResource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -51,6 +52,7 @@ public class DevtoolRestClient {
 	private String basePath;
 	
 	@Autowired
+	@Qualifier("DevClient")
 	private RestTemplate restTemplate;
 
 	private Gson gson = createGson();
