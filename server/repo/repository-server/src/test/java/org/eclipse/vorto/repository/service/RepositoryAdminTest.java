@@ -93,5 +93,4 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 			assertEquals(1, ex.getReferencedBy().size());
 		}
 	}
-	
 }

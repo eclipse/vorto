@@ -17,11 +17,13 @@ package org.eclipse.vorto.repository.resolver;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.resolver.LWM2MQuery;
 import org.eclipse.vorto.repository.internal.resolver.DefaultResolver;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
+import org.junit.Ignore;
 import org.junit.Test;
  
 public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
@@ -37,7 +39,15 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 		
 		assertNotNull(this.modelRepository.getById(lwm2mResolver.resolve(new LWM2MQuery("2"))));
 	}
-	
+	/*
+	 * Steps: Specify an invalid objectId.
+	 * Expected Result: No object should be returned.
+	 */
+	@Ignore
+	@Test
+	public void toDotestResolveForNonExistingObjectId() {
+		fail("Negative test case not included");
+	}
 	@Test
 	public void testResolveResourceId() {
 		checkinModel("lwm2m/ColorLight.fbmodel");
@@ -47,4 +57,15 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 		lwm2mResolver.setRepository(this.modelRepository);
 		assertNull(lwm2mResolver.resolve(new LWM2MQuery("3")));
 	}
+	/*
+	 * Steps: Specify invalid resource Id
+	 * Expected Result: No resource should be returned.
+	 */
+	@Ignore
+	@Test
+	public void toDotestResolveInvalidResourceId() {
+		fail("Uploading invalid model cases are not included");
+	
+	}
+	
 }

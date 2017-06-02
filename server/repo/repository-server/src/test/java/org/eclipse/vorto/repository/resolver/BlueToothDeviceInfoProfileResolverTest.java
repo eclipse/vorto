@@ -16,11 +16,13 @@ package org.eclipse.vorto.repository.resolver;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.resolver.BluetoothQuery;
 import org.eclipse.vorto.repository.internal.resolver.DefaultResolver;
 import org.eclipse.vorto.repository.service.AbstractIntegrationTest;
+import org.junit.Ignore;
 import org.junit.Test;
  
 public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationTest {
@@ -37,5 +39,14 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
 		
 		assertNotNull(this.modelRepository.getById(resolver.resolve(new BluetoothQuery("4810"))));
 	}
-
+	
+	/*
+	 * Steps: Specify an invalid device serial number. 
+	 * Expected Result: No device should be returned.
+	 */
+	@Ignore
+	@Test
+	public void toDotestResolveInfoModelByInvalidDeviceInfoProfileSerialNo() {
+		fail("Negative test case for invalid serial number is not included");
+	}
 }
