@@ -72,6 +72,9 @@ ul.nav p {
   font-size: 20px;
   padding-top:20px;
   }
+.navbar-brand-suffix {
+  font-size: 11px;
+  }
 }
 
 @media (min-width: 970px) {
@@ -79,12 +82,18 @@ ul.nav p {
   font-size: 28px;
   padding-top:20px;
   }
+.navbar-brand-suffix {
+  font-size: 15px;
+  }
 }
 
 @media (min-width: 1168px) {
 .navbar-inverse .navbar-brand {
   font-size: 48px;
   padding-top:10px;
+  }
+.navbar-brand-suffix {
+  font-size: 20px;
   }
 }
 
@@ -379,6 +388,12 @@ ul.nav {
     padding-top: 10px;
     color: #fff;
 }
+.navbar-inverse .navbar-brand .navbar-brand-suffix {
+  font-size: 12px;
+  padding-top: 10px;
+  font-weight: bold;
+  color: #fff;
+  }
 }
 
 .navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
