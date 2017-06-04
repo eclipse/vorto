@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.api.generation;
 
 import java.util.Arrays;
+import java.util.Set;
 
 public class GeneratorInfo {
 	private String key;
@@ -28,6 +29,8 @@ public class GeneratorInfo {
 	private String[] tags;
 	private GeneratorRating rating;
 	private String infoUrl;
+	private String configTemplate = null;
+	private Set<String> configKeys = null;
 
 	public String getKey() {
 		return key;
@@ -119,6 +122,22 @@ public class GeneratorInfo {
 
 	public void setTags(String[] tags) {
 		this.tags = tags;
+	}
+	
+	public String getConfigTemplate() {
+		return configTemplate;
+	}
+
+	public void setConfigTemplate(String configTemplate) {
+		this.configTemplate = configTemplate;
+	}
+
+	public Set<String> getConfigKeys() {
+		return configKeys;
+	}
+
+	public void setConfigKeys(Set<String> configKeys) {
+		this.configKeys = configKeys;
 	}
 
 	@Override

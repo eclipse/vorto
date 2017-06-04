@@ -250,7 +250,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 
 }]);
 
-repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route',function ($rootScope,$scope, $http,$routeParams,$location,$route) {
+repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal) {
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
     $scope.documentationGenerators = null;
@@ -425,7 +425,39 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
      * Stop - Handling Comments
      */
 
+	$scope.openGeneratorConfig = function(generator) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "GeneratorConfigController",
+        templateUrl: "partials/generator-config-template.html",
+        size: 'lg',
+        resolve: {
+    		generator: function () {
+      			return generator;
+    		},
+    		model: function() {
+    			return $scope.model;
+    		}
+  		}
+      });
+    };
 
+}]);
+
+repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', function ($scope,$http,generator,model,$uibModalInstance) {
+
+	$scope.model = model;
+	$scope.generator = generator;
+	
+	
+	$scope.generate = function() {
+     window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key);
+ 	 $uibModalInstance.dismiss("cancel");
+    };
+
+    $scope.cancel = function() {
+      $uibModalInstance.dismiss("cancel");
+    };
 }]);
 
 repositoryControllers.controller('GeneratorController', [ '$scope','$http', function ($scope,$http) {

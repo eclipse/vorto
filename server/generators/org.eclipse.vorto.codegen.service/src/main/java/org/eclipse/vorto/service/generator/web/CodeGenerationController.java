@@ -97,6 +97,9 @@ public class CodeGenerationController {
 	private IVortoCodeGenerator vortoGenerator;
 	
 	@Autowired
+	private IGeneratorConfigUITemplate configTemplate;
+	
+	@Autowired
 	private ServerGeneratorLookup lookupService;
 	
 	@Autowired
@@ -180,6 +183,8 @@ public class CodeGenerationController {
 		serviceInfo.setName(serviceName);
 		serviceInfo.setClassifier(classifier);
 		serviceInfo.setTags(tags);
+		serviceInfo.setConfigTemplate(this.configTemplate.getContent(serviceInfo));
+		serviceInfo.setConfigKeys(this.configTemplate.getKeys());
 		return serviceInfo;
 	}
 	

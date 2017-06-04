@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.codegen.api;
 
+import java.util.Set;
+
 /**
  * 
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -30,6 +32,9 @@ public class GeneratorServiceInfo {
 	private String image144x144;
 	private ServiceClassifier classifier;
 	private String[] tags;
+		
+	private String configTemplate = null;
+	private Set<String> configKeys = null;
 
 	public String getKey() {
 		return key;
@@ -103,4 +108,22 @@ public class GeneratorServiceInfo {
 		this.tags = tags;
 	}
 
+	public String getConfigTemplate() {
+		return configTemplate;
+	}
+
+	public void setConfigTemplate(String configTemplate) {
+		this.configTemplate = configTemplate;
+	}
+
+	public Set<String> getConfigKeys() {
+		return configKeys;
+	}
+
+	public void setConfigKeys(Set<String> configKeys) {
+		this.configKeys = configKeys;
+	}
+
+	
+	
 }

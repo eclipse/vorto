@@ -108,7 +108,7 @@
 							<div class="row" ng-repeat="row in platformGeneratorMatrix">
 								<!--genbox-->
 								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
-									<a ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{generator.key}}">
+								
 		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
 		                					<span class="tiny-box-icon">
 												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
@@ -118,11 +118,11 @@
 											</div>
 		               						<div class="tiny-box-number">
 												<span>
-													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{generator.key}}">Generate</button>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" ng-click="openGeneratorConfig(generator)">Generate</button>
 												</span>
 											</div>
 		               					</div>
-	               					</a>
+	               				
 								</div>
 							   <!-- end genbox -->            
 							</div>

@@ -1498,4 +1498,13 @@ legend.results-border {
   display: inline-block;
   vertical-align: middle;
   line-height: 0.9em;
-  color: #005691; }
+  color: #005691; 
+ }
+  
+.align-left {
+	float: left;
+}
+
+.align-right {
+	float: right;
+}
