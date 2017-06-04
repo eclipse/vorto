@@ -1,11 +1,6 @@
 server:
-  port: 8443
+  port: 8080
   contextPath: /infomodelrepository
-  ssl:
-    key-store: classpath:keystore.jks
-    key-store-password: Vorto123!
-    keyStoreType: jks
-    keyAlias: vorto-selfsigned
 
 github:
   oauth2:

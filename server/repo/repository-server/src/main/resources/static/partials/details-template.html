@@ -50,7 +50,7 @@
 							  <div class="adv">
 								  <div class="small-box bg-aqua">
 									<div class="inner">
-									  <h3>Client Tools</h3>
+									  <h3>Tools</h3>
 									  <p><img src="images/cli.png"> Vorto CLI</p>
 									  <p><img src="images/eclipse.png"> Vorto Eclipse Toolset</p>
 									</div>
@@ -103,30 +103,28 @@
 						  </div>
 						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype'">
 							<div class="row">
-								<label>Platform Generators: </label>
+								<label>Available Generators: </label>
 							</div>
 							<div class="row" ng-repeat="row in platformGeneratorMatrix">
 								<!--genbox-->
-								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">
+								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
 									<a ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{generator.key}}">
-									<div class="gen-box" title="{{generator.description}}">
-										<div class="gen-logo"><img ng-src="data:image/png;base64,{{generator.image32x32}}" width="32" height="32"></div>
-										<div class="gen-name"><span>{{generator.name}}</span></div>
-										<div class="gen-rating">
-											<span class="rating">
-												<span ng-class="isFilled(generator.rating,'FAIR') || isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'EXCELLENT')" class="star"></span>
+		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
+		                					<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
 											</span>
-										</div>
-									</div>
-									</a>
+		               						<div class="tiny-box-name">
+												<span>{{generator.name}}</span>
+											</div>
+		               						<div class="tiny-box-number">
+												<span>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{generator.key}}">Generate</button>
+												</span>
+											</div>
+		               					</div>
+	               					</a>
 								</div>
 							   <!-- end genbox -->            
-							</div>
-							<div class="col-xs-12">
-								<label class="pull-right"><a href="./#/generators">More Info <i class="fa fa-arrow-circle-right"></i></a></label>
 							</div>
 						 </div>
 						   <div class="col-sm-12">
