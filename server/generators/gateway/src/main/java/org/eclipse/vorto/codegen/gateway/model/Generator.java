@@ -6,10 +6,13 @@ import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.gateway.exception.GeneratorCreationException;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
+import org.eclipse.vorto.server.commons.DefaultConfigTemplate;
+import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
 
 public class Generator {
 	private GeneratorServiceInfo info;
 	private IVortoCodeGenerator instance;
+	private IGeneratorConfigUITemplate configUi = new DefaultConfigTemplate();
 	
 	public static Generator create(String configFile, Class<? extends IVortoCodeGenerator> generatorClass) {
 		Objects.requireNonNull(configFile);
@@ -26,6 +29,8 @@ public class Generator {
 	private Generator(GeneratorServiceInfo info, IVortoCodeGenerator instance) {
 		this.info = Objects.requireNonNull(info);
 		this.instance = Objects.requireNonNull(instance);
+		this.info.setConfigTemplate(configUi.getContent(info));
+		this.info.setConfigKeys(configUi.getKeys());
 	}
 	
 	public GeneratorServiceInfo getInfo() {

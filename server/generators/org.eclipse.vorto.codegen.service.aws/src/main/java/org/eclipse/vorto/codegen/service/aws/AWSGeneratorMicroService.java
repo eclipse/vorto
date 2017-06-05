@@ -16,8 +16,8 @@ package org.eclipse.vorto.codegen.service.aws;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.aws.AWSGenerator;
+import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
-import org.eclipse.vorto.service.generator.web.IGeneratorConfigUITemplate;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

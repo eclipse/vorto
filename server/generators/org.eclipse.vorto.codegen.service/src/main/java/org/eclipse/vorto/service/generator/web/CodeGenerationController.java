@@ -39,6 +39,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
 import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
 import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.slf4j.Logger;

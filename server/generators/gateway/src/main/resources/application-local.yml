@@ -5,4 +5,4 @@ server:
   serviceUrl: http://localhost:8081/generatorgateway
 
 vorto:
-  serverUrl: https://localhost:8443/infomodelrepository
+  serverUrl: http://localhost:8080/infomodelrepository

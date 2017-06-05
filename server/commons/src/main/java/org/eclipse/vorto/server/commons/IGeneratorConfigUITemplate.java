@@ -1,4 +1,4 @@
-package org.eclipse.vorto.service.generator.web;
+package org.eclipse.vorto.server.commons;
 
 import java.util.Set;
 

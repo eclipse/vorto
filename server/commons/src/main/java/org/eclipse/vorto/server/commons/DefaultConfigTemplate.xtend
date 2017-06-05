@@ -1,7 +1,8 @@
-package org.eclipse.vorto.service.generator.web
+package org.eclipse.vorto.server.commons
 
 import java.util.Collections
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
+import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
 class DefaultConfigTemplate implements IGeneratorConfigUITemplate {
 	
