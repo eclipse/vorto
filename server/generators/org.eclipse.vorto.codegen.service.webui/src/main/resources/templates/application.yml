@@ -1,0 +1,6 @@
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  profiles:
+    active: local

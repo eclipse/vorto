@@ -6,9 +6,9 @@
 		<artifactId>generators</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>org.eclipse.vorto.codegen.service.aws</artifactId>
+	<artifactId>org.eclipse.vorto.codegen.service.webui</artifactId>
 	<description>
-        Generates AWS lambda and alexa skillset for a given information model
+        Generates a Web Front-end for various IoT Backends
     </description>
 	<packaging>jar</packaging>
 
@@ -19,19 +19,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.aws</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.codegen.service</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.server.commons</artifactId>
-			<version>${project.version}</version>
+			<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
@@ -41,7 +37,7 @@
 
 
 	<build>
-		<finalName>vorto-aws</finalName>
+		<finalName>vorto-webui</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -60,7 +56,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>org.eclipse.vorto.codegen.service.aws.AWSGeneratorMicroService</mainClass>
+							<mainClass>org.eclipse.vorto.codegen.service.webui.WebUIGeneratorMicroService</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
