@@ -391,7 +391,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $scope.date = new Date();
 
         var comment = {
-            "modelId"	: '/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version,
+            "modelId"	: $routeParams.namespace + '.' + $routeParams.name + ':' + $routeParams.version,
             "author"	: $scope.user,
             "date"		: $scope.date,
             "content"	: commentContent
