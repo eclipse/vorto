@@ -1468,7 +1468,7 @@ legend.results-border {
   margin: 5px auto;
   min-height: 114px;
   background: #eee;
-  height: 160px;
+  height: 154px;
   width: 154px;
   text-align: center; }
 
@@ -1484,17 +1484,17 @@ legend.results-border {
   border: 4px solid #c2e1f5;
   cursor: pointer; }
 
-.tiny-box-name, .tiny-box-number {
+.tiny-box-name, .tiny-box-action {
   margin: 0px 5px 0px;
-  height: 30px; }
+  height: 50px; }
 
 .tiny-box-name span {
   display: inline-block;
   vertical-align: middle;
   line-height: 0.9em;
-  font-weight: 600; }
+  font-weight: 500; }
 
-.tiny-box-number span {
+.tiny-box-action span {
   display: inline-block;
   vertical-align: middle;
   line-height: 0.9em;

@@ -32,17 +32,13 @@
 
 						<div class="row">
 								
-							  <h3 class="modelHeader ng-binding">{{model.displayName}}</h3>
+							  <h3 class="modelHeader ng-binding">{{model.displayName}} {{model.type}}</h3>
 
 							  <div class="col-sm-12 modelDetails">
-								 <div class="col-sm-3 modelImg" ng-show="model.type === 'InformationModel'">
+								 <div class="col-sm-3 modelImg">
 								   <div class="row">
 										<div class="placeHolder">
-											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
-											<img ng-if="model.hasImage" ng-src="rest/model/image/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}" width="200" height="200"/>
-											<div class="upload">
-												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
-											</div>
+											<div class="noimg">No Image Yet</div>
 										</div>
 										<input style="display:none" type="file" onchange="angular.element(this).scope().uploadImage()" name="imageFile" id="imageFile" accept="png | jpg">
 								   </div>
@@ -98,6 +94,11 @@
 								 
 							</dd>
 							</dl>
+							<div class="modelFilePreview">
+							  <h4>Model Preview</h4>
+							  <pre><code style="font-size: 12px;">{{content}}</code>
+							</pre>
+							</div>
 						  </div>
 						  
 						  </div>
@@ -116,7 +117,7 @@
 		               						<div class="tiny-box-name">
 												<span>{{generator.name}}</span>
 											</div>
-		               						<div class="tiny-box-number">
+		               						<div class="tiny-box-action">
 												<span>
 													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" ng-click="openGeneratorConfig(generator)">Generate</button>
 												</span>
@@ -127,13 +128,6 @@
 							   <!-- end genbox -->            
 							</div>
 						 </div>
-						   <div class="col-sm-12">
-							<div class="modelFilePreview">
-							  <h4>Model Preview</h4>
-							  <pre><code>{{content}}</code>
-							</pre>
-							</div>
-						   </div> 
 						  </div>
 						</div>
 					</div>
