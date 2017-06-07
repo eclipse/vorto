@@ -20,6 +20,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.eclipse.vorto.repository.security.SecurityConfiguration;
 import org.eclipse.vorto.repository.web.security.VortoUser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,18 @@ public class HomeController {
 	@Value("${eidp.oauth2.enabled}")
 	private boolean eidpEnabled;
 	
+	@Value("${webEditor.enabled}")
+	private boolean webEditorEnabled;
+	
+	@Value("${webEditor.loginUrl.github}")
+	private String githubLoginUrl;
+	
+	@Value("${webEditor.loginUrl.eidp}")
+	private String eidpLoginUrl;
+	
+	@Value("${webEditor.loginUrl.default}")
+	private String defaultLoginUrl;
+	
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Returns the currently logged in User")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized"), 
@@ -67,24 +80,43 @@ public class HomeController {
 			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 			map.put("name", oauth2User.getName());
 			map.put("email", ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
-			map.put("isRegistered", ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("isRegistered"));
+			
+			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()); 
+			map.put("isRegistered", userDetails.get("isRegistered"));
+			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
 			map.put("name", vortoUser.getUsername());
 			map.put("email", vortoUser.getEmail());
 			map.put("isRegistered", "true");
+			map.put("loginType", "default");
 		}
 		
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value ={ "/context" }, method = RequestMethod.GET)
-	public Map<String, String> globalContext() {
-		Map<String, String> map = new LinkedHashMap<>();
+	public Map<String, Object> globalContext() {
+		Map<String, Object> context = new LinkedHashMap<>();
 		
-		map.put("githubEnabled", Boolean.toString(githubEnabled));
-		map.put("eidpEnabled", Boolean.toString(eidpEnabled));
+		context.put("githubEnabled", githubEnabled);
+		context.put("eidpEnabled", eidpEnabled);
+		context.put("webEditor", getWebEditorContext());
 		
-		return map;
+		return context;
+	}
+	
+	public Map<String, Object> getWebEditorContext() {
+		Map<String, Object> webEditorContext = new LinkedHashMap<>();
+		
+		Map<String, Object> loginContext = new LinkedHashMap<>();
+		loginContext.put("default", defaultLoginUrl);
+		loginContext.put("github", githubLoginUrl);
+		loginContext.put("eidp", eidpLoginUrl);
+		
+		webEditorContext.put("enabled", webEditorEnabled);
+		webEditorContext.put("loginUrl", loginContext);
+		
+		return webEditorContext;
 	}
 }

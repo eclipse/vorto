@@ -47,6 +47,8 @@ import org.springframework.web.filter.CompositeFilter;
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	public static final String LOGIN_TYPE = "loginType";
+	
 	@Autowired
 	private UserDetailsService userDetailsService;
 

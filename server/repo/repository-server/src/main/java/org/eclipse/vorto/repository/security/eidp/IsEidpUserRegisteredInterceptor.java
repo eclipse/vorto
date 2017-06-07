@@ -2,6 +2,7 @@ package org.eclipse.vorto.repository.security.eidp;
 
 import java.util.Map;
 
+import org.eclipse.vorto.repository.security.SecurityConfiguration;
 import org.eclipse.vorto.repository.service.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2RestOperations;
@@ -24,6 +25,8 @@ public class IsEidpUserRegisteredInterceptor implements Interceptor {
 		} else {
 			userDetails.put("isRegistered", "true");
 		}
+		
+		userDetails.put(SecurityConfiguration.LOGIN_TYPE, "eidp");
 	}
 
 }
