@@ -83,10 +83,18 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.logout = function() {
         $http.post("logout", {}).success(function() {
             $rootScope.authenticated = false;
+            $rootScope.userInfo = null;
+            $rootScope.user = null;
+            $rootScope.authority = null;
+            $rootScope.getContext();
             $location.path("/login");
         }).error(function(data) {
-            $location.path("/login");
             $rootScope.authenticated = false;
+            $rootScope.userInfo = null;
+            $rootScope.user = null;
+            $rootScope.authority = null;
+            $rootScope.getContext();
+            $location.path("/login");
         });
     };
     
