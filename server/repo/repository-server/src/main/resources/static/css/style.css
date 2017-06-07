@@ -316,8 +316,9 @@ select {
 }
 
 .project-selection {
-    float:left;
-    margin-left:15px;
+    float: left;
+    margin-left: 15px;
+    padding-right: 45px;
 }
 
 .table>tbody>tr {

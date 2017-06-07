@@ -38,6 +38,8 @@ public class InterceptedUserInfoTokenServices extends UserInfoTokenServices {
 			} else {
 				userDetails.put("isRegistered", "true");
 			}
+			
+			userDetails.put(SecurityConfiguration.LOGIN_TYPE, "github");
 		}
 		
 		return auth;

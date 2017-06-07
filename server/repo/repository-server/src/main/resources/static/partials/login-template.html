@@ -3,13 +3,13 @@
 		<h2>Sign in to Vorto</h2>
 	</div>
 		
-	<div ng-show="context.eidpEnabled === 'true'">
+	<div ng-show="context.eidpEnabled">
 		<a href="eidp/login" class="btn btn-block btn-flat" style="text-align: left">
 			<img src="images/bosch-social.png" alt="Bosch"/>&nbsp;Sign in using Bosch eIDP
 		</a>
 	</div>
 	
-	<div ng-show="context.githubEnabled === 'true'">
+	<div ng-show="context.githubEnabled">
 		<a href="github/login" class="btn btn-block btn-flat" style="text-align: left">
 			<img src="images/github-social.png" alt="Github"/>&nbsp;Sign in using Github
 		</a>

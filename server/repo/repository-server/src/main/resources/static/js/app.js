@@ -54,6 +54,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.getUser = function() {
         $http.get("./user").success(function(data, status, headers, config) {
             if (data.name !== null) {
+                $rootScope.userInfo = data;
                 $rootScope.user = data.name;
                 $rootScope.authenticated = true;
                 $rootScope.authority = data.role;
@@ -82,10 +83,25 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.logout = function() {
         $http.post("logout", {}).success(function() {
             $rootScope.authenticated = false;
+            $rootScope.userInfo = null;
+            $rootScope.user = null;
+            $rootScope.authority = null;
+            $rootScope.getContext();
             $location.path("/login");
         }).error(function(data) {
-            $location.path("/login");
             $rootScope.authenticated = false;
+            $rootScope.userInfo = null;
+            $rootScope.user = null;
+            $rootScope.authority = null;
+            $rootScope.getContext();
+            $location.path("/login");
         });
+    };
+    
+    $rootScope.webEditorLink = function() {
+        if ($rootScope.userInfo != null && $rootScope.userInfo.loginType != null) {
+            return $rootScope.context.webEditor.loginUrl[$rootScope.userInfo.loginType];    		
+        }
+        return $rootScope.context.webEditor.loginUrl["default"];
     };
 });

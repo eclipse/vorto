@@ -1,6 +1,11 @@
 server:
-  port: 8080
+  port: 8443
   contextPath: /infomodelrepository
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-password: Vorto123!
+    keyStoreType: jks
+    keyAlias: vorto-selfsigned
 
 github:
   oauth2:
@@ -18,14 +23,14 @@ github:
     
 eidp:
   oauth2:
-    enabled: false
+    enabled: true
     client:
-      clientId: 
-      clientSecret: 
+      clientId: ${eidp_clientid}
+      clientSecret: ${eidp_secret}
       accessTokenUri: https://accounts.bosch.com/adfs/oauth2/token
       userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
       clientAuthenticationScheme: form
-      resource: 
+      resource: https://vorto.eclipse.org
       scope:
         - openid
         - email
@@ -33,6 +38,13 @@ eidp:
     resource:
       userInfoUri: https://accounts.bosch.com/adfs/userinfo
       preferTokenInfo: true
+
+webEditor:
+  enabled: true
+  loginUrl:
+    default: https://localhost:9443/#/project
+    github: https://localhost:9443/login/github
+    eidp: https://localhost:9443/login/eidp
 
 mail:
   smtp:
