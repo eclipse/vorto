@@ -57,9 +57,10 @@ public interface IGeneratorService {
 	/**
 	 * Gets more information about the generator, such as description, rating, creator etc.
 	 * @param serviceKey
+	 * @param includeUITemplate
 	 * @return
 	 */
-	GeneratorInfo getGeneratorServiceInfo(String serviceKey);
+	GeneratorInfo getGeneratorServiceInfo(String serviceKey, boolean includeUITemplate);
 	
 	/**
 	 * Returns the mostly used generators

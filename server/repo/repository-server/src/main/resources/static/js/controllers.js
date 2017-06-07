@@ -253,7 +253,6 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal) {
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
-    $scope.documentationGenerators = null;
     $scope.chosenFile = false;
 
     $scope.uploadImage = function () {
@@ -316,13 +315,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         });
     };
 
-    $scope.getDocumentationGenerators = function () {
-        $http.get('./rest/generation-router/documentation')
-        .success(function(result){
-            $scope.documentationGenerators = result;
-        });
-    };
-
     $scope.isFilled = function(rating, value) {
         if (rating === value) {
             return "filled"
@@ -345,7 +337,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getDetails($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getContent($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getPlatformGenerators();
-    $scope.getDocumentationGenerators();
 
     $scope.remove = function(){
         $http.delete('./rest/admin/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
@@ -449,6 +440,14 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	$scope.model = model;
 	$scope.generator = generator;
 	
+	$scope.loadConfiguration = function() {
+		$http.get('./rest/generation-router/info/'+$scope.generator.key)
+			.success(function(result){
+				$scope.generator = result;
+			});
+	};
+	
+	$scope.loadConfiguration();
 	
 	$scope.generate = function() {
      window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key);

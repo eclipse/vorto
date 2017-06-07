@@ -193,7 +193,7 @@ public class ModelGenerationController extends AbstractRepositoryController {
 		
 		for (String serviceKey : this.generatorService.getRegisteredGeneratorServiceKeys(ServiceClassifier.valueOf(classifier))) {
 			try {
-				generatorInfoResult.add(this.generatorService.getGeneratorServiceInfo(serviceKey));
+				generatorInfoResult.add(this.generatorService.getGeneratorServiceInfo(serviceKey,false));
 			} catch(Throwable t) {
 				LOGGER.warn("Generator " + serviceKey+" appears to be offline or not deployed. Skipping...");
 			}
@@ -224,6 +224,14 @@ public class ModelGenerationController extends AbstractRepositoryController {
 		}
 		
 		return false;
+	}
+	
+	@ApiOperation(value = "Returns a specific generator info")
+	@RequestMapping(value = "/info/{serviceKey}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
+	public GeneratorInfo getGeneratorInfo(
+			@ApiParam(value = "generator service key", required = true) @PathVariable String serviceKey) {
+		
+		return this.generatorService.getGeneratorServiceInfo(serviceKey,true);
 	}
 		
 	@ApiOperation(value = "Returns the rank of code generators by usage")

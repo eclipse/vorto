@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -43,9 +44,9 @@ public class Generators {
 	}
 	
 	@RequestMapping(value = "/generators/{key}/generate/info", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public GeneratorServiceInfo info(final @PathVariable String key) {
+	public GeneratorServiceInfo info(final @PathVariable String key,@RequestParam boolean includeConfigUI) {
 		Generator generator = repo.get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
-		return generator.getInfo();
+		return includeConfigUI? generator.getFullInfo() : generator.getInfo();
 	}
 	
 	@RequestMapping(value = "/generators/{key}/generate/{namespace}/{name}/{version:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

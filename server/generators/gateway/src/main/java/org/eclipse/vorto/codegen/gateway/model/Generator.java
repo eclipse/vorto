@@ -29,8 +29,6 @@ public class Generator {
 	private Generator(GeneratorServiceInfo info, IVortoCodeGenerator instance) {
 		this.info = Objects.requireNonNull(info);
 		this.instance = Objects.requireNonNull(instance);
-		this.info.setConfigTemplate(configUi.getContent(info));
-		this.info.setConfigKeys(configUi.getKeys());
 	}
 	
 	public GeneratorServiceInfo getInfo() {
@@ -47,5 +45,11 @@ public class Generator {
 
 	public void setInstance(IVortoCodeGenerator instance) {
 		this.instance = instance;
+	}
+
+	public GeneratorServiceInfo getFullInfo() {
+		this.info.setConfigTemplate(configUi.getContent(info));
+		this.info.setConfigKeys(configUi.getKeys());
+		return this.info;
 	}
 }
