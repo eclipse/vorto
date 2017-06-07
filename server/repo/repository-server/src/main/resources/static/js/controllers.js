@@ -435,27 +435,37 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 }]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', function ($scope,$http,generator,model,$uibModalInstance) {
+repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance','$compile','$timeout', function ($scope,$http,generator,model,$uibModalInstance,$compile,$timeout) {
 
 	$scope.model = model;
 	$scope.generator = generator;
-	
+		
 	$scope.loadConfiguration = function() {
+	
 		$http.get('./rest/generation-router/info/'+$scope.generator.key)
-			.success(function(result){
+			.success(function(result) {
 				$scope.generator = result;
-			});
+				
+				var template = $scope.generator.configTemplate;
+				
+				var compiled = $compile(template)($scope);
+		
+				$timeout(function() {
+					console.log(compiled.prop('innerHTML'));
+					$scope.configTemplate = compiled.prop('innerHTML');
+		 		});
+		});
 	};
 	
 	$scope.loadConfiguration();
 	
 	$scope.generate = function() {
-     window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key);
- 	 $uibModalInstance.dismiss("cancel");
+     	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key);
+ 	 	$uibModalInstance.dismiss("cancel");
     };
 
     $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
+     	$uibModalInstance.dismiss("cancel");
     };
 }]);
 
