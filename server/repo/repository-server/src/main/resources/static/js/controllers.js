@@ -421,7 +421,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         animation: true,
         controller: "GeneratorConfigController",
         templateUrl: "partials/generator-config-template.html",
-        size: 'lg',
+        size: "lg",
         resolve: {
     		generator: function () {
       			return generator;
@@ -435,32 +435,36 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 }]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance','$compile','$timeout', function ($scope,$http,generator,model,$uibModalInstance,$compile,$timeout) {
+repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', function ($scope,$http,generator,model,$uibModalInstance) {
 
 	$scope.model = model;
 	$scope.generator = generator;
-		
-	$scope.loadConfiguration = function() {
+	$scope.configParams = {};
 	
+	$scope.loadConfiguration = function() {
 		$http.get('./rest/generation-router/info/'+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				
-				var template = $scope.generator.configTemplate;
+				for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+					var key = result.configKeys[i];
+					$scope.configParams[key] = false;
+				}
 				
-				var compiled = $compile(template)($scope);
-		
-				$timeout(function() {
-					console.log(compiled.prop('innerHTML'));
-					$scope.configTemplate = compiled.prop('innerHTML');
-		 		});
+				$scope.configTemplate = $scope.generator.configTemplate;
+
 		});
 	};
 	
 	$scope.loadConfiguration();
 	
 	$scope.generate = function() {
-     	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key);
+		var requestParams = "";
+		for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+			var key = $scope.generator.configKeys[i];
+			requestParams += "&"+key+"="+$scope.configParams[key];
+		}
+     	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 
