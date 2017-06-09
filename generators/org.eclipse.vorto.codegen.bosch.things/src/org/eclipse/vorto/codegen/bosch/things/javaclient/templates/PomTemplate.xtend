@@ -18,9 +18,6 @@ import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-/**
- * @author Ying Shaodong (Robert Bosch (SEA) Pte. Ltd)
- */
 class PomTemplate implements IFileTemplate<InformationModel> {
 
 	override getFileName(InformationModel model) {

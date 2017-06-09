@@ -21,9 +21,6 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
-/**
- * @author Ying Shaodong (Robert Bosch (SEA) Pte. Ltd)
- */
 class ThingsClientTemplate implements ITemplate<InformationModel> {
 
 	override getContent(InformationModel model, InvocationContext context) {

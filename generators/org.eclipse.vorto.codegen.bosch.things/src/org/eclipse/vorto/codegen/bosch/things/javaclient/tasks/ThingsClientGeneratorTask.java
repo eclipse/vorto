@@ -19,9 +19,6 @@ import org.eclipse.vorto.codegen.api.ITemplate;
 import org.eclipse.vorto.codegen.bosch.things.javaclient.templates.ThingsClientTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
-/**
- * @author Ying Shaodong (Robert Bosch (SEA) Pte. Ltd)
- */
 public class ThingsClientGeneratorTask extends AbstractTemplateGeneratorTask<InformationModel> {
 
 	@Override

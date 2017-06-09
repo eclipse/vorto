@@ -19,9 +19,6 @@ import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.bosch.things.javaclient.TypeMapper
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 
-/**
- * @author Ying Shaodong (Robert Bosch (SEA) Pte. Ltd)
- */
 class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 
     override getFileName(FunctionblockModel model) {
