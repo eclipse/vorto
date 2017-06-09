@@ -1,17 +1,17 @@
-package org.eclipse.vorto.codegen.bosch.things.tasks;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks;
 
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.ConfigurationValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.ConstraintTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.EntityValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.EnumValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.EventValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.FaultValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.OperationParametersValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.OperationReturnTypeValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.OperationSingleParameterValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.PrimitiveTypeValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.StateValidationTemplate;
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.StatusValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.ConfigurationValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.ConstraintTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.EntityValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.EnumValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.EventValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.FaultValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.OperationParametersValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.OperationReturnTypeValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.OperationSingleParameterValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.PrimitiveTypeValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.StateValidationTemplate;
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.StatusValidationTemplate;
 
 public class ValidationTemplates {
 	private static EnumValidationTemplate enumValidationTemplate = new EnumValidationTemplate();

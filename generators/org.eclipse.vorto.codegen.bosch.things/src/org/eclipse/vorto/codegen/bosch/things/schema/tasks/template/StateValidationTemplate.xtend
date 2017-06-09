@@ -1,9 +1,9 @@
-package org.eclipse.vorto.codegen.bosch.things.tasks.template;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks.template;
 
 import java.util.HashMap
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.bosch.things.Utils
+import org.eclipse.vorto.codegen.bosch.things.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType

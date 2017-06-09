@@ -1,4 +1,4 @@
-package org.eclipse.vorto.codegen.bosch.things.tasks;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks;
 
 import org.eclipse.vorto.codegen.api.AbstractTemplateGeneratorTask;
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
