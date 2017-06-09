@@ -14,6 +14,7 @@ define(["../init/AppController"], function(controllers) {
     $scope.selectedModel = null;
     $scope.selectedModelId = null;
     $scope.showAddFunctionBlockButton = true;
+    $scope.isValidationInProcess = false;
 
     $scope.tabs = [];
     $scope.editors = [];
@@ -213,11 +214,14 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.uploadProject = function() {
       var unsavedFiles = $scope.getUnsavedFiles();
+      $scope.isValidationInProcess = true;
       if (unsavedFiles.length < 1) {
         var params = {projectName: $scope.projectName};
         PublishDataService.validateProject(params).then(function(data){
+          $scope.isValidationInProcess = false;
           $scope.openPublishModal(data);
         }).catch(function(error){
+          $scope.isValidationInProcess = false;
           var message = "Failed to upload resources";
           var params = {message: message};
           ToastrService.createErrorToast(params);

@@ -1,6 +1,6 @@
 <div class="error-message-body" ng-show="showEditorBody == false">
 	<h2>
-		Could not open project : {{projectName}} 
+		Could not open project : {{projectName}}
 	</h2>
 </div>
 
@@ -12,16 +12,17 @@
 					<h3 class="box-title">
 						<b>{{projectName}}</b>
 						<div class="align-right">
-							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true">Save <span class="fa fa-floppy-o"></span></button>							 
-							 <button class="btn btn-primary" type="button" ng-click="uploadProject()">Publish <i class="fa fa-upload" aria-hidden="true"></i></button>
-							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Exit <span class="glyphicon glyphicon-remove"></span></button>							 
+							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true">Save <span class="fa fa-floppy-o"></span></button>
+							 <button class="btn btn-primary" type="button" ng-click="uploadProject()" ng-show="isValidationInProcess == false">Publish <i class="fa fa-upload" aria-hidden="true"></i></button>
+							 <a ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-1x"></i> </a>
+							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Exit <span class="glyphicon glyphicon-remove"></span></button>
 						</div>
 					</h3>
 				</div>
 				<!-- /.box-header -->
 				<p>
 					<i class="fa fa-edit"></i> Describe your Vorto Model
-					<br>	
+					<br>
 					<i>Hint: Press Ctrl + Space for Content Assist</i>
 					<br>
 					<i>Hint: Press Ctrl + S to Save</i>
@@ -48,13 +49,13 @@
 				        <li role="presentation">
 				        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openAddEditorModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
 				        </li>
-				    </ul>		    
+				    </ul>
 				</div>
 		        <div id="editors"></div>
 		   </div>
 		</div>
-			
-		<div class="col-md-3 col-box" ng-show="isEditorOpen == true">		
+
+		<div class="col-md-3 col-box" ng-show="isEditorOpen == true">
 			<div class="col-md-1 col-box">
 				<div class="center-col">
 					<div class="center-container" ng-show="showImportButton">
@@ -67,7 +68,7 @@
 							<i class="fa fa-cog fa-spin fa-2x"></i>
 						</a>
 					</div>
-				</div>	
+				</div>
 			</div>
 
 			<div class="col-md-11 col-box">
@@ -98,7 +99,7 @@
 										</th>
 										 <th class="action">
 										 	Details
-										</th>								
+										</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -134,5 +135,5 @@
 				</div>
 			</div>
 		</div>
-	</div>	
+	</div>
 </div>
