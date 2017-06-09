@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.bosch.things.tasks.template;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks.template;
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext

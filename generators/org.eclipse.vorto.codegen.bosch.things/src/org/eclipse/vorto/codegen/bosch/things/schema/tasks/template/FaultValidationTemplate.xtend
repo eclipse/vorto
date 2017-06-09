@@ -1,8 +1,8 @@
-package org.eclipse.vorto.codegen.bosch.things.tasks.template;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks.template;
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.bosch.things.Utils
+import org.eclipse.vorto.codegen.bosch.things.schema.Utils
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
@@ -29,7 +29,7 @@ public class FaultValidationTemplate implements ITemplate<Fault> {
 		this.constraintTemplate = constraintTemplate;
 	}
 	
-	override getContent(Fault fault, InvocationContext invocationContext) {
+	override getContent(Fault fault, InvocationContext invocationContext) {	
 		var fbm = fault.eContainer.eContainer as FunctionblockModel;
 		var modelId = fbm.namespace + "." + fbm.name + ":" + fbm.version;
 				'''

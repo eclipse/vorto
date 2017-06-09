@@ -12,10 +12,10 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.bosch.things
+package org.eclipse.vorto.codegen.bosch.things.schema
 
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.bosch.things.tasks.template.ConstraintTemplate
+import org.eclipse.vorto.codegen.bosch.things.schema.tasks.template.ConstraintTemplate
 import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 
 class Utils {

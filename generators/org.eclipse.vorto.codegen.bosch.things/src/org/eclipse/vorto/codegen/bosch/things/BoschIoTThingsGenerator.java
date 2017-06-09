@@ -16,27 +16,22 @@ package org.eclipse.vorto.codegen.bosch.things;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
-import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.bosch.things.tasks.ValidationTaskFactory;
-import org.eclipse.vorto.core.api.model.functionblock.Configuration;
-import org.eclipse.vorto.core.api.model.functionblock.Event;
-import org.eclipse.vorto.core.api.model.functionblock.Fault;
-import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
-import org.eclipse.vorto.core.api.model.functionblock.Operation;
-import org.eclipse.vorto.core.api.model.functionblock.Status;
-import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
+import org.eclipse.vorto.codegen.bosch.things.javaclient.JavaClientTask;
+import org.eclipse.vorto.codegen.bosch.things.schema.SchemaValidatorTask;
+import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
-	public static final String JSON_SCHEMA_FILE_EXTENSION 	= ".schema.json";
-	public static final String TARGET_PATH 					= "feature";
+	private static final String FALSE = "false";
+	private static final String TRUE = "true";
+	private static final String SIMULATOR = "simulator";
+	private static final String SCHEMAVALIDATOR = "validation";
 
 	public IGenerationResult generate(InformationModel infomodel,
 			InvocationContext invocationContext,
@@ -44,74 +39,28 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
 		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
 
-		for (FunctionblockProperty fbp : infomodel.getProperties()) {
-			FunctionBlock fb = fbp.getType().getFunctionblock();
+		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
+		
+		if (hasNoTarget(invocationContext)) {
+			generator.addTask(new SchemaValidatorTask());
+		} else {
+			if (invocationContext.getConfigurationProperties().getOrDefault(SIMULATOR, FALSE).equalsIgnoreCase(TRUE)) {
+				generator.addTask(new JavaClientTask());
+			}
 			
-			generateForFunctionblock(
-					fb, invocationContext,
-					TARGET_PATH + "/" + fbp.getType().getNamespace() + "." + fbp.getType().getName() + "_" + fbp.getType().getVersion(),
-					JSON_SCHEMA_FILE_EXTENSION,
-					zipOutputter);
-		}
-		return zipOutputter;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void generateForFunctionblock(
-			FunctionBlock fb, 
-			InvocationContext context,
-			String targetPath, 
-			String jsonFileExt,
-			IGeneratedWriter outputter) {
-		if (fb == null) {
-			throw new RuntimeException("fb is null");
-		}
-		
-		String stateTargetPath = targetPath + "/state";
-		String operationTargetPath = targetPath + "/operations";
-		String eventTargetPath = targetPath + "/events";
-		
-		Configuration configuration = fb.getConfiguration();
-		if (configuration != null) {
-			generateTask(configuration, context, outputter, ValidationTaskFactory.getConfigurationValidationTask(jsonFileExt, stateTargetPath));
-		}
-		
-		Status status = fb.getStatus();
-		if (status != null) {
-			generateTask(status, context, outputter, ValidationTaskFactory.getStatusValidationTask(jsonFileExt, stateTargetPath));
-		}
-		
-		Fault fault = fb.getFault();
-		if (fault != null) {
-			generateTask(fault, context, outputter, ValidationTaskFactory.getFaultValidationTask(jsonFileExt, stateTargetPath));
-		}
-		
-		if (configuration != null || status != null || fault != null) {
-			generateTask(fb, context, outputter, ValidationTaskFactory.getStateValidationTask(jsonFileExt, stateTargetPath));
-		}
-		
-		if (fb.getEvents() != null) {
-			for (Event event : fb.getEvents()) {
-				generateTask(event, context, outputter, ValidationTaskFactory.getEventValidationTask(jsonFileExt, eventTargetPath));
+			if (invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(TRUE)) {
+				generator.addTask(new SchemaValidatorTask());
 			}
 		}
 		
-		if (fb.getOperations() != null) {
-			for (Operation op : fb.getOperations()) {
-				generateTask(op, context, outputter, 
-						ValidationTaskFactory.getOperationParametersValidationTask(jsonFileExt, operationTargetPath),
-						ValidationTaskFactory.getOperationReturnTypeValidationTask(jsonFileExt, operationTargetPath));
-			}
-		}
+		generator.generate(infomodel, invocationContext, zipOutputter);
+		
+		return GenerationResultBuilder.from(zipOutputter).build();
 	}
 
-	@SuppressWarnings("unchecked")
-	private <K> void generateTask(K element, InvocationContext context, IGeneratedWriter outputter, ICodeGeneratorTask<K>... tasks) {
-		ChainedCodeGeneratorTask<K> generator = new ChainedCodeGeneratorTask<K>();
-		for(ICodeGeneratorTask<K> task : tasks) {
-			generator.addTask(task);
-		}
-		generator.generate(element, context, outputter);
+	private boolean hasNoTarget(InvocationContext invocationContext) {
+		return (invocationContext.getConfigurationProperties().getOrDefault(SIMULATOR, FALSE).equalsIgnoreCase(FALSE) &&
+		        invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(FALSE));
 	}
 
 	@Override

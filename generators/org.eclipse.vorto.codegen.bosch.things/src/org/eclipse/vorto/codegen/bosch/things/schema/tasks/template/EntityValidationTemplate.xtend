@@ -12,15 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.codegen.bosch.things.tasks.template;
+package org.eclipse.vorto.codegen.bosch.things.schema.tasks.template;
 
 import org.eclipse.vorto.codegen.api.ITemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
-import org.eclipse.vorto.core.api.model.datatype.ConstraintRule
 
 class EntityValidationTemplate implements ITemplate<Entity>{
 	var EnumValidationTemplate enumValidationTemplate;
