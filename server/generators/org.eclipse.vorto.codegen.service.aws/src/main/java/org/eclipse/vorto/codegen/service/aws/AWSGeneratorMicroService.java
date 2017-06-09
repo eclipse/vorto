@@ -16,7 +16,6 @@ package org.eclipse.vorto.codegen.service.aws;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.aws.AWSGenerator;
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
 import org.eclipse.vorto.service.generator.web.AbstractBackendCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,12 +34,7 @@ public class AWSGeneratorMicroService extends AbstractBackendCodeGenerator {
 	public IVortoCodeGenerator awsGenerator() {
 		return new AWSGenerator();
 	}
-	
-	@Override
-	public IGeneratorConfigUITemplate getConfigTemplate() {
-		return new AWSConfigTemplate();
-	}
-	
+		
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
