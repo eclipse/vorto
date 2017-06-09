@@ -31,7 +31,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 	private static final String FALSE = "false";
 	private static final String TRUE = "true";
 	private static final String SIMULATOR = "simulator";
-	private static final String SCHEMAVALIDATOR = "schemavalidator";
+	private static final String SCHEMAVALIDATOR = "validation";
 
 	public IGenerationResult generate(InformationModel infomodel,
 			InvocationContext invocationContext,
