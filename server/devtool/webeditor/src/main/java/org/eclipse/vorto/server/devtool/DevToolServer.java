@@ -69,7 +69,7 @@ public class DevToolServer extends SpringBootServletInitializer {
 
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().antMatchers("/rest/context/user", "/project/**", "/editor/**", "/publish/**")
+			http.authorizeRequests().antMatchers("/rest/context/", "/rest/user/", "/project/**", "/editor/**", "/publish/**")
 					.authenticated().and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessUrl("/index.html");
 			http.formLogin().loginProcessingUrl("/j_spring_security_check");

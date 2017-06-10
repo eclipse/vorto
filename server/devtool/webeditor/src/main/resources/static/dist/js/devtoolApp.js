@@ -55,15 +55,7 @@ define("devtoolApp", [
           redirectTo: "/project"
         });
     }
-  ]).run(function($location, $http, $rootScope) {
-
-    $rootScope.getContext = function() {
-      $http.get("./rest/context").success(function(data, status, headers, config) {
-        $rootScope.globalContext = data;
-      });
-    }
-
-    $rootScope.getContext();
+  ]).run(function($location, $rootScope, LoginDataService) {
 
     $rootScope.$on("$locationChangeStart", function(event, next, current) {
       $rootScope.error = false;
@@ -73,34 +65,43 @@ define("devtoolApp", [
     });
 
     $rootScope.user = [];
+
     $rootScope.getUser = function() {
-      $http.get("rest/context/user").success(function(data, status, headers, config) {
+      LoginDataService.getUser().then(function(data){
         if (data.name != null) {
           $rootScope.user = data.name;
           $rootScope.authenticated = true;
-          $rootScope.authority = data.role;
-          $location.path("/project");
+          $rootScope.getContext();
         } else {
           $location.path("/login");
         }
-      }).error(function(data, status, headers, config) {
+      }).catch(function(error){
         $rootScope.authenticated = false;
-        $location.path("login");
+        $location.path("/login");
+      });
+    };
+
+    $rootScope.getContext = function() {
+      LoginDataService.getContext().then(function(data){
+        $rootScope.globalContext = data;
+        $location.path("/project");
+      }).catch(function(error){
+        $rootScope.globalContext = {};
+      });
+    }
+
+    $rootScope.logout = function() {
+      LoginDataService.logout().then(function(data){
+        $rootScope.authenticated = false;
+        $location.path("/login");
+      }).catch(function(error) {
+        $location.path("/login");
+        $rootScope.authenticated = false;
       });
     };
 
     $rootScope.getUser();
 
-    $rootScope.logout = function() {
-      $http.post("logout", {}).success(function() {
-        $rootScope.authenticated = false;
-        $location.path("/login");
-      }).error(function(data) {
-        $location.path("/login");
-        $rootScope.authenticated = false;
-      });
-    };
   });
-
   return app;
 });
