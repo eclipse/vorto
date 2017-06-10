@@ -6,16 +6,16 @@ You have successfully installed the [Vorto Eclipse Plugins](https://marketplace.
 
 ## Overview
 
-In this tutorial, you are going to show you, how easy you can create a small web application that is able to receive sensor data from MQTT and visualize it in a simple HTML page. 
-All we need to do, is to describe the sensors with Vorto and use existing generators that convert the descriptions into multiple system components. 
+In this tutorial, we are going to show you, how easy you can create a small web application that is able to receive sensor data from MQTT and visualize it in a simple HTML page.
+All we need to do, is to describe the sensors with Vorto and use existing generators that convert the descriptions into multiple system components.
 
 - MQTT consumer that receives the device data and deserializes it into a device specific object model
 - Web Application Front-end that pushes the device data via Web Sockets to the browser and displays it in a HTML page.
 
-![System Architecture](images/vorto_tutorial_architecture.jpg)
+![System Architecture](images/create_webapp_with_vorto/vorto_tutorial_architecture.jpg)
 
 The webapplication that is going to communicate with mqtt client will appear as shown below:
-![Web UIIntro](images/tut_tisensorwebui.jpg)
+![Web UIIntro](images/create_webapp_with_vorto/tut_tisensorwebui.jpg)
 
 ### Let's begin!
 
@@ -25,14 +25,14 @@ The webapplication that is going to communicate with mqtt client will appear as 
 2. Select Model Repository tab, Search for the info model **TI_Sensor**
 3. _TI_SensorTag_ info model gets listed in the search result.
 4. Drag and drop this infomodel into the infomodel frame
-	![Search Infomodel](images/tut_searchdraginfomodel.jpg)
+	![Search Infomodel](images/create_webapp_with_vorto/tut_searchdraginfomodel.jpg)
 5. Select the info model -> Right-click  -> Generate Code -> _choose_ MQTT Generator
-	![Generate MQTT](images/tut_generatemqtt.jpg)
+	![Generate MQTT](images/create_webapp_with_vorto/tut_generatemqtt.jpg)
 6. Switch back to java perspective. The generated project will not compile, since it requires some Java model classes for the device.
 7. Switch back to the Vorto Repository and Generate also the _Javabeans_ for the TI SensorTag
 8. Update mqtt and javabeans project. The MQTT Client project should fully compile now.
 
-	![mqttTick](images/tut_tickmark.jpg) Congratulations! You have just generated a MQTT client for the functionblocks, offered as functionality by the TI SensorTag.
+	![mqttTick](images/create_webapp_with_vorto/tut_tickmark.jpg) Congratulations! You have just generated a MQTT client for the functionblocks, offered as functionality by the TI SensorTag.
 
 ## Step 2:  Implement a Web Application for the information model   ##
 
@@ -43,13 +43,13 @@ In this exercise we are making our IoT app a little more sophisticated and displ
 3. Switch back to the Java Perspective. You should see another Eclipse Project added by the Web UI Generator (_webdevice.example_)
 4. Convert this Project to an Eclipse Project as well. The Web application is a Spring Boot application and already fully runnable.Run the application.
 
-	![SpringBoot app](images/tut_springbootrun.jpg)
+	![SpringBoot app](images/create_webapp_with_vorto/tut_springbootrun.jpg)
 5. Open your browser under [http://localhost:8080/webdevice]
 6. In the web application, switch to the Accelerometer tab. You will see status fields that have been generated from the Accelerometer functionblock.
 
-	![Web UI](images/tut_tisensorwebui.jpg)
+	![Web UI](images/create_webapp_with_vorto/tut_tisensorwebui.jpg)
 
-	![Tick](images/tut_tickmark.jpg) Congratulations! You just implemented a small AngularJS web application with the help of Vorto. However the Accelerometer UI fields are not yet populated with the sensor data. Let's do that in the next exercise.
+	![Tick](images/create_webapp_with_vorto/tut_tickmark.jpg) Congratulations! You just implemented a small AngularJS web application with the help of Vorto. However the Accelerometer UI fields are not yet populated with the sensor data. Let's do that in the next exercise.
 
 ## Step 3: Sign up for a PubNub account ##
 
@@ -61,12 +61,12 @@ In this exercise we are making our IoT app a little more sophisticated and displ
 In this exercise we are going to glue the Web application together with the MQTT client, that Vorto had so nicely generated for us.
 
 1. In the pom.xml of the web application, add a dependency to the generated MQTT client
-	![dependency](images/tut_mqttdependency.jpg)
+	![dependency](images/create_webapp_with_vorto/tut_mqttdependency.jpg)
 
 2. Go to the Spring Boot Application class and import the MQTT configuration for the Accelerometer (_@Import (MqttConfigurationAccelerometer.class_)).
 3. Find the commented code that handles the incoming MQTT events and un-comment it.
 4. Remove the annotation _@EnableScheduling_
-	![Springbootclass](images/tut_springbootclass.jpg)
+	![Springbootclass](images/create_webapp_with_vorto/tut_springbootclass.jpg)
 5. Edit **MqttConfigurationAccelerometer.java** by adding the following lines to **inboundAccelerometer** method
 
 	   MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter(this.connectionUrl, "pub-c-xxxx/sub-c-xxxx/clientAccelerometer_00c740db-9245-4e5a-8c80-8a50908ee69f");
@@ -104,4 +104,4 @@ In this exercise we are going to glue the Web application together with the MQTT
 13. Click on **Publish**
 14. Switch back to Web UI (http://localhost:8080/webdevice/#/accelerometer)
 15. The Speed field is updated with the value **44.4**
-	![Speedfield](images/tut_pubnubtowebui.jpg)
+	![Speedfield](images/create_webapp_with_vorto/tut_pubnubtowebui.jpg)
