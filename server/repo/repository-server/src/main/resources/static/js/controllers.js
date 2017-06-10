@@ -441,6 +441,20 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	$scope.generator = generator;
 	$scope.configParams = {};
 	
+	$scope.enableGeneratorButton = function() {
+		if ($scope.generator.configKeys.length > 0) {
+			for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+				var key = $scope.generator.configKeys[i];
+				if ($scope.configParams[key] === true) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			return true;
+		}
+	};
+	
 	$scope.loadConfiguration = function() {
 		$http.get('./rest/generation-router/info/'+$scope.generator.key)
 			.success(function(result) {

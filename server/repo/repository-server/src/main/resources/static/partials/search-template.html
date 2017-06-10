@@ -22,7 +22,7 @@
 					<input type="text" ng-model="queryFilter" ng-keypress="searchOnEnter($event)" placeholder="Filter Information Models" class="queryFilter" autofocus>
 					<button id="search" type="button" class="btn btn-primary" ng-click="search()">Search</button>
 					<button type="button" class="btn btn-primary" ng-click="clearInput()">Clear</button>
-					<a ng-show="context.webEditor.enabled" class="btn btn-default btn-primary pull-right" target="_blank" href="{{ webEditorLink() }}" role="button"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp;Describe your device</a>
+					<a uib-popover-html="'<b>Describe</b> and <b>Publish</b> a new information model.'" popover-trigger="mouseenter" ng-show="context.webEditor.enabled" class="btn btn-default btn-primary pull-right" target="_blank" href="{{ webEditorLink() }}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New Information Model</a>
 				</div>
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 <div class="modal-header">
-	<h3 class="modal-title"><center>{{generator.name}} Generator Configuration</center></h3>
+	<h3 class="modal-title"><center>Configuration</center></h3>
 </div>
 
 <div>
@@ -19,7 +19,7 @@
 	</div>
 	<div class="modal-footer">
 		<div class="align-right">
-			 <button class="btn btn-primary" type="submit" ng-click="generate()">Generate</button>
+			 <button class="btn btn-primary" type="submit" ng-disabled="!enableGeneratorButton()" ng-click="generate()">Generate</button>
 		</div>
 		<div class="align-left">
 			<button  class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
