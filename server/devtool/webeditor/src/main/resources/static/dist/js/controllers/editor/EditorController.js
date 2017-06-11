@@ -214,8 +214,8 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.uploadProject = function() {
       var unsavedFiles = $scope.getUnsavedFiles();
-      $scope.isValidationInProcess = true;
       if (unsavedFiles.length < 1) {
+        $scope.isValidationInProcess = true;
         var params = {projectName: $scope.projectName};
         PublishDataService.validateProject(params).then(function(data){
           $scope.isValidationInProcess = false;
