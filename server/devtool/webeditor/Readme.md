@@ -6,11 +6,25 @@ The web editor can also be configured to interact with the Vorto Repository. Thi
 
 Once published the user can convert the information models into executable, platform - specific code with the help of Code Generators.
 
+## Contents
+
+#### 1. [Setup](#setup)
+#### 2. [Build and Run](#build-and-run)
+#### 3. [Tutorial](#tutorial)
+
 ## Setup
 
 #### Step 1. Create a Github OAuth Application
 
 The web editor uses Github OAuth to authenticate users. Follow the instructions [here](https://developer.github.com/apps/building-integrations/setting-up-and-registering-oauth-apps/registering-oauth-apps) to create an OAuth application on Github.
+
+You can use the following configuration for your development setup.
+
+    Homepage URL:
+      http://localhost:9080
+
+    Authorization Callback URL:
+      http://localhost:9080
 
 #### Step 2. Configure the Github clientId and clientSecret.
 
@@ -26,9 +40,9 @@ Use the Github clientId and clientSecret from the previous step to configure you
 
 If you would like to use the default configuration for the web editor, you can directly jump to [Build and Run](#build-and-run).
 
-#### Step 3. Configure the Vorto Repository url.
+#### Step 3. Configure the Vorto Repository URL.
 
-By default, the local setup points to the Vorto Repository hosted on localhost. You can update the Vorto Repository to the new url in the appropriate **.yml** file.
+By default, the local setup points to the Vorto Repository hosted on localhost. You can update the Vorto Repository to the new URL in the appropriate **.yml** file.
 
     vorto:
       repository:
@@ -48,6 +62,9 @@ In the command prompt, invoke
 
     mvn clean install spring-boot:run
 
-Open your browser and open the URL:
+Use your browser to open the URL:
 
     http://localhost:9080
+
+## Tutorial
+You can refer to the tutorial [here](https://github.com/eclipse/vorto/blob/development/tutorials/tutorial-create_and_publish_with_web_editor.md).
