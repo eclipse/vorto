@@ -2,12 +2,12 @@ define(["../init/AppController"], function(controllers) {
   controllers.controller("EditorController", EditorController);
 
   EditorController.$inject = [
-    "$rootScope", "$scope", "$location", "$routeParams", "$compile",
+    "$rootScope", "$scope", "$location", "$window", "$routeParams", "$compile",
     "$uibModal", "toastr", "ShareDataService", "ProjectDataService",
     "EditorDataService", "PublishDataService", "ToastrService"
   ]
 
-  function EditorController($rootScope, $scope, $location, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
+  function EditorController($rootScope, $scope, $location, $window, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -361,6 +361,13 @@ define(["../init/AppController"], function(controllers) {
       }
       $scope.closeProject();
     });
+
+    $window.onbeforeunload = function() {
+      var unsavedFiles = $scope.getUnsavedFiles();
+      if(unsavedFiles.length > 0){
+        return "Unsaved changes";
+      }
+    }
 
     $scope.$on("closeEditor", function(event, index, save) {
       if (save) {
