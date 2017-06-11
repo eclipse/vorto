@@ -71,6 +71,7 @@ These models have now been uploaded to the Vorto Repository
 
 ![Vorto repository](images/create_and_publish_with_web_editor/repo.png)
 
-You can now use code generators like the [Bosch IoT Things Generator](https://github.com/eclipse/vorto/blob/master/server/generators/org.eclipse.vorto.codegen.service.bosch.things/Readme.md) to generate platform specific code for the FitnessBand and integrate it.
+## What's next?
 
-The web editor has moved the entire process from creating device descriptions to generating platform specific code to the web.
+
+Integrate the Fitness Band into IoT Platforms by generating source code using [Vorto Generators](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md)

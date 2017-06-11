@@ -108,11 +108,8 @@
           href: "/documentation/vorto-repository/cli-tool/configuring-cli-tool.html"
         - title: "Vorto CLI Tool Command Summary"
           href: "/documentation/vorto-repository/cli-tool/cli-tool-command-summary.html"
-- title: "Tutorial"
-  href: ""
-  sub:
-    - title: "Visualize device data with Vorto"
-      href: "/documentation/tutorial/mqttwithwebapp.html"
+- title: "Tutorials"
+  href: "https://github.com/eclipse/vorto/tree/development/tutorials"
 - title: "Appendix"
   href: ""
   sub:

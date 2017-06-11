@@ -4,18 +4,18 @@ Vorto Code Generators convert an Information Model into executable code that is 
 
 Available Generators:
 
--  [Bosch-ProSyst Generator](org.eclipse.vorto.codegen.service.prosystfi/Readme.md)
- - [Amazon Web Services Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
- - [CoAP Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
- - [IOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
+ -  [Bosch IoT Suite Generator](org.eclipse.vorto.codegen.service.bosch.things/Readme.md)
+ -  [ProSyst Functional Items Generator](org.eclipse.vorto.codegen.service.prosystfi/Readme.md)
+ - [AWS IoT Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
+ - [Eclipse Californium Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
+ - [iOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
  - [Javabean Generator](org.eclipse.vorto.codegen.service.javabean/Readme.md)
- - [JSON Schema Generator](org.eclipse.vorto.codegen.service.jsonschema/Readme.md)
- - [Latex Generator](org.eclipse.vorto.codegen.service.latex/Readme.md)
- - [LWM2M Generator](org.eclipse.vorto.codegen.service.lwm2m/Readme.md)
- - [Markdown Generator](org.eclipse.vorto.codegen.service.markdown/Readme.md)
- - [MQTT Generator](org.eclipse.vorto.codegen.service.mqtt/Readme.md)
- - [ThingWorx Generator](org.eclipse.vorto.codegen.service.thingworx/Readme.md)
- - [Web UI Generator](org.eclipse.vorto.codegen.service.webdevice/Readme.md)
+ - [LaTeX Documentation Generator](org.eclipse.vorto.codegen.service.latex/Readme.md)
+ - [Eclipse Leshan Generator](org.eclipse.vorto.codegen.service.lwm2m/Readme.md)
+ - [Markdown Documentation Generator](org.eclipse.vorto.codegen.service.markdown/Readme.md)
+ - [Eclipse Paho Generator](org.eclipse.vorto.codegen.service.mqtt/Readme.md)
+ - [PTC ThingWorx Generator](org.eclipse.vorto.codegen.service.thingworx/Readme.md)
+ - [AngularJS Web UI Generator](org.eclipse.vorto.codegen.service.webdevice/Readme.md)
  
 
 # Add your Code Generator
