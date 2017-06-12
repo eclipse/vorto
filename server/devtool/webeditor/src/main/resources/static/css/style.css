@@ -28,7 +28,7 @@ ul.nav {
 
 @media (min-width: 1368px) {
 ul.nav {
-    margin-left: 100px;
+    margin-left: 0px;
 }
 }
 
