@@ -476,7 +476,11 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 		var requestParams = "";
 		for (var i = 0;i < $scope.generator.configKeys.length;i++) {
 			var key = $scope.generator.configKeys[i];
-			requestParams += "&"+key+"="+$scope.configParams[key];
+			var concat = "&";
+			if (i == 0) {
+				concat = "?";
+			}
+			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
      	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
