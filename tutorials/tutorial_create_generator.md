@@ -1,16 +1,16 @@
-#Create and deploy a simple SQL code generator using Vorto
+# Create and deploy a simple SQL code generator using Vorto
 
 
-##Prerequisites
+## Prerequisites
 In order to follow this tutorial exactly, you need to download and install [Vorto Toolset Eclipse Plugins](https://marketplace.eclipse.org/content/vorto-toolset) from Eclipse Marketplace. 
 
  
 
-##Overview
+## Overview
 In this tutorial, we will talk about how to create a simple SQL database schema code generator using Eclipse Vorto Toolset. The purpose of this code generator is to convert a Vorto Information Model into an SQL schema automatically. After that we will also show you how to deploy this generator as a service for your Vorto Repository server. 
 
 
-##Step 1: Create Code Generator
+## Step 1: Create Code Generator
 First let us fire up Eclispe and start a code generator project by following. Choose File->New->Project->Vorto->Code Generator Project. Name your project "SQLGenerator" as we are going to generate a simple SQL command to create a table in your SQL database. Here is a screenshot of the Code Generator wizard. Remeber to tick the Server-side Generation Support option as this will create the service project files which you will need to use later on.
 
 ![](./images/create_generator/wizard.png)
@@ -77,7 +77,7 @@ override getContent(InformationModel model, InvocationContext context) {
 }
 ```  
 
-##Step 2: Test Code Generator
+## Step 2: Test Code Generator
 
 Now we have completed our SQL code generator. It is time to put it into test. First select your code generator project in Eclipse and right click then select run as Eclipse Application. This will launch a new Eclipse application. Switch into Vorto Perspective and you should expect to see the following picture:
 
@@ -144,7 +144,7 @@ Now you can test this command in any of your favorite SQL database. For the sake
 
 Once you have SQLite installed, type sqlite3 in your command line. This will bring you into SQLite console. Copy and paste the above SQL command into your SQLite console and type ".tables" to verify the table is created successfully. 
 
-##Step 3: Deploy your Code Generator
+## Step 3: Deploy your Code Generator
 
 Now our SQL code generator is ready for use. We want to deploy it as a service. If you have followed our instruction in Step 1 closely(Ticking the "Server Side Generation Support" when using Code Generator Wizard) you should be able to locate a generator service project in your Eclipse Package Explorer. This project was generated when we first created our generator project using Eclipse.  
 
@@ -175,7 +175,7 @@ Now if you go back to your Vorto Repo page running in your browser, and click on
 
 Another way to test this generator is to search for any Information Model and click on it to go into detail view of it. On the right hand side you should see your generator listed. Click on your generator icon and your browser should start downloading a zip file containing the files this generator produced for your Information Model, in our case it is a text file containing the SQL schema. 
 
-##Summary 
+## Summary 
 
 In this tutorial, we have shown you how to build a simple SQL schema generator using Vorto Eclipse Toolset. We have also demonstrated how to run this generator as a service for your Vorto Repository server. There are many other [Vorto Generators](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md) which you might be interested to take a look at them if you want to find out other features of code generators. You should also go through the Eclipse Vorto code generator [documentation](http://www.eclipse.org/vorto/documentation/developer-api/codegenerator-implementation.html) in order to understand it better. Once you feel comfortable creating your own code generator for Vorto you are welcome to join the Eclipse Vorto open source community and contribute your code generator project so that other IoT developers can reuse and improve upon it. 
 
