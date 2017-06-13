@@ -23,6 +23,7 @@ import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
 import org.eclipse.vorto.codegen.gateway.templates.BoschThingsConfigTemplate;
+import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.ios.IOSPlatformGenerator;
 import org.eclipse.vorto.codegen.javabean.JavabeanGenerator;
@@ -70,7 +71,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/mqtt.properties", MQTTPlatformGenerator.class));
 			generatorRepo.add(Generator.create("/generators/prosystfi.properties", ProSystGenerator.class));
 			generatorRepo.add(Generator.create("/generators/thingworx.properties", ThingWorxCodeGenerator.class));
-			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class));
+			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class, new WebUIConfigTemplate()));
 			
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			

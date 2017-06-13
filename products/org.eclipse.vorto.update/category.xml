@@ -9,9 +9,6 @@
    <feature url="features/org.eclipse.vorto.feature.codegen.mqtt_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.codegen.mqtt" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </feature>
-   <feature url="features/org.eclipse.vorto.feature.codegen.webui_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.codegen.webui" version="0.10.0.qualifier">
-      <category name="Vorto Code Generators"/>
-   </feature>
    <bundle id="org.eclipse.vorto.codegen.aws" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
@@ -40,6 +37,9 @@
       <category name="Vorto Code Generators"/>
    </bundle>
    <bundle id="org.eclipse.vorto.codegen.thingworx" version="0.10.0.qualifier">
+      <category name="Vorto Code Generators"/>
+   </bundle>
+   <bundle id="org.eclipse.vorto.codegen.webui" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
    <category-def name="Vorto" label="Vorto"/>
