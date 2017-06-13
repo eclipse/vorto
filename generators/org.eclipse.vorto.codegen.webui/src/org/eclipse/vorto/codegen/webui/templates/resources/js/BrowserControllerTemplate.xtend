@@ -40,7 +40,6 @@ class BrowserControllerTemplate implements IFileTemplate<InformationModel> {
 				$scope.thingsMatrix = null;
 				$scope.listView = false;
 				$scope.currentPage = 1;
-				$scope.thingsCount = null;
 						
 				$scope.getThings = function() {			
 					$http.get("rest/devices")
@@ -56,14 +55,7 @@ class BrowserControllerTemplate implements IFileTemplate<InformationModel> {
 							$scope.isLoading = false;
 						 });
 				}	
-		
-				$scope.getThingsCount = function() {			
-					$http.get("rest/devices/count")	
-						.success(function(data, status) {
-						 	$scope.thingsCount = data;
-						 });
-				};
-										
+												
 				$scope.listToMatrix = function(list, n) {
 				    var grid = [], i = 0, x = list.length, col, row = -1;
 				    for (var i = 0; i < x; i++) {
@@ -102,7 +94,6 @@ class BrowserControllerTemplate implements IFileTemplate<InformationModel> {
 				}
 				
 				$scope.getThings();
-				$scope.getThingsCount();
 		
 			}]);
 		'''

@@ -42,18 +42,14 @@ class IdentityControllerTemplate implements IFileTemplate<InformationModel> {
 		import org.springframework.web.bind.annotation.RequestMethod;
 		import org.springframework.web.bind.annotation.RestController;
 		
-		import com.bosch.iotsuite.data.permissions.model.UserInfo;
-		
 		@RestController
 		@RequestMapping("/rest/identities")
 		public class IdentityController {
 		
 			@RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 			public Map<String, String> user(Principal user) {
-				UserInfo userToken = Utils.getUserToken();
 				Map<String, String> principal = new HashMap<String, String>();
-				principal.put("userId", userToken.getFirstName());
-				
+				principal.put("userId", user.getName());
 				return principal;
 			}
 		}

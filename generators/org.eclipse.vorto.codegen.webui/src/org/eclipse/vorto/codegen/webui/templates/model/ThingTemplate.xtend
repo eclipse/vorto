@@ -33,7 +33,7 @@ class ThingTemplate implements IFileTemplate<InformationModel> {
 		'''
 		package com.example.iot.«model.name.toLowerCase».model;
 		
-		import com.bosch.iotsuite.management.thingtype.api.ModelId;
+		import org.eclipse.vorto.repository.api.ModelId;
 		
 		«IF context.configurationProperties.getOrDefault("history","true").equalsIgnoreCase("true")»@javax.persistence.Entity«ENDIF»
 		public class «model.name» {

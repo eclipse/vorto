@@ -42,7 +42,10 @@ class LoginTemplate implements IFileTemplate<InformationModel> {
 				</div>
 		
 				<p class="login-box-msg">Sign in to start your session</p>
-				<form ng-submit="login()">
+				<a href="google/login">
+					<i class="fa fa-google fa-2x" aria-hidden="true"></i> Login with Google
+				</a>
+				<!--form ng-submit="login()">
 					<div class="form-group has-feedback">
 						<input type="text" class="form-control" placeholder="Username" id="username" ng-model="credentials.userId" />
 					</div>
@@ -56,7 +59,7 @@ class LoginTemplate implements IFileTemplate<InformationModel> {
 						</div>
 						<!-- /.col -->
 					</div>
-				</form>
+				</form-->
 			</div>
 		</div>
 		</section>

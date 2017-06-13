@@ -14,11 +14,7 @@
  */
 package org.eclipse.vorto.codegen.webui;
 
-import java.io.IOException;
-
-import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
-import org.eclipse.vorto.codegen.api.Generated;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
@@ -42,6 +38,7 @@ import org.eclipse.vorto.codegen.webui.templates.model.ThingTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.AngularGageTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.ApplicationConfigTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.IndexHtmlTemplate;
+import org.eclipse.vorto.codegen.webui.templates.resources.css.StyleTemplace;
 import org.eclipse.vorto.codegen.webui.templates.resources.js.ApiControllerTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.js.AppTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.js.BrowserControllerTemplate;
@@ -53,11 +50,27 @@ import org.eclipse.vorto.codegen.webui.templates.resources.partials.BrowserTempl
 import org.eclipse.vorto.codegen.webui.templates.resources.partials.DetailsTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.partials.LocatorTemplate;
 import org.eclipse.vorto.codegen.webui.templates.resources.partials.LoginTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.DataServiceTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.QueryTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.BoschThingsDataServiceTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingBuilderTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientBuilderTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingsQueryTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.AsyncInvocationTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.DefaultThingClient;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.ThingsInvocationTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.FeatureImplTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.ThingImplTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.ThingSearchResultImplTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.AclEntryTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingSearchResultTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTypeAwareTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.sample.SampleDataServiceTemplate;
 import org.eclipse.vorto.codegen.webui.templates.web.HistoryDataControllerTemplate;
 import org.eclipse.vorto.codegen.webui.templates.web.IdentityControllerTemplate;
 import org.eclipse.vorto.codegen.webui.templates.web.ThingControllerTemplate;
 import org.eclipse.vorto.codegen.webui.templates.web.ThingMessageControllerTemplate;
-import org.eclipse.vorto.codegen.webui.templates.web.UtilsTemplate;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
@@ -89,7 +102,6 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IdentityControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingMessageControllerTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new UtilsTemplate()));
 		
 		/**
 		 * Root Application templates
@@ -105,7 +117,10 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DetailsControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LoginControllerTemplate()));
 		
-		
+		/**
+		 * Web static css templates
+		 */
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new StyleTemplace()));
 		
 		/**
 		 * Web static html partial templates
@@ -135,6 +150,33 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 				
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ApplicationConfigTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AngularGageTemplate()));
+		
+		/**
+		 * IoT Cloud Platform Integration stuff
+		 */
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new QueryTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DataServiceTemplate()));
+		
+		if (context.getConfigurationProperties().getOrDefault("boschcloud", "false").equalsIgnoreCase("true")) {
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingsQueryTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientBuilderTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingBuilderTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new BoschThingsDataServiceTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AclEntryTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.FeatureTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingSearchResultTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingTypeAwareTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new FeatureImplTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingImplTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingSearchResultImplTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AsyncInvocationTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DefaultThingClient()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingsInvocationTemplate()));
+		} else {
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new SampleDataServiceTemplate()));
+		}
 		
 		generator.generate(model, context, output);
 		
@@ -169,23 +211,6 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 				
 	}
 
-	private void copyTemplateResources(InformationModel model, GenerationResultZip writer) {
-		copyResource("/templates/static/dist/js/angular-gage.min.js", "angular-gage.min.js", model.getName().toLowerCase()+"-solution/src/main/resources/static/dist/js", writer);
-		
-		copyResource("/templates/application-local.yml", "application-local.yml", model.getName().toLowerCase()+"-solution/src/main/resources", writer);
-		copyResource("/templates/application.yml", "application.yml", model.getName().toLowerCase()+"-solution/src/main/resources", writer);
-	
-	}
-
-	private void copyResource(String resource, String fileName, String output, GenerationResultZip writer) {
-		try {
-			byte[] content = IOUtils.toByteArray(getClass().getResourceAsStream(resource));
-			writer.write(new Generated(fileName, output, content));
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	@Override
 	public String getServiceKey() {
 		return "webui";

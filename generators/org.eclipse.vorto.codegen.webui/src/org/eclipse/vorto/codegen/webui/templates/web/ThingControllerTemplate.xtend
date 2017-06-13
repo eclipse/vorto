@@ -34,10 +34,8 @@ class ThingControllerTemplate implements IFileTemplate<InformationModel> {
 		package com.example.iot.«element.name.toLowerCase».web;
 		
 		import java.util.List;
-		import java.util.concurrent.CompletableFuture;
 		import java.util.concurrent.ExecutionException;
-		import java.util.stream.Collectors;
-				
+		
 		import org.springframework.beans.factory.annotation.Autowired;
 		import org.springframework.http.HttpStatus;
 		import org.springframework.http.MediaType;
@@ -49,47 +47,35 @@ class ThingControllerTemplate implements IFileTemplate<InformationModel> {
 		import org.springframework.web.bind.annotation.RestController;
 		
 		import com.example.iot.«element.name.toLowerCase».model.«element.name»;
-		import com.bosch.iotsuite.management.things.ThingClient;
-		import com.bosch.iotsuite.management.things.model.Query;
-		import com.bosch.iotsuite.management.things.model.Thing;
-		import com.bosch.iotsuite.management.things.model.ThingSearchResult;
+		import com.example.iot.«element.name.toLowerCase».service.DataService;
+		import com.example.iot.«element.name.toLowerCase».service.Query;
 		
 		@RestController
 		@RequestMapping("/rest/devices")
 		public class «element.name»Controller {
 		
 			@Autowired
-			private ThingClient thingClient;
-					
+			private DataService dataService;
+							
 			@RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-			public List<«element.name»> search«element.name»Things() throws ExecutionException, InterruptedException  {
-				Query query = Query.newBuilder().withOptions("limit(" + 0 + "," + 50 + ")")
-											.withFilter("eq(attributes/_modelId,\"«element.namespace».«element.name»:«element.version»\")").build();
-				CompletableFuture<ThingSearchResult> searchResult = thingClient.searchThings(query);
-				return searchResult.get().getThings().stream().map(Utils.thingTo«element.name»).collect(Collectors.toList());
+			public List<«element.name»> searchApplewatchThings() throws ExecutionException, InterruptedException  {		
+				Query query = dataService.newQuery();
+				return dataService.queryThings(query);
 			}
-		
-			@RequestMapping(value = "/count", produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-			public Integer get«element.name»Count() throws ExecutionException, InterruptedException {
-				return thingClient.countThings(
-					Query.newBuilder().withFilter("eq(attributes/_modelId,\"«element.namespace».«element.name»:«element.version»\")").build())
-				.get();
-			}
-		
+			
 			@RequestMapping(value = "/{thingId:.+}", produces = {
 					MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
 			public «element.name» get«element.name»Thing(@PathVariable("thingId") final String thingId) throws ExecutionException, InterruptedException {
-				Thing «element.name.toFirstLower»Thing = thingClient.getThing(thingId).get();
-				return Utils.thingTo«element.name».apply(«element.name.toFirstLower»Thing);
+				return dataService.getThing(thingId);
 			}
-			
-			@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason = "Problem accessing Bosch IoT Things")
+				
+			@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason = "Problem accessing Backend IoT Cloud")
 			@ExceptionHandler(ExecutionException.class)
 			public void executionError(final ExecutionException ex){
 				// handle this error 
 			}
-				
-			@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason = "Problem accessing Bosch IoT Things")
+					
+			@ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason = "Problem accessing Backend IoT Cloud")
 			@ExceptionHandler(InterruptedException.class)
 			public void interruptedError(final InterruptedException ex){
 				// handle this error

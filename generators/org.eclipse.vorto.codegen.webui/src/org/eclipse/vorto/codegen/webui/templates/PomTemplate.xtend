@@ -61,7 +61,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 				<java.version>1.8</java.version>
-				<bosch.instsuite.version>0.5.DR1</bosch.instsuite.version>
+				<vorto.version>0.10.0-SNAPSHOT</vorto.version>
 			</properties>
 		
 			<dependencies>
@@ -89,45 +89,30 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 					<artifactId>spring-boot-starter-websocket</artifactId>
 				</dependency>
 				<dependency>
+					<groupId>org.springframework.security.oauth</groupId>
+					<artifactId>spring-security-oauth2</artifactId>
+				</dependency>
+				<dependency>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-starter-test</artifactId>
 					<scope>test</scope>
 				</dependency>
 				<dependency>
-					<groupId>com.bosch.iotsuite</groupId>
-					<artifactId>iotsuite-mgmt</artifactId>
-					<version>${bosch.instsuite.version}</version>
+					<groupId>org.eclipse.vorto</groupId>
+					<artifactId>repository-java-client</artifactId>
+					<version>${vorto.version}</version>
 				</dependency>
-				
+				«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 				<dependency>
-					<groupId>com.bosch.iotsuite</groupId>
-					<artifactId>iotsuite-data</artifactId>
-					<version>${bosch.instsuite.version}</version>
+					<groupId>com.bosch.cr</groupId>
+					<artifactId>cr-integration-client</artifactId>
+					<version>2.4.1</version>
 				</dependency>
-				
-				<dependency>
-					<groupId>com.bosch.iotsuite</groupId>
-					<artifactId>iotsuite-data-spring</artifactId>
-					<version>${bosch.instsuite.version}</version>
-				</dependency>
-						
+				«ENDIF»
 				<dependency>
 					<groupId>org.webjars</groupId>
 					<artifactId>webjars-locator</artifactId>
 				</dependency>
-				«IF context.configurationProperties.getOrDefault("theme","bcx").equalsIgnoreCase("bcx")»
-				<dependency>
-					<groupId>com.bosch.iot.webjars</groupId>
-					<artifactId>bcx-ui-template</artifactId>
-					<version>1.2</version>
-				</dependency>
-				«ELSE»
-				<dependency>
-					<groupId>com.bosch.iot.webjars</groupId>
-					<artifactId>bosch-ui-template</artifactId>
-					<version>1.19</version>
-				</dependency>
-				«ENDIF»
 				<dependency>
 					<groupId>org.webjars</groupId>
 					<artifactId>jquery</artifactId>
@@ -182,9 +167,13 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<dependency>
 					<groupId>org.webjars.bower</groupId>
 					<artifactId>adminlte</artifactId>
-					<version>2.3.8</version>
+					<version>2.3.11</version>
 				</dependency>
-				
+				<dependency>
+					<groupId>org.webjars</groupId>
+					<artifactId>font-awesome</artifactId>
+					<version>4.2.0</version>
+				</dependency>
 				«IF context.configurationProperties.getOrDefault("swagger","true").equalsIgnoreCase("true")»
 				<!-- Swagger -->
 				<dependency>

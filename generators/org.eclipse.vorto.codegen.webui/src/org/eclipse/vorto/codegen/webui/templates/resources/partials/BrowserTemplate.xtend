@@ -71,7 +71,10 @@ class BrowserTemplate implements IFileTemplate<InformationModel> {
 					            			<div class="tiny-box" id="tinyBox:{{thing.thingId}}" ng-click="toggleBox(thing.thingId)">
 						                		<span ng-show="thing.thingType" class="tiny-box-icon"><img width="64px" height="64px" ng-src="http://vortorepo.apps.bosch-iot-cloud.com/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
 						               			<span ng-show="!thing.thingType" class="tiny-box-icon"><img width="64px" height="64px" ng-src="img/noImageIcon.png"/></span>
-						               			<div class="tiny-box-name"><span>{{thing.name}}</span></div>	
+						               			<div class="tiny-box-name"><span>{{thing.name}}</span></div>
+						               			<div class="tiny-box-number">
+						               				<span href="#" data-toggle="tooltip" title=""><p class="breakeWordWithDots ng-binding" style="width: 130px">{{thing.thingId}}</p></span>
+						               			</div>
 					                 		</div>
 					                	</a>
 				            		<!--box end-->

@@ -38,6 +38,7 @@ class ApplicationConfigTemplate implements IFileTemplate<InformationModel>{
 		server:
 		  port: 8080
 		  contextPath: /
+		«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 		bosch:
 		  permissions:
 		    endpointUrl: https://permissions-api.apps.bosch-iot-cloud.com
@@ -55,11 +56,28 @@ class ApplicationConfigTemplate implements IFileTemplate<InformationModel>{
 		    solutionid: 
 		    keystore:
 		      password: 
+		«ENDIF»
 		http:
 		  proxyUser: 
 		  proxyPassword:
 		  proxyHost: 
 		  proxyPort: 8080
+		  
+		google:
+		  oauth2:
+		    client:
+		      clientId: 
+		      clientSecret: 
+		      accessTokenUri: https://www.googleapis.com/oauth2/v4/token
+		      userAuthorizationUri: https://accounts.google.com/o/oauth2/v2/auth
+		      clientAuthenticationScheme: form
+		      scope:
+		        - openid
+		        - email
+		        - profile
+		    resource:
+		      userInfoUri: https://www.googleapis.com/oauth2/v3/userinfo
+		      preferTokenInfo: true
 		'''
 	}
 	
