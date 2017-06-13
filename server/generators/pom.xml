@@ -13,22 +13,8 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>gateway</module>
 		<module>org.eclipse.vorto.codegen.service</module>
-		<module>org.eclipse.vorto.codegen.service.javabean</module>
-		<module>org.eclipse.vorto.codegen.service.ios</module>
-		<module>org.eclipse.vorto.codegen.service.webdevice</module>
-		<module>org.eclipse.vorto.codegen.service.webui</module>
-		<module>org.eclipse.vorto.codegen.service.mqtt</module>
-		<module>org.eclipse.vorto.codegen.service.thingworx</module>
-		<module>org.eclipse.vorto.codegen.service.markdown</module>
-		<module>org.eclipse.vorto.codegen.service.latex</module>
-		<module>org.eclipse.vorto.codegen.service.bosch.things</module>
-		<module>org.eclipse.vorto.codegen.service.coap</module>
-		<module>org.eclipse.vorto.codegen.service.aws</module>
-		<module>org.eclipse.vorto.codegen.service.lwm2m</module>
-		<module>org.eclipse.vorto.codegen.service.prosystfi</module>
-
+		<module>org.eclipse.vorto.codegen.service.gateway</module>
     </modules>
 
 	<dependencies>
