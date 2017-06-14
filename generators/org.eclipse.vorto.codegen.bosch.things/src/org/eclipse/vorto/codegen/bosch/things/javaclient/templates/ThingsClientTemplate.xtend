@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+	 * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -105,8 +105,8 @@ public class «model.name»ThingsClient {
     	«IF fbProperty.type.namespace == "com.ipso.smartobjects" && fbProperty.type.name == "Location" && fbProperty.type.version == "0.0.1"»
     		«fbProperty.name».setLatitude("«1.0»");
     		«fbProperty.name».setLongitude("«1.0»");
-    		«fbProperty.name».setAltitude("");
     		«fbProperty.name».setUncertainty("");
+    		«fbProperty.name».setCompass_direction(new java.util.Random().nextFloat());
     		«fbProperty.name».setVelocity((byte) new java.util.Random().nextInt(100));
     		«fbProperty.name».setTimestamp(new java.util.Date());
     	«ELSE»

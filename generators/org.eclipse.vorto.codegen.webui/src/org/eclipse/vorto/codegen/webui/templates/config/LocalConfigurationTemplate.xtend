@@ -53,10 +53,10 @@ class LocalConfigurationTemplate implements IFileTemplate<InformationModel> {
 		import com.bosch.cr.integration.client.configuration.PublicKeyAuthenticationConfiguration;
 		import com.bosch.cr.integration.client.configuration.TrustStoreConfiguration;
 		import com.bosch.cr.integration.things.ThingIntegration;
-		import com.example.iot.applewatch.service.bosch.BoschThingsDataService;
-		import com.example.iot.applewatch.service.bosch.ThingClient;
+		import com.example.iot.«element.name.toLowerCase».service.bosch.BoschThingsDataService;
+		import com.example.iot.«element.name.toLowerCase».service.bosch.ThingClient;
 		«ELSE»
-		import com.example.iot.applewatch.service.sample.SampleDataService;
+		import com.example.iot.«element.name.toLowerCase».service.sample.SampleDataService;
 		«ENDIF»
 				
 		@Configuration
