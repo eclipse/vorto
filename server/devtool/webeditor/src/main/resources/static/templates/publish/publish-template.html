@@ -64,16 +64,14 @@
 
 <div class="modal-footer">
 	<div ng-hide="modelCheckedIn">
-		<div class="align-left">
-		    <button class="btn btn-primary" type="button" ng-click="cancel()">Cancel</button>
-		</div>
 		 <div class="align-right">
-			<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Check In</button>
+			<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary">Check In</button>
+			<button class="btn" type="button" ng-click="cancel()">Cancel</button>
 		 </div>
 	</div>
 	<div ng-show="modelCheckedIn">
-		<center>
+		<div class="align-right">
 		    <button class="btn btn-primary" type="button" ng-click="cancel()">Complete</button>
-		</center>
+		</div>
 	</div>
 </div>

@@ -4,18 +4,18 @@ Vorto Code Generators convert an Information Model into executable code that is 
 
 Available Generators:
 
- -  [Bosch IoT Suite Generator](org.eclipse.vorto.codegen.service.bosch.things/Readme.md)
- -  [ProSyst Functional Items Generator](org.eclipse.vorto.codegen.service.prosystfi/Readme.md)
- - [AWS IoT Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
- - [Eclipse Californium Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
- - [iOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
- - [Javabean Generator](org.eclipse.vorto.codegen.service.javabean/Readme.md)
- - [LaTeX Documentation Generator](org.eclipse.vorto.codegen.service.latex/Readme.md)
- - [Eclipse Leshan Generator](org.eclipse.vorto.codegen.service.lwm2m/Readme.md)
- - [Markdown Documentation Generator](org.eclipse.vorto.codegen.service.markdown/Readme.md)
- - [Eclipse Paho Generator](org.eclipse.vorto.codegen.service.mqtt/Readme.md)
- - [PTC ThingWorx Generator](org.eclipse.vorto.codegen.service.thingworx/Readme.md)
- - [AngularJS Web UI Generator](org.eclipse.vorto.codegen.service.webdevice/Readme.md)
+ - [Bosch IoT Suite Generator](../../generators/org.eclipse.vorto.codegen.bosch.things/Readme.md)
+ - [ProSyst Functional Items Generator](../../generators/org.eclipse.vorto.codegen.prosystfi/Readme.md)
+ - [AWS IoT Generator](../../generators/org.eclipse.vorto.codegen.aws/Readme.md)
+ - [Eclipse Californium Generator](../../generators/org.eclipse.vorto.codegen.coap/Readme.md)
+ - [iOS Generator](../../generators/org.eclipse.vorto.codegen.ios/Readme.md)
+ - [Javabean Generator](../../generators/org.eclipse.vorto.codegen.javabean/Readme.md)
+ - [LaTeX Documentation Generator](../../generators/org.eclipse.vorto.codegen.latex/Readme.md)
+ - [Eclipse Leshan Generator](../../generators/org.eclipse.vorto.codegen.lwm2m/Readme.md)
+ - [Markdown Documentation Generator](../../generators/org.eclipse.vorto.codegen.markdown/Readme.md)
+ - [Eclipse Paho Generator](../../generators/org.eclipse.vorto.codegen.mqtt/Readme.md)
+ - [PTC ThingWorx Generator](../../generators/org.eclipse.vorto.codegen.thingworx/Readme.md)
+ - [AngularJS Web UI Generator](../../generators/org.eclipse.vorto.codegen.webui/Readme.md)
  
 
 # Add your Code Generator
