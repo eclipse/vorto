@@ -40,7 +40,7 @@ class LocationMapUITemplate implements IFunctionBlockUITemplate {
 			            	m1 : {
 			            		lat: $scope.thing.«element.name».status.«latitudeProperty» === "" ? 1.3580576343735706 : parseFloat($scope.thing.«element.name».status.«latitudeProperty»),
 			                	lng: $scope.thing.«element.name».status.«longitudeProperty» === "" ? 103.798828125 : parseFloat($scope.thing.«element.name».status.«longitudeProperty»),
-			                	icon : { iconUrl : 'img/marker-icon.png'}
+			                	icon : { iconUrl : 'webjars/leaflet/1.0.0/images/marker-icon.png'}
 			                }
 			            }; 
 				};

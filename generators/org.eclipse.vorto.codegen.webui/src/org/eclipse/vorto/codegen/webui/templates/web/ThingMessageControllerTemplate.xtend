@@ -73,7 +73,7 @@ class ThingMessageControllerTemplate implements IFileTemplate<InformationModel> 
 					dataService.registerAsyncCallback(thingId, new DataCallback() {
 							
 						@Override
-						public void onChange(Applewatch thing) {
+						public void onChange(«element.name» thing) {
 							«IF context.configurationProperties.getOrDefault("persistence","false").equalsIgnoreCase("true")»
 							crudRepository.save(thing);
 							«ENDIF»
