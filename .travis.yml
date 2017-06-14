@@ -29,19 +29,19 @@ cache:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f server/repo/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./server/repo/repository-server;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.aws/Dockerfile -t eclipsevorto/vorto-aws:latest ./server/generators/org.eclipse.vorto.codegen.service.aws;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.bosch.things/Dockerfile -t eclipsevorto/vorto-bosch:latest ./server/generators/org.eclipse.vorto.codegen.service.bosch.things ;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.coap/Dockerfile -t eclipsevorto/vorto-coap:latest ./server/generators/org.eclipse.vorto.codegen.service.coap;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.ios/Dockerfile -t eclipsevorto/vorto-ios:latest ./server/generators/org.eclipse.vorto.codegen.service.ios;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.javabean/Dockerfile -t eclipsevorto/vorto-javabean:latest ./server/generators/org.eclipse.vorto.codegen.service.javabean;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.latex/Dockerfile -t eclipsevorto/vorto-latex:latest ./server/generators/org.eclipse.vorto.codegen.service.latex;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.lwm2m/Dockerfile -t eclipsevorto/vorto-lwm2m:latest ./server/generators/org.eclipse.vorto.codegen.service.lwm2m;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.markdown/Dockerfile -t eclipsevorto/vorto-markdown:latest ./server/generators/org.eclipse.vorto.codegen.service.markdown;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.mqtt/Dockerfile -t eclipsevorto/vorto-mqtt:latest ./server/generators/org.eclipse.vorto.codegen.service.mqtt;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.prosystfi/Dockerfile -t eclipsevorto/vorto-prosyst:latest ./server/generators/org.eclipse.vorto.codegen.service.prosystfi;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.webdevice/Dockerfile -t eclipsevorto/vorto-webdevice:latest ./server/generators/org.eclipse.vorto.codegen.service.webdevice;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.thingworx/Dockerfile -t eclipsevorto/vorto-thingworx:latest ./server/generators/org.eclipse.vorto.codegen.service.thingworx;
+    docker build -f server/repo/repository-server/Dockerfile -t eclipsevorto/vorto-repo:0.9.0 ./server/repo/repository-server;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.aws/Dockerfile -t eclipsevorto/vorto-aws:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.aws;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.bosch.things/Dockerfile -t eclipsevorto/vorto-bosch:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.bosch.things ;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.coap/Dockerfile -t eclipsevorto/vorto-coap:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.coap;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.ios/Dockerfile -t eclipsevorto/vorto-ios:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.ios;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.javabean/Dockerfile -t eclipsevorto/vorto-javabean:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.javabean;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.latex/Dockerfile -t eclipsevorto/vorto-latex:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.latex;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.lwm2m/Dockerfile -t eclipsevorto/vorto-lwm2m:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.lwm2m;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.markdown/Dockerfile -t eclipsevorto/vorto-markdown:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.markdown;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.mqtt/Dockerfile -t eclipsevorto/vorto-mqtt:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.mqtt;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.prosystfi/Dockerfile -t eclipsevorto/vorto-prosyst:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.prosystfi;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.webdevice/Dockerfile -t eclipsevorto/vorto-webdevice:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.webdevice;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.thingworx/Dockerfile -t eclipsevorto/vorto-thingworx:0.9.0 ./server/generators/org.eclipse.vorto.codegen.service.thingworx;
     docker push eclipsevorto/vorto-repo;
     docker push eclipsevorto/vorto-aws;
     docker push eclipsevorto/vorto-bosch;
