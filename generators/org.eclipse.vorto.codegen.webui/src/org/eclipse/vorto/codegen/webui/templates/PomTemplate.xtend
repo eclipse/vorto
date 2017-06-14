@@ -53,7 +53,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<repository>
 					<id>bosch-releases</id>
 					<name>bosch-releases</name>
-					<url>https://maven.bosch-si.com/content/repositories/bosch-iot-releases</url>
+					<url>https://maven.bosch-si.com/content/repositories/bosch-releases/</url>
 				</repository>
 			</repositories>
 		
