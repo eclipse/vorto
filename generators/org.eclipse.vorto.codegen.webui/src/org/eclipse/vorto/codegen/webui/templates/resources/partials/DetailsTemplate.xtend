@@ -16,11 +16,8 @@ package org.eclipse.vorto.codegen.webui.templates.resources.partials
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.webui.templates.resources.js.DetailsControllerTemplate
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.core.api.model.model.ModelId
-import org.eclipse.vorto.core.api.model.model.ModelType
 import org.eclipse.vorto.codegen.webui.templates.resources.ui.UIComponentFactory
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class DetailsTemplate implements IFileTemplate<InformationModel> {
 	
@@ -49,15 +46,15 @@ class DetailsTemplate implements IFileTemplate<InformationModel> {
 		<!-- Main content -->
 		<section class="content">
 			<div class="row">
-		            <div class="col-md-3 col-sm-6 col-xs-12">
+		            <div class="col-md-5 col-sm-6 col-xs-12">
 		              <div class="info-box">
-		                <span class="info-box-icon" style="background-color:white"><img ng-src="http://vortorepo.apps.bosch-iot-cloud.com/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
+		                <span class="info-box-icon" style="background-color:white"><img ng-src="http://vorto.eclipse.org/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
 		                <div class="info-box-content">
 		                  <span class="info-box-text">{{thing.name}}</span>
 		                  <div class="tiny-box-number">
-		                  	<span href="#" data-toggle="tooltip" title=""><p class="breakeWordWithDots ng-binding" style="width: 130px">{{thing.thingId}}</p></span>
+		                  	<span href="#" data-toggle="tooltip" title="">{{thing.thingId}}</span>
 		                  </div>
-		                  <a href="http://vortorepo.apps.bosch-iot-cloud.com/#/details/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}" target="_blank" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+		                  <a href="http://vorto.eclipse.org/#/details/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}" target="_blank" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
 		                </div><!-- /.info-box-content -->
 		              </div><!-- /.info-box -->
 		            </div><!-- /.col -->

@@ -69,7 +69,7 @@ class BrowserTemplate implements IFileTemplate<InformationModel> {
 					 	 				<!--box-->
 				                		<a ui-sref="details({ thingId: thing.thingId })">
 					            			<div class="tiny-box" id="tinyBox:{{thing.thingId}}" ng-click="toggleBox(thing.thingId)">
-						                		<span ng-show="thing.thingType" class="tiny-box-icon"><img width="64px" height="64px" ng-src="http://vortorepo.apps.bosch-iot-cloud.com/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
+						                		<span ng-show="thing.thingType" class="tiny-box-icon"><img width="64px" height="64px" ng-src="http://vorto.eclipse.org/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
 						               			<span ng-show="!thing.thingType" class="tiny-box-icon"><img width="64px" height="64px" ng-src="img/noImageIcon.png"/></span>
 						               			<div class="tiny-box-name"><span>{{thing.name}}</span></div>
 						               			<div class="tiny-box-number">
@@ -86,7 +86,7 @@ class BrowserTemplate implements IFileTemplate<InformationModel> {
 						 	 		<div ng-repeat="thing in row">
 						 	 			<div class="row">				 	 			
 						 	 				<div class="col-xs-1">
-						 	 					<span ng-show="thing.thingType"><img width="16px" height="16px" ng-src="http://vortorepo.apps.bosch-iot-cloud.com/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
+						 	 					<span ng-show="thing.thingType"><img width="16px" height="16px" ng-src="http://vorto.eclipse.org/rest/model/image/{{thing.thingType.namespace}}/{{thing.thingType.name}}/{{thing.thingType.version}}"/></span>
 						               			<span ng-show="!thing.thingType"><img width="16px" height="16px" ng-src="img/noImageIcon.png"/></span>
 						               		</div>			 	 			
 							 	 			<div class="col-xs-8">

@@ -41,6 +41,9 @@ class ThingMessageControllerTemplate implements IFileTemplate<InformationModel> 
 		import org.springframework.stereotype.Controller;
 		
 		import com.example.iot.«element.name.toLowerCase».config.WebSocketConfig;
+		«IF context.configurationProperties.getOrDefault("persistence","false").equalsIgnoreCase("true")»
+		import com.example.iot.«element.name.toLowerCase».dao.«element.name»Repository;
+		«ENDIF»
 		import com.example.iot.«element.name.toLowerCase».model.«element.name»;
 		import com.example.iot.«element.name.toLowerCase».service.DataService;
 		import com.example.iot.«element.name.toLowerCase».service.DataService.DataCallback;
@@ -55,6 +58,11 @@ class ThingMessageControllerTemplate implements IFileTemplate<InformationModel> 
 				
 			@Autowired
 			private DataService dataService;
+			
+			«IF context.configurationProperties.getOrDefault("persistence","false").equalsIgnoreCase("true")»
+			@Autowired
+			private «element.name»Repository crudRepository;
+			«ENDIF»
 				
 			@MessageMapping(WebSocketConfig.ENDPOINT+"/subscribe")
 			public String subscribe(String thingId) throws Exception {
@@ -66,6 +74,9 @@ class ThingMessageControllerTemplate implements IFileTemplate<InformationModel> 
 							
 						@Override
 						public void onChange(Applewatch thing) {
+							«IF context.configurationProperties.getOrDefault("persistence","false").equalsIgnoreCase("true")»
+							crudRepository.save(thing);
+							«ENDIF»
 							tmp.convertAndSend( "/topic/device/" + thingId, thing);	
 						}
 					});

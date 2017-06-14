@@ -106,6 +106,7 @@ class BoschThingsDataServiceTemplate implements IFileTemplate<InformationModel> 
 			public static Function<Thing, «element.name»> thingTo«element.name» = (thing) -> {
 				«element.name» «element.name.toLowerCase» = new «element.name»(thing.getId(), thing.getName(),
 						ModelId.fromPrettyFormat(thing.getThingTypeId()));
+				«element.name.toLowerCase».setCreatedOn(thing.getCreatedOn());
 				«FOR fbProperty : element.properties»
 				«element.name.toLowerCase».set«fbProperty.type.name»(convert(thing, "«fbProperty.name»", «fbProperty.type.name».class));
 				«ENDFOR»
