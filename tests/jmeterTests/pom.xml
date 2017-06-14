@@ -26,6 +26,10 @@
 					<jmeter.save.saveservice.thread_name>true</jmeter.save.saveservice.thread_name>
 					<jmeter.save.saveservice.time>true</jmeter.save.saveservice.time>
 					</propertiesUser>
+                     <proxyConfig>
+                            <host></host>
+                            <port></port>
+                     </proxyConfig>
                 </configuration>
                 <executions>
                     <execution>
