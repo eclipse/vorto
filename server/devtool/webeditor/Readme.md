@@ -21,10 +21,10 @@ The web editor uses Github OAuth to authenticate users. Follow the instructions 
 You can use the following configuration for your development setup.
 
     Homepage URL:
-      http://localhost:9080
+      http://localhost:9080/#/
 
     Authorization Callback URL:
-      http://localhost:9080
+      http://localhost:9080/#/project
 
 #### Step 2. Configure the Github clientId and clientSecret.
 
@@ -38,7 +38,7 @@ Use the Github clientId and clientSecret from the previous step to configure you
 
 #### Note
 
-If you would like to use the default configuration for the web editor, you can directly jump to [Build and Run](#build-and-run).
+If you would like to use the default configuration for the other settings, you can directly jump to [Build and Run](#build-and-run).
 
 #### Step 3. Configure the Vorto Repository URL.
 
@@ -58,13 +58,21 @@ The web editor uses file based persistence to store the files on the server. The
 
 ## Build and Run
 
-In the command prompt, invoke
+In the command prompt, go the **{$project_root_directory}** and invoke
 
-    mvn clean install spring-boot:run
+    mvn clean install
+
+Then, go to **{$project_root_directory/server}** and invoke
+
+    mvn clean install
+
+Finally go to **{$project_root_directory/server/devtool/webeditor}** and run
+
+    mvn spring-boot:run
 
 Use your browser to open the URL:
 
-    http://localhost:9080
+    http://localhost:9080/#/
 
 ## Tutorial
 You can refer to the tutorial [here](https://github.com/eclipse/vorto/blob/development/tutorials/tutorial-create_and_publish_with_web_editor.md).
