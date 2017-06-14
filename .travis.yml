@@ -30,9 +30,9 @@ after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker build -f server/repo/repo-ui/Dockerfile -t eclipsevorto/vorto-repo:latest ./server/repo/repository-server;
-	docker build -f server/generators/org.eclipse.vorto.codegen.service.gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./server/generators/org.eclipse.vorto.codegen.service.gateway;
+    docker build -f server/generators/org.eclipse.vorto.codegen.service.gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./server/generators/org.eclipse.vorto.codegen.service.gateway;
     docker build -f server/devtool/Dockerfile -t eclipsevorto/vorto-webeditor:latest ./server/devtool;
     docker push eclipsevorto/vorto-repo;
-	docker push eclipsevorto/vorto-generator-gateway;
+    docker push eclipsevorto/vorto-generator-gateway;
     docker push eclipsevorto/vorto-webeditor;
     fi
