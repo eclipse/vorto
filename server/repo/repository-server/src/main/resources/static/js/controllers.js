@@ -442,7 +442,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	$scope.configParams = {};
 	
 	$scope.enableGeneratorButton = function() {
-		if ($scope.generator.configKeys.length > 0) {
+		if ($scope.generator.configKeys && $scope.generator.configKeys.length > 0) {
 			for (var i = 0;i < $scope.generator.configKeys.length;i++) {
 				var key = $scope.generator.configKeys[i];
 				if ($scope.configParams[key] === true) {
@@ -460,12 +460,15 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 			.success(function(result) {
 				$scope.generator = result;
 				
-				for (var i = 0;i < $scope.generator.configKeys.length;i++) {
-					var key = result.configKeys[i];
-					$scope.configParams[key] = false;
+				if ($scope.generator.configKeys && $scope.generator.configTemplate) {
+					for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+						var key = result.configKeys[i];
+						$scope.configParams[key] = false;
+					}
+					$scope.configTemplate = $scope.generator.configTemplate;
+				} else {
+					$scope.configTemplate = "";
 				}
-				
-				$scope.configTemplate = $scope.generator.configTemplate;
 
 		});
 	};
@@ -474,7 +477,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	
 	$scope.generate = function() {
 		var requestParams = "";
-		for (var i = 0;i < $scope.generator.configKeys.length;i++) {
+		for (var i = 0;i < ($scope.generator.configKeys && $scope.generator.configKeys.length);i++) {
 			var key = $scope.generator.configKeys[i];
 			var concat = "&";
 			if (i == 0) {
