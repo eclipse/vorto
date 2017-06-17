@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto%3Aorg.eclipse.vorto.parent%3Adevelopment)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto%3Aorg.eclipse.vorto.parent%3Adevelopment)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:org.eclipse.vorto.parent:development) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent)
 
 # Getting started with Vorto
@@ -25,7 +25,7 @@ Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 3. Right-Click on the model, Choose 'Generate' and Select the Generator(s) of your choice, e.g. CoAP and Web UI. You should see the generated bundles in the Java Perspective.
 4. **That's it**! You have just generated CoAP specific bundles and a web-based UI from a single Vorto model.  
 
-# Vorto Repository Server [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
+# Vorto Repository Server
 
 Setup your own Vorto Server backend in a couple of minutes:
 
