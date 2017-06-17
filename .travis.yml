@@ -10,6 +10,7 @@ jdk: oraclejdk8
 
 addons:
   sonarqube:
+    organization: "vorto"
     token:
       secure: $SONAR_TOKEN
     branches:
