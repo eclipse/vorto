@@ -1,5 +1,6 @@
+[![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto:server:sonar)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto%3Aorg.eclipse.vorto.parent%3Adevelopment)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent)
 
 # Getting started with Vorto
@@ -8,7 +9,7 @@
 
 Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 
-# Vorto Toolset [![Build Status](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/vorto/job/Vorto%20Toolset%20-%20Development.svg)](https://hudson.eclipse.org/vorto/)
+# Vorto Toolset
 
 
 ### Install & Run
