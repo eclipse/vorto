@@ -28,10 +28,10 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		
 		 var speechOutput;
 		 var reprompt;
-		 var welcomeOutput = "Let's ask the device. What do you want to know?";
+		 var welcomeOutput = "Let's ask the «element.name». What do you want to know?";
 		
 		 var thingsApiToken = "INSERT API TOKEN OF BOSCH IOT THINGS HERE";
-		 var thingId = «context.configurationProperties.get("thingId")»
+		 var thingId = «context.configurationProperties.getOrDefault("thingId","\"INSERT THING ID HERE\"")»;
 		 var username= "INSERT USERNAME HERE";
 		 var password= "INSERT PASSWORD HERE";
 		 
@@ -104,8 +104,8 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		«FOR fbProperty : element.properties» 
 			«IF fbProperty.type.functionblock.status != null»
 				«FOR statusProperty : fbProperty.type.functionblock.status.properties»
-					function fetch«statusProperty.name.toFirstUpper»(request, session, callback){
-						 console.log("in fetch«statusProperty.name.toFirstUpper»");
+					function fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»(request, session, callback){
+						 console.log("in fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»");
 						 
 						  var sessionAttributes = {};
 						  var httpRequest = {
@@ -182,8 +182,8 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		    «FOR fbProperty : element.properties» 
 		    	«IF fbProperty.type.functionblock.status != null»
 		    		«FOR statusProperty : fbProperty.type.functionblock.status.properties»
-		    			else if (intentName === '«statusProperty.name»') {
-		    				fetch«statusProperty.name.toFirstUpper»(request, session, callback);
+		    			else if (intentName === '«fbProperty.name»«statusProperty.name.toFirstUpper»') {
+		    				fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»(request, session, callback);
 		    			}
 		    		«ENDFOR»
 		    	«ENDIF»

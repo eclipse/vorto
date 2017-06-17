@@ -15,7 +15,8 @@ Available Generators:
  - [Markdown Documentation Generator](../../generators/org.eclipse.vorto.codegen.markdown/Readme.md)
  - [Eclipse Paho Generator](../../generators/org.eclipse.vorto.codegen.mqtt/Readme.md)
  - [PTC ThingWorx Generator](../../generators/org.eclipse.vorto.codegen.thingworx/Readme.md)
- - [AngularJS Web UI Generator](../../generators/org.eclipse.vorto.codegen.webui/Readme.md)
+ - [Device Web Dashboard Generator](../../generators/org.eclipse.vorto.codegen.webui/Readme.md)
+ - [AngularJS Web UI Generator](../../generators/org.eclipse.vorto.codegen.webdevice/Readme.md)
  
 
 # Add your Code Generator

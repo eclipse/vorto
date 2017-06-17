@@ -27,10 +27,10 @@ class AlexaIndentSchemaTemplate extends AbstractAlexaTemplate {
 	'''
 		{
 		  "intents": [
-				«FOR fbProperty : element.properties»
+				«FOR fbProperty : element.properties SEPARATOR ','»
 				«FOR operation : fbProperty.type.functionblock.operations SEPARATOR ','»
 					{
-					"intent": "«operation.name»"«IF operation.params != null && operation.params.length > 0»,
+					"intent": "«fbProperty.name»«operation.name.toFirstUpper»"«IF operation.params != null && operation.params.length > 0»,
 					"slots": [
 						«FOR param : operation.params SEPARATOR ','»
 							«IF isAlexaSupportedParamType(param)»
@@ -48,7 +48,7 @@ class AlexaIndentSchemaTemplate extends AbstractAlexaTemplate {
 					«IF fbProperty.type.functionblock.operations.length > 0»,«ENDIF»
 					«FOR statusProperty : fbProperty.type.functionblock.status.properties SEPARATOR ','»
 						{
-						"intent": "«statusProperty.name»Status"
+						"intent": "«fbProperty.name»«statusProperty.name.toFirstUpper»"
 						}
 					«ENDFOR»
 				«ENDIF»

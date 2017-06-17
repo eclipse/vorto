@@ -30,18 +30,18 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 		«FOR fbProperty : element.properties»
 			«FOR operation : fbProperty.type.functionblock.operations»
 				«var mappedElement = context.getMappedElement(operation,STEREOTYPE_ALEXA)»
-				«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(operation).toString))»
+				«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(fbProperty.name, operation).toString))»
 				«FOR singleCmd : commands»
-					«operation.name» «singleCmd»
+					«fbProperty.name»«operation.name.toFirstUpper» «singleCmd»
 				«ENDFOR»
 			«ENDFOR»
 			
 			«IF fbProperty.type.functionblock.status != null»
 				«FOR statusProperty : fbProperty.type.functionblock.status.properties»
 					«var mappedElement = context.getMappedElement(statusProperty,STEREOTYPE_ALEXA)»
-					«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(statusProperty).toString))»
+					«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(fbProperty.name,statusProperty).toString))»
 					«FOR singleCmd : commands»
-					«statusProperty.name» «singleCmd»
+					«fbProperty.name»«statusProperty.name.toFirstUpper» «singleCmd»
 					«ENDFOR»
 				«ENDFOR»
 			«ENDIF»
@@ -54,16 +54,16 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 		return concatenatedValue.split(";");
 	}
 	
-	protected def getDefaultCommand(Operation operation) {
+	protected def getDefaultCommand(String fbPropertyName, Operation operation) {
 		if (operation.params != null && operation.params.length > 0) {
 			'''«FOR param : operation.params BEFORE '{' SEPARATOR ' ' AFTER '}'»«IF isAlexaSupportedParamType(param)»«param.name»«ENDIF»«ENDFOR»'''
 		} else {
-			return operation.name
+			return fbPropertyName+" "+operation.name
 		}
 	}
 	
-	protected def getDefaultCommand(Property property) {
-		'''get «property.name» status'''
+	protected def getDefaultCommand(String functionblockPropertyName, Property property) {
+		'''get «functionblockPropertyName» «property.name»'''
 	}
 	
 }
