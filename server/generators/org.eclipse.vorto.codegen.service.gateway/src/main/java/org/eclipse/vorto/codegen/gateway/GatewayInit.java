@@ -33,6 +33,7 @@ import org.eclipse.vorto.codegen.markdown.MarkdownGenerator;
 import org.eclipse.vorto.codegen.mqtt.MQTTPlatformGenerator;
 import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.eclipse.vorto.codegen.thingworx.ThingWorxCodeGenerator;
+import org.eclipse.vorto.codegen.webdevice.WebDeviceGenerator;
 import org.eclipse.vorto.codegen.webui.WebUIGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +73,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/prosystfi.properties", ProSystGenerator.class));
 			generatorRepo.add(Generator.create("/generators/thingworx.properties", ThingWorxCodeGenerator.class));
 			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class, new WebUIConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/webdevice.properties", WebDeviceGenerator.class));
 			
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			

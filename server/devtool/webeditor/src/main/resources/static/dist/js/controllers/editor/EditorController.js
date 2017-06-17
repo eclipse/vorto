@@ -66,15 +66,15 @@ define(["../init/AppController"], function(controllers) {
     $scope.editorConfig = {
       infomodel: {
         syntaxDefinition: "xtext/mode-infomodel",
-        serviceUrl: "/infomodel/xtext-service"
+        serviceUrl: "infomodel/xtext-service"
       },
       fbmodel: {
         syntaxDefinition: "xtext/mode-fbmodel",
-        serviceUrl: "/functionblock/xtext-service"
+        serviceUrl: "functionblock/xtext-service"
       },
       type: {
         syntaxDefinition: "xtext/mode-type",
-        serviceUrl: "/datatype/xtext-service"
+        serviceUrl: "datatype/xtext-service"
       }
     }
 
@@ -161,19 +161,19 @@ define(["../init/AppController"], function(controllers) {
           valid_children: ["infomodel", "fbmodel", "enum", "entity"]
         },
         infomodel: {
-          icon: "/images/im.png",
+          icon: "images/im.png",
           valid_children: ["fbmodel"]
         },
         fbmodel: {
-          icon: "/images/fb.png",
+          icon: "images/fb.png",
           valid_children: ["fbmodel", "enum", "entity"]
         },
         enum: {
-          icon: "/images/enu.png",
+          icon: "images/enu.png",
           valid_children: []
         },
         entity: {
-          icon: "/images/ent.png",
+          icon: "images/ent.png",
           valid_children: ["enum"]
         }
       },

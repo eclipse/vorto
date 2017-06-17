@@ -5,11 +5,12 @@ vorto:
       path: http://vorto.eclipse.org
       
 http:
-  proxyHost: rb-proxy-apac.bosch.com
+  proxyHost:
   proxyPort: 8080
 
 server:
   port: 9080
+  contextPath: /
   
 github:
   client:

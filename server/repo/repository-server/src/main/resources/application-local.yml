@@ -37,9 +37,9 @@ eidp:
 webEditor:
   enabled: true
   loginUrl:
-    default: http://localhost:9080/#/project
-    github: http://localhost:9080/login/github
-    eidp: http://localhost:9080/login/eidp
+    default: http://localhost:9080/editor/#/project
+    github: http://localhost:9080/editor/login/github
+    eidp: http://localhost:9080/editor/login/eidp
 
 mail:
   smtp:

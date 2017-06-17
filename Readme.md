@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
 [![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto:server:sonar)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent)
@@ -9,15 +8,14 @@
 
 Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 
-# Vorto Toolset
+# Vorto Toolset [![Build Status](https://img.shields.io/jenkins/s/https/hudson.eclipse.org/vorto/job/Vorto%20Toolset%20-%20Development.svg)](https://hudson.eclipse.org/vorto/)
+
 
 ### Install & Run
 
 1. Eclipse for DSL Developers
 2. Java 8
 3. Install Vorto from Eclipse Marketplace 
-
-Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/ziXJ) and we set everything up for you, automatically.
 
 ### Describe once, Integrate Anywhere
 
@@ -26,11 +24,11 @@ Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/zi
 3. Right-Click on the model, Choose 'Generate' and Select the Generator(s) of your choice, e.g. CoAP and Web UI. You should see the generated bundles in the Java Perspective.
 4. **That's it**! You have just generated CoAP specific bundles and a web-based UI from a single Vorto model.  
 
-# Vorto Repository Server
+# Vorto Repository Server [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 
 Setup your own Vorto Server backend in a couple of minutes:
 
- - Set up [Vorto Repository](server/repo/repo-ui/Readme.md)
+ - Set up [Vorto Repository](server/repo/repository-server/Readme.md)
  - Set up [Vorto Code Generators](server/generators/Readme.md)
 
 # Documentation
@@ -44,8 +42,6 @@ Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overvi
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
 # Contribute to the Project
-
-Download the [Vorto for Contributors IDE](https://marketplace.yatta.de/profiles/qTKP). 
 
 When you create a Pull Request, make sure:
 

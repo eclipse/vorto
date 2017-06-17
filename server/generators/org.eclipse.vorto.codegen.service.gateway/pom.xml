@@ -144,9 +144,14 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.webdevice</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 		<!-- Generator dependencies -->
 		
-		<!-- COaP dependency -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>

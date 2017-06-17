@@ -42,6 +42,9 @@
    <bundle id="org.eclipse.vorto.codegen.webui" version="0.10.0.qualifier">
       <category name="Vorto Code Generators"/>
    </bundle>
+   <bundle id="org.eclipse.vorto.codegen.webdevice" version="0.10.0.qualifier">
+      <category name="Vorto Code Generators"/>
+   </bundle>
    <category-def name="Vorto" label="Vorto"/>
    <category-def name="Vorto Code Generators" label="Vorto Code Generators"/>
 </site>

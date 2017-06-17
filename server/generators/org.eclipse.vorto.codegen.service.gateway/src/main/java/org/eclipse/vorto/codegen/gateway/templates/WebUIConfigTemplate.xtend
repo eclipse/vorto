@@ -35,7 +35,7 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
 						<p><input type="checkbox" checked disabled="disabled">&nbsp;Data Visualization</p>
-						<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;Data Persistence</p>
+						<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;(Historical) Data Persistence</p>
 						<p><input type="checkbox" ng-model="configParams.swagger">&nbsp;Swagger Documentation</p>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->

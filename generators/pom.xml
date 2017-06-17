@@ -19,6 +19,7 @@
 		<module>org.eclipse.vorto.codegen.javabean</module>
 		<module>org.eclipse.vorto.codegen.mqtt</module>
 		<module>org.eclipse.vorto.codegen.webui</module>
+		<module>org.eclipse.vorto.codegen.webdevice</module>
 		<module>org.eclipse.vorto.codegen.markdown</module>
 		<module>org.eclipse.vorto.codegen.ios</module>
 		<module>org.eclipse.vorto.codegen.latex</module>
