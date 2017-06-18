@@ -21,7 +21,6 @@ import javax.annotation.PostConstruct;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
 import org.eclipse.vorto.editor.datatype.DatatypeRuntimeModule;
 import org.eclipse.vorto.editor.datatype.web.DatatypeServlet;
 import org.eclipse.vorto.editor.datatype.web.DatatypeWebModule;
