@@ -21,10 +21,10 @@ The web editor uses Github OAuth to authenticate users. Follow the instructions 
 You can use the following configuration for your development setup.
 
     Homepage URL:
-      http://localhost:9080/#/
+      http://localhost:9080/editor
 
     Authorization Callback URL:
-      http://localhost:9080/#/project
+      http://localhost:9080/editor/#/projects
 
 #### Step 2. Configure the Github clientId and clientSecret.
 
@@ -72,7 +72,7 @@ Finally go to **{$project_root_directory/server/devtool/webeditor}** and run
 
 Use your browser to open the URL:
 
-    http://localhost:9080/#/
+    http://localhost:9080/editor
 
 ## Tutorial
 You can refer to the tutorial [here](https://github.com/eclipse/vorto/blob/development/tutorials/tutorial-create_and_publish_with_web_editor.md).

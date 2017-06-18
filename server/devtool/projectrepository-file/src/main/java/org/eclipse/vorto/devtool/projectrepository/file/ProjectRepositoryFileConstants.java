@@ -18,4 +18,6 @@ public class ProjectRepositoryFileConstants {
 	
 	public static final String META_PROPERTY_MODEL_SUB_TYPE = "modelSubType";
 	
+	public static final String META_PROPERTY_IS_PROJECT = "isProject";
+		
 }
