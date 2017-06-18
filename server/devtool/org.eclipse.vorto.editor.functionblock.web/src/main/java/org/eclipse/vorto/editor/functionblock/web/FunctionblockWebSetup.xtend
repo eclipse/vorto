@@ -18,11 +18,13 @@
  */
 package org.eclipse.vorto.editor.functionblock.web
 
+import com.google.inject.AbstractModule
 import com.google.inject.Guice
 import com.google.inject.Injector
 import com.google.inject.Provider
 import com.google.inject.util.Modules
 import java.util.concurrent.ExecutorService
+import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService
 import org.eclipse.vorto.editor.functionblock.FunctionblockRuntimeModule
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
@@ -35,10 +37,18 @@ class FunctionblockWebSetup extends FunctionblockStandaloneSetup {
 	
 	val Provider<ExecutorService> executorServiceProvider;
 	
+	val IProjectRepositoryService projectRepositoryService;
+	
 	override Injector createInjector() {
 		val runtimeModule = new FunctionblockRuntimeModule()
 		val webModule = new FunctionblockWebModule(executorServiceProvider)
-		return Guice.createInjector(Modules.override(runtimeModule).with(webModule))
+		return Guice.createInjector(Modules.override(runtimeModule).with(webModule,new AbstractModule(){
+			
+			override protected configure() {
+				bind(typeof(IProjectRepositoryService)).toInstance(projectRepositoryService);
+			}
+			
+			}))
 	}
 	
 }

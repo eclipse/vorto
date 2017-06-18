@@ -337,6 +337,10 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
         return file;
 	}
+	
+	public String theProjectsDirectory() {
+		return this.projectsDirectory;
+	}
 }
 
 /* EOF */

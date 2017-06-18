@@ -382,7 +382,7 @@ define(["../init/AppController"], function(controllers) {
     });
 
     $scope.closeProject = function() {
-      $location.path("/project");
+      $location.path("/projects");
       $location.replace();
     }
 

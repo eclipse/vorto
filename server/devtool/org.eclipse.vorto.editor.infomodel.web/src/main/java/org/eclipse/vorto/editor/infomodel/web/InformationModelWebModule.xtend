@@ -38,7 +38,7 @@ class InformationModelWebModule extends AbstractInformationModelWebModule {
 	def Class<? extends IServerResourceHandler> bindIServerResourceHandler() {
 		return FileResourceHandler;
 	}
-
+	
 	override bindIContentTypeProvider() {
 		return ContentTypeProvider
 	}
