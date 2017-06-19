@@ -156,7 +156,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	private FileUploadHandle getFileUploadHandle(String projectName, String fileContent, String author,
 			ModelResource modelResource) {
-		Resource projectResource = projectRepositoryService.createQuery().path(projectName).singleResult();
+		Resource projectResource = projectRepositoryService.createQuery().path(projectName.replace("\\", "/")).singleResult();
 		FileUploadHandle fileUploadHandle = new FileUploadHandle((FolderResource) projectResource,
 				modelResource.getFilename(), fileContent.getBytes());
 		String resourceId = devtoolUtils.generateResourceId(modelResource, projectName, author);
