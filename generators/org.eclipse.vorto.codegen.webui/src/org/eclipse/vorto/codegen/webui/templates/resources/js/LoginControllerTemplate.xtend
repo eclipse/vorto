@@ -59,7 +59,7 @@ class LoginControllerTemplate implements IFileTemplate<InformationModel> {
 				
 					$scope.isLoading = true;
 					
-					$scope.credentials.username = "BCX\\" + $scope.credentials.userId;
+					$scope.credentials.username = $scope.credentials.userId;
 			
 					$http.post('login', $.param(JSON.parse(JSON.stringify($scope.credentials))), {
 						headers : {

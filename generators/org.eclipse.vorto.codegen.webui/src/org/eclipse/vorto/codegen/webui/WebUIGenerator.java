@@ -52,11 +52,11 @@ import org.eclipse.vorto.codegen.webui.templates.resources.partials.LocatorTempl
 import org.eclipse.vorto.codegen.webui.templates.resources.partials.LoginTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.DataServiceTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.QueryTemplate;
-import org.eclipse.vorto.codegen.webui.templates.service.bosch.BoschThingsDataServiceTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingBuilderTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientBuilderTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingsQueryTemplate;
+import org.eclipse.vorto.codegen.webui.templates.service.bosch.auth.IM3AuthenticationProviderTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.AsyncInvocationTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.DefaultThingClient;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.ThingsInvocationTemplate;
@@ -162,7 +162,7 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientBuilderTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingBuilderTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new BoschThingsDataServiceTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IM3AuthenticationProviderTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AclEntryTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.FeatureTemplate()));
