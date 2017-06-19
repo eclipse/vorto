@@ -108,6 +108,11 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 					<artifactId>cr-integration-client</artifactId>
 					<version>2.4.1</version>
 				</dependency>
+				<dependency>
+					<groupId>com.bosch.im</groupId>
+					<artifactId>im-api2-client</artifactId>
+					<version>1.0-beta2</version>
+				</dependency>
 				«ENDIF»
 				<dependency>
 					<groupId>org.webjars</groupId>
