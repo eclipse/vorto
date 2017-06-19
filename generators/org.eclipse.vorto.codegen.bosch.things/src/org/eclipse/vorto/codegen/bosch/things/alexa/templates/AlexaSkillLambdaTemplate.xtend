@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.codegen.bosch.things.alexa.templates
 
+import org.apache.commons.lang3.StringUtils
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -182,7 +183,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		    «FOR fbProperty : element.properties» 
 		    	«IF fbProperty.type.functionblock.status != null»
 		    		«FOR statusProperty : fbProperty.type.functionblock.status.properties»
-		    			else if (intentName === '«fbProperty.name»«statusProperty.name.toFirstUpper»') {
+		    			else if (intentName === '«fbProperty.name.replace("_","")»«statusProperty.name.toFirstUpper.replace("_","")»') {
 		    				fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»(request, session, callback);
 		    			}
 		    		«ENDFOR»

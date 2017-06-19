@@ -32,7 +32,7 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 				«var mappedElement = context.getMappedElement(operation,STEREOTYPE_ALEXA)»
 				«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(fbProperty.name, operation).toString))»
 				«FOR singleCmd : commands»
-					«fbProperty.name»«operation.name.toFirstUpper» «singleCmd»
+					«fbProperty.name.replace("_","")»«operation.name.toFirstUpper.replace("_","")» «singleCmd.replace("_"," ")»
 				«ENDFOR»
 			«ENDFOR»
 			
@@ -41,7 +41,7 @@ class AlexaUtterancesTemplate extends AbstractAlexaTemplate {
 					«var mappedElement = context.getMappedElement(statusProperty,STEREOTYPE_ALEXA)»
 					«var commands = split(mappedElement.getAttributeValue("command",getDefaultCommand(fbProperty.name,statusProperty).toString))»
 					«FOR singleCmd : commands»
-					«fbProperty.name»«statusProperty.name.toFirstUpper» «singleCmd»
+					«fbProperty.name.replace("_","")»«statusProperty.name.toFirstUpper.replace("_","")» «singleCmd.replace("_"," ")»
 					«ENDFOR»
 				«ENDFOR»
 			«ENDIF»
