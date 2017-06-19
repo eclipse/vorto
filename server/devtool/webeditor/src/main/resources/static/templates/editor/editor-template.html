@@ -42,8 +42,8 @@
 					<ul class="nav nav-tabs editor-ul" role="tablist">
 				    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
-				        		{{tab.filename}}
-				        		<span ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></span>
+				        		<span>{{tab.name}}</span>
+				        		<i ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></i>
 				        	</a>
 						</li>
 				        <li role="presentation">
