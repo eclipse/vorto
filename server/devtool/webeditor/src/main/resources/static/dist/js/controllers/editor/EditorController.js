@@ -2,12 +2,12 @@ define(["../init/AppController"], function(controllers) {
   controllers.controller("EditorController", EditorController);
 
   EditorController.$inject = [
-    "$rootScope", "$scope", "$location", "$window", "$routeParams", "$compile",
+    "$q", "$rootScope", "$scope", "$location", "$window", "$routeParams", "$compile",
     "$uibModal", "toastr", "ShareDataService", "ProjectDataService",
     "EditorDataService", "PublishDataService", "ToastrService"
   ]
 
-  function EditorController($rootScope, $scope, $location, $window, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
+  function EditorController($q, $rootScope, $scope, $location, $window, $routeParams, $compile, $uibModal, toastr, ShareDataService, ProjectDataService, EditorDataService, PublishDataService, ToastrService) {
     $scope.error = null;
     $scope.errorMessage = null;
     $scope.validationError = false;
@@ -354,11 +354,12 @@ define(["../init/AppController"], function(controllers) {
     });
 
     $scope.$on("closeProject", function(event, save) {
-      if(save){
-        $scope.editors.forEach(function(editor){
-          editor.xtextServices.saveResource();
-        });
-      }
+      $scope.editors.forEach(function(editor){
+        if(!save){
+          editor.setValue(editor.lastSavedValue);
+        }
+        editor.xtextServices.saveResource();
+      });
       $scope.closeProject();
     });
 
@@ -370,13 +371,16 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.$on("closeEditor", function(event, index, save) {
+      var editor = $scope.editors[index];
       if (save) {
-        var editor = $scope.editors[index];
         editor.xtextServices.saveResource();
         var tab = $scope.tabs[index];
         var message = "Resource " + tab.filename + " saved";
         var params = {message: message};
         ToastrService.createSuccessToast(params);
+      }else{
+        editor.setValue(editor.lastSavedValue);
+        editor.xtextServices.saveResource();
       }
       $scope.closeEditor(index);
     });
@@ -432,24 +436,12 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.openXtextEditor = function(tab) {
-      require(["webjars/ace/1.2.0/src/ace"], function() {
-        require(["xtext/xtext-ace"], function(xtext) {
-          var editor = xtext.createEditor({
-            xtextLang: tab.language,
-            syntaxDefinition: $scope.editorConfig[tab.language].syntaxDefinition,
-            serviceUrl: $scope.editorConfig[tab.language].serviceUrl,
-            enableFormattingAction: "true",
-            enableSaveAction: "true",
-            showErrorDialogs: "true",
-            parent: tab.editorDivId,
-            resourceId: tab.resourceId
-          });
-          $scope.editors.push(editor);
-          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
-          $scope.clearSearch();
-          $scope.isEditorOpen = true;
-          $scope.$apply();
-        });
+      $scope.createEditor(tab).then(function(editor){
+        $scope.editors.push(editor);
+        $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
+        $scope.clearSearch();
+        $scope.isEditorOpen = true;
+        // $scope.$apply();
       });
     }
 
@@ -490,7 +482,8 @@ define(["../init/AppController"], function(controllers) {
           var element = angular.element(document).find('#editors');
           element.append('<div id="' + editorParentDivId + '" ng-show="selectedTabId==' + tabId + '"><div id="' + editorDivId + '" class="custom-xtext-editor"></div></div>');
           $compile(element.contents())($scope);
-          $scope.addXtextEditor(editorDivId, model);
+          model.editorDivId = editorDivId;
+          $scope.addXtextEditor(model);
         }
       }).catch(function(error){
         var message = resource.filename + " already exists";
@@ -500,31 +493,19 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.addXtextEditor = function(parentId, model) {
-      require(["webjars/ace/1.2.0/src/ace"], function() {
-        require(["xtext/xtext-ace"], function(xtext) {
-          editor = xtext.createEditor({
-            enableFormattingAction: "true",
-            enableSaveAction: "true",
-            showErrorDialogs: "true",
-            parent: parentId,
-            xtextLang: model.language,
-            resourceId: model.resourceId,
-            syntaxDefinition: $scope.editorConfig[model.language].syntaxDefinition,
-            serviceUrl: $scope.editorConfig[model.language].serviceUrl
-          });
-          $scope.editors.push(editor);
-          $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
-          $scope.clearSearch();
-          var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
-          var tab = $scope.tabs[$scope.selectedTabIndex];
-          tab["text"] = model.name;
-          tab["parent"] = $scope.rootParentId;
-          tab["status"] = $scope.valid;
-          $scope.addResource(tab);
-          $scope.selectTab($scope.selectedTabIndex);
-          $scope.isEditorOpen = true;
-          $scope.$apply();
-        });
+      $scope.createEditor(model).then(function(editor){
+        $scope.editors.push(editor);
+        $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
+        $scope.clearSearch();
+        var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
+        var tab = $scope.tabs[$scope.selectedTabIndex];
+        tab["text"] = model.name;
+        tab["parent"] = $scope.rootParentId;
+        tab["status"] = $scope.valid;
+        $scope.addResource(tab);
+        $scope.selectTab($scope.selectedTabIndex);
+        $scope.isEditorOpen = true;
+        // $scope.$apply();
       });
     }
 
@@ -781,6 +762,43 @@ define(["../init/AppController"], function(controllers) {
         }
       }
       return unsavedFiles;
+    }
+
+    $scope.createEditor = function(model) {
+      var defer = $q.defer();
+      require(["webjars/ace/1.2.0/src/ace"], function() {
+        require(["xtext/xtext-ace"], function(xtext) {
+          var editor = xtext.createEditor({
+            enableFormattingAction: "true",
+            enableSaveAction: "true",
+            showErrorDialogs: "true",
+            parent: model.editorDivId,
+            xtextLang: model.language,
+            resourceId: model.resourceId,
+            syntaxDefinition: $scope.editorConfig[model.language].syntaxDefinition,
+            serviceUrl: $scope.editorConfig[model.language].serviceUrl
+          });
+          editor.commands.addCommand({
+              name: 'customSaveCommand',
+              bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+              exec: function(editor) {
+                editor.xtextServices.saveResource();
+                editor.lastSavedValue = editor.getValue();
+                var tab = $scope.tabs[$scope.selectedTabIndex];
+                var message = "Resource " + tab.filename + " saved";
+                var params = {message: message};
+                ToastrService.createSuccessToast(params);
+              }
+          });
+          editor.xtextServices.loadResource().then(function(data){
+            editor.lastSavedValue = data.fullText;
+            defer.resolve(editor);
+          }, function(err){
+            defer.resolve(editor);
+          });
+        });
+      });
+      return defer.promise;
     }
   }
 });
