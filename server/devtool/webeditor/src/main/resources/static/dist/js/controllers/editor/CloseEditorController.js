@@ -17,9 +17,6 @@ define(["../init/AppController"], function(controllers) {
       $rootScope.$broadcast("closeEditor", $scope.index, true);
       $uibModalInstance.dismiss("cancel");
     };
-
-    $scope.cancel = function() {
-      $uibModalInstance.dismiss("cancel");
-    };
+    
   }
 });

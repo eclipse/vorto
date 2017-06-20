@@ -28,7 +28,7 @@
 								</div>
 
 					 	 		<div class="col-md-2" ng-repeat="project in topRow">
-	              	<a href="#/editor/{{ project.name }}">
+	              	<a href="./#/projects/{{ project.name }}">
 		            		<div class="tiny-box" id="tinyBox:{{project.name}}">
 	                		<span class="tiny-box-icon">
 												<img width="32px" height="32px" ng-src="images/vorto-icon.png"/>
@@ -38,7 +38,7 @@
 											</div>
 	               			<div class="tiny-box-number">
 												<span>
-													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="./#/projects/{{ project.name }}">Open</button>
 												</span>
 											</div>
 		               	</div>
@@ -49,17 +49,17 @@
 
 					 		<div class="row" ng-repeat="row in projectsMatrix">
 					 	 		<div class="col-md-2" ng-repeat="project in row">
-	              	<a href="#/editor/{{ project.name }}">
+	              	<a href="./#/projects/{{ project.name }}">
 		            		<div class="tiny-box" id="tinyBox:{{project.name}}">
 	                		<span class="tiny-box-icon">
-												<img width="32px" height="32px" ng-src="/images/vorto-icon.png"/>
+												<img width="32px" height="32px" ng-src="images/vorto-icon.png"/>
 											</span>
 	               			<div class="tiny-box-name">
 												<span>{{project.name}}</span>
 											</div>
 	               			<div class="tiny-box-number">
 												<span>
-													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="#/editor/{{ project.name }}">Open</button>
+													<button class="btn btn-block btn-info btn-xs"  data-toggle="modal" href="./#/projects/{{ project.name }}">Open</button>
 												</span>
 											</div>
 		               	</div>

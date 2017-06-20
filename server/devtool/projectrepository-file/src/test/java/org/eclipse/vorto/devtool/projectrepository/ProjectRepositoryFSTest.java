@@ -90,7 +90,7 @@ public class ProjectRepositoryFSTest {
 		assertNotNull(project.getCreationDate());
 		assertNull(project.getParent());
 		assertEquals("myProject",project.getPath());
-		assertEquals(1,project.getProperties().size());
+		assertEquals(2,project.getProperties().size());
 		assertEquals(ResourceType.ProjectResource,project.getType());
 	}
 
@@ -99,7 +99,7 @@ public class ProjectRepositoryFSTest {
         Map<String,String> properties = new HashMap<String, String>();
         properties.put("city","singapore");
         ProjectResource project = repoService.createProject("myProject",properties, "JUnit test for creating a project");
-        assertEquals(2,project.getProperties().size());
+        assertEquals(3,project.getProperties().size());
         assertEquals("singapore",project.getProperties().get("city"));
     }
     

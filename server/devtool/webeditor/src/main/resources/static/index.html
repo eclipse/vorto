@@ -29,11 +29,11 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
         <div class="navbar-header">
-          <a class="navbar-brand" href="./#/">Eclipse Vorto <span class="navbar-brand-suffix">Web Editor</span><sup>BETA</sup></a>
+          <a class="navbar-brand" href="./#/projects">Eclipse Vorto <span class="navbar-brand-suffix">Web Editor</span><sup>BETA</sup></a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-          	<li><a href="./#/editor" ng-show="authenticated">Projects</a></li>
+          	<li><a href="./#/projects" ng-show="authenticated">Projects</a></li>
           	<li><a href="http://vorto.eclipse.org">Repository</a></li>
           	<li><a href="https://github.com/eclipse/vorto/blob/development/tutorials/tutorial-create_and_publish_with_web_editor.md" target="_blank">Getting started</a></li>
           </ul>
@@ -41,7 +41,7 @@
             <ul class="nav navbar-nav">
         			<li ng-show="authenticated"><a id="userWelcome">Welcome, {{user}}</a></li>
         			<li ng-show="authenticated"><a href="#" ng-click="logout()"><i class="fa fa-sign-out"></i> Log Out</a></li>
-        			<li ng-show="!authenticated"><a href="#/login"><i class="fa fa-sign-in"></i> Login</a></li>
+        			<li ng-show="!authenticated"><a href="./#/login"><i class="fa fa-sign-in"></i> Login</a></li>
             </ul>
           </div>
         </div>

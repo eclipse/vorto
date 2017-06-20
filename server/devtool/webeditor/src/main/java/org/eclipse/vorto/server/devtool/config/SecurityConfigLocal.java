@@ -50,7 +50,7 @@ public class SecurityConfigLocal extends AbstractSecurityConfiguration {
 		List<Filter> filters = new ArrayList<>();
 
 		OAuth2ClientAuthenticationProcessingFilter githubFilter = new OAuth2ClientAuthenticationProcessingFilter(
-				"/login/github");
+				"/**/authentication/login/github");
 		OAuth2RestTemplate githubTemplate = new OAuth2RestTemplate(github(), oauth2ClientContext);
 
 		AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider = new AuthorizationCodeAccessTokenProvider();

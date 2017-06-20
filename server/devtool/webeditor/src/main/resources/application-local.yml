@@ -10,7 +10,7 @@ http:
 
 server:
   port: 9080
-  contextPath: /
+  contextPath: /editor
   
 github:
   client:

@@ -30,12 +30,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @Profile("!cloud")
+@Order(7)
 public class EditorConfigurationLocal {
 
 	@Value("${http.proxyHost}")
@@ -44,14 +46,14 @@ public class EditorConfigurationLocal {
 	@Value("${http.proxyPort}")
 	private String proxyPort;
 	
-	@Value("${project.repository.path}")
-	private String projectRepositoryPath;
-	
 	@Value("${reference.repository}")
 	private String referenceRepository;
 		
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;
+	
+	@Value("${project.repository.path}")
+	private String projectRepositoryPath;
 		
 	@Autowired
 	private IUserRepository userRepository;

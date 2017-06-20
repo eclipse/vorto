@@ -30,11 +30,11 @@ define(["../init/AppController"], function(controllers) {
       var params = {project: project};
       ProjectDataService.createProject(params).then(function(data){
         if (data.message === "resource already exists") {
-          var message = "Project " + projectName + " already exsits";
+          var message = "Project " + projectName + " already exists";
           var params = {message: message};
           ToastrService.createErrorToast(params);
         } else {
-          $location.path("editor/" + projectName);
+          $location.path("projects/" + projectName);
           $location.replace();
         }
       }).catch(function(error){

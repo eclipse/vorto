@@ -1222,3 +1222,34 @@ sup {
   transform: translateY(-50%);
   position: relative;
 }
+
+@media screen and (max-width: 1280px) {
+.editor-ul>li {
+    width: 110px;
+    }
+.editor-ul>li>a>span {
+    display: inline-block;
+    width: 75px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    }
+.editor-ul>li>a>.glyphicon {
+    position: absolute;
+    top: 14px;
+    right: 2px;
+}
+.queryFilter {
+    width: auto;
+}
+.col-box {
+    padding: 0 5px 0 0;
+}
+.import-button {
+    font-size: 40px; 
+}
+#function-block-browser-container {
+    width: 98%;
+    }
+}
+

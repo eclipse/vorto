@@ -35,15 +35,15 @@ define("devtoolApp", [
   app.config(["$routeProvider", "$httpProvider",
     function($routeProvider, $httpProvider) {
       $routeProvider
-        .when("/publish", {
+        .when("/projects/publish", {
           templateUrl: "templates/publish/publish-template.html",
           controller: "PublishController"
         })
-        .when("/editor/:projectName", {
+        .when("/projects/:projectName", {
           templateUrl: "templates/editor/editor-template.html",
           controller: "EditorController"
         })
-        .when("/project", {
+        .when("/projects", {
           templateUrl: "templates/project/project-template.html",
           controller: "ProjectController"
         })
@@ -52,7 +52,7 @@ define("devtoolApp", [
           controller: "LoginController"
         })
         .otherwise({
-          redirectTo: "/project"
+          redirectTo: "/projects"
         });
     }
   ]).run(function($location, $rootScope, LoginDataService) {
@@ -84,7 +84,7 @@ define("devtoolApp", [
     $rootScope.getContext = function() {
       LoginDataService.getContext().then(function(data){
         $rootScope.globalContext = data;
-        $location.path("/project");
+        $location.path("/projects");
       }).catch(function(error){
         $rootScope.globalContext = {};
       });

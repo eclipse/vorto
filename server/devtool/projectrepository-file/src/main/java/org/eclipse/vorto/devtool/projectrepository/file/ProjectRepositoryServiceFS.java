@@ -50,61 +50,60 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
 	protected String projectsDirectory = null;
 
-    public static final String META_PROPERTY_FILENAME = ".meta.props";
-    public static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
+	public static final String META_PROPERTY_FILENAME = ".meta.props";
+	public static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
 
 	private static final Logger log = LoggerFactory.getLogger(ProjectRepositoryServiceFS.class);
 
-	
 	public ProjectRepositoryServiceFS(String projectsDirectory) {
-		final String normalizedDirectory = FilenameUtils.normalize(new File(
-				projectsDirectory).getAbsolutePath());
+		final String normalizedDirectory = FilenameUtils.normalize(new File(projectsDirectory).getAbsolutePath());
 		createProjectsDirectory(normalizedDirectory);
-		
+
 		this.projectsDirectory = normalizedDirectory;
 	}
-	
+
 	private static void createProjectsDirectory(String projectsDirectory) {
-		File projectsFolder = new File(System.getProperty("user.dir")+File.separator+projectsDirectory);
+		File projectsFolder = new File(System.getProperty("user.dir") + File.separator + projectsDirectory);
 
 		if (!projectsFolder.exists()) {
 			projectsFolder.mkdirs();
 			log.info("Projects directory " + projectsDirectory + " created.");
 		}
 	}
-	
+
 	@Override
-	public ProjectResource createProject(String name,String commitMessage)
-			throws ResourceAlreadyExistsError {
+	public ProjectResource createProject(String name, String commitMessage) throws ResourceAlreadyExistsError {
 		log.info("Create a new project. Name : " + name);
-        File projectFolder =  new File(projectsDirectory + File.separator
-                + name) ;
-        createProjectDirectory(projectFolder);
-        createMetaFile(addSystemProperties(new HashMap<String, String>()), projectFolder);
+		File projectFolder = new File(projectsDirectory + File.separator + name);
+		createProjectDirectory(projectFolder);
+		
+		Map<String, String> properties = addProjectResourceProperties(new HashMap<String, String>());
+		createMetaFile(addSystemProperties(properties), projectFolder);
 		log.info("Directory for Project " + name + " created.");
 
 		return (ProjectResource) createQuery().path(name).singleResult();
 	}
 
-    private Map<String,String> addSystemProperties(Map<String,String> source) {
-        if (!source.containsKey(META_PROPERTY_CREATIONDATE)) {
-            source.put(META_PROPERTY_CREATIONDATE,Long.toString(new Date().getTime()));
-        }
-        return source;
-    }
+	private Map<String, String> addSystemProperties(Map<String, String> source) {
+		if (!source.containsKey(META_PROPERTY_CREATIONDATE)) {
+			source.put(META_PROPERTY_CREATIONDATE, Long.toString(new Date().getTime()));
+		}
+		return source;
+	}
 
-    @Override
-    public ProjectResource createProject(String name, Map<String,String> properties, String commitMessage)
-            throws ResourceAlreadyExistsError {
-        log.info("Create a new project. Name : " + name);
-        File projectFolder =  new File(projectsDirectory + File.separator
-                + name) ;
-        createProjectDirectory(projectFolder);
-        createMetaFile(addSystemProperties(properties), projectFolder);
-        log.info("Directory for Project " + name + " created.");
+	@Override
+	public ProjectResource createProject(String name, Map<String, String> properties, String commitMessage)
+			throws ResourceAlreadyExistsError {
+		log.info("Create a new project. Name : " + name);		
+		File projectFolder = new File(projectsDirectory + File.separator + name);
+		createProjectDirectory(projectFolder);
+		
+		properties = addProjectResourceProperties(properties);
+		createMetaFile(addSystemProperties(properties), projectFolder);
+		log.info("Directory for Project " + name + " created.");
 
-        return (ProjectResource) createQuery().path(name).singleResult();
-    }
+		return (ProjectResource) createQuery().path(name).singleResult();
+	}
 
 	@Override
 	public ResourceQueryFS createQuery() {
@@ -114,35 +113,30 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
 	@Override
 	public void deleteResource(Resource resource) {
-		if(resource == null)
+		if (resource == null)
 			return;
-		log.info("Delete a resource. Name : " + resource.getName() + "; Path: "
-				+ resource.getPath());
-		resource.setPath(projectsDirectory + File.separator
-				+ FilenameUtils.normalize(resource.getPath()));
-		
+		log.info("Delete a resource. Name : " + resource.getName() + "; Path: " + resource.getPath());
+		resource.setPath(projectsDirectory + File.separator + FilenameUtils.normalize(resource.getPath()));
+
 		String arr[] = resource.getPath().split(Pattern.quote(File.separator));
-		String folder = arr[arr.length-2];
-		File file = new File(resource.getPath());		
-		File metaPropertyFile = new File(projectsDirectory + File.separator + FilenameUtils.normalize( folder + File.separator + "." +  resource.getName() + META_PROPERTY_FILENAME));
+		String folder = arr[arr.length - 2];
+		File file = new File(resource.getPath());
+		File metaPropertyFile = new File(projectsDirectory + File.separator
+				+ FilenameUtils.normalize(folder + File.separator + "." + resource.getName() + META_PROPERTY_FILENAME));
 		FileUtils.deleteQuietly(file);
 		FileUtils.deleteQuietly(metaPropertyFile);
-		log.info("Resource deleted. (Name : " + resource.getName() + "; Path: "
-				+ resource.getPath() + ")");
+		log.info("Resource deleted. (Name : " + resource.getName() + "; Path: " + resource.getPath() + ")");
 	}
 
 	@Override
 	public ResourceContent getResourceContent(FileResource fileResource) {
-		log.info("Getting content for resource with path : "
-				+ fileResource.getPath());
-		fileResource.setPath(projectsDirectory + File.separator
-				+ FilenameUtils.normalize(fileResource.getPath()));
+		log.info("Getting content for resource with path : " + fileResource.getPath());
+		fileResource.setPath(projectsDirectory + File.separator + FilenameUtils.normalize(fileResource.getPath()));
 
 		ResourceContent result = new ResourceContent();
 		result.setContent(readContentFromFile(new File(fileResource.getPath())));
 		result.setPath(fileResource.getPath());
-		log.info("Content for resource with path " + fileResource.getPath()
-				+ " found.");
+		log.info("Content for resource with path " + fileResource.getPath() + " found.");
 
 		return result;
 	}
@@ -157,14 +151,12 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		log.info("Uploading resource. Commit comment: " + commitComment);
 
 		for (UploadHandle handle : handles) {
-			handle.setPath(projectsDirectory + File.separator
-					+ handle.getPath());
-            if (!(handle instanceof ProjectUploadHandle))  {
-			    checkProjectExists(handle.getPath());
-            }
+			handle.setPath(projectsDirectory + File.separator + handle.getPath());
+			if (!(handle instanceof ProjectUploadHandle)) {
+				checkProjectExists(handle.getPath());
+			}
 			createResource(handle);
-			handle.setPath(handle.getPath().replace(
-					projectsDirectory + File.separatorChar, ""));
+			handle.setPath(handle.getPath().replace(projectsDirectory + File.separatorChar, ""));
 		}
 	}
 
@@ -209,8 +201,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		} else {
 			log.info("Directory " + file.getPath() + " already existed.");
 			throw new ResourceAlreadyExistsError(
-					"Directory for Project (Path: " + file.getPath()
-							+ ") already exists.");
+					"Directory for Project (Path: " + file.getPath() + ") already exists.");
 		}
 	}
 
@@ -222,8 +213,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 			try {
 				content = FileUtils.readFileToByteArray(file);
 			} catch (IOException e) {
-				throw new ProjectRepositoryException(
-						"File cannot be read into byte stream");
+				throw new ProjectRepositoryException("File cannot be read into byte stream");
 			}
 		} else {
 			log.info("Resource not found with path: " + file.getPath());
@@ -236,106 +226,106 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	private void checkProjectExists(String path) {
 
 		if (createQuery().name(getProjectName(path)).list().size() == 0) {
-			throw new NotExistingResourceError("Project with name "
-					+ getProjectName(path) + " does not exist.");
+			throw new NotExistingResourceError("Project with name " + getProjectName(path) + " does not exist.");
 		}
 
 	}
 
 	private String getProjectName(String path) {
-		String[] pathArray = StringUtils.split(
-				StringUtils.remove(
-						FilenameUtils.getPath(path),
-						FilenameUtils.getPath(projectsDirectory
-								+ File.separator)), File.separator);
+		String[] pathArray = StringUtils.split(StringUtils.remove(FilenameUtils.getPath(path),
+				FilenameUtils.getPath(projectsDirectory + File.separator)), File.separator);
 
 		return pathArray[0];
 	}
 
 	private void createResource(UploadHandle content) {
-        addSystemProperties(content.getProperties());
+		addSystemProperties(content.getProperties());
 		if (content instanceof FolderUploadHandle) {
 			File folder = createFolder(content.getPath());
-            createMetaFile(content.getProperties(), folder);
+			createMetaFile(content.getProperties(), folder);
 		} else if (content instanceof FileUploadHandle) {
-            File createdFile = null;
+			File createdFile = null;
 			FileUploadHandle fileContent = (FileUploadHandle) content;
 
 			if (new File(fileContent.getPath()).exists()) {
-                createdFile = updateFile(fileContent);
+				createdFile = updateFile(fileContent);
 			} else {
-                createdFile = createFile(fileContent);
+				createdFile = createFile(fileContent);
 			}
-            createMetaFile(content.getProperties(),createdFile);
+			createMetaFile(content.getProperties(), createdFile);
 		} else if (content instanceof ProjectUploadHandle) {
-            File projectFolder =  new File(content.getPath());
-            createMetaFile(content.getProperties(),projectFolder);
-        } else {
-			throw new WrongUploadHandleTypeError(
-					"UploadHandle ist not of type FileUploadHandle or FolderUploadHandle");
+			File projectFolder = new File(content.getPath());
+			createMetaFile(content.getProperties(), projectFolder);
+		} else {
+			throw new WrongUploadHandleTypeError("UploadHandle ist not of type FileUploadHandle or FolderUploadHandle");
 		}
 	}
 
-    private void createMetaFile(Map<String,String> properties, File source) {
-        Properties projectProps = new Properties();
-        projectProps.putAll(properties);
-        ByteArrayOutputStream projectPropXml = new ByteArrayOutputStream();
-        try{
-            File metaFile = new File(source,META_PROPERTY_FILENAME);
-            projectProps.storeToXML(projectPropXml,"");
-            if (!source.isDirectory()) {
-                metaFile = new File(source.getParent(),"."+source.getName()+META_PROPERTY_FILENAME);
-            }
-            FileUtils.writeByteArrayToFile(metaFile,projectPropXml.toByteArray());
-        } catch (IOException ioEx) {
-            throw new RuntimeException(ioEx);
-        }
-    }
+	private void createMetaFile(Map<String, String> properties, File source) {
+		Properties projectProps = new Properties();
+		projectProps.putAll(properties);
+		ByteArrayOutputStream projectPropXml = new ByteArrayOutputStream();
+		try {
+			File metaFile = new File(source, META_PROPERTY_FILENAME);
+			projectProps.storeToXML(projectPropXml, "");
+			if (!source.isDirectory()) {
+				metaFile = new File(source.getParent(), "." + source.getName() + META_PROPERTY_FILENAME);
+			}
+			FileUtils.writeByteArrayToFile(metaFile, projectPropXml.toByteArray());
+		} catch (IOException ioEx) {
+			throw new RuntimeException(ioEx);
+		}
+	}
 
 	private File createFolder(String path) {
 		File file = new File(path);
 
 		if (file.exists()) {
 			log.info("Folder with path " + path + " already exists.");
-			throw new ResourceAlreadyExistsError("Directory (Path: "
-					+ file.getPath() + ") already exists.");
+			throw new ResourceAlreadyExistsError("Directory (Path: " + file.getPath() + ") already exists.");
 		} else {
 			file.mkdirs();
 			log.info("Folder for resource with path " + path + " created.");
 		}
 
-        return file;
+		return file;
 	}
 
 	private File updateFile(FileUploadHandle content) {
 
 		try {
-			FileUtils.writeByteArrayToFile(new File(content.getPath()),
-					content.getContent());
-			log.info("Content for resource with path " + content.getPath()
-					+ " updated.");
+			FileUtils.writeByteArrayToFile(new File(content.getPath()), content.getContent());
+			log.info("Content for resource with path " + content.getPath() + " updated.");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
 
-        return new File(content.getPath());
+		return new File(content.getPath());
 	}
 
 	private File createFile(FileUploadHandle content) {
 		File file = new File(content.getPath());
 		try {
-			//to create all parent directories first 
-			if(!file.getParentFile().exists())
-				file.getParentFile().mkdirs();			
+			// to create all parent directories first
+			if (!file.getParentFile().exists())
+				file.getParentFile().mkdirs();
 			file.createNewFile();
 			FileUtils.writeByteArrayToFile(file, content.getContent());
-			log.info("File for resource with path " + content.getPath()
-					+ " created.");
+			log.info("File for resource with path " + content.getPath() + " created.");
 		} catch (IOException e) {
 			log.error(e.getMessage(), e);
 		}
 
-        return file;
+		return file;
+	}
+
+	public String theProjectsDirectory() {
+		return this.projectsDirectory;
+	}
+	
+	private Map<String, String> addProjectResourceProperties(Map<String, String> source) {
+		source.put(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT, String.valueOf(true));
+		return source;
 	}
 }
 

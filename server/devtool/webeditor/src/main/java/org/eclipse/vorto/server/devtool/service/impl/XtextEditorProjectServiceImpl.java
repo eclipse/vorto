@@ -77,7 +77,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	@Override
 	public Resource createProjectResource(String projectName, String author, ModelResource modelResource) {
-		IResourceQuery resourceQuery = getResourceQuery(projectName, modelResource);
+		IResourceQuery resourceQuery = getModelResourceQuery(projectName, modelResource);
 		List<Resource> list = resourceQuery.list();
 
 		if (list.isEmpty()) {
@@ -119,7 +119,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	@Override
 	public Resource getReferencedResource(ModelInfo modelInfo) {
 		ModelResource modelResource = devtoolUtils.getModelResource(modelInfo);
-		IResourceQuery resourceQuery = getResourceQuery(referenceRepository, modelResource);
+		IResourceQuery resourceQuery = getModelResourceQuery(referenceRepository, modelResource);
 		List<Resource> list = resourceQuery.list();
 
 		if (list.isEmpty()) {
@@ -147,7 +147,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 		projectRepositoryService.deleteResource(resource);
 	}
 
-	private IResourceQuery getResourceQuery(String projectName, ModelResource modelResource) {
+	private IResourceQuery getModelResourceQuery(String projectName, ModelResource modelResource) {
 		return projectRepositoryService.createQuery().pathLike(projectName).name(modelResource.getFilename())
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_VERSION, modelResource.getVersion())
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE, modelResource.getNamespace())
@@ -156,7 +156,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	private FileUploadHandle getFileUploadHandle(String projectName, String fileContent, String author,
 			ModelResource modelResource) {
-		Resource projectResource = projectRepositoryService.createQuery().path(projectName).singleResult();
+		Resource projectResource = projectRepositoryService.createQuery().path(projectName.replace("\\", "/")).singleResult();
 		FileUploadHandle fileUploadHandle = new FileUploadHandle((FolderResource) projectResource,
 				modelResource.getFilename(), fileContent.getBytes());
 		String resourceId = devtoolUtils.generateResourceId(modelResource, projectName, author);

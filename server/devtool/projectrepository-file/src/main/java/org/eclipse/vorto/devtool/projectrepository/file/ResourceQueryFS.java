@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.io.FilenameUtils;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
@@ -68,13 +67,13 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 	}
 
 	public ResourceQueryFS author(String author) {
-        TextFilter tf = new TextFilter();
-        tf.setKey("author");
-        tf.setText(author);
-        tf.setWhereCondition("/.[author='?']");
-        addFilter(tf);
+		TextFilter tf = new TextFilter();
+		tf.setKey("author");
+		tf.setText(author);
+		tf.setWhereCondition("/.[author='?']");
+		addFilter(tf);
 
-        return this;
+		return this;
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 
 		return this;
 	}
-	
+
 	@Override
 	public IResourceQuery property(String propertyName, String propertyValue) {
 		TextFilter tf = new TextFilter();
@@ -129,18 +128,14 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Resource createResource(File file) {
 		Resource resource;
-		String parentPath = FilenameUtils.normalize(file.getParent());
 		Properties props = new Properties();
 		File metaFile;
-		if (file.isDirectory() && parentPath.equals(rootDirectory)) {
-			resource = new ProjectResource();
+		if (file.isDirectory()) {
 			metaFile = new File(file, ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
-		} else if (file.isDirectory()) {
-			resource = new FolderResource();
-            metaFile = new File(file, ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
 		} else {
 			resource = new FileResource();
-            metaFile = new File(file.getParentFile(), "."+file.getName()+ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
+			metaFile = new File(file.getParentFile(),
+					"." + file.getName() + ProjectRepositoryServiceFS.META_PROPERTY_FILENAME);
 		}
 
 		try {
@@ -149,9 +144,23 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 			// Nothing to do here.
 		}
 
-		String resourcePath = file.getPath()
-				.replace(rootDirectory + File.separator, "")
-				.replace(File.separator, "/");
+		if (file.isDirectory()) {
+			if (props.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT)) {
+				boolean isProject = Boolean
+						.parseBoolean((String) props.get(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT));
+				if (isProject) {
+					resource = new ProjectResource();
+				} else {
+					resource = new FolderResource();
+				}
+			} else {
+				resource = new FolderResource();
+			}
+		} else {
+			resource = new FileResource();
+		}
+
+		String resourcePath = file.getPath().replace(rootDirectory + File.separator, "").replace(File.separator, "/");
 		resource.setPath(resourcePath);
 		resource.setName(file.getName());
 		if (props.containsKey((ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))) {

@@ -42,13 +42,12 @@ class FileResourceHandler implements IServerResourceHandler {
 	@Inject 
 	private IEncodingProvider encodingProvider
 
-	private String projectRepositoryPath = "devtool-project-repository";
-	
-	private IProjectRepositoryService projectRepositoryService = new ProjectRepositoryServiceFS(projectRepositoryPath);
-			
+	@Inject
+	private IProjectRepositoryService repositoryService;
+				
 	def getFileURI(String resourceId) {
-		val resource = projectRepositoryService.createQuery().property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId).singleResult();
-		return URI.createFileURI(projectRepositoryPath + File.separator +  resource.path);
+		val resource = repositoryService.createQuery().property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId).singleResult();
+		return URI.createFileURI((repositoryService as ProjectRepositoryServiceFS).projectsDirectory + File.separator +  resource.path);
 	}
 	
 	override get(String resourceId, IServiceContext serviceContext) throws IOException {

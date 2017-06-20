@@ -26,6 +26,8 @@ import java.util.concurrent.ExecutorService
 import org.eclipse.vorto.editor.infomodel.InformationModelRuntimeModule
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
+import com.google.inject.AbstractModule
+import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService
 
 /**
  * Initialization support for running Xtext languages in web applications.
@@ -35,10 +37,19 @@ class InformationModelWebSetup extends InformationModelStandaloneSetup {
 	
 	val Provider<ExecutorService> executorServiceProvider;
 	
+	val IProjectRepositoryService projectRepositoryService;
+
+	
 	override Injector createInjector() {
 		val runtimeModule = new InformationModelRuntimeModule()
 		val webModule = new InformationModelWebModule(executorServiceProvider)
-		return Guice.createInjector(Modules.override(runtimeModule).with(webModule))
+		return Guice.createInjector(Modules.override(runtimeModule).with(webModule,new AbstractModule(){
+			
+			override protected configure() {
+				bind(typeof(IProjectRepositoryService)).toInstance(projectRepositoryService);
+			}
+			
+			}))
 	}
 	
 }
