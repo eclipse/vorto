@@ -46,7 +46,7 @@
               category="org.eclipse.vorto.perspective"
               class="org.eclipse.vorto.perspective.vorto.view.VortoProjectSelectionViewPart"
               icon="platform:/plugin/org.eclipse.vorto.perspective/icons/vorto-icon.png"
-              id="org.eclipse.vorto.perspective.view.ProjectSelectionViewPart"
+              id="org.eclipse.vorto.perspective.view.VortoProjectSelectionViewPart"
               name="Vorto Model Project Browser">
         </view>
         <view

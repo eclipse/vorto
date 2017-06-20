@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.perspective;
 
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.vorto.perspective.vorto.view.VortoProjectSelectionViewPart;
@@ -23,16 +24,8 @@ public class VortoPerspective implements IPerspectiveFactory {
 	@Override
 	public void createInitialLayout(IPageLayout layout) {
 				
-		layout.createFolder("left", IPageLayout.LEFT, 0.2f,
-				IPageLayout.ID_EDITOR_AREA);
-		layout.createFolder("right", IPageLayout.RIGHT, 0.6f,
-				IPageLayout.ID_EDITOR_AREA);
-		layout.createFolder("bottom", IPageLayout.BOTTOM, 0.8f,
-				IPageLayout.ID_EDITOR_AREA);
-		layout.createFolder("top", IPageLayout.TOP, 0.6f,
-				IPageLayout.ID_EDITOR_AREA);
+		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.2f, layout.getEditorArea());
 
-		layout.addView(VortoProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID, IPageLayout.LEFT, 0.20f,
-				layout.getEditorArea());
+		left.addView(VortoProjectSelectionViewPart.PROJECT_SELECT_VIEW_ID);
 	}
 }

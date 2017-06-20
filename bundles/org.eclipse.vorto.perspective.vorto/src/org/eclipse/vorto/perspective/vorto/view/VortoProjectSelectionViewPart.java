@@ -22,7 +22,7 @@ import org.eclipse.vorto.wizard.vorto.VortoProjectWizard;
 
 public class VortoProjectSelectionViewPart extends AbstractProjectSelectionViewPart {
 
-	public static final String PROJECT_SELECT_VIEW_ID = "org.eclipse.vorto.perspective.vorto.view.VortoProjectSelectionViewPart";
+	public static final String PROJECT_SELECT_VIEW_ID = "org.eclipse.vorto.perspective.view.VortoProjectSelectionViewPart";
 
 	@Override
 	protected ModelTreeViewer getDataTypeTreeViewer(Composite modelPanel) {
