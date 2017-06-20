@@ -441,7 +441,6 @@ define(["../init/AppController"], function(controllers) {
         $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
         $scope.clearSearch();
         $scope.isEditorOpen = true;
-        // $scope.$apply();
       });
     }
 
@@ -492,7 +491,7 @@ define(["../init/AppController"], function(controllers) {
       });
     }
 
-    $scope.addXtextEditor = function(parentId, model) {
+    $scope.addXtextEditor = function(model) {
       $scope.createEditor(model).then(function(editor){
         $scope.editors.push(editor);
         $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
@@ -505,7 +504,6 @@ define(["../init/AppController"], function(controllers) {
         $scope.addResource(tab);
         $scope.selectTab($scope.selectedTabIndex);
         $scope.isEditorOpen = true;
-        // $scope.$apply();
       });
     }
 
