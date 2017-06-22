@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,21 +14,31 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.http.response;
 
-public class DeleteResourceRequest {
+import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 
-	private String projectName;
-	private String resourceId;
+public class Response {
 
-	public String getProjectName() {
-		return projectName;
+	private String message;
+	private Resource resource;
+	
+	public Response(String message, Resource resource){
+		this.message = message;
+		this.resource = resource;
 	}
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
+	
+	public String getMessage() {
+		return message;
 	}
-	public String getResourceId() {
-		return resourceId;
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
-	public void setResourceId(String resourceId) {
-		this.resourceId = resourceId;
-	}	
+	
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
 }

@@ -14,8 +14,13 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
@@ -64,6 +69,13 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	}
 
 	@Override
+	public ProjectResource getProject(String projectName) {
+		return (ProjectResource) projectRepositoryService.createQuery()
+				.path(projectName)
+				.type(ResourceType.ProjectResource).singleResult();
+	}
+	
+	@Override
 	public List<Resource> getProjects(String author) {
 		return projectRepositoryService.createQuery()
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author)
@@ -82,15 +94,14 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 		if (list.isEmpty()) {
 			String fileContent = devtoolUtils.generateFileContent(modelResource);
-			FileUploadHandle fileUploadHandle = getFileUploadHandle(projectName, fileContent, author,
-					modelResource);
+			FileUploadHandle fileUploadHandle = getFileUploadHandle(projectName, fileContent, author, modelResource);
 			projectRepositoryService.uploadResource(null, fileUploadHandle);
 			return resourceQuery.list().get(0);
 		} else {
 			throw new ResourceAlreadyExistsError(Constants.MESSAGE_RESOURCE_ALREADY_EXISTS);
 		}
 	}
-	
+
 	@Override
 	public Resource createProjectResource(String projectName, ModelResource modelResource) {
 		return createProjectResource(projectName, editorSession.getUser(), modelResource);
@@ -137,7 +148,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	public void deleteResource(String projectName, String resourceId) {
 		deleteResource(projectName, editorSession.getUser(), resourceId);
 	}
-	
+
 	@Override
 	public void deleteResource(String projectName, String author, String resourceId) {
 		IResourceQuery resourceQuery = projectRepositoryService.createQuery().pathLike(projectName)
@@ -145,6 +156,29 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author);
 		Resource resource = resourceQuery.singleResult();
 		projectRepositoryService.deleteResource(resource);
+	}
+
+	@Override
+	public void addReferenceToProject(String projectName, String referenceResourceId) {
+		ProjectResource projectResource = (ProjectResource) projectRepositoryService.createQuery().pathLike(projectName)
+				.type(ResourceType.ProjectResource).singleResult();
+		Map<String, String> properties = projectResource.getProperties();
+		String[] resourceIdArray = {};
+		if (properties.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)) {
+			resourceIdArray = properties.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)
+					.split(Constants.COMMA);
+		}
+		ArrayList<String> resourceIdList = new ArrayList<>(Arrays.asList(resourceIdArray));
+		Set<String> resourceIdSet = new HashSet<String>(resourceIdList);
+		if (resourceIdSet.contains(referenceResourceId)) {
+			return;
+		}else{
+			resourceIdList.add(referenceResourceId);
+			Map<String, String> updatedProperties = new HashMap<String, String>();
+			updatedProperties.put(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES,
+					String.join(Constants.COMMA, resourceIdList));
+			projectRepositoryService.updateFolderResourceProperties(projectResource, updatedProperties);			
+		}
 	}
 
 	private IResourceQuery getModelResourceQuery(String projectName, ModelResource modelResource) {
@@ -156,7 +190,8 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	private FileUploadHandle getFileUploadHandle(String projectName, String fileContent, String author,
 			ModelResource modelResource) {
-		Resource projectResource = projectRepositoryService.createQuery().path(projectName.replace("\\", "/")).singleResult();
+		Resource projectResource = projectRepositoryService.createQuery().path(projectName.replace("\\", "/"))
+				.singleResult();
 		FileUploadHandle fileUploadHandle = new FileUploadHandle((FolderResource) projectResource,
 				modelResource.getFilename(), fileContent.getBytes());
 		String resourceId = devtoolUtils.generateResourceId(modelResource, projectName, author);
@@ -166,5 +201,4 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 		fileUploadHandle.setProperties(properties);
 		return fileUploadHandle;
 	}
-
 }

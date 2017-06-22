@@ -24,6 +24,8 @@ import org.eclipse.vorto.server.devtool.models.ModelResource;
 public interface IProjectService {
 			
 	ProjectResource createProject(String projectName, String author);
+	
+	ProjectResource getProject(String projectName);
 			
 	List<Resource> getProjects(String author);	
 	
@@ -40,4 +42,6 @@ public interface IProjectService {
 	void deleteResource(String projectName, String resourceId);
 	
 	void deleteResource(String projectName, String author, String resourceId);
+	
+	void addReferenceToProject(String projectName, String resourceId);
 }

@@ -17,11 +17,8 @@ package org.eclipse.vorto.server.devtool.models;
 public class GlobalContext {
 
 	public String repositoryBasePath = null;
-	
-	public String referenceRepository = null;
-	
-	public GlobalContext(String repositoryBasePath, String referenceRepository) {
+		
+	public GlobalContext(String repositoryBasePath) {
 		this.repositoryBasePath = repositoryBasePath;
-		this.referenceRepository = referenceRepository;
 	}
 }

@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.server.devtool.models.LinkReferenceResponse;
 import org.eclipse.vorto.server.devtool.service.impl.editor.DatatypeEditorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,8 @@ public class DatatypeEditorController extends AbstractEditorController {
 	private DatatypeEditorServiceImpl datatypeEditorServiceImpl;
 
 	@Override
-	public String linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet) {
-		String content = datatypeEditorServiceImpl.linkReferenceToResource(resoruceId, modelId, resourceSet);
-		return content;
+	public LinkReferenceResponse linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet) {
+		return datatypeEditorServiceImpl.linkReferenceToResource(resoruceId, modelId, resourceSet);
 	}
 
 	@Override
@@ -43,10 +43,8 @@ public class DatatypeEditorController extends AbstractEditorController {
 	}
 
 	@Override
-	public String linkReferenceToResource(String targetResourceId, String referenceResourceId,
+	public LinkReferenceResponse linkReferenceToResource(String targetResourceId, String referenceResourceId,
 			ResourceSet resourceSet) {
-		String content = datatypeEditorServiceImpl.linkReferenceToResource(targetResourceId, referenceResourceId,
-				resourceSet);
-		return content;
+		return datatypeEditorServiceImpl.linkReferenceToResource(targetResourceId, referenceResourceId, resourceSet);
 	}
 }

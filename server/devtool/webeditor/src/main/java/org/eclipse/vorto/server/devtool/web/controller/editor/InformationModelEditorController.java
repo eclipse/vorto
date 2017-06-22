@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.server.devtool.models.LinkReferenceResponse;
 import org.eclipse.vorto.server.devtool.service.impl.editor.InformationModelEditorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,9 +33,8 @@ public class InformationModelEditorController extends AbstractEditorController {
 	private InformationModelEditorServiceImpl informationModelEditorServiceImpl;
 
 	@Override
-	public String linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet) {
-		String content = informationModelEditorServiceImpl.linkReferenceToResource(resoruceId, modelId, resourceSet);
-		return content;
+	public LinkReferenceResponse linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet) {
+		return informationModelEditorServiceImpl.linkReferenceToResource(resoruceId, modelId, resourceSet);
 	}
 
 	@Override
@@ -43,10 +43,9 @@ public class InformationModelEditorController extends AbstractEditorController {
 	}
 
 	@Override
-	public String linkReferenceToResource(String targetResourceId, String referenceResourceId,
+	public LinkReferenceResponse linkReferenceToResource(String targetResourceId, String referenceResourceId,
 			ResourceSet resourceSet) {
-		String content = informationModelEditorServiceImpl.linkReferenceToResource(targetResourceId,
+		return informationModelEditorServiceImpl.linkReferenceToResource(targetResourceId,
 				referenceResourceId, resourceSet);
-		return content;
 	}
 }

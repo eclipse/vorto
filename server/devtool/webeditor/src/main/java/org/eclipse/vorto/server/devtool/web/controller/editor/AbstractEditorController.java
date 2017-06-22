@@ -25,8 +25,10 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.http.response.LinkReferenceModelRequest;
-import org.eclipse.vorto.server.devtool.http.response.LinkReferenceResourceRequest;
+import org.eclipse.vorto.server.devtool.http.request.LinkReferenceModelRequest;
+import org.eclipse.vorto.server.devtool.http.request.LinkReferenceResourceRequest;
+import org.eclipse.vorto.server.devtool.models.LinkReferenceResponse;
+import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,9 +44,12 @@ public abstract class AbstractEditorController {
 	@Autowired
 	private WebUtils webUtils;
 
-	public abstract String linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet);
+	@Autowired
+	private IProjectService projectService;
 
-	public abstract String linkReferenceToResource(String targetResourceId, String referenceResourceId,
+	public abstract LinkReferenceResponse linkReferenceToResource(String resoruceId, ModelId modelId, ResourceSet resourceSet);
+
+	public abstract LinkReferenceResponse linkReferenceToResource(String targetResourceId, String referenceResourceId,
 			ResourceSet resourceSet);
 
 	public abstract List<ModelInfo> search(String expression);
@@ -59,7 +64,10 @@ public abstract class AbstractEditorController {
 		ModelId modelId = new ModelId(linkReferenceModelRequest.getModelName(),
 				linkReferenceModelRequest.getModelNamespace(), linkReferenceModelRequest.getModelVersion());
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		String content = linkReferenceToResource(linkReferenceModelRequest.getResourceId(), modelId, resourceSet);
+		LinkReferenceResponse linkReferenceResponse  = linkReferenceToResource(linkReferenceModelRequest.getResourceId(), modelId, resourceSet);
+		String content = linkReferenceResponse.getContent();
+		String projectName = webUtils.getUserProjectName(linkReferenceModelRequest.getProjectName());
+		projectService.addReferenceToProject(projectName, linkReferenceResponse.getReferenceResourceId());
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();
@@ -70,13 +78,14 @@ public abstract class AbstractEditorController {
 
 	@ApiOperation(value = "Imports the specified reference resource from the project workspace into the target resource")
 	@RequestMapping(value = "/link/resource", method = RequestMethod.POST)
-	public void linkReference(@RequestBody LinkReferenceResourceRequest linkReferenceResourceRequest,
+	public void linkResource(@RequestBody LinkReferenceResourceRequest linkReferenceResourceRequest,
 			HttpServletRequest request, HttpServletResponse response) {
 
 		webUtils.validateLinkResourceReferenceRequest(linkReferenceResourceRequest);
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		String content = linkReferenceToResource(linkReferenceResourceRequest.getTargetResourceId(),
+		LinkReferenceResponse linkReferenceResponse = linkReferenceToResource(linkReferenceResourceRequest.getTargetResourceId(),
 				linkReferenceResourceRequest.getReferenceResourceId(), resourceSet);
+		String content = linkReferenceResponse.getContent();
 		try {
 			IOUtils.copy(new ByteArrayInputStream(content.getBytes()), response.getOutputStream());
 			response.flushBuffer();

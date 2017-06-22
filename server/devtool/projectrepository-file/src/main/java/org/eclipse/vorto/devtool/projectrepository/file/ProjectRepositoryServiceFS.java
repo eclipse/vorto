@@ -16,6 +16,7 @@ package org.eclipse.vorto.devtool.projectrepository.file;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.WrongUploadHandleTypeError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FileUploadHandle;
+import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderUploadHandle;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectUploadHandle;
@@ -76,7 +78,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		log.info("Create a new project. Name : " + name);
 		File projectFolder = new File(projectsDirectory + File.separator + name);
 		createProjectDirectory(projectFolder);
-		
+
 		Map<String, String> properties = addProjectResourceProperties(new HashMap<String, String>());
 		createMetaFile(addSystemProperties(properties), projectFolder);
 		log.info("Directory for Project " + name + " created.");
@@ -94,10 +96,10 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	@Override
 	public ProjectResource createProject(String name, Map<String, String> properties, String commitMessage)
 			throws ResourceAlreadyExistsError {
-		log.info("Create a new project. Name : " + name);		
+		log.info("Create a new project. Name : " + name);
 		File projectFolder = new File(projectsDirectory + File.separator + name);
 		createProjectDirectory(projectFolder);
-		
+
 		properties = addProjectResourceProperties(properties);
 		createMetaFile(addSystemProperties(properties), projectFolder);
 		log.info("Directory for Project " + name + " created.");
@@ -158,6 +160,27 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 			createResource(handle);
 			handle.setPath(handle.getPath().replace(projectsDirectory + File.separatorChar, ""));
 		}
+	}
+
+	@Override
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	public void updateFolderResourceProperties(FolderResource resource, Map<String, String> properties) {
+		String metaFileDirectoryPath = projectsDirectory + File.separator + resource.getPath();
+		File metaFileDirectory = new File(metaFileDirectoryPath);
+		File metaFile = new File(metaFileDirectoryPath, META_PROPERTY_FILENAME);
+		Properties metaProperties = new Properties();
+		try {
+			metaProperties.loadFromXML(new FileInputStream(metaFile));
+		} catch (Exception ex) {
+			// Nothing to do here.
+		}
+		HashMap<String, String> map = new HashMap(metaProperties);
+		for (Map.Entry<String, String> entry : properties.entrySet()) {
+			if(!ProjectRepositoryFileConstants.IMMUTABLE_META_PROPERTY_SET.contains(entry.getKey())){
+				map.put(entry.getKey(), entry.getValue());
+			}
+		}
+		createMetaFile(map, metaFileDirectory);
 	}
 
 	@Override
@@ -322,7 +345,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	public String theProjectsDirectory() {
 		return this.projectsDirectory;
 	}
-	
+
 	private Map<String, String> addProjectResourceProperties(Map<String, String> source) {
 		source.put(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT, String.valueOf(true));
 		return source;

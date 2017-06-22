@@ -12,24 +12,23 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.http.response;
+package org.eclipse.vorto.server.devtool.http.request;
 
-public class LinkReferenceResourceRequest {
+public class DeleteResourceRequest {
 
-	private String targetResourceId;
-	private String referenceResourceId;
+	private String projectName;
+	private String resourceId;
 
-	public String getTargetResourceId() {
-		return targetResourceId;
+	public String getProjectName() {
+		return projectName;
 	}
-	public void setTargetResourceId(String targetResourceId) {
-		this.targetResourceId = targetResourceId;
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
 	}
-	public String getReferenceResourceId() {
-		return referenceResourceId;
+	public String getResourceId() {
+		return resourceId;
 	}
-	public void setReferenceResourceId(String referenceResourceId) {
-		this.referenceResourceId = referenceResourceId;
-	}
-		
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}	
 }

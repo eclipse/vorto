@@ -21,8 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
-import org.eclipse.vorto.server.devtool.http.response.LinkReferenceModelRequest;
-import org.eclipse.vorto.server.devtool.http.response.LinkReferenceResourceRequest;
+import org.eclipse.vorto.server.devtool.http.request.LinkReferenceModelRequest;
+import org.eclipse.vorto.server.devtool.http.request.LinkReferenceResourceRequest;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
@@ -60,6 +60,7 @@ public class WebUtils {
 		Objects.requireNonNull(linkReferenceModelRequest.getModelName(), "model name must not be null");
 		Objects.requireNonNull(linkReferenceModelRequest.getModelNamespace(), "model namespace must not be null");
 		Objects.requireNonNull(linkReferenceModelRequest.getModelVersion(), "model version must not be null");
+		Objects.requireNonNull(linkReferenceModelRequest.getProjectName(), "project name must not be null");
 	}
 
 	public void validateSearchExpression(String string) {

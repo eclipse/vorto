@@ -29,10 +29,7 @@ public class EditorConfigurationCloud {
 
 	@Value("${project.repository.path}")
 	private String projectRepositoryPath;
-	
-	@Value("${reference.repository}")
-	private String referenceRepository;
-		
+			
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;
 	
@@ -48,7 +45,7 @@ public class EditorConfigurationCloud {
 	
 	@Bean
 	public GlobalContext getGlobalContext(){
-		return new GlobalContext(repositoryBasePath, referenceRepository);
+		return new GlobalContext(repositoryBasePath);
 	}
 
 }
