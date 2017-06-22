@@ -52,8 +52,8 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
 	protected String projectsDirectory = null;
 
-	public static final String META_PROPERTY_FILENAME = ".meta.props";
-	public static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
+	public static final String META_PROPERTY_FILENAME = ProjectRepositoryFileConstants.META_PROPERTY_FILENAME;
+	public static final String META_PROPERTY_CREATIONDATE = ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE;
 
 	private static final Logger log = LoggerFactory.getLogger(ProjectRepositoryServiceFS.class);
 

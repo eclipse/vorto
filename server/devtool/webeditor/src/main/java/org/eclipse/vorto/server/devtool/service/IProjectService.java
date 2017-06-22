@@ -27,7 +27,7 @@ public interface IProjectService {
 	
 	ProjectResource getProject(String projectName);
 			
-	List<Resource> getProjects(String author);	
+	List<ProjectResource> getProjects(String author);	
 	
 	List<Resource> getProjectResources(String projectName);
 	

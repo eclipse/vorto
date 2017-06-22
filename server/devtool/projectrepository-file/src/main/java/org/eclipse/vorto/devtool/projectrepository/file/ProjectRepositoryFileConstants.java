@@ -25,6 +25,10 @@ public class ProjectRepositoryFileConstants {
 	public static final String META_PROPERTY_IS_PROJECT = "isProject";
 
 	public static final String META_PROPERTY_REFERENCES = "references";
+	
+	public static final String META_PROPERTY_CREATIONDATE = "meta.createdOn";
+	
+	public static final String META_PROPERTY_FILENAME = ".meta.props";
 
 	public static Set<String> IMMUTABLE_META_PROPERTY_SET = new HashSet<String>(Arrays.asList(
 		META_PROPERTY_AUTHOR,
