@@ -3,7 +3,7 @@ vorto:
   repository:
     base:
       path: http://vorto.eclipse.org
-      
+
 http:
   proxyHost:
   proxyPort: 8080
@@ -11,11 +11,11 @@ http:
 server:
   port: 9080
   contextPath: /editor
-  
+
 github:
   client:
-    clientId: ${github_clientid}
-    clientSecret: ${github_secret}
+    clientId: b75406b8428b88732920
+    clientSecret: dcd1253b69d76f262924d9144756052fe9bff072
     accessTokenUri: https://github.com/login/oauth/access_token
     userAuthorizationUri: https://github.com/login/oauth/authorize
     clientAuthenticationScheme: form
