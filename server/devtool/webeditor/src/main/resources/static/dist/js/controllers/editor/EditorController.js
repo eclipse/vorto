@@ -90,6 +90,7 @@ define(["../init/AppController"], function(controllers) {
               $scope.openEditor(node.original);
             } else {
               $scope.selectTab(index);
+              $scope.$apply();
             }
           }
         },
