@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2017 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,31 +14,22 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.http.request;
 
-import org.eclipse.vorto.devtool.projectrepository.model.Resource;
+public class LinkReferenceResourceRequest {
 
-public class Response {
+	private String targetResourceId;
+	private String referenceResourceId;
 
-	private String message;
-	private Resource resource;
-	
-	public Response(String message, Resource resource){
-		this.message = message;
-		this.resource = resource;
+	public String getTargetResourceId() {
+		return targetResourceId;
 	}
-	
-	public String getMessage() {
-		return message;
+	public void setTargetResourceId(String targetResourceId) {
+		this.targetResourceId = targetResourceId;
 	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	public String getReferenceResourceId() {
+		return referenceResourceId;
 	}
-	
-	public Resource getResource() {
-		return resource;
+	public void setReferenceResourceId(String referenceResourceId) {
+		this.referenceResourceId = referenceResourceId;
 	}
-
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
+		
 }

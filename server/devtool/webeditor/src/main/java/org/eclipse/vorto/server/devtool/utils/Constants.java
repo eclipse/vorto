@@ -17,6 +17,8 @@ package org.eclipse.vorto.server.devtool.utils;
 public class Constants {
 
 	public static final String DOT = ".";
+	
+	public static final String COMMA = ",";
 
 	public static final String MESSAGE_RESOURCE_CREATED = "resource created";
 

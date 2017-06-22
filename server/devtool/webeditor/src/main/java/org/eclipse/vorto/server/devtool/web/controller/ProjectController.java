@@ -15,6 +15,8 @@
 package org.eclipse.vorto.server.devtool.web.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,10 +24,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
+import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
-import org.eclipse.vorto.server.devtool.http.request.Response;
-import org.eclipse.vorto.server.devtool.http.response.DeleteResourceRequest;
+import org.eclipse.vorto.server.devtool.http.request.DeleteResourceRequest;
+import org.eclipse.vorto.server.devtool.http.response.Response;
 import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
@@ -132,19 +135,38 @@ public class ProjectController {
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
-		if (!projectName.equals(referenceRepository)) {
-			projectName = webUtils.getUserProjectName(projectName);
-		}
+		projectName = webUtils.getUserProjectName(projectName);
 
 		return projectService.getProjectResources(projectName);
 	}
 
 	@ApiOperation(value = "Opens an existing Vorto project")
 	@RequestMapping(value = "/{projectName}/open", method = RequestMethod.GET)
-	public void openProject(@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
+	public Resource openProject(@ApiParam(value = "ProjectName", required = true) @PathVariable final String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) throws IOException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
+		String pName = webUtils.getUserProjectName(projectName);
+
+		ResourceSet resourceSet = webUtils.getResourceSet(request);
+		ProjectResource projectResource = projectService.getProject(pName);
+		List<String> resourceIdList = new ArrayList<String>();
+
+		if(projectResource.getProperties().containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)){
+			resourceIdList = new ArrayList<String>(Arrays.asList(projectResource.getProperties()
+					.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES).split(Constants.COMMA)));			
+		}
+		
+		List<Resource> resourceList = projectService.getProjectResources(projectName);
+		for(Resource resource : resourceList){
+			resourceIdList.add(resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID));
+		}
+		
+		devtoolReferenceLinker.resetResourceSet(resourceSet);
+		devtoolReferenceLinker.loadResources(resourceIdList, resourceSet);
+
+		return projectResource;
+
 	}
 
 	@ApiOperation(value = "Deletes a resource from the project")
@@ -154,9 +176,6 @@ public class ProjectController {
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
-		if (projectName.equals(referenceRepository)) {
-			return;
-		}
 
 		projectName = webUtils.getUserProjectName(projectName);
 		ResourceSet resourceSet = webUtils.getResourceSet(request);

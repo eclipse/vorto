@@ -21,6 +21,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.server.devtool.models.LinkReferenceResponse;
 import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
@@ -33,26 +34,26 @@ public abstract class IEditorService {
 
 	@Autowired
 	private DevtoolRestClient devtoolRestClient;
-	
+
 	@Autowired
 	private DevtoolReferenceLinker devtoolReferenceLinker;
-	
+
 	@Autowired
 	private DevtoolUtils devtoolUtils;
-	
+
 	@Autowired
 	private IProjectService projectService;
 
 	public abstract List<ModelInfo> searchModelByExpression(String expression);
 
 	public abstract String generateFileContent(ModelResource modelResource);
-	
+
 	public abstract ModelInfo getAndValidateModelInfo(ModelId modelId);
-	
-	public abstract void updateVariableNames(String targetResourceId, String referenceResourceId, ResourceSet resourceSet);
-	
-	public final List<ModelInfo> searchModelByExpressionAndValidate(String expression,
-			List<ModelType> modelTypeList) {
+
+	public abstract void updateVariableNames(String targetResourceId, String referenceResourceId,
+			ResourceSet resourceSet);
+
+	public final List<ModelInfo> searchModelByExpressionAndValidate(String expression, List<ModelType> modelTypeList) {
 		List<ModelInfo> resourceList = devtoolRestClient.searchByExpression(expression);
 		ArrayList<ModelInfo> modelResourceList = new ArrayList<ModelInfo>();
 		for (ModelInfo modelResource : resourceList) {
@@ -65,29 +66,35 @@ public abstract class IEditorService {
 		return modelResourceList;
 	}
 
-	public final String linkReferenceToResource(String targetResourceId, ModelId modelId, ResourceSet resourceSet) {
+	public final LinkReferenceResponse linkReferenceToResource(String targetResourceId, ModelId modelId,
+			ResourceSet resourceSet) {
 		validateArguments(targetResourceId, resourceSet);
 		ModelInfo modelInfo = getAndValidateModelInfo(modelId);
 		projectService.getReferencedResource(modelInfo);
 		String referenceResourceId = devtoolUtils.getReferencedResourceId(modelInfo);
-		return linkReference(targetResourceId, referenceResourceId, resourceSet);
+		String content = linkReference(targetResourceId, referenceResourceId, resourceSet);
+		LinkReferenceResponse linkReferenceResponse = new LinkReferenceResponse(content, targetResourceId,
+				referenceResourceId);
+		return linkReferenceResponse;
 	}
 
-	public final String linkReferenceToResource(String targetResourceId, String referenceResourceId,
+	public final LinkReferenceResponse linkReferenceToResource(String targetResourceId, String referenceResourceId,
 			ResourceSet resourceSet) {
 		validateArguments(referenceResourceId, resourceSet);
 		validateArguments(targetResourceId, resourceSet);
-		return linkReference(targetResourceId, referenceResourceId, resourceSet);
+		String content = linkReference(targetResourceId, referenceResourceId, resourceSet);
+		LinkReferenceResponse linkReferenceResponse = new LinkReferenceResponse(content, targetResourceId,
+				referenceResourceId);
+		return linkReferenceResponse;
 	}
-	
-	private void validateArguments(String resourceId, ResourceSet resourceSet){
+
+	private void validateArguments(String resourceId, ResourceSet resourceSet) {
 		if (!devtoolReferenceLinker.containsResource(resourceId, resourceSet)) {
 			throw new RuntimeException("No resource with resourceId : " + resourceId);
 		}
 	}
-	
-	private String linkReference(String targetResourceId, String referenceResourceId,
-			ResourceSet resourceSet){
+
+	private String linkReference(String targetResourceId, String referenceResourceId, ResourceSet resourceSet) {
 		devtoolReferenceLinker.linkReferenceToResource(targetResourceId, referenceResourceId, resourceSet);
 		updateVariableNames(targetResourceId, referenceResourceId, resourceSet);
 		return devtoolUtils.getResourceContentsAsString(targetResourceId, resourceSet);

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.http.response;
+package org.eclipse.vorto.server.devtool.http.request;
 
 public class LinkReferenceModelRequest {
 

@@ -22,6 +22,7 @@ define(["../init/AppController"], function(controllers) {
     $scope.selectedTabIndex = 0;
     $scope.selectedTabId = 0;
     $scope.selectedEditor = null;
+    $scope.references = [];
 
     $scope.showImportButton = true;
     $scope.showSearchButton = true;
@@ -204,7 +205,6 @@ define(["../init/AppController"], function(controllers) {
       ProjectDataService.openProject(params).then(function(data){
         $scope.showEditorBody = true;
         $scope.getResources();
-        $scope.getReferences();
       }).catch(function(error){
         $scope.showEditorBody = false;
       });
@@ -246,16 +246,6 @@ define(["../init/AppController"], function(controllers) {
         size: "lg"
       });
     };
-
-    $scope.getReferences = function() {
-      var params = {projectName: $rootScope.globalContext.referenceRepository};
-      ProjectDataService.getProjectResources(params).then(function(responses){
-        responses.forEach(function(response){
-          var resource = $scope.getResourceObject(response);
-          $scope.loadResourceAtServer(resource);
-        });
-      });
-    }
 
     $scope.getResources = function() {
       var params = {projectName: $scope.projectName};
@@ -780,12 +770,17 @@ define(["../init/AppController"], function(controllers) {
               name: 'customSaveCommand',
               bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
               exec: function(editor) {
-                editor.xtextServices.saveResource();
-                editor.lastSavedValue = editor.getValue();
                 var tab = $scope.tabs[$scope.selectedTabIndex];
-                var message = "Resource " + tab.filename + " saved";
-                var params = {message: message};
-                ToastrService.createSuccessToast(params);
+                editor.xtextServices.saveResource().then(function(data){
+                  var message = "Resource " + tab.filename + " saved";
+                  var params = {message: message};
+                  ToastrService.createSuccessToast(params);
+                }, function(err){
+                  var message = "Failed to save " + tab.filename;
+                  var params = {message: message};
+                  ToastrService.createErrorToast(params);
+                });
+                editor.lastSavedValue = editor.getValue();
               }
           });
           editor.xtextServices.loadResource().then(function(data){

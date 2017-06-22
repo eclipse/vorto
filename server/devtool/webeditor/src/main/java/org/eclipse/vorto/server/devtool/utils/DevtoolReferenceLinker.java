@@ -14,6 +14,8 @@
  *******************************************************************************/
 package org.eclipse.vorto.server.devtool.utils;
 
+import java.util.List;
+
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
@@ -29,6 +31,12 @@ public class DevtoolReferenceLinker {
 
 	@Autowired
 	private DevtoolUtils devtoolUtils;
+
+	public void loadResources(List<String> resourceIdList, ResourceSet resourceSet){
+		for(String resourceId: resourceIdList){
+			resourceSet.getResource(devtoolUtils.getResourceURI(resourceId), true);
+		}
+	}
 	
 	public void linkReferenceToResource(String targetResourceId, String referenceResourceId, ResourceSet resourceSet) {
 		Resource targetResource = resourceSet.getResource(devtoolUtils.getResourceURI(targetResourceId), true);

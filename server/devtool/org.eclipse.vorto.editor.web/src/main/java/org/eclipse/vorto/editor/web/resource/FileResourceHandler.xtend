@@ -30,6 +30,7 @@ import org.eclipse.xtext.web.server.model.IWebDocumentProvider
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
 import org.eclipse.xtext.web.server.model.IXtextWebDocument
 import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
+import org.eclipse.emf.common.notify.impl.NotificationChainImpl
 
 class FileResourceHandler implements IServerResourceHandler {
 		
@@ -69,6 +70,10 @@ class FileResourceHandler implements IServerResourceHandler {
 	override put(IXtextWebDocument document, IServiceContext serviceContext) throws IOException {
 		try {
 			val uri = getFileURI(document.resourceId)
+			val resourceSet = resourceSetProvider.get(document.resourceId, serviceContext)
+			if(document.resource.resourceSet === null){
+				document.resource.basicSetResourceSet(resourceSet, new NotificationChainImpl);
+			}
 			val outputStream = document.resource.resourceSet.URIConverter.createOutputStream(uri)
 			val writer = new OutputStreamWriter(outputStream, encodingProvider.getEncoding(uri))
 			writer.write(document.text)

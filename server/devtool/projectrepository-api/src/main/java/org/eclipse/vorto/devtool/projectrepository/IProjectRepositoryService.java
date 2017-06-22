@@ -17,6 +17,7 @@ package org.eclipse.vorto.devtool.projectrepository;
 import java.util.Map;
 
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
+import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.devtool.projectrepository.model.ResourceContent;
@@ -98,6 +99,16 @@ public interface IProjectRepositoryService {
 	 */
 	public void uploadResource(String commitComment, UploadHandle... handle);
 
+	/**
+	 * Updates the old properties of the resource with the new properties
+	 * 
+	 * @param folderResource
+	 * 				The folderResource whose properties would be updated
+	 * @param properties
+	 * 				The properties of the resource that would be added / modified
+	 */
+	public void updateFolderResourceProperties(FolderResource folderResource,  Map<String,String> properties);
+	
 	/**
 	 * Create a version of a project.
 	 * 

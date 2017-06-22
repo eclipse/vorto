@@ -45,10 +45,7 @@ public class EditorConfigurationLocal {
 
 	@Value("${http.proxyPort}")
 	private String proxyPort;
-	
-	@Value("${reference.repository}")
-	private String referenceRepository;
-		
+			
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;
 	
@@ -79,7 +76,7 @@ public class EditorConfigurationLocal {
 
 	@Bean
 	public GlobalContext getGlobalContext(){
-		return new GlobalContext(repositoryBasePath, referenceRepository);
+		return new GlobalContext(repositoryBasePath);
 	}
 	
 	@Bean
