@@ -44,17 +44,18 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.getProjects = function() {
       ProjectDataService.getProjects().then(function(data){
-        $scope.topRow = data.splice(0, gridSize);
+        $scope.topRow = data.splice(0, gridSize-1);
         $scope.projectsMatrix = $scope.listToMatrix(data, gridSize);
       }).catch(function(error){
           $scope.projects = [];
       });
     }
 
-    $scope.listToMatrix = function(list, n) {
-        var grid = [], i = 0, x = list.length, col, row = -1;
-        for (var i = 0; i < x; i++) {
-            col = i % n;
+    $scope.listToMatrix = function(list, gridsize) {
+        var grid = [];
+        var row = -1;
+        for (var i = 0; i < list.length; i++) {
+            var col = i % gridsize;
             if (col === 0) {
                 grid[++row] = [];
             }
