@@ -17,6 +17,7 @@ package org.eclipse.vorto.server.devtool.web.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.Constants;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
+import org.eclipse.vorto.server.devtool.utils.ProjectResourceComparator;
 import org.eclipse.vorto.server.devtool.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -65,6 +67,8 @@ public class ProjectController {
 	@Value("${reference.repository}")
 	private String referenceRepository;
 
+	private ProjectResourceComparator projectResourceComparator = new ProjectResourceComparator();
+	
 	@ApiOperation(value = "Checks whether a Vorto project already exists")
 	@RequestMapping(value = "/{projectName}/check", method = RequestMethod.GET)
 	public Response checkProjectExists(
@@ -104,8 +108,10 @@ public class ProjectController {
 
 	@ApiOperation(value = "Returns all the projects of the user")
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Resource> getProjects(final HttpServletRequest request) {
-		return projectService.getProjects(editorSession.getUser());
+	public List<ProjectResource> getProjects(final HttpServletRequest request) {
+		List<ProjectResource> projectList = projectService.getProjects(editorSession.getUser());
+		Collections.sort(projectList, projectResourceComparator.reversed());
+		return projectList;
 	}
 
 	@ApiOperation(value = "Creates a new resource in the Vorto project")

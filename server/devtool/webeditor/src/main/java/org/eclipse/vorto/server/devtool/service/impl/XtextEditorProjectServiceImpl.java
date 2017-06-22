@@ -76,10 +76,15 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	}
 	
 	@Override
-	public List<Resource> getProjects(String author) {
-		return projectRepositoryService.createQuery()
+	public List<ProjectResource> getProjects(String author) {
+		List<Resource> resourceList = projectRepositoryService.createQuery()
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author)
 				.type(ResourceType.ProjectResource).list();
+		ArrayList<ProjectResource> projectResourceList = new ArrayList<>();
+		for(Resource resource : resourceList){
+			projectResourceList.add((ProjectResource)resource);
+		}
+		return projectResourceList;
 	}
 
 	@Override
