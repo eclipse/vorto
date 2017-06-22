@@ -171,4 +171,14 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 			error(DatatypeSystemMessage.ERROR_PROPNAME_SUFFIX_TS, property, DatatypePackage.Literals.PROPERTY__NAME)
 		}
 	}
+	
+	@Check
+	def checkPropertyIfInReferences(Property property) {
+		if (property.type instanceof ObjectPropertyType) {
+			var topParent = ValidatorUtils.getParentOfType(property, Model) as Model
+			if (topParent != null && !ValidatorUtils.isTypeInReferences((property.type as ObjectPropertyType).type, topParent.references)) {
+				error(DatatypeSystemMessage.ERROR_PROPERTY_TYPE_NOT_IMPORTED, property, DatatypePackage.Literals.PROPERTY__TYPE)
+			}	
+		}
+	}
 }
