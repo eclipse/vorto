@@ -1,10 +1,9 @@
-`/*
+/*
 Global
 ============================= */
 body{
-    line-height: 1.85em;
+    lnav-ne-height: 1.85em;
     color: #000;
-    font-weight: 300;
     -webkit-font-smoothing: antialiased;
     font-smoothing: antialiased;
     font-size: 14px;
@@ -22,8 +21,8 @@ h2{font-size: 30px; font-weight: 300; color:#444; margin: 30px 0 20px}
 h3{font-size: 20px; font-weight: 400; margin: 10px 0;}
 h4{font-size:18px; font-weight: 400}
 
-ul.nav {
-    margin-top: 10px;
+.navbar-nav {
+    margin-top: 10px; 
 }
 
 @media (min-width: 1368px) {
@@ -161,15 +160,7 @@ ul.nav p {
 }
 
  .btn-primary {
-    background-color: rgb(0, 129, 199);
-    background-image: -moz-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(0, 129, 199, 1)), color-stop(100%, rgba(0, 73, 134, 1))); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* Chrome10+,Safari5.1+ */
-    background-image: -o-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* Opera 11.10+ */
-    background-image: -ms-linear-gradient(top, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* IE10+ */
-    background-image: linear-gradient(to bottom, rgba(0, 129, 199, 1) 0%, rgba(0, 73, 134, 1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0081c7', endColorstr='#004986', GradientType=0); /* IE6-9 */
-    border-color: rgba(0,0,0,0);
+    background-color: #2E4672;
 }
 
 .btn-primary:hover,
@@ -179,7 +170,6 @@ ul.nav p {
 .btn-primary.active,
 .open > .dropdown-toggle.btn-primary {
     color: #fff;
-    background-color: #286090;
     border-color: rgba(0,0,0,0);
     background-color: rgb(0, 73, 134);
 }
@@ -288,7 +278,6 @@ select {
 .project-selection {
     float:left;
     margin-left:15px;
-   <!-- margin-bottom:25px; -->
 }
 
 .nav>li>a {
@@ -371,17 +360,18 @@ ul.nav {
     border-color: rgba(0,0,0,0);
 }
 
-.queryFilter {
-    width: 195px;
+.login-box {
+     margin: 7% auto;
+     width: 380px;
+     border: 1px solid #dadada;
+     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+     padding: 30px 40px 70px;
+     background: rgba(255,255,255,0.9)
 }
 
-.login-box {
-     margin: 5% auto;
-     width: 360px;
-     border-radius:5px;
-     border:1px solid #ccc;
-     padding:50px;
-     background: #f5f6f7;
+.login-box h2{
+    text-align: center;
+    margin-bottom: 35px;
 }
 
 .main .login-box .page-header .signup-box{
@@ -657,6 +647,21 @@ span.star.filled:before{
     overflow: hidden;
 }
 
+.box-header {
+    color: #444;
+    display: block;
+    position: relative;
+}
+
+.box-header .box-title {
+    margin: 20px 20px 10px;
+}
+
+.box-header>.box-tools {
+    position: absolute;
+    right: 0px;
+    top: -5px;
+}
 .box h4{
     font-weight: bold;
     color: #325A87;
@@ -693,7 +698,12 @@ span.star.filled:before{
 }
 
 .main {
+    min-height: 100vh;
     padding: 40px;
+}
+
+.login-page {
+   background-color: #ecf0f5;
 }
 
 th.action
@@ -705,7 +715,7 @@ th.action
 
 @media (max-width: 1280px){
 .main {
-    padding: 20px 20px 20px 25px;
+    padding: 40px 20px 20px 25px;
 }
 }
 
@@ -813,16 +823,40 @@ th.action
 	right: 0;
 	padding: 4px;
 	border: 1px solid #aaa;
-	height: 387px;
+	min-height: 387px;
+    height: 75vh;
 	width: auto;
 }
 
 #function-block-browser-container {
 	position:relative;
-	padding: 4px;
-	border: 1px solid #aaa;
-	height: 440px;
-	width: auto;
+	padding: 0px;
+	border: 1px solid #dadada;
+	min-height: 440px;
+    height: auto;
+	width: 95%;
+    /*margin-top: 42px;*/
+}
+
+.input-group-search {
+    width: 100%;
+}
+/*@media screen and (max-width: 1280px) {
+.input-group-search {
+    width: 98%;
+    }
+}*/
+.search-button {
+    padding: 2px;
+    font-size: 20px;
+    border: none;
+    position: absolute;
+    right: 15px;
+    top: 6px;
+    color: #ccc;
+}
+.search-button:hover {
+    color:#111;
 }
 
 #project-container {
@@ -848,7 +882,8 @@ th.action
 /* Editor End */
 
 .st-selected{
-	background-color: #337ab7;
+  background: rgba(194, 225, 245, 0.35); 
+  box-shadow: 0px 1px 1px 1px rgba(194, 225, 245, 0.75)
 }
 
 .import-button {
@@ -860,10 +895,25 @@ th.action
 	margin-bottom: 180px;
 }
 
-.search-button {
-	padding: 2px;
-	font-size: 20px;
-	border: none;
+.import-btn {
+    color: #666;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    margin: 32px 5px 5px;
+    padding-bottom: 2px;
+}
+.import-btn span {
+    font-size: 12px;
+}
+.import-btn>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+    font-size: 28px;
+    float: left;
+    margin-top: -2px;
+    margin-right: 5px;
+}
+
+.btn-close {
+    right: 10px;
 }
 
 a:hover {
@@ -871,21 +921,45 @@ a:hover {
 	cursor: hand;
 }
 
-.nav-tabs > li > a{
-    cursor:pointer;
+.nav-tabs {
+    border-bottom: 0;
 }
 
-.nav-tabs li a span:hover {
-    color: red;
+.nav-tabs > li > a{
+    cursor:pointer;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    color: #999;
+    background: #fff;
+}
+
+.nav-tabs > li > a:hover, .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    font-weight: 600;
+    color: #111;
+    border: 1px solid #999;
+}
+
+.nav-tabs>li>a>i, .nav-tabs>li.active>a>i {
+    color: #999;
+}
+
+.nav-tabs li a i:hover {
+    color: #111;
     cursor:pointer;
 }
 
 .editor-ul.nav a {
 	box-shadow: none;
     background: transparent;
-    color: #000000;
+    color: #555;
     text-shadow: none;
-    font-weight: bold;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+.import-model-ul.nav a {
+    cursor: default;
+    color: #111;
 }
 
 .align-left {
@@ -902,8 +976,8 @@ a:hover {
 }
 
 .project-list-container {
-	height: 100%
-    transform: translateX(50%) translateY(50%);
+	height: 100%;
+    /*transform: translateX(50%) translateY(50%);*/
 }
 
 .align-center {
@@ -1179,10 +1253,11 @@ sup {
  * -------------------
  */
 .tiny-box {
-  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
-  padding: 0px 5px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 1px 1px  rgba(0, 0, 0, 0.1);
+  padding: 20px 5px;
   color: #333;
-  margin: 5px auto;
+  margin: 10px auto;
   min-height: 114px;
   background: #fff;
   height: 160px;
@@ -1198,8 +1273,18 @@ sup {
   background-color: transparent !important; }
 
 .tiny-box:hover, .tiny-box.selected {
-  border: 4px solid #c2e1f5;
-  cursor: pointer; }
+  border: 1px solid #c2e1f5;
+  cursor: pointer;
+  background: rgba(194, 225, 245, 0.15); 
+  box-shadow: 0px 1px 1px 2px rgba(194, 225, 245, 0.75);}
+
+.tiny-box.new {
+   color: #666; 
+}
+
+.tiny-box.new:hover {
+   color: #000; 
+}
 
 .tiny-box-name, .tiny-box-number {
   margin: 0px 5px 0px;
@@ -1223,9 +1308,34 @@ sup {
   position: relative;
 }
 
+.btn-app {
+    border-radius: 3px;
+    position: relative;
+    padding: 5px 4px;
+    margin: 0 0 10px 10px;
+    min-width: 80px;
+    height: 60px;
+    text-align: center;
+    color: #666;
+    border: 1px solid #ddd;
+    background-color: #f4f4f4;
+    font-size: 12px;
+}
+.btn-app:hover {
+    color: #333;
+    border: 1px solid #999;
+}
+.btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
+    font-size: 20px;
+    display: block;
+}
+
 @media screen and (max-width: 1280px) {
 .editor-ul>li {
     width: 110px;
+    }
+.editor-ul>li#addnewmodel {
+    width: auto;
     }
 .editor-ul>li>a>span {
     display: inline-block;
@@ -1234,22 +1344,165 @@ sup {
     overflow: hidden;
     text-overflow: ellipsis;
     }
-.editor-ul>li>a>.glyphicon {
+.editor-ul>li#addnewmodel>a>span {
+    width: 1px;
+    }
+.editor-ul>li>a>.fa {
     position: absolute;
-    top: 14px;
-    right: 2px;
-}
-.queryFilter {
-    width: auto;
-}
-.col-box {
-    padding: 0 5px 0 0;
-}
-.import-button {
-    font-size: 40px; 
-}
+    top: 7px;
+    right: 5px;
+    }
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th {
+    font-size: 10px;
+    }
+.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td  {
+    padding: 4px;
+    font-size: 12px;
+    }
+
 #function-block-browser-container {
     width: 98%;
     }
+.btn-app {
+    padding: 1px 2px !important;
+    margin: 0 0 5px 0px;
+    min-width: 70px !important;
+    font-size: 10px !important;
+    height: 50px !important;
+    }
 }
+
+@media (max-width: 1024px) {
+#searchResult .table td span.namespace {
+    display: inline-block;
+    width: 95px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    }
+#searchResult .table td .btn {
+    padding: 1px 4px!important;
+    }
+.queryFilter {
+    font-size: 12px;
+}
+}
+.btn-github {
+    color: #fff;
+    background-color: #444;
+    border-color: rgba(0,0,0,0.2);
+}
+
+.btn-github:hover {
+    color: #fff;
+    background-color: #000;
+    border-color: rgba(0,0,0,0.2);
+}
+
+.btn-social {
+    position: relative;
+    padding-left: 44px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-social>:first-child {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    bottom: 0;
+    width: 32px;
+    line-height: 34px;
+    font-size: 1.7em;
+    text-align: center;
+}
+
+.btn-default {
+    color: #666;
+}
+
+.alert {
+    font-weight: 600;
+}
+
+.fileUploadDetails {
+    padding: 20px;
+}
+
+.editor-body {
+    margin: 0px;
+}
+
+.editor-body hr {
+    margin-top: 0; 
+    margin-bottom: 0; 
+}
+
+.editor {
+    min-height: 82vh;
+    background-color: #ecf0f5;
+}
+
+.col-header {
+    text-shadow: 1px 1px 0 #fff;
+    font-size: 11px;
+    color: #999;
+    font-weight: 600;
+    /*display: inline-block;*/
+    margin-bottom: 5px;
+    margin-left: 3px;
+}
+
+.sidebar .col-header {
+    margin-left: 20px;
+}
+
+.namespace {
+    font-size: 11px;
+    color: #0088cc;
+}
+
+/*jstree*/
+.jstree-wholerow-ul {
+    margin-left: 8px;
+}
+.jstree-anchor>.jstree-themeicon {
+    margin-left: -8px !important;
+}
+@media screen and (max-width: 1280px) {
+.jstree-default .jstree-anchor {
+    font-size: 12px !important;
+}
+}
+.vakata-context, .vakata-context ul {
+    border: 1px solid #ccc;
+    box-shadow: 0px 1px 1px #ccc;
+}
+.vakata-context li>a {
+    padding: 0 2em;
+    font-size: 12px;
+}
+
+table>thead>tr>th {
+    border-bottom: 1px solid #ddd !important;
+}
+
+th, th a {
+    color: #999;
+}
+
+sup {
+    top: -0.1em;
+}
+
+.action-btn {
+    padding: 5px;
+}
+
+.validate-btn {
+    color: #999;
+}
+
 

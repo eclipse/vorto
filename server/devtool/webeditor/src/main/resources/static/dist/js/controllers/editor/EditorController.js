@@ -81,6 +81,12 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.projectResources = [];
 
+    $scope.editorHint = "Hint: Press Ctrl + Space for Content Assist";
+
+    $scope.closeHint = function() {
+      $scope.editorHint = null;
+    };
+
     $scope.contextMenu = function customMenu(node) {
       var items = {
         openResource: {
@@ -104,7 +110,7 @@ define(["../init/AppController"], function(controllers) {
           }
         },
         addResource: {
-          label: "New Resource",
+          label: "New Model",
           action: function() {
             $scope.openAddEditorModal();
           }
@@ -233,7 +239,7 @@ define(["../init/AppController"], function(controllers) {
           animation: true,
           controller: "UnsavedEditorFilesController",
           templateUrl: "templates/editor/unsaved-files-modal-template.html",
-          size: "sm"
+          //size: "sm"
         });
       }
     }
@@ -548,7 +554,7 @@ define(["../init/AppController"], function(controllers) {
         animation: true,
         controller: "CloseEditorController",
         templateUrl: "templates/editor/close-editor-modal-template.html",
-        size: "sm"
+        //size: "sm"
       });
     };
 
@@ -558,7 +564,7 @@ define(["../init/AppController"], function(controllers) {
         animation: true,
         controller: "AddEditorController",
         templateUrl: "templates/editor/add-editor-modal-template.html",
-        size: "sm"
+        //size: "sm"
       });
     };
 
@@ -568,7 +574,7 @@ define(["../init/AppController"], function(controllers) {
         animation: true,
         controller: "DescribeEditorController",
         templateUrl: "templates/editor/describe-editor-modal-template.html",
-        size: "sm"
+        //size: "sm"
       });
     };
 
@@ -578,7 +584,7 @@ define(["../init/AppController"], function(controllers) {
         animation: true,
         controller: "DeleteEditorController",
         templateUrl: "templates/editor/delete-editor-modal-template.html",
-        size: "m"
+        //size: "m"
       });
     };
 
@@ -592,7 +598,7 @@ define(["../init/AppController"], function(controllers) {
           animation: true,
           controller: "CloseProjectController",
           templateUrl: "templates/project/close-project-modal-template.html",
-          size: "sm"
+          //size: "sm"
         });
       }
     };
@@ -625,13 +631,13 @@ define(["../init/AppController"], function(controllers) {
       }
     }
 
-    $scope.importModel = function() {
+    $scope.importModel = function(model) {
       if ($scope.isValidModel($scope.selectedEditor)) {
-        if ($scope.isModelSelected()) {
+        if (model) {
           $scope.showImportButton = false;
           var language = $scope.tabs[$scope.selectedTabIndex]["language"];
           var editor = $scope.selectedEditor;
-          var modelId = $scope.selectedModelId;
+          var modelId = model.id;
           var importModelRequest = {
             modelName: modelId["name"],
             modelNamespace: modelId["namespace"],

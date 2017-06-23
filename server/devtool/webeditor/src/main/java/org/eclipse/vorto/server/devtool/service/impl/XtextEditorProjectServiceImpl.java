@@ -71,7 +71,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	@Override
 	public ProjectResource getProject(String projectName) {
 		return (ProjectResource) projectRepositoryService.createQuery()
-				.path(projectName)
+				.path(projectName.replace("\\", "/"))
 				.type(ResourceType.ProjectResource).singleResult();
 	}
 	

@@ -1,7 +1,7 @@
 <div class="modal-header">
 
-<legend class="results-border">Upload Results</legend>
-	<div class="row">
+<legend class="results-border">Publish Models</legend>
+	<!--div class="row">
 		<div ng-show="showResultBox">
 			  <div class="col-xs-3">Information models : {{infoModelCount}}</div>
 			  <div class="col-xs-3">Functionblocks: {{fbModelCount}}</div>
@@ -9,11 +9,11 @@
 				<div class="col-xs-3">Mapping:{{mappingCount}} </div>
 		</div>
 	</div>
-</div>
+</div-->
 
 <div class="modal-body">
   <div class="center-results">
-		<fieldset ng-show="showResultBox" class="results-border">
+		<fieldset ng-show="showResultBox">
 				<div class="row errorbox-spacing">
 					<div ng-show="showResultBox" ng-class="showCheckin === true ? 'alert alert-success' : 'alert alert-danger'">
 				  		{{resultMessage}}
@@ -65,13 +65,13 @@
 <div class="modal-footer">
 	<div ng-hide="modelCheckedIn">
 		 <div class="align-right">
-			<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary">Check In</button>
+			<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary">Publish</button>
 			<button class="btn" type="button" ng-click="cancel()">Cancel</button>
 		 </div>
 	</div>
 	<div ng-show="modelCheckedIn">
 		<div class="align-right">
-		    <button class="btn btn-primary" type="button" ng-click="cancel()">Complete</button>
+		    <button class="btn btn-primary" type="button" ng-click="cancel()">OK</button>
 		</div>
 	</div>
 </div>

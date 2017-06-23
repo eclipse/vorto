@@ -9,45 +9,56 @@
 		<div class="col-md-12">
 			<div class="box box-primary">
 				<div class="box-header">
-					<h3 class="box-title">
-						<b>{{projectName}}</b>
-						<div class="align-right">
-							 <button class="btn btn-primary" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true">Save <span class="fa fa-floppy-o"></span></button>
-							 <button class="btn btn-primary" type="button" ng-click="uploadProject()" ng-show="isValidationInProcess == false">Publish <i class="fa fa-upload" aria-hidden="true"></i></button>
-							 <a ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-1x"></i> </a>
-							 <button class="btn btn-primary" type="button" ng-click="openCloseProjectModal()">Exit <span class="glyphicon glyphicon-remove"></span></button>
-						</div>
-					</h3>
+					<h2 class="box-title">{{projectName}}</h2>
+						<!--div class="box-tools">
+							 <button class="btn btn-default btn-close" type="button" ng-click="openCloseProjectModal()"><i class="fa fa-close"></i> Close Project</button>
+						</div-->					
 				</div>
-				<!-- /.box-header -->
-				<p>
-					<i class="fa fa-edit"></i> Describe your Vorto Model
-					<br>
-					<i>Hint: Press Ctrl + Space for Content Assist</i>
-					<br>
-					<i>Hint: Press Ctrl + S to Save</i>
-				</p>
+				<div class="row action-btn">
+						<div class="col-md-3">
+							 <button class="btn btn-app" type="button" ng-click="openAddEditorModal()"> <span class="fa fa-plus"></span> New Model</button>
+							 <button class="btn btn-app" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true"> <span class="fa fa-floppy-o"></span> Save</button>
+							 <button class="btn btn-app" type="button" ng-click="uploadProject()" ng-show="isValidationInProcess==false && isEditorOpen==true"> <i class="fa fa-upload" aria-hidden="true"></i>Publish</button>
+							 <a class="validate-btn" ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-2x"></i> </a>
+							 </div>
+								<div class="col-md-5">
+									<div uib-alert ng-show="editorHint" close="closeHint()">{{editorHint}}</div>
+						  		</div>
+							<div class="col-md-4">
+							  <button class="btn btn-app btn-close pull-right" type="button" ng-click="openCloseProjectModal()"><i class="fa fa-close"></i> Close Project</button>
+							  </div>
+						</div>
+						</div>
+						<div class="row">
+						<hr/>
+						</div>
+			</div>
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-2 col-box">
+		<div class="col-md-2 col-box sidebar">
+			<span class="col-header">FILE EXPLORER</span>
 			<div js-tree="treeConfig" ng-model="projectResources" tree="treeInstance" tree-events="copy_node:copyNodeCallback;create_node:createNodeCallback">
 			</div>
 		</div>
 
-		<div class="col-md-7 col-box">
+		<div class="col-md-7 col-box editor">
+			<span class="col-header">EDITOR</span>
 			<div id="tabbed-editor-container">
 				<div role="tabpanel">
 					<ul class="nav nav-tabs editor-ul" role="tablist">
 				    	<li role="presentation" ng-repeat="tab in tabs" ng-click="selectTab($index)" ng-class="{'active':selectedTabIndex == $index}">
 				        	<a data-target="#tab" aria-controls="home" role="tab" data-toggle="tab">
 				        		<span>{{tab.name}}</span>
-				        		<i ng-click="closeTab($index)" class="glyphicon glyphicon-remove"></i>
+				        		<i class="fa fa-close" ng-click="closeTab($index)"></i>
 				        	</a>
 						</li>
-				        <li role="presentation">
-				        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openAddEditorModal()"><i class="fa fa-plus" aria-hidden="true"></i></a>
+				        <li role="presentation" id="addnewmodel">
+				        	<a aria-controls="home" role="tab" data-toggle="tab" ng-click="openAddEditorModal()">
+				        		<span></span>
+				        		<i class="fa fa-plus" aria-hidden="true"></i>
+				        	</a>
 				        </li>
 				    </ul>
 				</div>
@@ -55,8 +66,10 @@
 		   </div>
 		</div>
 
-		<div class="col-md-3 col-box" ng-show="isEditorOpen == true">
-			<div class="col-md-1 col-box">
+		<div class="col-md-3 col-box">
+					<span class="col-header">IMPORT MODELS</span>
+					<div  ng-show="isEditorOpen == true">
+			<!--div class="col-md-1 col-box" >
 				<div class="center-col">
 					<div class="center-container" ng-show="showImportButton">
 						<a>
@@ -69,9 +82,13 @@
 						</a>
 					</div>
 				</div>
-			</div>
-
-			<div class="col-md-11 col-box">
+			</div-->
+				<!--button class="btn import-btn" type="button" ng-show="showImportButton" ng-click="importModel()" ng-disabed="showAddFunctionBlockButton"> <i class="fa fa-angle-double-left"></i> <span>Import Model</span></button>
+				<a ng-hide="showImportButton">
+							<i class="fa fa-cog fa-spin"></i>
+				</a-->
+	
+			<div class="col-md-12 col-box">
 				<div id="function-block-browser-container">
 					<div id="searchResult">
 						<div>
@@ -79,31 +96,32 @@
 								class="table">
 								<thead>
 									<tr>
-										<th colspan="2">
-											<div class="form-inline form-group">
+										<th colspan="3">
+											<div class="input-group-search">
 												<input type="search" placeholder="Search Models"
 													ng-model="queryFilter" ng-keypress="searchOnEnter($event)"
-													st-search autofocus class="queryFilter input-sm" />
-												<a id="search" class="search-button" ng-click="search()" ng-show="showSearchButton">
+													st-search autofocus class="form-control queryFilter" />
+												<a class="search-button" id="search" ng-click="search()" ng-show="showSearchButton">
 													<i class="fa fa-search"></i>
 												</a>
-												<a ng-hide="showSearchButton">
-													<i class="fa fa-cog fa-spin fa-2x"></i>
+												<a class="search-button" ng-hide="showSearchButton">
+													<i class="fa fa-cog fa-spin"></i>
 												</a>
 											</div>
 										</th>
 									</tr>
 									<tr>
+										<th></th>
 										<th id="onName" st-sort="id.name">
 											<a href="">Name <i class="fa fa-sort"></i></a>
 										</th>
 										 <th class="action">
-										 	Details
+										 	Action
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr st-select-row="model" ng-repeat="model in displayedModels">
+									<tr ng-repeat="model in displayedModels">
 					                	<td ng-show="model.type === 'InformationModel'">
 			              					<img src="images/im.png"/>
 			              				</td>
@@ -113,11 +131,14 @@
 							            <td ng-show="model.type === 'Datatype'">
 						              		<img src="images/dt.png"/>
 							            </td>
-										<td>{{ model.id.name }}</td>
+										<td><a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}" title=""Click for details"">{{ model.id.name }}<br/> <span class="namespace">{{ model.id.namespace }}:{{ model.id.version }}</span></a></td>
+										
 										<td class="action">
-											<a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}">
-												<i class="fa fa-info-circle" tooltip-placement="top" uib-tooltip="Click for details"></i>
-											</a>
+											
+											<button class="btn" ng-show="showImportButton" ng-click="importModel(model)" ng-disabed="showAddFunctionBlockButton" tooltip-placement="auto" uib-tooltip="Import"> <i class="fa fa-angle-double-left"></i></button>
+						
+											<button class="btn" ng-hide="showImportButton"><i class="fa fa-cog fa-spin"></i></button>
+											
 										</td>
 									</tr>
 								</tbody>
@@ -130,6 +151,7 @@
 									</tr>
 								</tfoot>
 							</table>
+							</div>
 						</div>
 					</div>
 				</div>

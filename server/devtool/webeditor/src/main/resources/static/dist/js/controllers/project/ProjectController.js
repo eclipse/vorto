@@ -21,7 +21,7 @@ define(["../init/AppController"], function(controllers) {
         animation: true,
         controller: "CreateProjectController",
         templateUrl: "templates/project/create-project-modal-template.html",
-        size: "sm"
+        //size: "sm"
       });
     };
 
