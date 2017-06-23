@@ -8,6 +8,7 @@ define([
   '../project/CreateProjectController',
   '../project/ProjectController',
   '../project/CloseProjectController',
+  '../project/DeleteProjectController',
 
   '../editor/AddEditorController',
   '../editor/DescribeEditorController',

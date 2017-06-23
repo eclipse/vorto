@@ -70,19 +70,18 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	@Override
 	public ProjectResource getProject(String projectName) {
-		return (ProjectResource) projectRepositoryService.createQuery()
-				.path(projectName.replace("\\", "/"))
+		return (ProjectResource) projectRepositoryService.createQuery().path(projectName.replace("\\", "/"))
 				.type(ResourceType.ProjectResource).singleResult();
 	}
-	
+
 	@Override
 	public List<ProjectResource> getProjects(String author) {
 		List<Resource> resourceList = projectRepositoryService.createQuery()
 				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author)
 				.type(ResourceType.ProjectResource).list();
 		ArrayList<ProjectResource> projectResourceList = new ArrayList<>();
-		for(Resource resource : resourceList){
-			projectResourceList.add((ProjectResource)resource);
+		for (Resource resource : resourceList) {
+			projectResourceList.add((ProjectResource) resource);
 		}
 		return projectResourceList;
 	}
@@ -164,6 +163,14 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	}
 
 	@Override
+	public void deleteProject(String projectName) {
+		IResourceQuery resourceQuery = projectRepositoryService.createQuery().type(ResourceType.ProjectResource)
+				.path(projectName.replace("\\", "/"));
+		Resource resource = resourceQuery.singleResult();
+		projectRepositoryService.deleteResource(resource);
+	}
+
+	@Override
 	public void addReferenceToProject(String projectName, String referenceResourceId) {
 		ProjectResource projectResource = (ProjectResource) projectRepositoryService.createQuery().pathLike(projectName)
 				.type(ResourceType.ProjectResource).singleResult();
@@ -177,12 +184,12 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 		Set<String> resourceIdSet = new HashSet<String>(resourceIdList);
 		if (resourceIdSet.contains(referenceResourceId)) {
 			return;
-		}else{
+		} else {
 			resourceIdList.add(referenceResourceId);
 			Map<String, String> updatedProperties = new HashMap<String, String>();
 			updatedProperties.put(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES,
 					String.join(Constants.COMMA, resourceIdList));
-			projectRepositoryService.updateFolderResourceProperties(projectResource, updatedProperties);			
+			projectRepositoryService.updateFolderResourceProperties(projectResource, updatedProperties);
 		}
 	}
 

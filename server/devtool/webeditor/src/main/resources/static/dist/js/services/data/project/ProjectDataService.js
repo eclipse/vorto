@@ -9,6 +9,7 @@ define(["../../init/AppService"], function(services) {
       openProject: openProject,
       getProjects: getProjects,
       createProject: createProject,
+      deleteProject: deleteProject,
 
       getProjectResources: getProjectResources,
       createProjectResource: createProjectResource,
@@ -32,6 +33,12 @@ define(["../../init/AppService"], function(services) {
       var project = params.project;
       var url = "./rest/project";
       return $http.post(url, project).then(httpCallSuccess).catch(httpCallFailure);
+    }
+
+    function deleteProject(params) {
+      var projectName = params.projectName;
+      var url = "./rest/project/" + projectName;
+      return $http.delete(url).then(httpCallSuccess).catch(httpCallFailure);
     }
 
     function getProjectResources(params) {

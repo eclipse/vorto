@@ -3,10 +3,10 @@ define(["../init/AppController"], function(controllers) {
 
   ProjectController.$inject = [
     "$rootScope", "$scope", "$location", "$http", "$uibModal",
-    "ProjectDataService", "ToastrService"
+    "ProjectDataService", "ToastrService", "ShareDataService"
   ]
 
-  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService, ToastrService) {
+  function ProjectController($rootScope, $scope, $location, $http, $uibModal, ProjectDataService, ToastrService, ShareDataService) {
     $scope.selectedProject = null;
     $scope.projects = [];
     $scope.topRow = [];
@@ -16,11 +16,25 @@ define(["../init/AppController"], function(controllers) {
       $scope.createProject(projectName);
     });
 
+    $scope.$on("deleteProject", function(event, projectName) {
+      $scope.deleteProject(projectName);
+    });
+
     $scope.openCreateProjectModal = function() {
       var modalInstance = $uibModal.open({
         animation: true,
         controller: "CreateProjectController",
         templateUrl: "templates/project/create-project-modal-template.html",
+        //size: "sm"
+      });
+    };
+
+    $scope.openDeleteProjectModal = function(projectName) {
+      ShareDataService.setDeleteProjectName(projectName);
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "DeleteProjectController",
+        templateUrl: "templates/project/delete-project-modal-template.html",
         //size: "sm"
       });
     };
@@ -38,11 +52,13 @@ define(["../init/AppController"], function(controllers) {
           $location.replace();
         }
       }).catch(function(error){
-          window.alert("Failed to create new Project " + projectName)
+          var message = "Failed to create Project " + projectName;
+          var params = {message: message};
+          ToastrService.createErrorToast(params);
       });
     }
 
-    $scope.getProjects = function() {
+    $scope.showProjects = function() {
       ProjectDataService.getProjects().then(function(data){
         $scope.topRow = data.splice(0, gridSize-1);
         $scope.projectsMatrix = $scope.listToMatrix(data, gridSize);
@@ -64,6 +80,16 @@ define(["../init/AppController"], function(controllers) {
         return grid;
     };
 
-    $scope.getProjects();
+    $scope.showProjects();
+
+    $scope.deleteProject = function(projectName) {
+      ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
+        $scope.showProjects();
+      }).catch(function(error){
+        var message = "Failed to delete project " +  projectName ;
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
+      });
+    }
   }
 });

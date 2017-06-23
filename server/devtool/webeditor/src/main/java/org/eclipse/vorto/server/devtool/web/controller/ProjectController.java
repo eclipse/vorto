@@ -68,7 +68,7 @@ public class ProjectController {
 	private String referenceRepository;
 
 	private ProjectResourceComparator projectResourceComparator = new ProjectResourceComparator();
-	
+
 	@ApiOperation(value = "Checks whether a Vorto project already exists")
 	@RequestMapping(value = "/{projectName}/check", method = RequestMethod.GET)
 	public Response checkProjectExists(
@@ -148,7 +148,8 @@ public class ProjectController {
 
 	@ApiOperation(value = "Opens an existing Vorto project")
 	@RequestMapping(value = "/{projectName}/open", method = RequestMethod.GET)
-	public Resource openProject(@ApiParam(value = "ProjectName", required = true) @PathVariable final String projectName,
+	public Resource openProject(
+			@ApiParam(value = "ProjectName", required = true) @PathVariable final String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) throws IOException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
@@ -158,16 +159,16 @@ public class ProjectController {
 		ProjectResource projectResource = projectService.getProject(pName);
 		List<String> resourceIdList = new ArrayList<String>();
 
-		if(projectResource.getProperties().containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)){
+		if (projectResource.getProperties().containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)) {
 			resourceIdList = new ArrayList<String>(Arrays.asList(projectResource.getProperties()
-					.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES).split(Constants.COMMA)));			
+					.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES).split(Constants.COMMA)));
 		}
-		
+
 		List<Resource> resourceList = projectService.getProjectResources(projectName);
-		for(Resource resource : resourceList){
+		for (Resource resource : resourceList) {
 			resourceIdList.add(resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID));
 		}
-		
+
 		devtoolReferenceLinker.resetResourceSet(resourceSet);
 		devtoolReferenceLinker.loadResources(resourceIdList, resourceSet);
 
@@ -187,5 +188,16 @@ public class ProjectController {
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
 		devtoolReferenceLinker.removeResourceFromResourceSet(deleteResourceRequest.getResourceId(), resourceSet);
 		projectService.deleteResource(projectName, deleteResourceRequest.getResourceId());
+	}
+
+	@ApiOperation(value = "Deletes a resource from the project")
+	@RequestMapping(value = "/{projectName}", method = RequestMethod.DELETE)
+	public void deleteProject(@ApiParam(value = "ProjectName", required = true) @PathVariable String projectName,
+			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
+
+		Objects.requireNonNull(projectName, "projectName must not be null");
+
+		projectName = webUtils.getUserProjectName(projectName);
+		projectService.deleteProject(projectName);
 	}
 }
