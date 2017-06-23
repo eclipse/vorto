@@ -118,8 +118,6 @@ public class ProjectRepositoryFSTest {
          repoService.createProject("myProject3",props2, "JUnit test for creating a project");
          
          assertEquals(2,repoService.createQuery().property("city","berlin").list().size());
-         assertEquals("myProject2",repoService.createQuery().property("city","berlin").list().get(0).getName());
-         assertEquals("myProject3",repoService.createQuery().property("city","berlin").list().get(1).getName());
     }
 
     @Test
