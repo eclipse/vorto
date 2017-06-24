@@ -255,6 +255,30 @@ define(["../init/AppController"], function(controllers) {
         });
       }
     }
+    
+    $scope.openDeleteProjectModal = function(projectName) {
+      ShareDataService.setDeleteProjectName(projectName);
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "DeleteProjectController",
+        templateUrl: "templates/project/delete-project-modal-template.html",
+        //size: "sm"
+      });
+    };
+    
+    $scope.$on("deleteProject", function(event, projectName) {
+      $scope.deleteProject(projectName);
+    });
+    
+    $scope.deleteProject = function(projectName) {
+      ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
+        $scope.closeProject();
+      }).catch(function(error){
+        var message = "Failed to delete project " +  projectName ;
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
+      });
+     };
 
     $scope.openPublishModal = function(result) {
       ShareDataService.setPublishResult(result);
@@ -384,7 +408,7 @@ define(["../init/AppController"], function(controllers) {
       if (save) {
         editor.xtextServices.saveResource();
         var tab = $scope.tabs[index];
-        var message = "Resource " + tab.filename + " saved";
+        var message = "Model " + tab.name + " saved";
         var params = {message: message};
         ToastrService.createSuccessToast(params);
       }else{
@@ -406,7 +430,7 @@ define(["../init/AppController"], function(controllers) {
     $scope.saveResource = function() {
       var editor = $scope.editors[$scope.selectedTabIndex];
       var tab = $scope.tabs[$scope.selectedTabIndex];
-      var message = "Resource " + tab.filename + " saved";
+      var message = "Model " + tab.name + " saved";
       var params = {message: message};
       ToastrService.createSuccessToast(params);
       editor.xtextServices.saveResource();
@@ -791,7 +815,7 @@ define(["../init/AppController"], function(controllers) {
               exec: function(editor) {
                 var tab = $scope.tabs[$scope.selectedTabIndex];
                 editor.xtextServices.saveResource().then(function(data){
-                  var message = "Resource " + tab.filename + " saved";
+                  var message = "Model " + tab.name + " saved";
                   var params = {message: message};
                   ToastrService.createSuccessToast(params);
                 }, function(err){

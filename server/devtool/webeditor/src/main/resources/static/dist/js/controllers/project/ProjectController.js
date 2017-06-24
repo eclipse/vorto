@@ -16,25 +16,11 @@ define(["../init/AppController"], function(controllers) {
       $scope.createProject(projectName);
     });
 
-    $scope.$on("deleteProject", function(event, projectName) {
-      $scope.deleteProject(projectName);
-    });
-
     $scope.openCreateProjectModal = function() {
       var modalInstance = $uibModal.open({
         animation: true,
         controller: "CreateProjectController",
         templateUrl: "templates/project/create-project-modal-template.html",
-        //size: "sm"
-      });
-    };
-
-    $scope.openDeleteProjectModal = function(projectName) {
-      ShareDataService.setDeleteProjectName(projectName);
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "DeleteProjectController",
-        templateUrl: "templates/project/delete-project-modal-template.html",
         //size: "sm"
       });
     };
@@ -81,15 +67,5 @@ define(["../init/AppController"], function(controllers) {
     };
 
     $scope.showProjects();
-
-    $scope.deleteProject = function(projectName) {
-      ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
-        $scope.showProjects();
-      }).catch(function(error){
-        var message = "Failed to delete project " +  projectName ;
-        var params = {message: message};
-        ToastrService.createErrorToast(params);
-      });
-    }
   }
 });
