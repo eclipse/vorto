@@ -81,7 +81,19 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.projectResources = [];
 
-    $scope.editorHint = "Hint: Press Ctrl + Space for Content Assist";
+    $scope.EditorHints = [
+      "Hint: Press Ctrl + Space for Content Assist",
+      "Hint: Press Cmd + S / Ctrl + S to Save",
+      "Hint: Press Cmd + Shift + F / Ctrl + Shift + F to Auto format",
+      "Hint: Right Click on the models in the File Explorer for more options"
+    ];
+
+    $scope.getRandomHint = function() {
+      var index = Math.floor(Math.random() * $scope.EditorHints.length);
+      return $scope.EditorHints[index];
+    }
+
+    $scope.editorHint = $scope.getRandomHint();
 
     $scope.closeHint = function() {
       $scope.editorHint = null;
