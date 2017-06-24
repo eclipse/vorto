@@ -40,6 +40,9 @@
 	<div class="row">
 		<div class="col-md-2 col-box sidebar">
 			<span class="col-header">FILE EXPLORER</span>
+			<div ng-show="isTreeLoading == true" class="center">
+				<i class="fa fa-cog fa-spin"></i>
+			</div>
 			<div js-tree="treeConfig" ng-model="projectResources" tree="treeInstance" tree-events="copy_node:copyNodeCallback;create_node:createNodeCallback">
 			</div>
 		</div>
