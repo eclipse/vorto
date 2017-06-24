@@ -8,6 +8,7 @@ define(["../init/AppService"], function(services) {
     var describeEditorType;
     var unsavedFilesList;
     var publishResult;
+    var deleteProjectName;
 
     var service = {
       getAddEditorTypes: getAddEditorTypes,
@@ -16,13 +17,15 @@ define(["../init/AppService"], function(services) {
       getDescribeEditorType: getDescribeEditorType,
       getUnsavedFiles: getUnsavedFiles,
       getPublishResult: getPublishResult,
+      getDeleteProjectName: getDeleteProjectName,
 
       setAddEditorTypes: setAddEditorTypes,
       setCloseEditorIndex: setCloseEditorIndex,
       setDeleteEditorTab: setDeleteEditorTab,
       setDescribeEditorType: setDescribeEditorType,
       setUnsavedFiles: setUnsavedFiles,
-      setPublishResult: setPublishResult
+      setPublishResult: setPublishResult,
+      setDeleteProjectName: setDeleteProjectName
     }
 
     return service;
@@ -51,6 +54,10 @@ define(["../init/AppService"], function(services) {
       return publishResult;
     }
 
+    function getDeleteProjectName() {
+      return deleteProjectName;
+    }
+
     function setAddEditorTypes(editorTypes) {
       addEditorTypes = editorTypes;
     }
@@ -73,6 +80,10 @@ define(["../init/AppService"], function(services) {
 
     function setPublishResult(result) {
       publishResult = result;
+    }
+
+    function setDeleteProjectName(projectName) {
+      deleteProjectName = projectName;
     }
   }
 });

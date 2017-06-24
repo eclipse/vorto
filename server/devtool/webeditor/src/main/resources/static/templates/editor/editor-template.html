@@ -12,7 +12,7 @@
 					<h2 class="box-title">{{projectName}}</h2>
 						<!--div class="box-tools">
 							 <button class="btn btn-default btn-close" type="button" ng-click="openCloseProjectModal()"><i class="fa fa-close"></i> Close Project</button>
-						</div-->					
+						</div-->
 				</div>
 				<div class="row action-btn">
 						<div class="col-md-3">
@@ -26,7 +26,7 @@
 						  		</div>
 							<div class="col-md-4">
 							  <button class="btn btn-app btn-close pull-right" type="button" ng-click="openCloseProjectModal()"><i class="fa fa-close"></i> Close Project</button>
-							  </div>
+						  </div>
 						</div>
 						</div>
 						<div class="row">
@@ -87,7 +87,7 @@
 				<a ng-hide="showImportButton">
 							<i class="fa fa-cog fa-spin"></i>
 				</a-->
-	
+
 			<div class="col-md-12 col-box">
 				<div id="function-block-browser-container">
 					<div id="searchResult">
@@ -132,13 +132,13 @@
 						              		<img src="images/dt.png"/>
 							            </td>
 										<td><a target="_blank" href="{{ globalContext.repositoryBasePath }}/#/details/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}" title=""Click for details"">{{ model.id.name }}<br/> <span class="namespace">{{ model.id.namespace }}:{{ model.id.version }}</span></a></td>
-										
+
 										<td class="action">
-											
+
 											<button class="btn" ng-show="showImportButton" ng-click="importModel(model)" ng-disabed="showAddFunctionBlockButton" tooltip-placement="auto" uib-tooltip="Import"> <i class="fa fa-angle-double-left"></i></button>
-						
+
 											<button class="btn" ng-hide="showImportButton"><i class="fa fa-cog fa-spin"></i></button>
-											
+
 										</td>
 									</tr>
 								</tbody>

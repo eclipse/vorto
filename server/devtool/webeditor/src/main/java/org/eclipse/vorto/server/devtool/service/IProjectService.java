@@ -43,5 +43,7 @@ public interface IProjectService {
 	
 	void deleteResource(String projectName, String author, String resourceId);
 	
+	void deleteProject(String projectName);
+	
 	void addReferenceToProject(String projectName, String resourceId);
 }
