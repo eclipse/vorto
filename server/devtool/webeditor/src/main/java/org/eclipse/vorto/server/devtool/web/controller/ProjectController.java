@@ -197,7 +197,6 @@ public class ProjectController {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 
-		projectName = webUtils.getUserProjectName(projectName);
-		projectService.deleteProject(projectName);
+		projectService.deleteProject(webUtils.getUserProjectName(projectName));
 	}
 }
