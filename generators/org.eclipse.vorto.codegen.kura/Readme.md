@@ -6,7 +6,8 @@ The Generator outputs:
 
  - Functionblock API 
  - Functionblock API Implementation that sends data to Bosch IoT Things
- - Application code template using the Functionblock API 
+ - Application code template using the Functionblock API
+ - Supports Bluetooth Low Energy
 
 ----------
 

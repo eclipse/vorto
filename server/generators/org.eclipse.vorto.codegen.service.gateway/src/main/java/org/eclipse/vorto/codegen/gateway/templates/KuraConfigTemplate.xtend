@@ -34,7 +34,7 @@ class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 			      		<span class="label label-primary pull-right"><i class="fa fa-plug"></i></span>
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
-						<p><input type="checkbox" ng-model="configParams.bluetooth">&nbsp;Bluetooth</p>
+						<p><input type="checkbox" ng-model="configParams.bluetooth">&nbsp;Bluetooth LE</p>
 						<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">GPIO (Coming soon)</i></p>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
