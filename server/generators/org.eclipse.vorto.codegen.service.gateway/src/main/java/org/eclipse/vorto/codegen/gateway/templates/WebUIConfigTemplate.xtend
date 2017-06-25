@@ -35,6 +35,7 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
 						<p><input type="checkbox" checked disabled="disabled">&nbsp;Data Visualization</p>
+						<p><input type="checkbox" checked disabled="disabled">&nbsp;SSO with Google</p>
 						<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;(Historical) Data Persistence</p>
 						<p><input type="checkbox" ng-model="configParams.swagger">&nbsp;Swagger Documentation</p>
 					</div><!-- /.box-body -->
@@ -48,6 +49,7 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
 						<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite Integrator</p>
+						<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">AWS IoT Integrator (Coming soon)</i></p>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
 			</div>
