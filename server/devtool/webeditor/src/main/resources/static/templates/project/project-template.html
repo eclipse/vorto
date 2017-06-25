@@ -11,7 +11,11 @@
 	               		</a>
 	               		</div>
 						</div-->
-							<div class="row">
+							<div class="row" ng-show="showLoader == true">
+								<i class="fa fa-cog fa-spin center"></i>
+							</div>
+
+							<div class="row" ng-show="showLoader == false">
 
 								<div class="col-md-2">
 									<a ng-click="openCreateProjectModal()">

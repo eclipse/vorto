@@ -15,6 +15,7 @@ define(["../init/AppController"], function(controllers) {
     $scope.selectedModelId = null;
     $scope.showAddFunctionBlockButton = true;
     $scope.isValidationInProcess = false;
+    $scope.isTreeLoading = false;
 
     $scope.tabs = [];
     $scope.editors = [];
@@ -292,6 +293,7 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.getResources = function() {
       var params = {projectName: $scope.projectName};
+      $scope.isTreeLoading = true;
       ProjectDataService.getProjectResources(params).then(function(data){
         var resources = [];
         var rootNode = {
@@ -311,6 +313,12 @@ define(["../init/AppController"], function(controllers) {
           resources.push(resource);
         }
         $scope.openResourceTree(resources);
+        $scope.isTreeLoading = false;
+      }).catch(function(error){
+        $scope.isTreeLoading = false;
+        var message = "Unable to load resources";
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
       });
     }
 

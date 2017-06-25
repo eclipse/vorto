@@ -10,6 +10,8 @@ define(["../init/AppController"], function(controllers) {
     $scope.selectedProject = null;
     $scope.projects = [];
     $scope.topRow = [];
+    $scope.showLoader = false;
+
     var gridSize = 6;
 
     $scope.$on("createProject", function(event, projectName) {
@@ -45,11 +47,17 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.showProjects = function() {
+      $scope.showLoader = true;
       ProjectDataService.getProjects().then(function(data){
+        $scope.showLoader = false;
         $scope.topRow = data.splice(0, gridSize-1);
         $scope.projectsMatrix = $scope.listToMatrix(data, gridSize);
       }).catch(function(error){
-          $scope.projects = [];
+        $scope.showLoader = false;
+        $scope.projects = [];
+        var message = "Failed to load projects";
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
       });
     }
 
