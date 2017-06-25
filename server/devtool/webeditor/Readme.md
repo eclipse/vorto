@@ -2,7 +2,7 @@
 
 The Vorto web editor is a web application that can be used to create, edit, store and publish technology agnostic, abstract device descriptions, so called information models. The web editor has been designed to offer functionality similar to the [Vorto Toolset](http://www.eclipse.org/vorto/documentation/installation/installation.html#installing-the-vorto-toolset) and can be used as an alternative.
 
-The web editor can also be configured to interact with the Vorto Repository. This not only enables the user to use the existing function blocks and datatypes from the repository while describing new devices but also publish these device descriptions to the repository.
+The web editor can also be configured to interact with the Vorto Repository. This not only enables the user to use the existing function blocks and datatypes from the repository while describing new devices, but also publish these device descriptions to the repository.
 
 Once published the user can convert the information models into executable, platform - specific code with the help of Code Generators.
 
@@ -58,7 +58,7 @@ The web editor uses file based persistence to store the files on the server. The
 
 ## Build and Run
 
-In the command prompt, go the **{$project_root_directory}** and invoke
+In the command prompt, go to **{$project_root_directory}** and invoke
 
     mvn clean install
 
