@@ -17,6 +17,7 @@ Available Generators:
  - [PTC ThingWorx Generator](org.eclipse.vorto.codegen.thingworx/Readme.md)
  - [Device Web Dashboard Generator](org.eclipse.vorto.codegen.webui/Readme.md)
  - [AngularJS Web UI Generator](org.eclipse.vorto.codegen.webdevice/Readme.md)
+ - [Eclipse Kura Generator](org.eclipse.vorto.codegen.kura/Readme.md)
  
 
 # Add your Code Generator

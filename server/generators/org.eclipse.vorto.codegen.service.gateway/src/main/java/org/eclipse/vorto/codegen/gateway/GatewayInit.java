@@ -23,10 +23,12 @@ import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
 import org.eclipse.vorto.codegen.gateway.templates.BoschThingsConfigTemplate;
+import org.eclipse.vorto.codegen.gateway.templates.KuraConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.ios.IOSPlatformGenerator;
 import org.eclipse.vorto.codegen.javabean.JavabeanGenerator;
+import org.eclipse.vorto.codegen.kura.KuraGenerator;
 import org.eclipse.vorto.codegen.latex.LatexGenerator;
 import org.eclipse.vorto.codegen.lwm2m.LWM2MGenerator;
 import org.eclipse.vorto.codegen.markdown.MarkdownGenerator;
@@ -74,6 +76,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/thingworx.properties", ThingWorxCodeGenerator.class));
 			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class, new WebUIConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/webdevice.properties", WebDeviceGenerator.class));
+			generatorRepo.add(Generator.create("/generators/kura.properties", KuraGenerator.class, new KuraConfigTemplate()));
 			
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			

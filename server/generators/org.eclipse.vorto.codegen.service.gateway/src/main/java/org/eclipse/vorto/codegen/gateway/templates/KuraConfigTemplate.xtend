@@ -20,9 +20,9 @@ import java.util.Set
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
 import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
-class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
+class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("persistence","swagger","boschcloud"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("bluetooth","boschcloud"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
@@ -30,14 +30,12 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 			<div class="col-sm-6">
 				<div class="box box-primary">
 			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Choose Add-Ons</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+			      		<h3 class="box-title">Choose driver</h3>
+			      		<span class="label label-primary pull-right"><i class="fa fa-plug"></i></span>
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
-						<p><input type="checkbox" checked disabled="disabled">&nbsp;Data Visualization</p>
-						<p><input type="checkbox" checked disabled="disabled">&nbsp;SSO with Google</p>
-						<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;(Historical) Data Persistence</p>
-						<p><input type="checkbox" ng-model="configParams.swagger">&nbsp;Swagger Documentation</p>
+						<p><input type="checkbox" ng-model="configParams.bluetooth">&nbsp;Bluetooth</p>
+						<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">GPIO (Coming soon)</i></p>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
 			</div>
@@ -49,7 +47,7 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
 						<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
-						<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">AWS IoT (Coming soon)</i></p>
+						<p><input type="checkbox" checked disabled="disabled">&nbsp;<i style="color:#999">Built-in Cloud Services</i></p>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
 			</div>

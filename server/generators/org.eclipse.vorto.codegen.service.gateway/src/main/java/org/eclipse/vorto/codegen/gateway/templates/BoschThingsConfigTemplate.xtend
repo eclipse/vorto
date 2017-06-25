@@ -30,36 +30,36 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 			<div class="col-sm-4">
 				<div class="box box-primary">
 			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Simulate {{model.id.name}}</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+			      		<h3 class="box-title">Device Simulator</h3>
+			      		<span class="label label-primary pull-right"><i class="fa fa-play-circle"></i></span>
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
 						<p>Creates a thing client that sends {{model.id.name}} data to Bosch IoT Things via HTTP</p>
-						<input type="checkbox" ng-model="configParams.simulator"><i>&nbsp;Yes, I want to generate this!</i>
+						<input type="checkbox" ng-model="configParams.simulator"><i>&nbsp;Yes, I need that</i>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
 			</div>
 			<div class="col-sm-4">
 				<div class="box box-primary">
 			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Voice-Control {{model.id.name}}</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+			      		<h3 class="box-title">Device Voice-Control</h3>
+			      		<span class="label label-primary pull-right"><i class="fa fa-microphone"></i></span>
 			    	</div><!-- /.box-header -->
 					<div class="box-body">
-						<p>Creates an Alexa Skillset that allows you to fetch {{model.id.name}} properties from Bosch IoT Things</p>
-						<input type="checkbox" ng-model="configParams.alexa" ><i>&nbsp;Yes, I want to generate this!</i>
+						<p>Creates an Alexa Skillset that fetches {{model.id.name}} properties from Bosch IoT Things via voice commands.</p>
+						<input type="checkbox" ng-model="configParams.alexa" ><i>&nbsp;Yes, I need that</i>
 					</div><!-- /.box-body -->
 			  	</div><!-- /.box -->
 			</div>
 			<div class="col-sm-4">
 				<div class="box box-primary">
 					<div class="box-header with-border">
-						<h3 class="box-title">Validate {{model.id.name}}</h3>
+						<h3 class="box-title">Device Validation</h3>
 						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
 					</div><!-- /.box-header -->
 					<div class="box-body">
 						<p>Creates JSON Schema files to validate {{model.id.name}} properties in Bosch IoT Things</p>
-						<input type="checkbox" ng-model="configParams.validation" ><i>&nbsp;Yes, I want to generate this!</i>
+						<input type="checkbox" ng-model="configParams.validation" ><i>&nbsp;Yes, I need that</i>
 					</div><!-- /.box-body -->
 				</div><!-- /.box -->
 			</div>
