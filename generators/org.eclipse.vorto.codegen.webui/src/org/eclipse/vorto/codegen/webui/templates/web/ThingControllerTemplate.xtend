@@ -58,7 +58,7 @@ class ThingControllerTemplate implements IFileTemplate<InformationModel> {
 			private DataService dataService;
 							
 			@RequestMapping(produces = { MediaType.APPLICATION_JSON_VALUE }, method = RequestMethod.GET)
-			public List<«element.name»> searchApplewatchThings() throws ExecutionException, InterruptedException  {		
+			public List<«element.name»> search«element.name»Things() throws ExecutionException, InterruptedException  {		
 				Query query = dataService.newQuery();
 				return dataService.queryThings(query);
 			}

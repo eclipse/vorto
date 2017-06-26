@@ -50,7 +50,7 @@ class BrowserTemplate implements IFileTemplate<InformationModel> {
 						<div class="row">
 					 		<div class="col-xs-6">			
 								<h3 ng-show="isLoading" class="box-title"><i class="fa fa-refresh fa-spin"></i>&nbsp;&nbsp; Searching for devices </h3>
-								<h3 ng-show="!isLoading" class="box-title">{{things.length}} of {{thingsCount}} devices displayed</h3>						
+								<h3 ng-show="!isLoading" class="box-title">{{things.length}} devices found</h3>						
 							</div>
 						</div>			
 					</div>			
