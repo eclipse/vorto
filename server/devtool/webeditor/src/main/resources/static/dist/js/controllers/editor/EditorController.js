@@ -220,6 +220,7 @@ define(["../init/AppController"], function(controllers) {
     };
 
     $scope.openProject = function() {
+      $scope.isTreeLoading = true;
       $scope.projectName = $routeParams.projectName;
       var params = {projectName: $scope.projectName};
       ProjectDataService.openProject(params).then(function(data){
@@ -227,6 +228,7 @@ define(["../init/AppController"], function(controllers) {
         $scope.getResources();
       }).catch(function(error){
         $scope.showEditorBody = false;
+        $scope.isTreeLoading = false;
       });
     }
 
@@ -256,7 +258,7 @@ define(["../init/AppController"], function(controllers) {
         });
       }
     }
-    
+
     $scope.openDeleteProjectModal = function(projectName) {
       ShareDataService.setDeleteProjectName(projectName);
       var modalInstance = $uibModal.open({
@@ -266,11 +268,11 @@ define(["../init/AppController"], function(controllers) {
         //size: "sm"
       });
     };
-    
+
     $scope.$on("deleteProject", function(event, projectName) {
       $scope.deleteProject(projectName);
     });
-    
+
     $scope.deleteProject = function(projectName) {
       ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
         $scope.closeProject();
@@ -293,7 +295,6 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.getResources = function() {
       var params = {projectName: $scope.projectName};
-      $scope.isTreeLoading = true;
       ProjectDataService.getProjectResources(params).then(function(data){
         var resources = [];
         var rootNode = {
