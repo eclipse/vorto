@@ -2,9 +2,9 @@
 
 This generator creates
 
-- JSON Schema files for validating things in Bosch IoT Things
-- Alexa Skillset that reads/updates thing data from/to Bosch IoT Things
-- Simulator generating test data for Bosch IoT Things
+- JSON Schema files for validating things managed in Bosch IoT Things
+- Alexa Skillset that fetches device data from Bosch IoT Things
+- Simulator generating device test data and publishes it to Bosch IoT Things
 
 
 ----------

@@ -41,6 +41,14 @@ class PomTemplate implements IFileTemplate<InformationModel> {
     <version>0.0.1-SNAPSHOT</version>
     <description>Bosch Iot Thing Client for «model.name»</description>
 
+	<repositories>
+		<repository>
+			<id>bosch-releases</id>
+			<name>bosch-releases</name>
+			<url>https://maven.bosch-si.com/content/repositories/bosch-releases/</url>
+		</repository>
+	</repositories>
+		
     <dependencies>
         <dependency>
 			<groupId>com.bosch.cr</groupId>
