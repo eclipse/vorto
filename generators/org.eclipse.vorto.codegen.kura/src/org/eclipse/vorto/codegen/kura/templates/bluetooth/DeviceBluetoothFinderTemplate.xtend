@@ -29,12 +29,12 @@ class DeviceBluetoothFinderTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/bluetooth'''
+		'''«Utils.javaPackageBasePath»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage».bluetooth;
+		package «Utils.javaPackage»;
 		
 		import java.util.ArrayList;
 		import java.util.Date;
@@ -45,7 +45,6 @@ class DeviceBluetoothFinderTemplate implements IFileTemplate<InformationModel> {
 		import java.util.concurrent.ScheduledFuture;
 		import java.util.concurrent.TimeUnit;
 		
-		import org.eclipse.kura.KuraException;
 		import org.eclipse.kura.bluetooth.BluetoothAdapter;
 		import org.eclipse.kura.bluetooth.BluetoothDevice;
 		import org.eclipse.kura.bluetooth.BluetoothGattSecurityLevel;
@@ -55,9 +54,10 @@ class DeviceBluetoothFinderTemplate implements IFileTemplate<InformationModel> {
 		import org.eclipse.kura.cloud.CloudClient;
 		import org.eclipse.kura.cloud.CloudClientListener;
 		import org.eclipse.kura.cloud.CloudService;
+		import org.eclipse.kura.message.KuraPayload;
+		import org.eclipse.kura.KuraException;
 		«ENDIF»
 		import org.eclipse.kura.configuration.ConfigurableComponent;
-		import org.eclipse.kura.message.KuraPayload;
 		import org.osgi.service.component.ComponentContext;
 		import org.osgi.service.component.ComponentException;
 		import org.slf4j.Logger;

@@ -17,11 +17,11 @@ package org.eclipse.vorto.codegen.kura.templates;
 public class Utils {
 
 	public static String getJavaPackageBasePath() {
-		return getBasePath()+"/src/com/example/kura/app";
+		return getBasePath()+"/src/com/example/kura";
 	}
 	
 	public static String getJavaPackage() {
-		return "com.example.kura.app";
+		return "com.example.kura";
 	}
 	
 	public static String getBasePath() {

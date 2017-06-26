@@ -34,12 +34,12 @@ class ComponentXmlTemplate implements IFileTemplate<InformationModel> {
 		<?xml version="1.0" encoding="UTF-8"?>
 		
 		«IF context.configurationProperties.getOrDefault("bluetooth","false").equalsIgnoreCase("true")»
-		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" enabled="true" immediate="true" modified="updated" name="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder">
-		   <implementation class="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder"/>
+		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" enabled="true" immediate="true" modified="updated" name="«Utils.javaPackage».«element.name»BluetoothFinder">
+		   <implementation class="«Utils.javaPackage».«element.name»BluetoothFinder"/>
 		   <service>
 		      <provide interface="org.eclipse.kura.configuration.ConfigurableComponent"/>
 		   </service>
-		   <property name="service.pid" value="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder"/>
+		   <property name="service.pid" value="«Utils.javaPackage».«element.name»BluetoothFinder"/>
 		   «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("false")»
 		   <reference bind="setCloudService" 
 		    		  cardinality="1..1" 
