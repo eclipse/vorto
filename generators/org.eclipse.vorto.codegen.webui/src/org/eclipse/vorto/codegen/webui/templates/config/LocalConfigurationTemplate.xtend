@@ -110,7 +110,7 @@ class LocalConfigurationTemplate implements IFileTemplate<InformationModel> {
 			@Bean
 			public ThingClient thingClient() {
 				return ThingClient.newBuilder()
-					.withProxy(proxyHost, proxyPort)
+					//.withProxy(proxyHost, proxyPort)
 					.withEndpointUrl(thingEndpointUrl)
 					.withApiToken(thingApiToken)
 					.withOAuth2ClientContext(oauth2context)
@@ -140,7 +140,7 @@ class LocalConfigurationTemplate implements IFileTemplate<InformationModel> {
 				      .authenticationConfiguration(authenticationConfiguration)
 				      .centralRegistryEndpointUrl(wsEndpointUrl)
 				      .trustStoreConfiguration(trustStore)
-				      .proxyConfiguration(proxyConfig.build())
+				      //.proxyConfiguration(proxyConfig.build())
 				      .build();
 						
 				final IntegrationClient integrationClient = IntegrationClientImpl.newInstance(integrationClientConfiguration);

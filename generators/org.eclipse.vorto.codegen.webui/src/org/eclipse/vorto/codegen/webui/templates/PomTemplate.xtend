@@ -46,7 +46,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 			<parent>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-starter-parent</artifactId>
-				<version>1.4.0.RELEASE</version>
+				<version>1.4.6.RELEASE</version>
 			</parent>
 			
 			<repositories>

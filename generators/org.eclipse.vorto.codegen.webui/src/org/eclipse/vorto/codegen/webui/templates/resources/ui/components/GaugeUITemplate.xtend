@@ -14,21 +14,22 @@
  */
 package org.eclipse.vorto.codegen.webui.templates.resources.ui.components
 
+import java.util.Optional
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.webui.templates.resources.ui.IFunctionBlockUITemplate
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 
 class GaugeUITemplate implements IFunctionBlockUITemplate {
 	
-	private String symbol;
-	private String minValue;
-	private String maxValue;
+	private Optional<String> symbol;
+	private Optional<String> minValue;
+	private Optional<String> maxValue;
 	private String value;
 	
 	new(String symbol, String minValue, String maxValue, String value) {
-		this.symbol = symbol;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+		this.symbol = Optional.ofNullable(symbol);
+		this.minValue = Optional.ofNullable(minValue);
+		this.maxValue = Optional.ofNullable(maxValue);
 		this.value = value;
 	}
 	
@@ -37,13 +38,13 @@ class GaugeUITemplate implements IFunctionBlockUITemplate {
 		<div justgage
 			titleFontColor=black
 			decimals="2"
-			«IF !symbol.equals("")»
+			«IF symbol.isPresent() && !symbol.equals("")»
 			symbol={{thing.«fbProperty.name.toLowerCase».status.«symbol»}}
 			«ENDIF»
-			«IF !minValue.equals("")»
+			«IF minValue.isPresent && !minValue.equals("")»
 			min={{thing.«fbProperty.name.toLowerCase».status.«minValue»}}
 			«ENDIF»
-			«IF !maxValue.equals("")»
+			«IF maxValue.isPresent && !maxValue.equals("")»
 			max={{thing.«fbProperty.name.toLowerCase».status.«maxValue»}}
 			«ENDIF»
 			value={{thing.«fbProperty.name.toLowerCase».status.«value»}}>

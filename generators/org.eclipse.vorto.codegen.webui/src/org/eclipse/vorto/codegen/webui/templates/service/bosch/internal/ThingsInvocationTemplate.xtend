@@ -21,11 +21,13 @@ class ThingsInvocationTemplate implements IFileTemplate<InformationModel> {
 		
 		import org.apache.http.HttpHeaders;
 		import org.apache.http.client.methods.HttpUriRequest;
+		import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 		import org.springframework.security.core.Authentication;
 		import org.springframework.security.core.context.SecurityContextHolder;
 		import org.springframework.security.oauth2.client.OAuth2ClientContext;
 		import org.springframework.security.oauth2.provider.OAuth2Authentication;
 		
+		import com.example.iot.«element.name.toLowerCase».service.bosch.permissions.IMUserInfo;
 		import com.google.gson.GsonBuilder;
 		
 		public class ThingsInvocationTemplate extends AsyncInvocationTemplate {
@@ -52,6 +54,9 @@ class ThingsInvocationTemplate implements IFileTemplate<InformationModel> {
 				Authentication autentication = SecurityContextHolder.getContext().getAuthentication();
 				if (autentication instanceof OAuth2Authentication) {
 					return (String) oauthClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+				} else if (autentication instanceof UsernamePasswordAuthenticationToken) {
+					IMUserInfo userInfo =  (IMUserInfo)((UsernamePasswordAuthenticationToken)autentication).getDetails();
+					return userInfo.getAuthorizationToken().getJwt();
 				} else {
 					throw new RuntimeException("User is not yet authenticated.");
 				}
