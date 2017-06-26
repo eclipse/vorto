@@ -396,13 +396,16 @@ define(["../init/AppController"], function(controllers) {
     });
 
     $scope.$on("closeProject", function(event, save) {
+      var promises = [];
       $scope.editors.forEach(function(editor){
         if(!save){
           editor.setValue(editor.lastSavedValue);
         }
-        editor.xtextServices.saveResource();
+        promises.push(editor.xtextServices.saveResource());
+        $q.all(promises).then(function(results){
+          $scope.closeProject();
+        });
       });
-      $scope.closeProject();
     });
 
     $window.onbeforeunload = function() {
@@ -415,11 +418,8 @@ define(["../init/AppController"], function(controllers) {
     $scope.$on("closeEditor", function(event, index, save) {
       var editor = $scope.editors[index];
       if (save) {
-        editor.xtextServices.saveResource();
         var tab = $scope.tabs[index];
-        var message = "Model " + tab.name + " saved";
-        var params = {message: message};
-        ToastrService.createSuccessToast(params);
+        $scope.saveEditor(editor, tab);
       }else{
         editor.setValue(editor.lastSavedValue);
         editor.xtextServices.saveResource();
@@ -439,10 +439,7 @@ define(["../init/AppController"], function(controllers) {
     $scope.saveResource = function() {
       var editor = $scope.editors[$scope.selectedTabIndex];
       var tab = $scope.tabs[$scope.selectedTabIndex];
-      var message = "Model " + tab.name + " saved";
-      var params = {message: message};
-      ToastrService.createSuccessToast(params);
-      editor.xtextServices.saveResource();
+      $scope.saveEditor(editor, tab);
     }
 
     $scope.loadResource = function(resource) {
@@ -822,28 +819,33 @@ define(["../init/AppController"], function(controllers) {
               name: 'customSaveCommand',
               bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
               exec: function(editor) {
+                editor.lastSavedValue = editor.getValue();
                 var tab = $scope.tabs[$scope.selectedTabIndex];
                 editor.xtextServices.saveResource().then(function(data){
+                  editor.lastSavedValue = editor.getValue();
                   var message = "Model " + tab.name + " saved";
                   var params = {message: message};
                   ToastrService.createSuccessToast(params);
-                }, function(err){
-                  var message = "Failed to save " + tab.filename;
-                  var params = {message: message};
-                  ToastrService.createErrorToast(params);
                 });
-                editor.lastSavedValue = editor.getValue();
               }
           });
           editor.xtextServices.loadResource().then(function(data){
             editor.lastSavedValue = data.fullText;
             defer.resolve(editor);
-          }, function(err){
-            defer.resolve(editor);
           });
         });
       });
       return defer.promise;
+    }
+
+    $scope.saveEditor = function(editor, tab){
+      editor.lastSavedValue = editor.getValue();
+      editor.xtextServices.saveResource().then(function(data){
+        editor.lastSavedValue = editor.getValue();
+        var message = "Model " + tab.name + " saved";
+        var params = {message: message};
+        ToastrService.createSuccessToast(params);
+      });
     }
   }
 });
