@@ -29,12 +29,12 @@ class DeviceTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/bluetooth'''
+		'''«Utils.javaPackageBasePath»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage».bluetooth;
+		package «Utils.javaPackage»;
 		
 		import org.eclipse.kura.KuraException;
 		import org.eclipse.kura.bluetooth.BluetoothDevice;
@@ -56,7 +56,7 @@ class DeviceTemplate implements IFileTemplate<InformationModel> {
 			private BluetoothDevice device;
 			private boolean isConnected;
 		
-			public BoschGlmDevice(BluetoothDevice bluetoothDevice) {
+			public «element.name»Device(BluetoothDevice bluetoothDevice) {
 				this.device = bluetoothDevice;
 				this.isConnected = false;
 			}

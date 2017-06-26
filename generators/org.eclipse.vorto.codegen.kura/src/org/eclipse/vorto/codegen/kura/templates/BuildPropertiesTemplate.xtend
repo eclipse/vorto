@@ -36,6 +36,7 @@ class BuildPropertiesTemplate implements IFileTemplate<InformationModel>{
 		               OSGI-INF/component.xml«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("false")»,\
 		               secret/
 		               «ENDIF»
+		               
 		source.. = src/
 		'''
 	}

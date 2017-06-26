@@ -22,7 +22,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class MetatypeTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
-		'''«Utils.javaPackage».bluetooth.«context.name»BluetoothFinder.xml'''
+		'''«Utils.javaPackage».«context.name»BluetoothFinder.xml'''
 	}
 	
 	override getPath(InformationModel context) {
@@ -33,7 +33,7 @@ class MetatypeTemplate implements IFileTemplate<InformationModel> {
 		'''
 		<?xml version="1.0" encoding="UTF-8"?>
 		<MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
-		    <OCD id="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder"
+		    <OCD id="«Utils.javaPackage».«element.name»BluetoothFinder"
 		         name="«element.displayname» Bluetooth Finder" 
 		         description="App that reads «element.displayname» data via bluetooth and sends it to the IoT cloud backend.">
 		         
@@ -107,8 +107,8 @@ class MetatypeTemplate implements IFileTemplate<InformationModel> {
 		         «ENDFOR»
 		    </OCD>
 		
-		    <Designate pid="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder">
-		        <Object ocdref="«Utils.javaPackage».bluetooth.«element.name»BluetoothFinder"/>
+		    <Designate pid="«Utils.javaPackage».«element.name»BluetoothFinder">
+		        <Object ocdref="«Utils.javaPackage».«element.name»BluetoothFinder"/>
 		    </Designate>
 		</MetaData>
 		
