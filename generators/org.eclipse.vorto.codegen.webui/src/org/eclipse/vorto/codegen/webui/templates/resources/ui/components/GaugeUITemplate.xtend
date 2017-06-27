@@ -39,13 +39,13 @@ class GaugeUITemplate implements IFunctionBlockUITemplate {
 			titleFontColor=black
 			decimals="2"
 			«IF symbol.isPresent() && !symbol.equals("")»
-			symbol={{thing.«fbProperty.name.toLowerCase».status.«symbol»}}
+			symbol={{thing.«fbProperty.name.toLowerCase».status.«symbol.get»}}
 			«ENDIF»
 			«IF minValue.isPresent && !minValue.equals("")»
-			min={{thing.«fbProperty.name.toLowerCase».status.«minValue»}}
+			min={{thing.«fbProperty.name.toLowerCase».status.«minValue.get»}}
 			«ENDIF»
 			«IF maxValue.isPresent && !maxValue.equals("")»
-			max={{thing.«fbProperty.name.toLowerCase».status.«maxValue»}}
+			max={{thing.«fbProperty.name.toLowerCase».status.«maxValue.get»}}
 			«ENDIF»
 			value={{thing.«fbProperty.name.toLowerCase».status.«value»}}>
 		</div>
