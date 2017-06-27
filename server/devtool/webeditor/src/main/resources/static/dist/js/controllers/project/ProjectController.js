@@ -17,6 +17,11 @@ define(["../init/AppController"], function(controllers) {
     $scope.$on("createProject", function(event, projectName) {
       $scope.createProject(projectName);
     });
+    
+    $scope.openProject = function(projectName) {
+    	$location.path("projects/"+projectName);
+        $location.replace();
+    };
 
     $scope.openCreateProjectModal = function() {
       var modalInstance = $uibModal.open({
@@ -26,6 +31,31 @@ define(["../init/AppController"], function(controllers) {
         //size: "sm"
       });
     };
+
+	 $scope.openDeleteProjectModal = function(projectName) {
+      ShareDataService.setDeleteProjectName(projectName);
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "DeleteProjectController",
+        templateUrl: "templates/project/delete-project-modal-template.html",
+        //size: "sm"
+      });
+    };
+
+    $scope.$on("deleteProject", function(event, projectName) {
+      $scope.deleteProject(projectName);
+    });
+
+    $scope.deleteProject = function(projectName) {
+      ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
+      	$location.path("projects/");
+          $location.replace();
+      }).catch(function(error){
+        var message = "Failed to delete project " +  projectName ;
+        var params = {message: message};
+        ToastrService.createErrorToast(params);
+      });
+     };
 
     $scope.createProject = function(projectName) {
       var project = {name: projectName};

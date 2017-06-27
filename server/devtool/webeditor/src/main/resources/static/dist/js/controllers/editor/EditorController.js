@@ -259,30 +259,6 @@ define(["../init/AppController"], function(controllers) {
       }
     }
 
-    $scope.openDeleteProjectModal = function(projectName) {
-      ShareDataService.setDeleteProjectName(projectName);
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "DeleteProjectController",
-        templateUrl: "templates/project/delete-project-modal-template.html",
-        //size: "sm"
-      });
-    };
-
-    $scope.$on("deleteProject", function(event, projectName) {
-      $scope.deleteProject(projectName);
-    });
-
-    $scope.deleteProject = function(projectName) {
-      ProjectDataService.deleteProject({projectName: projectName}).then(function(data){
-        $scope.closeProject();
-      }).catch(function(error){
-        var message = "Failed to delete project " +  projectName ;
-        var params = {message: message};
-        ToastrService.createErrorToast(params);
-      });
-     };
-
     $scope.openPublishModal = function(result) {
       ShareDataService.setPublishResult(result);
       $uibModal.open({

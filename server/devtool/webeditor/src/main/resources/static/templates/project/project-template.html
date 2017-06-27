@@ -44,8 +44,8 @@
 												<span>{{project.name}}</span>
 											</div>
 	               			<div class="tiny-box-action pull-right">
-													<button class="btn btn-link btn-open" href="./#/projects/{{ project.name }}" uib-tooltip="Open Project"><i class="fa fa-edit"></i></button>
-													<button class="btn btn-link btn-delete" data-toggle="modal" ng-click="openDeleteProjectModal(projectName)"><i class="fa fa-trash-o" uib-tooltip="Delete Project"></i></button>
+													<button class="btn btn-link btn-open" ng-click="openProject(project.name)" uib-tooltip="Open Project"><i class="fa fa-edit"></i></button>
+													<button class="btn btn-link btn-delete" data-toggle="modal" ng-click="openDeleteProjectModal(project.name)"><i class="fa fa-trash-o" uib-tooltip="Delete Project"></i></button>
 											</div>
 		               	</div>
 	               	<!--/a-->
@@ -55,7 +55,7 @@
 
 					 		<div class="row" ng-repeat="row in projectsMatrix">
 					 	 		<div class="col-md-2" ng-repeat="project in row">
-	              	<a href="./#/projects/{{ project.name }}">
+	              	
 		            		<div class="tiny-box" id="tinyBox:{{project.name}}">
 	                		<span class="tiny-box-icon">
 												<img width="32px" height="32px" ng-src="images/vorto-icon.png"/>
@@ -64,11 +64,11 @@
 												<span>{{project.name}}</span>
 											</div>
 	               		<div class="tiny-box-action pull-right">
-													<button class="btn btn-link btn-open" href="./#/projects/{{ project.name }}" uib-tooltip="Open Project"><i class="fa fa-edit"></i></button>
-													<button class="btn btn-link btn-delete" data-toggle="modal" ng-click="openDeleteProjectModal(projectName)"><i class="fa fa-trash-o" uib-tooltip="Delete Project"></i></button>
+													<button class="btn btn-link btn-open" ng-click="openProject(project.name)"  uib-tooltip="Open Project"><i class="fa fa-edit"></i></button>
+													<button class="btn btn-link btn-delete" data-toggle="modal" ng-click="openDeleteProjectModal(project.name)"><i class="fa fa-trash-o" uib-tooltip="Delete Project"></i></button>
 											</div>
 		               	</div>
-	               	</a>
+	             
 	        			</div>
 	        						
 					 	 	</div>
