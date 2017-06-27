@@ -153,10 +153,9 @@ public class ProjectController {
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) throws IOException {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
-		String pName = webUtils.getUserProjectName(projectName);
 
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		ProjectResource projectResource = projectService.getProject(pName);
+		ProjectResource projectResource = projectService.getProject(webUtils.getUserProjectName(projectName));
 		List<String> resourceIdList = new ArrayList<String>();
 
 		if (projectResource.getProperties().containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)) {
@@ -168,12 +167,13 @@ public class ProjectController {
 		for (Resource resource : resourceList) {
 			resourceIdList.add(resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID));
 		}
-
+				
 		devtoolReferenceLinker.resetResourceSet(resourceSet);
+		webUtils.removePreviousProjectSessionAttributes(request);
 		devtoolReferenceLinker.loadResources(resourceIdList, resourceSet);
+		webUtils.setSessionResourceSet(request, resourceSet);
 
 		return projectResource;
-
 	}
 
 	@ApiOperation(value = "Deletes a resource from the project")
