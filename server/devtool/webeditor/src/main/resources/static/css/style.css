@@ -1272,7 +1272,7 @@ sup {
   line-height: 70px;
   background-color: transparent !important; }
 
-.tiny-box:hover, .tiny-box.selected {
+/*.tiny-box:hover,*/ .tiny-box.selected {
   border: 1px solid #c2e1f5;
   cursor: pointer;
   background: rgba(194, 225, 245, 0.15); 
@@ -1280,10 +1280,16 @@ sup {
 
 .tiny-box.new {
    color: #666; 
+   border: 2px dashed rgba(0, 0, 0, 0.1);
+   box-shadow: none;
 }
 
 .tiny-box.new:hover {
-   color: #000; 
+   color: #111;
+   border: 2px dashed #c2e1f5;
+  cursor: pointer;
+  /*background: rgba(194, 225, 245, 0.15); 
+  box-shadow: 0px 1px 1px 2px rgba(194, 225, 245, 0.75); */
 }
 
 .tiny-box-name, .tiny-box-number {
@@ -1296,11 +1302,11 @@ sup {
   line-height: 0.9em;
   font-weight: 600; }
 
-.tiny-box-number span {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 0.9em;
-  color: #005691; }
+.tiny-box-action .btn{
+  padding: 10px 6px 3px 4px;
+  color: #999;
+  font-size: 16px;
+ }
 
 .absolute-center {
   top: 50%;
@@ -1328,6 +1334,18 @@ sup {
 .btn-app>.fa, .btn-app>.glyphicon, .btn-app>.ion {
     font-size: 20px;
     display: block;
+}
+
+.btn-open:hover{
+    color: rgb(0, 73, 134);
+}
+
+.btn-delete:hover {
+    color: red;
+}
+.btn-trash:hover {
+    color: red;
+    border-color: red;
 }
 
 @media screen and (max-width: 1280px) {

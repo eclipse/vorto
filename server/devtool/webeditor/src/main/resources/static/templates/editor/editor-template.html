@@ -17,10 +17,10 @@
 				<div class="row action-btn">
 						<div class="col-md-3">
 							 <button class="btn btn-app" type="button" ng-click="openAddEditorModal()"> <span class="fa fa-plus"></span> New Model</button>
-							 <button class="btn btn-app" type="button" ng-click="openDeleteProjectModal(projectName)"> <span class="fa fa-minus"></span> Delete</button>
+							 <button class="btn btn-app btn-trash" type="button" ng-click="openDeleteProjectModal(projectName)"> <span class="fa fa-trash-o"></span> Delete</button>
 							 <button class="btn btn-app" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true"> <span class="fa fa-floppy-o"></span> Save</button>
 							 <button class="btn btn-app" type="button" ng-click="uploadProject()" ng-show="isValidationInProcess==false && isEditorOpen==true"> <i class="fa fa-upload" aria-hidden="true"></i>Publish</button>
-							 <a class="validate-btn" ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-2x"></i> </a>
+							 <button class="btn btn-app validate-btn" ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-2x"></i> </button>
 							 </div>
 								<div class="col-md-5">
 									<div uib-alert ng-show="editorHint" close="closeHint()">{{editorHint}}</div>
