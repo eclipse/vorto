@@ -397,15 +397,19 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.$on("closeProject", function(event, save) {
       var promises = [];
-      $scope.editors.forEach(function(editor){
-        if(!save){
-          editor.setValue(editor.lastSavedValue);
-        }
-        promises.push(editor.xtextServices.saveResource());
-        $q.all(promises).then(function(results){
-          $scope.closeProject();
+      if($scope.editors.length == 0){
+        $scope.closeProject();
+      }else{
+        $scope.editors.forEach(function(editor){
+          if(!save){
+            editor.setValue(editor.lastSavedValue);
+          }
+          promises.push(editor.xtextServices.saveResource());
+          $q.all(promises).then(function(results){
+            $scope.closeProject();
+          });
         });
-      });
+      }
     });
 
     $window.onbeforeunload = function() {
