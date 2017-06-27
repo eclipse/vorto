@@ -15,6 +15,9 @@
 package org.eclipse.vorto.server.devtool.utils;
 
 import java.io.File;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +28,7 @@ import org.eclipse.vorto.server.devtool.http.request.LinkReferenceModelRequest;
 import org.eclipse.vorto.server.devtool.http.request.LinkReferenceResourceRequest;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
+import org.eclipse.xtext.web.server.model.XtextWebDocument;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -40,6 +44,13 @@ public class WebUtils {
 	@Autowired
 	private IEditorSession editorSession;
 
+	public void setSessionResourceSet(HttpServletRequest request, ResourceSet resourceSet){
+		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
+		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
+				.getInstance(IWebResourceSetProvider.class);
+		webEditorResourceSetProvider.setSessionResourceSet(httpServiceContext, resourceSet);
+	}
+	
 	public ResourceSet getResourceSet(HttpServletRequest request) {
 		HttpServiceContext httpServiceContext = new HttpServiceContext(request);
 		WebEditorResourceSetProvider webEditorResourceSetProvider = (WebEditorResourceSetProvider) injector
@@ -69,5 +80,20 @@ public class WebUtils {
 
 	public String getUserProjectName(String projectName) {
 		return editorSession.getUser() + File.separator + projectName;
+	}
+	
+	public void removePreviousProjectSessionAttributes(HttpServletRequest request){
+		Enumeration<String> attributeNames = request.getSession().getAttributeNames();
+		HashSet<String> removeAttributesSet = new HashSet<>();
+		while(attributeNames.hasMoreElements()){
+			String key = attributeNames.nextElement();
+			if(request.getSession().getAttribute(key).getClass().equals(XtextWebDocument.class)){
+				removeAttributesSet.add(key);
+			}
+		}
+		Iterator<String> iterator = removeAttributesSet.iterator();
+		while(iterator.hasNext()){
+			request.getSession().removeAttribute(iterator.next());
+		}
 	}
 }
