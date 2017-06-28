@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -82,7 +83,7 @@ public class WebUtils {
 		return editorSession.getUser() + File.separator + projectName;
 	}
 	
-	public void removePreviousProjectSessionAttributes(HttpServletRequest request){
+	public void removePreviousProjectModelsFromSessionAttributes(HttpServletRequest request){
 		Enumeration<String> attributeNames = request.getSession().getAttributeNames();
 		HashSet<String> removeAttributesSet = new HashSet<>();
 		while(attributeNames.hasMoreElements()){
@@ -91,9 +92,25 @@ public class WebUtils {
 				removeAttributesSet.add(key);
 			}
 		}
+		removeAttributeFromSession(removeAttributesSet, request);
+	}
+	
+	public void removeDeletedModelFromSessionAttributes(HttpServletRequest request, String resourceId){
+		Enumeration<String> attributeNames = request.getSession().getAttributeNames();
+		HashSet<String> removeAttributesSet = new HashSet<>();
+		while(attributeNames.hasMoreElements()){
+			String key = attributeNames.nextElement();
+			if(request.getSession().getAttribute(key).getClass().equals(XtextWebDocument.class) && key.contains(resourceId)){
+				removeAttributesSet.add(key);
+			}
+		}
+		removeAttributeFromSession(removeAttributesSet, request);
+	}
+	
+	private void removeAttributeFromSession(Set<String> removeAttributesSet, HttpServletRequest request){
 		Iterator<String> iterator = removeAttributesSet.iterator();
 		while(iterator.hasNext()){
 			request.getSession().removeAttribute(iterator.next());
-		}
+		}		
 	}
 }

@@ -169,7 +169,7 @@ public class ProjectController {
 		}
 				
 		devtoolReferenceLinker.resetResourceSet(resourceSet);
-		webUtils.removePreviousProjectSessionAttributes(request);
+		webUtils.removePreviousProjectModelsFromSessionAttributes(request);
 		devtoolReferenceLinker.loadResources(resourceIdList, resourceSet);
 		webUtils.setSessionResourceSet(request, resourceSet);
 
@@ -186,8 +186,9 @@ public class ProjectController {
 
 		projectName = webUtils.getUserProjectName(projectName);
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		devtoolReferenceLinker.removeResourceFromResourceSet(deleteResourceRequest.getResourceId(), resourceSet);
+		devtoolReferenceLinker.removeResourceFromResourceSet(deleteResourceRequest.getResourceId(), resourceSet);		
 		projectService.deleteResource(projectName, deleteResourceRequest.getResourceId());
+		webUtils.removeDeletedModelFromSessionAttributes(request, deleteResourceRequest.getResourceId());
 	}
 
 	@ApiOperation(value = "Deletes a resource from the project")
