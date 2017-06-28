@@ -32,9 +32,11 @@ public class DatatypeValidator extends TargetClassSourceClassValidator {
 		if (receivingModelElement instanceof IModelElement && droppedObject instanceof IModelElement) {
 			boolean entityDroppedToEnum = entityDroppedToEnum(((IModelElement)receivingModelElement).getModel(), ((IModelElement) droppedObject).getModel());
 			boolean enumDroppedToEnum = enumDroppedToEnum(((IModelElement)receivingModelElement).getModel(), ((IModelElement) droppedObject).getModel());
+			if (entityDroppedToEnum || enumDroppedToEnum) {
+				MessageDisplayFactory.getMessageDisplay().displayError("You cannot drop an Entity or Enum into an Enum");
+			}
 			return super.allow(receivingModelElement, droppedObject) && !entityDroppedToEnum && !enumDroppedToEnum;
 		} else {
-			MessageDisplayFactory.getMessageDisplay().displayError("You cannot drop an Entity or Enum into an Enum");
 			return false;
 		}
 	}
