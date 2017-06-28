@@ -78,7 +78,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
           default: "",
           github: "",
           eidp: ""
-	    }
+        }
       }
     };
     
