@@ -69,7 +69,19 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
     $rootScope.getUser();
     
-    $rootScope.context = {};
+    $rootScope.context = {
+      githubEnabled: false,
+      eidpEnabled: false,
+      webEditor: {
+        enabled: false,
+        loginUrl: {
+          default: "",
+          github: "",
+          eidp: ""
+        }
+      }
+    };
+    
     $rootScope.getContext = function() {
         $http.get("context").success(function(data, status, headers, config) {
             $rootScope.context = data;

@@ -78,7 +78,7 @@
             <input 	type="text" 
             		name="username"
             		class="form-control"            		 
-            		email-check="email"
+            		ng-pattern="/^[a-zA-Z0-9@\.]*$/"
             		ng-model="user.username"
             		ng-readonly="user.emailReadonly"
             		ng-minlength="5" 
@@ -155,9 +155,9 @@
 		</div>
                 
         <div class="form-actions" style="margin-top:20px;">
-            <button type="submit"
-            		ng-disabled="form.$invalid || vm.dataLoading || emailAddressExists || usernameExists" 
-            		class="btn btn-primary" 
+        	<button type="submit"
+                    ng-disabled="form.$invalid || emailAddressExists || usernameExists"
+                    class="btn btn-primary"
             		ng-click="register(user)">Sign up</button>
             <a href="#/login" class="btn btn-link">Cancel</a>            			
         </div>

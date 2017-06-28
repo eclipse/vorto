@@ -79,7 +79,7 @@
              		id="username"
              		placeholder="Username"
              		ng-model="user.username"
-             		email-check="email"
+             		ng-pattern="/^[a-zA-Z0-9@\.]*$/"
             		ng-minlength="5" 
        				ng-maxlength="30"
              		ng-blur="usernameAlreadyExists(user)" 
