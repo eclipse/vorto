@@ -142,10 +142,9 @@ public class DefaultMessageDisplay implements IMessageDisplay {
 
 	
 	protected void showStatus(final Status status) {
-		if(status.matches(IStatus.INFO)) {
-			
+		if(status.getSeverity() == IStatus.INFO || status.getSeverity() == IStatus.OK) {
 			/* Do not log informative messages in 'Error Log' */
-			StatusManager.getManager().handle(status, StatusManager.SHOW);
+			StatusManager.getManager().handle(status, StatusManager.LOG);
 		} else {
 			StatusManager.getManager().handle(status, StatusManager.SHOW | StatusManager.LOG | StatusManager.BLOCK);
 		}

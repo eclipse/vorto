@@ -54,7 +54,6 @@ public abstract class ShareModelAction extends Action {
 	@Override
 	public void run() {
 		IModelElement modelElement = getSelectedElement();
-
 		try {
 			UploadResult uploadResult = modelRepo.upload(modelElement.getModelFile().getName(),
 					ByteStreams.toByteArray(modelElement.getModelFile().getContents()));
@@ -63,7 +62,7 @@ public abstract class ShareModelAction extends Action {
 			int result = uploadDialog.open();
 			if (uploadResult.statusOk() && result == Window.OK) {
 				modelRepo.commit(uploadResult.getHandleId());
-				MessageDisplayFactory.getMessageDisplay().display(
+				MessageDisplayFactory.getMessageDisplay().displaySuccess(
 						"Model " + modelElement.getModelFile().getName() + " saved to repository.");
 			}
 		} catch (Exception e) {
