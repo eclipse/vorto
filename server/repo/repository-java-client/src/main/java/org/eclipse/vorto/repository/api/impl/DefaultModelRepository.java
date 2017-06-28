@@ -1,7 +1,5 @@
-package org.eclipse.vorto.repository.api.impl;
-
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2017 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,6 +12,7 @@ package org.eclipse.vorto.repository.api.impl;
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
+package org.eclipse.vorto.repository.api.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
