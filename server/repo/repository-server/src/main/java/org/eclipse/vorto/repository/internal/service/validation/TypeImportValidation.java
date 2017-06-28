@@ -57,7 +57,7 @@ public class TypeImportValidation  implements IModelValidator {
 			unImportedReferences.addAll(getUnimportedProperties(((Entity) model).getProperties(), 
 					model.getReferences()));
 		} else if (model instanceof FunctionblockModel) {
-			unImportedReferences.addAll(validateFunctionBlock((FunctionblockModel) model, modelResource));
+			unImportedReferences.addAll(validateFunctionBlock((FunctionblockModel) model));
 		} else if (model instanceof InformationModel) {
 			unImportedReferences.addAll(getUnimportedFunctionblocks(((InformationModel) model).getProperties(), 
 					model.getReferences()));
@@ -70,7 +70,7 @@ public class TypeImportValidation  implements IModelValidator {
 		}
 	}
 	
-	private Collection<String> validateFunctionBlock(FunctionblockModel model, ModelInfo modelResource) throws ValidationException {
+	private Collection<String> validateFunctionBlock(FunctionblockModel model) throws ValidationException {
 		FunctionBlock functionBlock = model.getFunctionblock();
 		
 		Collection<String> unImportedReferences = Lists.newArrayList();
