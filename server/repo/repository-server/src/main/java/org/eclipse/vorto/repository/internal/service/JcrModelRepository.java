@@ -57,6 +57,7 @@ import org.eclipse.vorto.repository.internal.service.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.internal.service.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.internal.service.validation.IModelValidator;
 import org.eclipse.vorto.repository.internal.service.validation.ModelReferencesValidation;
+import org.eclipse.vorto.repository.internal.service.validation.TypeImportValidation;
 import org.eclipse.vorto.repository.internal.service.validation.ValidationException;
 import org.eclipse.vorto.repository.model.IModelContent;
 import org.eclipse.vorto.repository.model.User;
@@ -324,6 +325,7 @@ public class JcrModelRepository implements IModelRepository {
 	public void createValidators() {
 		this.validators.add(new DuplicateModelValidation(this));
 		this.validators.add(new ModelReferencesValidation(this));
+		this.validators.add(new TypeImportValidation());
 	}
 
 	public void setSession(Session session) {

@@ -247,7 +247,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	}
 	
 	@Check
-	def checkRefParamIsImported(ReturnObjectType returnType) {
+	def checkReturnTypeIsImported(ReturnObjectType returnType) {
 		val topParent = ValidatorUtils.getParentOfType(returnType, FunctionblockModel) as FunctionblockModel
 		if (topParent != null && !ValidatorUtils.isTypeInReferences(returnType.returnType, topParent.references)) {
 			error(SystemMessage.ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED, returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
