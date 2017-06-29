@@ -41,10 +41,11 @@ class GeneratorTemplate implements IFileTemplate<IGeneratorProjectContext> {
 			import org.eclipse.vorto.codegen.api.InvocationContext;
 			import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 			import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+			import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 			
 			class «context.generatorName» implements IVortoCodeGenerator {
 			
-				override generate(InformationModel infomodel, InvocationContext context) {
+				override generate(InformationModel infomodel, InvocationContext context, IVortoCodeGenProgressMonitor monitor) {
 					var output = new GenerationResultZip(infomodel,getServiceKey());
 					var generator = new ChainedCodeGeneratorTask<InformationModel>();
 					generator.addTask(new GeneratorTaskFromFileTemplate(new SampleTemplate()));

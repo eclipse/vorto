@@ -26,7 +26,7 @@ class PomTemplate implements IFileTemplate<IGeneratorProjectContext> {
 			<properties>
 				<tycho-version>0.20.0</tycho-version>
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-				<xtext.version>2.7.2</xtext.version>
+				<xtext.version>2.9.0</xtext.version>
 				<jdk.version>1.7</jdk.version>
 			</properties>
 		

@@ -30,7 +30,7 @@ class MicroServicePomTemplate implements IFileTemplate<IGeneratorProjectContext>
 			<packaging>jar</packaging>
 		
 			<properties>
-				<vorto.version>0.4.0-SNAPSHOT</vorto.version>
+				<vorto.version>0.10.0.M1</vorto.version>
 			</properties>
 			
 			<dependencies>
