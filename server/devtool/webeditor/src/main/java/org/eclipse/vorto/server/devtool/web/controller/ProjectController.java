@@ -28,7 +28,6 @@ import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
-import org.eclipse.vorto.server.devtool.http.request.DeleteResourceRequest;
 import org.eclipse.vorto.server.devtool.http.response.Response;
 import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
@@ -177,18 +176,20 @@ public class ProjectController {
 	}
 
 	@ApiOperation(value = "Deletes a resource from the project")
-	@RequestMapping(value = "/{projectName}/delete", method = RequestMethod.POST)
-	public void deleteResource(@RequestBody DeleteResourceRequest deleteResourceRequest,
+	@RequestMapping(value = "/{projectName}/{resourceId:.+}", method = RequestMethod.DELETE)
+	public void deleteResource(
 			@ApiParam(value = "ProjectName", required = true) @PathVariable String projectName,
+			@ApiParam(value = "resourceId", required = true) @PathVariable String resourceId,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
-
+		Objects.requireNonNull(resourceId, "resourceId must not be null");
+		
 		projectName = webUtils.getUserProjectName(projectName);
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		devtoolReferenceLinker.removeResourceFromResourceSet(deleteResourceRequest.getResourceId(), resourceSet);		
-		projectService.deleteResource(projectName, deleteResourceRequest.getResourceId());
-		webUtils.removeDeletedModelFromSessionAttributes(request, deleteResourceRequest.getResourceId());
+		devtoolReferenceLinker.removeResourceFromResourceSet(resourceId, resourceSet);		
+		projectService.deleteResource(projectName, resourceId);
+		webUtils.removeDeletedModelFromSessionAttributes(request, resourceId);
 	}
 
 	@ApiOperation(value = "Deletes a resource from the project")

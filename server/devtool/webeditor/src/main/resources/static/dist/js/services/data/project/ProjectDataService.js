@@ -56,8 +56,9 @@ define(["../../init/AppService"], function(services) {
 
     function deleteProjectResource(params) {
       var projectName = params.projectName;
-      var url = "./rest/project/" + projectName + "/delete";
-      return $http.post(url, params).then(httpCallSuccess).catch(httpCallFailure);
+      var resourceId = params.resourceId;
+      var url = "./rest/project/" + projectName + "/" + resourceId;
+      return $http.delete(url).then(httpCallSuccess).catch(httpCallFailure);
     }
 
     function httpCallSuccess(response) {
