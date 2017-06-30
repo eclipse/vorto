@@ -116,6 +116,8 @@
     - title: "Release Notes"
       href: ""
       sub:
+        - title: "0.10.0-M1"
+          href: "/documentation/appendix/releasenotes/0.10.0-M1.html"
         - title: "0.9.x"
           href: "/documentation/appendix/releasenotes/0.9.x.html"
     - title: "Troubleshooting"
