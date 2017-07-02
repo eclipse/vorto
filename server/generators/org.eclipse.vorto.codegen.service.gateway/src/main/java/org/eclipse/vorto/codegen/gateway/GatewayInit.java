@@ -22,6 +22,7 @@ import org.eclipse.vorto.codegen.coap.CoAPGenerator;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
+import org.eclipse.vorto.codegen.gateway.templates.AWSConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.BoschThingsConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.KuraConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
@@ -63,7 +64,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 	public void run(ApplicationArguments args) throws Exception {
 		
 		try {
-			generatorRepo.add(Generator.create("/generators/aws.properties", AWSGenerator.class));
+			generatorRepo.add(Generator.create("/generators/aws.properties", AWSGenerator.class, new AWSConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/bosch-things.properties", BoschIoTThingsGenerator.class, new BoschThingsConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/coap.properties", CoAPGenerator.class));
 			generatorRepo.add(Generator.create("/generators/ios.properties", IOSPlatformGenerator.class));

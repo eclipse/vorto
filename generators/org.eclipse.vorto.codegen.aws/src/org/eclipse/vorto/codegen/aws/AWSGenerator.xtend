@@ -22,11 +22,10 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
-import org.eclipse.vorto.codegen.aws.templates.alexa.AlexaIndentSchemaTemplate
-import org.eclipse.vorto.codegen.aws.templates.alexa.AlexaSkillLambdaTemplate
-import org.eclipse.vorto.codegen.aws.templates.alexa.AlexaSlotTypeTemplate
-import org.eclipse.vorto.codegen.aws.templates.alexa.AlexaUtterancesTemplate
-import org.eclipse.vorto.codegen.aws.templates.shadow.ThingShadowForOperationsTask
+import org.eclipse.vorto.codegen.aws.alexa.templates.AlexaIndentSchemaTemplate
+import org.eclipse.vorto.codegen.aws.alexa.templates.AlexaSkillLambdaTemplate
+import org.eclipse.vorto.codegen.aws.alexa.templates.AlexaSlotTypeTemplate
+import org.eclipse.vorto.codegen.aws.alexa.templates.AlexaUtterancesTemplate
 import org.eclipse.vorto.codegen.utils.Utils
 import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
@@ -42,7 +41,7 @@ class AWSGenerator implements IVortoCodeGenerator {
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		var chainedGenerators = new ChainedCodeGeneratorTask<InformationModel>();
 		
-		chainedGenerators.addTask(new ThingShadowForOperationsTask());
+//		chainedGenerators.addTask(new ThingShadowForOperationsTask());
 		
 		// Adds Generators for Speech to Command using Alexa Skill Service.
 		// That way it is possible to update a thing shadow by various speech command variations defined as mapping rules

@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.codegen.bosch.things;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -21,7 +24,6 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.bosch.things.alexa.AlexaThingsTask;
 import org.eclipse.vorto.codegen.bosch.things.javaclient.JavaClientTask;
 import org.eclipse.vorto.codegen.bosch.things.schema.SchemaValidatorTask;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
@@ -33,7 +35,6 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 	private static final String TRUE = "true";
 	private static final String SIMULATOR = "simulator";
 	private static final String SCHEMAVALIDATOR = "validation";
-	private static final String ALEXA = "alexa";
 
 	public IGenerationResult generate(InformationModel infomodel,
 			InvocationContext invocationContext,
@@ -53,21 +54,47 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 			if (invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(TRUE)) {
 				generator.addTask(new SchemaValidatorTask());
 			}
-			
-			if (invocationContext.getConfigurationProperties().getOrDefault(ALEXA, FALSE).equalsIgnoreCase(TRUE)) {
-				generator.addTask(new AlexaThingsTask());
-			}
 		}
 		
 		generator.generate(infomodel, invocationContext, zipOutputter);
 		
-		return GenerationResultBuilder.from(zipOutputter).build();
+		GenerationResultBuilder result = GenerationResultBuilder.from(zipOutputter);
+		
+		if (invocationContext.getConfigurationProperties().getOrDefault("kura", FALSE).equalsIgnoreCase(TRUE)) {
+			Map<String, String> props = new HashMap<>();
+			props.put("boschcloud", "true");
+			props.put("bluetooth", "true");
+			IGenerationResult kuraResult = invocationContext.lookupGenerator("kura").generate(infomodel,
+					InvocationContext.simpleInvocationContext(props), monitor);
+			result.append(kuraResult);
+		}
+		
+		if (invocationContext.getConfigurationProperties().getOrDefault("alexa", FALSE).equalsIgnoreCase(TRUE)) {
+			Map<String, String> props = new HashMap<>();
+			props.put("boschcloud", "true");
+			IGenerationResult awsResult = invocationContext.lookupGenerator("aws").generate(infomodel,
+					InvocationContext.simpleInvocationContext(props), monitor);
+			result.append(awsResult);
+		
+		}
+		
+		if (invocationContext.getConfigurationProperties().getOrDefault("webui", FALSE).equalsIgnoreCase(TRUE)) {
+			Map<String, String> props = new HashMap<>();
+			props.put("boschcloud", "true");
+			props.put("swagger", "true");
+			props.put("persistence", "true");
+			IGenerationResult webuiResult = invocationContext.lookupGenerator("webui").generate(infomodel,
+					InvocationContext.simpleInvocationContext(props), monitor);
+			result.append(webuiResult);
+		}
+		
+		return result.build();
 	}
 
 	private boolean hasNoTarget(InvocationContext invocationContext) {
 		return (invocationContext.getConfigurationProperties().getOrDefault(SIMULATOR, FALSE).equalsIgnoreCase(FALSE) &&
 		        invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(FALSE) &&
-		        invocationContext.getConfigurationProperties().getOrDefault(ALEXA, FALSE).equalsIgnoreCase(FALSE));
+		        invocationContext.getConfigurationProperties().getOrDefault("alexa", FALSE).equalsIgnoreCase(FALSE));
 	}
 
 	@Override

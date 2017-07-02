@@ -12,9 +12,8 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.bosch.things.alexa.templates
+package org.eclipse.vorto.codegen.aws.alexa.templates
 
-import org.apache.commons.lang3.StringUtils
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -31,6 +30,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		 var reprompt;
 		 var welcomeOutput = "Let's ask the «element.name». What do you want to know?";
 		
+		 «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 		 var thingsApiToken = "INSERT API TOKEN OF BOSCH IOT THINGS HERE";
 		 var thingId = «context.configurationProperties.getOrDefault("thingId","\"INSERT THING ID HERE\"")»;
 		 var username= "INSERT USERNAME HERE";
@@ -38,6 +38,16 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		 
 		 
 		 var http = require('http');
+		 «ENDIF»
+		 «IF context.configurationProperties.getOrDefault("awsiot","false").equalsIgnoreCase("true")»
+		 var config = {
+		 	"thingName": "<PUT THING NAME HERE>",
+		 	"endpointAddress": "<PUT YOUR ENDPOINT URL HERE>"
+		 }
+		 
+		 var AWS = require('aws-sdk');
+		 var iotdata = new AWS.IotData({endpoint: config.endpointAddress});
+		 «ENDIF»
 		
 		// --------------- Helpers that build all of the responses -----------------------
 		
@@ -109,6 +119,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 console.log("in fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»");
 						 
 						  var sessionAttributes = {};
+						 «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 						  var httpRequest = {
 						 	 host : "things.apps.bosch-iot-cloud.com",
 						 	 path: "/api/1/things/"+thingId,
@@ -129,6 +140,20 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 		callback(sessionAttributes, buildSpeechletResponse("«fbProperty.name»", speechOutput, "", true));
 						 	});
 						 });
+						 «ENDIF»
+						 «IF context.configurationProperties.getOrDefault("awsiot","false").equalsIgnoreCase("true")»
+						 iotdata.getThingShadow({
+						 	thingName: config.thingName
+						 },function(err, data) {
+						 	if (err) {
+						 		callback(err);
+						 	} else {          
+						 		var jsonPayload = JSON.parse(data.payload);
+						 		speechOutput = jsonPayload.state.reported["«element.name»"];
+						 		callback(sessionAttributes, buildSpeechletResponse("«fbProperty.name»", speechOutput, "", true));
+						 	}
+						 });
+						 «ENDIF»
 					}
 				«ENDFOR»
 			«ENDIF»

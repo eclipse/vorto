@@ -22,7 +22,7 @@ import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
 class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("simulator","validation","alexa"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("simulator","validation","alexa", "kura", "webui"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
@@ -60,6 +60,30 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 					<div class="box-body">
 						<p>Creates JSON Schema files to validate {{model.id.name}} properties in Bosch IoT Things</p>
 						<input type="checkbox" ng-model="configParams.validation" ><i>&nbsp;Yes, I need that</i>
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div>
+			<div class="col-sm-4">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h3 class="box-title">Device Gateway</h3>
+						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+					</div><!-- /.box-header -->
+					<div class="box-body">
+						<p>Reads device data via BLE using Eclipse Kura and sends it to Bosch IoT Things</p>
+						<input type="checkbox" ng-model="configParams.kura" ><i>&nbsp;Yes, I need that</i>
+					</div><!-- /.box-body -->
+				</div><!-- /.box -->
+			</div>
+			<div class="col-sm-4">
+				<div class="box box-primary">
+					<div class="box-header with-border">
+						<h3 class="box-title">Device Visualization</h3>
+						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+					</div><!-- /.box-header -->
+					<div class="box-body">
+						<p>Consumes {{model.id.name}} data from Bosch IoT Things and displays it in a Web UI</p>
+						<input type="checkbox" ng-model="configParams.webui" ><i>&nbsp;Yes, I need that</i>
 					</div><!-- /.box-body -->
 				</div><!-- /.box -->
 			</div>
