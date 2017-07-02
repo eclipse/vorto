@@ -61,7 +61,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 				<java.version>1.8</java.version>
-				<vorto.version>0.10.0-SNAPSHOT</vorto.version>
+				<vorto.version>0.10.0.M1</vorto.version>
 			</properties>
 		
 			<dependencies>

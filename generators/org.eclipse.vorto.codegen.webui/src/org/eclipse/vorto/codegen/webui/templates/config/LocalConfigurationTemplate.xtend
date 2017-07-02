@@ -163,7 +163,7 @@ class LocalConfigurationTemplate implements IFileTemplate<InformationModel> {
 			«ELSE»
 			@Bean
 			public DataService dataService() {
-				return return new SampleDataService();
+				return new SampleDataService();
 			}
 			«ENDIF»
 		}

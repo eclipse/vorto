@@ -51,7 +51,7 @@ class SampleDataServiceTemplate implements IFileTemplate<InformationModel> {
 			}
 		
 			@Override
-			public «element.name.toLowerCase» getThing(String thingId) {
+			public «element.name» getThing(String thingId) {
 				return null;
 			}
 		
