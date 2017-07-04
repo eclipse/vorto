@@ -191,7 +191,9 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart
 	}
 
 	private void setSelectedProject(final IModelProject project) {
-		projectSelectionViewer.setSelection(new StructuredSelection(project), true);
+		if (project != null) {
+			projectSelectionViewer.setSelection(new StructuredSelection(project), true);
+		}
 	}
 
 	public void populate(IModelProject modelProject) {
