@@ -27,6 +27,7 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 	override getContent(GeneratorServiceInfo info) {
 		'''
 		<div class="form-group">
+			<div class="row">
 			<div class="col-sm-4">
 				<div class="box box-primary">
 			    	<div class="box-header with-border">
@@ -63,6 +64,8 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 					</div><!-- /.box-body -->
 				</div><!-- /.box -->
 			</div>
+			</div>
+			<div class="row">
 			<div class="col-sm-4">
 				<div class="box box-primary">
 					<div class="box-header with-border">
@@ -86,6 +89,7 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 						<input type="checkbox" ng-model="configParams.webui" ><i>&nbsp;Yes, I need that</i>
 					</div><!-- /.box-body -->
 				</div><!-- /.box -->
+			</div>
 			</div>
 		</div>
 		'''
