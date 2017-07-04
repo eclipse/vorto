@@ -1,75 +1,59 @@
-# Java Client API for Eclipse Vorto
+# Vorto Repository Client API for Java
 
-Here We introduce to our Java Client API for Eclipse Vorto Repository which is able to search information models and get its details. We can also trigger generation of code to a specific platform target.     
-Eg. Client code for Kura using Eclipse Kura generator.
+The Vorto Repository Client API for Java provides various services to interact with the Vorto Repository and use its models. 
 
-Here are a few use cases where you could use our Java Client API
+Use the Client API to
+- search for models by full-text search 
+- read model content
+- generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#/generators)
+- resolve a model by platform-specific identifiers, e.g. lwm2m object identifiers
 
-- To query information models in Vorto Repository
-  - Fetch all available Information models
-  - Find a specific Information model
-- Code generation for a specific client platform
-- Resolve model ids to information models
 
-## To query information models
-The following code snippet is a set up snippet for the above use cases.
+## Search information models
+The following code snippet searches for all devices that have 'sensors'
 
 ```
 RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder()
-	.setBaseUrl("http://vorto.eclipse.org");
-		
-IModelRepository modelRepo = builder.buildModelRepositoryClient();
-```
-
-### Fetch all available Information models
-We can get all the available models by using the following code snippet. Here we are using a free text search, where we pass a wild card (*) as the search parameter.
+	.setBaseUrl("http://vorto.eclipse.org");	
+IModelRepository repository = builder.buildModelRepositoryClient();
+Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(ModelType.InformationModel).freeText("sensors").build()).get();
 
 ```
-Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().freeText("*").build()).get();
-			
-```
 
-### Find a specific Information model
-To find an specific information model for specific model Id, we need to know the model Id and pass that Model Id in the search query as shown in the following code snippet.
+## Fetch a specific information model and its content
+
+The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
 
 ```
-/** 
- * name -> "XDK"
- * namespace -> "com.bosch.devices"
- * version -> "1.0.0"
- *
- */
-ModelId xdk = new ModelId("XDK", "com.bosch.devices", "1.0.0");
-ModelInfo xdkModelInfo = modelRepo.getById(xdk).get();
+ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
+InformationModel boschGlmModelContent = modelRepo.getContent(boschGlm, InformationModel.class).get();
 ```
 
-To get the function block model, try the following
+## Generate code for a specific IoT platform
 
-```
-FunctionblockModel xdkFbModel = modelRepo.getContent(xdk, FunctionblockModel.class).get();
-```
-
-## Code generation for a specific client platform
-Example: The following snippet shows how to generate code for Bluetooth and Bosch Cloud clients using Eclipse Kura generator. 
+The following snippet shows how to generate a Eclipse Kura application for a Bosch GLM information model, that reads data via Bluetooth and sends 
+the data to the Bosch IoT Suite cloud platform.  
 
 ```
 IModelGeneration modelGen = builder.buildModelGenerationClient();
 
-ModelId xdk = new ModelId("XDK", "com.bosch.devices", "1.0.0");
-Map<String,String> invocationParams = new HashMap<String,String>();
-invocationParams.put("bluetooth","true");
-invocationParams.put("boschcloud", "true");
+ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
+Map<String,String> invocationConfig = new HashMap<String,String>();
+invocationConfig.put("bluetooth","true");
+invocationConfig.put("boschcloud", "true");
 
-GeneratedOutput generatedOutput = modelGen.generate(xkd, "kura", invocationParams).get();
+GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "kura", invocationConfig).get();
 ```
 
-## To Resolve Ids to Information Models
+## Resolve Vorto Models by platform-specific attributes
 
-Here we show you how to resolve LWM2M (Light Weight M2M) model id to LWM2M information models using LWM2M model resolvers.
+The following code snippet illustrates how to get the Vorto functionblock model for a [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml) object ID:
 
 ```
 IModelResolver modelResolver = builder.buildModelResolverClient();
 			
-// where "3300" is the object id for the Generic_Sensor_lwm2m found in the Mappings
-ModelInfo lwm2mModelInfo = modelResolver.resolve(new LWM2MQuery("3300")).get();
+// where "3303" is the object id for the OMA LWM2M/IPSO TemperatureSensor
+ModelInfo temperatureSensorInfo = modelResolver.resolve(new LWM2MQuery("3303")).get();
+FunctionBlockModel temperatureSensorContent = modelRepo.getContent(temperatureSensorInfo, FunctionblockModel.class).get();
+
 ```
