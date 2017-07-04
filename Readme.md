@@ -31,6 +31,7 @@ Setup your own Vorto Server backend in a couple of minutes:
 
  - Set up [Vorto Repository](server/repo/repository-server/Readme.md)
  - Set up [Vorto Code Generators](server/generators/Readme.md)
+ - How to use Java Client API? [Click here!](server/repo/repository-java-client/Readme.md)
 
 # Documentation
 
