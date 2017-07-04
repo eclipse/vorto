@@ -8,6 +8,16 @@ Use the Client API to
 - generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#/generators)
 - resolve a model by platform-specific identifiers, e.g. lwm2m object identifiers
 
+### Maven dependency
+
+```
+<dependency>
+   <groupId>org.eclipse.vorto</groupId>
+   <artifactId>repository-java-client</artifactId>
+   <version>0.10.0.M1</version>
+</dependency>
+
+```
 
 ## Search information models
 The following code snippet searches for all devices that have 'sensors'
