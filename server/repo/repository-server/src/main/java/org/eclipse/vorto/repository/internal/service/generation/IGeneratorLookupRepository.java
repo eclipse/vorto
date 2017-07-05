@@ -27,14 +27,14 @@ public interface IGeneratorLookupRepository extends CrudRepository<Generator, Lo
 	/**
 	 * finds all generators by the specific generator service key
 	 * @param generatorKey
-	 * @return the list of generators
+	 * @return
 	 */
 	List<Generator> findByGeneratorKey(String generatorKey);
 	
 	/**
 	 * Finds all generators by either platform or documentation classifier
 	 * @param classifier
-	 * @return list of generators
+	 * @return
 	 */
 	List<Generator> findByClassifier(String classifier);
 }

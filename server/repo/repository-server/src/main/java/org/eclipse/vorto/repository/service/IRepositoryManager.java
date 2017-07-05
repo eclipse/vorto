@@ -22,14 +22,14 @@ public interface IRepositoryManager {
 	
 	/**
 	 * creates a complete backup of the repository content
-	 * @return the backup contents
+	 * @return
 	 * @throws Exception
 	 */
 	byte[] backup() throws Exception;
 	
 	/**
 	 * restores the given backup. Previous data will be lost!!
-	 * @param backup
+	 * @param inputStream
 	 * @throws Exception
 	 */
 	void restore(byte[] backup) throws Exception;

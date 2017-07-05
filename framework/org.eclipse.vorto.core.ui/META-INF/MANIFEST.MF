@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Core UI (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.core.ui;singleton:=true
+Bundle-Version: 0.10.0.M1
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.core.expressions,
+ org.eclipse.ui,
+ org.apache.commons.lang3,
+ org.apache.commons.collections,
+ org.eclipse.vorto.core,
+ org.eclipse.ui.console,
+ org.eclipse.text,
+ org.eclipse.ui.workbench
+Export-Package: org.eclipse.vorto.core.ui,org.eclipse.vorto.core.ui.ex
+ ception,org.eclipse.vorto.core.ui.model,org.eclipse.vorto.core.ui.mod
+ el.nature,org.eclipse.vorto.core.ui.parser;uses:="org.eclipse.core.re
+ sources"

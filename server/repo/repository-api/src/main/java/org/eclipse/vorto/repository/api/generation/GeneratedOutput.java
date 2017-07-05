@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.api.generation;
 
+import java.util.Arrays;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
@@ -42,6 +44,10 @@ public class GeneratedOutput {
 	public long getSize() {
 		return size;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "GeneratedOutput [content=" + Arrays.toString(content) + ", fileName=" + fileName + ", size=" + size
+				+ "]";
+	}
 }

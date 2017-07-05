@@ -1,0 +1,1288 @@
+{
+  "id": {
+    "name": "DemoFunctionBlock",
+    "namespace": "com.mycompany.fb",
+    "version": "1.0.0",
+    "prettyFormat": "com.mycompany.fb.DemoFunctionBlock:1.0.0"
+  },
+  "type": "Functionblock",
+  "displayName": "DemoFunctionBlock",
+  "description": "Function block model for DemoFunctionBlock",
+  "references": [
+    {
+      "name": "DemoEntity",
+      "namespace": "com.mycompany.type",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.type.DemoEntity:1.0.0"
+    },
+    {
+      "name": "DemoEnum",
+      "namespace": "com.mycompany.type",
+      "version": "1.0.0",
+      "prettyFormat": "com.mycompany.type.DemoEnum:1.0.0"
+    }
+  ],
+  "configurationProperties": [
+    {
+      "name": "configProperty",
+      "description": null,
+      "type": "STRING",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    }
+  ],
+  "statusProperties": [
+    {
+      "name": "booleanstatus",
+      "description": null,
+      "type": "BOOLEAN",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "bytestatus",
+      "description": null,
+      "type": "BYTE",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "datetimestatus",
+      "description": null,
+      "type": "DATETIME",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "doublestatus",
+      "description": null,
+      "type": "DOUBLE",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "floatstatus",
+      "description": null,
+      "type": "FLOAT",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "intstatus",
+      "description": null,
+      "type": "INT",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "longstatus",
+      "description": null,
+      "type": "LONG",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "shortstatus",
+      "description": null,
+      "type": "SHORT",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    },
+    {
+      "name": "stringstatus",
+      "description": null,
+      "type": "STRING",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    }
+  ],
+  "faultProperties": [
+    {
+      "name": "faultProperty",
+      "description": null,
+      "type": "STRING",
+      "constraints": [],
+      "attributes": [],
+      "primitive": true,
+      "mandatory": true,
+      "multiple": false
+    }
+  ],
+  "events": [],
+  "operations": [
+    {
+      "name": "entityOperation",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "entityParam",
+          "description": null,
+          "type": {
+            "name": "DemoEntity",
+            "namespace": "com.mycompany.type",
+            "version": "1.0.0",
+            "prettyFormat": "com.mycompany.type.DemoEntity:1.0.0"
+          },
+          "constraints": [],
+          "primitive": false,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "enumOperation",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "enumParam",
+          "description": null,
+          "type": {
+            "name": "DemoEnum",
+            "namespace": "com.mycompany.type",
+            "version": "1.0.0",
+            "prettyFormat": "com.mycompany.type.DemoEnum:1.0.0"
+          },
+          "constraints": [],
+          "primitive": false,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "manyParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "intparam",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "booleanparam",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "byteparam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "dateparam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "doubleparam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "floatparam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "longparam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "shortparam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "stringparam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "manyParamOpWithConstraints",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "intparam",
+          "description": "int param with min 10 and max 20",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "10"
+            },
+            {
+              "type": "MAX",
+              "value": "20"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "booleanparam",
+          "description": "boolean parm",
+          "type": "BOOLEAN",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "byteparam",
+          "description": "byte param",
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "dateparam",
+          "description": "date param with regex",
+          "type": "DATETIME",
+          "constraints": [
+            {
+              "type": "REGEX",
+              "value": "\"([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\""
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "doubleparam",
+          "description": "double param with min 20.0 and max 22.5",
+          "type": "DOUBLE",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "20.0"
+            },
+            {
+              "type": "MAX",
+              "value": "22.5"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "floatparam",
+          "description": "float param with min 99.01 and max 99.99",
+          "type": "FLOAT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "99.01"
+            },
+            {
+              "type": "MAX",
+              "value": "99.99"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "longparam",
+          "description": "long param with min 1000000 and max 10000000",
+          "type": "LONG",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "1000000"
+            },
+            {
+              "type": "MAX",
+              "value": "10000000"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "shortparam",
+          "description": "short param with min -127 and max 128",
+          "type": "SHORT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "-127"
+            },
+            {
+              "type": "MAX",
+              "value": "128"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "stringparam",
+          "description": "string param with max length 5",
+          "type": "STRING",
+          "constraints": [
+            {
+              "type": "STRLEN",
+              "value": "5"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "stringregex",
+          "description": "string param with regex. all capitals",
+          "type": "STRING",
+          "constraints": [
+            {
+              "type": "REGEX",
+              "value": "\"([A-Z])+\""
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        },
+        {
+          "name": "scalingparam",
+          "description": "int param with sclaing of 10",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "SCALING",
+              "value": "10"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipleParamOpWithConstraints",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "intparam",
+          "description": "intparam",
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "10"
+            },
+            {
+              "type": "MAX",
+              "value": "20"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "booleanparam",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "byteparam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "dateparam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [
+            {
+              "type": "REGEX",
+              "value": "\"([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9])\""
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "doubleparam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "20.0"
+            },
+            {
+              "type": "MAX",
+              "value": "22.5"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "floatparam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "99.01"
+            },
+            {
+              "type": "MAX",
+              "value": "99.99"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "longparam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "1000000"
+            },
+            {
+              "type": "MAX",
+              "value": "10000000"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "shortparam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [
+            {
+              "type": "MIN",
+              "value": "-127"
+            },
+            {
+              "type": "MAX",
+              "value": "128"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "stringparam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [
+            {
+              "type": "STRLEN",
+              "value": "5"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "stringregex",
+          "description": null,
+          "type": "STRING",
+          "constraints": [
+            {
+              "type": "REGEX",
+              "value": "\"([A-Z])+\""
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        },
+        {
+          "name": "scalingparam",
+          "description": null,
+          "type": "INT",
+          "constraints": [
+            {
+              "type": "SCALING",
+              "value": "10"
+            }
+          ],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "booleanParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "BOOLEAN",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveBooleanParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "byteParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveByteParam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "byteParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "BYTE",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveByteParam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "dateTimeParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveDateTimeParam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "dateTimeParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "DATETIME",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveDateTimeParam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "doubleParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveDoubleParam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "doubleParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "DOUBLE",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveDoubleParam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "floatParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveFloatParam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "floatParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "FLOAT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveFloatParam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "intParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveIntParam",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "intParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "INT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveIntParam",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "longParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveLongParam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "longParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "LONG",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveLongParam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "shortParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveShortParam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "shortParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "SHORT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveShortParam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "stringParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveStringParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "stringParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "STRING",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveStringParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": false
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplebooleanParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveBooleanParam",
+          "description": null,
+          "type": "BOOLEAN",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplebooleanParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "BOOLEAN",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveBooleanParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplebyteParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveByteParam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplebyteParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "BYTE",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveByteParam",
+          "description": null,
+          "type": "BYTE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipledateTimeParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveDateTimeParam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipledateTimeParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "DATETIME",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveDateTimeParam",
+          "description": null,
+          "type": "DATETIME",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipledoubleParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveDoubleParam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipledoubleParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "DOUBLE",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveDoubleParam",
+          "description": null,
+          "type": "DOUBLE",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplefloatParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveFloatParam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplefloatParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "FLOAT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveFloatParam",
+          "description": null,
+          "type": "FLOAT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipleintParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveIntParam",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipleintParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "INT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveIntParam",
+          "description": null,
+          "type": "INT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplelongParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveLongParam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplelongParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "LONG",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveLongParam",
+          "description": null,
+          "type": "LONG",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipleshortParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveShortParam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multipleshortParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "SHORT",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveShortParam",
+          "description": null,
+          "type": "SHORT",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplestringParamOp",
+      "description": null,
+      "result": null,
+      "params": [
+        {
+          "name": "primitiveStringParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    },
+    {
+      "name": "multiplestringParamOpWithReturn",
+      "description": null,
+      "result": {
+        "type": "STRING",
+        "primitive": true,
+        "multiple": false
+      },
+      "params": [
+        {
+          "name": "primitiveStringParam",
+          "description": null,
+          "type": "STRING",
+          "constraints": [],
+          "primitive": true,
+          "mandatory": true,
+          "multiple": true
+        }
+      ],
+      "breakable": false
+    }
+  ]
+}

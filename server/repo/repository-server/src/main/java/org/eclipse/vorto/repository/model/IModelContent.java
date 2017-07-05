@@ -22,19 +22,19 @@ public interface IModelContent {
 	/**
 	 * EMF Model object
 	 * 
-	 * @return the model
+	 * @return
 	 */
 	Model getModel();
 	
 	/**
 	 * format of the model content
-	 * @return the type of the model
+	 * @return
 	 */
 	ContentType getType();
 	
 	/**
 	 * actual model content value
-	 * @return the context of the model
+	 * @return
 	 */
 	byte[] getContent();
 }

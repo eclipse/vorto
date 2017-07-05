@@ -8,6 +8,7 @@ import static org.junit.Assert.fail;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.internal.service.DefaultRepositoryManager;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -54,6 +55,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	@Ignore
 	public void testRestoreBackupExistingData() throws Exception {
 		this.repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		assertEquals(4,this.modelRepository.search("*").size());

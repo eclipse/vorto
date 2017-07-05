@@ -1,21 +1,22 @@
 [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto:server:sonar)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:server:sonar) 
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto%3Aorg.eclipse.vorto.parent%3Adevelopment)](https://sonarqube.com/dashboard/index/org.eclipse.vorto:org.eclipse.vorto.parent:development) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent)
 
 # Getting started with Vorto
 
-[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Convert the Information Models into executable code with the help of Vorto Code Generators. 
+[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Information Models can be converted into executable source code with the help of Vorto Code Generators. 
+
+Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 
 # Vorto Toolset
+
 
 ### Install & Run
 
 1. Eclipse for DSL Developers
 2. Java 8
 3. Install Vorto from Eclipse Marketplace 
-
-Alternatively, download the [Vorto IDE](https://marketplace.yatta.de/profiles/ziXJ) and we set everything up for you, automatically.
 
 ### Describe once, Integrate Anywhere
 
@@ -30,6 +31,7 @@ Setup your own Vorto Server backend in a couple of minutes:
 
  - Set up [Vorto Repository](server/repo/repository-server/Readme.md)
  - Set up [Vorto Code Generators](server/generators/Readme.md)
+ - How to use Java Client API? [Click here!](server/repo/repository-java-client/Readme.md)
 
 # Documentation
 
@@ -42,8 +44,6 @@ Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overvi
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
 # Contribute to the Project
-
-Download the [Vorto for Contributors IDE](https://marketplace.yatta.de/profiles/qTKP). 
 
 When you create a Pull Request, make sure:
 

@@ -1,19 +1,20 @@
 <div class="login-box">
-<div class="page-header">
-	<h2>Sign in to Vorto</h2>
-</div>
-
-	<!-- 
-		<div class="page-header">
-			<p style="float: left;">
-				<a id="githubLoginLink" href="login/github">
-					<img src="images/github-mark.png"/>
-					<h3 id="githubText">Login via Github</h3>
-				</a>
-			</p>
-		</div>
-	-->
+	<div class="page-header">
+		<h2>Sign in to Vorto</h2>
+	</div>
+		
+	<div ng-show="context.eidpEnabled">
+		<a href="eidp/login" class="btn btn-block btn-flat" style="text-align: left">
+			<img src="images/bosch-social.png" alt="Bosch"/>&nbsp;Sign in using Bosch eIDP
+		</a>
+	</div>
 	
+	<div ng-show="context.githubEnabled">
+		<a href="github/login" class="btn btn-block btn-flat" style="text-align: left">
+			<img src="images/github-social.png" alt="Github"/>&nbsp;Sign in using Github
+		</a>
+	</div>
+	<hr>
 	<div>			
 	      <form class="form-signin">
 	        

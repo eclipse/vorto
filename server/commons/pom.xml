@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>server</artifactId>
-		<version>0.9.0</version>
+		<version>0.10.0.M1</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.server.commons</artifactId>
@@ -77,6 +77,10 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>

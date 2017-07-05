@@ -332,7 +332,7 @@ Refer to entity in [Datatype DSL Syntax](#data-type-model-dsl-reference).
 <table class="table table-bordered">
 	<tbody>
   <tr>
-    <td><i class="fa fa-info-circle info-note"></td>
+    <td><i class="fa fa-info-circle info-note"></i></td>
     <td>To find out more about which language elements are available when writing a data type DSL, have a look at the respective DSL Reference. </br>
     Use the keyboard shortcut <span style="font-variant:small-caps;">Ctrl + Space</span> to get a list of available DSL elements, that can be applied in the current scope you are in.</td>
   </tr>

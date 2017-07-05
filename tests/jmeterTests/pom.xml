@@ -1,0 +1,73 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>jmeter-demo</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>jmeter-demo</name>
+   <build>
+        <plugins>
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>2.2.0</version>
+                <configuration>
+                    <testResultsTimestamp>false</testResultsTimestamp>
+                    <jmeterVersion>3.1</jmeterVersion>
+                    <resultDirectory>results</resultDirectory>
+                    <propertiesUser>
+                    <jmeter.save.saveservice.output_format>csv</jmeter.save.saveservice.output_format>
+                    <jmeter.save.saveservice.bytes>true</jmeter.save.saveservice.bytes>
+					<jmeter.save.saveservice.label>true</jmeter.save.saveservice.label>
+					<jmeter.save.saveservice.latency>true</jmeter.save.saveservice.latency>
+					<jmeter.save.saveservice.response_code>true</jmeter.save.saveservice.response_code>
+					<jmeter.save.saveservice.response_message>true</jmeter.save.saveservice.response_message>
+					<jmeter.save.saveservice.successful>true</jmeter.save.saveservice.successful>
+					<jmeter.save.saveservice.thread_counts>true</jmeter.save.saveservice.thread_counts>
+					<jmeter.save.saveservice.thread_name>true</jmeter.save.saveservice.thread_name>
+					<jmeter.save.saveservice.time>true</jmeter.save.saveservice.time>
+					</propertiesUser>
+                     <proxyConfig>
+                            <host></host>
+                            <port></port>
+                     </proxyConfig>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+             <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <configuration>
+                            <tasks>
+                                <mkdir dir="${basedir}/target/jmeter/results/dashboard" />
+                                <copy file="${basedir}/src/test/resources/reportgenerator.properties" 
+									  tofile="${basedir}/target/jmeter/bin/reportgenerator.properties" />
+                                <copy todir="${basedir}/target/jmeter/bin/report-template">
+                                    <fileset dir="${basedir}/src/test/resources/report-template" />
+                                </copy>
+                                <java jar="${basedir}/target/jmeter/bin/ApacheJMeter-3.1.jar" fork="true">
+                                    <arg value="-g" />
+                                    <arg value="${basedir}/target/jmeter/results/*.jtl" />
+                                    <arg value="-o" />
+                                    <arg value="${basedir}/target/jmeter/results/dashboard/" />
+                                </java>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

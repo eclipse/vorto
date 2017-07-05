@@ -24,14 +24,14 @@ public interface IUserRepository extends CrudRepository<User, Long> {
     /**
      * finds the user by the specified email address
      * @param email
-     * @return the user
+     * @return
      */
 	User findByEmail(String email);
 	
 	/**
 	 * Finds the user by the specified username
 	 * @param username
-	 * @return the user
+	 * @return
 	 */
     User findByUsername(String username);
 }

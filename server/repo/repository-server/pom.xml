@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repo</artifactId>
-		<version>0.9.0</version>
+		<version>0.10.0.M1</version>
 	</parent>
 	<artifactId>repository-server</artifactId>
 	<packaging>jar</packaging>
@@ -122,6 +122,17 @@
 			<artifactId>freemarker</artifactId>
 		</dependency>
 
+		<!-- Misc -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+
 		<!-- Spring Boot dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -140,6 +151,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security.oauth</groupId>
+			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -219,13 +234,16 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
 		<dependency>
-		    <groupId>javax.interceptor</groupId>
-		    <artifactId>javax.interceptor-api</artifactId>
-		    <version>1.2</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-bootstrap</artifactId>
+			<version>0.14.3</version>
 		</dependency>
-				
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-sanitize</artifactId>
+			<version>1.5.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

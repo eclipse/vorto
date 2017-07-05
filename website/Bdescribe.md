@@ -8,10 +8,11 @@ order : 2
 imagename : "ToolsetHomepage.png"
 videourl: "https://www.youtube.com/watch?v=hdHwyc6vMlQ&width=1500&height=1000"
 videotitle : "Describe your devices using Vorto"
-style: "thumb1"
+style: "thumb5"
 animatestyle: "fadeIn"
 fadestyle: "fadeIn"
 fadeduration: "4"
+releaseinfo: "no"
 ---
 
 The IoT Tool Set lets **Device Manufacturers** to describe the devices using Information Models in a textual DSL editor. The editor provides several features e.g. auto completion, syntax highlighting, and content assistance.

@@ -18,7 +18,7 @@
 <feature
       id="org.eclipse.vorto.feature.dependencies"
       label="Vorto Dependencies (Incubation)"
-      version="0.9.0"
+      version="0.10.0.M1"
       provider-name="Eclipse.org/Vorto">
 
    <description>

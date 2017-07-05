@@ -18,7 +18,7 @@
 <feature
       id="org.eclipse.vorto.feature.repository"
       label="Vorto Repository Adapter (Incubation)"
-      version="0.9.0"
+      version="0.10.0.M1"
       provider-name="Eclipse.org/Vorto">
 
    <description>
@@ -48,9 +48,6 @@ http://www.eclipse.org/legal/epl-v10.html Description here.
       <import plugin="org.apache.commons.logging"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.equinox.security"/>
-      <import plugin="org.eclipse.vorto.editor.datatype"/>
-      <import plugin="org.eclipse.vorto.editor.functionblock"/>
-      <import plugin="org.eclipse.vorto.editor.infomodel"/>
       <import plugin="org.eclipse.core.net"/>
       <import plugin="org.apache.commons.io"/>
       <import plugin="org.eclipse.vorto.codegen"/>

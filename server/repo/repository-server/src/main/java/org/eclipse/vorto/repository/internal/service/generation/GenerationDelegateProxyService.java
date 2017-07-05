@@ -94,9 +94,9 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	}
 
 	@Override
-	public GeneratorInfo getGeneratorServiceInfo(String serviceKey) {
+	public GeneratorInfo getGeneratorServiceInfo(String serviceKey, boolean includeConfigUI) {
 		Generator generatorEntity = getGenerator(serviceKey);
-		GeneratorInfo generatorInfo = restTemplate.getForObject(generatorEntity.getGenerationInfoUrl(), GeneratorInfo.class);
+		GeneratorInfo generatorInfo = restTemplate.getForObject(generatorEntity.getGenerationInfoUrl()+"?includeConfigUI={includeConfigUI}", GeneratorInfo.class,includeConfigUI);
 		generatorInfo.setInfoUrl(generatorEntity.getGenerationInfoUrl());
 		generatorInfo.performRating(generatorEntity.getInvocationCount());		
 		return generatorInfo;
@@ -186,7 +186,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 		for (Generator entity : topResult) {
 			if (counter < top) {
 				try {
-					result.add(getGeneratorServiceInfo(entity.getKey()));
+					result.add(getGeneratorServiceInfo(entity.getKey(),false));
 					counter++;
 				} catch(Throwable t) {
 					LOGGER.warn("Generator " + entity.getKey()+" appears to be offline or not deployed. Skipping...");

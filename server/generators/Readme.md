@@ -2,25 +2,44 @@
 
 Vorto Code Generators convert an Information Model into executable code that is specific for the platform. Every generator translates the platform independent information model into a platform model and lastly source code. 
 
-Available Generators:
+Currently available Generators:
 
- - [Bosch-ProSyst Generator](org.eclipse.vorto.codegen.service.prosystfi/Readme.md)
- - [Bosch-Things Generator](org.eclipse.vorto.codegen.service.bosch.things/Readme.md)
- - [Amazon Web Services Generator](org.eclipse.vorto.codegen.service.aws/Readme.md)
- - [CoAP Generator](org.eclipse.vorto.codegen.service.coap/Readme.md)
- - [IOS Generator](org.eclipse.vorto.codegen.service.ios/Readme.md)
- - [Javabean Generator](org.eclipse.vorto.codegen.service.javabean/Readme.md)
- - [Latex Generator](org.eclipse.vorto.codegen.service.latex/Readme.md)
- - [LWM2M Generator](org.eclipse.vorto.codegen.service.lwm2m/Readme.md)
- - [Markdown Generator](org.eclipse.vorto.codegen.service.markdown/Readme.md)
- - [MQTT Generator](org.eclipse.vorto.codegen.service.mqtt/Readme.md)
- - [ThingWorx Generator](org.eclipse.vorto.codegen.service.thingworx/Readme.md)
- - [Web UI Generator](org.eclipse.vorto.codegen.service.webdevice/Readme.md)
+### Bosch IoT Suite
+
+ - [Bosch IoT Suite Generator](../../generators/org.eclipse.vorto.codegen.bosch.things/Readme.md)
+ - [ProSyst Functional Items Generator](../../generators/org.eclipse.vorto.codegen.prosystfi/Readme.md)
+
+### AWS IoT
+ 
+ - [AWS IoT Generator](../../generators/org.eclipse.vorto.codegen.aws/Readme.md)
+ 
+### Eclipse IoT
+
+ - [Eclipse Californium Generator](../../generators/org.eclipse.vorto.codegen.coap/Readme.md)
+ - [Eclipse Leshan Generator](../../generators/org.eclipse.vorto.codegen.lwm2m/Readme.md)
+ - [Eclipse Paho Generator](../../generators/org.eclipse.vorto.codegen.mqtt/Readme.md)
+ - [Eclipse Kura Generator](../../generators/org.eclipse.vorto.codegen.kura/Readme.md)
+
+### iOS
+
+- [iOS Generator](../../generators/org.eclipse.vorto.codegen.ios/Readme.md)
+
+### PTC Thingworx
+
+ - [PTC ThingWorx Generator](../../generators/org.eclipse.vorto.codegen.thingworx/Readme.md)
+ 
+### Misc
+
+ - [Device Web Dashboard Generator](../../generators/org.eclipse.vorto.codegen.webui/Readme.md)
+ - [Javabean Generator](../../generators/org.eclipse.vorto.codegen.javabean/Readme.md)
+ - [AngularJS Web UI Generator](../../generators/org.eclipse.vorto.codegen.webdevice/Readme.md)
+ - [LaTeX Documentation Generator](../../generators/org.eclipse.vorto.codegen.latex/Readme.md)
+ - [Markdown Documentation Generator](../../generators/org.eclipse.vorto.codegen.markdown/Readme.md)
  
 
-# Add your Code Generator
+# Generator SDK
 
-It is easier than it sounds to implement your own code generator and plug it into the Vorto infrastructure. For this, please read our [Developer Documentation](http://www.eclipse.org/vorto/documentation/developer-api/codegenerator-implementation.html) 
+It is easier than it sounds to implement your own code generator and plug it into the Vorto infrastructure. Get started quickly with this [Tutorial](https://github.com/eclipse/vorto/blob/development/tutorials/tutorial_create_generator.md).
 
 
 ----------

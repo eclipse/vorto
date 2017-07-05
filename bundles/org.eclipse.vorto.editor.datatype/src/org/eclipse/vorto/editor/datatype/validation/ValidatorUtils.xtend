@@ -5,6 +5,7 @@ import com.google.common.collect.Lists
 import java.util.Collection
 import java.util.HashMap
 import java.util.Map
+import org.eclipse.emf.common.util.EList
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 import org.eclipse.vorto.core.api.model.datatype.Entity
@@ -15,6 +16,7 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.core.api.model.model.ModelReference
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils.ModelTypeBasedChildrenSupplier
 
 public class ValidatorUtils {
@@ -29,6 +31,17 @@ public class ValidatorUtils {
 		} else {
 			return getParentOfType(obj.eContainer, type);	
 		}
+	}
+	
+	public static def boolean isTypeInReferences(Model type, EList<ModelReference> references) {
+		val propertySig = type.namespace + "." + type.name + ":" +  type.version
+		for(ref : references) {
+			val refSig = ref.importedNamespace + ":" + ref.version
+			if (propertySig.equals(refSig)) {
+				return true;
+			}
+		}
+		return false
 	}
 	
 	public static def boolean hasCircularReference(Model parent, Model child, ModelTypeBasedChildrenSupplier modelTypeChildrenSupplier) {

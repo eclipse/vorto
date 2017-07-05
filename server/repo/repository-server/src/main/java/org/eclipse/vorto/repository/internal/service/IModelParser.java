@@ -27,7 +27,7 @@ public interface IModelParser {
 	/**
 	 * builds a model resource from the given inputstream
 	 * @param is the actual content containing model related meta data
-	 * @return the Model information
+	 * @return
 	 */
 	ModelInfo parse(InputStream is);
 }

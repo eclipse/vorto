@@ -39,6 +39,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
 import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
 import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.slf4j.Logger;
@@ -97,6 +98,9 @@ public class CodeGenerationController {
 	private IVortoCodeGenerator vortoGenerator;
 	
 	@Autowired
+	private IGeneratorConfigUITemplate configTemplate;
+	
+	@Autowired
 	private ServerGeneratorLookup lookupService;
 	
 	@Autowired
@@ -125,7 +129,7 @@ public class CodeGenerationController {
 			Map<String,String> requestParams = new HashMap<>();
 			request.getParameterMap().entrySet().stream().forEach(x -> requestParams.put(x.getKey(), x.getValue()[0]));
 			
-			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams));
+			result = vortoGenerator.generate(infomodel, createInvocationContext(infomodel, vortoGenerator.getServiceKey(), requestParams),null);
 		} catch (Exception e) {
 			GenerationResultZip output = new GenerationResultZip(infomodel,vortoGenerator.getServiceKey());
 			Generated generated = new Generated("generation_error.log", "/generated", e.getMessage());
@@ -180,6 +184,8 @@ public class CodeGenerationController {
 		serviceInfo.setName(serviceName);
 		serviceInfo.setClassifier(classifier);
 		serviceInfo.setTags(tags);
+		serviceInfo.setConfigTemplate(this.configTemplate.getContent(serviceInfo));
+		serviceInfo.setConfigKeys(this.configTemplate.getKeys());
 		return serviceInfo;
 	}
 	

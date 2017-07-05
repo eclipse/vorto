@@ -32,6 +32,8 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage
 import org.eclipse.vorto.core.api.model.functionblock.Operation
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam
+import org.eclipse.vorto.core.api.model.functionblock.RefParam
+import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType
 import org.eclipse.vorto.core.api.model.functionblock.Status
 import org.eclipse.vorto.core.api.model.model.ModelPackage
@@ -233,6 +235,22 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 			} catch(Exception e) {
 				e.printStackTrace
 			}
+		}
+	}
+	
+	@Check
+	def checkRefParamIsImported(RefParam refParam) {
+		val topParent = ValidatorUtils.getParentOfType(refParam, FunctionblockModel) as FunctionblockModel
+		if (topParent != null && !ValidatorUtils.isTypeInReferences(refParam.type, topParent.references)) {
+			error(SystemMessage.ERROR_REF_PARAM_NOT_IMPORTED, refParam, FunctionblockPackage.Literals.REF_PARAM__TYPE);
+		}
+	}
+	
+	@Check
+	def checkReturnTypeIsImported(ReturnObjectType returnType) {
+		val topParent = ValidatorUtils.getParentOfType(returnType, FunctionblockModel) as FunctionblockModel
+		if (topParent != null && !ValidatorUtils.isTypeInReferences(returnType.returnType, topParent.references)) {
+			error(SystemMessage.ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED, returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
 		}
 	}
 	

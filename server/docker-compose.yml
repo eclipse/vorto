@@ -9,6 +9,17 @@ services:
       - 8080:8080
     expose:
       - "8080"
+    
+  vorto-webeditor:
+    image: eclipsevorto/vorto-webeditor
+    container_name: vorto-webeditor
+    ports:
+      - 8090:8090
+    depends_on:
+      - vorto-repo
+    environment:
+      VORTO_REPOSITORY_BASE_PATH: http://vorto-repo:8080/infomodelrepository
+      SERVER_PORT: 8090
 
   vorto-boschthings-generator:
     image: eclipsevorto/vorto-bosch

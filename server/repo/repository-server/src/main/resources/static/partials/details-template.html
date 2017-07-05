@@ -32,15 +32,15 @@
 
 						<div class="row">
 								
-							  <h3 class="modelHeader ng-binding">{{model.displayName}}</h3>
+							  <h3 class="modelHeader ng-binding">{{model.displayName}} {{model.type}}</h3>
 
 							  <div class="col-sm-12 modelDetails">
-								 <div class="col-sm-3 modelImg" ng-show="model.type === 'InformationModel'">
+								 <div class="col-sm-3 modelImg">
 								   <div class="row">
 										<div class="placeHolder">
 											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
 											<img ng-if="model.hasImage" ng-src="rest/model/image/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}" width="200" height="200"/>
-											<div class="upload">
+											<div class="upload" ng-show="model.type === 'InformationModel'">
 												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
 											</div>
 										</div>
@@ -49,8 +49,11 @@
 							   <div class="row">
 							  <div class="adv">
 								  <div class="small-box bg-aqua">
+								    <a ng-show="context.webEditor.enabled" target="_blank" href="{{ webEditorLink() }}" class="small-box-footer">
+									  Go to the Web Editor <i class="fa fa-arrow-circle-right"></i>
+									</a>
 									<div class="inner">
-									  <h3>Client Tools</h3>
+									  <h3>Tools</h3>
 									  <p><img src="images/cli.png"> Vorto CLI</p>
 									  <p><img src="images/eclipse.png"> Vorto Eclipse Toolset</p>
 									</div>
@@ -98,44 +101,40 @@
 								 
 							</dd>
 							</dl>
+							<div class="modelFilePreview">
+							  <h4>Model Preview</h4>
+							  <pre><code style="font-size: 12px;">{{content}}</code>
+							</pre>
+							</div>
 						  </div>
 						  
 						  </div>
-						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype'">
+						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
 							<div class="row">
-								<label>Platform Generators: </label>
+								<label>Available Generators: </label>
 							</div>
 							<div class="row" ng-repeat="row in platformGeneratorMatrix">
 								<!--genbox-->
-								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">
-									<a ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{generator.key}}">
-									<div class="gen-box" title="{{generator.description}}">
-										<div class="gen-logo"><img ng-src="data:image/png;base64,{{generator.image32x32}}" width="32" height="32"></div>
-										<div class="gen-name"><span>{{generator.name}}</span></div>
-										<div class="gen-rating">
-											<span class="rating">
-												<span ng-class="isFilled(generator.rating,'FAIR') || isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-												<span ng-class="isFilled(generator.rating,'EXCELLENT')" class="star"></span>
+								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
+										<a ng-click="openGeneratorConfig(generator)">
+		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
+		                					<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
 											</span>
-										</div>
-									</div>
-									</a>
+		               						<div class="tiny-box-name">
+												<span>{{generator.name}}</span>
+											</div>
+		               						<div class="tiny-box-action">
+												<span>
+													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
+												</span>
+											</div>
+		               					</div>
+	               						</a>
 								</div>
 							   <!-- end genbox -->            
 							</div>
-							<div class="col-xs-12">
-								<label class="pull-right"><a href="./#/generators">More Info <i class="fa fa-arrow-circle-right"></i></a></label>
-							</div>
 						 </div>
-						   <div class="col-sm-12">
-							<div class="modelFilePreview">
-							  <h4>Model Preview</h4>
-							  <pre><code>{{content}}</code>
-							</pre>
-							</div>
-						   </div> 
 						  </div>
 						</div>
 					</div>

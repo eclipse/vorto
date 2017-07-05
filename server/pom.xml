@@ -6,46 +6,9 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>server</artifactId>
-	<version>0.9.0</version>
+	<version>0.10.0.M1</version>
 
-	<name>Eclipse Vorto Repository</name>
-    <description>Eclipse Vorto Repository manages Information Models</description>
-
-    <url>http://www.eclipse.org/vorto</url>
-    
-    <licenses>
-		<license>
-			<name>Eclipse Public License</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-		</license>
-	</licenses>
-	
-	<scm>
-		<developerConnection>scm:git:https://github.com/eclipse/vorto.git</developerConnection>
-		<url>https://github.com/eclipse/vorto</url>
-		<tag>HEAD</tag>
-	</scm>
-	
-	<developers>
-		<developer>
-			<id>aedelmann</id>
-			<name>Alexander Edelmann</name>
-			<email>alexander.edelmann@bosch-si.com</email>
-			<roles>
-				<role>Lead</role>
-				<role>Committer</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>OlafWeinmann</id>
-			<name>Olaf Weinmann</name>
-			<email>olaf.weinmann@bosch-si.com</email>
-			<roles>
-				<role>Lead</role>
-				<role>Committer</role>
-			</roles>
-		</developer>
-	</developers>
+	<name>Vorto Server</name>
 
 	<packaging>pom</packaging>
 
@@ -68,7 +31,7 @@
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>tycho-snapshots</id>
@@ -79,7 +42,7 @@
 			<url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
 		</pluginRepository>
 	</pluginRepositories>
-	
+
 	<repositories>
 		<repository>
 			<id>eclipse</id>
@@ -91,6 +54,7 @@
 		<module>commons</module>
 		<module>generators</module>
 		<module>repo</module>
+		<module>devtool</module>
 	</modules>
 
 	<dependencyManagement>
@@ -140,6 +104,11 @@
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>repository-api</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -202,7 +171,7 @@
 							</goals>
 							<configuration>
 								<sources>
-									<source>src/main/xtend-gen</source>
+									<source>${basedir}/src/main/xtend-gen</source>
 								</sources>
 							</configuration>
 						</execution>
@@ -217,6 +186,9 @@
 							<goals>
 								<goal>compile</goal>
 							</goals>
+							<configuration>
+								<outputDirectory>${basedir}/src/main/xtend-gen</outputDirectory>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
@@ -226,7 +198,7 @@
 					<configuration>
 						<filesets>
 							<fileset>
-								<directory>src/main/xtend-gen</directory>
+								<directory>${basedir}/src/main/xtend-gen</directory>
 							</fileset>
 						</filesets>
 					</configuration>
@@ -242,15 +214,6 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>doclint-java8-disable</id>
-			<activation>
-				<jdk>[1.8,)</jdk>
-			</activation>
-			<properties>
-				<javadoc.opts>-Xdoclint:none</javadoc.opts>
-			</properties>
-		</profile>
-		<profile>
 			<id>sign</id>
 			<build>
 				<plugins>
@@ -265,29 +228,6 @@
 								<goals>
 									<goal>sign</goal>
 								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>with-javadoc</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.4</version>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-								<configuration>
-									<additionalparam>-Xdoclint:none</additionalparam>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

@@ -1,0 +1,68 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Create New {{editorType.display}}</center></h3>
+</div>
+<div>
+	<form name="describeEditorModalForm" novalidate>
+		<div class="modal-body">
+			<div>
+				<p>Please enter the following details</p>
+			</div>
+			<div>
+				<p>
+					<div class="describe-modal-label">
+						{{editorType.display}} Name
+					</div>
+
+					<input type="text" class="form-control" data-ng-model="model.name" name="mName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required/>
+					<div ng-show="describeEditorModalForm.mName.$dirty">
+				    	<div ng-show="describeEditorModalForm.mName.$error.required">Please enter a valid model name</div>
+				    </div>
+
+					<div ng-hide="describeEditorModalForm.mName.$error.required">
+				    	<div ng-show="createProjectForm.mName.$error.pattern">
+				    		The file name must start with a capital letter and no special characters allowed
+				    	</div>
+				    </div>
+				</p>
+				<p>
+					<div class="describe-modal-label">
+						{{editorType.display}} Namespace
+					</div>
+
+					<input type="text" class="form-control" data-ng-model="model.namespace" name="mNamespace" required/>
+					<div ng-show="describeEditorModalForm.mNamespace.$dirty">
+				    	<div ng-show="describeEditorModalForm.mNamespace.$error.required">Please enter a valid model namespace</div>
+				    </div>
+				</p>
+				<p>
+					<div class="describe-modal-label">
+						{{editorType.display}} Version
+					</div>
+
+					<input type="text" class="form-control" data-ng-model="model.version" name="mVersion" ng-pattern="/^\d\.\d\.\d+$/" required/>
+					<div ng-show="describeEditorModalForm.mVersion.$dirty" >
+				    	<div ng-show="describeEditorModalForm.mVersion.$error.required">Please enter a version number</div>
+				    </div>
+
+					<div ng-hide="describeEditorModalForm.mVersion.$error.required">
+				    	<div ng-show="describeEditorModalForm.mVersion.$error.pattern">
+				    		Version number format : &ltMAJOR&gt.&ltMINOR&gt.&ltPATCH&gt
+				    	</div>
+				    </div>
+				</p>
+				<p>
+					<div class="describe-modal-label">
+						{{editorType.display}} Description
+					</div>
+					<textarea class="form-control" rows="4" cols="35" data-ng-model="model.description"/>
+				</p>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<div class="align-right">
+				<button class="btn btn-primary" type="button" type="submit" ng-click="ok()" ng-disabled="describeEditorModalForm.$invalid">Create</button>
+			    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+			</div>
+		</div>
+	</form>
+</div>

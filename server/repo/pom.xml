@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>server</artifactId>
-		<version>0.9.0</version>
+		<version>0.10.0.M1</version>
 	</parent>
 	<artifactId>repo</artifactId>
 
@@ -16,7 +16,8 @@
 
 	<modules>
 		<module>repository-server</module>
-		<module>repository-api</module>		
+		<module>repository-api</module>
+		<module>repository-java-client</module>		
 	</modules>
 	
 	<properties>

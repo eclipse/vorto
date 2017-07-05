@@ -13,3 +13,6 @@ bin/
 .classpath
 .project
 generated-sources
+*.orig
+
+devtool-project-repository/

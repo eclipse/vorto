@@ -57,14 +57,15 @@ public interface IGeneratorService {
 	/**
 	 * Gets more information about the generator, such as description, rating, creator etc.
 	 * @param serviceKey
-	 * @return the generator info
+	 * @param includeUITemplate
+	 * @return
 	 */
-	GeneratorInfo getGeneratorServiceInfo(String serviceKey);
+	GeneratorInfo getGeneratorServiceInfo(String serviceKey, boolean includeUITemplate);
 	
 	/**
 	 * Returns the mostly used generators
 	 * @param top the upper limit of results, e.g. top 3 or top 10
-	 * @return the list of generators
+	 * @return
 	 */
 	Collection<GeneratorInfo> getMostlyUsedGenerators(int top);
 	

@@ -1,0 +1,17 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>devtool</artifactId>
+		<version>0.10.0.M1</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>projectrepository-api</artifactId>
+	<packaging>jar</packaging>
+	<name>Project-Repository API</name>
+	<description>Project Repository API which lets you persist your projects to various storages</description>
+
+</project>
+
+
+

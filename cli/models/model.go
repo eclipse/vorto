@@ -8,7 +8,7 @@ type Model struct {
 	DisplayName		string 			`json:"displayName"`
 	Description		string			`json:"description"`
 	CreatedBy		string			`json:"author"`
-	CreatedOn 		int64			`json:"creationDate"`
+	CreatedOn 		Time			`json:"creationDate"`
 	References		[]ModelItem		`json:"references"`
 	ReferencedBy	[]ModelItem		`json:"referencedBy"`
 }

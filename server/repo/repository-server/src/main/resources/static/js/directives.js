@@ -30,3 +30,20 @@ repositoryDirectives.directive('emailCheck', [function () {
       }
     }
 }]);
+
+repositoryDirectives.directive( 'dynTemplate', function ( $compile ) {
+  return {
+    scope: true,
+    link: function ( scope, element, attrs ) {
+      var el;
+
+      attrs.$observe( 'src', function ( template ) {
+        if ( angular.isDefined( template ) ) {
+          el = $compile( template )( scope );
+          element.html("");
+          element.append( el );
+        }
+      });
+    }
+  };
+});

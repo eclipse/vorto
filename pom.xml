@@ -3,13 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>org.eclipse.vorto.parent</artifactId>
-	<version>0.9.0</version>
+	<version>0.10.0.M1</version>
 	<packaging>pom</packaging>
-
-    <name>Eclipse Vorto Toolset</name>
-    <description>Eclipse Vorto Toolset lets you describe IoT device characteristics and functionality as Information Models</description>
-
-    <url>http://www.eclipse.org/vorto</url>
 
 	<organization>
 		<name>Eclipse.org</name>
@@ -44,23 +39,16 @@
 				<role>Committer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>OlafWeinmann</id>
-			<name>Olaf Weinmann</name>
-			<email>olaf.weinmann@bosch-si.com</email>
-			<roles>
-				<role>Lead</role>
-				<role>Committer</role>
-			</roles>
-		</developer>
 	</developers>
 	
 	<modules>
-		<module>bundles</module>
-		<module>example-generators</module>
+		
+		<module>generators</module>
 		<module>features</module>
 		<module>products</module>
 		<module>targetplatform</module>
+		<module>bundles</module>
+		<module>framework</module>
 	</modules>
 
 	<properties>

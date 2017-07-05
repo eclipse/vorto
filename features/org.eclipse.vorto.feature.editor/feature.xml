@@ -17,16 +17,20 @@
 -->
 <feature
       id="org.eclipse.vorto.feature.editor"
-      label="Vorto DSL Editors (Incubation)"
-      version="0.9.0"
+      label="Vorto DSL Editor Bundle (Incubation)"
+      version="0.10.0.M1"
       provider-name="Eclipse.org/Vorto">
 
    <description>
-      This feature defines the bundles for all Vorto DSL editors.
+      This is the Vorto DSL Editor Bundle, which provides the Vorto DSL Editors, the perspective and wizards, as well as the model repository.
    </description>
 
    <copyright>
-      Copyright (c) 2014 Bosch Software Innovations GmbH and others.      All rights reserved. This program and the accompanying materialsare made available under the terms of the Eclipse Public Licensev1.0 which accompanies this distribution, and is available athttp://www.eclipse.org/legal/epl-v10.html Description here.
+      Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Public License
+v1.0 which accompanies this distribution, and is available at
+http://www.eclipse.org/legal/epl-v10.html Description here.
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
@@ -34,159 +38,53 @@
    </license>
 
    <requires>
-      <import plugin="org.apache.log4j"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.xtend.lib"/>
-      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.xtext"/>
       <import plugin="org.eclipse.xtext.util"/>
       <import plugin="org.eclipse.emf.ecore"/>
-      <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.xtext"/>
-      <import plugin="org.eclipse.xtext.xbase.lib"/>
-      <import plugin="com.google.inject"/>
-      <import plugin="com.google.guava"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.antlr.runtime" version="3.2.0" match="equivalent"/>
-      <import plugin="org.eclipse.xtext.common.types"/>
-      <import plugin="org.eclipse.equinox.registry"/>
       <import plugin="org.eclipse.emf.common"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.antlr.runtime"/>
+      <import plugin="org.eclipse.xtext.common.types"/>
+      <import plugin="org.eclipse.vorto.core"/>
+      <import plugin="org.eclipse.vorto.editor"/>
+      <import plugin="org.eclipse.xtext.xbase.lib"/>
+      <import plugin="org.eclipse.xtend.lib"/>
+      <import plugin="org.apache.log4j"/>
+      <import plugin="org.eclipse.xtext.ide"/>
+      <import plugin="org.eclipse.xtext.xbase.ide"/>
+      <import plugin="org.eclipse.xtext.junit4"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.hamcrest.core"/>
       <import plugin="org.eclipse.xtext.ui"/>
+      <import plugin="org.eclipse.ui.editors" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtext.ui.shared"/>
       <import plugin="org.eclipse.xtext.builder"/>
-      <import plugin="org.eclipse.xtext.xbase.ui"/>
       <import plugin="org.eclipse.xtext.common.types.ui"/>
       <import plugin="org.eclipse.xtext.ui.codetemplates.ui"/>
-      <import plugin="org.eclipse.xtext.ui.shared"/>
-      <import plugin="org.apache.log4j"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.eclipse.vorto.core.ui"/>
+      <import plugin="org.eclipse.xtext.xbase"/>
+      <import plugin="org.apache.commons.logging"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.vorto.perspective"/>
+      <import plugin="org.eclipse.vorto.wizard"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.vorto.codegen.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.emf.ecore.xmi"/>
+      <import plugin="org.eclipse.vorto.codegen"/>
       <import plugin="org.apache.commons.lang3"/>
-      <import plugin="org.eclipse.emf.ecore"/>
+      <import plugin="com.google.guava"/>
+      <import plugin="org.eclipse.xtend.lib.macro"/>
    </requires>
 
    <plugin
-         id="org.eclipse.vorto.codegen"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.templates.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.editor.datatype"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.datatype.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.mapping"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.mapping.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.infomodel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.infomodel.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.functionblock"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.functionblock.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.wizard"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.core.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.editor.infomodel.ide"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -200,6 +98,27 @@
          unpack="false"/>
 
    <plugin
+         id="org.eclipse.vorto.editor.datatype.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.datatype.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.functionblock"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.eclipse.vorto.editor.functionblock.ide"
          download-size="0"
          install-size="0"
@@ -207,7 +126,84 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.vorto.editor.mapping.ide"
+         id="org.eclipse.vorto.editor.functionblock.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.functionblock.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.infomodel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.infomodel.ide"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.infomodel.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.infomodel.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.mapping"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.mapping.tests"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.editor.mapping.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.perspective.vorto"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.wizard.vorto"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.codegen.templates.java"
          download-size="0"
          install-size="0"
          version="0.0.0"

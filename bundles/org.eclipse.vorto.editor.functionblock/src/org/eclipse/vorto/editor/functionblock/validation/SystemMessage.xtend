@@ -32,4 +32,8 @@ class SystemMessage {
 
 	public static final String ERROR_NAMESPACE_PATTERN = 'Namespace should have following pattern: <[a-z0-9]+(.[a-z0-9])*> E.g com.bosch, com.bosch.lightsystem'
 	
+	public static final String ERROR_REF_PARAM_NOT_IMPORTED = "Reference parameter has not yet been imported.";
+	
+	public static final String ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED = "Return type has not yet been imported.";
+	
 }

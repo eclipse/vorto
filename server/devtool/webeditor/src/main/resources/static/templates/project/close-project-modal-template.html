@@ -1,0 +1,15 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Save changes before closing?</center></h3>
+</div>
+<div class="modal-body">
+	<p>{{unsavedFiles.length}} unsaved resource(s)</p>
+	<div ng-repeat="unsavedFile in unsavedFiles">
+		{{unsavedFile}}
+	</div>
+</div>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-click="yes()">Yes</button>
+	    <button class="btn" type="button" ng-click="no()">No</button>
+	</div>
+</div>

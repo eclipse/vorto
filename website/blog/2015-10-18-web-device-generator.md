@@ -8,7 +8,7 @@ imgtitle: Web Application for Devices in < 2 minutes
 videourl: "https://youtu.be/zUJK2wWXIpo&width=1500&height=1000"
 author: Nagavijay Sivakumar
 githubid: nagavijays
-style: "thumb1"
+style: "thumb5"
 ---
 {% include base.html %}
 
