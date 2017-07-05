@@ -26,9 +26,9 @@
 						<goals>
 							<goal>repackage</goal>
 						</goals>
-					    <configuration>
-						    <addResources>true</addResources>
-					    </configuration>
+						<configuration>
+							<addResources>true</addResources>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -89,6 +89,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.interceptor</groupId>
+			<artifactId>javax.interceptor-api</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 		<!-- Vorto Dependencies -->
@@ -165,7 +171,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<!-- Project Repository Storage -->
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -177,7 +183,7 @@
 			<artifactId>projectrepository-file</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 
 		<!-- http://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
@@ -278,19 +284,19 @@
 			<version>2.1.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>jstree</artifactId>
-		    <version>3.2.1</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>jstree</artifactId>
+			<version>3.2.1</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars.bower</groupId>
-		    <artifactId>ng-js-tree</artifactId>
-		    <version>0.0.6</version>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>ng-js-tree</artifactId>
+			<version>0.0.6</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars</groupId>
-		    <artifactId>angular-toastr</artifactId>
-		    <version>2.1.1</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-toastr</artifactId>
+			<version>2.1.1</version>
 		</dependency>
 
 		<!-- Test dependencies -->
