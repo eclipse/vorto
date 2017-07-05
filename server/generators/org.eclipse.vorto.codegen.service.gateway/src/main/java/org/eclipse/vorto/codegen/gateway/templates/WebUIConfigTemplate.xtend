@@ -27,31 +27,33 @@ class WebUIConfigTemplate implements IGeneratorConfigUITemplate {
 	override getContent(GeneratorServiceInfo info) {
 		'''
 		<div class="form-group">
-			<div class="col-sm-6">
-				<div class="box box-primary">
-			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Choose Add-Ons</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
-			    	</div><!-- /.box-header -->
-					<div class="box-body">
-						<p><input type="checkbox" checked disabled="disabled">&nbsp;Data Visualization</p>
-						<p><input type="checkbox" checked disabled="disabled">&nbsp;SSO with Google</p>
-						<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;(Historical) Data Persistence</p>
-						<p><input type="checkbox" ng-model="configParams.swagger">&nbsp;Swagger Documentation</p>
-					</div><!-- /.box-body -->
-			  	</div><!-- /.box -->
-			</div>
-			<div class="col-sm-6">
-				<div class="box box-primary">
-			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Choose Cloud Platform Connector</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
-			    	</div><!-- /.box-header -->
-					<div class="box-body">
-						<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
-						<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">AWS IoT (Coming soon)</i></p>
-					</div><!-- /.box-body -->
-			  	</div><!-- /.box -->
+			<div class="row">
+				<div class="col-sm-6">
+					<div class="box box-primary">
+				    	<div class="box-header with-border">
+				      		<h3 class="box-title">Choose Add-Ons</h3>
+				      		<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
+				    	</div><!-- /.box-header -->
+						<div class="box-body">
+							<p><input type="checkbox" checked disabled="disabled">&nbsp;Data Visualization</p>
+							<p><input type="checkbox" checked disabled="disabled">&nbsp;SSO with Google</p>
+							<p><input type="checkbox" ng-model="configParams.persistence">&nbsp;(Historical) Data Persistence</p>
+							<p><input type="checkbox" ng-model="configParams.swagger">&nbsp;Swagger Documentation</p>
+						</div><!-- /.box-body -->
+				  	</div><!-- /.box -->
+				</div>
+				<div class="col-sm-6">
+					<div class="box box-primary">
+				    	<div class="box-header with-border">
+				      		<h3 class="box-title">Choose Cloud Platform Connector</h3>
+				      		<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
+				    	</div><!-- /.box-header -->
+						<div class="box-body">
+							<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
+							<p><input type="checkbox" disabled="disabled">&nbsp;<i style="color:#999">AWS IoT (Coming soon)</i></p>
+						</div><!-- /.box-body -->
+				  	</div><!-- /.box -->
+				</div>
 			</div>
 		</div>
 		'''
