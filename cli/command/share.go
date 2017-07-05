@@ -24,6 +24,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"fmt"
 
 	"github.com/eclipse/vorto/client/cli/config"
 	"github.com/eclipse/vorto/client/cli/errorMessages"
@@ -125,7 +126,6 @@ func (this *ShareCommand) Execute() error {
 	var valid bool
 
 	if resp.StatusCode == 200 {
-
 		if err != nil {
 			return err
 		} else {
@@ -141,17 +141,17 @@ func (this *ShareCommand) Execute() error {
 				}
 				resp.Body.Close()
 			}
-
+			
 			var response vorto.Response
 			if err := json.Unmarshal(contents, &response); err != nil {
 				return errorMessages.ERR_AUTH_FAILED
 			}
 
-			errorMessage = response.ErrorMessage
-			handleId = response.HandleId
-			valid = response.Valid
+			errorMessage = response.Result[0].ErrorMessage
+			handleId = response.Result[0].HandleId
+			valid = response.Result[0].Valid
 		}
-
+		
 		// only if model is valid 'valid=true', user should be able to upload his model
 		if valid {
 			request, err := http.NewRequest("PUT", this.Repository+"/rest/secure/"+handleId, &b)
@@ -175,6 +175,7 @@ func (this *ShareCommand) Execute() error {
 
 				if response.StatusCode == 200 {
 					println("Message:	Checkin of " + this.File + " successful")
+					return nil
 				} else {
 					return errorMessages.ERR_UNKNOWN
 				}
@@ -184,6 +185,7 @@ func (this *ShareCommand) Execute() error {
 		}
 	} else if resp.StatusCode == 401 {
 		return errorMessages.ERR_HTTP_401
+	} else {
+		return errors.New(fmt.Sprintln("Error Status Code: ", resp.StatusCode))
 	}
-	return nil
 }
