@@ -8,6 +8,9 @@ type Response struct {
 	Result          []UploadMessageResult `json:"obj"`
 }
 
+/*
+   Represents the object returned by the Share API 
+*/
 type UploadMessageResult struct {
 	HandleId        string          `json:"handleId"`
 	Valid           bool            `json:"valid"`
