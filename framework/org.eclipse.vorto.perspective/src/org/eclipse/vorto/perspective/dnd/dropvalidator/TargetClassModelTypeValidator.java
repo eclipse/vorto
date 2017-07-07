@@ -16,7 +16,6 @@ package org.eclipse.vorto.perspective.dnd.dropvalidator;
 
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.ModelResource;
-import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.perspective.dnd.IDropValidator;
 
 /**

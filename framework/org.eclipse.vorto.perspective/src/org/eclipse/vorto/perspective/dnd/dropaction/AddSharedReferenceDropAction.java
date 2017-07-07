@@ -16,6 +16,11 @@ package org.eclipse.vorto.perspective.dnd.dropaction;
 
 import java.io.ByteArrayInputStream;
 
+import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.Enum;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
@@ -46,10 +51,13 @@ public class AddSharedReferenceDropAction implements IDropAction<IModelElement, 
 
 		if (droppedObjectClass.isInstance(modelElementToBeDropped)
 				&& !receivingModelElement.equals(modelElementToBeDropped)) {
-			ModelResource modelToAddAsReference = downloadAndSaveModel(receivingModelElement.getProject(),
+			IModelElement modelToAddAsReference = downloadAndSaveModel(receivingModelElement.getProject(),
 					modelElementToBeDropped.getId());
 
-			receivingModelElement.addModelReference(modelToAddAsReference.getId());
+			if (canAddAsReference(receivingModelElement.getModel(), modelToAddAsReference.getModel())) {
+				receivingModelElement.addModelReference(modelToAddAsReference.getId());
+			}
+			
 			receivingModelElement.save();
 			return receivingModelElement;
 		}
@@ -57,19 +65,29 @@ public class AddSharedReferenceDropAction implements IDropAction<IModelElement, 
 		return null;
 	}
 
+	private boolean canAddAsReference(Model receivingModel, Model modelToAdd) {
+		if (receivingModel instanceof Entity || receivingModel instanceof FunctionblockModel) {
+			return modelToAdd instanceof Enum || modelToAdd instanceof Entity;
+		}
+		
+		if (receivingModel instanceof InformationModel) {
+			return modelToAdd instanceof FunctionblockModel;
+		}
+		return false;
+	}
+
 	// Download and save model from repository to local project.
 	// It also recursively do the same for the model references.
-	private ModelResource downloadAndSaveModel(IModelProject project, ModelId modelId) {
-		ModelResource model = null;
+	private IModelElement downloadAndSaveModel(IModelProject project, ModelId modelId) {
 		try {
-			model = modelRepo.getModel(modelId);
+			ModelResource model = modelRepo.getModel(modelId);
 			if (model != null) {
 				for (ModelId reference : model.getReferences()) {
 					downloadAndSaveModel(project, reference);
 				}
 				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
 				byte[] modelContent = modelRepo.downloadContent(model.getId());
-				project.addModelElement(model.getId(), new ByteArrayInputStream(modelContent));
+				return project.addModelElement(model.getId(), new ByteArrayInputStream(modelContent));
 			} else {
 				MessageDisplayFactory.getMessageDisplay()
 						.displayError("Model " + modelId.toString() + " not found in repository.");
@@ -78,6 +96,6 @@ public class AddSharedReferenceDropAction implements IDropAction<IModelElement, 
 			ExceptionHandlerFactory.getHandler().handle(e);
 		}
 		
-		return model;
+		return null;
 	}
 }
