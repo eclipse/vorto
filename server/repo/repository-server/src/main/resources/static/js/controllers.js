@@ -566,7 +566,8 @@ repositoryControllers.controller('AuthenticateController',
 /*
  * TODO -
  */
-repositoryControllers.controller('SignUpController', [ '$location', '$scope','$http', '$routeParams', function ($location,$scope, $http, $routeParams) {
+repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', 
+                                                       function ($location, $rootScope, $scope, $http, $routeParams) {
 
     $scope.user = {}; 
     if ($routeParams.email) {
@@ -650,6 +651,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$scope','$h
         })
         .success( function(data, status, headers, config) {
             if ($scope.user.emailReadonly == true) {
+            	$rootScope.getUser();
                 $location.path('/');
             } else {
                 $('#signup').modal('show');

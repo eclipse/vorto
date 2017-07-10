@@ -21,7 +21,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.repository.security.SecurityConfiguration;
+import org.eclipse.vorto.repository.service.IUserRepository;
 import org.eclipse.vorto.repository.web.security.VortoUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,6 +62,9 @@ public class HomeController {
 	@Value("${webEditor.loginUrl.default}")
 	private String defaultLoginUrl;
 	
+	@Autowired
+    private IUserRepository userRepository;
+	
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Returns the currently logged in User")
 	@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized"), 
@@ -78,11 +83,13 @@ public class HomeController {
 		
 		if (user instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
+			String email = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email");
 			map.put("name", oauth2User.getName());
-			map.put("email", ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
+			map.put("email",  email);
 			
 			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()); 
-			map.put("isRegistered", userDetails.get("isRegistered"));
+			//map.put("isRegistered", userDetails.get("isRegistered"));
+			map.put("isRegistered", Boolean.toString(userRepository.findByEmail(email) != null));
 			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
