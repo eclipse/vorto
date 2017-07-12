@@ -34,6 +34,7 @@ class DatatypeSystemMessage {
 	public static final String ERROR_CONSTRAINT_VALUE_INT = 'This constraint value must be of an Integer'
 	public static final String ERROR_CONSTRAINT_VALUE_FLOAT = 'This constraint value must be of a Float'
 	public static final String ERROR_CONSTRAINT_VALUE_LONG = 'This constraint value must be of a Long'
+	public static final String ERROR_CONSTRAINT_VALUE_BOOLEAN = 'This constraint value must be of a Boolean'
 	public static final String ERROR_CONSTRAINT_VALUE_SHORT = 'This constraint value must be of a Short'
 	public static final String ERROR_CONSTRAINT_VALUE_DOUBLE= 'This constraint value must be of a Double'
 	public static final String ERROR_CONSTRAINT_VALUE_BYTE= 'This constraint value must be of a Byte'

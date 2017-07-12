@@ -129,7 +129,7 @@ Constraint:
 	type = ConstraintIntervalType constraintValues = IntervalType
 ;
 
-enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = 'MIMETYPE' | scaling = 'SCALING';
+enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = 'MIMETYPE' | scaling = 'SCALING' | default = 'DEFAULT'; 
 
 IntervalType:
 	INT | SIGNEDINT | FLOAT | DATETIME | STRING

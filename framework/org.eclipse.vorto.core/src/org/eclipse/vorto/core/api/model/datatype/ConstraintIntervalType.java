@@ -88,7 +88,15 @@ public enum ConstraintIntervalType implements Enumerator {
 	 * @generated
 	 * @ordered
 	 */
-	SCALING(5, "scaling", "SCALING");
+	SCALING(5, "scaling", "SCALING"), /**
+	 * The '<em><b>Default</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #DEFAULT_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	DEFAULT(6, "default", "DEFAULT");
 
 	/**
 	 * The '<em><b>Min</b></em>' literal value.
@@ -181,6 +189,21 @@ public enum ConstraintIntervalType implements Enumerator {
 	public static final int SCALING_VALUE = 5;
 
 	/**
+	 * The '<em><b>Default</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>Default</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #DEFAULT
+	 * @model name="default" literal="DEFAULT"
+	 * @generated
+	 * @ordered
+	 */
+	public static final int DEFAULT_VALUE = 6;
+
+	/**
 	 * An array of all the '<em><b>Constraint Interval Type</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -194,6 +217,7 @@ public enum ConstraintIntervalType implements Enumerator {
 			REGEX,
 			MIMETYPE,
 			SCALING,
+			DEFAULT,
 		};
 
 	/**
@@ -256,6 +280,7 @@ public enum ConstraintIntervalType implements Enumerator {
 			case REGEX_VALUE: return REGEX;
 			case MIMETYPE_VALUE: return MIMETYPE;
 			case SCALING_VALUE: return SCALING;
+			case DEFAULT_VALUE: return DEFAULT;
 		}
 		return null;
 	}

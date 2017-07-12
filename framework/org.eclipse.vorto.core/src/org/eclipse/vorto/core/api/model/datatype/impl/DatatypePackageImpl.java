@@ -869,6 +869,7 @@ public class DatatypePackageImpl extends EPackageImpl implements DatatypePackage
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.REGEX);
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.MIMETYPE);
 		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.SCALING);
+		addEEnumLiteral(constraintIntervalTypeEEnum, ConstraintIntervalType.DEFAULT);
 
 		initEEnum(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.class, "BooleanPropertyAttributeType");
 		addEEnumLiteral(booleanPropertyAttributeTypeEEnum, BooleanPropertyAttributeType.READABLE);

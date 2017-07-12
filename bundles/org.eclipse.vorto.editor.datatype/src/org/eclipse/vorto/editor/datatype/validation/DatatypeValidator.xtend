@@ -70,9 +70,10 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 
 	@Check
 	def checkConstraint(Property prop) {
+
 		var constraints = prop.constraintRule.constraints
 
-		if(constraints.length == 0) return;
+		if(constraints.length == 0 || prop.type instanceof ObjectPropertyType) return;
 		var primi = prop.type as PrimitivePropertyType
 		var isMultiplcity = prop.multiplicity;
 		for (constraint : constraints) {

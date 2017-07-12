@@ -39,6 +39,8 @@ class ConstraintValidatorFactory {
 					new RegexValueValidator
 				case 'SCALING' :
 					new ScalarValueValidator 
+				case 'DEFAULT' :
+					new AccordinglyValueValidator
 				default:
 					throw new IllegalArgumentException('Not supported constraint type')
 			}
