@@ -18,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -32,6 +33,7 @@ import org.eclipse.vorto.repository.api.upload.ServerResponse;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
+import org.eclipse.vorto.server.devtool.utils.WebUtils;
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider;
 import org.eclipse.xtext.web.servlet.HttpServiceContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,9 @@ public class PublisherController {
 
 	@Autowired
 	private DevtoolUtils devtoolUtils;
+	
+	@Autowired
+	private WebUtils webUtils;
 
 	@ApiOperation(value = "Uploads models to the vorto repository for validation")
 	@RequestMapping(value = "/{projectName}/validate", method = RequestMethod.GET)
@@ -78,8 +83,11 @@ public class PublisherController {
 				.getInstance(IWebResourceSetProvider.class);
 		ResourceSet resourceSet = webEditorResourceSetProvider.getResourceSetFromSession(httpServiceContext);
 
+		Objects.requireNonNull(projectName, "projectName must not be null");
+		String userProjectName = webUtils.getUserProjectName(projectName);
+		
 		List<org.eclipse.vorto.devtool.projectrepository.model.Resource> projectResources = projectService
-				.getProjectResources(projectName);
+				.getProjectResources(userProjectName);
 
 		HashMap<String, Resource> resourceMap = new HashMap<>();
 
