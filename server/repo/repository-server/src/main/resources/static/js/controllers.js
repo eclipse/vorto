@@ -1,9 +1,10 @@
-var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
+var repositoryControllers = angular.module("repositoryControllers", ["swaggerUi"]);
 
-repositoryControllers.controller('SearchController', [ '$scope','$http', '$location', function ($scope,$http,$location) {
+repositoryControllers.controller("SearchController", [ "$scope","$http", "$location", 
+                                                       function ($scope,$http,$location) {
 
     $scope.models = [];
-    $scope.modelType = 'all';
+    $scope.modelType = "all";
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
 
@@ -19,12 +20,12 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
 
     $scope.search = function() {
         var filter = null;
-        if ($scope.modelType === 'all') {
+        if ($scope.modelType === "all") {
             filter = $scope.queryFilter + " -Mapping";
         } else {
             filter = $scope.queryFilter + " -Mapping "+$scope.modelType;
         }
-        $http.get('./rest/model/query=' + filter).success(
+        $http.get("./rest/model/query=" + filter).success(
             function(data, status, headers, config) {
                 $scope.models = data;
             }).error(function(data, status, headers, config) {
@@ -58,20 +59,21 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
     };
 } ]);
 
-repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+repositoryControllers.controller("AdminController", ["$scope", "$rootScope", "$http", "$location", 
+                                                     function ($scope, $rootScope, $http, $location) {
     $scope.restore = function () {
         $scope.restoreResult = {};
         $scope.resultMessage = "";
         $rootScope.error = "";
 
-        var fileToUpload = document.getElementById('file').files[0];
+        var fileToUpload = document.getElementById("file").files[0];
         if(fileToUpload != undefined) {
-            var filename = document.getElementById('file').files[0].name;
+            var filename = document.getElementById("file").files[0].name;
             var fd = new FormData();
-            fd.append('file', fileToUpload);
-            $http.post('./rest/admin/content',fd, {
+            fd.append("file", fileToUpload);
+            $http.post("./rest/admin/content",fd, {
                 transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
+                headers: {"Content-Type": undefined}
             })
             .success(function(result){
                 $location.path("/");
@@ -82,7 +84,8 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
     };
 } ]);
 
-repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+repositoryControllers.controller("UploadController", ["$scope", "$rootScope", "$http","$location", 
+                                                      function ($scope, $rootScope, $http, $location) {
 
     $scope.uploadModel = function () {
         $scope.uploadResult = {};
@@ -90,15 +93,15 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         $scope.showResultBox = false;
         $rootScope.error = "";
 
-        var fileToUpload = document.getElementById('file').files[0];
+        var fileToUpload = document.getElementById("file").files[0];
         if(fileToUpload != undefined) {
-            var filename = document.getElementById('file').files[0].name;
+            var filename = document.getElementById("file").files[0].name;
             var extn = filename.split(".").pop();
-            var modelFiles = ['type', 'fbmodel', 'infomodel', 'mapping'];
+            var modelFiles = ["type", "fbmodel", "infomodel", "mapping"];
             if(modelFiles.indexOf(extn) !== -1)
-                upload('./rest/secure/', fileToUpload);
+                upload("./rest/secure/", fileToUpload);
             else
-                upload('./rest/secure/multiple', fileToUpload);
+                upload("./rest/secure/multiple", fileToUpload);
         } else {
             $rootScope.error = "Choose model file(s) and click Upload.";
         }
@@ -110,10 +113,10 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         $scope.modelStats = {};
         var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
         var fd = new FormData();
-        fd.append('file', fileToUpload);
+        fd.append("file", fileToUpload);
         $http.post(url,fd, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: {"Content-Type": undefined}
         })
         .success(function(result){
             $scope.stateArr = [];
@@ -206,7 +209,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/secure/checkInMultiple', validUploadHandles)
+        $http.put("./rest/secure/checkInMultiple", validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
@@ -228,7 +231,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     };
 
     checkinSingle = function (handleId) {
-        $http.put('./rest/secure/'+handleId)
+        $http.put("./rest/secure/"+handleId)
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
             $scope.showResultBox = true;
@@ -250,20 +253,21 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 
 }]);
 
-repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal) {
+repositoryControllers.controller("DetailsController", ["$rootScope", "$scope", "$http","$routeParams","$location", "$route","$uibModal",
+                                                       function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal) {
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
     $scope.chosenFile = false;
 
     $scope.uploadImage = function () {
         var fd = new FormData();
-        fd.append('file', document.getElementById('imageFile').files[0]);
-        fd.append('namespace',$scope.model.id.namespace);
-        fd.append('name',$scope.model.id.name);
-        fd.append('version',$scope.model.id.version);
-        $http.post('./rest/model/image/',fd, {
+        fd.append("file", document.getElementById("imageFile").files[0]);
+        fd.append("namespace",$scope.model.id.namespace);
+        fd.append("name",$scope.model.id.name);
+        fd.append("version",$scope.model.id.version);
+        $http.post("./rest/model/image/",fd, {
             transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
+            headers: {"Content-Type": undefined}
         })
         .success(function(result){
             $location.path("/details/"+$scope.model.id.namespace+"/"+$scope.model.id.name+"/"+$scope.model.id.version);
@@ -295,21 +299,21 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
 
     $scope.getDetails = function (namespace,name,version) {
-        $http.get('./rest/model/'+namespace+'/'+name+'/'+version)
+        $http.get("./rest/model/"+namespace+"/"+name+"/"+version)
         .success(function(result){
             $scope.model = result;
         });
     };
 
     $scope.getContent = function (namespace,name,version) {
-        $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
+        $http.get("./rest/model/file/"+namespace+"/"+name+"/"+version)
         .success(function(result) {
             $scope.content = result;
         });
     };
 
     $scope.getPlatformGenerators = function () {
-        $http.get('./rest/generation-router/platform')
+        $http.get("./rest/generation-router/platform")
         .success(function(result){
             $scope.platformGeneratorMatrix = $scope.listToMatrix(result, 2);
         });
@@ -339,11 +343,11 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getPlatformGenerators();
 
     $scope.remove = function(){
-        $http.delete('./rest/admin/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
+        $http.delete("./rest/admin/"+$routeParams.namespace+"/"+$routeParams.name+"/"+$routeParams.version )
         .success(function(result){
-            $location.path('/');
+            $location.path("/");
         }).error(function(data, status, headers, config) {
-            $location.path('/');
+            $location.path("/");
         });
     }
 
@@ -355,7 +359,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
     $scope.getCommentsForModelId = function(){
 
-        $http.get('./rest/comments/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+        $http.get("./rest/comments/model/"+$routeParams.namespace+"/"+$routeParams.name+"/"+$routeParams.version)
         .success(function(result){
             $scope.comments = result;
             $scope.comments.reverse();
@@ -382,13 +386,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $scope.date = new Date();
 
         var comment = {
-            "modelId"	: $routeParams.namespace + '.' + $routeParams.name + ':' + $routeParams.version,
+            "modelId"	: $routeParams.namespace + "." + $routeParams.name + ":" + $routeParams.version,
             "author"	: $scope.user,
             "date"		: $scope.date,
             "content"	: commentContent
         }
 
-        $http.post('./rest/comments', comment)
+        $http.post("./rest/comments", comment)
         .success(function(result){
             $scope.comments.reverse();
             $scope.comments.push(comment);
@@ -435,7 +439,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 }]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', function ($scope,$http,generator,model,$uibModalInstance) {
+repositoryControllers.controller("GeneratorConfigController", [ "$scope","$http","generator","model","$uibModalInstance", 
+                                                                function ($scope,$http,generator,model,$uibModalInstance) {
 
 	$scope.model = model;
 	$scope.generator = generator;
@@ -456,7 +461,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	};
 	
 	$scope.loadConfiguration = function() {
-		$http.get('./rest/generation-router/info/'+$scope.generator.key)
+		$http.get("./rest/generation-router/info/"+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				
@@ -485,7 +490,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 			}
 			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
-     	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key+requestParams);
+     	window.location.assign("./rest/generation-router/"+$scope.model.id.namespace+"/"+$scope.model.id.name+"/"+$scope.model.id.version+"/"+$scope.generator.key+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 
@@ -494,20 +499,20 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
     };
 }]);
 
-repositoryControllers.controller('GeneratorController', [ '$scope','$http', function ($scope,$http) {
+repositoryControllers.controller("GeneratorController", [ "$scope","$http", function ($scope,$http) {
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
 
     $scope.listGenerators = function() {
-        $http.get('./rest/generation-router/platform').success(
+        $http.get("./rest/generation-router/platform").success(
             function(data, status, headers, config) {
                 $scope.generators = data;
             });
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/generation-router/topused/3').success(
+        $http.get("./rest/generation-router/topused/3").success(
             function(data, status, headers, config) {
                 $scope.mostUsedGenerators = data;
             });
@@ -524,15 +529,15 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http', func
 
 } ]);
 
-repositoryControllers.controller('AuthenticateController', 
-    ['$scope', '$rootScope', '$location', '$http',
+repositoryControllers.controller("AuthenticateController", 
+    ["$scope", "$rootScope", "$location", "$http",
      function($scope, $rootScope, $location, $http) {
 
         var authenticate = function(credentials, callback) {
 
             var headers = credentials ? {authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
 
-            $http.get('user', {headers : headers}).success(function(data) {
+            $http.get("user", {headers : headers}).success(function(data) {
                 if (data.name) {
                     $rootScope.authenticated = true;
                     $rootScope.getUser();
@@ -566,7 +571,7 @@ repositoryControllers.controller('AuthenticateController',
 /*
  * TODO -
  */
-repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', 
+repositoryControllers.controller("SignUpController", [ "$location", "$rootScope", "$scope", "$http", "$routeParams", 
                                                        function ($location, $rootScope, $scope, $http, $routeParams) {
 
     $scope.user = {}; 
@@ -612,8 +617,8 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
      */
     $scope.checkEmailAlreadyExists = function(user){
 
-        $http.post('./rest/users/unique/email', user.email , {
-            headers: {'Content-Type': "application/json"}
+        $http.post("./rest/users/unique/email", user.email , {
+            headers: {"Content-Type": "application/json"}
         }).success(
             function(data, status, headers, config) {
                 $scope.emailAddressExists = data;
@@ -625,8 +630,8 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
 
     $scope.usernameAlreadyExists = function(user){
 
-        $http.post('./rest/users/unique/username', user.username , {
-            headers: {'Content-Type': "application/json"}
+        $http.post("./rest/users/unique/username", user.username , {
+            headers: {"Content-Type": "application/json"}
         }).success(
             function(data, status, headers, config) {
                 $scope.usernameExists = data;
@@ -646,15 +651,15 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
             "password":user.password
         };
 
-        $http.post('./rest/users', userData, {
-            headers: {'Content-Type': "application/json"}
+        $http.post("./rest/users", userData, {
+            headers: {"Content-Type": "application/json"}
         })
         .success( function(data, status, headers, config) {
             if ($scope.user.emailReadonly == true) {
             	$rootScope.getUser();
-                $location.path('/');
+                $location.path("/");
             } else {
-                $('#signup').modal('show');
+                $("#signup").modal("show");
             }
         }).error(function(data, status, headers, config) {
 
@@ -665,11 +670,12 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
 /*
  * TODO -
  */
-repositoryControllers.controller('SettingsController', [ '$scope','$http','$rootScope', '$location', function ($scope,$http,$rootScope,$location) {
+repositoryControllers.controller("SettingsController", [ "$scope","$http","$rootScope", "$location", 
+                                                         function ($scope,$http,$rootScope,$location) {
 
     var currentEmailAddress = "";
 
-    $http.get('./rest/users/'+$rootScope.user).success(
+    $http.get("./rest/users/"+$rootScope.user).success(
         function(data, status, headers, config) {
 
             if(data === ""){
@@ -690,7 +696,7 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
 
         $scope.put = null;
 
-        $http.put('./rest/users/'+$rootScope.user, user)
+        $http.put("./rest/users/"+$rootScope.user, user)
         .then(function(response) {
             $scope.user = response.data;
             if (response.status === 200){
@@ -707,7 +713,7 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
         if (currentEmailAddress === user.email) {
             $scope.emailAddressExists = false;
         } else {
-            $http.post('./rest/users/unique/email', user.email)
+            $http.post("./rest/users/unique/email", user.email)
                 .success(function(data, status, headers, config) {
                     $scope.emailAddressExists = data;
                 })
@@ -718,10 +724,11 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
 
 }]);
 
-repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$http', function ($location,$scope,$http) {
+repositoryControllers.controller("SwaggerController", [ "$location", "$scope","$http", 
+                                                        function ($location,$scope,$http) {
     $scope.isLoading = true;
-    $scope.url = $scope.swaggerUrl = 'v2/api-docs';
+    $scope.url = $scope.swaggerUrl = "v2/api-docs";
     $scope.defaultErrorHandler = function(data, status) {
-        alert('Error Loading Swagger API!');
+        alert("Error Loading Swagger API!");
     };
 }]);
