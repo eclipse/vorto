@@ -35,6 +35,10 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.web.exception.FileAccessException;
+import org.eclipse.vorto.repository.web.exception.ImageNotFoundException;
+import org.eclipse.vorto.repository.web.exception.StreamCopyException;
+import org.eclipse.vorto.repository.web.exception.ZipCreationException;
 import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -120,13 +124,17 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		
 		final ModelId modelId = new ModelId(name, namespace, version);
 		byte[] modelImage = modelRepository.getModelImage(modelId);
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getName()+".png");
-		response.setContentType(APPLICATION_OCTET_STREAM);
-		try {
-			IOUtils.copy(new ByteArrayInputStream(modelImage), response.getOutputStream());
-			response.flushBuffer();
-		} catch (IOException e) {
-			throw new RuntimeException("Error copying file.", e);
+		if (modelImage != null) {
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getName()+".png");
+			response.setContentType(APPLICATION_OCTET_STREAM);
+			try {
+				IOUtils.copy(new ByteArrayInputStream(modelImage), response.getOutputStream());
+				response.flushBuffer();
+			} catch (IOException e) {
+				throw new StreamCopyException("Error copying image to output stream. " + modelId.toString(), e);
+			} 
+		} else {
+			throw new ImageNotFoundException("Cannot find image for " + modelId.toString());
 		}
 	}
 	
@@ -141,7 +149,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		try {
 			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new FileAccessException("Error accessing file " + file.getName(), e);
 		}
 	}
 	
@@ -174,7 +182,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 				IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
 				response.flushBuffer();
 			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
+				throw new StreamCopyException("Error copying file to response stream " + modelId.toString(), e);
 			}
 		} else {
 			createSingleModelContent(modelId,contentType, response);
@@ -193,8 +201,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			
 			return baos.toByteArray();
 			
-		} catch(Exception ex) {
-			throw new RuntimeException(ex);
+		} catch(IOException ex) {
+			throw new ZipCreationException("Error creating zip for " + modelId.toString(), ex);
 		}
 	}
 	
@@ -208,14 +216,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
 				response.flushBuffer();
 			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
+				throw new StreamCopyException("Error copying file " + modelId.toString() + " to response stream.", e);
 			}
 		} else {
-			throw new RuntimeException("File not found.");
+			throw new ModelNotFoundException("Model " + modelId.toString() + " not found");
 		}
 	}
 	
-	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId, ContentType contentType) throws Exception {
+	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId, ContentType contentType) throws IOException {
 		byte[] modelContent = modelRepository.getModelContent(modelId,contentType).getContent();
 		ModelInfo modelResource = modelRepository.getById(modelId);
 		
@@ -224,7 +232,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			zipOutputStream.putNextEntry(zipEntry);
 			zipOutputStream.write(modelContent);
 			zipOutputStream.closeEntry();
-		} catch(Exception ex) {
+		} catch(IOException ex) {
 			// entry possible exists already, so skipping TODO: ugly hack!!
 		}
 		
@@ -261,14 +269,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		final ContentType contentType = ContentType.DSL;
 		
 		try {
-		for (ModelInfo mappingResource : mappingResources) {
-			addModelToZip(zos, mappingResource.getId(), contentType);
-		}
-
-		zos.close();
-		baos.close();
+			for (ModelInfo mappingResource : mappingResources) {
+				addModelToZip(zos, mappingResource.getId(), contentType);
+			}
+		
+			zos.close();
+			baos.close();
 		} catch(Exception ex) {
-			throw new RuntimeException(ex);
+			throw new ZipCreationException("Error creating zip for " + modelId.toString(), ex);
 		}
 		
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
@@ -278,7 +286,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
 			response.flushBuffer();
 		} catch (IOException e) {
-			throw new RuntimeException("Error copying file.", e);
+			throw new StreamCopyException("Error copying file " + modelId.toString() + " to response stream.", e);
 		}
 	}
 
