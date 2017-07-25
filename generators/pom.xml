@@ -29,6 +29,7 @@
 		<module>org.eclipse.vorto.codegen.lwm2m</module>
 		<module>org.eclipse.vorto.codegen.prosystfi</module>
 		<module>org.eclipse.vorto.codegen.kura</module>
+		<module>org.eclipse.vorto.codegen.protobuf</module>
   </modules>
   
 </project>

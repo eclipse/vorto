@@ -20,6 +20,6 @@ github:
     userAuthorizationUri: https://github.com/login/oauth/authorize
     clientAuthenticationScheme: form
     scope:
-      - user
+      - user:email
   resource:
     userInfoUri: https://api.github.com/user

@@ -156,6 +156,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.protobuf</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 		<!-- Generator dependencies -->
 		
 		<dependency>
