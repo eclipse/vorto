@@ -30,7 +30,6 @@ import org.eclipse.vorto.codegen.webui.templates.config.SwaggerConfigurationTemp
 import org.eclipse.vorto.codegen.webui.templates.config.WebSecurityConfigTemplate;
 import org.eclipse.vorto.codegen.webui.templates.config.WebSocketConfigTemplate;
 import org.eclipse.vorto.codegen.webui.templates.dao.CrudRepositoryTemplate;
-import org.eclipse.vorto.codegen.webui.templates.model.FeatureStatusPropertyTemplate;
 import org.eclipse.vorto.codegen.webui.templates.model.FeatureTemplate;
 import org.eclipse.vorto.codegen.webui.templates.model.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.webui.templates.model.JavaEnumGeneratorTask;
@@ -187,7 +186,6 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		
 		ChainedCodeGeneratorTask<FunctionblockProperty> fbPropertyGenerators = new ChainedCodeGeneratorTask<FunctionblockProperty>();
 		for (FunctionblockProperty property : model.getProperties()) {
-			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new FeatureStatusPropertyTemplate()));
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new FeatureTemplate()));
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new LocationControllerTemplate()));
 			

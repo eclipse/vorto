@@ -31,7 +31,7 @@ class DefaultUITemplate implements IFunctionBlockUITemplate {
 							</div>
 							<div class="col-sm-6">
 									<input readonly type="text" name="«statusProperty.name»" 
-										value={{thing.«fbProperty.name».status.«statusProperty.name»}}
+										value={{thing.«fbProperty.name».«statusProperty.name»}}
 										class="ng-pristine ng-valid col-xs-10" pull-right"/>
 							</div>
 						</div>

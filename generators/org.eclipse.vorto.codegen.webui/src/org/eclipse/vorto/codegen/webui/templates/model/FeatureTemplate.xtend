@@ -16,11 +16,24 @@ package org.eclipse.vorto.codegen.webui.templates.model;
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldGetterTemplate
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldSetterTemplate
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldTemplate
 import org.eclipse.vorto.codegen.webui.templates.TemplateUtils
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
+	
+	private JavaClassFieldTemplate propertyTemplate;
+	private JavaClassFieldSetterTemplate propertySetterTemplate;
+	private JavaClassFieldGetterTemplate propertyGetterTemplate;
+	
+	new() {
+		this.propertyTemplate = new JavaClassFieldTemplate();
+		this.propertySetterTemplate = new JavaClassFieldSetterTemplate("set");
+		this.propertyGetterTemplate = new JavaClassFieldGetterTemplate("get");
+	}
 	
 	override getFileName(FunctionblockProperty context) {
 		'''«context.type.name».java'''
@@ -52,20 +65,18 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 				«IF fb.status != null»
 				«IF context.configurationProperties.getOrDefault("history","true").equalsIgnoreCase("true")»
 				    @javax.persistence.OneToOne(cascade = {javax.persistence.CascadeType.PERSIST,javax.persistence.CascadeType.MERGE})
-				    «ENDIF»
-					private «element.type.name»Status status = null;
 				«ENDIF»
-				
-				«IF fb.status != null»
-					public «element.type.name»Status getStatus() {
-						return this.status;
-					}
-					
-					public void setStatus(«element.type.name»Status status) {
-						this.status = status;
-					}
+					«IF element.type.functionblock.status != null»
+						«FOR property : element.type.functionblock.status.properties»
+							«propertyTemplate.getContent(property,context)»
+						«ENDFOR»
+										
+						«FOR property : element.type.functionblock.status.properties»
+							«propertySetterTemplate.getContent(property,context)»
+							«propertyGetterTemplate.getContent(property,context)»
+						«ENDFOR»
+					«ENDIF»
 				«ENDIF»
-				
 				
 			}
 		'''

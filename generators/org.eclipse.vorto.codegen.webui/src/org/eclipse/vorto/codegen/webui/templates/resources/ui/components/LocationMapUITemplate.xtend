@@ -32,14 +32,14 @@ class LocationMapUITemplate implements IFunctionBlockUITemplate {
 		'''
 		$scope.set«element.name.toFirstUpper» = function() {
 					$scope.thingLocation = {
-			            	lat: $scope.thing.«element.name».status.«latitudeProperty» === "" ? 1.3580576343735706 : parseFloat($scope.thing.«element.name».status.«latitudeProperty»),
-			                lng: $scope.thing.«element.name».status.«longitudeProperty» === "" ? 103.798828125 : parseFloat($scope.thing.«element.name».status.«longitudeProperty»),
+			            	lat: $scope.thing.«element.name».«latitudeProperty» === "" ? 1.3580576343735706 : parseFloat($scope.thing.«element.name».«latitudeProperty»),
+			                lng: $scope.thing.«element.name».«longitudeProperty» === "" ? 103.798828125 : parseFloat($scope.thing.«element.name».«longitudeProperty»),
 			                zoom: 8
 			            };
 			            $scope.markers = {
 			            	m1 : {
-			            		lat: $scope.thing.«element.name».status.«latitudeProperty» === "" ? 1.3580576343735706 : parseFloat($scope.thing.«element.name».status.«latitudeProperty»),
-			                	lng: $scope.thing.«element.name».status.«longitudeProperty» === "" ? 103.798828125 : parseFloat($scope.thing.«element.name».status.«longitudeProperty»),
+			            		lat: $scope.thing.«element.name».«latitudeProperty» === "" ? 1.3580576343735706 : parseFloat($scope.thing.«element.name».«latitudeProperty»),
+			                	lng: $scope.thing.«element.name».«longitudeProperty» === "" ? 103.798828125 : parseFloat($scope.thing.«element.name».«longitudeProperty»),
 			                	icon : { iconUrl : 'webjars/leaflet/1.0.0/images/marker-icon.png'}
 			                }
 			            }; 

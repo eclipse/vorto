@@ -128,7 +128,7 @@ public class «model.name»ThingsClient {
             featureHandle.retrieve()
                 .exceptionally(addMissingFeature(thingHandle, featureId))
                 .thenCompose(feature -> {
-                    return featureHandle.putProperty("status", JsonObject.newBuilder()
+                    return featureHandle.setProperties(JsonObject.newBuilder()
                         «FOR statusProperty : fbProperty.type.functionblock.status.properties»
                         «IF statusProperty.type instanceof PrimitivePropertyType && (statusProperty.type as PrimitivePropertyType).type == PrimitiveType.DATETIME»
                         .set("«statusProperty.name»", JSON_DATE_FORMAT.format(fb.get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»()))

@@ -60,7 +60,7 @@ class BarChartUITemplate implements IFunctionBlockUITemplate {
 				   				key: "Cumulative Return",
 				    			values: [
 				    				«FOR prop : properties SEPARATOR ","»
-				    				{ "label" : "«prop»" , "value" : $scope.thing.«element.name.toLowerCase».status.«prop» }
+				    				{ "label" : "«prop»" , "value" : $scope.thing.«element.name.toLowerCase».«prop» }
 				    				«ENDFOR»
 				    			]
 							}]; 
