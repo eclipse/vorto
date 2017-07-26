@@ -63,19 +63,16 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 				
 				«var fb = element.type.functionblock»	
 				«IF fb.status != null»
-				«IF context.configurationProperties.getOrDefault("history","true").equalsIgnoreCase("true")»
-				    @javax.persistence.OneToOne(cascade = {javax.persistence.CascadeType.PERSIST,javax.persistence.CascadeType.MERGE})
+				«IF element.type.functionblock.status != null»
+				«FOR property : element.type.functionblock.status.properties»
+					«propertyTemplate.getContent(property,context)»
+				«ENDFOR»
+				
+				«FOR property : element.type.functionblock.status.properties»
+					«propertySetterTemplate.getContent(property,context)»
+					«propertyGetterTemplate.getContent(property,context)»
+				«ENDFOR»
 				«ENDIF»
-					«IF element.type.functionblock.status != null»
-						«FOR property : element.type.functionblock.status.properties»
-							«propertyTemplate.getContent(property,context)»
-						«ENDFOR»
-										
-						«FOR property : element.type.functionblock.status.properties»
-							«propertySetterTemplate.getContent(property,context)»
-							«propertyGetterTemplate.getContent(property,context)»
-						«ENDFOR»
-					«ENDIF»
 				«ENDIF»
 				
 			}
