@@ -47,13 +47,21 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	}
 	
 	protected void checkinModel(String modelName) {
+		checkinModel(modelName, getCallerId());
+	}
+	
+	protected String getCallerId() {
+		return "alex";
+	}
+	
+	protected void checkinModel(String modelName, String callerId) {
 		try {
 			UploadModelResult uploadResult = modelRepository.upload(
 					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream()),
-					modelName);
+					modelName, callerId);
 			Assert.isTrue(uploadResult.isValid(), uploadResult.getErrorMessage());
 			when(userRepository.findAll()).thenReturn(Collections.emptyList());
-			modelRepository.checkin(uploadResult.getHandleId(), "alex");
+			modelRepository.checkin(uploadResult.getHandleId(), callerId);
 			modelRepository.search("*");
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.vorto.repository.service.IModelRepository;
 
 /**
@@ -44,16 +45,16 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
 	}
 
 	@Override
-	public void validate(ModelInfo modelResource) throws ValidationException {
-		validateInRepository(modelResource);
+	public void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException {
+		validateInRepository(modelResource,context);
 		//Validate other references in zip files.
 		validateInZipFiles(modelResource);
 	}
 
-	private List<ModelId> validateInRepository(ModelInfo modelResource) {
+	private List<ModelId> validateInRepository(ModelInfo modelResource, InvocationContext context) {
 		List<ModelId> missingReferences = new ArrayList<ModelId>();
 		try {
-			super.validate(modelResource);
+			super.validate(modelResource,context);
 		} catch (CouldNotResolveReferenceException e) {
 			return e.getMissingReferences();
 		}

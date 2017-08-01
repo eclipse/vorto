@@ -19,6 +19,7 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.vorto.repository.service.IModelRepository;
 
 /**
@@ -37,7 +38,7 @@ public class ModelReferencesValidation implements IModelValidator {
 	}
 	
 	@Override
-	public void validate(ModelInfo modelResource)
+	public void validate(ModelInfo modelResource, InvocationContext context)
 			throws ValidationException {
 		List<ModelId> missingReferences = new ArrayList<ModelId>();
 		if (!modelResource.getReferences().isEmpty()) {

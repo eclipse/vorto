@@ -58,9 +58,10 @@ public interface IModelRepository {
 	 * 
 	 * @param content to validate
 	 * @param fileName
+	 * @param callerId
 	 * @return result about information of the uploaded content and the upload handle. 
 	 */
-	UploadModelResult upload(byte[] content, String fileName);
+	UploadModelResult upload(byte[] content, String fileName, String callerId);
 	
 	/**
 	 * @pre {@link UploadModelResult#isValid() == true}}
@@ -69,9 +70,9 @@ public interface IModelRepository {
 	 * 
 	 * Checks in a new model into the repository
 	 * @param uploadHandle
-	 * @param author
+	 * @param callerId
 	 */
-	void checkin(String handleId, String author);
+	void checkin(String handleId, String callerId);
 		
 	/**
 	 * Adds a model image for the given model id

@@ -12,21 +12,21 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.internal.service.validation;
+package org.eclipse.vorto.repository.internal.service;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.internal.service.InvocationContext;
+public final class InvocationContext {
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface IModelValidator {
+	private String username;
 	
-	/**
-	 * Validates an uploaded model resource
-	 * @param modelResource
-	 * @param context
-	 * @throws ValidationException
-	 */
-	void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException;
+	public static InvocationContext create(String username) {
+		return new InvocationContext(username);
+	}
+	
+	private InvocationContext(String username) {
+		this.username = username;
+	}
+	
+	public String getUsername() {
+		return this.username;
+	}
 }

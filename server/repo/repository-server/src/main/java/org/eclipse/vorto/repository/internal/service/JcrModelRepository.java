@@ -95,7 +95,7 @@ public class JcrModelRepository implements IModelRepository {
 	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
 
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
-
+	
 	@Override
 	public List<ModelInfo> search(final String expression) {
 		String queryExpression = expression;
@@ -199,7 +199,7 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public UploadModelResult upload(byte[] content, String fileName) {
+	public UploadModelResult upload(byte[] content, String fileName, String callerId) {
 
 		try {
 			ModelInfo resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
@@ -207,7 +207,7 @@ public class JcrModelRepository implements IModelRepository {
 			List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
 			for (IModelValidator validator : validators) {
 				try {
-					validator.validate(resource);
+					validator.validate(resource,InvocationContext.create(callerId));
 				} catch (ValidationException validationException) {
 					validationExceptions.add(validationException);
 				}
@@ -242,14 +242,22 @@ public class JcrModelRepository implements IModelRepository {
 
 		try {
 			Node folderNode = createNodeForModelId(resource.getId());
-			Node fileNode = folderNode.addNode(resource.getId().getName() + resource.getType().getExtension(),
-					"nt:file");
-			fileNode.addMixin("vorto:meta");
-			fileNode.addMixin("mix:referenceable");
-			fileNode.setProperty("vorto:author", author);
-			Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream((byte[])uploadedItem.getValue()));
-			contentNode.setProperty("jcr:data", binary);
+			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()?folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
+			if (fileNode == null) {
+				fileNode = folderNode.addNode(resource.getId().getName() + resource.getType().getExtension(),
+						"nt:file");
+				fileNode.addMixin("vorto:meta");
+				fileNode.addMixin("mix:referenceable");
+				fileNode.setProperty("vorto:author", author);
+				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream((byte[])uploadedItem.getValue()));
+				contentNode.setProperty("jcr:data", binary);
+			} else {
+				Node contentNode = fileNode.getNode("jcr:content");
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream((byte[])uploadedItem.getValue()));
+				contentNode.setProperty("jcr:data", binary);
+			}
+			
 			session.save();
 			logger.info("Checkin successful");
 			this.uploadStorage.remove(handleId);

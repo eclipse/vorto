@@ -41,7 +41,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadValidModels() throws IOException {
 		String fileName = "sample_models/valid-models.zip";
-		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(3, uploadResults.size());
 		verifyAllModelsAreValid(uploadResults);
 	}
@@ -49,7 +49,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadOneMissingModels() throws IOException {
 		String fileName = "sample_models/missing-models.zip";
-		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2, uploadResults.size());
 		verifyOneModelAreMissing(uploadResults);
 	}
@@ -57,7 +57,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadInvalidModels() throws IOException {
 		String fileName = "sample_models/invalid-models.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
 		assertFalse(result.get(0).isValid());
 		assertFalse(result.get(1).isValid()); 
@@ -66,7 +66,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadDifferentModelTypesWithSameId() throws Exception {
 		String fileName = "sample_models/modelsWithSameId.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
 		assertFalse(result.get(1).isValid()); 	
 	}
@@ -74,7 +74,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 	@Test
 	public void testUploadModelWithInvalidGrammar() throws Exception {
 		String fileName = "sample_models/modelsWithWrongGrammar.zip";
-		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName);
+		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
 		assertFalse(result.get(0).isValid());
 		assertFalse(result.get(1).isValid()); 

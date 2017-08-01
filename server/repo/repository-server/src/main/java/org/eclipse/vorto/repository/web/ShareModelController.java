@@ -70,7 +70,7 @@ public class ShareModelController {
 	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
-			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename());
+			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
 			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
 			uploadModelResults.add(uploadModelResult);
 			String message = "Uploaded model " + file.getOriginalFilename() + (uploadModelResult.isValid() ? " is valid to check in." : " has errors. Cannot check in.") ;
@@ -90,7 +90,7 @@ public class ShareModelController {
 		try {
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);
 			
-			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename());
+			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
 			ServerResponse serverResponse = (uploadModelResults.size() == 0)
 					? new ServerResponse("Uploaded file doesn't have any valid models.", false, uploadModelResults)

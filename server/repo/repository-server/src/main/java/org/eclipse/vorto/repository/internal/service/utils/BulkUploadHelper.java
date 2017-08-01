@@ -32,6 +32,7 @@ import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
 import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.vorto.repository.internal.service.ModelParserFactory;
 import org.eclipse.vorto.repository.internal.service.UploadModelResultFactory;
 import org.eclipse.vorto.repository.internal.service.validation.BulkModelDuplicateIdValidation;
@@ -56,7 +57,7 @@ public class BulkUploadHelper {
 		this.uploadStorage = storage;
 	}
 
-	public List<UploadModelResult> uploadMultiple(byte[] content, String zipFileName) {
+	public List<UploadModelResult> uploadMultiple(byte[] content, String zipFileName, String callerId) {
 		if (!isValid(zipFileName)) {
 			throw new FatalModelRepositoryException("Filename/type is invalid", null);
 		}
@@ -92,7 +93,7 @@ public class BulkUploadHelper {
 			for (ModelInfo modelResource : parsedModels) {
 				try {
 					for (IModelValidator validator : bulkUploadValidators) {
-						validator.validate(modelResource);
+						validator.validate(modelResource,InvocationContext.create(callerId));
 					}
 					
 					UploadModelResult result = UploadModelResult.valid(modelResource);

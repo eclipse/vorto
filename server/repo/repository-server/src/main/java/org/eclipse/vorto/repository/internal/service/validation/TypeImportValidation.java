@@ -38,6 +38,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.internal.model.ModelEMFResource;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 
 import com.google.common.collect.Lists;
@@ -45,7 +46,7 @@ import com.google.common.collect.Lists;
 public class TypeImportValidation  implements IModelValidator {
 
 	@Override
-	public void validate(ModelInfo modelResource) throws ValidationException {
+	public void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException {
 		Collection<String> unImportedReferences = Lists.newArrayList();
 		
 		ModelEMFResource emfModel = (ModelEMFResource) modelResource;

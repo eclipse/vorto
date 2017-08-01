@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.vorto.repository.service.IModelRepository;
 
 public class BulkModelDuplicateIdValidation extends ModelReferencesValidation {
@@ -39,7 +40,7 @@ public class BulkModelDuplicateIdValidation extends ModelReferencesValidation {
 	}
 
 	@Override
-	public void validate(ModelInfo modelResource) throws ValidationException {
+	public void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException {
 		Set<ModelId> nonduplicates = new HashSet<>();
 		
 		for (ModelId modelId : zipModelIds) {

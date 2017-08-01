@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.internal.service.validation;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.internal.service.InvocationContext;
 import org.eclipse.vorto.repository.service.IModelRepository;
 
 /**
@@ -29,9 +30,9 @@ public class DuplicateModelValidation implements IModelValidator {
 	}
 	
 	@Override
-	public void validate(ModelInfo modelResource)
+	public void validate(ModelInfo modelResource, InvocationContext context)
 			throws ValidationException {
-		if (modelRepository.getById(modelResource.getId()) != null) {
+		if (modelRepository.getById(modelResource.getId()) != null && !context.getUsername().equalsIgnoreCase("admin")) {
 			throw new ValidationException("Model already exists", modelResource);
 		}
 	}
