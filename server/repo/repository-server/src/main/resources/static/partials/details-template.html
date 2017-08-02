@@ -20,9 +20,9 @@
 							<h4 class="reviews text-capitalize"><i class="fa fa-comment"></i> Discussion  <span class="badge">{{comments.length}}</span> </h4>
 						</a>
 					</li>
-					<li ng-show="authority == 'ROLE_ADMIN'">
+					<li ng-show="authority == 'ROLE_ADMIN' || model.author === user">
 						<a href="" role="tab" data-target="#admin" data-toggle="tab" style="height:70px;">
-							<h4 class="reviews text-capitalize"><i class="fa fa-cogs"></i> Admin  </h4>
+							<h4 class="reviews text-capitalize"><i class="fa fa-cogs"></i> Administration  </h4>
 						</a>
 					</li>
 				</ul> 

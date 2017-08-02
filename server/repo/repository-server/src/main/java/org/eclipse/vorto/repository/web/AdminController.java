@@ -27,6 +27,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.service.IRepositoryManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -48,7 +49,7 @@ public class AdminController extends AbstractRepositoryController {
 	private static final SimpleDateFormat SIMPLEDATEFORMAT = new SimpleDateFormat("yyyyMMdd-HH:mm");
 	
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.DELETE)
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:delete')")
 	public void deleteModelResource(final @PathVariable String namespace,final @PathVariable String name, final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");

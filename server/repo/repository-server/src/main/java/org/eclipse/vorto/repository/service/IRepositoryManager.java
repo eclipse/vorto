@@ -37,6 +37,7 @@ public interface IRepositoryManager {
 	/**
 	 * Removes the model with the given model id from the repository. 
 	 * @param modelId
+	 * @param callerId
 	 */
 	void removeModel(ModelId modelId);
 }

@@ -41,6 +41,7 @@ public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.w
 	public void setUpTestUser() {
 		userRepository.save(newUser("admin", "admin", false, "alexander.edelmann@bosch-si.com", Role.ADMIN));
 		userRepository.save(newUser("testuser", "testuser", false, "erleczars.mantos@bosch-si.com", Role.USER));
+		userRepository.save(newUser("testuser2", "testuser2", false, "testuser2@my.com", Role.USER));
 	}
 	
 	private User newUser(String username, String password, boolean hasWatchOnRepo, String email, Role role) {
