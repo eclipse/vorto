@@ -31,6 +31,23 @@ repositoryDirectives.directive('emailCheck', [function () {
     }
 }]);
 
+repositoryDirectives.directive('totalSummary', function () {
+
+    return {
+    restrict: 'E',
+    require: '^stTable',
+    template:'<span><b>{{pagination.totalItemCount}} models found</b></span>',
+    scope: {},
+    link: function (scope, element, attr, ctrl) {
+      var listener = function (val) {
+        scope.pagination = ctrl.tableState().pagination;
+        scope.to = Math.min(scope.pagination.start + scope.pagination.number, scope.total || 0);
+      };
+      scope.$watch(ctrl.tableState(), listener, true);
+    }
+  }
+});
+
 repositoryDirectives.directive( 'dynTemplate', function ( $compile ) {
   return {
     scope: true,

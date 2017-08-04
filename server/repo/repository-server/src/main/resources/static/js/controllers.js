@@ -6,7 +6,7 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
     $scope.modelType = 'all';
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
-
+    
     $scope.clearInput = function() {
         $scope.queryFilter = "";
     };

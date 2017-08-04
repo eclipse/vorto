@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-sm-12 main">
-		<div class="row">
+		<!--div class="row">
 			<div class="col-sm-12 col-md-12 project-selection">
 				<div class="row form-inline form-group">
 					<div class="radio">
@@ -25,18 +25,37 @@
 					<a uib-popover-html="'<b>Describe</b> a new device and <b>Publish</b> it as an information model.'" popover-trigger="mouseenter" ng-show="context.webEditor.enabled" class="btn btn-default btn-primary pull-right" target="_blank" href="{{ webEditorLink() }}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New Information Model</a>
 				</div>
 			</div>
-		</div>
+		</div-->
 
 		<div class="row" id="searchResult">
-
+			
 			<div>
 				<table st-table="displayedModels" st-safe-src="models" class="table table-striped">
 					<thead>
 						<tr>
-							<th colspan="6"><b>Search Results: {{models.length}} </b></th>
+							<th colspan="10">
+								<div class="form-group search-box-spacing" >
+									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="80"
+										ng-model="queryFilter"
+										st-search="" autofocus class="queryFilter input-sm" />
+									<a uib-popover-html="'<b>Describe</b> a new device and <b>Publish</b> it as an information model.'" popover-trigger="mouseenter" ng-show="context.webEditor.enabled" class="btn btn-default btn-primary pull-right" target="_blank" href="{{ webEditorLink() }}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New Information Model</a>
+									
+								</div>
+							</th>
 						</tr>
 						<tr>
-							<th id="onType" st-sort="type"><a href="">Type <i class="fa fa-sort"></i></a></th>
+							<th colspan="6" >
+							<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary></th>
+						</tr>
+						<tr>
+							<th>
+                				<select style="font-size:12px" st-search="type">
+                    				<option value="">All</option>
+                    				<option value="InformationModel">Information Model</option>
+                    				<option value="Functionblock">Functionblock</option>
+                    				<option value="Datatype">Datatype</option>
+                				</select>
+            				</th>
 							<th id="onName" st-sort="id.name"><a href="">Name <i class="fa fa-sort"></i></a></th>
 							<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace <i class="fa fa-sort"></i>
 							</a></th>
