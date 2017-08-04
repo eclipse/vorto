@@ -71,7 +71,8 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 		
 		if (invocationContext.getConfigurationProperties().getOrDefault("alexa", FALSE).equalsIgnoreCase(TRUE)) {
 			Map<String, String> props = new HashMap<>();
-			props.put("boschcloud", "true");
+			props.put("cloud", "bosch");
+			props.put("thingId", invocationContext.getConfigurationProperties().getOrDefault("thingId", ""));
 			IGenerationResult awsResult = invocationContext.lookupGenerator("aws").generate(infomodel,
 					InvocationContext.simpleInvocationContext(props), monitor);
 			result.append(awsResult);

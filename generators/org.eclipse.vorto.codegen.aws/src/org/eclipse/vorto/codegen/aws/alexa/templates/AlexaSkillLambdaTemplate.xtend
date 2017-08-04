@@ -30,16 +30,16 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		 var reprompt;
 		 var welcomeOutput = "Let's ask the «element.name». What do you want to know?";
 		
-		 «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+		 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("bosch")»
 		 var thingsApiToken = "INSERT API TOKEN OF BOSCH IOT THINGS HERE";
-		 var thingId = «context.configurationProperties.getOrDefault("thingId","\"INSERT THING ID HERE\"")»;
+		 var thingId = "«context.configurationProperties.getOrDefault("thingId","INSERT THING ID HERE")»";
 		 var username= "INSERT USERNAME HERE";
 		 var password= "INSERT PASSWORD HERE";
 		 
 		 
 		 var http = require('http');
 		 «ENDIF»
-		 «IF context.configurationProperties.getOrDefault("awsiot","false").equalsIgnoreCase("true")»
+		 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("aws")»
 		 var config = {
 		 	"thingName": "<PUT THING NAME HERE>",
 		 	"endpointAddress": "<PUT YOUR ENDPOINT URL HERE>"
@@ -119,7 +119,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 console.log("in fetch«fbProperty.name.toFirstUpper»«statusProperty.name.toFirstUpper»");
 						 
 						  var sessionAttributes = {};
-						 «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+						 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("bosch")»
 						  var httpRequest = {
 						 	 host : "things.apps.bosch-iot-cloud.com",
 						 	 path: "/api/1/things/"+thingId,
@@ -141,7 +141,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 	});
 						 });
 						 «ENDIF»
-						 «IF context.configurationProperties.getOrDefault("awsiot","false").equalsIgnoreCase("true")»
+						 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("aws")»
 						 iotdata.getThingShadow({
 						 	thingName: config.thingName
 						 },function(err, data) {

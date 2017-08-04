@@ -445,7 +445,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 		if ($scope.generator.configKeys && $scope.generator.configKeys.length > 0) {
 			for (var i = 0;i < $scope.generator.configKeys.length;i++) {
 				var key = $scope.generator.configKeys[i];
-				if ($scope.configParams[key] === true) {
+				if ($scope.configParams[key]) {
 					return true;
 				}
 			}
@@ -463,7 +463,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 				if ($scope.generator.configKeys && $scope.generator.configTemplate) {
 					for (var i = 0;i < $scope.generator.configKeys.length;i++) {
 						var key = result.configKeys[i];
-						$scope.configParams[key] = false;
+						$scope.configParams[key] = "";
 					}
 					$scope.configTemplate = $scope.generator.configTemplate;
 				} else {

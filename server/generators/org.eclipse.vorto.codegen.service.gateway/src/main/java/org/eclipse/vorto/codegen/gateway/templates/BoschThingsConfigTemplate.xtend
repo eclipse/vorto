@@ -22,11 +22,16 @@ import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
 class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("simulator","validation","alexa", "kura", "webui"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("simulator","validation","alexa", "kura", "webui","thingId"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
 		<div class="form-group">
+			<div class="row">
+				<div class="col-sm-12">
+					<p>Thing ID: <input type="text" size="50" ng-model="configParams.thingId" placeholder="Optional Thing ID, e.g com.mycompany:4711"></p>
+				</div>
+			</div>
 			<div class="row">
 			<div class="col-sm-4">
 				<div class="box box-primary">

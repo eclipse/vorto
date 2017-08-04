@@ -22,7 +22,7 @@ import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
 class AWSConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("boschcloud","awsiot"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("cloud"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
@@ -35,8 +35,8 @@ class AWSConfigTemplate implements IGeneratorConfigUITemplate {
 				      		<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
 				    	</div><!-- /.box-header -->
 						<div class="box-body">
-							<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
-							<p><input type="checkbox" ng-model="configParams.awsiot">&nbsp;AWS IoT Thing Shadow</p>
+							<p><input type="radio" ng-model="configParams.cloud" value="bosch">&nbsp;Bosch IoT Suite</p>
+							<p><input type="radio" ng-model="configParams.cloud" value="aws">&nbsp;AWS IoT Thing Shadow</p>
 						</div><!-- /.box-body -->
 				  	</div><!-- /.box -->
 				</div>
