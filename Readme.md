@@ -16,7 +16,8 @@ Wanna learn more? [Read Tutorials](tutorials/Readme.md)
 
 1. Eclipse for DSL Developers
 2. Java 8
-3. Install Vorto from Eclipse Marketplace 
+3. Install Vorto from Eclipse Marketplace
+4. Vorto for [contributors](tutorials/tutorial_vortosetup_contributors.md)
 
 ### Describe once, Integrate Anywhere
 
