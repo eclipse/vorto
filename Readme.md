@@ -5,34 +5,32 @@
 
 # Getting started with Vorto
 
-[Vorto](http://www.eclipse.org/vorto) is a toolset that lets you describe devices using a simple language and share these descriptions, so-called Information Models, in a centralized [Vorto Repository](http://vorto.eclipse.org). Information Models can be converted into executable source code with the help of Vorto Code Generators. 
+[Vorto](http://www.eclipse.org/vorto) is an IoT development infrastructure that lets you describe devices using a simple language and publish and manage these descriptions as Information Models in a centralized [Vorto Repository](http://vorto.eclipse.org). Vorto provides many [generators](http://vorto.eclipse.org/#/generators) that let you easily create device-specific source code in order to integrate the device into IoT platforms.
+ 
+Wanna learn more? Browse through the [tutorials](tutorials/Readme.md).
 
-Wanna learn more? [Read Tutorials](tutorials/Readme.md)
-
-# Vorto Toolset
+## Connect a device with Vorto 
 
 
-### Install & Run
+1. Open the [Vorto Repository](http://vorto.eclipse.org)
+2. Search for [_Bosch GLM_](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
+3. Select _Kura Generator_, choose your configuration (e.g. BLE) and confirm with _Generate_.
+4. Download the generated Kura bundle and import it into your Eclipse
+4. **That's it**! You just created a device-specific OSGI Kura bundle to connect the device for a selected IoT cloud backend.
 
-1. Eclipse for DSL Developers
-2. Java 8
-3. Install Vorto from Eclipse Marketplace
-4. Vorto for [contributors](tutorials/tutorial_vortosetup_contributors.md)
+## Describe a new device 
 
-### Describe once, Integrate Anywhere
-
-1. Open the Model Repository Browser in the Eclipse Vorto Perspective
-2. Search for an Information Model, e.g. 'XDK'
-3. Right-Click on the model, Choose 'Generate' and Select the Generator(s) of your choice, e.g. CoAP and Web UI. You should see the generated bundles in the Java Perspective.
-4. **That's it**! You have just generated CoAP specific bundles and a web-based UI from a single Vorto model.  
+The [Vorto web editor](http://vorto.eclipse.org/editor) makes it very easy to describe a device and publish it as an information model to the Vorto Repository. Just follow the [tutorial](tutorials/tutorial-create_and_publish_with_web_editor.md) to learn more.
 
 # Vorto Repository Server
 
-Setup your own Vorto Server backend in a couple of minutes:
+The [Eclipse Vorto Repository](http://vorto.eclipse.org) manages many different information models as well as Code Generators. 
+
+However, if you would like to setup your own local repository including generators, you can do that in just a couple of minutes:
 
  - Set up [Vorto Repository](server/repo/repository-server/Readme.md)
  - Set up [Vorto Code Generators](server/generators/Readme.md)
- - How to use Java Client API? [Click here!](server/repo/repository-java-client/Readme.md)
+ - Access models and generate code via the [Java Client API ](server/repo/repository-java-client/Readme.md)
 
 # Documentation
 
@@ -45,6 +43,8 @@ Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overvi
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
 # Contribute to the Project
+
+Make sure, that you have installed [Vorto for contributors](tutorials/tutorial_vortosetup_contributors.md)
 
 When you create a Pull Request, make sure:
 
