@@ -7,6 +7,8 @@
 
 [Vorto](http://www.eclipse.org/vorto) is an IoT development infrastructure that lets you describe devices using a simple language and publish and manage these descriptions as Information Models in a centralized [Vorto Repository](http://vorto.eclipse.org). Vorto provides many [generators](http://vorto.eclipse.org/#/generators) that let you easily create device-specific source code in order to integrate the device into IoT platforms.
  
+ <img src="./tutorials/images/vorto_overview.png" width="60%" height="60%" />
+ 
 Wanna learn more? Browse through the [tutorials](tutorials/Readme.md).
 
 ## Connect a device with Vorto 
