@@ -73,7 +73,7 @@
     	-Dgithub_secret=<CLIENT_SECRET>
 
 9. Right-Click > _Run as > Java Application_
-10. Launch the Vorto Information model repository from localhost:[http://localhost:8080/infomodelrepository/#/]
+10. Launch the Vorto Information model repository from localhost: [http://localhost:8080/infomodelrepository/#/]
 
  ![Repo](images/vortosetup_contributors/local_repo.png)
 
@@ -84,7 +84,7 @@
 3. Log in to your github account and choose _Profile > Settings > Choose OAuth applications_ and _Register a new application_
 4. Key in details in the registration form and _Register application_
 
-![Editor](images/vortosetup_contributors/editor_details.png)
+ ![Editor](images/vortosetup_contributors/editor_details.png)
 
 5. _Client ID_ and _Client Secret_ are generated for the registered application
 6. From eclipse, choose _webeditor >  src/main/java > org.eclipse.vorto.server.devtool > DevToolServer.java > Right-click > Run As > Run configurations_
@@ -101,7 +101,7 @@
         -Dgithub_secret=<CLIENT_SECRET>
 
 8. _Save > Apply > Run As > Java application >_ The webeditor will be started
-9. Launch the Vorto WebEdtitor from localhost:[http://localhost:9080/editor/]
+9. Launch the Vorto WebEdtitor from localhost: [http://localhost:9080/editor/]
 
 ![EditorWeb](images/vortosetup_contributors/webeditor_webpage.png)
 
@@ -109,23 +109,16 @@
 
 1. Open _eclipse > server> generators>org.eclipse.vorto.codegen.service.gateway>Gateway.java_
 2. _Right-Click > Run As > Java Application_
-3. Launch the Vorto Generators from localhost:[http://localhost:8080/#/generators]
+3. Launch the Vorto Generators from localhost: [http://localhost:8080/#/generators]
 
 ![Generators](images/vortosetup_contributors/generators_local.png)
 
 ## Troubleshooting Installation errors<a name="troubleshoot"></a>
 
-The setup should work without any errors in eclipse, if all the above steps are followed. If there are still errors, with respect to target platform, try the following steps:
+The setup should work without any errors in eclipse, if all the above steps are followed. Incase there are any more errors, with respect to target platform, try the following steps:
 
 1. From eclipse IDE, open _Target Definition > i.e. open org.eclipse.vorto.targetplatform > vorto.target_
 
 ![TargetPlatform](images/vortosetup_contributors/target_platform.png)
 
 2. Choose > _Reload > Set as Target Platform_
-
-
-
-
-
-
-    
