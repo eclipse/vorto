@@ -38,18 +38,18 @@ class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 		* Setter for «property.name».
 		*/
 		«IF property.type instanceof PrimitivePropertyType»
-			public void «setterPrefix»«property.name.toFirstUpper»(«ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «property.name») {
-				this.«property.name» = «property.name»;
+			public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «ValueMapper.normalize(property.name)») {
+				this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 			}
 		«ELSEIF property.type instanceof ObjectPropertyType»
 			«var ObjectPropertyType object = property.type as ObjectPropertyType»
 			«IF object.type instanceof Entity» 
-				public void «setterPrefix»«property.name.toFirstUpper»(«(object.type as Entity).name.toFirstUpper» «property.name») {
-					this.«property.name» = «property.name»;
+				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
+					this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 				}
 			«ELSEIF object.type instanceof Enum»
-				public void «setterPrefix»«property.name.toFirstUpper»(«(object.type as Enum).name.toFirstUpper» «property.name») {
-					this.«property.name» = «property.name»;
+				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
+					this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 				}
 			«ENDIF»
 		«ENDIF»

@@ -30,7 +30,13 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 	private JavaClassFieldGetterTemplate propertyGetterTemplate;
 	
 	new() {
-		this.propertyTemplate = new JavaClassFieldTemplate();
+		this.propertyTemplate = new JavaClassFieldTemplate() {
+			protected override addFieldAnnotations(org.eclipse.vorto.core.api.model.datatype.Property property) {
+			'''
+			@JsonProperty("«property.name»")
+			'''
+			}
+		};
 		this.propertySetterTemplate = new JavaClassFieldSetterTemplate("set");
 		this.propertyGetterTemplate = new JavaClassFieldGetterTemplate("get");
 	}
@@ -46,7 +52,9 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 	override getContent(FunctionblockProperty element, InvocationContext context) {
 		'''			
 			package com.example.iot.«(element.eContainer as InformationModel).name.toLowerCase».model;
-						
+			
+			import com.fasterxml.jackson.annotation.JsonProperty;
+			
 			/**
 			* «element.description»
 			*/
@@ -63,7 +71,6 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 				
 				«var fb = element.type.functionblock»	
 				«IF fb.status != null»
-				«IF element.type.functionblock.status != null»
 				«FOR property : element.type.functionblock.status.properties»
 					«propertyTemplate.getContent(property,context)»
 				«ENDFOR»
@@ -72,7 +79,6 @@ class FeatureTemplate implements IFileTemplate<FunctionblockProperty> {
 					«propertySetterTemplate.getContent(property,context)»
 					«propertyGetterTemplate.getContent(property,context)»
 				«ENDFOR»
-				«ENDIF»
 				«ENDIF»
 				
 			}

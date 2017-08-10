@@ -108,7 +108,7 @@ class BoschThingsDataServiceTemplate implements IFileTemplate<InformationModel> 
 						ModelId.fromPrettyFormat(thing.getThingTypeId()));
 				«element.name.toLowerCase».setCreatedOn(thing.getCreatedOn());
 				«FOR fbProperty : element.properties»
-				«element.name.toLowerCase».set«fbProperty.type.name»(convert(thing, "«fbProperty.name»", «fbProperty.type.name».class));
+				«element.name.toLowerCase».set«fbProperty.name.toFirstUpper»(convert(thing, "«fbProperty.name»", «fbProperty.type.name».class));
 				«ENDFOR»
 				return «element.name.toLowerCase»;
 			};
