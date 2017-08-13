@@ -22,10 +22,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.eclipse.vorto.repository.api.IModelGeneration;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.IModelResolver;
+import org.eclipse.vorto.repository.api.impl.DefaultMappingClient;
 import org.eclipse.vorto.repository.api.impl.DefaultModelGeneration;
 import org.eclipse.vorto.repository.api.impl.DefaultModelRepository;
 import org.eclipse.vorto.repository.api.impl.DefaultModelResolver;
 import org.eclipse.vorto.repository.api.impl.RequestContext;
+import org.eclipse.vorto.repository.api.mapping.IMapping;
 
 public class RepositoryClientBuilder {
 	private String baseUrl;
@@ -65,6 +67,10 @@ public class RepositoryClientBuilder {
 		HttpClient client = buildHttpClient();
 		RequestContext context = buildRequestContext();
 		return new DefaultModelResolver(client, context, new DefaultModelRepository(client, context));
+	}
+	
+	public IMapping buildIMappingClient() {
+		return new DefaultMappingClient();
 	}
 	
 	private HttpClient buildHttpClient() {

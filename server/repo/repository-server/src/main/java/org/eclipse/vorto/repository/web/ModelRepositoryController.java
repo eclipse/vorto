@@ -21,6 +21,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -29,12 +30,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.eclipse.vorto.repository.service.IModelRepository.ContentType;
+import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
 import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -104,7 +107,30 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		
 		byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
 		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
-		return ModelDtoFactory.createResource(extractor.extract(name));
+		return ModelDtoFactory.createResource(extractor.extract(name),Optional.empty());
+	}
+	
+	@ApiOperation(value = "Returns the model content including target platform specific attributes")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}/{targetplatformKey}", method = RequestMethod.GET)
+	public AbstractModel getModelContentForTargetPlatform(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
+			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
+		
+		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
+		if (!mappingResources.isEmpty()) {
+			byte[] mappingContentZip = createZipWithAllDependencies(mappingResources.get(0).getId(), ContentType.DSL);
+			MappingZipFileExtractor mappingExtractor = new MappingZipFileExtractor(mappingContentZip);
+			
+			MappingModel mappingModel = mappingExtractor.extract().get(0);
+			
+			byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
+			ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
+			return ModelDtoFactory.createResource(extractor.extract(name),Optional.of(mappingModel));
+		}
+		
+		return null;
 	}
 	
 	@ApiOperation(value = "Returns the image of a vorto model")

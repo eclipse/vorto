@@ -15,6 +15,8 @@
 package org.eclipse.vorto.repository.web;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
@@ -34,7 +36,18 @@ import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.Attribute;
+import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
+import org.eclipse.vorto.core.api.model.mapping.EntitySource;
+import org.eclipse.vorto.core.api.model.mapping.FaultSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.api.model.mapping.StatusSource;
+import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
+import org.eclipse.vorto.core.api.model.mapping.Target;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.repository.api.AbstractModel;
@@ -81,15 +94,15 @@ public class ModelDtoFactory {
 		return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
 	}
 
-	public static AbstractModel createResource(Model model) {
+	public static AbstractModel createResource(Model model,Optional<MappingModel> mappingModel) {
 		if (model instanceof InformationModel) {
 			return createResource((InformationModel) model);
 		} else if (model instanceof FunctionblockModel) {
-			return createResource((FunctionblockModel) model);
+			return createResource((FunctionblockModel) model,mappingModel);
 		} else if (model instanceof Entity) {
-			return createResource((Entity) model);
+			return createResource((Entity) model,mappingModel);
 		} else if (model instanceof Enum) {
-			return createResource((Enum) model);
+			return createResource((Enum) model,mappingModel);
 		} else if (model instanceof MappingModel) {
 			return new ModelInfo(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
 					ModelType.Mapping);
@@ -123,7 +136,7 @@ public class ModelDtoFactory {
 		return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
 	}
 
-	public static org.eclipse.vorto.repository.api.content.FunctionblockModel createResource(FunctionblockModel model) {
+	public static org.eclipse.vorto.repository.api.content.FunctionblockModel createResource(FunctionblockModel model,Optional<MappingModel> mappingModel) {
 		org.eclipse.vorto.repository.api.content.FunctionblockModel resource = new org.eclipse.vorto.repository.api.content.FunctionblockModel(
 				new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Functionblock);
 		resource.setDescription(model.getDescription());
@@ -133,20 +146,20 @@ public class ModelDtoFactory {
 
 		if (model.getFunctionblock().getConfiguration() != null) {
 			resource.setConfigurationProperties(model.getFunctionblock().getConfiguration().getProperties().stream()
-					.map(p -> createProperty(p)).collect(Collectors.toList()));
+					.map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
 		}
 		if (model.getFunctionblock().getStatus() != null) {
 			resource.setStatusProperties(model.getFunctionblock().getStatus().getProperties().stream()
-					.map(p -> createProperty(p)).collect(Collectors.toList()));
+					.map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
 		}
 
 		if (model.getFunctionblock().getFault() != null) {
 			resource.setFaultProperties(model.getFunctionblock().getFault().getProperties().stream()
-					.map(p -> createProperty(p)).collect(Collectors.toList()));
+					.map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
 		}
 
 		if (model.getFunctionblock().getEvents() != null) {
-			resource.setEvents(model.getFunctionblock().getEvents().stream().map(e -> createEvent(e))
+			resource.setEvents(model.getFunctionblock().getEvents().stream().map(e -> createEvent(e,mappingModel))
 					.collect(Collectors.toList()));
 		}
 
@@ -154,8 +167,24 @@ public class ModelDtoFactory {
 			resource.setOperations(model.getFunctionblock().getOperations().stream().map(o -> createOperation(o))
 					.collect(Collectors.toList()));
 		}
+		
+		if (mappingModel.isPresent()) {
+			MappingModel _mappingModel = mappingModel.get();
+			resource.setTargetPlatformKey(_mappingModel.getTargetPlatform());
+			Target target = getFbRule((_mappingModel.getRules())).getTarget();
+			resource.setStereotype(((StereoTypeTarget)target).getName());
+			resource.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+		}
 
 		return resource;
+	}
+	private static Map<String,String> convertAttributesToMap(List<Attribute> attributes) {
+		Map<String,String> result = attributes.stream().collect(
+                Collectors.toMap(Attribute::getName, Attribute::getValue));
+		return result;
+	}
+	private static MappingRule getFbRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockSource).findFirst().get();
 	}
 
 	private static Operation createOperation(org.eclipse.vorto.core.api.model.functionblock.Operation o) {
@@ -211,7 +240,7 @@ public class ModelDtoFactory {
 		return p;
 	}
 
-	private static ModelProperty createProperty(Property property) {
+	private static ModelProperty createProperty(Property property,Optional<MappingModel> mappingModel) {
 		ModelProperty p = new ModelProperty();
 		p.setDescription(property.getDescription());
 		p.setMandatory(property.getPresence() != null ? property.getPresence().isMandatory() : true);
@@ -235,7 +264,34 @@ public class ModelDtoFactory {
 					.collect(Collectors.toList());
 			p.setAttributes(attributes);
 		}
+		
+		if (mappingModel.isPresent()) {
+			p.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			Optional<MappingRule> propertyRule = getPropertyRule(p.getName(),mappingModel.get().getRules());
+			if (propertyRule.isPresent()) {
+				Target target = propertyRule.get().getTarget();
+				p.setStereotype(((StereoTypeTarget)target).getName());
+				p.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+			}
+		}
+		
 		return p;
+	}
+	
+	private static Optional<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockPropertySource && matchesProperty(r.getSources().get(0),propertyName)).findFirst();
+	}
+
+	
+	private static boolean matchesProperty(Source source, String propertyName) {
+		if (source instanceof ConfigurationSource && ((ConfigurationSource)source).getProperty().getName().equals(propertyName)) {
+			return true;
+		} else if (source instanceof StatusSource && ((StatusSource)source).getProperty().getName().equals(propertyName)) {
+			return true;
+		} else if (source instanceof FaultSource && ((FaultSource)source).getProperty().getName().equals(propertyName)) {
+			return true;
+		}
+		return false;
 	}
 
 	private static IPropertyAttribute createAttribute(PropertyAttribute attribute) {
@@ -257,23 +313,38 @@ public class ModelDtoFactory {
 		return new Constraint(ConstraintType.valueOf(c.getType().name()), c.getConstraintValues());
 	}
 
-	private static ModelEvent createEvent(Event event) {
+	private static ModelEvent createEvent(Event event,Optional<MappingModel> mappingModel) {
 		ModelEvent modelEvent = new ModelEvent();
 		modelEvent.setName(event.getName());
 		modelEvent
-				.setProperties(event.getProperties().stream().map(p -> createProperty(p)).collect(Collectors.toList()));
+				.setProperties(event.getProperties().stream().map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
 		return modelEvent;
 	}
 
-	public static EntityModel createResource(Entity model) {
+	public static EntityModel createResource(Entity model,Optional<MappingModel> mappingModel) {
 		EntityModel resource = new EntityModel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
 				ModelType.Datatype);
 		resource.setDescription(model.getDescription());
 		resource.setDisplayName(model.getDisplayname());
 		resource.setReferences(
 				model.getReferences().stream().map(reference -> createModelId(reference)).collect(Collectors.toList()));
-		resource.setProperties(model.getProperties().stream().map(p -> createProperty(p)).collect(Collectors.toList()));
+		resource.setProperties(model.getProperties().stream().map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
+		
+		if (mappingModel.isPresent()) {
+			resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			Optional<MappingRule> entityRule = getEntityRule(mappingModel.get().getRules());
+			if (entityRule.isPresent()) {
+				Target target = entityRule.get().getTarget();
+				resource.setStereotype(((StereoTypeTarget)target).getName());
+				resource.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+			}
+		}
+		
 		return resource;
+	}
+	
+	private static Optional<MappingRule> getEntityRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof EntitySource).findFirst();
 	}
 
 	public static EnumModel createResource(Enum model) {

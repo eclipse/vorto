@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.api.content;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractProperty {
+public class AbstractProperty extends DefaultMappedElement {
 
 	protected boolean isMandatory = true;
 	protected String name;

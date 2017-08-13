@@ -63,4 +63,11 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 		String url = String.format("%s/rest/model/content/%s/%s/%s", getRequestContext().getBaseUrl(), modelId.getNamespace(), modelId.getName(), modelId.getVersion());
 		return requestAndTransform(url, transformToClass(resultClass));
 	}
+
+	@Override
+	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
+			Class<ModelContent> resultClass, String targetPlatformKey) {
+		String url = String.format("%s/rest/model/content/%s/%s/%s/%s", getRequestContext().getBaseUrl(), modelId.getNamespace(), modelId.getName(), modelId.getVersion(),targetPlatformKey);
+		return requestAndTransform(url, transformToClass(resultClass));
+	}
 }

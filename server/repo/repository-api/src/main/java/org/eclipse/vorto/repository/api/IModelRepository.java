@@ -51,6 +51,15 @@ public interface IModelRepository {
 	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass);
 	
 	/**
+	 * Gets the actual model content for a given model id including the meta data for the given target platform.
+	 * @param modelId model id to get its content for
+	 * @param resultClass expected model class, either {@link Infomodel}, {@link FunctionblockModel}, {@link EntityModel} or {@link EnumModel}
+	 * @param key of the target platform
+	 * @return model content
+	 */
+	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass, String targetPlatformKey);
+	
+	/**
 	 * Creates a new model query builder as a helper for searching models via {@link IModelRepository#search(ModelQuery)} 
 	 * @return
 	 */
