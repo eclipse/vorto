@@ -18,6 +18,8 @@ import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.kura.templates.cloud.TypeMapper
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory
+import org.eclipse.vorto.core.api.model.model.ModelType
 
 class DefaultAppTemplate implements IFileTemplate<InformationModel> {
 	
@@ -42,8 +44,11 @@ class DefaultAppTemplate implements IFileTemplate<InformationModel> {
 		import org.slf4j.Logger;
 		import org.slf4j.LoggerFactory;
 		
-		import «Utils.javaPackage».cloud.*;
-		import «Utils.javaPackage».cloud.bosch.*;
+		«FOR reference : element.references»
+		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+		import «Utils.javaPackage».cloud.«modelId.name»;
+		«ENDFOR»
+		import «Utils.javaPackage».cloud.bosch.BoschDataService;
 		
 		public class «element.name»App {
 		

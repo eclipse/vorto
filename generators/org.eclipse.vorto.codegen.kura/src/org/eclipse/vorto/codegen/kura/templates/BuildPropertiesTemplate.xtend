@@ -33,11 +33,21 @@ class BuildPropertiesTemplate implements IFileTemplate<InformationModel>{
 		output.. = bin/
 		bin.includes = META-INF/,\
 		               .,\
-		               OSGI-INF/component.xml«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("false")»,\
-		               secret/
+		               OSGI-INF/,\
+		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+		               lib/,\
+		               secret/,\
 		               «ENDIF»
-		               
+		               build.properties
 		source.. = src/
+		src.includes = bin/,\
+		               OSGI-INF/,\
+		               META-INF/,\
+		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+		               lib/,\
+		               secret/,\
+		               «ENDIF»
+		               build.properties
 		'''
 	}
 	

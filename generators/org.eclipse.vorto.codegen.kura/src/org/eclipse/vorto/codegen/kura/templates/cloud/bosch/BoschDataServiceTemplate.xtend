@@ -17,10 +17,12 @@ package org.eclipse.vorto.codegen.kura.templates.cloud.bosch
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.kura.templates.Utils
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
-import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.codegen.kura.templates.cloud.TypeMapper
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory
+import org.eclipse.vorto.core.api.model.model.ModelType
 
 /**
  * @author Alexander Edelmann
@@ -52,7 +54,10 @@ class BoschDataServiceTemplate implements IFileTemplate<InformationModel>{
 		import com.bosch.cr.integration.things.ThingHandle;
 		import com.bosch.cr.json.JsonObject;
 		import com.bosch.cr.model.things.Feature;
-		import «Utils.javaPackage».cloud.*;
+		«FOR reference : element.references»
+		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+		import «Utils.javaPackage».cloud.«modelId.name»;
+		«ENDFOR»
 		
 		public class BoschDataService implements IDataService {
 		

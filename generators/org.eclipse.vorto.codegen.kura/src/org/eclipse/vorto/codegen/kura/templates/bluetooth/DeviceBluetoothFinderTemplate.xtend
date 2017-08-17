@@ -18,6 +18,9 @@ import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.kura.templates.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelId
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory
+import org.eclipse.vorto.core.api.model.model.ModelType
 
 /**
  * @author Alexander Edelmann
@@ -64,7 +67,10 @@ class DeviceBluetoothFinderTemplate implements IFileTemplate<InformationModel> {
 		import org.slf4j.LoggerFactory;
 		
 		«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-		import «Utils.javaPackage».cloud.*;
+		«FOR reference : element.references»
+		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+		import «Utils.javaPackage».cloud.«modelId.name»;
+		«ENDFOR»
 		import «Utils.javaPackage».cloud.bosch.BoschDataService;
 		«ENDIF»
 		

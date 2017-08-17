@@ -18,6 +18,8 @@ import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.kura.templates.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory
+import org.eclipse.vorto.core.api.model.model.ModelType
 
 /**
  * @author Alexander Edelmann
@@ -44,8 +46,9 @@ class DeviceTemplate implements IFileTemplate<InformationModel> {
 		import org.slf4j.Logger;
 		import org.slf4j.LoggerFactory;
 		
-		«FOR fbProperty : element.properties»
-		import «Utils.javaPackage».cloud.«fbProperty.type.name»;
+		«FOR reference : element.references»
+		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+		import «Utils.javaPackage».cloud.«modelId.name»;
 		«ENDFOR»
 		
 		public class «element.name»Device implements BluetoothLeNotificationListener {
