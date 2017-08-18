@@ -67,8 +67,8 @@ class ManifestTemplate implements IFileTemplate<InformationModel> {
 		 lib/things-model-2.4.1.jar
 		«ENDIF»
 		Export-Package: «Utils.javaPackage»,
-		 «Utils.javaPackage».kura.cloud,
-		 «Utils.javaPackage».kura.cloud.bosch,
+		 «Utils.javaPackage».cloud,
+		 «Utils.javaPackage».cloud.bosch,
 		  com.bosch.cr.integration,
 		  com.bosch.cr.integration.client,
 		  com.bosch.cr.integration.client.configuration,
@@ -251,7 +251,10 @@ class ManifestTemplate implements IFileTemplate<InformationModel> {
 		 org.eclipse.kura.bluetooth;version="1.4.0",
 		 org.eclipse.kura.bluetooth.listener;version="1.0.1",
 		 «ENDIF»
-		 org.osgi.service.component
+		 org.osgi.service.component,
+		 com.eclipsesource.json;version="0.9.4",
+		 javax.net.ssl,
+		 javax.security.cert
 		'''
 	}
 	

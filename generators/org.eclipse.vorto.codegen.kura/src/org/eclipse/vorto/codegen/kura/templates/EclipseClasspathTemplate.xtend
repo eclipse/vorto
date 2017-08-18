@@ -35,6 +35,30 @@ class EclipseClasspathTemplate implements IFileTemplate<InformationModel> {
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.8"/>
     <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
     <classpathentry kind="src" path="src"/>
+    <classpathentry exported="true" kind="lib" path="secret" sourcepath="secret"/>
+	<classpathentry exported="true" kind="lib" path="lib/async-http-client-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cr-integration-api-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cr-integration-client-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cr-integration-client-osgi-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cr-json-1.6.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cr-model-3.3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javassist-3.20.0-GA.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-buffer-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-codec-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-codec-dns-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-codec-http-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-common-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-handler-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-reactive-streams-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-resolver-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-resolver-dns-2.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/netty-transport-4.0.36.Final.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/reactive-streams-1.0.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/reactor-bus-2.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/reactor-core-2.0.7.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stomp-client-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/stomp-common-2.4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/things-model-2.4.1.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
         '''
