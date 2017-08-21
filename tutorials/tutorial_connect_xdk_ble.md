@@ -1,11 +1,11 @@
 # Connect XDK to Bosch IoT Suite with Eclipse Kura
 
 In this tutorial, we are going to walk you through the steps of rapidly developing an e2e IoT solution that reads a Bosch XDK's surrounding temperature and transmits this data to the Bosch IoT Suite where it can be visualized in a web application and voice-controlled via Amazon Alexa Service. 
-Eclipse Vorto provides great tools helping you to reduce the development time significantly.
+
 
 ![](./images/connect_xdk_kura/overview.png)
 
-We are breaking down this IoT app into smaller steps:
+Let's develop this app in small steps and have small wins:
 
 - Describe the XDK as an information model with the Vorto IoT toolset
 - Register the XDK in the Bosch IoT Suite with the Bosch IoT Developer Console
@@ -80,6 +80,7 @@ As a prerequisite, you would need to request for a free Bosch IoT Suite evaluati
       <td colspan="1">7.</td>
       <td colspan="1">
         <p>Now you have successfully registered your XDK with the Suite for a given XDK information model.</p>
+        <img src="./images/connect_xdk_kura/step2_7.png" width="70%" height="50%"/>
       </td>
     </tr>
     <tr>
@@ -107,7 +108,7 @@ As a prerequisite, you would need to request for a free Bosch IoT Suite evaluati
     <tr>
       <td colspan="1">9.</td>
       <td colspan="1">
-        <ac:emoticon ac:name="tick"/> Way to go! Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
+        Way to go! Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
     </tr>
   </tbody>
 </table>
@@ -162,7 +163,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">6.</td>
       <td colspan="1">
         <p>Open the <em>src/main/resources/application.yml </em>and insert the Bosch IoT Permissions and Bosch IoT Things credentials including the paths to the keystore that you just created with the keytool.</p>
-        <code>bosch:
+        <pre><code>bosch:
   permissions:
     endpointUrl: https://permissions-api.apps.bosch-iot-cloud.com
     clientId: [enter Bosch IoT Permissions client id here]
@@ -179,8 +180,8 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
     solutionid: [enter Bosch IoT Things solution ID here ]
     keystore:
       password: [enter keystore password here ]]]>
-    </code>
-    <p>Behind proxy ?</p>
+    </code></pre>
+    <p><b>Behind proxy ?</b></p>
     <p>1) Add proxy information in the application.yml</p>
     <p>2) Open java class com.example.iot.xdk.config.LocalConfiguration and uncomment the proxy authentication configuration.</p>
       </td>
@@ -190,12 +191,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">
         <p>Open the <em>com.example.iot.xdk.config.LocalConfiguration</em> and use the clientID <em>&lt;mysolutionID&gt; + ":xdkapp. </em>
         </p>
-        <ac:structured-macro ac:name="warning">
-          <ac:parameter ac:name="title">ClientID Configuration</ac:parameter>
-          <ac:rich-text-body>
             <p>Make sure the <strong>clientID</strong> in your configuration matches the clientID in the ACL that you had created via the Developer Console earlier!</p>
-          </ac:rich-text-body>
-        </ac:structured-macro>
       </td>
     </tr>
     <tr>
@@ -204,9 +200,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
         <p>Open your browser under <a href="http://localhost:8080">http://localhost:8080</a>
         </p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-10 18:8:2.png"/>
-          </ac:image>
+          <img src="./images/connect_xdk_kura/step3_8.png" width=50%" height="50%"/>
         </p>
       </td>
     </tr>
@@ -225,9 +219,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">
         <p>After successful authentication, you can see the XDK device, that you had registered earlier (see chapter " Register / Pre-commission device in Bosch IoT Suite")</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-11 9:40:35.png"/>
-          </ac:image>
+           <img src="./images/connect_xdk_kura/step3_9.png" width=50%" height="50%"/>
         </p>
       </td>
     </tr>
@@ -236,9 +228,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">
         <p>Click on the XDK device to see the details containing UI widgets to potentially display sensor values.</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-11 9:44:53.png"/>
-          </ac:image>
+           <img src="./images/connect_xdk_kura/step3_10.png" width=50%" height="50%"/>
         </p>
         <p> </p>
       </td>
@@ -246,7 +236,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
     <tr>
       <td colspan="1">11.</td>
       <td colspan="1">
-        <ac:emoticon ac:name="tick"/> Fantastic. Your app is ready to receive XDK telemetry data. As no data has been sent to Bosch IoT Suite yet, the UI fields are not yet populated. Let's change that and send some test values and check if our app doesn't break.</td>
+        <b>Fantastic!</b> Your app is ready to receive XDK telemetry data. As no data has been sent to Bosch IoT Suite yet, the UI fields are not yet populated. Let's change that and send some test values and check if our app doesn't break.</td>
     </tr>
   </tbody>
 </table>
@@ -262,11 +252,7 @@ At this point, we would like to test our web application and check if the UI wid
       <td>
         <p>Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select 'Bosch IoT Suite' from the list of generators on the right hand-side.</p>
         <p>
-          <a href="http://vorto.eclipse.org/rest/generation-router/com.bosch.devices/XDK/1.0.0/boschiotthings?simulator=true&amp;webui=&amp;alexa=&amp;kura=&amp;validation=&amp;thingId=demo.vorto.example:MyXDK-0000">
-            <ac:image>
-              <ri:attachment ri:filename="image2017-8-11 9:49:7.png"/>
-            </ac:image>
-          </a>
+            <img src="./images/connect_xdk_kura/step4_1.png"/>
         </p>
       </td>
     </tr>
@@ -275,9 +261,7 @@ At this point, we would like to test our web application and check if the UI wid
       <td>
         <p>Select <em>Device Simulator</em> and hit <strong>Generate</strong>. Download and save the generated maven project bundle.</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-11 9:50:26.png"/>
-          </ac:image>
+           <img src="./images/connect_xdk_kura/step4_2.png" width=50%" height="50%"/>
         </p>
       </td>
     </tr>
@@ -301,13 +285,8 @@ At this point, we would like to test our web application and check if the UI wid
       <td colspan="1">5.</td>
       <td colspan="1">
         <p>Open the java class <em>com.example.things.ThingClientFactory</em> and insert your evaluation credentials as well as change the keystore resource paths.</p>
-        <ac:structured-macro ac:name="info">
-          <ac:parameter ac:name="title">ClientID Configuration</ac:parameter>
-          <ac:rich-text-body>
             <p>Use the &lt;mysolutionID&gt; + ":myxdk as the client ID.</p>
             <p>This ClientID must match the ACL that you had created earlier via the Developer Console</p>
-          </ac:rich-text-body>
-        </ac:structured-macro>
       </td>
     </tr>
     <tr>
@@ -324,16 +303,14 @@ At this point, we would like to test our web application and check if the UI wid
       <td colspan="1">
         <p>Open XDK details page. You should see the test data received from Bosch IoT Suite.</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-11 11:21:5.png"/>
-          </ac:image>
+          <img src="./images/connect_xdk_kura/step4_8.png" width=50%" height="50%"/>
         </p>
       </td>
     </tr>
     <tr>
       <td colspan="1">9.</td>
       <td colspan="1">
-        <ac:emoticon ac:name="tick"/> Wow! You have just simulated the XDK device by sending out dummy data that are compliant to a well defined Vorto model. Now that we know that the app is able to display data coming from the Bosch IoT Suite, it's time to send actual XDK sensor data.</td>
+        <b>Wow!</b> You have just simulated the XDK device by sending out dummy data that are compliant to a well defined Vorto model. Now that we know that the app is able to display data coming from the Bosch IoT Suite, it's time to send actual XDK sensor data.</td>
     </tr>
   </tbody>
 </table>
@@ -361,31 +338,17 @@ Our backend functionality works fine, but it's not really actual sensor data fro
         <ul>
           <li>
             <p>Change from OpenJDK to Oracle JDK</p>
-            <ac:structured-macro ac:name="code">
-              <ac:parameter ac:name="language">bash</ac:parameter>
-              <ac:plain-text-body><![CDATA[sudo apt-get install oracle-java8-jdk
-sudo update-alternatives --config java]]></ac:plain-text-body>
-            </ac:structured-macro>
-          </li>
+            <pre><code>sudo apt-get install oracle-java8-jdk
+sudo update-alternatives --config java</code></pre>
+			</li>
           <li>
             <p>Add some configuration in Kura init </p>
+            <pre><code>sudo nano /opt/eclipse/kura/kura/config.ini</code></pre>          <p>Add this line to the end of the file</p>
             <ac:structured-macro ac:name="code">
-              <ac:parameter ac:name="language">bash</ac:parameter>
-              <ac:plain-text-body><![CDATA[sudo nano /opt/eclipse/kura/kura/config.ini]]></ac:plain-text-body>
-            </ac:structured-macro>
-            <p>Add this line to the end of the file</p>
-            <ac:structured-macro ac:name="code">
-              <ac:parameter ac:name="language">bash</ac:parameter>
-              <ac:plain-text-body><![CDATA[org.osgi.framework.bootdelegation=sun.*,com.sun.*]]></ac:plain-text-body>
-            </ac:structured-macro>
-          </li>
+              <pre><code>org.osgi.framework.bootdelegation=sun.*,com.sun.*</code></pre>          </li>
           <li>
             <p>Reboot.</p>
-            <ac:structured-macro ac:name="code">
-              <ac:parameter ac:name="language">bash</ac:parameter>
-              <ac:plain-text-body><![CDATA[sudo reboot]]></ac:plain-text-body>
-            </ac:structured-macro>
-          </li>
+            <pre><code>sudo reboot</code></pre>          </li>
           <li>On the Kura web application, change the necessary firewall rules to suit your development environment<ul>
               <li>
                 <p>The Kura gateway will create its own wifi access point. If you have a second network on the Raspberry Pi (i.e Using the Ethernet cable), join that network. Check the raspberry pi for its IP<br/> on that network. Use that IP Address to reach the Kura web application. It is on http://[IP Address]/kura.</p>
@@ -419,17 +382,11 @@ sudo update-alternatives --config java]]></ac:plain-text-body>
           <li>Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> in the Vorto Repository</li>
           <li>Click on the <strong>Eclipse Kura Generator</strong>:<br/>
             <br/>
-            <a href="http://vorto.eclipse.org/rest/generation-router/com.bosch.devices/XDK/1.0.0/kura?bluetooth=true&amp;boschcloud=true">
-              <ac:image>
-                <ri:attachment ri:filename="image2017-8-14 14:51:30.png"/>
-              </ac:image>
-            </a>
+              <img src="./images/connect_xdk_kura/step5_4.png"/>
           </li>
           <li>Select <strong>Bluetooth LE</strong> and <strong>Bosch IoT Suite</strong>
             <br/>
-            <ac:image ac:width="500">
-              <ri:attachment ri:filename="image2017-8-16 13:32:33.png"/>
-            </ac:image>
+            <img src="./images/connect_xdk_kura/step5_4_1.png" width=50%" height="50%"/>
           </li>
           <li>Confirm your selection with <strong>Generate</strong>
           </li>
@@ -447,9 +404,7 @@ sudo update-alternatives --config java]]></ac:plain-text-body>
         <ul>
           <li>Replace the JRE in build path to local JRE. Go to "<em>Build Path &gt; Configure Build Path &gt; Libraries</em>", remove library with Error and "Add JRE System Library"</li>
           <li>Create a "secret" folder on the root, and add the keystore and truststore files you generated on the steps above.</li>
-          <li>Create a "lib" folder on the root and add all the Things Integration Client dependencies from this zip - [<ac:link>
-              <ri:attachment ri:filename="things-dependencies.zip"/>
-            </ac:link>]</li>
+          <li>Create a "lib" folder on the root and add all the Things Integration Client dependencies</li>
         </ul>
       </td>
     </tr>
@@ -461,40 +416,26 @@ sudo update-alternatives --config java]]></ac:plain-text-body>
           <li>Firmware on the device side<ol>
               <li>Download XDK workbench [<a href="https://xdk.bosch-connectivity.com/software-downloads">https://xdk.bosch-connectivity.com/software-downloads</a>]</li>
               <li>Open your XDK workbench and import the SensorsToBle project [<ac:link>
-                  <ri:attachment ri:filename="SensorsToBle.zip"/>
-                </ac:link>]</li>
+                  <a href="./tutorials/examples/SensorsToBle.zip">XDK Firmware</a></li>
               <li>Flash the SensorsToBle project to the XDK (Please consult the XDK manual for doing this.</li>
             </ol>
           </li>
           <li>On the XDK Kura bundle<ol>
               <li>
                 <p>In <em>ThingClientFactory.java</em>, add your network proxy if you need one and uncomment the line below:</p>
-                <ac:structured-macro ac:name="code">
-                  <ac:parameter ac:name="language">java</ac:parameter>
-                  <ac:plain-text-body><![CDATA[.proxyConfiguration(proxy)]]></ac:plain-text-body>
-                </ac:structured-macro>
-              </li>
+                <pre><code>.proxyConfiguration(proxy)</code></pre>              </li>
               <li>
                 <p>In XDKDevice.java, in the method getResourceId(), modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in Chapter 2 of this guide.</p>
-                <ac:structured-macro ac:name="code">
-                  <ac:parameter ac:name="language">java</ac:parameter>
-                  <ac:plain-text-body><![CDATA[return "xdk:" + getBluetoothDevice().getAdress().replace(":", ""); ]]></ac:plain-text-body>
-                </ac:structured-macro>
-                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
+                <pre><code>return "xdk:" + getBluetoothDevice().getAdress().replace(":", ""); </code></pre>                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
               </li>
               <li>
                 <p>In XDKDevice.java, in the method enableTemperature_0(), change the entire method to </p>
-                <ac:structured-macro ac:name="code">
-                  <ac:parameter ac:name="language">java</ac:parameter>
-                  <ac:plain-text-body><![CDATA[this.bluetoothGatt.writeCharacteristicValue("0x0013", "0100");]]></ac:plain-text-body>
-                </ac:structured-macro>
+                <pre><code>this.bluetoothGatt.writeCharacteristicValue("0x0013", "0100");</code></pre>
                 <p>This will turn-ON notifications for the XDK Bluetooth LE.</p>
               </li>
               <li>
                 <p>In XDKDevice.java, in the method readTemperature(), change the entire method to </p>
-                <ac:structured-macro ac:name="code">
-                  <ac:parameter ac:name="language">java</ac:parameter>
-                  <ac:plain-text-body><![CDATA[TemperatureSensor temperature_0 = new TemperatureSensor();
+                <pre><code>TemperatureSensor temperature = new TemperatureSensor();
 try {
 	this.bluetoothGatt.writeCharacteristicValue("0x0010", "74656D70");
 	String btReturnValue = this.bluetoothGatt.readCharacteristicValue("0x0012");
@@ -504,13 +445,12 @@ try {
 		number.append((char) Integer.parseInt(hex, 16));
 	}
 	
-	temperature_0.setSensorValue((float) (Float.parseFloat(number.toString())/1000.0));
-	temperature_0.setUnits("Celsius");
+	temperature.setSensorValue((float) (Float.parseFloat(number.toString())/1000.0));
+	temperature.setUnits("Celsius");
 } catch (KuraException e) {
 	logger.error("Error in Sending Temperature", e);
 }
-return temperature_0;]]></ac:plain-text-body>
-                </ac:structured-macro>
+return temperature;</code></pre>
                 <p>Here we are writing the ascii representation of the string "temp" to the XDK register to get a reading of the temperature which we then read back and parse.</p>
                 <p> </p>
               </li>
@@ -545,24 +485,16 @@ return temperature_0;]]></ac:plain-text-body>
         <p>Change the configuration of our XDK Kura bundle</p>
         <ol>
           <li>Go to the Kura webapp and look for the configuration page of our Bundle<br/>
-            <ac:image>
-              <ri:attachment ri:filename="2017-08-18_13h52_37.png"/>
-            </ac:image>
+            <img src="./images/connect_xdk_kura/step5_9.png" width=50%" height="50%"/>
           </li>
           <li>Put solution id<br/>
-            <ac:image>
-              <ri:attachment ri:filename="image2017-8-18 14:11:17.png"/>
-            </ac:image>
+            <img src="./images/connect_xdk_kura/step5_9_2.png" width=50%" height="50%"/>
           </li>
           <li>Enable scanning<br/>
-            <ac:image>
-              <ri:attachment ri:filename="2017-08-18_13h54_52.png"/>
-            </ac:image>
+            <img src="./images/connect_xdk_kura/step5_9_4.png" width=50%" height="50%"/>
           </li>
           <li>Enable temperature<br/>
-            <ac:image>
-              <ri:attachment ri:filename="2017-08-18_13h55_10.png"/>
-            </ac:image>
+            <img src="./images/connect_xdk_kura/step5_9_5.png" width=50%" height="50%"/>
             <br/>
             <br/>
           </li>
@@ -583,7 +515,7 @@ return temperature_0;]]></ac:plain-text-body>
     <tr>
       <td colspan="1">11.</td>
       <td colspan="1">
-        <ac:emoticon ac:name="tick"/> Great!! The XDK is now sending temperature data via bluetooth to the Bosch IoT Suite and it's visualized in our web application.</td>
+        </b>Great!!</b> The XDK is now sending temperature data via bluetooth to the Bosch IoT Suite and it's visualized in our web application.</td>
     </tr>
   </tbody>
 </table>
@@ -599,11 +531,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td>
         <p>Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select 'AWS IoT' from the list of generators on the right hand-side.</p>
         <p>
-          <a href="http://vorto.eclipse.org/rest/generation-router/com.bosch.devices/XDK/1.0.0/boschiotthings?simulator=&amp;webui=&amp;alexa=true&amp;kura=&amp;validation=&amp;thingId=demo.vorto.example:MyXDK-0000">
-            <ac:image>
-              <ri:attachment ri:filename="image2017-8-14 14:54:42.png"/>
-            </ac:image>
-          </a>
+            <img src="./images/connect_xdk_kura/step6_1.png">
         </p>
       </td>
     </tr>
@@ -612,9 +540,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td>
         <p>In the generator configuration page, select <strong>Bosch IoT Suite</strong> as the digital twin backend. Confirm your selection with <strong>Generate</strong>:</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-16 13:36:29.png"/>
-          </ac:image>
+          <img src="./images/connect_xdk_kura/step6_2.png" width="50%" height="50%">
         </p>
       </td>
     </tr>
@@ -649,9 +575,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">
         <p>Select <strong>Alexa Skills Kit</strong> as the trigger triggering the new function and confirm with <strong>Next</strong>:</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-16 13:47:14.png"/>
-          </ac:image>
+          <img src="./images/connect_xdk_kura/step6_5.png" width="50%" height="50%">
         </p>
       </td>
     </tr>
@@ -660,9 +584,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">
         <p>Give your function a name, leave the Runtime default configuration and Copy and Paste the generated alexa-skillset-lambda function in the online editor:</p>
         <p>
-          <ac:image ac:width="500">
-            <ri:attachment ri:filename="image2017-8-16 13:51:4.png"/>
-          </ac:image>
+          <img src="./images/connect_xdk_kura/step6_6.png" width="50%" height="50%">
         </p>
       </td>
     </tr>
@@ -670,12 +592,8 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">7.</td>
       <td colspan="1">
         <p>Change the code and insert your thingsApiToken, thingID, username and password.</p>
-        <ac:structured-macro ac:name="info">
-          <ac:rich-text-body>
-            <p>Make sure to encode the tenant in the username. Example &lt;tenantId&gt;\&lt;username&gt;</p>
-          </ac:rich-text-body>
-        </ac:structured-macro>
-      </td>
+        <p>Make sure to encode the tenant in the username. Example &lt;tenantId&gt;\&lt;username&gt;</p>
+             </td>
     </tr>
     <tr>
       <td colspan="1">8.</td>
@@ -715,7 +633,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">13.</td>
       <td colspan="1">
         <p>
-          <ac:emoticon ac:name="tick"/> That's it! You have just generated an Alexa skillset that reads the XDK sensor data from Bosch IoT Suite and outputs it as speech. Feel free to modify the utterances in the skillset builder or add additional behavior in the lambda function.  </p>
+          <b>That's it!</b> You have just generated an Alexa skillset that reads the XDK sensor data from Bosch IoT Suite and outputs it as speech. Feel free to modify the utterances in the skillset builder or add additional behavior in the lambda function.  </p>
       </td>
     </tr>
   </tbody>
