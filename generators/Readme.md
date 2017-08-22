@@ -18,7 +18,7 @@ Available Generators:
  - [Device Web Dashboard Generator](org.eclipse.vorto.codegen.webui/Readme.md)
  - [AngularJS Web UI Generator](org.eclipse.vorto.codegen.webdevice/Readme.md)
  - [Eclipse Kura Generator](org.eclipse.vorto.codegen.kura/Readme.md)
- 
+ - [Arduino Generator](org.eclipse.vorto.codegen.arduino/Readme.md) 
 
 # Add your Code Generator
 
