@@ -484,20 +484,10 @@ return temperature;</code></pre>
       <td colspan="1">
         <p>Change the configuration of our XDK Kura bundle</p>
         <ol>
-          <li>Go to the Kura webapp and look for the configuration page of our Bundle<br/>
-            <img src="./images/connect_xdk_kura/step5_9.png" width=50%" height="50%"/>
-          </li>
-          <li>Put solution id<br/>
-            <img src="./images/connect_xdk_kura/step5_9_2.png" width=50%" height="50%"/>
-          </li>
-          <li>Enable scanning<br/>
-            <img src="./images/connect_xdk_kura/step5_9_4.png" width=50%" height="50%"/>
-          </li>
-          <li>Enable temperature<br/>
-            <img src="./images/connect_xdk_kura/step5_9_5.png" width=50%" height="50%"/>
-            <br/>
-            <br/>
-          </li>
+		<li>Go to the Kura webapp and look for the configuration page of our Bundle <br/> <img src="./images/connect_xdk_kura/step5_9.png" width=50%" height="50%"/></li>
+		<li>Put solution id <br/><img src="./images/connect_xdk_kura/step5_9_2.png" width=50%" height="50%"/></li>
+          	<li>Enable scanning <br/> <img src="./images/connect_xdk_kura/step5_9_4.png" width=50%" height="50%"/></li>
+          	<li>Enable temperature <br/> <img src="./images/connect_xdk_kura/step5_9_5.png" width=50%" height="50%"/></li>
         </ol>
       </td>
     </tr>
@@ -612,11 +602,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">11.</td>
       <td colspan="1">
         <p>Select AWS Lambda ARN Endpoint and add the ARN.</p>
-        <ac:structured-macro ac:name="info">
-          <ac:rich-text-body>
-            <p>You can get the ARN of your lambda function in the lambda console.</p>
-          </ac:rich-text-body>
-        </ac:structured-macro>
+	<p>You can get the ARN of your lambda function in the lambda console.</p>
       </td>
     </tr>
     <tr>
