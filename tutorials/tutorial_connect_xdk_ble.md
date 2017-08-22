@@ -1,17 +1,17 @@
-# Connect XDK to Bosch IoT Suite with Eclipse Kura
+# Rapidly develop an IoT App with Vorto connecting a XDK to the Bosch IoT Suite
 
 In this tutorial, we are going to walk you through the steps of rapidly developing an e2e IoT solution that reads a Bosch XDK's surrounding temperature and transmits this data to the Bosch IoT Suite where it can be visualized in a web application and voice-controlled via Amazon Alexa Service. 
 
 
 ![](./images/connect_xdk_kura/overview.png)
 
-Let's develop this app in small steps and have small wins:
+Let's break down the development into several steps:
 
 - Describe the XDK as an information model with the Vorto IoT toolset
 - Register the XDK in the Bosch IoT Suite with the Bosch IoT Developer Console
 - Build an XDK web application that consumes XDK sensor data from Bosch IoT Suite
 - Simulate the XDK device by sending test data to Bosch IoT Suite, thus verifying the correct behavior of the web application
-- Connect the XDK with Bluetooth to the Bosch IoT Suite via Eclipse Kura Gateway
+- Connect the XDK with Bluetooth to the Bosch IoT Suite via Eclipse Kura
 - Build an Amazon Alexa Skillset to voice-control the XDK.
 
 # Step 1: Describe XDK as Vorto Information Model
@@ -30,87 +30,87 @@ You have two options to describe a new Vorto Information model:
 As a prerequisite, you would need to request for a free Bosch IoT Suite evaluation account. Selecting 'Bosch IoT Things' and 'Bosch IoT Permissions' is sufficient for this tutorial. Once you get the email response containing all the information about your evaluation account, you can proceed:
 
 <table>
-  <tbody>
-    <tr>
-      <td>1</td>
-      <td>Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">2</td>
-      <td colspan="1">Log in to the console with your evaluation tenant, username and password.</td>
-    </tr>
-    <tr>
-      <td>3</td>
-      <td>
-        <p>At the moment, your evaluation account does not have any registered devices yet.</p>
-        <p>Let's go and register your XDK by clicking <em>+ Connect thing</em>
-        </p>
-        <p>
-          <img src="./images/connect_xdk_kura/step2_connect.png" width="50%" height="50%"/>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">4.</td>
-      <td colspan="1">
-        <p>Search the Vorto repository for <em>xdk</em> and select it in the result table and confirm with <em>Next</em>.</p>
-        <p>
-          <img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%" height="50%"/>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">5.</td>
-      <td colspan="1">Choose <strong>HTTP</strong> as a connector and confirm with <em>Next</em>.</td>
-    </tr>
-    <tr>
-      <td colspan="1">6.</td>
-      <td colspan="1">
-        <p>Now, you can give your XDK a specific name in order to identify uniquely. For example</p>
-        <p>Namespace: demo.vorto.example</p>
-        <p>Name: <em>Leave blank</em>
-        </p>
-        <p>Technical ID: &lt;bluetooth address of XDK without colons&gt;</p>
-        <p>Confirm with <em>Complete.</em>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">7.</td>
-      <td colspan="1">
-        <p>Now you have successfully registered your XDK with the Suite for a given XDK information model.</p>
-        <img src="./images/connect_xdk_kura/step2_7.png" width="70%" height="50%"/>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">8.</td>
-      <td colspan="1">
-        <p>Before we can start sending as well as consuming device data, we need to grant the access permissions for the device and the application:</p>
-        <ol>
-          <li>First open the XDK details page of the <a href="https://console.bosch-iot-suite.com">Developer Console</a>
-          </li>
-          <li>Click the <strong>Permissions</strong> tab and click <strong>New Entry</strong>
-          </li>
-          <li>Add the ID of the the device, e.g. <em>&lt;mysolutionID&gt;:myxdk</em> and click <strong>Save</strong>
-          </li>
-        </ol>
-        <p>
-          <img src="./images/connect_xdk_kura/step2_connect_permission1.png" width="50%" height="50%"/>
-        </p>
-        <p>4. Repeat the steps to create another permission ACL for the xdk web application, that we are going to develop in the next chapter.</p>
-        <p>    Call the ID of the app, e.g. <em>&lt;mysolutionID&gt;:xdkapp </em>and grant the read and write permissions. Click <em>Save</em> to confirm.</p>
-        <p>
-          <img src="./images/connect_xdk_kura/step2_connect_permission2.png" width="50%" height="50%"/>
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">9.</td>
-      <td colspan="1">
-        Way to go! Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
-    </tr>
-  </tbody>
+<tbody>
+<tr>
+  <td>1</td>
+  <td>Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">2</td>
+  <td colspan="1">Log in to the console with your evaluation tenant, username and password.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td>
+    <p>At the moment, your evaluation account does not have any registered devices yet.</p>
+    <p>Let's go and register your XDK by clicking <em>+ Connect thing</em>
+    </p>
+    <p>
+      <img src="./images/connect_xdk_kura/step2_connect.png" width="50%" height="50%"/>
+    </p>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">4.</td>
+  <td colspan="1">
+    <p>Search the Vorto repository for <em>xdk</em> and select it in the result table and confirm with <em>Next</em>.</p>
+    <p>
+      <img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%" height="50%"/>
+    </p>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">5.</td>
+  <td colspan="1">Choose <strong>HTTP</strong> as a connector and confirm with <em>Next</em>.</td>
+</tr>
+<tr>
+  <td colspan="1">6.</td>
+  <td colspan="1">
+    <p>Now, you can give your XDK a specific name in order to identify uniquely. For example</p>
+    <p>Namespace: demo.vorto.example</p>
+    <p>Name: <em>Leave blank</em>
+    </p>
+    <p>Technical ID: &lt;bluetooth address of XDK without colons&gt;</p>
+    <p>Confirm with <em>Complete.</em>
+    </p>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">7.</td>
+  <td colspan="1">
+    <p>Now you have successfully registered your XDK with the Suite for a given XDK information model.</p>
+    <img src="./images/connect_xdk_kura/step2_7.png" width="70%" height="50%"/>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">8.</td>
+  <td colspan="1">
+    <p>Before we can start sending as well as consuming device data, we need to grant the access permissions for the device and the application:</p>
+    <ol>
+      <li>First open the XDK details page of the <a href="https://console.bosch-iot-suite.com">Developer Console</a>
+      </li>
+      <li>Click the <strong>Permissions</strong> tab and click <strong>New Entry</strong>
+      </li>
+      <li>Add the ID of the the device, e.g. <em>&lt;mysolutionID&gt;:myxdk</em> and click <strong>Save</strong>
+      </li>
+    </ol>
+    <p>
+      <img src="./images/connect_xdk_kura/step2_connect_permission1.png" width="50%" height="50%"/>
+    </p>
+    <p>4. Repeat the steps to create another permission ACL for the xdk web application, that we are going to develop in the next chapter.</p>
+    <p>    Call the ID of the app, e.g. <em>&lt;mysolutionID&gt;:xdkapp </em>and grant the read and write permissions. Click <em>Save</em> to confirm.</p>
+    <p>
+      <img src="./images/connect_xdk_kura/step2_connect_permission2.png" width="50%" height="50%"/>
+    </p>
+  </td>
+</tr>
+<tr>
+  <td colspan="1">9.</td>
+  <td colspan="1">
+    Way to go! Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
+</tr>
+</tbody>
 </table>
 
 # Step 3: Create XDK web application that visualizes XDK data
@@ -341,101 +341,101 @@ Our backend functionality works fine, but it's not really actual sensor data fro
             <pre><code>sudo apt-get install oracle-java8-jdk
 sudo update-alternatives --config java</code></pre>
 			</li>
-          <li>
-            <p>Add some configuration in Kura init </p>
-            <pre><code>sudo nano /opt/eclipse/kura/kura/config.ini</code></pre>          <p>Add this line to the end of the file</p>
-            <ac:structured-macro ac:name="code">
-              <pre><code>org.osgi.framework.bootdelegation=sun.*,com.sun.*</code></pre>          </li>
-          <li>
-            <p>Reboot.</p>
-            <pre><code>sudo reboot</code></pre>          </li>
-          <li>On the Kura web application, change the necessary firewall rules to suit your development environment<ul>
-              <li>
-                <p>The Kura gateway will create its own wifi access point. If you have a second network on the Raspberry Pi (i.e Using the Ethernet cable), join that network. Check the raspberry pi for its IP<br/> on that network. Use that IP Address to reach the Kura web application. It is on http://[IP Address]/kura.</p>
-              </li>
-              <li>
-                <p>If your raspberry pi doesn't have a second network, you can join the Wifi Access Point created by the Kura gateway, and reach the Kura web application from there via it's IP on that network.</p>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">3</td>
-      <td colspan="1">
-        <p>Create a Kura Development Environment (More comprehensive tutorial here: <a href="http://eclipse.github.io/kura/dev/kura-setup.html">http://eclipse.github.io/kura/dev/kura-setup.html</a>)</p>
-        <ul>
-          <li>Install Eclipse Neon (the version that allows Plugin Development)</li>
-          <li>Install mToolkit as new software in Eclipse (URL : <a href="http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com">http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com</a>)</li>
-          <li>Download Kura's Developer's Workspace Archive (<a href="http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip">http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip</a>)</li>
-          <li>Unzip Developer's Workspace Archive to workspaceImport the unzipped projects</li>
-          <li>Go to "Target Definition" project, click on kura-equinox_3.11.1.target, and click "Set as Target Platform"</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">4</td>
-      <td colspan="1">
-        <p>Generate the XDK Kura Bundle from Vorto</p>
-        <ul>
-          <li>Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> in the Vorto Repository</li>
-          <li>Click on the <strong>Eclipse Kura Generator</strong>:<br/>
-            <br/>
-              <img src="./images/connect_xdk_kura/step5_4.png"/>
-          </li>
-          <li>Select <strong>Bluetooth LE</strong> and <strong>Bosch IoT Suite</strong>
-            <br/>
-            <img src="./images/connect_xdk_kura/step5_4_1.png" width=50%" height="50%"/>
-          </li>
-          <li>Confirm your selection with <strong>Generate</strong>
-          </li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">5</td>
-      <td colspan="1">Unzip the generated XDK Kura bundle to Eclipse workspace and import. The project will appear as <em>com.example.kura</em>.</td>
-    </tr>
-    <tr>
-      <td colspan="1">6</td>
-      <td colspan="1">
-        <p>Add dependencies to XDK Kura bundle</p>
-        <ul>
-          <li>Replace the JRE in build path to local JRE. Go to "<em>Build Path &gt; Configure Build Path &gt; Libraries</em>", remove library with Error and "Add JRE System Library"</li>
-          <li>Create a "secret" folder on the root, and add the keystore and truststore files you generated on the steps above.</li>
-          <li>Create a "lib" folder on the root and add all the Things Integration Client dependencies</li>
-        </ul>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="1">7</td>
-      <td colspan="1">
-        <p>Add application logic</p>
-        <ol>
-          <li>Firmware on the device side<ol>
-              <li>Download XDK workbench [<a href="https://xdk.bosch-connectivity.com/software-downloads">https://xdk.bosch-connectivity.com/software-downloads</a>]</li>
-              <li>Open your XDK workbench and import the SensorsToBle project [<ac:link>
-                  <a href="./tutorials/examples/SensorsToBle.zip">XDK Firmware</a></li>
-              <li>Flash the SensorsToBle project to the XDK (Please consult the XDK manual for doing this.</li>
-            </ol>
-          </li>
-          <li>On the XDK Kura bundle<ol>
-              <li>
-                <p>In <em>ThingClientFactory.java</em>, add your network proxy if you need one and uncomment the line below:</p>
-                <pre><code>.proxyConfiguration(proxy)</code></pre>              </li>
-              <li>
-                <p>In XDKDevice.java, in the method getResourceId(), modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in Chapter 2 of this guide.</p>
-                <pre><code>return "xdk:" + getBluetoothDevice().getAdress().replace(":", ""); </code></pre>                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
-              </li>
-              <li>
-                <p>In XDKDevice.java, in the method enableTemperature_0(), change the entire method to </p>
-                <pre><code>this.bluetoothGatt.writeCharacteristicValue("0x0013", "0100");</code></pre>
-                <p>This will turn-ON notifications for the XDK Bluetooth LE.</p>
-              </li>
-              <li>
-                <p>In XDKDevice.java, in the method readTemperature(), change the entire method to </p>
-                <pre><code>TemperatureSensor temperature = new TemperatureSensor();
+	      <li>
+	        <p>Add some configuration in Kura init </p>
+	        <pre><code>sudo nano /opt/eclipse/kura/kura/config.ini</code></pre>          <p>Add this line to the end of the file</p>
+	        <ac:structured-macro ac:name="code">
+	          <pre><code>org.osgi.framework.bootdelegation=sun.*,com.sun.*</code></pre>          </li>
+	      <li>
+	        <p>Reboot.</p>
+	        <pre><code>sudo reboot</code></pre>          </li>
+	      <li>On the Kura web application, change the necessary firewall rules to suit your development environment<ul>
+	          <li>
+	            <p>The Kura gateway will create its own wifi access point. If you have a second network on the Raspberry Pi (i.e Using the Ethernet cable), join that network. Check the raspberry pi for its IP<br/> on that network. Use that IP Address to reach the Kura web application. It is on http://[IP Address]/kura.</p>
+	          </li>
+	          <li>
+	            <p>If your raspberry pi doesn't have a second network, you can join the Wifi Access Point created by the Kura gateway, and reach the Kura web application from there via it's IP on that network.</p>
+	          </li>
+	        </ul>
+	      </li>
+	    </ul>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="1">3</td>
+	  <td colspan="1">
+	    <p>Create a Kura Development Environment (More comprehensive tutorial here: <a href="http://eclipse.github.io/kura/dev/kura-setup.html">http://eclipse.github.io/kura/dev/kura-setup.html</a>)</p>
+	    <ul>
+	      <li>Install Eclipse Neon (the version that allows Plugin Development)</li>
+	      <li>Install mToolkit as new software in Eclipse (URL : <a href="http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com">http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com</a>)</li>
+	      <li>Download Kura's Developer's Workspace Archive (<a href="http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip">http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip</a>)</li>
+	      <li>Unzip Developer's Workspace Archive to workspaceImport the unzipped projects</li>
+	      <li>Go to "Target Definition" project, click on kura-equinox_3.11.1.target, and click "Set as Target Platform"</li>
+	    </ul>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="1">4</td>
+	  <td colspan="1">
+	    <p>Generate the XDK Kura Bundle from Vorto</p>
+	    <ul>
+	      <li>Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> in the Vorto Repository</li>
+	      <li>Click on the <strong>Eclipse Kura Generator</strong>:<br/>
+	        <br/>
+	          <img src="./images/connect_xdk_kura/step5_4.png"/>
+	      </li>
+	      <li>Select <strong>Bluetooth LE</strong> and <strong>Bosch IoT Suite</strong>
+	        <br/>
+	        <img src="./images/connect_xdk_kura/step5_4_1.png" width=50%" height="50%"/>
+	      </li>
+	      <li>Confirm your selection with <strong>Generate</strong>
+	      </li>
+	    </ul>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="1">5</td>
+	  <td colspan="1">Unzip the generated XDK Kura bundle to Eclipse workspace and import. The project will appear as <em>com.example.kura</em>.</td>
+	</tr>
+	<tr>
+	  <td colspan="1">6</td>
+	  <td colspan="1">
+	    <p>Add dependencies to XDK Kura bundle</p>
+	    <ul>
+	      <li>Replace the JRE in build path to local JRE. Go to "<em>Build Path &gt; Configure Build Path &gt; Libraries</em>", remove library with Error and "Add JRE System Library"</li>
+	      <li>Create a "secret" folder on the root, and add the keystore and truststore files you generated on the steps above.</li>
+	      <li>Create a "lib" folder on the root and add all the Things Integration Client dependencies</li>
+	    </ul>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="1">7</td>
+	  <td colspan="1">
+	    <p>Add application logic</p>
+	    <ol>
+	      <li>Firmware on the device side<ol>
+	          <li>Download XDK workbench [<a href="https://xdk.bosch-connectivity.com/software-downloads">https://xdk.bosch-connectivity.com/software-downloads</a>]</li>
+	          <li>Open your XDK workbench and import the SensorsToBle project [<ac:link>
+	              <a href="./tutorials/examples/SensorsToBle.zip">XDK Firmware</a></li>
+	          <li>Flash the SensorsToBle project to the XDK (Please consult the XDK manual for doing this.</li>
+	        </ol>
+	      </li>
+	      <li>On the XDK Kura bundle<ol>
+	          <li>
+	            <p>In <em>ThingClientFactory.java</em>, add your network proxy if you need one and uncomment the line below:</p>
+	            <pre><code>.proxyConfiguration(proxy)</code></pre>              </li>
+	          <li>
+	            <p>In XDKDevice.java, in the method getResourceId(), modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in Chapter 2 of this guide.</p>
+	            <pre><code>return "xdk:" + getBluetoothDevice().getAdress().replace(":", ""); </code></pre>                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
+	          </li>
+	          <li>
+	            <p>In XDKDevice.java, in the method enableTemperature_0(), change the entire method to </p>
+	            <pre><code>this.bluetoothGatt.writeCharacteristicValue("0x0013", "0100");</code></pre>
+	            <p>This will turn-ON notifications for the XDK Bluetooth LE.</p>
+	          </li>
+	          <li>
+	            <p>In XDKDevice.java, in the method readTemperature(), change the entire method to </p>
+	            <pre><code>TemperatureSensor temperature = new TemperatureSensor();
 try {
 	this.bluetoothGatt.writeCharacteristicValue("0x0010", "74656D70");
 	String btReturnValue = this.bluetoothGatt.readCharacteristicValue("0x0012");
