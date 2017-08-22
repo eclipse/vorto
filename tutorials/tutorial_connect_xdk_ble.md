@@ -484,10 +484,10 @@ return temperature;</code></pre>
       <td colspan="1">
         <p>Change the configuration of our XDK Kura bundle</p>
         <ol>
-		<li>Go to the Kura webapp and look for the configuration page of our Bundle <br/> <img src="./images/connect_xdk_kura/step5_9.png" width=50%" height="50%"/></li>
-		<li>Put solution id <br/><img src="./images/connect_xdk_kura/step5_9_2.png" width=50%" height="50%"/></li>
-          	<li>Enable scanning <br/> <img src="./images/connect_xdk_kura/step5_9_4.png" width=50%" height="50%"/></li>
-          	<li>Enable temperature <br/> <img src="./images/connect_xdk_kura/step5_9_5.png" width=50%" height="50%"/></li>
+		<li>Go to the Kura webapp and look for the configuration page of our Bundle <br/> <img src="./images/connect_xdk_kura/step5_9.png"/></li>
+		<li>Put solution id <br/><img src="./images/connect_xdk_kura/step5_9_2.png"/></li>
+          	<li>Enable scanning <br/> <img src="./images/connect_xdk_kura/step5_9_3.png"/></li>
+          	<li>Enable temperature <br/> <img src="./images/connect_xdk_kura/step5_9_4.png"/></li>
         </ol>
       </td>
     </tr>
