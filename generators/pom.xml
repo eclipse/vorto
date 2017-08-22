@@ -30,6 +30,7 @@
 		<module>org.eclipse.vorto.codegen.prosystfi</module>
 		<module>org.eclipse.vorto.codegen.kura</module>
 		<module>org.eclipse.vorto.codegen.protobuf</module>
+		<module>org.eclipse.vorto.codegen.arduino</module>
   </modules>
   
 </project>
