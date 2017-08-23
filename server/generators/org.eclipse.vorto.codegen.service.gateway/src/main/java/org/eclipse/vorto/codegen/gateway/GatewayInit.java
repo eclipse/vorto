@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.gateway;
 
 import javax.annotation.PreDestroy;
 
+import org.eclipse.vorto.codegen.arduino.ArduinoCodeGenerator;
 import org.eclipse.vorto.codegen.aws.AWSGenerator;
 import org.eclipse.vorto.codegen.bosch.things.BoschIoTThingsGenerator;
 import org.eclipse.vorto.codegen.coap.CoAPGenerator;
@@ -80,6 +81,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/webdevice.properties", WebDeviceGenerator.class));
 			generatorRepo.add(Generator.create("/generators/kura.properties", KuraGenerator.class, new KuraConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/protobuf.properties", ProtobufGenerator.class));
+			generatorRepo.add(Generator.create("/generators/arduino.properties", ArduinoCodeGenerator.class));
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			
 			generatorRepo.list().stream().forEach(vorto::register);
