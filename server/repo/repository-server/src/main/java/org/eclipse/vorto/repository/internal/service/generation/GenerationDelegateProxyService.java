@@ -67,13 +67,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	
 	@Override
 	public void registerGenerator(String serviceKey, String baseUrl, ServiceClassifier classifier) {
-		if (!registeredGeneratorsRepository.findByGeneratorKey(serviceKey).isEmpty()) {
-			throw new GeneratorAlreadyExistsException(serviceKey);
-		} else {
-			LOGGER.info("Registered generator {} under base url {} and classifier {}",serviceKey,baseUrl,classifier);
-				
-			this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, classifier.name()));
-		}
+		this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, classifier.name()));
 	}
 
 	@Override

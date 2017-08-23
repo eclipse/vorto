@@ -151,7 +151,6 @@ public class VortoService {
 	}
 	
 	public void register(Generator generator) {
-		deregister(generator);
 		String serviceUrl = getServiceUrl(generator);
 		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/generation-router/register/%s/%s]", 
 				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey(), 
