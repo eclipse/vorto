@@ -29,23 +29,23 @@ class ArduinoImSourceTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// «model.name»
+		// Â«model.nameÂ»
 		
-		#include "«model.name».h"
+		#include "Â«model.nameÂ».h"
 		
-		«model.name»::«model.name»() 
+		Â«model.nameÂ»::Â«model.nameÂ»() 
 		{
 		}
 		
-		String «model.name»::serialize()
+		String Â«model.nameÂ»::serialize()
 		{
             String result = "\"features\": {";
 
-            «FOR fb : model.properties»
-                result += "\"«fb.name»\": { ";
-                result += «fb.name».serialize();
+            Â«FOR fb : model.propertiesÂ»
+                result += "\"Â«fb.nameÂ»\": { ";
+                result += Â«fb.nameÂ».serialize();
                 result += " },";
-            «ENDFOR»
+            Â«ENDFORÂ»
 		
             result += "}"; 
 		
