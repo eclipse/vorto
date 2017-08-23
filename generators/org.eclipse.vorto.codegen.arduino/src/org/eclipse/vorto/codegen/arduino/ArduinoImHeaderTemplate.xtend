@@ -29,31 +29,31 @@ class ArduinoImHeaderTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// «model.name»
+		// Â«model.nameÂ»
 		
-		#ifndef __«model.name.toUpperCase»_H__
-		#define __«model.name.toUpperCase»_H__
+		#ifndef __Â«model.name.toUpperCaseÂ»_H__
+		#define __Â«model.name.toUpperCaseÂ»_H__
 		
 		#include <WString.h>
 		
-		«FOR fb : model.properties»
-		#include "«fb.type.name».h"
-		«ENDFOR»
+		Â«FOR fb : model.propertiesÂ»
+		#include "Â«fb.type.nameÂ».h"
+		Â«ENDFORÂ»
 		
-		class «model.name»
+		class Â«model.nameÂ»
 		{
             public:
-                «model.name»();
+                Â«model.nameÂ»();
 
-                «FOR fb : model.properties»
-                    «fb.type.name» «fb.name»;
-                «ENDFOR»
+                Â«FOR fb : model.propertiesÂ»
+                    Â«fb.type.nameÂ» Â«fb.nameÂ»;
+                Â«ENDFORÂ»
 
                 String serialize();
             private:
 		};
 		
-		#endif // __«model.name.toUpperCase»_H__
+		#endif // __Â«model.name.toUpperCaseÂ»_H__
 		'''
 	}
 	

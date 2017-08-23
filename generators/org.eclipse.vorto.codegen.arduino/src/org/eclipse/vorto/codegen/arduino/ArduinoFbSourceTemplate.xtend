@@ -30,44 +30,44 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getContent(FunctionblockModel fb, InvocationContext context) {
 		'''
-		// «fb.name»
+		// Â«fb.nameÂ»
 		
-		#include "«fb.name».h"
+		#include "Â«fb.nameÂ».h"
 		
-		«fb.name»::«fb.name»()
+		Â«fb.nameÂ»::Â«fb.nameÂ»()
 		{
-            «FOR status : fb.functionblock.status.properties»
-                «status.name»Updated = false;
-            «ENDFOR»
+            Â«FOR status : fb.functionblock.status.propertiesÂ»
+                Â«status.nameÂ»Updated = false;
+            Â«ENDFORÂ»
 		}
 		
-		«FOR status : fb.functionblock.status.properties»
-        	void «fb.name»::set«status.name»(«type(status.type)» value)
+		Â«FOR status : fb.functionblock.status.propertiesÂ»
+        	void Â«fb.nameÂ»::setÂ«status.nameÂ»(Â«type(status.type)Â» value)
             {
-                «status.name» = value;
-                «status.name»Updated = true;
+                Â«status.nameÂ» = value;
+                Â«status.nameÂ»Updated = true;
             }
         
-            «type(status.type)» «fb.name»::get«status.name»()
+            Â«type(status.type)Â» Â«fb.nameÂ»::getÂ«status.nameÂ»()
             {
-                return «status.name»;
+                return Â«status.nameÂ»;
             }
-        «ENDFOR»
+        Â«ENDFORÂ»
 		
-		String «fb.name»::serialize()
+		String Â«fb.nameÂ»::serialize()
 		{
 		    String result = "\"properties\" : {";
-            «FOR status : fb.functionblock.status.properties»
-                if («status.name»Updated)
+            Â«FOR status : fb.functionblock.status.propertiesÂ»
+                if (Â«status.nameÂ»Updated)
                 {
-                    «IF isNumericType(status.type)»
-                        result += "\"«status.name»\" : " + String(«status.name») + "; ";
-                    «ELSE»
-                        result += "\"«status.name»\" : \"" + String(«status.name») + "\"; ";
-                    «ENDIF» 
-                    «status.name»Updated = false;
+                    Â«IF isNumericType(status.type)Â»
+                        result += "\"Â«status.nameÂ»\" : " + String(Â«status.nameÂ») + "; ";
+                    Â«ELSEÂ»
+                        result += "\"Â«status.nameÂ»\" : \"" + String(Â«status.nameÂ») + "\"; ";
+                    Â«ENDIFÂ» 
+                    Â«status.nameÂ»Updated = false;
                 }
-            «ENDFOR»
+            Â«ENDFORÂ»
 			
     		result += "}";
 

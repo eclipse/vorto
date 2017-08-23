@@ -30,32 +30,32 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getContent(FunctionblockModel fb, InvocationContext context) {
 		'''
-		// «fb.name»
+		// Â«fb.nameÂ»
 		
-		#ifndef __«fb.name.toUpperCase»_H__
-		#define __«fb.name.toUpperCase»_H__
+		#ifndef __Â«fb.name.toUpperCaseÂ»_H__
+		#define __Â«fb.name.toUpperCaseÂ»_H__
 		
 		#include <WString.h>
 		
-		class «fb.name»
+		class Â«fb.nameÂ»
 		{
             public:
-                «fb.name»();
+                Â«fb.nameÂ»();
 				
-                «FOR status : fb.functionblock.status.properties»
-                void set«status.name»(«type(status.type)» value);
-                «type(status.type)» get«status.name»();
-                «ENDFOR»
+                Â«FOR status : fb.functionblock.status.propertiesÂ»
+                void setÂ«status.nameÂ»(Â«type(status.type)Â» value);
+                Â«type(status.type)Â» getÂ«status.nameÂ»();
+                Â«ENDFORÂ»
 
                 String serialize();
             private:
-                «FOR status : fb.functionblock.status.properties»
-                    «type(status.type)» «status.name»;
-                    bool «status.name»Updated;
-                «ENDFOR»				
+                Â«FOR status : fb.functionblock.status.propertiesÂ»
+                    Â«type(status.type)Â» Â«status.nameÂ»;
+                    bool Â«status.nameÂ»Updated;
+                Â«ENDFORÂ»				
         };
 		
-        #endif // __«fb.name.toUpperCase»_H__
+        #endif // __Â«fb.name.toUpperCaseÂ»_H__
 		'''
 	}
 	
