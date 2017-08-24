@@ -363,7 +363,7 @@ At this point, we would like to test our web application and check if the UI wid
 
 # Step 5: Connect the Bosch XDK via Bluetooth LE using Eclipse Kura
 
-Our backend functionality works fine, but it's not really actual sensor data from the device yet. Let's change that and connect the XDK via Bluetooth to the Bosch IoT Suite. As long as the sent data complies to the Vorto information model, our backend web application should not break. Let's go:
+Our backend functionality works fine, but it's not really actual sensor data from the device yet. Let's change that and connect the XDK via Bluetooth to the Bosch IoT Suite. As long as the sent data complies to the Vorto information model, our backend web application will not break. Let's go:
 
 <table>
   <tbody>
@@ -412,9 +412,9 @@ sudo update-alternatives --config java</code></pre>
 	  <td colspan="1">
 	    <p>Create a Kura Development Environment (More comprehensive tutorial here: <a href="http://eclipse.github.io/kura/dev/kura-setup.html">http://eclipse.github.io/kura/dev/kura-setup.html</a>)</p>
 	    <ul>
-	      <li>Install Eclipse Neon (the version that allows Plugin Development)</li>
-	      <li>Install mToolkit as new software in Eclipse (URL : <a href="http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com">http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com</a>)</li>
-	      <li>Download Kura's Developer's Workspace Archive (<a href="http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip">http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip</a>)</li>
+	      <li>Start your Eclipse IDE</li>
+	      <li>Install <a href="http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com">mToolkit</a> as new software in Eclipse</li>
+	      <li>Download <a href="http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip">Kura's Developer's Workspace Archive</a></li>
 	      <li>Unzip Developer's Workspace Archive to workspaceImport the unzipped projects</li>
 	      <li>Go to "Target Definition" project, click on kura-equinox_3.11.1.target, and click "Set as Target Platform"</li>
 	    </ul>
