@@ -27,6 +27,7 @@ import org.eclipse.vorto.codegen.kura.templates.DefaultAppTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseClasspathTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseProjectFileTemplate;
 import org.eclipse.vorto.codegen.kura.templates.ManifestTemplate;
+import org.eclipse.vorto.codegen.kura.templates.PomTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceBluetoothFinderTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.FunctionblockTemplate;
@@ -58,6 +59,7 @@ public class KuraGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ComponentXmlTemplate()));
 		
 		if (invocationContext.getConfigurationProperties().getOrDefault("boschcloud", "false").equalsIgnoreCase("true")) {
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new IDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ThingClientFactoryTemplate()));
