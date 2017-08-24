@@ -1,8 +1,11 @@
 # Create and publish Information Models using Vorto Web Editor
 
+
+
 ## Prerequisites
+
 1. You must have a Github account to use the Vorto Web Editor. If you don't have an account, you can create one [here](https://github.com/join).
-2. Sign In to the Vorto Web Editor.
+2. Sign In to the [Vorto Web Editor](http://vorto.eclipse.org/editor) .
 
 ![Web Editor project view](images/create_and_publish_with_web_editor/projects_view.png)
 

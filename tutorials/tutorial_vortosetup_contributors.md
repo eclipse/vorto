@@ -1,4 +1,4 @@
-# A step-by-step guide to setup Vorto Toolset in eclipse IDE for contributors
+# Setup the Vorto Toolset in Eclipse for Vorto Contributors
 
 1. [Setup Eclipse IDE](#setupeclipseIDE)
 2. [Execute Vorto from Source Code](#executefromsourcecode)
