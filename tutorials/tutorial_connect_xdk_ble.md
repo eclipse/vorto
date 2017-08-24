@@ -1,33 +1,51 @@
 # Rapidly develop an IoT App with Vorto connecting a XDK to the Bosch IoT Suite
 
-In this tutorial, we are going to walk you through the steps of rapidly developing an e2e IoT solution that reads a Bosch XDK's surrounding temperature and transmits this data to the Bosch IoT Suite where it can be visualized in a web application and voice-controlled via Amazon Alexa Service. 
+In this tutorial, we are going to walk you through the steps of developing an IoT solution that reads a Bosch XDK's surrounding temperature and transmits this data to the Bosch IoT Suite where it can be visualized in a web application and voice-controlled via Amazon Alexa Service. 
 
 
 ![](./images/connect_xdk_kura/overview.png)
 
-Let's break down the development into several steps:
+Let's break down the development into smaller steps:
 
-- Describe the XDK as an information model with the Vorto IoT toolset
-- Register the XDK in the Bosch IoT Suite with the Bosch IoT Developer Console
-- Build an XDK web application that consumes XDK sensor data from Bosch IoT Suite
-- Simulate the XDK device by sending test data to Bosch IoT Suite, thus verifying the correct behavior of the web application
-- Connect the XDK with Bluetooth to the Bosch IoT Suite via Eclipse Kura
-- Build an Amazon Alexa Skillset to voice-control the XDK.
+1. Describe the XDK as an information model with the Vorto IoT toolset
+2. Register the XDK in the Bosch IoT Suite with the Bosch IoT Developer Console
+3. Build an XDK web application that consumes XDK sensor data from Bosch IoT Suite
+4. Simulate the XDK device by sending test data to Bosch IoT Suite, thus verifying the correct behavior of the web application
+5. Connect the XDK with Bluetooth to the Bosch IoT Suite via Eclipse Kura
+6. Build an Amazon Alexa Skillset to voice-control the XDK.
+
+# Prerequisites
+
+- Hardware
+	- XDK
+	- Raspberry Pi 3
+- Software
+	- [Eclipse Oxygen for DSL Developers](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygenr)
+	- [Eclipse Vorto 0.9 IoT Toolset](https://marketplace.eclipse.org/content/vorto-toolset) for describing devices
+	- [mToolkit](http://mtoolkit-neon.s3-website-us-east-1.amazonaws.com) for deploying Kura bundles to the Pi
+	- [Kura's Developer's Workspace Archive](http://www.eclipse.org/downloads/download.php?file=/kura/releases/3.0.0/user_workspace_archive_3.0.0.zip)
+	- [Eclipse XDK Workbench 2.0.1](https://xdk.bosch-connectivity.com/software-downloads) for flashing the XDK firmware
+
 
 # Step 1: Describe XDK as Vorto Information Model
 
 Before you can start integrating the device with the Bosch IoT Suite, you need to have a Vorto information model exposing the device's functionality. The information model "teaches" the Bosch IoT Suite about the XDK's capabilities making it able to semantically understand the device data.
 
-Before creating a new information model, check the Vorto Repository for any existing XDK model that you may want to re-use for your solution development. For that, open the Vorto repository and search for 'XDK'. In this case the XDK information model is already available and you can just use it. If you cannot find your model, you can easily create a new information model using the Vorto Toolset.
+For this tutorial, we are going to use the existing [XDK Information Model](http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0). 
 
-You have two options to describe a new Vorto Information model:
-
-- Option 1: Use the Eclipse Toolset by installing the toolset plugins from Eclipse Marketplace. Read more here.
-- Option 2: Use the Vorto Web Editor (Beta). Read more here.
 
 # Step 2: Register / Pre-commission device in Bosch IoT Suite
 
-As a prerequisite, you would need to request for a free Bosch IoT Suite evaluation account. Selecting 'Bosch IoT Things' and 'Bosch IoT Permissions' is sufficient for this tutorial. Once you get the email response containing all the information about your evaluation account, you can proceed:
+As a prerequisite, you would need to request for a free Bosch IoT Suite evaluation account. Selecting 'Bosch IoT Things' and 'Bosch IoT Permissions' is sufficient for this tutorial. You will receive an email, containing your personal evaluation account information:
+
+- Bosch IoT Permissions:
+	- Admin Dashboard URL to manage your application identities
+	- Tenant, username and password, which is for example needed to login to the IoT Developer console later
+	- Client ID and Client Secret needed for developing a secure web application using Bosch IoT Permissions
+- Bosch IoT Things:
+	- Open the Things Admin Dashboard to find
+		- API-Token, aka. x-cri-api-token, for communicating to Things via its REST API
+		- SolutionID to uniquely identify your solution in the Bosch IoT Suite
 
 <table>
 <tbody>
@@ -68,10 +86,9 @@ As a prerequisite, you would need to request for a free Bosch IoT Suite evaluati
   <td colspan="1">6.</td>
   <td colspan="1">
     <p>Now, you can give your XDK a specific name in order to identify uniquely. For example</p>
-    <p>Namespace: demo.vorto.example</p>
-    <p>Name: <em>Leave blank</em>
-    </p>
-    <p>Technical ID: &lt;bluetooth address of XDK without colons&gt;</p>
+    <p><b>Namespace</b>: demo.vorto.example</p>
+    <p>As for the <b>technical device ID</b>, use the bluetooth mac address which you can find on the backside of the XDK. Make sure to remove the dashes! Example: <i>FCD6BD100B88</i></p>
+	<p>Your suggested thing ID should look similar to this: <i>demo.vorto.example:FCD6BD100B88<i></p>
     <p>Confirm with <em>Complete.</em>
     </p>
   </td>
@@ -88,27 +105,29 @@ As a prerequisite, you would need to request for a free Bosch IoT Suite evaluati
   <td colspan="1">
     <p>Before we can start sending as well as consuming device data, we need to grant the access permissions for the device and the application:</p>
     <ol>
-      <li>First open the XDK details page of the <a href="https://console.bosch-iot-suite.com">Developer Console</a>
-      </li>
-      <li>Click the <strong>Permissions</strong> tab and click <strong>New Entry</strong>
-      </li>
-      <li>Add the ID of the the device, e.g. <em>&lt;mysolutionID&gt;:myxdk</em> and click <strong>Save</strong>
-      </li>
+      <li>First open the XDK details page of the <a href="https://console.bosch-iot-suite.com">Developer Console</a> by selecting the XDK in the thing browser
+	  <br/><br/>
+      <img src="./images/connect_xdk_kura/step2_8-1.png" width="70%" />
+	 </li>
+      <li>Click the <strong>Permissions</strong> tab and click <strong>New Entry</strong><br/><br/>
+      <img src="./images/connect_xdk_kura/step2_8.png" width="70%"/></li>
+	   <li>Add the ID of the the device, e.g. <em>&lt;solutionID&gt;:myxdk</em> and click <strong>Save</strong><br/><br/>
+	   <img src="./images/connect_xdk_kura/step2_8-3.png" width="70%"/></li>
     </ol>
     <p>
       <img src="./images/connect_xdk_kura/step2_connect_permission1.png" width="50%" height="50%"/>
     </p>
     <p>4. Repeat the steps to create another permission ACL for the xdk web application, that we are going to develop in the next chapter.</p>
-    <p>    Call the ID of the app, e.g. <em>&lt;mysolutionID&gt;:xdkapp </em>and grant the read and write permissions. Click <em>Save</em> to confirm.</p>
+    <p>    Call the ID of the app, e.g. <em>&lt;solutionID&gt;:xdkapp </em>and grant the read and write permissions. Click <em>Save</em> to confirm.</p>
     <p>
-      <img src="./images/connect_xdk_kura/step2_connect_permission2.png" width="50%" height="50%"/>
+      <img src="./images/connect_xdk_kura/step2_connect_permission2.png" width="70%"/>
     </p>
   </td>
 </tr>
 <tr>
   <td colspan="1">9.</td>
   <td colspan="1">
-    Way to go! Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
+    <b>Way to go!</b> Now you have your own claimed XDK instance registered in the Suite and we can go ahead and build an app with Vorto that receives and visualizes XDK data.</td>
 </tr>
 </tbody>
 </table>
@@ -148,7 +167,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">
         <p>Download <a href="https://github.com/bsinno/iot-things-examples/blob/master/cr-integration-api-examples/common/src/main/resources/bosch-iot-cloud.jks">https://github.com/bsinno/iot-things-examples/blob/master/cr-integration-api-examples/common/src/main/resources/bosch-iot-cloud.jks</a>
         </p>
-        <p>and store this file under <em>src/main/resource/secure/bosch-iot-cloud.jks</em>
+        <p>and store this file under <em>src/main/resources/secure/bosch-iot-cloud.jks</em>
         </p>
       </td>
     </tr>
@@ -157,20 +176,42 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">
         <p>Create a <a href="https://things.apps.bosch-iot-cloud.com/dokuwiki/doku.php?id=002_getting_started:booking:manage-solution-ui#private_and_public_key">public and private key for your solution</a> and store the CRClient.jks private key under <em>src/main/resource/secure/CRClient.jks</em>
         </p>
+		<ul>
+		<li>
+		Create a public and private key pair for your solution:
+		<pre><code>keytool -genkeypair -noprompt -dname "CN=-, OU=-, O=-, L=-, S=-, C=-" -keyalg EC -alias CR -sigalg SHA512withECDSA -validity 365 -keystore CRClient.jks</code></pre>
+		</li>
+		<li>
+		Extract the public key information into a separate file:
+		<pre><code>keytool -export -keystore CRClient.jks -alias CR -rfc -file CRClient_key.cer </code></pre>
+		</li>
+		<li>
+		Print the public key to the command prompt: 
+		<pre><code>keytool -printcert -rfc -file CRClient_key.cer</code></pre>
+		</li>
+		<li>
+		Open the Things Adminstration Dashboard for your solution (sent to you via Email) and submit your public key by copy&pasting the key from the command prompt:<br/>
+		<img src="./images/connect_xdk_kura/step3_5_publickey.png" width="50%"/>
+		</li>
+		</ul>
       </td>
     </tr>
     <tr>
       <td colspan="1">6.</td>
       <td colspan="1">
-        <p>Open the <em>src/main/resources/application.yml </em>and insert the Bosch IoT Permissions and Bosch IoT Things credentials including the paths to the keystore that you just created with the keytool.</p>
-        <pre><code>bosch:
+        <p>Open the <em>src/main/resources/application.yml </em>and insert the Bosch IoT Permissions and Bosch IoT Things credentials that you have received via Email during the evaluation account registration:</p>
+        <pre><code>spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+bosch:
   permissions:
     endpointUrl: https://permissions-api.apps.bosch-iot-cloud.com
     clientId: [enter Bosch IoT Permissions client id here]
     clientSecret: [enter Bosch IoT Permissions secret here]
   things:
     alias: CR
-    alias.password: [enter key alias password here ]
+    alias.password: [enter keystore password you chose when generating your public private key pair]
     endpointUrl : https://things.apps.bosch-iot-cloud.com
     wsEndpointUrl : wss://events.apps.bosch-iot-cloud.com
     apiToken: [enter Bosch IoT Things API Token here ]
@@ -179,7 +220,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
     trustStorePassword : jks
     solutionid: [enter Bosch IoT Things solution ID here ]
     keystore:
-      password: [enter keystore password here ]]]>
+      password: [enter keystore password you chose when generating your public private key pair ]]]>
     </code></pre>
     <p><b>Behind proxy ?</b></p>
     <p>1) Add proxy information in the application.yml</p>
@@ -189,7 +230,7 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
     <tr>
       <td colspan="1">7.</td>
       <td colspan="1">
-        <p>Open the <em>com.example.iot.xdk.config.LocalConfiguration</em> and use the clientID <em>&lt;mysolutionID&gt; + ":xdkapp. </em>
+        <p>Open the <em>com.example.iot.xdk.config.LocalConfiguration</em> and use the clientID <em>&lt;solutionID&gt; + ":xdkapp. </em>
         </p>
             <p>Make sure the <strong>clientID</strong> in your configuration matches the clientID in the ACL that you had created via the Developer Console earlier!</p>
       </td>
@@ -208,9 +249,9 @@ In this step, we want to build a small Spring-boot based IoT webapp that is able
       <td colspan="1">8.</td>
       <td colspan="1">
         <p>Login with your Bosch IoT Permissions credentials, e.g:</p>
-        <p>Username: <em>mytenantId\myuser</em>
+        <p>Username: <em>tenant\username</em>
         </p>
-        <p>Password: <em>mypassword</em>
+        <p>Password: <em>password</em>
         </p>
       </td>
     </tr>
@@ -426,7 +467,7 @@ sudo update-alternatives --config java</code></pre>
 	            <pre><code>.proxyConfiguration(proxy)</code></pre>              </li>
 	          <li>
 	            <p>In XDKDevice.java, in the method getResourceId(), modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in Chapter 2 of this guide.</p>
-	            <pre><code>return "xdk:" + getBluetoothDevice().getAdress().replace(":", ""); </code></pre>                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
+	            <pre><code>return "demo.vorto.example:" + getBluetoothDevice().getAdress().replace(":", ""); </code></pre>                <p>In our particular implementation, we will get the bluetooth address, strip the colons (":"), and prepend it with "xdk:"</p>
 	          </li>
 	          <li>
 	            <p>In XDKDevice.java, in the method enableTemperature_0(), change the entire method to </p>
@@ -484,8 +525,8 @@ return temperature;</code></pre>
       <td colspan="1">
         <p>Change the configuration of our XDK Kura bundle</p>
         <ol>
-		<li>Go to the Kura webapp and look for the configuration page of our Bundle <br/> <img src="./images/connect_xdk_kura/step5_9.png"/></li>
-		<li>Put solution id <br/><img src="./images/connect_xdk_kura/step5_9_2.png"/></li>
+    	<li>Go to the Kura webapp and look for the configuration page of our Bundle <br/> <img src="./images/connect_xdk_kura/step5_9.png"/></li>
+    	<li>Put solution id <br/><img src="./images/connect_xdk_kura/step5_9_2.png"/></li>
           	<li>Enable scanning <br/> <img src="./images/connect_xdk_kura/step5_9_3.png"/></li>
           	<li>Enable temperature <br/> <img src="./images/connect_xdk_kura/step5_9_4.png"/></li>
         </ol>
@@ -602,7 +643,7 @@ We are almost there and completed our entire IoT XDK solution. The only thing le
       <td colspan="1">11.</td>
       <td colspan="1">
         <p>Select AWS Lambda ARN Endpoint and add the ARN.</p>
-	<p>You can get the ARN of your lambda function in the lambda console.</p>
+    <p>You can get the ARN of your lambda function in the lambda console.</p>
       </td>
     </tr>
     <tr>
