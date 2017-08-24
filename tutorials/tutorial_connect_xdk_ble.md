@@ -443,9 +443,10 @@ sudo update-alternatives --config java</code></pre>
 	  <td colspan="1">
 	    <p>Add dependencies to XDK Kura bundle</p>
 	    <ul>
-	      <li>Replace the JRE in build path to local JRE. Go to "<em>Build Path &gt; Configure Build Path &gt; Libraries</em>", remove library with Error and "Add JRE System Library"</li>
+	      <li>In the commandline, go to the directory of the project and execute 'mvn dependency:copy-dependencies'</li>
+	      <li>In Eclipse, refresh your project, then right-click on your project, go to "<em>Plug-in Tools</em>", and click on "<em>Update classpath</em>"</li>
+	      <li>Rebuild your project and fix the import errors</li>
 	      <li>Create a "secret" folder on the root, and add the keystore and truststore files you generated on the steps above.</li>
-	      <li>Create a "lib" folder on the root and add all the Things Integration Client dependencies</li>
 	    </ul>
 	  </td>
 	</tr>
