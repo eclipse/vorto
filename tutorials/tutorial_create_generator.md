@@ -1,4 +1,4 @@
-# Create and deploy a simple SQL code generator using Vorto
+# Create a DDL-script from a Vorto Information Model with the Generator SDK
 
 
 ## Prerequisites
@@ -75,7 +75,7 @@ override getContent(InformationModel model, InvocationContext context) {
 	);
 	'''
 }
-```  
+```
 
 ## Step 2: Test Code Generator
 
@@ -95,49 +95,8 @@ Now select your TISensorTag Information Model in your project browser. Right cli
 	   			Accelerometer_sensor_units VARCHAR(255),
 	   			Accelerometer_min_range_value FLOAT,
 	   			Accelerometer_max_range_value FLOAT,
-	   			Gyrometer_x_value FLOAT,
-	   			Gyrometer_y_value FLOAT,
-	   			Gyrometer_z_value FLOAT,
-	   			Gyrometer_sensor_units VARCHAR(255),
-	   			Gyrometer_min_x_value FLOAT,
-	   			Gyrometer_max_x_value FLOAT,
-	   			Gyrometer_min_y_value FLOAT,
-	   			Gyrometer_max_y_value FLOAT,
-	   			Gyrometer_min_z_value FLOAT,
-	   			Gyrometer_max_z_value FLOAT,
-	   			Gyrometer_min_range_value FLOAT,
-	   			Gyrometer_max_range_value FLOAT,
-	   			Gyrometer_application_type VARCHAR(255),
-	   			Magnetometer_x_value FLOAT,
-	   			Magnetometer_y_value FLOAT,
-	   			Magnetometer_z_value FLOAT,
-	   			Magnetometer_compass_direction FLOAT,
-	   			Magnetometer_sensor_units VARCHAR(255),
-	   			Humidity_sensor_value FLOAT,
-	   			Humidity_min_measured_value FLOAT,
-	   			Humidity_max_measured_value FLOAT,
-	   			Humidity_min_range_value VARCHAR(255),
-	   			Humidity_max_range_value FLOAT,
-	   			Humidity_sensor_units VARCHAR(255),
-	   			Temperature_sensor_value FLOAT,
-	   			Temperature_min_measured_value FLOAT,
-	   			Temperature_max_measured_value FLOAT,
-	   			Temperature_min_range_value FLOAT,
-	   			Temperature_max_range_value FLOAT,
-	   			Temperature_sensor_units VARCHAR(255),
-	   			Barometer_sensor_value FLOAT,
-	   			Barometer_min_measured_value FLOAT,
-	   			Barometer_max_measured_value FLOAT,
-	   			Barometer_min_range_value FLOAT,
-	   			Barometer_max_range_value FLOAT,
-	   			Barometer_sensor_units VARCHAR(255),
-	   			Buzzer_on_off VARCHAR(255),
-	   			Buzzer_dimmer INT,
-	   			Buzzer_delay_duration FLOAT,
-	   			Buzzer_minimum_off_time FLOAT,
-	   			Buzzer_application_type VARCHAR(255)
+				... //other function block properties
 );
-
 ```
 
 Now you can test this command in any of your favorite SQL database. For the sake of demonstration here, we use SQLite as it's fast and runs locally. You can install SQLite [here](https://sqlite.org/download.html)

@@ -1,77 +1,107 @@
-# Create and publish Information Models using Vorto Web Editor
+# Create and publish Information Models
+
+In this tutorial, we are going to show you how to create an information model and publish it to the Vorto Repository using the Vorto Web Editor. We are going to describe a fitness band device with a heart rate monitoring- and step counting functionality.
 
 ## Prerequisites
-1. You must have a Github account to use the Vorto Web Editor. If you don't have an account, you can create one [here](https://github.com/join).
-2. Sign In to the Vorto Web Editor.
 
-![Web Editor project view](images/create_and_publish_with_web_editor/projects_view.png)
+Before you begin, make sure, that you have a Github account in order to log on to the Vorto Web Editor. If you don't have an account, you can create one [here](https://github.com/join).
 
-## Overview
 
-In this tutorial, we are going to show you how to create an information model and publish it to the Vorto Repository using the web editor. We will be creating the device description for a generic fitness band and in the process touch upon the features of the editor.
+## Steps
 
-## Tutorial
+### Describing the fitness band device
 
-#### Step 1: Create a new Vorto Project
-Click on the **+** icon to create a new project. We will name this project Fitness.
+#### 1. Log on to the [Web Editor](http://vorto.eclipse.org/editor) with your Github Account
 
-![Web Editor create project](images/create_and_publish_with_web_editor/create_project.png)
 
-Once you create the project, you will be redirected to the editor page.
+#### 2. Create a new Model Project
 
-![Web Editor view](images/create_and_publish_with_web_editor/editor_view.png)
+Click on the **+** icon to create a new project. Let's name the project "Health".
 
-#### Step 2: Create a new Information Model file
-There are two ways to create a new resource in the project:
-- Click on the **+** icon
+<img src="images/create_and_publish_with_web_editor/create_project.png" width="50%"/>
 
-OR
+Upon creation, the project view opens where you can add new model resources that describe your device.
 
-- **Right Click** on the Folder icon and choose **New Resource** in the file viewer present in the left panel.
+<img src="./images/create_and_publish_with_web_editor/editor_view.png" width="50%"/>
 
-![Web Editor choose model type](images/create_and_publish_with_web_editor/choose_model_type.png)
+#### 3. Create a Fitness Band Information Model
 
-Select Information model under model type and click on **Next**.
+Click on the **+** icon to create a new model and select _Information Model_.
 
-![Web Editor describe model](images/create_and_publish_with_web_editor/describe_model.png)
+<img src="./images/create_and_publish_with_web_editor/choose_model_type.png" width="50%"/>
 
-Add the appropriate description and click on **Create** to create the information model.
+Enter the name for the device "Fitnessband" and a meaningful description. Confirm with **Create**.
 
-![Web Editor with info model](images/create_and_publish_with_web_editor/editor_info_model.png)
+<img src="./images/create_and_publish_with_web_editor/describe_model.png" width="50%"/>
 
-#### Step 3: Import Function block into the Information model using Drag and Drop
+This will open the information model in an editor. 
 
-Some of the common functionalities provided by a fitness band include **Step Counter** and **Heart Rate Monitor**. These functionalities can be described using function blocks.
+<img src="./images/create_and_publish_with_web_editor/editor_info_model.png" width="50%"/>
 
-Using the steps mentioned before, you can create a function block to describe a **Step Counter** in the project.
+#### 4. Create a Step Counter functionblock
 
-![Web Editor with fbmodel](images/create_and_publish_with_web_editor/editor_fb_model.png)
+Our fitness band's functionality includes a **Step Counter** and a **Heart Rate Monitor**. These functionalities can be described as function blocks. 
 
-The Web editor provides Drag and Drop functionality to import models. To import the **StepCounter** functionblock in the FitnessBand model, open the **FitnessBand** tab and then Drag and Drop the function block over the information model in the resource tree present in the left panel.
+As for the information model, create a new function block model for the step counter by clicking on the **+** icon. This time, make sure to select Function Block as the model type in the creation wizard. 
 
-![Web Editor import sc](images/create_and_publish_with_web_editor/import_sc.png)
+Open the Step Counter Editor to define the step counter functionality:
 
-#### Step 4: Import Function block into the Information model from the Vorto Repository
+```
+namespace com.mycompany
+version 1.0.0
+displayname "StepCounter"
+category demo
+functionblock StepCounter {
 
-We have already added the **HeartRateMonitor** functionblock to out Vorto Repository. To import this functionblock, first search for it in the search box provided, then select the suitable model and click on the double arrow button to import it.
+	status {
+	   // status properties define the state of the device that
+		mandatory dayStepCounter as int "Number of steps covered in 1 day"
+		mandatory allTimeStepCount as int "Total number of steps covered"
+	}
+	
+	operations {
+	   // operations define functionality that can be invoked on the device
+		resetDailyStepCount() "Reset dayStepCount value to 0"
+		resetAllTimeStepCount() "Reset allTimeStepCount value to 0"
+	}
+}
 
-![Web Editor import hrm](images/create_and_publish_with_web_editor/import_hr.png)
+``` 
+Your model should look like this:
 
-#### Step 5: Publish the models to the Vorto Repository
+<img src="./images/create_and_publish_with_web_editor/editor_fb_model.png" width="50%"/>
 
-Click on the **Publish** button to validate and publish these models on the Vorto Repository
+Now open the Fitnessband Information Model by clicking on the FitnessBand tab and Drag&Drop the Step Counter onto the FitnessBand in the File Explorer. 
 
-![Web Editor validate](images/create_and_publish_with_web_editor/checkin.png)
+<img src="./images/create_and_publish_with_web_editor/import_sc.png" width="50%"/>
 
-You can check in the files to repository if the files are valid.
+#### 5. Import the Heart Rate Monitor Function Block
 
-![Web Editor checkin](images/create_and_publish_with_web_editor/complete.png)
+- Open the FitnessBand Information Model and search for 'HeartRateMonitor' in the _Import Models Browser_.
 
-These models have now been uploaded to the Vorto Repository
+- Click on the **<<** icon to import the model into the FitnessBand Information Model
 
-![Vorto repository](images/create_and_publish_with_web_editor/repo.png)
+<img src="./images/create_and_publish_with_web_editor/import_hr.png" width="50%"/>
+
+### Publishing the Information Model to the Vorto Repository
+
+Before users are able to discover your device description and generate code, you must publish the model to the Vorto Repository. 
+
+#### 1. Publish Information model and its referenced models 
+
+Click on the **Publish** button to validate and confirm with _Publish_.
+
+<img src="./images/create_and_publish_with_web_editor/checkin.png" width="50%"/>
+
+Open the [Vorto Repository](http://vorto.eclipse.org) and search for "FitnessBand". There you can see the Information Model you had just created. 
+
+<img src="./images/create_and_publish_with_web_editor/repo.png" width="50%"/>
+
 
 ## What's next?
 
+Now that you have described the device as an Information Model with Vorto, you can use the Vorto Code Generation infrastructure and generate platform-specific source code:
 
-Integrate the Fitness Band into IoT Platforms by generating source code using [Vorto Generators](https://github.com/eclipse/vorto/blob/development/server/generators/Readme.md)
+- [Connect the device via bluetooth with Eclipse Kura](tutorial_connect_xdk_ble.md)
+- [Create a Spring-Boot web application consuming the device telemetry data](tutorial_create_webapp_dashboard.md)
+- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_build_alexaskill.md)
