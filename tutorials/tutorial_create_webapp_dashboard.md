@@ -18,7 +18,7 @@ In this tutorial, we want to build a small Spring-boot based IoT webapp that is 
  
 - In the generator configuration page, select the <strong>Bosch IoT Suite</strong> as a cloud platform connector. Feel free to select other add-ons as needed. Confirm your selection by clicking **Generate**. This will generate a ZIP achieve containing a maven project of the XDK dashboard spring-boot application.
 
- <img src="./images/create_webapp_dashboard/step3_2.png" width="50%"/>
+ <img src="./images/create_webapp_dashboard/step3_2.png" width="50%" />
  
 - **Unzip** and **import** the project as a Maven Project into your Eclipse IDE.
 
@@ -42,7 +42,7 @@ keytool -printcert -rfc -file CRClient_key.cer
 ```
 - Open the Things Adminstration Dashboard for your solution (sent to you via Email during evaluation account registration) and submit your public key by copy&pasting the key from the command prompt
 
-	<img src="./images/connect_xdk_kura/step3_5_publickey.png" width="50%"/>
+	<img src="./images/connect_xdk_kura/step3_5_publickey.png" width="50%" />
 
 - Open the src/main/resources/application.yml and insert the Bosch IoT Permissions and Bosch IoT Things credentials that you have received via Email during the evaluation account registration:
 
@@ -82,15 +82,15 @@ Make sure the  **clientID** in your configuration matches the clientID in the AC
 - Open your browser under <a href="http://localhost:8080">http://localhost:8080</a>
 - Log in with your Bosch IoT Permissions credentials
 
-	<img src="./images/connect_xdk_kura/step3_8.png" width=50%"/>
+	<img src="./images/connect_xdk_kura/step3_8.png" width="50%"/>
 
 - After successful authentication, you can see all your claimed devices, that you had registered (see [Register a device in Bosch IoT Suite](tutorial_register_device.md) 
 
-	<img src="./images/connect_xdk_kura/step3_9.png" width=50%"/>
+	<img src="./images/connect_xdk_kura/step3_9.png" width="50%"/>
 
 - Click on the device to see the details containing UI widgets for the individual function blocks
 
-	<img src="./images/create_webapp_dashboard/step3_10.png" width=50%"/>
+	<img src="./images/create_webapp_dashboard/step3_10.png" width="50%"/>
 
 - Let's send some test temperature value to the Bosch IoT Suite, that gets displayed in the dashboard:
 
