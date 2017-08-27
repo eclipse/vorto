@@ -33,9 +33,9 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import netifaces
 	import paho.mqtt.client as mqtt
 	import datetime, threading, time
-        «FOR fb : model.properties»
-		    import «fb.type.namespace».«fb.type.name» as «fb.type.name» 
-        «ENDFOR»
+	«FOR fb : model.properties»
+	import «fb.type.namespace».«fb.type.name» as «fb.type.name» 
+    «ENDFOR»
 	import «model.namespace».«model.name» as «model.name»
 	import serializer.DittoSerializer as DittoSerializer
 

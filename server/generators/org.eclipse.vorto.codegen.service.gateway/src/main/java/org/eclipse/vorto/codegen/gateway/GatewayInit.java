@@ -35,6 +35,7 @@ import org.eclipse.vorto.codegen.latex.LatexGenerator;
 import org.eclipse.vorto.codegen.lwm2m.LWM2MGenerator;
 import org.eclipse.vorto.codegen.markdown.MarkdownGenerator;
 import org.eclipse.vorto.codegen.mqtt.MQTTPlatformGenerator;
+import org.eclipse.vorto.codegen.mqtt.python.PythonGenerator;
 import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.eclipse.vorto.codegen.protobuf.ProtobufGenerator;
 import org.eclipse.vorto.codegen.thingworx.ThingWorxCodeGenerator;
@@ -82,6 +83,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/kura.properties", KuraGenerator.class, new KuraConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/protobuf.properties", ProtobufGenerator.class));
 			generatorRepo.add(Generator.create("/generators/arduino.properties", ArduinoCodeGenerator.class));
+			generatorRepo.add(Generator.create("/generators/pythonmqtt.properties", PythonGenerator.class));
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			
 			generatorRepo.list().stream().forEach(vorto::register);
