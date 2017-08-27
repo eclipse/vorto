@@ -49,20 +49,20 @@ You can easily test your skillset with the Amazon Alexa online skillset builder.
 
 - Before we let Alexa output the value, let us update the temperature in Bosch IoT Things first:
 
-	```
+```
 curl -X PUT 
 https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/temperature
 -H 'authorization: Basic  ADD_CREDENTIALS_HERE' \
 -H "Accept: application/json" \
 -H 'x-cr-api-token: ADD_THINGS_API_TOKEN_HERE' \
 -d '{"properties": {"sensor_value":30.1}}'
-	```
+```
 
 -  Now, we can ask Alexa about the temperature. For this, enter the following utterance:
 
-	```
+```
 Get temperature sensor value
-	```
+```
 	
 	Alexa outputs `30.1`
 

@@ -25,22 +25,22 @@ In this tutorial we would like to show you how you can connect a bluetooth devic
 
 - Change from OpenJDK to Oracle JDK
 	
-	```
+```
 sudo apt-get install oracle-java8-jdk
 sudo update-alternatives --config java
-	```
+```
 
 - Add some configuration in Kura init
 
-	```
+```
 sudo nano /opt/eclipse/kura/kura/config.ini
-	```
+```
 
 - Add this line to the end of the file
 
-	```
+```
 org.osgi.framework.bootdelegation=sun.*,com.sun.*
-	```
+```
 
 - Reboot with `sudo reboot`
 - On the Kura web application, change the necessary firewall rules to suit your development environment
@@ -117,7 +117,7 @@ This will turn-ON notifications for the XDK Bluetooth LE
 
 - In XDKDevice.java, in the method readTemperature(), change the entire method to
 
-	```
+```
 TemperatureSensor temperature = new TemperatureSensor();
 try {
 	this.bluetoothGatt.writeCharacteristicValue("0x0010", "74656D70");
@@ -134,7 +134,7 @@ try {
 	logger.error("Error in Sending Temperature", e);
 }
 return temperature;
-	```
+```
 Here we are writing the ascii representation of the string "temp" to the XDK register to get a reading of the temperature which we then read back and parse.
 
 ### 7. Deploy Kura bundle to gateway

@@ -46,7 +46,7 @@ keytool -printcert -rfc -file CRClient_key.cer
 
 - Open the src/main/resources/application.yml and insert the Bosch IoT Permissions and Bosch IoT Things credentials that you have received via Email during the evaluation account registration:
 
-	```
+```
 spring:
   jackson:
     serialization:
@@ -68,7 +68,7 @@ bosch:
     solutionid: [enter Bosch IoT Things solution ID here ]
     keystore:
       password: [enter keystore password]
-	```
+```
 
 - If you are behind a proxy, make these couple of changes:
 	- Add proxy information in the application.yml
@@ -94,14 +94,14 @@ Make sure the  **clientID** in your configuration matches the clientID in the AC
 
 - Let's send some test temperature value to the Bosch IoT Suite, that gets displayed in the dashboard:
 
-	```
+```
 curl -X PUT 
 https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/temperature
 -H 'authorization: Basic  ADD_CREDENTIALS_HERE' \
 -H "Accept: application/json" \
 -H 'x-cr-api-token: ADD_THINGS_API_TOKEN_HERE' \
 -d '{"properties": {"sensor_value":22.2}}'
-	```
+```
 
 ## What's next ?
 
