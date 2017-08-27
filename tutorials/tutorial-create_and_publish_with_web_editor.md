@@ -18,25 +18,25 @@ Before you begin, make sure, that you have a Github account in order to log on t
 
 Click on the **+** icon to create a new project. Let's name the project "Health".
 
-<img src="./images/create_and_publish_with_web_editor/create_project.png" width=70%"/>
+<img src="images/create_and_publish_with_web_editor/create_project.png" width="50%"/>
 
 Upon creation, the project view opens where you can add new model resources that describe your device.
 
-<img src="./images/create_and_publish_with_web_editor/editor_view.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/editor_view.png" width="50%"/>
 
 #### 3. Create a Fitness Band Information Model
 
 Click on the **+** icon to create a new model and select _Information Model_.
 
-<img src="./images/create_and_publish_with_web_editor/choose_model_type.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/choose_model_type.png" width="50%"/>
 
 Enter the name for the device "Fitnessband" and a meaningful description. Confirm with **Create**.
 
-<img src="./images/create_and_publish_with_web_editor/describe_model.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/describe_model.png" width="50%"/>
 
 This will open the information model in an editor. 
 
-<img src="./images/create_and_publish_with_web_editor/editor_info_model.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/editor_info_model.png" width="50%"/>
 
 #### 4. Create a Step Counter functionblock
 
@@ -69,11 +69,11 @@ functionblock StepCounter {
 ``` 
 Your model should look like this:
 
-<img src="./images/create_and_publish_with_web_editor/editor_fb_model.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/editor_fb_model.png" width="50%"/>
 
 Now open the Fitnessband Information Model by clicking on the FitnessBand tab and Drag&Drop the Step Counter onto the FitnessBand in the File Explorer. 
 
-<img src="./images/create_and_publish_with_web_editor/import_sc.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/import_sc.png" width="50%"/>
 
 #### 5. Import the Heart Rate Monitor Function Block
 
@@ -81,7 +81,7 @@ Now open the Fitnessband Information Model by clicking on the FitnessBand tab an
 
 - Click on the **<<** icon to import the model into the FitnessBand Information Model
 
-	<img src="./images/create_and_publish_with_web_editor/import_hr.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/import_hr.png" width="50%"/>
 
 ### Publishing the Information Model to the Vorto Repository
 
@@ -91,11 +91,11 @@ Before users are able to discover your device description and generate code, you
 
 Click on the **Publish** button to validate and confirm with _Publish_.
 
-<img src="./images/create_and_publish_with_web_editor/checkin.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/checkin.png" width="50%"/>
 
 Open the [Vorto Repository](http://vorto.eclipse.org) and search for "FitnessBand". There you can see the Information Model you had just created. 
 
-<img src="./images/create_and_publish_with_web_editor/repo.png" width=70%"/>
+<img src="./images/create_and_publish_with_web_editor/repo.png" width="50%"/>
 
 
 ## What's next?
