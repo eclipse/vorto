@@ -17,7 +17,7 @@
 
 - Search the Vorto Repository for the device type you would like to register, e.g. _XDK_. Select the device type and confirm with _Next_
 
- <img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%"/>
+	<img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%"/>
 
 - Choose the protocol connector that the device connects to the Suite, e.g. **HTTP**. Confirm your selection with _Next_
 - Give your device a unique name. For example
