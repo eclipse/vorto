@@ -12,31 +12,29 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  *******************************************************************************/
-package org.eclipse.vorto.server.devtool.models;
+package org.eclipse.vorto.devtool.projectrepository.model;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
-import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.repository.api.ModelType;
 
 public class ModelResource extends FileResource {
 
-	private String name;
 	private String version;
 	private String namespace;
 	private String modelSubType;
 	private ModelType modelType;
-	private String filename;
 	private String description;
+	private byte[] content;
 
-	public String getFilename() {
-		return filename;
+	public byte[] getContent() {
+		return content;
 	}
 
-	public void setFilename(String filename) {
-		this.filename = filename;
+	public void setContent(byte[] content) {
+		this.content = content;
 	}
 
 	public String getModelSubType() {
@@ -45,14 +43,6 @@ public class ModelResource extends FileResource {
 
 	public void setSubType(String modelSubType) {
 		this.modelSubType = modelSubType;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getVersion() {
@@ -88,10 +78,17 @@ public class ModelResource extends FileResource {
 	}
 
 	@Override
+	public String getFileName() {
+		return this.namespace.replace(ProjectRepositoryConstants.DOT, ProjectRepositoryConstants.UNDERSCORE) + "-"
+				+ getName() + "-"
+				+ this.version.replace(ProjectRepositoryConstants.DOT, ProjectRepositoryConstants.UNDERSCORE);
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (obj.getClass().equals(this.getClass())) {
 			ModelResource projectResource = (ModelResource) obj;
-			if (this.name.equals(projectResource.name) && this.namespace.equals(projectResource.namespace)
+			if (getName().equals(projectResource.getName()) && this.namespace.equals(projectResource.namespace)
 					&& this.version.equals(projectResource.version)) {
 				return true;
 			}
@@ -101,11 +98,11 @@ public class ModelResource extends FileResource {
 
 	public Map<String, String> getProperties() {
 		HashMap<String, String> properties = (HashMap<String, String>) super.getProperties();
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE, this.namespace);
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_NAME, this.name);
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_VERSION, this.version);
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_MODEL_TYPE, this.modelType.toString());
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_MODEL_SUB_TYPE, this.modelSubType);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_NAMESPACE, this.namespace);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_NAME, getName());
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_VERSION, this.version);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_MODEL_TYPE, this.modelType.toString());
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_MODEL_SUB_TYPE, this.modelSubType);
 		return properties;
 	}
 }

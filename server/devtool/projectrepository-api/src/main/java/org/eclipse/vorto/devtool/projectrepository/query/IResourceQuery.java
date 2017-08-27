@@ -28,7 +28,7 @@ import org.eclipse.vorto.devtool.projectrepository.model.ResourceType;
 public interface IResourceQuery {
 
     /**
-     * finds all resources with a name like the given name.
+     * finds all resources with a name meta property like the given name.
      *
      * @param   name
      *
@@ -37,14 +37,14 @@ public interface IResourceQuery {
     IResourceQuery nameLike(String name);
 
     /**
-     * finds the resources with the given name.
+     * finds the resources with the given name as a meta property.
      *
      * @param   name
      *
      * @return  new {@link IResourceQuery}
      */
     IResourceQuery name(String name);
-
+    
     /**
      * finds the resource with the given unique path.
      *
@@ -65,7 +65,7 @@ public interface IResourceQuery {
     IResourceQuery pathLike(String path);
 
     /**
-     * finds all resources with the given author.
+     * finds all resources with the given author as a meta property.
      *
      * @param   author
      *
@@ -74,13 +74,23 @@ public interface IResourceQuery {
     IResourceQuery author(String author);
 
     /**
-     * finds all resources with the given version.
+     * finds all resources with the given version as a meta property.
      *
      * @param   version
      *
      * @return  new {@link IResourceQuery}
      */
     IResourceQuery version(String version);
+    
+    /**
+     * finds all resources with the given namespace.
+     *
+     * @param   version
+     *
+     * @return  new {@link IResourceQuery}
+     */
+    IResourceQuery namespace(String namespace);
+
 
     /**
      * finds all resources with the given type. Type is either

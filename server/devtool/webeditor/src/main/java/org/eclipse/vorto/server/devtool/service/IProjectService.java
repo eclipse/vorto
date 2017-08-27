@@ -16,10 +16,10 @@ package org.eclipse.vorto.server.devtool.service;
 
 import java.util.List;
 
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 
 public interface IProjectService {
 			
@@ -29,7 +29,7 @@ public interface IProjectService {
 			
 	List<ProjectResource> getProjects(String author);	
 	
-	List<Resource> getProjectResources(String projectName);
+	List<ModelResource> getProjectResources(String projectName);
 	
 	Resource createProjectResource(String projectName, ModelResource modelResource);
 	

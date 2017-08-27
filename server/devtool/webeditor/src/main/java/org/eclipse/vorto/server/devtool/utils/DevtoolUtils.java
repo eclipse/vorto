@@ -15,7 +15,6 @@
 package org.eclipse.vorto.server.devtool.utils;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,11 +30,10 @@ import org.eclipse.vorto.core.api.model.model.ModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
-import org.eclipse.vorto.devtool.projectrepository.model.Resource;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.impl.editor.DatatypeEditorServiceImpl;
 import org.eclipse.vorto.server.devtool.service.impl.editor.FunctionBlockEditorServiceImpl;
 import org.eclipse.vorto.server.devtool.service.impl.editor.InformationModelEditorServiceImpl;
@@ -54,47 +52,48 @@ public class DevtoolUtils {
 
 	@Autowired
 	private FunctionBlockEditorServiceImpl functionBlockEditorServiceImpl;
-	
+
 	@Autowired
 	private IProjectRepositoryService projectRepositoryService;
-	
+
 	@Value("${project.repository.path}")
 	private String projectRepositoryPath;
 
 	@Value("${reference.repository}")
 	private String referenceRepository;
-	
+
 	public String generateFileContent(ModelResource modelResource) {
 		if (modelResource.getModelType() == org.eclipse.vorto.repository.api.ModelType.Datatype) {
 			return datatypeEditorServiceImpl.generateFileContent(modelResource);
 		} else if (modelResource.getModelType() == org.eclipse.vorto.repository.api.ModelType.Functionblock) {
 			return functionBlockEditorServiceImpl.generateFileContent(modelResource);
-		} else if(modelResource.getModelType() == org.eclipse.vorto.repository.api.ModelType.InformationModel){
+		} else if (modelResource.getModelType() == org.eclipse.vorto.repository.api.ModelType.InformationModel) {
 			return informationModelEditorServiceImpl.generateFileContent(modelResource);
-		}else{
-			return new String();
+		} else {
+			return "";
 		}
 	}
 
 	public String generateResourceId(ModelResource modelResource, String projectName, String author) {
-		return Integer.toString(new HashCodeBuilder(17, 37).append(author).append(projectName)
-				.append(modelResource.getName()).append(modelResource.getNamespace()).append(modelResource.getVersion())
-				.toHashCode()) + modelResource.getModelType().getExtension();
+		return Integer
+				.toString(new HashCodeBuilder(17, 37).append(author).append(projectName).append(modelResource.getName())
+						.append(modelResource.getNamespace()).append(modelResource.getVersion()).toHashCode())
+				+ modelResource.getModelType().getExtension();
 	}
-	
-	public String getReferencedResourceId(ModelInfo modelInfo){
+
+	public String getReferencedResourceId(ModelInfo modelInfo) {
 		ModelResource modelResource = getModelResource(modelInfo);
 		String resourceId = generateResourceId(modelResource, referenceRepository, modelInfo.getAuthor());
 		return resourceId;
 	}
-	
-	public URI getResourceURI(String resourceId){
-		Resource resource = projectRepositoryService.createQuery().property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId).singleResult();
-		return URI.createFileURI(projectRepositoryPath + File.separator + resource.getPath());
+
+	public URI getResourceURI(String resourceId) {
+		ModelResource modelResource = (ModelResource) projectRepositoryService.createQuery()
+				.property(ProjectRepositoryConstants.META_PROPERTY_RESOURCE_ID, resourceId).singleResult();
+		return URI.createURI(ProjectRepositoryConstants.DUMMY + modelResource.getPath());
 	}
-	
-	public ModelType getModelType(ModelInfo modelInfo) {
-		String modelType = modelInfo.getType().toString();
+
+	public ModelType getModelType(String modelType) {
 		if (modelType.equalsIgnoreCase(ModelType.Datatype.toString())) {
 			return ModelType.Datatype;
 		} else if (modelType.equalsIgnoreCase(ModelType.Functionblock.toString())) {
@@ -107,43 +106,37 @@ public class DevtoolUtils {
 			throw new UnsupportedOperationException("Given ModelType is unknown");
 		}
 	}
-	
-	public ModelResource getModelResource(ModelInfo modelInfo){
+
+	public ModelResource getModelResource(ModelInfo modelInfo) {
 		ModelId modelId = modelInfo.getId();
 		ModelResource modelResource = new ModelResource();
 		modelResource.setName(modelId.getName());
 		modelResource.setNamespace(modelId.getNamespace());
 		modelResource.setVersion(modelId.getVersion());
 		modelResource.setModelType(modelInfo.getType());
-		modelResource.setSubType(new String());
-		modelResource.setFilename(getFileName(modelInfo));
+		modelResource.setSubType("");
+		modelResource.setFileName(getFileName(modelInfo));
 		return modelResource;
 	}
 	
-	public ModelReference getModelRefernce(String name, String namespace, String version){
+	public ModelReference getModelRefernce(String name, String namespace, String version) {
 		ModelReference modelReference = ModelFactory.eINSTANCE.createModelReference();
 		modelReference.setImportedNamespace(namespace + "." + name);
 		modelReference.setVersion(version);
 		return modelReference;
 	}
-			
-	private String getFileName(ModelInfo modelInfo) {
-		ModelId modelId = modelInfo.getId();
-		return modelId.getNamespace().replace(".", "_") + "_" + modelId.getName() + "_"
-				+ modelId.getVersion().replace(".", "_") + getModelType(modelInfo).getExtension();
-	}
 
-	public String getResourceContentsAsString(String resourceId, ResourceSet resourceSet){
+	public String getResourceContentsAsString(String resourceId, ResourceSet resourceSet) {
 		org.eclipse.emf.ecore.resource.Resource resource = resourceSet.getResource(getResourceURI(resourceId), true);
 		try {
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			resource.save(byteArrayOutputStream, null);
 			return byteArrayOutputStream.toString();
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			return "";
 		}
 	}
-	
+
 	public Set<String> getVariableNames(EList<FunctionblockProperty> properties) {
 		Set<String> variableNames = new HashSet<String>();
 		for (FunctionblockProperty property : properties) {
@@ -151,13 +144,18 @@ public class DevtoolUtils {
 		}
 		return variableNames;
 	}
-	
+
 	public FunctionblockProperty createFunctionblockProperty(FunctionblockModel functionblockModel,
 			Set<String> existingVariableNames) {
 		FunctionblockProperty functionblockProperty = InformationModelFactory.eINSTANCE.createFunctionblockProperty();
 		functionblockProperty.setType(functionblockModel);
 		functionblockProperty.setName(generateFunctionBlockVariableName(functionblockModel, existingVariableNames));
 		return functionblockProperty;
+	}
+	
+	public String getFileName(ModelResource modelResource) {
+		return getFileName(modelResource.getName(), modelResource.getNamespace(), modelResource.getVersion(),
+				getModelType(modelResource.getModelType().toString()));
 	}
 
 	private String generateFunctionBlockVariableName(FunctionblockModel fbm, Set<String> variableNames) {
@@ -168,6 +166,15 @@ public class DevtoolUtils {
 		}
 		return variableName;
 	}
+
+	private String getFileName(String name, String namespace, String version, ModelType modelType) {
+		return namespace.replace(Constants.DOT, Constants.UNDERSCORE) + Constants.HYPHEN + name + Constants.HYPHEN
+				+ version.replace(Constants.DOT, Constants.UNDERSCORE) + modelType.getExtension();
+	}
+
+	private String getFileName(ModelInfo modelInfo) {
+		ModelId modelId = modelInfo.getId();
+		return getFileName(modelId.getName(), modelId.getNamespace(), modelId.getVersion(),
+				getModelType(modelInfo.getType().toString()));
+	}
 }
-
-

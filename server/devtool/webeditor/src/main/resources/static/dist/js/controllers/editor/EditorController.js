@@ -301,8 +301,9 @@ define(["../init/AppController"], function(controllers) {
 
     $scope.getResourceObject = function(data) {
       var resource = {};
-      resource["language"] = $scope.getResourceLanguage(data["name"]);
       var properties = data["properties"];
+      var displayName = properties["displayName"];
+      resource["language"] = $scope.getResourceLanguage(displayName);
       if (properties["modelSubType"] != "") {
         resource["type"] = properties["modelSubType"];
       } else {
@@ -312,11 +313,11 @@ define(["../init/AppController"], function(controllers) {
       resource["modelSubType"] = properties["modelSubType"];
       resource["parent"] = $scope.rootParentId;
       resource["resourceId"] = properties["resourceId"];
-      resource["name"] = properties["name"];
+      resource["name"] = displayName;
+      resource["text"] = properties["name"];
+      resource["filename"] = properties["name"];
       resource["namespace"] = properties["namespace"];
       resource["version"] = properties["version"];
-      resource["text"] = properties["name"];
-      resource["filename"] = data["name"];
       return resource;
     }
 

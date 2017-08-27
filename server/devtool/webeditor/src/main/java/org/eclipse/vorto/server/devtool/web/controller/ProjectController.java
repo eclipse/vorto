@@ -24,12 +24,12 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
+import org.eclipse.vorto.devtool.projectrepository.exception.ResourceAlreadyExistsError;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.server.devtool.http.response.Response;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.Constants;
@@ -62,7 +62,7 @@ public class ProjectController {
 
 	@Autowired
 	private WebUtils webUtils;
-
+	
 	@Value("${reference.repository}")
 	private String referenceRepository;
 
@@ -135,16 +135,20 @@ public class ProjectController {
 
 	@ApiOperation(value = "Returns a list of resources in the Vorto project")
 	@RequestMapping(value = "/{projectName}/resources", method = RequestMethod.GET)
-	public List<Resource> getResources(
+	public List<ModelResource> getResources(
 			@ApiParam(value = "ProjectName", required = true) @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		projectName = webUtils.getUserProjectName(projectName);
-
-		return projectService.getProjectResources(projectName);
+			
+		List<ModelResource> projectResourceList = projectService.getProjectResources(projectName);
+		for(ModelResource modelResource : projectResourceList){
+			modelResource.setContent("".toString().getBytes());
+		}
+		return projectResourceList;
 	}
-
+	
 	@ApiOperation(value = "Opens an existing Vorto project")
 	@RequestMapping(value = "/{projectName}/open", method = RequestMethod.GET)
 	public Resource openProject(
@@ -157,19 +161,18 @@ public class ProjectController {
 		ProjectResource projectResource = projectService.getProject(webUtils.getUserProjectName(projectName));
 		List<String> resourceIdList = new ArrayList<String>();
 
-		if (projectResource.getProperties().containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)) {
+		if (projectResource != null && projectResource.getProperties() != null
+				&& projectResource.getProperties().containsKey(ProjectRepositoryConstants.META_PROPERTY_REFERENCES)) {
 			resourceIdList = new ArrayList<String>(Arrays.asList(projectResource.getProperties()
-					.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES).split(Constants.COMMA)));
+					.get(ProjectRepositoryConstants.META_PROPERTY_REFERENCES).split(Constants.COMMA)));
 		}
 
-		List<Resource> resourceList = projectService.getProjectResources(projectName);
-		for (Resource resource : resourceList) {
-			resourceIdList.add(resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID));
-		}
-				
+		List<ModelResource> resourceList = projectService.getProjectResources(webUtils.getUserProjectName(projectName));
+
 		devtoolReferenceLinker.resetResourceSet(resourceSet);
 		webUtils.removePreviousProjectModelsFromSessionAttributes(request);
-		devtoolReferenceLinker.loadResources(resourceIdList, resourceSet);
+		devtoolReferenceLinker.loadResourcesFromResourceId(resourceIdList, resourceSet);
+		devtoolReferenceLinker.loadResources(resourceList, resourceSet);
 		webUtils.setSessionResourceSet(request, resourceSet);
 
 		return projectResource;
@@ -177,18 +180,17 @@ public class ProjectController {
 
 	@ApiOperation(value = "Deletes a resource from the project")
 	@RequestMapping(value = "/{projectName}/{resourceId:.+}", method = RequestMethod.DELETE)
-	public void deleteResource(
-			@ApiParam(value = "ProjectName", required = true) @PathVariable String projectName,
+	public void deleteResource(@ApiParam(value = "ProjectName", required = true) @PathVariable String projectName,
 			@ApiParam(value = "resourceId", required = true) @PathVariable String resourceId,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		Objects.requireNonNull(resourceId, "resourceId must not be null");
-		
-		projectName = webUtils.getUserProjectName(projectName);
+
+		String userProjectName = webUtils.getUserProjectName(projectName);
 		ResourceSet resourceSet = webUtils.getResourceSet(request);
-		devtoolReferenceLinker.removeResourceFromResourceSet(resourceId, resourceSet);		
-		projectService.deleteResource(projectName, resourceId);
+		devtoolReferenceLinker.removeResourceFromResourceSet(resourceId, resourceSet);
+		projectService.deleteResource(userProjectName, resourceId);
 		webUtils.removeDeletedModelFromSessionAttributes(request, resourceId);
 	}
 

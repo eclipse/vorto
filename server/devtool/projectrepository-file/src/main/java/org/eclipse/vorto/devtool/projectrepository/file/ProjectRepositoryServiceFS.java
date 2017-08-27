@@ -28,9 +28,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
-import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
-import org.eclipse.vorto.devtool.projectrepository.WrongUploadHandleTypeError;
+import org.eclipse.vorto.devtool.projectrepository.exception.ProjectRepositoryException;
+import org.eclipse.vorto.devtool.projectrepository.exception.ResourceAlreadyExistsError;
+import org.eclipse.vorto.devtool.projectrepository.exception.WrongUploadHandleTypeError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FileUploadHandle;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
@@ -41,6 +41,7 @@ import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.devtool.projectrepository.model.ResourceContent;
 import org.eclipse.vorto.devtool.projectrepository.model.UploadHandle;
 import org.eclipse.vorto.devtool.projectrepository.query.NotExistingResourceError;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,8 +53,8 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 
 	protected String projectsDirectory = null;
 
-	public static final String META_PROPERTY_FILENAME = ProjectRepositoryFileConstants.META_PROPERTY_FILENAME;
-	public static final String META_PROPERTY_CREATIONDATE = ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE;
+	public static final String META_PROPERTY_FILENAME = ProjectRepositoryConstants.META_PROPERTY_FILE;
+	public static final String META_PROPERTY_CREATIONDATE = ProjectRepositoryConstants.META_PROPERTY_CREATIONDATE;
 
 	private static final Logger log = LoggerFactory.getLogger(ProjectRepositoryServiceFS.class);
 
@@ -163,7 +164,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	}
 
 	@Override
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void updateFolderResourceProperties(FolderResource resource, Map<String, String> properties) {
 		String metaFileDirectoryPath = projectsDirectory + File.separator + resource.getPath();
 		File metaFileDirectory = new File(metaFileDirectoryPath);
@@ -176,7 +177,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 		}
 		HashMap<String, String> map = new HashMap(metaProperties);
 		for (Map.Entry<String, String> entry : properties.entrySet()) {
-			if(!ProjectRepositoryFileConstants.IMMUTABLE_META_PROPERTY_SET.contains(entry.getKey())){
+			if (!ProjectRepositoryConstants.IMMUTABLE_META_PROPERTY_SET.contains(entry.getKey())) {
 				map.put(entry.getKey(), entry.getValue());
 			}
 		}
@@ -274,8 +275,8 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 				createdFile = updateFile(fileContent);
 			} else {
 				createdFile = createFile(fileContent);
+				createMetaFile(content.getProperties(), createdFile);
 			}
-			createMetaFile(content.getProperties(), createdFile);
 		} else if (content instanceof ProjectUploadHandle) {
 			File projectFolder = new File(content.getPath());
 			createMetaFile(content.getProperties(), projectFolder);
@@ -347,7 +348,7 @@ public class ProjectRepositoryServiceFS implements IProjectRepositoryService {
 	}
 
 	private Map<String, String> addProjectResourceProperties(Map<String, String> source) {
-		source.put(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT, String.valueOf(true));
+		source.put(ProjectRepositoryConstants.META_PROPERTY_IS_PROJECT, String.valueOf(true));
 		return source;
 	}
 }

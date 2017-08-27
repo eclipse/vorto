@@ -23,9 +23,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
@@ -61,7 +61,7 @@ public class InformationModelEditorServiceImpl extends IEditorService {
 	@Override
 	public ModelInfo getAndValidateModelInfo(ModelId modelId) {
 		ModelInfo modelInfo = devtoolRestClient.getModel(modelId);
-		if (!(devtoolUtils.getModelType(modelInfo) == ModelType.Functionblock)) {
+		if (devtoolUtils.getModelType(modelInfo.getType().toString()) != ModelType.Functionblock) {
 			throw new RuntimeException("No FunctionBlock [" + modelId.toString() + "]");
 		}
 		return modelInfo;
@@ -74,8 +74,8 @@ public class InformationModelEditorServiceImpl extends IEditorService {
 		Resource referencedResource = resourceSet.getResource(devtoolUtils.getResourceURI(referenceResourceId), true);
 		EObject eObject = referencedResource.getContents().get(0);
 		FunctionblockModel funtionblockModel = (FunctionblockModel) eObject;
-		informationModel.getProperties().add(
-				devtoolUtils.createFunctionblockProperty(funtionblockModel, devtoolUtils.getVariableNames(informationModel.getProperties())));
-		referencedResource.getContents().add(eObject);		
+		informationModel.getProperties().add(devtoolUtils.createFunctionblockProperty(funtionblockModel,
+				devtoolUtils.getVariableNames(informationModel.getProperties())));
+		referencedResource.getContents().add(eObject);
 	}
 }

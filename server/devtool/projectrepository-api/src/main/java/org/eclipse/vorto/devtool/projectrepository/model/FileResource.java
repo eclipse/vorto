@@ -21,8 +21,17 @@ package org.eclipse.vorto.devtool.projectrepository.model;
 public class FileResource extends Resource {
 
     private String encoding;
+    private String fileName;
+       
+    public String getFileName() {
+		return fileName;
+	}
 
-    public void setEncoding(String encoding) {
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public void setEncoding(String encoding) {
         this.encoding = encoding;
     }
 
@@ -45,8 +54,6 @@ public class FileResource extends Resource {
 		return "FileResource [encoding=" + encoding + ", toString()=" + super.toString() + "]";
 	}
     
-    
-
 }
 
 /* EOF */

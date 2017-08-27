@@ -14,8 +14,10 @@
  */
 package org.eclipse.vorto.devtool.projectrepository;
 
+
 import java.util.Map;
 
+import org.eclipse.vorto.devtool.projectrepository.exception.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
@@ -108,7 +110,7 @@ public interface IProjectRepositoryService {
 	 * 				The properties of the resource that would be added / modified
 	 */
 	public void updateFolderResourceProperties(FolderResource folderResource,  Map<String,String> properties);
-	
+		
 	/**
 	 * Create a version of a project.
 	 * 

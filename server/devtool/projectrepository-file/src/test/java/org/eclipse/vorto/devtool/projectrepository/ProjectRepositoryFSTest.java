@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.vorto.devtool.projectrepository.exception.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FileUploadHandle;

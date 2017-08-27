@@ -1,4 +1,3 @@
-
 vorto:
   repository:
     base:
@@ -14,7 +13,7 @@ server:
 
 github:
   client:
-    clientId: ${github_clientid}
+    clientId:  ${github_clientid}
     clientSecret: ${github_secret}
     accessTokenUri: https://github.com/login/oauth/access_token
     userAuthorizationUri: https://github.com/login/oauth/authorize
@@ -23,3 +22,5 @@ github:
       - user:email
   resource:
     userInfoUri: https://api.github.com/user
+
+repo.configFile: vorto-repository-config-file.json

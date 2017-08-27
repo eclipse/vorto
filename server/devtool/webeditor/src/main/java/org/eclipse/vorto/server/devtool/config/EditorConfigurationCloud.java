@@ -14,13 +14,18 @@
  */
 package org.eclipse.vorto.server.devtool.config;
 
+import javax.jcr.Session;
+
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
+import org.eclipse.vorto.devtool.projectrepository.modeshape.ProjectRepositoryServiceModeshape;
 import org.eclipse.vorto.server.devtool.models.GlobalContext;
+import org.modeshape.jcr.RepositoryConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
@@ -33,6 +38,12 @@ public class EditorConfigurationCloud {
 	@Value("${vorto.repository.base.path:http://vorto.eclipse.org}")
 	private String repositoryBasePath;
 	
+	@Value("${repo.configFile}")
+	private String repositoryConfigFile = null;
+	
+	@Autowired
+	private Session session;
+	
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
@@ -40,12 +51,16 @@ public class EditorConfigurationCloud {
 	
 	@Bean
 	public IProjectRepositoryService projectRepositoryService() {
-		return new ProjectRepositoryServiceFS(projectRepositoryPath);
+		return new ProjectRepositoryServiceModeshape(session);
 	}
 	
 	@Bean
 	public GlobalContext getGlobalContext(){
 		return new GlobalContext(repositoryBasePath);
 	}
-
+	
+	@Bean
+	public RepositoryConfiguration repoConfiguration() throws Exception {
+		return RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
+	}
 }

@@ -23,16 +23,20 @@ public class FileUploadHandle extends UploadHandle {
 	private byte[] content;
 
 	private String encoding;
+	
+	private String fileName;
 
-	public FileUploadHandle(FolderResource folder, String fileName, byte[] content, String encoding) {
+	public FileUploadHandle(FolderResource folder, String fileName, byte[] content, String encoding) {		
 		super(folder.getPath() + "/" + fileName);
 		this.content = content;
 		this.encoding = encoding;
+		this.fileName = fileName;
 	}
 	
 	public FileUploadHandle(FolderResource folder, String fileName, byte[] content) {
 		super(folder.getPath() + "/" + fileName);
 		this.content = content;
+		this.fileName = fileName;
 		this.encoding = "utf-8";
 	}
 
@@ -40,6 +44,10 @@ public class FileUploadHandle extends UploadHandle {
 		return content;
 	}
 
+	public String getFileName() {
+		return fileName;
+	}
+	
 	/**
 	 * @return the encoding name for this file upload handle.
 	 */

@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.devtool.projectrepository.query;
 
-import org.eclipse.vorto.devtool.projectrepository.ProjectRepositoryException;
+import org.eclipse.vorto.devtool.projectrepository.exception.ProjectRepositoryException;
 
 /**
  * This exception is thrown when a resource that is referred to is not existant.
