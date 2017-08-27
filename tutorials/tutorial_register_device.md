@@ -1,63 +1,34 @@
-# Register a device in Bosch IoT Suite
+# Register a device in the Bosch IoT Suite
 
 
-### Prerequisite
+## Prerequisite
 
 - An information model published to the Vorto Repository. [Read more](tutorial-create_and_publish_with_web_editor.md)
 - Evaluation account for the Bosch IoT Suite. [Request account here](https://bosch-si.secure.force.com/content/FormDisplayPage?f=2abiE).
 
-<table>
-<tbody>
-<tr>
-  <td>1</td>
-  <td>Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
-  </td>
-</tr>
-<tr>
-  <td colspan="1">2</td>
-  <td colspan="1">Log in to the console with your evaluation tenant, username and password.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td>
-    <p>At the moment, your evaluation account does not have any registered devices yet.</p>
-    <p>Let's go and register your XDK by clicking <em>+ Connect thing</em>
-    </p>
-    <p>
-      <img src="./images/connect_xdk_kura/step2_connect.png" width="50%" height="50%"/>
-    </p>
-  </td>
-</tr>
-<tr>
-  <td colspan="1">4.</td>
-  <td colspan="1">
-    <p>Search the Vorto repository for <em>xdk</em> and select it in the result table and confirm with <em>Next</em>.</p>
-    <p>
-      <img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%" height="50%"/>
-    </p>
-  </td>
-</tr>
-<tr>
-  <td colspan="1">5.</td>
-  <td colspan="1">Choose <strong>HTTP</strong> as a connector and confirm with <em>Next</em>.</td>
-</tr>
-<tr>
-  <td colspan="1">6.</td>
-  <td colspan="1">
-    <p>Now, you can give your XDK a specific name in order to identify uniquely. For example</p>
-    <p><b>Namespace</b>: demo.vorto.example</p>
-    <p>As for the <b>technical device ID</b>, use the bluetooth mac address which you can find on the backside of the XDK. Make sure to remove the dashes! Example: <i>FCD6BD100B88</i></p>
-	<p>Your suggested thing ID should look similar to this: <i>demo.vorto.example:FCD6BD100B88<i></p>
-    <p>Confirm with <em>Complete.</em>
-    </p>
-  </td>
-</tr>
-<tr>
-  <td colspan="1">7.</td>
-  <td colspan="1">
-    <p>Now you have successfully registered your XDK with the Suite for a given XDK information model.</p>
-    <img src="./images/connect_xdk_kura/step2_7.png" width="70%" height="50%"/>
-  </td>
-</tr>
-</tbody>
-</table>
+## Steps
+
+- Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
+- Log in to the console with your evaluation tenant, username and password.
+- Open the *thing browser** under Thing Console in the left navigation bar
+- Click **Connect thing**
+
+	<img src="./images/connect_xdk_kura/step2_connect.png" width="50%" height="50%"/>
+
+- Search the Vorto Repository for the device type you would like to register, e.g. _XDK_. Select the device type and confirm with _Next_
+
+ <img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%"/>
+
+- Choose the protocol connector that the device connects to the Suite, e.g. **HTTP**. Confirm your selection with _Next_
+- Give your device a unique name. For example
+	- Namespace: com.mycompany
+	- Technical ID: For example the mac address of the device, like _FCD6BD100B88_. Confirm your settings with _Complete_
+- Now you have successfully registered your device with the Suite for a given Vorto information model and you should be able to see it in the thing browser:
+	
+	<img src="./images/connect_xdk_kura/step2_7.png" width="50%"/>
+
+## What's next ? 
+
+- [Connect a device via Bluetooth to the Bosch IoT Suite](tutorial_connect_xdk_ble.md)
+- [Build a web application for a device](tutorial_create_webapp_dashboard.md)
+- [Build an Amazon Alexa Skillset for a device](tutorial_voicecontrol_alexa.md)
