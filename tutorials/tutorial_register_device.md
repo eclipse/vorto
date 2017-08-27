@@ -27,6 +27,17 @@
 	
 	<img src="./images/connect_xdk_kura/step2_7.png" width="50%"/>
 
+- Send test data to registered thing and verify the incoming data in the Developer Console:
+
+```
+curl -X PUT 
+https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/temperature
+-H 'authorization: Basic  ADD_CREDENTIALS_HERE' \
+-H "Accept: application/json" \
+-H 'x-cr-api-token: ADD_THINGS_API_TOKEN_HERE' \
+-d '{"properties": {"sensor_value":22.2}}'
+```
+
 ## What's next ? 
 
 - [Connect a device via Bluetooth to the Bosch IoT Suite](tutorial_connect_xdk_ble.md)
