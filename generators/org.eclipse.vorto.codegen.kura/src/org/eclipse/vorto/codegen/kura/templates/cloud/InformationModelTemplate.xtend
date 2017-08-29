@@ -20,12 +20,14 @@ import org.eclipse.vorto.codegen.kura.templates.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
- * @author Alexander Edelmann
+ * 
+ * @author Erle Czar Mantos - Robert Bosch (SEA) Pte. Ltd.
+ *
  */
-class IDataServiceTemplate implements IFileTemplate<InformationModel>{
+class InformationModelTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
-		'''IDataService.java'''
+		'''«context.name».java'''
 	}
 	
 	override getPath(InformationModel context) {
@@ -33,23 +35,39 @@ class IDataServiceTemplate implements IFileTemplate<InformationModel>{
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
-		'''
-		package «Utils.javaPackage».cloud;
-		
-		public interface IDataService {
-			
-			«FOR fbProperty : element.properties»
-			/**
-			 * publishes «fbProperty.name» data to the IoT Cloud backend
-			 * @param resourceId 
-			 * @param data
-			 */
-			void publish«fbProperty.name.toFirstUpper»(String resourceId, «fbProperty.type.name» data);
-			
-			«ENDFOR»
-		}
-		
-		'''
+'''
+package «Utils.javaPackage».cloud;
+
+public class «element.name» {
+	«FOR fbProperty : element.properties»
+	private «fbProperty.type.name» «fbProperty.name»;
+	«ENDFOR»
+	
+	private String resourceId;
+	
+	public «element.name»(String resourceId) {
+		this.resourceId = resourceId;
+	}
+	
+	«FOR fbProperty : element.properties»
+	public «fbProperty.type.name» get«fbProperty.name.toFirstUpper»() {
+		return «fbProperty.name»;
+	}
+
+	public void set«fbProperty.name.toFirstUpper»(«fbProperty.type.name» «fbProperty.name») {
+		this.«fbProperty.name» = «fbProperty.name»;
+	}
+	
+	«ENDFOR»
+	public void setResourceId(String resourceId) {
+		this.resourceId = resourceId;
+	}
+	
+	public String getResourceId() {
+		return resourceId;
+	}
+}
+'''
 	}
 	
 }

@@ -58,6 +58,7 @@ class BoschDataServiceTemplate implements IFileTemplate<InformationModel>{
 		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
 		import «Utils.javaPackage».cloud.«modelId.name»;
 		«ENDFOR»
+		import «Utils.javaPackage».cloud.IDataService;
 		
 		public class BoschDataService implements IDataService {
 		
