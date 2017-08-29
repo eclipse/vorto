@@ -112,4 +112,4 @@ https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/
 
 ## What's next ?
 
-- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_build_alexaskill.md)
+- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_voicecontrol_alexa.md)
