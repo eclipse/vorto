@@ -18,19 +18,22 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 
 import javax.annotation.PostConstruct;
+import javax.jcr.Session;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryServiceFS;
+import org.eclipse.vorto.devtool.projectrepository.modeshape.ProjectRepositoryServiceModeshape;
 import org.eclipse.vorto.server.devtool.models.GlobalContext;
 import org.eclipse.vorto.server.devtool.models.Role;
 import org.eclipse.vorto.server.devtool.models.User;
 import org.eclipse.vorto.server.devtool.service.IUserRepository;
+import org.modeshape.jcr.RepositoryConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
@@ -52,12 +55,18 @@ public class EditorConfigurationLocal {
 	@Value("${project.repository.path}")
 	private String projectRepositoryPath;
 		
+	@Value("${repo.configFile}")
+	private String repositoryConfigFile = null;
+	
 	@Autowired
 	private IUserRepository userRepository;
 	
 	@Autowired
 	private PasswordEncoder encoder;
-		
+	
+	@Autowired
+	private Session session;
+	
 	static {
 		javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(new javax.net.ssl.HostnameVerifier() {
 			public boolean verify(String hostname, javax.net.ssl.SSLSession sslSession) {
@@ -71,7 +80,7 @@ public class EditorConfigurationLocal {
 	
 	@Bean
 	public IProjectRepositoryService projectRepositoryService() {
-		return new ProjectRepositoryServiceFS(projectRepositoryPath);
+		return new ProjectRepositoryServiceModeshape(session);
 	}
 
 	@Bean
@@ -95,6 +104,11 @@ public class EditorConfigurationLocal {
 	@Bean(name = "DevClient")
 	public RestTemplate devClientTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	public RepositoryConfiguration repoConfiguration() throws Exception {
+		return RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
 	}
 			
 	@PostConstruct

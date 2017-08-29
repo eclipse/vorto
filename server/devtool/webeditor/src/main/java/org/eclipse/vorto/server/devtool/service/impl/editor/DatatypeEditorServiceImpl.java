@@ -19,9 +19,9 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
@@ -59,7 +59,7 @@ public class DatatypeEditorServiceImpl extends IEditorService {
 	@Override
 	public ModelInfo getAndValidateModelInfo(ModelId modelId) {
 		ModelInfo modelInfo = devtoolRestClient.getModel(modelId);
-		if (devtoolUtils.getModelType(modelInfo) != ModelType.Datatype) {
+		if (devtoolUtils.getModelType(modelInfo.getType().toString()) != ModelType.Datatype) {
 			throw new RuntimeException("No DataType [" + modelId.toString() + "]");
 		}
 		return modelInfo;

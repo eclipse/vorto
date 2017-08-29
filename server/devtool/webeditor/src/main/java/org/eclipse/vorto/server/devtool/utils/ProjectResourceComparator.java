@@ -17,8 +17,8 @@ package org.eclipse.vorto.server.devtool.utils;
 import java.util.Comparator;
 import java.util.Map;
 
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 
 public class ProjectResourceComparator implements Comparator<ProjectResource> {
 
@@ -30,14 +30,14 @@ public class ProjectResourceComparator implements Comparator<ProjectResource> {
 		long creationDateOne = 0L;
 		long creationDateTwo = 0L;
 
-		if (propertiesOne.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE)) {
+		if (propertiesOne.containsKey(ProjectRepositoryConstants.META_PROPERTY_CREATIONDATE)) {
 			creationDateOne = Long
-					.parseLong(propertiesOne.get(ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE));
+					.parseLong(propertiesOne.get(ProjectRepositoryConstants.META_PROPERTY_CREATIONDATE));
 		}
 
-		if (propertiesTwo.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE)) {
+		if (propertiesTwo.containsKey(ProjectRepositoryConstants.META_PROPERTY_CREATIONDATE)) {
 			creationDateTwo = Long
-					.parseLong(propertiesTwo.get(ProjectRepositoryFileConstants.META_PROPERTY_CREATIONDATE));
+					.parseLong(propertiesTwo.get(ProjectRepositoryConstants.META_PROPERTY_CREATIONDATE));
 		}
 
 		if (creationDateOne > creationDateTwo) {

@@ -19,8 +19,8 @@
 package org.eclipse.vorto.editor.functionblock.web
 
 import org.eclipse.vorto.editor.web.resource.ContentTypeProvider
-import org.eclipse.vorto.editor.web.resource.FileResourceHandler
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider
+import org.eclipse.vorto.editor.web.resource.WedEditorResourceHandler
 import org.eclipse.xtend.lib.annotations.FinalFieldsConstructor
 import org.eclipse.xtext.web.server.model.IWebResourceSetProvider
 import org.eclipse.xtext.web.server.persistence.IServerResourceHandler
@@ -36,7 +36,7 @@ class FunctionblockWebModule extends AbstractFunctionblockWebModule {
 	}
 
 	def Class<? extends IServerResourceHandler> bindIServerResourceHandler() {
-		return FileResourceHandler;
+		return WedEditorResourceHandler;
 	}
 
 	override bindIContentTypeProvider() {

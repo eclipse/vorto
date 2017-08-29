@@ -12,12 +12,13 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.devtool.projectrepository;
+package org.eclipse.vorto.devtool.projectrepository.exception;
 
 /**
- * Thrown when a UploadHandle is of the wrong type for the intended purpose.
+ * Exception thrown when a duplicate resource shall be created.
+ * 
  */
-public class WrongUploadHandleTypeError extends ProjectRepositoryException {
+public class ResourceAlreadyExistsError extends ProjectRepositoryException {
 
 	/**
 	 * Constructor.
@@ -25,7 +26,7 @@ public class WrongUploadHandleTypeError extends ProjectRepositoryException {
 	 * @param message
 	 *            exception details
 	 */
-	public WrongUploadHandleTypeError(String message) {
+	public ResourceAlreadyExistsError(String message) {
 		super(message);
 	}
 }

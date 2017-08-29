@@ -1,5 +1,5 @@
-/**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+/*******************************************************************************
+ * Copyright (c) 2017 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -11,19 +11,11 @@
  *
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
- */
-package org.eclipse.vorto.devtool.projectrepository;
+ *******************************************************************************/
+<vorto='http://www.eclipse.org/vorto/sequencer/model/1.0'>
 
-/**
- * Exception superclass for all exceptions thrown within project repository.
- * 
- */
-public class ProjectRepositoryException extends RuntimeException {
-
-	public ProjectRepositoryException(String msg) {
-		super(msg);
-	}
-
-}
-
-/* EOF */
+[vorto:projectResource] mixin
+- vorto:name (string)
+- vorto:author (string)
+- vorto:resourceType (string)
+- vorto:references (string)

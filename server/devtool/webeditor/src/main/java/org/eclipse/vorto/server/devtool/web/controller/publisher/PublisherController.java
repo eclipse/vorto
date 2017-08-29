@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
 import org.eclipse.vorto.repository.api.upload.ServerResponse;
@@ -68,7 +69,7 @@ public class PublisherController {
 
 	@Autowired
 	private DevtoolUtils devtoolUtils;
-	
+
 	@Autowired
 	private WebUtils webUtils;
 
@@ -85,14 +86,13 @@ public class PublisherController {
 
 		Objects.requireNonNull(projectName, "projectName must not be null");
 		String userProjectName = webUtils.getUserProjectName(projectName);
-		
-		List<org.eclipse.vorto.devtool.projectrepository.model.Resource> projectResources = projectService
-				.getProjectResources(userProjectName);
+
+		List<ModelResource> projectResources = projectService.getProjectResources(userProjectName);
 
 		HashMap<String, Resource> resourceMap = new HashMap<>();
 
 		for (org.eclipse.vorto.devtool.projectrepository.model.Resource resource : projectResources) {
-			String resourceId = resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID);
+			String resourceId = resource.getProperties().get(ProjectRepositoryConstants.META_PROPERTY_RESOURCE_ID);
 			Resource xtextResource = resourceSet.getResource(devtoolUtils.getResourceURI(resourceId), true);
 			resourceMap.put(resourceId, xtextResource);
 		}
@@ -119,9 +119,9 @@ public class PublisherController {
 	private byte[] createZipFileContent(HashMap<String, Resource> resourceMap) {
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipOutputStream zipOutputStream = new ZipOutputStream(baos);			
-			Iterator<String> iterator = resourceMap.keySet().iterator();			
-			while(iterator.hasNext()){
+			ZipOutputStream zipOutputStream = new ZipOutputStream(baos);
+			Iterator<String> iterator = resourceMap.keySet().iterator();
+			while (iterator.hasNext()) {
 				String resourceName = iterator.next();
 				zipOutputStream.putNextEntry(new ZipEntry(resourceName));
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

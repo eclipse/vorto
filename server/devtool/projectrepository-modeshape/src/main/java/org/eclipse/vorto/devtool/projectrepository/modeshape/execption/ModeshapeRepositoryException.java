@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2017 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -12,23 +12,22 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.devtool.projectrepository;
 
-/**
- * Exception thrown when a duplicate resource shall be created.
- * 
- */
-public class ResourceAlreadyExistsError extends ProjectRepositoryException {
+package org.eclipse.vorto.devtool.projectrepository.modeshape.execption;
+
+public class ModeshapeRepositoryException extends RuntimeException {
 
 	/**
-	 * Constructor.
 	 * 
-	 * @param message
-	 *            exception details
 	 */
-	public ResourceAlreadyExistsError(String message) {
-		super(message);
+	private static final long serialVersionUID = 1L;
+	
+	public ModeshapeRepositoryException(String msg) {
+		super(msg);
 	}
-}
+	
+	public ModeshapeRepositoryException(String msg,Throwable cause) {
+		super(msg,cause);
+	}	
 
-/* EOF */
+}

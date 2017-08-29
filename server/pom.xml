@@ -12,9 +12,9 @@
 
 	<packaging>pom</packaging>
 
-    	<description>Eclipse Vorto Server comprises repository, generators and editor</description>
+	<description>Eclipse Vorto Server comprises repository, generators and editor</description>
 	<url>http://www.eclipse.org/vorto</url>
-	
+
 	<organization>
 		<name>Eclipse.org</name>
 		<url>http://www.eclipse.org/vorto</url>
@@ -56,6 +56,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<spring.boot.version>1.3.0.RELEASE</spring.boot.version>
+		<modeshape.version>4.3.0.Final</modeshape.version>
 	</properties>
 
 	<distributionManagement>
@@ -190,6 +191,13 @@
 				<version>3.1.7</version>
 				<scope>test</scope>
 			</dependency>
+	      <dependency>
+	        <groupId>org.modeshape.bom</groupId>
+	        <artifactId>modeshape-bom-embedded</artifactId>
+	        <version>${modeshape.version}</version>
+	        <type>pom</type>
+	        <scope>import</scope>
+	      </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>

@@ -23,16 +23,16 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
-import org.eclipse.vorto.devtool.projectrepository.ResourceAlreadyExistsError;
-import org.eclipse.vorto.devtool.projectrepository.file.ProjectRepositoryFileConstants;
+import org.eclipse.vorto.devtool.projectrepository.exception.ResourceAlreadyExistsError;
 import org.eclipse.vorto.devtool.projectrepository.model.FileUploadHandle;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.devtool.projectrepository.model.ResourceType;
 import org.eclipse.vorto.devtool.projectrepository.query.IResourceQuery;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.service.IEditorSession;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.Constants;
@@ -63,7 +63,7 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	@Override
 	public ProjectResource createProject(String projectName, String author) {
 		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_AUTHOR, author);
 		ProjectResource resource = projectRepositoryService.createProject(projectName, properties, null);
 		return resource;
 	}
@@ -76,19 +76,24 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	@Override
 	public List<ProjectResource> getProjects(String author) {
-		List<Resource> resourceList = projectRepositoryService.createQuery()
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author)
+		List<Resource> resourceList = projectRepositoryService.createQuery().author(author)
 				.type(ResourceType.ProjectResource).list();
-		ArrayList<ProjectResource> projectResourceList = new ArrayList<>();
+		ArrayList<ProjectResource> projectList = new ArrayList<>();
 		for (Resource resource : resourceList) {
-			projectResourceList.add((ProjectResource) resource);
+			projectList.add((ProjectResource) resource);
 		}
-		return projectResourceList;
+		return projectList;
 	}
 
 	@Override
-	public List<Resource> getProjectResources(String projectName) {
-		return projectRepositoryService.createQuery().pathLike(projectName).type(ResourceType.FileResource).list();
+	public List<ModelResource> getProjectResources(String projectName) {
+		List<Resource> resourceList = projectRepositoryService.createQuery().pathLike(projectName)
+				.type(ResourceType.FileResource).list();
+		ArrayList<ModelResource> projectResourceList = new ArrayList<>();
+		for (Resource resource : resourceList) {
+			projectResourceList.add((ModelResource) resource);
+		}
+		return projectResourceList;
 	}
 
 	@Override
@@ -118,12 +123,8 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 					.type(resource.getType()).singleResult();
 		} else if (resource.getType() == ResourceType.FileResource) {
 			return projectRepositoryService.createQuery().pathLike(resource.getPath()).name(resource.getName())
-					.property(ProjectRepositoryFileConstants.META_PROPERTY_VERSION,
-							resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_VERSION))
-					.property(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE,
-							resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE))
-					.property(ProjectRepositoryFileConstants.META_PROPERTY_NAME,
-							resource.getProperties().get(ProjectRepositoryFileConstants.META_PROPERTY_NAME))
+					.version(resource.getProperties().get(ProjectRepositoryConstants.META_PROPERTY_VERSION))
+					.namespace(resource.getProperties().get(ProjectRepositoryConstants.META_PROPERTY_NAMESPACE))
 					.singleResult();
 		} else {
 			return projectRepositoryService.createQuery().path(resource.getPath()).name(resource.getName())
@@ -156,8 +157,8 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 	@Override
 	public void deleteResource(String projectName, String author, String resourceId) {
 		IResourceQuery resourceQuery = projectRepositoryService.createQuery().pathLike(projectName)
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId)
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author);
+				.property(ProjectRepositoryConstants.META_PROPERTY_RESOURCE_ID, resourceId)
+				.property(ProjectRepositoryConstants.META_PROPERTY_AUTHOR, author);
 		Resource resource = resourceQuery.singleResult();
 		projectRepositoryService.deleteResource(resource);
 	}
@@ -172,12 +173,12 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 
 	@Override
 	public void addReferenceToProject(String projectName, String referenceResourceId) {
-		ProjectResource projectResource = (ProjectResource) projectRepositoryService.createQuery().pathLike(projectName)
-				.type(ResourceType.ProjectResource).singleResult();
+		ProjectResource projectResource = (ProjectResource) projectRepositoryService.createQuery().type(ResourceType.ProjectResource)
+				.path(projectName.replace("\\", "/")).singleResult();
 		Map<String, String> properties = projectResource.getProperties();
 		String[] resourceIdArray = {};
-		if (properties.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)) {
-			resourceIdArray = properties.get(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES)
+		if (properties.containsKey(ProjectRepositoryConstants.META_PROPERTY_REFERENCES)) {
+			resourceIdArray = properties.get(ProjectRepositoryConstants.META_PROPERTY_REFERENCES)
 					.split(Constants.COMMA);
 		}
 		ArrayList<String> resourceIdList = new ArrayList<>(Arrays.asList(resourceIdArray));
@@ -187,29 +188,34 @@ public class XtextEditorProjectServiceImpl implements IProjectService {
 		} else {
 			resourceIdList.add(referenceResourceId);
 			Map<String, String> updatedProperties = new HashMap<String, String>();
-			updatedProperties.put(ProjectRepositoryFileConstants.META_PROPERTY_REFERENCES,
+			updatedProperties.put(ProjectRepositoryConstants.META_PROPERTY_REFERENCES,
 					String.join(Constants.COMMA, resourceIdList));
 			projectRepositoryService.updateFolderResourceProperties(projectResource, updatedProperties);
 		}
 	}
 
 	private IResourceQuery getModelResourceQuery(String projectName, ModelResource modelResource) {
-		return projectRepositoryService.createQuery().pathLike(projectName).name(modelResource.getFilename())
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_VERSION, modelResource.getVersion())
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_NAMESPACE, modelResource.getNamespace())
-				.property(ProjectRepositoryFileConstants.META_PROPERTY_NAME, modelResource.getName());
+		return projectRepositoryService.createQuery().pathLike(projectName)
+				.property(ProjectRepositoryConstants.META_PROPERTY_VERSION, modelResource.getVersion())
+				.property(ProjectRepositoryConstants.META_PROPERTY_NAMESPACE, modelResource.getNamespace())
+				.property(ProjectRepositoryConstants.META_PROPERTY_NAME, modelResource.getName());
 	}
 
 	private FileUploadHandle getFileUploadHandle(String projectName, String fileContent, String author,
 			ModelResource modelResource) {
 		Resource projectResource = projectRepositoryService.createQuery().path(projectName.replace("\\", "/"))
-				.singleResult();
-		FileUploadHandle fileUploadHandle = new FileUploadHandle((FolderResource) projectResource,
-				modelResource.getFilename(), fileContent.getBytes());
+				.type(ResourceType.ProjectResource).singleResult();
+		String fileName = devtoolUtils.getFileName(modelResource);
+		FileUploadHandle fileUploadHandle = new FileUploadHandle((FolderResource) projectResource, fileName,
+				fileContent.getBytes());
 		String resourceId = devtoolUtils.generateResourceId(modelResource, projectName, author);
 		HashMap<String, String> properties = (HashMap<String, String>) modelResource.getProperties();
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_AUTHOR, author);
-		properties.put(ProjectRepositoryFileConstants.META_PROPERTY_RESOURCE_ID, resourceId);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_DISPLAY_NAME,
+				modelResource.getName() + modelResource.getModelType().getExtension());
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_FILE_NAME, fileName);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_AUTHOR, author);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_RESOURCE_ID, resourceId);
+		properties.put(ProjectRepositoryConstants.META_PROPERTY_PROJECT_NAME, projectName);
 		fileUploadHandle.setProperties(properties);
 		return fileUploadHandle;
 	}

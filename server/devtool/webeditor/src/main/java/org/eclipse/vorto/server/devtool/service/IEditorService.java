@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.server.devtool.models.LinkReferenceResponse;
-import org.eclipse.vorto.server.devtool.models.ModelResource;
 import org.eclipse.vorto.server.devtool.utils.DevtoolReferenceLinker;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
@@ -72,6 +72,9 @@ public abstract class IEditorService {
 		ModelInfo modelInfo = getAndValidateModelInfo(modelId);
 		projectService.getReferencedResource(modelInfo);
 		String referenceResourceId = devtoolUtils.getReferencedResourceId(modelInfo);
+		List<String> resourceIdList = new ArrayList<String>();
+		resourceIdList.add(referenceResourceId);
+		devtoolReferenceLinker.loadResourcesFromResourceId(resourceIdList, resourceSet);
 		String content = linkReference(targetResourceId, referenceResourceId, resourceSet);
 		LinkReferenceResponse linkReferenceResponse = new LinkReferenceResponse(content, targetResourceId,
 				referenceResourceId);

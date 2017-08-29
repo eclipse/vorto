@@ -23,7 +23,6 @@
 			<artifactId>org.eclipse.vorto.server.commons</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>

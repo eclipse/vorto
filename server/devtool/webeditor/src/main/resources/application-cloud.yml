@@ -2,14 +2,14 @@ vorto:
   repository:
     base:
       path: http://vorto.eclipse.org
-      
+
 http:
   proxyHost:
   proxyPort:
 
 server:
   port: 9080
-  
+
 github:
   client:
     clientId: ${github_clientid}
@@ -21,3 +21,5 @@ github:
       - user:email
   resource:
     userInfoUri: https://api.github.com/user
+
+repo.configFile: vorto-repository-config-file.json

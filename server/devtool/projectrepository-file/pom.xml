@@ -35,6 +35,11 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.xtext</groupId>
+			<artifactId>org.eclipse.xtext.xbase.web</artifactId>
+			<version>${xtext.version}</version>
+		</dependency>		
 
 		<!-- FOR UNIT TESTS -->
 		<dependency>

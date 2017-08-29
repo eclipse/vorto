@@ -21,16 +21,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.FileUtils;
 import org.eclipse.vorto.devtool.projectrepository.IProjectRepositoryService;
 import org.eclipse.vorto.devtool.projectrepository.model.FileResource;
 import org.eclipse.vorto.devtool.projectrepository.model.FolderResource;
+import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.devtool.projectrepository.model.ProjectResource;
 import org.eclipse.vorto.devtool.projectrepository.model.Resource;
 import org.eclipse.vorto.devtool.projectrepository.model.ResourceType;
 import org.eclipse.vorto.devtool.projectrepository.query.IResourceQuery;
 import org.eclipse.vorto.devtool.projectrepository.query.TextFilter;
+import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
+import org.eclipse.vorto.repository.api.ModelType;
 
 /**
  * File system based implementation of {@link IProjectRepositoryService}
@@ -82,6 +87,17 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 		tf.setKey("name");
 		tf.setText(name);
 		tf.setWhereCondition("/.[name='?']");
+		addFilter(tf);
+
+		return this;
+	}
+
+	@Override
+	public IResourceQuery namespace(String namespace) {
+		TextFilter tf = new TextFilter();
+		tf.setKey("namespace");
+		tf.setText(namespace);
+		tf.setWhereCondition("/.[namespace='?']");
 		addFilter(tf);
 
 		return this;
@@ -145,9 +161,9 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 		}
 
 		if (file.isDirectory()) {
-			if (props.containsKey(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT)) {
+			if (props.containsKey(ProjectRepositoryConstants.META_PROPERTY_IS_PROJECT)) {
 				boolean isProject = Boolean
-						.parseBoolean((String) props.get(ProjectRepositoryFileConstants.META_PROPERTY_IS_PROJECT));
+						.parseBoolean((String) props.get(ProjectRepositoryConstants.META_PROPERTY_IS_PROJECT));
 				if (isProject) {
 					resource = new ProjectResource();
 				} else {
@@ -156,13 +172,25 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 			} else {
 				resource = new FolderResource();
 			}
+			resource.setName(file.getName());
 		} else {
-			resource = new FileResource();
+			if(props.containsKey(ProjectRepositoryConstants.META_PROPERTY_MODEL_TYPE)){
+				ModelResource modelResource = (ModelResource) createModelResource(
+						new HashMap(props));
+				try {
+					modelResource.setContent(FileUtils.readFileToByteArray(file));
+				} catch (Exception ex) {
+
+				}
+				resource = modelResource;				
+			}else{
+				resource = new FileResource();
+				resource.setName(file.getName());
+			}
 		}
 
 		String resourcePath = file.getPath().replace(rootDirectory + File.separator, "").replace(File.separator, "/");
 		resource.setPath(resourcePath);
-		resource.setName(file.getName());
 		if (props.containsKey((ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))) {
 			resource.setCreationDate(new Date(
 					Long.parseLong((String) props.get(ProjectRepositoryServiceFS.META_PROPERTY_CREATIONDATE))));
@@ -224,6 +252,18 @@ public class ResourceQueryFS extends AbstractQueryJxPath {
 				getChildren(child);
 			}
 		}
+	}
+
+	private ModelResource createModelResource(Map<String, String> properties) {
+		ModelResource modelResource = new ModelResource();
+		modelResource.setName(properties.get(ProjectRepositoryConstants.META_PROPERTY_NAME));
+		modelResource.setNamespace(properties.get(ProjectRepositoryConstants.META_PROPERTY_NAMESPACE));
+		modelResource.setVersion(properties.get(ProjectRepositoryConstants.META_PROPERTY_VERSION));
+		modelResource
+				.setModelType(ModelType.valueOf(properties.get(ProjectRepositoryConstants.META_PROPERTY_MODEL_TYPE)));
+		modelResource
+				.setSubType(properties.get(ProjectRepositoryConstants.META_PROPERTY_MODEL_SUB_TYPE));
+		return modelResource;
 	}
 }
 

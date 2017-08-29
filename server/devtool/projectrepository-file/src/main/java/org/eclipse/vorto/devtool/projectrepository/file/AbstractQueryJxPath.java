@@ -50,7 +50,6 @@ public abstract class AbstractQueryJxPath implements IResourceQuery {
 	
 	public Resource singleResult() {
         List<Resource> result = list();
-
         if (result.size() == 1) {
             return result.get(0);
         } else if (result.size() > 1) {

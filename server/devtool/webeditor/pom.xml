@@ -47,12 +47,6 @@
 	</build>
 
 	<dependencies>
-		<!-- Core dependencies -->
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repository-api</artifactId>
-		</dependency>
-
 		<!-- Spring Boot dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -183,7 +177,33 @@
 			<artifactId>projectrepository-file</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>projectrepository-modeshape</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
+		<!--Java Content Repository API -->
+		<dependency>
+			<groupId>javax.jcr</groupId>
+			<artifactId>jcr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-sequencer-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-jcr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-jcr-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-common</artifactId>
+		</dependency>
 
 		<!-- http://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
 		<dependency>
@@ -215,7 +235,6 @@
 			<artifactId>swagger-models</artifactId>
 			<version>1.5.6</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>

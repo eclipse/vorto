@@ -17,11 +17,12 @@
 	<modules>
 		<module>projectrepository-api</module>
 		<module>projectrepository-file</module>
+		<module>projectrepository-modeshape</module>
 		<module>org.eclipse.vorto.editor.web</module>
 		<module>org.eclipse.vorto.editor.datatype.web</module>
 		<module>org.eclipse.vorto.editor.functionblock.web</module>
 		<module>org.eclipse.vorto.editor.infomodel.web</module>
 		<module>webeditor</module>
 	</modules>
-	
+
 </project>
