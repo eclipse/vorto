@@ -46,7 +46,7 @@ public class «element.name»DeviceFilter implements Predicate<BluetoothDevice> 
 
 	@Override
 	public boolean test(BluetoothDevice bluetoothDevice) {
-		return bluetoothDevice.getName().contains("BCDS");
+		return bluetoothDevice.getName().contains(" «element.name»");
 	}
 
 }
