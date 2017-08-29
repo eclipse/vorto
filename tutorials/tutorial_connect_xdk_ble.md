@@ -67,7 +67,7 @@ More comprehensive tutorial here: <a href="http://eclipse.github.io/kura/dev/kur
 
 - Select **Bluetooth LE** and **Bosch IoT Suite**
 
-	<img src="./images/connect_xdk_kura/step5_4_1.png" width=50%"/>
+	<img src="./images/connect_xdk_kura/step5_4_1.png" width="50%"/>
 
 - Confirm your selection with **Generate**
 - Download the generated Kura bundle, unzip and import it to Eclipse workspace. The project will appear as _com.example.kura_.
