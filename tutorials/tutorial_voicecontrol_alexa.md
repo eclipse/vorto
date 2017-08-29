@@ -1,16 +1,18 @@
 # Voice - Control the XDK with Amazon Alexa
 
+In this tutorial, you are going to learn how you can build an Amazon Alexa Skillset that reads device data from Bosch IoT Suite.
+
 ## Prerequisite
 
-- An information model published to the Vorto Repository. [Read more](tutorial-create_and_publish_with_web_editor.md) 
-- Evaluation account for the Bosch IoT Suite. [Request account here](https://bosch-si.secure.force.com/content/FormDisplayPage?f=2abiE)
-- You have successfully registered your XDK in the Bosch IoT Suite. [Read more](tutorial_register_device.md) 
+- [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
+- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
 ## Steps
 
 ### 1. Generate an Amazon Alexa Skillset with Vorto
 
-- Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select 'AWS IoT' from the list of generators on the right hand-side.
+- Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select **AWS IoT** from the list of generators on the right hand-side.
 
 	<img src="./images/connect_xdk_kura/step6_1.png">
 
@@ -25,14 +27,14 @@
 
 ## 2. Write Skillset Lambda function
 
-- Open the <a href="https://console.aws.amazon.com/lambda/home">AWS Lambda console</a> and create a new function
+- Open the <a href="https://console.aws.amazon.com/lambda/home">AWS Lambda console</a> and create a **new function**
 - Select **Alexa Skills Kit** as the trigger triggering the new function and confirm with **Next**
 
- <img src="./images/connect_xdk_kura/step6_5.png" width="50%" height="50%">
+ <img src="./images/connect_xdk_kura/step6_5.png" width="50%">
  
 - Give your function a name, leave the Runtime default configuration and Copy and Paste the generated alexa-skillset-lambda.js content into the online editor
 
-	<img src="./images/connect_xdk_kura/step6_6.png" width="50%" height="50%">
+	<img src="./images/connect_xdk_kura/step6_6.png" width="50%">
 
 - Modify the code and add your api token, thingID, username and password. Beware, that the username must be formatted like _tenant\username_
 
@@ -41,7 +43,7 @@
 - Open the <a href="https://developer.amazon.com/edw/home.html#/skills">AWS Alexa Skillset Builder</a> and select **Add a New Skill**
 - Give the skill a name, e.g. XDKDemo, and an Invocation Name, e.g. XDK. Confirm with **Next**.
 - Add the generated **intent schema** as well as the **utterances**, into the online editor. Feel free to modify the utterances to more human friendly commands. Confirm with **Next**.
-- Select AWS Lambda ARN Endpoint and add the ARN of the skillset lambda function, that you created in step 2. 
+- Select **AWS Lambda ARN Endpoint** and add the ARN of the skillset lambda function, that you created in step 2. 
 
 ## 4. Test the Skillset 
 
@@ -66,5 +68,5 @@ Get temperature sensor value
 	
 	Alexa outputs `30.1`
 
-Now it's time to publish your skillset and test it with the Echo. Have fun!
+Now it's time to publish your skillset and test it with the Echo. **Have fun!**
 

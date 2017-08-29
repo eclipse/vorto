@@ -1,12 +1,12 @@
 # Connecting a Bluetooth device with Eclipse Vorto & Eclipse Kura to the Bosch IoT Suite
 
-In this tutorial we would like to show you how you can connect a bluetooth device to the Bosch IoT Suite with Eclipse Kura and Eclipse Vorto.
+In this tutorial you are going to learn how you can connect a bluetooth device to the Bosch IoT Suite with Eclipse Kura and Eclipse Vorto.
 
 ## Prerequisite
 
-- An information model published to the Vorto Repository. [Read more](tutorial-create_and_publish_with_web_editor.md)
-- Evaluation account for the Bosch IoT Suite. [Request account here](https://bosch-si.secure.force.com/content/FormDisplayPage?f=2abiE).
-- Device has been successfully registered in the Bosch IoT Suite. [Read more](tutorial_register_device.md) 
+- [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
+- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
 ## Tools
 - [Eclipse Oxygen](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygenr)
@@ -135,6 +135,7 @@ try {
 }
 return temperature;
 ```
+
 Here we are writing the ascii representation of the string "temp" to the XDK register to get a reading of the temperature which we then read back and parse.
 
 ### 7. Deploy Kura bundle to gateway
@@ -186,4 +187,4 @@ Alternatively, you can the see the incoming sensor data via the <a href="http://
 ## What's next ?
 
 - [Create a web application consuming the device telemetry data](tutorial_create_webapp_dashboard.md)
-- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_build_alexaskill.md)
+- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_voicecontrol_alexa.md)

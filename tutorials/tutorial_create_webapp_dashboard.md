@@ -1,18 +1,18 @@
 # Create a device-specific web application with Vorto
 
-In this tutorial, we want to build a small Spring-boot based IoT webapp that is able to consume device values, e.g. XDK, from a IoT Cloud backend and display the data in a dashboard. In this example, we will use the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0"> XDK Information Model</a> and create a web application specific to the XDK functionality.
+In this tutorial, you are going to learn how you can build a small Spring-boot AngularJS web application that is able to consume device values from the Bosch IoT Suite Cloud Services and display the data in a dashboard. In this example, we will use the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0"> XDK Information Model</a> and create a web application specific to the XDK functionality.
 
 ## Prerequisite
 
-- An information model published to the Vorto Repository. [Read more](tutorial-create_and_publish_with_web_editor.md) 
-- Evaluation account for the Bosch IoT Suite. [Request account here](https://bosch-si.secure.force.com/content/FormDisplayPage?f=2abiE) 
-- You have successfully registered your XDK in the Bosch IoT Suite. [Read more](tutorial_register_device.md) 
+- [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
+- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
 ## Steps
 
 ### 1. Generate a web application with Vorto
 
-- Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select 'Web-based Device Dashboard' from the list of generators on the right hand-side.
+- Go to the <a href="http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0">XDK Information Model</a> and select **Web-based Device Dashboard** from the list of generators on the right hand-side.
 
  <img src="./images/create_webapp_dashboard/step3_1.png"/>
  
@@ -77,7 +77,14 @@ bosch:
 - Open the _com.example.iot.xdk.config.LocalConfiguration_ and use the **clientID**: _solutionID:xdkapp._ 
 Make sure the  **clientID** in your configuration matches the clientID in the ACL that you had created via the Developer Console earlier!
 
-### 3. Test the application
+### 3. Run the application
+
+You can easily run the web application from the command-line with 
+`
+mvn spring-boot:run
+`
+
+### 4. Test the application
 
 - Open your browser under <a href="http://localhost:8080">http://localhost:8080</a>
 - Log in with your Bosch IoT Permissions credentials
@@ -105,4 +112,4 @@ https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/
 
 ## What's next ?
 
-- [Simulate the device and send test data](tutorial_simulate_device.md)
+- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_build_alexaskill.md)

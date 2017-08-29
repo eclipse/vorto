@@ -3,17 +3,17 @@
 
 ## Prerequisite
 
-- An information model published to the Vorto Repository. [Read more](tutorial-create_and_publish_with_web_editor.md)
-- Evaluation account for the Bosch IoT Suite. [Request account here](https://bosch-si.secure.force.com/content/FormDisplayPage?f=2abiE).
+- [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
+- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
 
 ## Steps
 
 - Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
 - Log in to the console with your evaluation tenant, username and password.
-- Open the *thing browser** under Thing Console in the left navigation bar
+- Open the **Thing Console -> Thing Browser** in the left navigation bar
 - Click **Connect thing**
 
-	<img src="./images/connect_xdk_kura/step2_connect.png" width="50%" height="50%"/>
+	<img src="./images/connect_xdk_kura/step2_connect.png" width="50%"/>
 
 - Search the Vorto Repository for the device type you would like to register, e.g. _XDK_. Select the device type and confirm with _Next_
 
