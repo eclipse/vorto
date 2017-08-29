@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.kura.templates.cloud
+package org.eclipse.vorto.codegen.kura.templates.bluetooth
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
@@ -20,36 +20,37 @@ import org.eclipse.vorto.codegen.kura.templates.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 /**
- * @author Alexander Edelmann
+ * 
+ * @author Erle Czar Mantos - Robert Bosch (SEA) Pte. Ltd.
+ *
  */
-class IDataServiceTemplate implements IFileTemplate<InformationModel>{
+class DeviceFilterTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
-		'''IDataService.java'''
+		'''«context.name»DeviceFilter.java'''
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/cloud'''
+		'''«Utils.javaPackageBasePath»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
-		'''
-		package «Utils.javaPackage».cloud;
-		
-		public interface IDataService {
-			
-			«FOR fbProperty : element.properties»
-			/**
-			 * publishes «fbProperty.name» data to the IoT Cloud backend
-			 * @param resourceId 
-			 * @param data
-			 */
-			void publish«fbProperty.name.toFirstUpper»(String resourceId, «fbProperty.type.name» data);
-			
-			«ENDFOR»
-		}
-		
-		'''
+'''
+package «Utils.javaPackage»;
+
+import java.util.function.Predicate;
+
+import org.eclipse.kura.bluetooth.BluetoothDevice;
+
+public class «element.name»DeviceFilter implements Predicate<BluetoothDevice> {
+
+	@Override
+	public boolean test(BluetoothDevice bluetoothDevice) {
+		return bluetoothDevice.getName().contains("BCDS");
+	}
+
+}
+'''		
 	}
 	
 }

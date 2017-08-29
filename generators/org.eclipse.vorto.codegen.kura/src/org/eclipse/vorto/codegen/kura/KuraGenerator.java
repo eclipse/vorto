@@ -26,12 +26,17 @@ import org.eclipse.vorto.codegen.kura.templates.BuildPropertiesTemplate;
 import org.eclipse.vorto.codegen.kura.templates.DefaultAppTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseClasspathTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseProjectFileTemplate;
+import org.eclipse.vorto.codegen.kura.templates.KuraCloudDataServiceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.ManifestTemplate;
 import org.eclipse.vorto.codegen.kura.templates.PomTemplate;
+import org.eclipse.vorto.codegen.kura.templates.bluetooth.ConfigurationTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceBluetoothFinderTemplate;
-import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceTemplate;
+import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceFilterTemplate;
+import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceToInformationModelTransformerTemplate;
+import org.eclipse.vorto.codegen.kura.templates.bluetooth.IDataServiceTemplate;
+import org.eclipse.vorto.codegen.kura.templates.bluetooth.InformationModelConsumerTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.FunctionblockTemplate;
-import org.eclipse.vorto.codegen.kura.templates.cloud.IDataServiceTemplate;
+import org.eclipse.vorto.codegen.kura.templates.cloud.InformationModelTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.BoschDataServiceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.ThingClientFactoryTemplate;
 import org.eclipse.vorto.codegen.kura.templates.osgiinf.ComponentXmlTemplate;
@@ -57,22 +62,28 @@ public class KuraGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ManifestTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new BuildPropertiesTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ComponentXmlTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<>(new IDataServiceTemplate()));
 		
 		if (invocationContext.getConfigurationProperties().getOrDefault("boschcloud", "false").equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<>(new IDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ThingClientFactoryTemplate()));
+		} else {
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new KuraCloudDataServiceTemplate()));
 		}
 		
 		if (invocationContext.getConfigurationProperties().getOrDefault("bluetooth", "false").equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new MetatypeTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DeviceBluetoothFinderTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DeviceTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ConfigurationTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DeviceFilterTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DeviceToInformationModelTransformerTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new InformationModelConsumerTemplate()));
 		} else {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DefaultAppTemplate()));
 		}
 		
+		generator.addTask(new GeneratorTaskFromFileTemplate<>(new InformationModelTemplate()));
 		for (FunctionblockProperty fbProperty : context.getProperties()) {
 			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate()).generate(fbProperty.getType(), invocationContext, outputter);
 		}
