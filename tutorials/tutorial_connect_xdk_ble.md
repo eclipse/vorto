@@ -143,7 +143,7 @@ and several other configurable properties.
 
 - In the new package, create a model class to hold the response data from the XDK. Let's also give it the responsibility to segregate string responses according to what type of sensor values it holds.
 	
-	Let's create the class _XDKSensorDataResponse_. You can download the full class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/XDKSensorDataResponse.java">XDKSensorDataResponse.java</a>].
+	Let's create the class _XDKSensorDataResponse_. You can download the full class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/XDKSensorDataResponse.txt">XDKSensorDataResponse.java</a>].
 	
 	Here are the juicy tidbits of this class. 
 	```
@@ -178,7 +178,7 @@ and several other configurable properties.
 - In the new package, create our own implementation of Kura's bluetooth gatt. This is because Kura's implementation uses a different command to write a string, which doesn't trigger the Virtual XDK firmware.
 
 	Let's create a class called _XDKBluetoothGatt_ that implements _org.eclipse.kura.bluetooth.BluetoothGatt_. We are only interested in the functions for connecting, writing and reading to a UUID. The rest we can leave
-	to Eclipse's own default. You can download the entire class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/XDKBluetoothGatt.java">XDKBluetoothGatt.java</a>].
+	to Eclipse's own default. You can download the entire class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/XDKBluetoothGatt.txt">XDKBluetoothGatt.java</a>].
 	
 	```
 	public boolean connect(String adapterId) throws KuraException {
@@ -264,7 +264,7 @@ and several other configurable properties.
 	BluetoothGatt gatt = new XDKBluetoothGatt(device.getAdress());
 	```
 
-- Modify the code in _DeviceToXDKTransformer.java_ that actually reads the sensor values. We will use the _Temperature_ sensor as an example. You can download the entire class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/DeviceToXDKTransformer.java">DeviceToXDKTransformer.java</a>].
+- Modify the code in _DeviceToXDKTransformer.java_ that actually reads the sensor values. We will use the _Temperature_ sensor as an example. You can download the entire class here [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/sample_codes/tutorial_connect_xdk_ble/DeviceToXDKTransformer.txt">DeviceToXDKTransformer.java</a>].
 	- Find the method `getTemperature(...)` and modify to 
 	
 	```

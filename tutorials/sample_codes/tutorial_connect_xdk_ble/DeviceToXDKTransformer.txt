@@ -26,11 +26,11 @@ import org.slf4j.LoggerFactory;
 import com.example.kura.cloud.Accelerometer;
 import com.example.kura.cloud.AlertNotification;
 import com.example.kura.cloud.Barometer;
-import com.example.kura.cloud.FirmwareUpdate;
+import com.example.kura.cloud.Firmware_Update;
 import com.example.kura.cloud.Gyrometer;
 import com.example.kura.cloud.Humidity;
 import com.example.kura.cloud.Illuminance;
-import com.example.kura.cloud.LightControl;
+import com.example.kura.cloud.Light_Control;
 import com.example.kura.cloud.Magnetometer;
 import com.example.kura.cloud.Temperature;
 import com.example.kura.cloud.XDK;
@@ -59,8 +59,8 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 				}
 				
 				if (configuration.enableFirmware_update) {
-					enableFirmwareUpdate(gatt);
-					xdk.setFirmwareUpdate(getFirmwareUpdate(gatt));
+					enableFirmware_update(gatt);
+					xdk.setFirmware_update(getFirmware_update(gatt));
 				}
 				
 				if (configuration.enableGyrometer) {
@@ -94,18 +94,18 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 				}
 				
 				if (configuration.enableLight_control) {
-					enableLightControl(gatt);
-					xdk.setLightControl(getLightControl(gatt));
+					enableLight_control(gatt);
+					xdk.setLight_control(getLight_control(gatt));
 				}
 				
 				if (configuration.enableLight_control1) {
-					enableLightControl1(gatt);
-					xdk.setLightControl1(getLightControl1(gatt));
+					enableLight_control1(gatt);
+					xdk.setLight_control1(getLight_control1(gatt));
 				}
 				
 				if (configuration.enableLight_control2) {
-					enableLightControl2(gatt);
-					xdk.setLightControl2(getLightControl2(gatt));
+					enableLight_control2(gatt);
+					xdk.setLight_control2(getLight_control2(gatt));
 				}
 				
 				if (configuration.enableAlertnotification) {
@@ -116,13 +116,13 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 				
 				gatt.disconnect();
 				return Optional.of(xdk);
-			} else {
-				return Optional.empty();
 			}
 		} catch (KuraException e) {
 			logger.error("Error in getting device data", e);
 			return Optional.empty();
 		}
+		
+		return Optional.empty();
 	}
 	
 	/*
@@ -168,20 +168,24 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	/*
 	 * Implement here the actual code to enable getting of Firmware_Update value from bluetooth device
 	 */
-	private void enableFirmwareUpdate(BluetoothGatt gatt) {
+	private void enableFirmware_update(BluetoothGatt gatt) {
 		gatt.writeCharacteristicValue("", "");
 	}
 	
 	/*
 	 * Implement the actual code to get Firmware_Update value from bluetooth device
 	 */
-	private FirmwareUpdate getFirmwareUpdate(BluetoothGatt gatt) {
+	private Firmware_Update getFirmware_update(BluetoothGatt gatt) {
+		Firmware_Update firmware_update = new Firmware_Update();
 		try {
-			gatt.readCharacteristicValue("");
+		
+			//TODO: insert code that reads Firmware_Update and converts into Firmware_Update object
+			String value = gatt.readCharacteristicValue("");
+			
 		} catch (KuraException e) {
 			 logger.error(e.toString());
 		}
-		return new FirmwareUpdate();
+		return firmware_update;
 	}
 	
 	/*------------------ Implement method for Gyrometer here! (start) -----------------*/
@@ -366,49 +370,49 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	/*
 	 * Implement here the actual code to enable getting of Light_Control value from bluetooth device
 	 */
-	private void enableLightControl(BluetoothGatt gatt) {
+	private void enableLight_control(BluetoothGatt gatt) {
 		gatt.writeCharacteristicValue("", "");
 	}
 	
 	/*
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
-	private LightControl getLightControl(BluetoothGatt gatt) {
-		return getLightControl(gatt, 1);
+	private Light_Control getLight_control(BluetoothGatt gatt) {
+		return _getLightControl(gatt, 1);
 	}
 	
 	/*------------------ Implement method for Light_control1 here! (start) -----------------*/
 	/*
 	 * Implement here the actual code to enable getting of Light_Control value from bluetooth device
 	 */
-	private void enableLightControl1(BluetoothGatt gatt) {
+	private void enableLight_control1(BluetoothGatt gatt) {
 		gatt.writeCharacteristicValue("", "");
 	}
 	
 	/*
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
-	private LightControl getLightControl1(BluetoothGatt gatt) {
-		return getLightControl(gatt, 2);
+	private Light_Control getLight_control1(BluetoothGatt gatt) {
+		return _getLightControl(gatt, 2);
 	}
 	
 	/*------------------ Implement method for Light_control2 here! (start) -----------------*/
 	/*
 	 * Implement here the actual code to enable getting of Light_Control value from bluetooth device
 	 */
-	private void enableLightControl2(BluetoothGatt gatt) {
+	private void enableLight_control2(BluetoothGatt gatt) {
 		gatt.writeCharacteristicValue("", "");
 	}
 	
 	/*
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
-	private LightControl getLightControl2(BluetoothGatt gatt) {
-		return getLightControl(gatt, 4);
+	private Light_Control getLight_control2(BluetoothGatt gatt) {
+		return _getLightControl(gatt, 4);
 	}
 	
-	private LightControl getLightControl(BluetoothGatt gatt, int mask) {
-		LightControl light_control = new LightControl();
+	private Light_Control _getLightControl(BluetoothGatt gatt, int mask) {
+		Light_Control light_control = new Light_Control();
 		try {
 			String value = gatt.readCharacteristicValue("0x003602");
 			if (value != null) {
@@ -436,12 +440,16 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	 * Implement the actual code to get AlertNotification value from bluetooth device
 	 */
 	private AlertNotification getAlertnotification(BluetoothGatt gatt) {
+		AlertNotification alertnotification = new AlertNotification();
 		try {
-			gatt.readCharacteristicValue("");
+		
+			//TODO: insert code that reads AlertNotification and converts into AlertNotification object
+			String value = gatt.readCharacteristicValue("");
+			
 		} catch (KuraException e) {
 			 logger.error(e.toString());
 		}
-		return new AlertNotification();
+		return alertnotification;
 	}
 	
 }

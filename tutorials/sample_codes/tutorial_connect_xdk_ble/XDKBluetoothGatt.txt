@@ -56,7 +56,7 @@ public class XDKBluetoothGatt implements BluetoothGatt {
 		return dataResponse.isComplete() || dataResponse.isPartiallyComplete(); 
 	}
 	
-	public void writeCharacteristicValue(String arg0, String arg1) { // Do nothing }
+	public void writeCharacteristicValue(String arg0, String arg1) {}
 	
 	public String readCharacteristicValue(String uuid) throws KuraException  {
 		if ("0x0034".equals(uuid)) {
@@ -119,12 +119,12 @@ public class XDKBluetoothGatt implements BluetoothGatt {
 	
 	/* We don't care about the rest of this functions */
 	public boolean checkConnection() throws KuraException { return false; }
-	public void disconnect() { // Do nothing }
+	public void disconnect() {}
 	public List<BluetoothGattCharacteristic> getCharacteristics(String arg0, String arg1) { return null; }
 	public BluetoothGattSecurityLevel getSecurityLevel() throws KuraException { return null; }
 	public BluetoothGattService getService(UUID arg0) { return null; }
 	public List<BluetoothGattService> getServices() { return null; }
 	public String readCharacteristicValueByUuid(UUID arg0) throws KuraException { return null; }
-	public void setBluetoothLeNotificationListener(BluetoothLeNotificationListener arg0) { // Do nothing }
-	public void setSecurityLevel(BluetoothGattSecurityLevel arg0) { // Do nothing }
+	public void setBluetoothLeNotificationListener(BluetoothLeNotificationListener arg0) {}
+	public void setSecurityLevel(BluetoothGattSecurityLevel arg0) {}
 }
