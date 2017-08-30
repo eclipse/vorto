@@ -6,37 +6,41 @@
 # Getting started with Vorto
 
 [Vorto](http://www.eclipse.org/vorto) is an IoT development infrastructure that lets you describe devices using a simple language and publish and manage these descriptions as Information Models in a centralized [Vorto Repository](http://vorto.eclipse.org). Vorto provides many [generators](http://vorto.eclipse.org/#/generators) that let you easily create device-specific source code in order to integrate the device into IoT platforms.
- 
- <img src="./tutorials/images/vorto_overview.png" width="60%" height="60%" />
- 
-Wanna learn more? Browse through the [tutorials](tutorials/Readme.md).
 
-## Connect a device with Vorto 
+Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md).
+ 
+ <img src="./tutorials/images/vorto_overview.png" width="80%"/>
 
+## 1. Describe a device with Vorto
+
+Use the Vorto Eclipse Toolset to describe the functionality of a device. [Read the Tutorial](tutorials/tutorial-create_and_publish_with_web_editor.md)
+
+## 2. Generate Source Code  
+
+Integrate a device for a given Information Model into IoT platforms with Vorto Code Generators:
 
 1. Open the [Vorto Repository](http://vorto.eclipse.org)
-2. Search for [_Bosch GLM_](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
-3. Select _Kura Generator_, choose your configuration (e.g. BLE) and confirm with _Generate_.
-4. Download the generated Kura bundle and import it into your Eclipse
-4. **That's it**! You just created a device-specific OSGI Kura bundle to connect the device for a selected IoT cloud backend.
+2. Search for, e.g. [**Bosch XDK**](http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0)
+3. Select **Eclipse Kura Generator**, choose your configuration (e.g. **BLE**) and confirm with **Generate**.
+4. Download the generated Kura bundle and **import** it into your Eclipse
+5. That's it! Use the generated device-specific OSGI Kura bundle to connect the device for a given IoT cloud backend. 
 
-## Describe a new device 
+[Read Tutorial](tutorials/tutorial_connect_xdk_ble.md).
 
-The [Vorto web editor](http://vorto.eclipse.org/editor) makes it very easy to describe a device and publish it as an information model to the Vorto Repository. Just follow the [tutorial](tutorials/tutorial-create_and_publish_with_web_editor.md) to learn more.
+## 3. Extend Vorto with the Generator SDK
 
-# Vorto Repository Server
+With the **Generator SDK** you can "_teach_" Vorto how to integrate an Information model, and thus device, into an IoT platform. [Read the Tutorial](tutorials/tutorial_create_generator.md)
 
-The [Eclipse Vorto Repository](http://vorto.eclipse.org) manages many different information models as well as Code Generators. 
+Here is a list of currently supported [Vorto Generators](http://vorto.eclipse.org/#/generators)
 
-However, if you would like to setup your own local repository including generators, you can do that in just a couple of minutes:
+## 4. Vorto Repository Java Client API
 
- - Set up [Vorto Repository](server/repo/repository-server/Readme.md)
- - Set up [Vorto Code Generators](server/generators/Readme.md)
- - Access models and generate code via the [Java Client API ](server/repo/repository-java-client/Readme.md)
+Access models and generate code via the [Java Client API ](server/repo/repository-java-client/Readme.md)
 
 # Documentation
 
-Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overview/introduction.html)
+- Read our [tutorials](tutorials/Readme.md)
+- Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overview/introduction.html)
 
 # Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -54,3 +58,6 @@ When you create a Pull Request, make sure:
 2. All your commits are signed off (git commit -s)
 3. Your commit message contains "Fixes #`<Github issue no>`
 4. Target to merge your fix is development branch
+
+
+
