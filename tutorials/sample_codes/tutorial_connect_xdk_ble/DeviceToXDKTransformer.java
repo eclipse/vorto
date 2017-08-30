@@ -374,7 +374,7 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
 	private LightControl getLightControl(BluetoothGatt gatt) {
-		return _getLightControl(gatt, 1);
+		return getLightControl(gatt, 1);
 	}
 	
 	/*------------------ Implement method for Light_control1 here! (start) -----------------*/
@@ -389,7 +389,7 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
 	private LightControl getLightControl1(BluetoothGatt gatt) {
-		return _getLightControl(gatt, 2);
+		return getLightControl(gatt, 2);
 	}
 	
 	/*------------------ Implement method for Light_control2 here! (start) -----------------*/
@@ -404,10 +404,10 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 	 * Implement the actual code to get Light_Control value from bluetooth device
 	 */
 	private LightControl getLightControl2(BluetoothGatt gatt) {
-		return _getLightControl(gatt, 4);
+		return getLightControl(gatt, 4);
 	}
 	
-	private LightControl _getLightControl(BluetoothGatt gatt, int mask) {
+	private LightControl getLightControl(BluetoothGatt gatt, int mask) {
 		LightControl light_control = new LightControl();
 		try {
 			String value = gatt.readCharacteristicValue("0x003602");
@@ -442,5 +442,6 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 			 logger.error(e.toString());
 		}
 		return new AlertNotification();
-	}	
+	}
+	
 }
