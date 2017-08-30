@@ -92,11 +92,6 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			LOGGER.error("Error registering a generator", e);
 		}
 	}
-	
-	@PreDestroy
-	public void deInit() {
-		generatorRepo.list().stream().forEach(vorto::deregister);
-	}
 
 	@Override
 	public void setEnvironment(Environment env) {

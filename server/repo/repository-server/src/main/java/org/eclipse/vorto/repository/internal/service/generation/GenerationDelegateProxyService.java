@@ -32,7 +32,6 @@ import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.api.generation.ServiceClassifier;
 import org.eclipse.vorto.repository.model.Generator;
-import org.eclipse.vorto.repository.service.GeneratorAlreadyExistsException;
 import org.eclipse.vorto.repository.service.IGeneratorService;
 import org.eclipse.vorto.repository.service.IModelRepository;
 import org.modeshape.common.collection.Collections;
@@ -67,7 +66,14 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	
 	@Override
 	public void registerGenerator(String serviceKey, String baseUrl, ServiceClassifier classifier) {
-		this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, classifier.name()));
+		Generator generator = this.getGenerator(serviceKey);
+		if (generator == null) {
+			this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, classifier.name()));
+		} else {
+			generator.setBaseUrl(baseUrl);
+			generator.setClassifier(classifier.name());
+			this.registeredGeneratorsRepository.save(generator);
+		}
 	}
 
 	@Override

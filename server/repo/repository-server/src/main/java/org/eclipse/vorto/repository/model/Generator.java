@@ -105,4 +105,12 @@ public class Generator {
 	public String getGenerationInfoUrl() {
 		 return baseUrl+"/info";
 	}
+
+	@Override
+	public String toString() {
+		return "Generator [id=" + id + ", generatorKey=" + generatorKey + ", baseUrl=" + baseUrl + ", classifier="
+				+ classifier + ", invocationCount=" + invocationCount + "]";
+	}
+	
+	
 }
