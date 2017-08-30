@@ -103,7 +103,7 @@ keytool -printcert -rfc -file CRClient_key.cer
 
 The Virtual XDK firmware for the XDK was originally developed to show sensor values on mobile devices. As such, they were designed to give all sensor values as a stream in one go.
 The sensors value stream is started by writing '00' on UUID handle _0x0039_. You can then read the continues stream of sensor values at UUID handle _0x0034_ and _0x0036_. The _0x0034_ contains values for 
-either a computed orientation or accelerometer and gyrometer. This behaviour is controlled by the flag that we asked you to modify on Step #5. The _0x0036_ can be two streams. If it starts with 01,
+either a computed orientation or accelerometer and gyrometer. This behaviour is controlled by a flag that we will ask you to modify in Step #6. The _0x0036_ can be two streams. If it starts with 01,
 then it contains values for the light sensor, noise sensor, pressure, temperature, humidity, sd card status, and button 1/2 states. If it starts with 02, then it contains values for the magnetometer,
 and led states.
 
