@@ -337,7 +337,7 @@ curl -X GET https://things.apps.bosch-iot-cloud.com/api/1/things?ids=ADD_THINGID
 -H "Accept: application/json" 
 -H "x-cr-api-token: apiToken"
 ```
-Alternatively, you can the see the incoming sensor data via the <a href="http://Bosch IoT Developer Console">Bosch IoT Developer Console</a>
+Alternatively, you can the see the incoming sensor data via the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
 
 ## What's next ?
 
