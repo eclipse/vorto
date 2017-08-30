@@ -56,14 +56,14 @@ public class XDKBluetoothGatt implements BluetoothGatt {
 		return dataResponse.isComplete() || dataResponse.isPartiallyComplete(); 
 	}
 	
-	public void writeCharacteristicValue(String arg0, String arg1) {}
+	public void writeCharacteristicValue(String arg0, String arg1) { // Do nothing }
 	
 	public String readCharacteristicValue(String uuid) throws KuraException  {
-		if (uuid.equals("0x0034")) {
+		if ("0x0034".equals(uuid)) {
 			return dataResponse.getAccAndGyro().orElse(null);
-		} else if (uuid.equals("0x003601")) {
+		} else if ("0x003601".equals(uuid)) {
 			return dataResponse.getEnvironmentSensor().orElse(null);
-		} else if (uuid.equals("0x003602")) {
+		} else if ("0x003602".equals(uuid)) {
 			return dataResponse.getMagnetometerLedStatus().orElse(null); 
 		}
 		
@@ -119,12 +119,12 @@ public class XDKBluetoothGatt implements BluetoothGatt {
 	
 	/* We don't care about the rest of this functions */
 	public boolean checkConnection() throws KuraException { return false; }
-	public void disconnect() {}
+	public void disconnect() { // Do nothing }
 	public List<BluetoothGattCharacteristic> getCharacteristics(String arg0, String arg1) { return null; }
 	public BluetoothGattSecurityLevel getSecurityLevel() throws KuraException { return null; }
 	public BluetoothGattService getService(UUID arg0) { return null; }
 	public List<BluetoothGattService> getServices() { return null; }
 	public String readCharacteristicValueByUuid(UUID arg0) throws KuraException { return null; }
-	public void setBluetoothLeNotificationListener(BluetoothLeNotificationListener arg0) { }
-	public void setSecurityLevel(BluetoothGattSecurityLevel arg0) {}
+	public void setBluetoothLeNotificationListener(BluetoothLeNotificationListener arg0) { // Do nothing }
+	public void setSecurityLevel(BluetoothGattSecurityLevel arg0) { // Do nothing }
 }

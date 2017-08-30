@@ -180,7 +180,7 @@ public class DeviceToXDKTransformer implements Function<BluetoothDevice, Optiona
 		try {
 		
 			//TODO: insert code that reads Firmware_Update and converts into Firmware_Update object
-			String value = gatt.readCharacteristicValue("");
+			//String value = gatt.readCharacteristicValue("");
 			
 		} catch (KuraException e) {
 			 logger.error(e.toString());
