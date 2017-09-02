@@ -12,14 +12,13 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.api;
+package org.eclipse.vorto.service.mapping;
 
-public interface IGeneratorLookup {
-	/**
-	 * Looks up a registered code generator in the platform by its service key
-	 * @param key
-	 * @return
-	 */
-	IVortoCodeGenerator lookupByKey(String key);
+public interface IDataMapper<Output extends JsonPayload> {
 	
+	Output map(DataInput input);
+	
+	static DataMapperBuilder newBuilder() {
+		return new DataMapperBuilder();
+	}
 }

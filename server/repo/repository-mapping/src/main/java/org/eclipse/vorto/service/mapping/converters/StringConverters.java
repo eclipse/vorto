@@ -12,14 +12,23 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.api;
+package org.eclipse.vorto.service.mapping.converters;
 
-public interface IGeneratorLookup {
-	/**
-	 * Looks up a registered code generator in the platform by its service key
-	 * @param key
-	 * @return
-	 */
-	IVortoCodeGenerator lookupByKey(String key);
+public class StringConverters {
+
+	public static float toFloat(String value) {
+		return Float.parseFloat(value);
+	}
 	
+	public static int length(String value) {
+		return value.length();
+	}
+	
+	public static String substring(String value, int beginIndex, int endIndex) {
+		return value.substring(beginIndex,endIndex);
+	}
+	
+	public static String substring(String value, int beginIndex) {
+		return value.substring(beginIndex);
+	}
 }

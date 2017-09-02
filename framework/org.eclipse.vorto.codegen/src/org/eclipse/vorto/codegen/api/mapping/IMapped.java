@@ -15,6 +15,8 @@
 package org.eclipse.vorto.codegen.api.mapping;
 
 public interface IMapped<T> {
+	
+	boolean isMapped();
 
 	/**
 	 * source element which is mapped

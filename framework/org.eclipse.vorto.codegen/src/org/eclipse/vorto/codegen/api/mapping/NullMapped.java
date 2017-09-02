@@ -41,4 +41,9 @@ public class NullMapped<T> implements IMapped<T> {
 	public String getAttributeValue(String attributeName, String defaultValue) {	
 		return defaultValue;
 	}
+
+	@Override
+	public boolean isMapped() {
+		return false;
+	}
 }
