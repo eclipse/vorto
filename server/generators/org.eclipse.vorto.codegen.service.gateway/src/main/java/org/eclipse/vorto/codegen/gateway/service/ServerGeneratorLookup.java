@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.service.generator.web;
+package org.eclipse.vorto.codegen.gateway.service;
 
 import java.util.List;
 
@@ -27,14 +27,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Service
 public class ServerGeneratorLookup implements IGeneratorLookup {
 
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	@Value("${vorto.service.repositoryUrl}") 
+	@Value("${vorto.serverUrl}") 
 	private String basePath;
 	
 	@Override
@@ -73,7 +75,7 @@ public class ServerGeneratorLookup implements IGeneratorLookup {
 		public IGenerationResult generate(InformationModel model, InvocationContext context,
 				IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 			restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-			ResponseEntity<byte[]> entity = restTemplate.getForEntity(basePath+"/generation-router/{namespace}/{name}/{version}/{serviceKey}", byte[].class,model.getNamespace(),model.getName(),model.getVersion(),key);
+			ResponseEntity<byte[]> entity = restTemplate.getForEntity(basePath+"/rest/generation-router/{namespace}/{name}/{version}/{serviceKey}", byte[].class,model.getNamespace(),model.getName(),model.getVersion(),key);
 			return new IGenerationResult() {
 				
 				@Override

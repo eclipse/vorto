@@ -17,7 +17,8 @@
 	<modules>
 		<module>repository-server</module>
 		<module>repository-api</module>
-		<module>repository-java-client</module>		
+		<module>repository-java-client</module>	
+		<module>repository-mapping</module>	
 	</modules>
 	
 </project>

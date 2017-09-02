@@ -60,4 +60,9 @@ public class DefaultMapped<T> implements IMapped<T> {
 		return defaultValue;
 	}
 
+	@Override
+	public boolean isMapped() {
+		return true;
+	}
+
 }

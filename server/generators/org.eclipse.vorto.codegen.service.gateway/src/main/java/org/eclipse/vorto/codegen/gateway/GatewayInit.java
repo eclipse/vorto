@@ -14,8 +14,6 @@
  */
 package org.eclipse.vorto.codegen.gateway;
 
-import javax.annotation.PreDestroy;
-
 import org.eclipse.vorto.codegen.arduino.ArduinoCodeGenerator;
 import org.eclipse.vorto.codegen.aws.AWSGenerator;
 import org.eclipse.vorto.codegen.bosch.things.BoschIoTThingsGenerator;
