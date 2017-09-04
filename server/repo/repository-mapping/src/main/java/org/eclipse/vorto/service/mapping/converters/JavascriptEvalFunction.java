@@ -24,6 +24,7 @@ import javax.script.ScriptException;
 
 import org.apache.commons.jxpath.ExpressionContext;
 import org.apache.commons.jxpath.Function;
+import org.apache.commons.jxpath.JXPathException;
 import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.util.TypeUtils;
 
@@ -47,7 +48,7 @@ public class JavascriptEvalFunction implements Function {
 		try {
 			engine.eval(functionBody);
 		} catch (ScriptException e) {
-			throw new RuntimeException("Problem evaluating " + functionName, e);
+			throw new JXPathException("Problem evaluating " + functionName, e);
 		}
 
 		Invocable inv = (Invocable) engine;
