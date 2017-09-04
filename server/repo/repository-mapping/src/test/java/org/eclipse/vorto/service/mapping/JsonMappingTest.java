@@ -59,15 +59,12 @@ public class JsonMappingTest {
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
 									.withModelLoader(new RepositoryLoader(ModelId.fromPrettyFormat("devices.aws.button.AWSIoTButton:1.0.0"), "awsiotbutton")).buildDittoMapper();
 		
-//		Map<String, Object> input = new HashMap<String, Object>();
-//		input.put("clickType", "DOUBLE");
-//		input.put("batteryVoltage", "2322mV");
+		Map<String, Object> input = new HashMap<String, Object>();
+		input.put("clickType", "DOUBLE");
+		input.put("batteryVoltage", "2322mV");
 		
-//		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromMap(input));
+		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromMap(input));
 		
-		String json = "{\"clickType\" : \"SINGLE\", \"batteryVoltage\": \"4422mV\"}";
-		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json));
 		
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 				
