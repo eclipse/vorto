@@ -15,6 +15,8 @@
 package org.eclipse.vorto.service.mapping.converters;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -49,7 +51,7 @@ public class JavascriptEvalFunction implements Function {
 			 try {
 		         Object[] args;
 				 int pi = 0;
-					Class[] types = new Class[] {String.class, String.class};
+					Class[] types = toTypes(parameters);
 	                if (types.length >= 1
 	                    && ExpressionContext.class.isAssignableFrom(types[0])) {
 	                    pi = 1;
@@ -63,7 +65,7 @@ public class JavascriptEvalFunction implements Function {
 	                        TypeUtils.convert(parameters[i], types[i + pi]);
 	                }
 	                
-	                return inv.invokeFunction(functionName, args);
+	                return inv.invokeFunction(functionName, unwrap(args));
 		        }
 		        catch (Throwable ex) {
 		            if (ex instanceof InvocationTargetException) {
@@ -75,6 +77,23 @@ public class JavascriptEvalFunction implements Function {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private Object[] unwrap(Object[] wrappedArgs) {
+		List<Object> unwrapped = new ArrayList<Object>();
+		for (Object o : wrappedArgs) {
+			List<?> args = (List<?>)o;
+			unwrapped.add(args.get(0));
+		}
+		return unwrapped.toArray();
+	}
+
+	private Class<?>[] toTypes(Object[] parameters) {
+		List<Class<?>> result = new ArrayList<>();
+		for (Object o : parameters) {
+			result.add(Object.class);
+		}
+		return result.toArray(new Class[parameters.length]);
 	}
 	
 }

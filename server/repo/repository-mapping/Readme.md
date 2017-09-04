@@ -30,9 +30,6 @@ DataMapperBuilder builder = IDataMapper.newBuilder();
 // add Loader to load Information Model and AWS IoT Button mappings from the Vorto Repository
 builder.withModelLoader(new RepositoryLoader(ModelId.fromPrettyFormat("devices.aws.button.AWSIoTButton:1.0.0"), "awsiotbutton"));
 
-// Add custom Converter Functions needed during runtime
-builder.withConverters(MyConverterFunctions.class,"custom");
-
 JsonToDittoMapper mapper = builder.buildDittoMapper();
 									
 String deviceJSON = "{\"clickType\" : \"SINGLE\", \"batteryVoltage\": \"4422mV\"}";
@@ -47,20 +44,5 @@ assertEquals("mV",voltageFeature.getProperty("sensor_units"));
 // Serialize mapped Eclipse Ditto format to JSON
 System.out.println(mappedDittoOutput.toJson());
 
-/*
- * Custom Xpath converter function that is registered 
- */
-public static class MyConverterFunctions {
-		
-	public static int clickType(String clickTypeValue) {
-		if (clickTypeValue.equalsIgnoreCase("single")) {
-			return 1;
-		} else if (clickTypeValue.equalsIgnoreCase("double")) {
-			return 2;
-		} else {
-			return 99;
-		}
-	}
-}
 ```
 

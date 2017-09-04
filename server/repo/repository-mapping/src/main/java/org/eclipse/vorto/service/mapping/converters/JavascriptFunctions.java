@@ -26,10 +26,12 @@ public class JavascriptFunctions implements Functions {
 	
 	private String namespace;
 	
+	private String functionName;
 	private String functionBody;
 	
-	public JavascriptFunctions(String namespace, String functionBody) {
+	public JavascriptFunctions(String namespace, String functionName, String functionBody) {
 		this.namespace = namespace;
+		this.functionName = functionName;
 		this.functionBody = functionBody;
 	}
 	
@@ -45,7 +47,7 @@ public class JavascriptFunctions implements Functions {
 			return null;
 		}
 		
-		return functions.get(name);
+		return new JavascriptEvalFunction(this.functionName, functionBody);
 	}
 
 }

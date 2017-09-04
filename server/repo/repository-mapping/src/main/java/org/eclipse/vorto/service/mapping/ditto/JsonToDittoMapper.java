@@ -14,8 +14,11 @@
  */
 package org.eclipse.vorto.service.mapping.ditto;
 
+import java.util.Optional;
+
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
+import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -26,7 +29,6 @@ import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IModelLoader;
-import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 import org.eclipse.vorto.service.mapping.converters.StringConverters;
 
 public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
@@ -52,10 +54,10 @@ public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
 		
 		final Infomodel deviceInfoModel = loader.getInfoModel();
 		
-		if ("functions".equals(deviceInfoModel.getStereotype())) {
-			converterLibrary.addFunctions(new JavascriptFunctions(deviceInfoModel.getMappedAttributes()));
+		Optional<Functions> customFunctions = loader.getCustomFunctions();
+		if (customFunctions.isPresent()) {
+			converterLibrary.addFunctions(customFunctions.get());
 		}
-				
 		context.setFunctions(converterLibrary);
 		
 		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {

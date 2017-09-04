@@ -172,10 +172,7 @@ public class JsonMappingTest {
 
 		@Override
 		public Optional<Functions> getCustomFunctions() {
-			Map<String, String> functions = new HashMap<String, String>(1);
-			functions.put("namespace", "custom");
-			functions.put("convertClickType", "function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}");
-			return Optional.of(new JavascriptFunctions(functions));
+			return Optional.of(new JavascriptFunctions("custom","convertClickType","function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}"));
 		}
 		
 	}

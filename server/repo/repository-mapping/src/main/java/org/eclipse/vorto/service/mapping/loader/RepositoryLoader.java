@@ -39,12 +39,15 @@ public class RepositoryLoader implements IModelLoader {
 	
 	private Infomodel infomodel;
 	
+	private static final String STEREOTYPE = "functions";
+	
 	private Map<ModelId, FunctionblockModel> fbs = new HashMap<ModelId, FunctionblockModel>();
 	
 	private FunctionLibrary library = new FunctionLibrary();
 	
 	public RepositoryLoader(ModelId infoModelId, String mappingKey) {
-		this.repositoryClient = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org").buildModelRepositoryClient();
+		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org");
+		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;
 		this.mappingKey = mappingKey;
 		
@@ -57,10 +60,14 @@ public class RepositoryLoader implements IModelLoader {
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
-				if (fbm.getMappedAttributes().containsKey("functions")) {
-					String functionCode = (String)fbm.getMappedAttributes().get("functions");
-					String functionNamespace = (String)fbm.getMappedAttributes().get("namespace");
-					this.library.addFunctions(new JavascriptFunctions(functionNamespace,functionCode));
+
+				if (fbm.getMappedAttributes().containsKey(STEREOTYPE)) {
+					String namespace = (String)fbm.getMappedAttributes().get("_namespace");
+					for (String key : fbm.getMappedAttributes().keySet()) {
+						if (!"_namespace".equalsIgnoreCase(key)) {
+							this.library.addFunctions(new JavascriptFunctions(namespace,key,fbm.getMappedAttributes().get(key)));
+						}
+					}
 				}
 				this.fbs.put(fbModelId, fbm);
 			}
