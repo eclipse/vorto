@@ -20,11 +20,13 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.IReferenceType;
+import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 import org.eclipse.vorto.service.mapping.converters.StringConverters;
 
 public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
@@ -36,18 +38,27 @@ public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
 	public JsonToDittoMapper(IModelLoader loader,ClassFunctions customFunctions) {
 		this.loader = loader;
 		this.converterLibrary = new FunctionLibrary();
-		this.converterLibrary.addFunctions(customFunctions);
+		if (customFunctions != null) {
+			this.converterLibrary.addFunctions(customFunctions);
+		}
 		this.converterLibrary.addFunctions(new ClassFunctions(StringConverters.class, "vorto"));
 	}
 	
 	public DittoOutput map(DataInput input) {
 	
 		JXPathContext context = newContext(input.getValue());
-		context.setFunctions(converterLibrary);
-		
+
 		DittoOutput output = new DittoOutput();
 		
-		for (ModelProperty fbProperty : loader.getInfoModel().getFunctionblocks()) {
+		final Infomodel deviceInfoModel = loader.getInfoModel();
+		
+		if ("functions".equals(deviceInfoModel.getStereotype())) {
+			converterLibrary.addFunctions(new JavascriptFunctions(deviceInfoModel.getMappedAttributes()));
+		}
+				
+		context.setFunctions(converterLibrary);
+		
+		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
 			output.withFeature(mapFunctionBlock(fbProperty, context));
 		}
 	

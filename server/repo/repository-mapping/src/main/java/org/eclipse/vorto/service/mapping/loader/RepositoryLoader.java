@@ -16,7 +16,10 @@ package org.eclipse.vorto.service.mapping.loader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.commons.jxpath.FunctionLibrary;
+import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -24,6 +27,7 @@ import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
 import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 
 public class RepositoryLoader implements IModelLoader {
 
@@ -36,6 +40,8 @@ public class RepositoryLoader implements IModelLoader {
 	private Infomodel infomodel;
 	
 	private Map<ModelId, FunctionblockModel> fbs = new HashMap<ModelId, FunctionblockModel>();
+	
+	private FunctionLibrary library = new FunctionLibrary();
 	
 	public RepositoryLoader(ModelId infoModelId, String mappingKey) {
 		this.repositoryClient = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org").buildModelRepositoryClient();
@@ -50,7 +56,13 @@ public class RepositoryLoader implements IModelLoader {
 			this.infomodel = this.repositoryClient.getContent(this.modelId, Infomodel.class, this.mappingKey).get();
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
-				this.fbs.put(fbModelId, this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get());
+				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
+				if (fbm.getMappedAttributes().containsKey("functions")) {
+					String functionCode = (String)fbm.getMappedAttributes().get("functions");
+					String functionNamespace = (String)fbm.getMappedAttributes().get("namespace");
+					this.library.addFunctions(new JavascriptFunctions(functionNamespace,functionCode));
+				}
+				this.fbs.put(fbModelId, fbm);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -67,6 +79,11 @@ public class RepositoryLoader implements IModelLoader {
 	@Override
 	public FunctionblockModel getFunctionBlock(ModelId modelId) {
 		return fbs.get(modelId);
+	}
+
+	@Override
+	public Optional<Functions> getCustomFunctions() {
+		return Optional.ofNullable(this.library);
 	}
 
 

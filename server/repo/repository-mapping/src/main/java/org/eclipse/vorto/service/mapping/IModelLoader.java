@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.service.mapping;
 
+import java.util.Optional;
+
+import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
@@ -24,4 +27,5 @@ public interface IModelLoader {
 	
 	FunctionblockModel getFunctionBlock(ModelId modelId);
 	
+	Optional<Functions> getCustomFunctions();
 }

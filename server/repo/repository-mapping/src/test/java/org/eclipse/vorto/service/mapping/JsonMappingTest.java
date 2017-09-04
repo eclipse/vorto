@@ -5,13 +5,16 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
+import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.ditto.JsonToDittoMapper;
@@ -24,8 +27,7 @@ public class JsonMappingTest {
 	public void testDittoMapping() throws Exception {
 			
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
-									.withModelLoader(new DummyModelLoader())
-									.withConverters(MyConverterFunctions.class,"custom").buildDittoMapper();
+									.withModelLoader(new DummyModelLoader()).buildDittoMapper();
 		
 //		Map<String, Object> input = new HashMap<String, Object>();
 //		input.put("clickType", "DOUBLE");
@@ -107,7 +109,7 @@ public class JsonMappingTest {
 			digitalInputCount.setTargetPlatformKey("iotbutton");
 			digitalInputCount.setStereotype("source");
 			Map<String, String> a2 = new HashMap<String, String>();
-			a2.put("xpath", "custom:clickType(clickType)"); //SINGLE -> 1, DOUBLE -> 2
+			a2.put("xpath", "custom:convertClickType(clickType)"); //SINGLE -> 1, DOUBLE -> 2
 			digitalInputCount.setMappedAttributes(a2);
 			
 			buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty,digitalInputCount}));
@@ -159,13 +161,21 @@ public class JsonMappingTest {
 			voltageProperty.setName("voltage");
 			voltageProperty.setType(ModelId.fromPrettyFormat("demo.fb.Voltage:1.0.0"));
 			infomodel.getFunctionblocks().add(voltageProperty);
-			
+						
 			return infomodel;
 		}
 
 		@Override
 		public FunctionblockModel getFunctionBlock(ModelId modelId) {	
 			return FBS.get(modelId);
+		}
+
+		@Override
+		public Optional<Functions> getCustomFunctions() {
+			Map<String, String> functions = new HashMap<String, String>(1);
+			functions.put("namespace", "custom");
+			functions.put("convertClickType", "function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}");
+			return Optional.of(new JavascriptFunctions(functions));
 		}
 		
 	}
