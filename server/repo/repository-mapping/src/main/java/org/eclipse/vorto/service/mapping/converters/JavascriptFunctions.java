@@ -15,8 +15,6 @@
 package org.eclipse.vorto.service.mapping.converters;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.jxpath.Function;

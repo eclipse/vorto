@@ -68,9 +68,6 @@ public class JavascriptEvalFunction implements Function {
 	                return inv.invokeFunction(functionName, unwrap(args));
 		        }
 		        catch (Throwable ex) {
-		            if (ex instanceof InvocationTargetException) {
-		                ex = ((InvocationTargetException) ex).getTargetException();
-		            }
 		            throw new JXPathInvalidAccessException("Cannot invoke " + functionName,
 		                    ex);
 		        }
