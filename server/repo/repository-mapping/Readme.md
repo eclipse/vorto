@@ -78,7 +78,7 @@ Mapped Eclipse Ditto JSON Output:
 				"digital_input_state":true
 			}
 		},
-		"voltage":{
+		"batteryVoltage":{
 			"properties":{
 				"sensor_units":"mV",
 				"sensor_value":2322.0
