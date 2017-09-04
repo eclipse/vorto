@@ -61,7 +61,7 @@ public class RepositoryLoader implements IModelLoader {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
 
-				if (fbm.getMappedAttributes().containsKey(STEREOTYPE)) {
+				if (STEREOTYPE.equalsIgnoreCase(fbm.getStereotype())) {
 					String namespace = (String)fbm.getMappedAttributes().get("_namespace");
 					for (String key : fbm.getMappedAttributes().keySet()) {
 						if (!"_namespace".equalsIgnoreCase(key)) {

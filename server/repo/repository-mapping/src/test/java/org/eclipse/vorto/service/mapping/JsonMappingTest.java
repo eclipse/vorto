@@ -57,8 +57,7 @@ public class JsonMappingTest {
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 			
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
-									.withModelLoader(new RepositoryLoader(ModelId.fromPrettyFormat("devices.aws.button.AWSIoTButton:1.0.0"), "awsiotbutton"))
-									.withConverters(MyConverterFunctions.class,"custom").buildDittoMapper();
+									.withModelLoader(new RepositoryLoader(ModelId.fromPrettyFormat("devices.aws.button.AWSIoTButton:1.0.0"), "awsiotbutton")).buildDittoMapper();
 		
 //		Map<String, Object> input = new HashMap<String, Object>();
 //		input.put("clickType", "DOUBLE");
