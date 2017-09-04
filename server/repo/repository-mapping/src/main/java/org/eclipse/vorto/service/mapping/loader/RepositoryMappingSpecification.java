@@ -26,10 +26,10 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
-import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 
-public class RepositoryLoader implements IModelLoader {
+public class RepositoryMappingSpecification implements IMappingSpecification {
 
 	private IModelRepository repositoryClient;
 	
@@ -45,7 +45,7 @@ public class RepositoryLoader implements IModelLoader {
 	
 	private FunctionLibrary library = new FunctionLibrary();
 	
-	public RepositoryLoader(ModelId infoModelId, String mappingKey) {
+	public RepositoryMappingSpecification(ModelId infoModelId, String mappingKey) {
 		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org");
 		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;

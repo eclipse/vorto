@@ -28,16 +28,16 @@ import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
-import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.converters.StringConverters;
 
 public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
 
-	private IModelLoader loader;
+	private IMappingSpecification loader;
 	
 	private FunctionLibrary converterLibrary;
 	
-	public JsonToDittoMapper(IModelLoader loader,ClassFunctions customFunctions) {
+	public JsonToDittoMapper(IMappingSpecification loader,ClassFunctions customFunctions) {
 		this.loader = loader;
 		this.converterLibrary = new FunctionLibrary();
 		if (customFunctions != null) {

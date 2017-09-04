@@ -21,14 +21,14 @@ public class DataMapperBuilder {
 	
 	private ClassFunctions functions;
 	
-	private IModelLoader loader;
+	private IMappingSpecification specification;
 		
 	protected DataMapperBuilder() {
 		
 	}
 
 	public JsonToDittoMapper buildDittoMapper() {
-		return new JsonToDittoMapper(loader, functions);
+		return new JsonToDittoMapper(specification, functions);
 	}
 
 	public DataMapperBuilder withConverters(Class<?> converterFunctions, String namespace) {
@@ -36,8 +36,8 @@ public class DataMapperBuilder {
 		return this;
 	}
 
-	public DataMapperBuilder withModelLoader(IModelLoader modelLoader) {
-		this.loader = modelLoader;
+	public DataMapperBuilder withSpecification(IMappingSpecification specification) {
+		this.specification = specification;
 		return this;
 	}
 	

@@ -18,7 +18,6 @@ import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.ditto.JsonToDittoMapper;
-import org.eclipse.vorto.service.mapping.loader.RepositoryLoader;
 import org.junit.Test;
 
 public class JsonMappingTest {
@@ -27,7 +26,7 @@ public class JsonMappingTest {
 	public void testDittoMapping() throws Exception {
 			
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
-									.withModelLoader(new DummyModelLoader()).buildDittoMapper();
+									.withSpecification(new TestMappingSpecification()).buildDittoMapper();
 		
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 		
@@ -51,7 +50,7 @@ public class JsonMappingTest {
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 			
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
-									.withModelLoader(new RepositoryLoader(ModelId.fromPrettyFormat("devices.aws.button.AWSIoTButton:1.0.0"), "awsiotbutton")).buildDittoMapper();
+									.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").sourceKey("awsiotbutton").build()).buildDittoMapper();
 		
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("clickType", "DOUBLE");
@@ -74,7 +73,7 @@ public class JsonMappingTest {
 		
 	}
 
-	private static class DummyModelLoader implements IModelLoader {
+	private static class TestMappingSpecification implements IMappingSpecification {
 
 		private static Map<ModelId, FunctionblockModel> FBS = new HashMap<ModelId, FunctionblockModel>(2);
 		
