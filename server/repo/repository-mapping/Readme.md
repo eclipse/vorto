@@ -39,6 +39,8 @@ Use the Eclipse Vorto IoT Toolset to create the specification and publish them v
 - AWS IoT Button Mapping Specification
 	- [Button Mapping Specification](http://vorto.eclipse.org/#/details/devices.aws.button/ButtonPayloadMapping/1.0.0)
 	- [Voltage Mapping Specification](http://vorto.eclipse.org/#/details/devices.aws.button/PayloadVoltageMapping/1.0.0)
+
+	
  
 ### Step 3: Use Vorto Mapping Engine to map data 
 
@@ -57,7 +59,7 @@ DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(devi
 
 Feature voltageFeature = mappedDittoOutput.getFeatures().get("batteryVoltage");
 		
-assertEquals(4422f,voltageFeature.getProperty("sensor_value"));
+assertEquals(2322f,voltageFeature.getProperty("sensor_value"));
 assertEquals("mV",voltageFeature.getProperty("sensor_units"));
 
 // Serialize mapped Eclipse Ditto format to JSON
