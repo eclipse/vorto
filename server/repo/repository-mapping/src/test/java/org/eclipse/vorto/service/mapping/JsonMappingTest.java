@@ -29,12 +29,6 @@ public class JsonMappingTest {
 		JsonToDittoMapper mapper = IDataMapper.newBuilder()
 									.withModelLoader(new DummyModelLoader()).buildDittoMapper();
 		
-//		Map<String, Object> input = new HashMap<String, Object>();
-//		input.put("clickType", "DOUBLE");
-//		input.put("batteryVoltage", "2322mV");
-		
-//		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromMap(input));
-		
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 		
 		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json));
@@ -69,11 +63,11 @@ public class JsonMappingTest {
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 				
 		assertEquals(true,(Boolean)buttonFeature.getProperty("digital_input_state"));
-		assertEquals(1,buttonFeature.getProperty("digital_input_count"));	
+		assertEquals(2,buttonFeature.getProperty("digital_input_count"));	
 		
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("batteryVoltage");
 		
-		assertEquals(4422f,voltageFeature.getProperty("sensor_value"));
+		assertEquals(2322f,voltageFeature.getProperty("sensor_value"));
 		assertEquals("mV",voltageFeature.getProperty("sensor_units"));
 		
 		System.out.println(mappedDittoOutput.toJson());

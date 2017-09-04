@@ -44,21 +44,21 @@ public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
 			this.converterLibrary.addFunctions(customFunctions);
 		}
 		this.converterLibrary.addFunctions(new ClassFunctions(StringConverters.class, "vorto"));
+		
+		Optional<Functions> functionsFromMappings = loader.getCustomFunctions();
+		if (functionsFromMappings.isPresent()) {
+			converterLibrary.addFunctions(functionsFromMappings.get());
+		}
 	}
 	
 	public DittoOutput map(DataInput input) {
 	
 		JXPathContext context = newContext(input.getValue());
+		context.setFunctions(converterLibrary);
 
 		DittoOutput output = new DittoOutput();
 		
 		final Infomodel deviceInfoModel = loader.getInfoModel();
-		
-		Optional<Functions> customFunctions = loader.getCustomFunctions();
-		if (customFunctions.isPresent()) {
-			converterLibrary.addFunctions(customFunctions.get());
-		}
-		context.setFunctions(converterLibrary);
 		
 		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
 			output.withFeature(mapFunctionBlock(fbProperty, context));
