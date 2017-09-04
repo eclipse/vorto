@@ -14,40 +14,53 @@
  */
 package org.eclipse.vorto.service.mapping.ditto;
 
+import java.util.Optional;
+
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
+import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.IReferenceType;
+import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
-import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.converters.StringConverters;
 
 public class JsonToDittoMapper implements IDataMapper<DittoOutput> {
 
-	private IModelLoader loader;
+	private IMappingSpecification loader;
 	
 	private FunctionLibrary converterLibrary;
 	
-	public JsonToDittoMapper(IModelLoader loader,ClassFunctions customFunctions) {
+	public JsonToDittoMapper(IMappingSpecification loader,ClassFunctions customFunctions) {
 		this.loader = loader;
 		this.converterLibrary = new FunctionLibrary();
-		this.converterLibrary.addFunctions(customFunctions);
+		if (customFunctions != null) {
+			this.converterLibrary.addFunctions(customFunctions);
+		}
 		this.converterLibrary.addFunctions(new ClassFunctions(StringConverters.class, "vorto"));
+		
+		Optional<Functions> functionsFromMappings = loader.getCustomFunctions();
+		if (functionsFromMappings.isPresent()) {
+			converterLibrary.addFunctions(functionsFromMappings.get());
+		}
 	}
 	
 	public DittoOutput map(DataInput input) {
 	
 		JXPathContext context = newContext(input.getValue());
 		context.setFunctions(converterLibrary);
-		
+
 		DittoOutput output = new DittoOutput();
 		
-		for (ModelProperty fbProperty : loader.getInfoModel().getFunctionblocks()) {
+		final Infomodel deviceInfoModel = loader.getInfoModel();
+		
+		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
 			output.withFeature(mapFunctionBlock(fbProperty, context));
 		}
 	

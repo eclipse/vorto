@@ -14,14 +14,35 @@
  */
 package org.eclipse.vorto.service.mapping;
 
+import java.util.Optional;
+
+import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 
-public interface IModelLoader {
+public interface IMappingSpecification {
 
+	/**
+	 * Information Model of the device
+	 * @return
+	 */
 	Infomodel getInfoModel();
 	
+	/**
+	 * Resolves the referenced function block by the given modelID
+	 * @param modelId
+	 * @return
+	 */
 	FunctionblockModel getFunctionBlock(ModelId modelId);
 	
+	/**
+	 * Gets all custom Mapping conversion functions
+	 * @return
+	 */
+	Optional<Functions> getCustomFunctions();
+	
+	static MappingSpecificationBuilder newBuilder() {
+		return new MappingSpecificationBuilder();
+	}
 }

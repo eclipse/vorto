@@ -16,16 +16,20 @@ package org.eclipse.vorto.service.mapping.loader;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
+import org.apache.commons.jxpath.FunctionLibrary;
+import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
-import org.eclipse.vorto.service.mapping.IModelLoader;
+import org.eclipse.vorto.service.mapping.IMappingSpecification;
+import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 
-public class RepositoryLoader implements IModelLoader {
+public class RepositoryMappingSpecification implements IMappingSpecification {
 
 	private IModelRepository repositoryClient;
 	
@@ -35,10 +39,15 @@ public class RepositoryLoader implements IModelLoader {
 	
 	private Infomodel infomodel;
 	
+	private static final String STEREOTYPE = "functions";
+	
 	private Map<ModelId, FunctionblockModel> fbs = new HashMap<ModelId, FunctionblockModel>();
 	
-	public RepositoryLoader(ModelId infoModelId, String mappingKey) {
-		this.repositoryClient = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org").buildModelRepositoryClient();
+	private FunctionLibrary library = new FunctionLibrary();
+	
+	public RepositoryMappingSpecification(ModelId infoModelId, String mappingKey) {
+		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org");
+		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;
 		this.mappingKey = mappingKey;
 		
@@ -50,7 +59,17 @@ public class RepositoryLoader implements IModelLoader {
 			this.infomodel = this.repositoryClient.getContent(this.modelId, Infomodel.class, this.mappingKey).get();
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
-				this.fbs.put(fbModelId, this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get());
+				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
+
+				if (STEREOTYPE.equalsIgnoreCase(fbm.getStereotype())) {
+					String namespace = (String)fbm.getMappedAttributes().get("_namespace");
+					for (String key : fbm.getMappedAttributes().keySet()) {
+						if (!"_namespace".equalsIgnoreCase(key)) {
+							this.library.addFunctions(new JavascriptFunctions(namespace,key,fbm.getMappedAttributes().get(key)));
+						}
+					}
+				}
+				this.fbs.put(fbModelId, fbm);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -67,6 +86,11 @@ public class RepositoryLoader implements IModelLoader {
 	@Override
 	public FunctionblockModel getFunctionBlock(ModelId modelId) {
 		return fbs.get(modelId);
+	}
+
+	@Override
+	public Optional<Functions> getCustomFunctions() {
+		return Optional.ofNullable(this.library);
 	}
 
 
