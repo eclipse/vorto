@@ -31,7 +31,7 @@
 		<module>org.eclipse.vorto.codegen.kura</module>
 		<module>org.eclipse.vorto.codegen.protobuf</module>
 		<module>org.eclipse.vorto.codegen.arduino</module>
-		<module>org.eclipse.vorto.codegen.mqtt.python</module>
+<!--		<module>org.eclipse.vorto.codegen.mqtt.python</module> -->
   </modules>
   
 </project>
