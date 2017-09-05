@@ -1,7 +1,5 @@
 package org.eclipse.vorto.service.mapping;
 
-import java.util.Map;
-
 public class DataInputFactory {
 
 	private static DataInputFactory singleton = null;
@@ -17,13 +15,13 @@ public class DataInputFactory {
 		
 		return singleton;
 	}
-	
-	public DataInput fromMap(Map<String, Object> input) {
+		
+	public DataInput fromObject(Object obj) {
 		return new DataInput() {
 			
 			@Override
-			public Map<String, Object> getValue() {
-				return input;
+			public Object getValue() {
+				return obj;
 			}
 		};
 	}

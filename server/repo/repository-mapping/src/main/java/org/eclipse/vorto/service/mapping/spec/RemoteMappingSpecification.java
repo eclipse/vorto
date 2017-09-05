@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.service.mapping.loader;
+package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +29,7 @@ import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 
-public class RepositoryMappingSpecification implements IMappingSpecification {
+public class RemoteMappingSpecification implements IMappingSpecification {
 
 	private IModelRepository repositoryClient;
 	
@@ -45,7 +45,7 @@ public class RepositoryMappingSpecification implements IMappingSpecification {
 	
 	private FunctionLibrary library = new FunctionLibrary();
 	
-	public RepositoryMappingSpecification(ModelId infoModelId, String mappingKey) {
+	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey) {
 		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org");
 		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;

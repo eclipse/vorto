@@ -6,7 +6,7 @@
 		<artifactId>repo</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>repository-mapping</artifactId>
 
 	<dependencies>
@@ -24,6 +24,13 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
+		</dependency>
 	</dependencies>
 </project>

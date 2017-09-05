@@ -15,25 +15,25 @@
 package org.eclipse.vorto.service.mapping;
 
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.service.mapping.loader.RepositoryMappingSpecification;
+import org.eclipse.vorto.service.mapping.spec.RemoteMappingSpecification;
 
 public class MappingSpecificationBuilder {
 
 	private ModelId modelId;
-	private String sourceKey;
+	private String key;
 	
 	public MappingSpecificationBuilder modelId(String infoModelId) {
 		this.modelId = ModelId.fromPrettyFormat(infoModelId);
 		return this;
 	}
 	
-	public MappingSpecificationBuilder sourceKey(String sourceKey) {
-		this.sourceKey = sourceKey;
+	public MappingSpecificationBuilder key(String key) {
+		this.key = key;
 		return this;
 	}
 	
 	public IMappingSpecification build() {
-		return new RepositoryMappingSpecification(this.modelId, sourceKey);
+		return new RemoteMappingSpecification(this.modelId, key);
 	}
 	
 }

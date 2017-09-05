@@ -15,7 +15,7 @@
 package org.eclipse.vorto.service.mapping;
 
 import org.apache.commons.jxpath.ClassFunctions;
-import org.eclipse.vorto.service.mapping.ditto.JsonToDittoMapper;
+import org.eclipse.vorto.service.mapping.ditto.DittoMapper;
 
 public class DataMapperBuilder {
 	
@@ -27,8 +27,8 @@ public class DataMapperBuilder {
 		
 	}
 
-	public JsonToDittoMapper buildDittoMapper() {
-		return new JsonToDittoMapper(specification, functions);
+	public DittoMapper buildDittoMapper() {
+		return new DittoMapper(specification, functions);
 	}
 
 	public DataMapperBuilder withConverters(Class<?> converterFunctions, String namespace) {
