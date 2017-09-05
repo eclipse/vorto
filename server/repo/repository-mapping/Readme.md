@@ -16,7 +16,13 @@ The Data Mapping API allows to map arbitrary JSON device data to platform - spec
 
 # Map JSON to Eclipse Ditto format
 
-The following steps describe how to map device-specific JSON data to Eclipse Ditto JSON format using Vorto Mappings. 
+### What you need:
+
+- [Eclipse Vorto IoT Toolset Plugins](https://marketplace.eclipse.org/content/vorto-toolset)
+
+
+
+The following steps describe how to map device-specific JSON data to [Eclipse Ditto](https://projects.eclipse.org/proposals/eclipse-ditto) JSON format using Vorto Mappings. 
 
 Let's look at an example by mapping the JSON data sent by an AWS IoT Button to a  data format that can be sent to Eclipse Ditto.
 
@@ -40,8 +46,23 @@ Use the Eclipse Vorto IoT Toolset to create the specification and publish them v
 	- [Button Mapping Specification](http://vorto.eclipse.org/#/details/devices.aws.button/ButtonPayloadMapping/1.0.0)
 	- [Voltage Mapping Specification](http://vorto.eclipse.org/#/details/devices.aws.button/PayloadVoltageMapping/1.0.0)
 
-	
- 
+Looking at the Button Mapping specification more closely, have might have spotted some javascript function that is declared as part of the mapping. This is a very powerful way of expressing custom converter functions as javascript that can be used from within your mapping. 
+
+Excerpt of the Button Mapping:
+
+```
+... to functions with {
+	_namespace: "custom", 
+	convertClickType: "function convertClickType(clickType) { conversion code } "
+	}
+
+... to source with {xpath: custom:convertClickType(xpathToValue)}
+```
+
+Here we declare the convertClickType function that converts the JSON clickType property value , e.g. 'DOUBLE' to an Integer value. That function is then used by the functionblock property mapping. 
+
+The Vorto Mapping Engine already provides some standard functions that you can use in your mapping specification to do e.g. string manipulations or type conversions. For more info, check out the Appendix chapter. 
+
 ### Step 3: Use Vorto Mapping Engine to map data 
 
 Last but not least, you can use the Mapping Engine that takes the device JSON data as input and outputs the Eclipse Ditto format:
@@ -49,9 +70,9 @@ Last but not least, you can use the Mapping Engine that takes the device JSON da
 ```
 DataMapperBuilder builder = IDataMapper.newBuilder();
 // add Loader to load Information Model and AWS IoT Button mappings from the Vorto Repository
-builder.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").sourceKey("awsiotbutton").build());
+builder.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").key("awsiotbutton").build());
 
-JsonToDittoMapper mapper = builder.buildDittoMapper();
+DittoMapper mapper = builder.buildDittoMapper();
 									
 String deviceJSON = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -89,3 +110,23 @@ Mapped Eclipse Ditto JSON Output:
 
 ```
 
+# What's next ?
+
+**Great!** You have just mapped a device specific JSON payload to Eclipse Ditto payload via an Vorto Information Model. This mapped data can now be sent to the Bosch IoT Suite (which is based on Eclipse Ditto) using HTTP. 
+
+
+## Appendix
+
+The Vorto Mapping Engine supports some standard converter functions that you can use in your mapping specification to do e.g. string manipulations or datatype conversions:
+
+String Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html) 
+
+Example: ```string:substring(employee/name,0,10)```
+
+Number Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html) 
+
+Example: ```number:toFloat(invoice/value)```
+
+Conversion Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html) 
+
+Example: ```conversion:byteArrayToInt(data/value,0,0,0,3)```
