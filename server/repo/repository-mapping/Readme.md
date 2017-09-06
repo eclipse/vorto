@@ -92,19 +92,17 @@ Mapped Eclipse Ditto JSON Output:
 
 ```
 {
-	"features": { 
-		"button": { 
-			"properties":{ 
-				"digital_input_count":2,
-				"digital_input_state":true
-			}
-		},
-		"batteryVoltage":{
-			"properties":{
-				"sensor_units":"mV",
-				"sensor_value":2322.0
-		 	}
+	"button": { 
+		"properties":{ 
+			"digital_input_count":2,
+			"digital_input_state":true
 		}
+	},
+	"batteryVoltage":{
+		"properties":{
+			"sensor_units":"mV",
+			"sensor_value":2322.0
+	 	}
 	}
 }
 

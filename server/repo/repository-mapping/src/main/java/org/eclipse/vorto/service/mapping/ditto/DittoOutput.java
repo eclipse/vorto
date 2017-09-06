@@ -20,7 +20,7 @@ import java.util.Map;
 
 import org.eclipse.vorto.service.mapping.JsonPayload;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -41,7 +41,7 @@ public class DittoOutput implements JsonPayload {
 		}
 	}
 	
-	@JsonGetter("features")
+	@JsonAnyGetter
 	public Map<String,Feature> getFeatures() {
 		return Collections.unmodifiableMap(features);
 	}
