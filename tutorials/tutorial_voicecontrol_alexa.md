@@ -63,7 +63,7 @@ https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features/
 -  Now, we can ask Alexa about the temperature. For this, enter the following utterance:
 
 ```
-Get temperature sensor value
+What's the temperature
 ```
 	
 	Alexa outputs `30.1`
