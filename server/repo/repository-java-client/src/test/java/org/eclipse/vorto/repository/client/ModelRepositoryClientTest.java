@@ -81,7 +81,7 @@ public class ModelRepositoryClientTest {
 		assertEquals(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0"),xdkModel.getId());
 	}
 	
-//	@Test
+	@Test
 	public void testGetModelForTargetPlatform() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
 		assertNotNull(accelerometer);
@@ -95,8 +95,8 @@ public class ModelRepositoryClientTest {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"omadm").get();
 		assertNull(accelerometer);
 	}
-	
-//	@Test
+		
+	@Test
 	public void testQueryModelPropertyByMappedAttribute() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
 		

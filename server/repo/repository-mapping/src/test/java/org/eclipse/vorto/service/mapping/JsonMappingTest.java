@@ -47,7 +47,7 @@ public class JsonMappingTest {
 		
 	}
 	
-//	@Test
+	@Test
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 			
 		DittoMapper mapper = IDataMapper.newBuilder()
