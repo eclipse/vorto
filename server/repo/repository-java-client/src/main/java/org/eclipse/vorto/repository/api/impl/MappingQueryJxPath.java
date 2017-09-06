@@ -63,7 +63,7 @@ public abstract class MappingQueryJxPath<Result extends IMappedElement> implemen
 		TextFilter tf = new TextFilter();
 		tf.setKey("stereotype");
 		tf.setText(name);
-		tf.setWhereCondition("/.[stereotype='?']");
+		tf.setWhereCondition("/.[stereotypes[@name = '?']]");
 		addFilter(tf);
 
 		return this;
@@ -74,7 +74,7 @@ public abstract class MappingQueryJxPath<Result extends IMappedElement> implemen
 		TextFilter tf = new TextFilter();
 		tf.setKey("attribute");
 		tf.setText(value);
-		tf.setWhereCondition("/.[mappedAttributes[@name = '" + key + "'] = '?']");
+		tf.setWhereCondition("/stereotypes/attributes[@name = '" + key + "'] = '?'");
 		addFilter(tf);
 		return this;
 	}

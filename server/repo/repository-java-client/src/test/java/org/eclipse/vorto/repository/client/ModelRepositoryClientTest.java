@@ -86,8 +86,8 @@ public class ModelRepositoryClientTest {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
 		assertNotNull(accelerometer);
 		assertEquals("lwm2m",accelerometer.getTargetPlatformKey());
-		assertEquals("Object",accelerometer.getStereotype());
-		assertEquals(7,accelerometer.getMappedAttributes().size());
+		assertTrue(accelerometer.getStereotype("Object").isPresent());
+		assertEquals(7,accelerometer.getStereotype("Object").get().getAttributes().size());
 	}
 	
 	@Test

@@ -14,35 +14,15 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class DefaultMappedElement implements IMappedElement {
 
 	protected String targetPlatformKey;
 	
-	protected String stereotype;
-	
-	protected Map<String, String> mappedAttributes = new HashMap<String, String>();
-	
-	@Override
-	public String getStereotype() {
-		return stereotype;
-	}
-
-	@Override
-	public Map<String, String> getMappedAttributes() {
-		return Collections.unmodifiableMap(mappedAttributes);
-	}
-
-	public void setStereotype(String stereotype) {
-		this.stereotype = stereotype;
-	}
-
-	public void setMappedAttributes(Map<String, String> mappedAttributes) {
-		this.mappedAttributes = mappedAttributes;
-	}
+	protected List<Stereotype> stereotypes = new ArrayList<Stereotype>();
 
 	public String getTargetPlatformKey() {
 		return targetPlatformKey;
@@ -51,5 +31,22 @@ public class DefaultMappedElement implements IMappedElement {
 	public void setTargetPlatformKey(String targetPlatformKey) {
 		this.targetPlatformKey = targetPlatformKey;
 	}
+
+	@Override
+	public List<Stereotype> getStereotypes() {
+		return stereotypes;
+	}
+
+	@Override
+	public Optional<Stereotype> getStereotype(String name) {
+		return this.stereotypes.stream().filter(s -> s.getName().equalsIgnoreCase(name)).findAny();		
+	}
 	
+	public void addStereotype(Stereotype stereotype) {
+		this.stereotypes.add(stereotype);
+	}
+	
+	public void setStereotypes(List<Stereotype> stereotypes) {
+		this.stereotypes = stereotypes;
+	}
 }

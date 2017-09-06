@@ -47,7 +47,6 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
-import org.eclipse.vorto.core.api.model.mapping.Target;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.repository.api.AbstractModel;
@@ -70,6 +69,7 @@ import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.Operation;
 import org.eclipse.vorto.repository.api.content.Param;
 import org.eclipse.vorto.repository.api.content.ReturnType;
+import org.eclipse.vorto.repository.api.content.Stereotype;
 
 /**
  * Converts the EMF Model to POJO's
@@ -171,9 +171,10 @@ public class ModelDtoFactory {
 		if (mappingModel.isPresent()) {
 			MappingModel _mappingModel = mappingModel.get();
 			resource.setTargetPlatformKey(_mappingModel.getTargetPlatform());
-			Target target = getFbRule((_mappingModel.getRules())).getTarget();
-			resource.setStereotype(((StereoTypeTarget)target).getName());
-			resource.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+			for (MappingRule rule : getFbRule(_mappingModel.getRules())) {
+				StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+				resource.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+			}
 		}
 
 		return resource;
@@ -183,8 +184,8 @@ public class ModelDtoFactory {
                 Collectors.toMap(Attribute::getName, Attribute::getValue));
 		return result;
 	}
-	private static MappingRule getFbRule(List<MappingRule> rules) {
-		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockSource).findFirst().get();
+	private static List<MappingRule> getFbRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockSource).collect(Collectors.toList());
 	}
 
 	private static Operation createOperation(org.eclipse.vorto.core.api.model.functionblock.Operation o) {
@@ -267,19 +268,17 @@ public class ModelDtoFactory {
 		
 		if (mappingModel.isPresent()) {
 			p.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
-			Optional<MappingRule> propertyRule = getPropertyRule(p.getName(),mappingModel.get().getRules());
-			if (propertyRule.isPresent()) {
-				Target target = propertyRule.get().getTarget();
-				p.setStereotype(((StereoTypeTarget)target).getName());
-				p.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+			for (MappingRule rule : getPropertyRule(p.getName(),mappingModel.get().getRules())) {
+				StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+				p.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
 			}
 		}
 		
 		return p;
 	}
 	
-	private static Optional<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
-		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockPropertySource && matchesProperty(r.getSources().get(0),propertyName)).findFirst();
+	private static List<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockPropertySource && matchesProperty(r.getSources().get(0),propertyName)).collect(Collectors.toList());
 	}
 
 	
@@ -332,19 +331,17 @@ public class ModelDtoFactory {
 		
 		if (mappingModel.isPresent()) {
 			resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
-			Optional<MappingRule> entityRule = getEntityRule(mappingModel.get().getRules());
-			if (entityRule.isPresent()) {
-				Target target = entityRule.get().getTarget();
-				resource.setStereotype(((StereoTypeTarget)target).getName());
-				resource.setMappedAttributes(convertAttributesToMap(((StereoTypeTarget)target).getAttributes()));
+			for (MappingRule rule : getEntityRule(mappingModel.get().getRules())) {
+				StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+				resource.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
 			}
 		}
 		
 		return resource;
 	}
 	
-	private static Optional<MappingRule> getEntityRule(List<MappingRule> rules) {
-		return rules.stream().filter(r -> r.getSources().get(0) instanceof EntitySource).findFirst();
+	private static List<MappingRule> getEntityRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof EntitySource).collect(Collectors.toList());
 	}
 
 	public static EnumModel createResource(Enum model) {

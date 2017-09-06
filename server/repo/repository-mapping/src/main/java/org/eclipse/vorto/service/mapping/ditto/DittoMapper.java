@@ -31,15 +31,25 @@ import org.eclipse.vorto.repository.api.content.IReferenceType;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
+import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
 
+/**
+ * 
+ * Maps data input to Eclipse Ditto / Vorto compliant data format
+ *
+ */
 public class DittoMapper implements IDataMapper<DittoOutput> {
 
 	private IMappingSpecification specification;
 	
 	private FunctionLibrary converterLibrary;
+	
+	private static final String STEREOTYPE = "source";
+	private static final String ATTRIBUTE_VALUE = "value";
+	private static final String ATTRIBUTE_XPATH = "xpath";
 	
 	public DittoMapper(IMappingSpecification loader,ClassFunctions customFunctions) {
 		this.specification = loader;
@@ -79,13 +89,30 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		FunctionblockModel fbModel = specification.getFunctionBlock((ModelId)fbProperty.getType());
 		
 		for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
-			if (statusProperty.getMappedAttributes().containsKey("value")) {
-				String value = statusProperty.getMappedAttributes().get("value");
-				featureBuilder.withStatusProperty(statusProperty.getName(), toType(value,statusProperty.getType()));
-			} else if (statusProperty.getMappedAttributes().containsKey("xpath")) {
-				String expression = replacePlaceHolders(statusProperty.getMappedAttributes().get("xpath"),statusProperty.getMappedAttributes());
-				
-				featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+			Optional<Stereotype> sourceStereotype = statusProperty.getStereotype(STEREOTYPE);
+			if (sourceStereotype.isPresent()) {
+				if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_VALUE)) {
+					String value = sourceStereotype.get().getAttributes().get(ATTRIBUTE_VALUE);
+					featureBuilder.withStatusProperty(statusProperty.getName(), toType(value,statusProperty.getType()));
+				} else if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_XPATH)) {
+					String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),sourceStereotype.get().getAttributes());
+					
+					featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+				}
+			}
+		}
+		
+		for (ModelProperty configProperty : fbModel.getConfigurationProperties()) {
+			Optional<Stereotype> sourceStereotype = configProperty.getStereotype(STEREOTYPE);
+			if (sourceStereotype.isPresent()) {
+				if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_VALUE)) {
+					String value = sourceStereotype.get().getAttributes().get(ATTRIBUTE_VALUE);
+					featureBuilder.withStatusProperty(configProperty.getName(), toType(value,configProperty.getType()));
+				} else if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_XPATH)) {
+					String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),sourceStereotype.get().getAttributes());
+					
+					featureBuilder.withConfigurationProperty(configProperty.getName(), context.getValue(expression));
+				}
 			}
 		}
 		

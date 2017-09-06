@@ -25,6 +25,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
+import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
@@ -60,12 +61,14 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
-
-				if (STEREOTYPE.equalsIgnoreCase(fbm.getStereotype())) {
-					String namespace = (String)fbm.getMappedAttributes().get("_namespace");
-					for (String key : fbm.getMappedAttributes().keySet()) {
+				
+				
+				if (fbm.getStereotype(STEREOTYPE).isPresent()) {
+					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE).get();
+					String namespace = functionsStereotype.getAttributes().get("_namespace");
+					for (String key : functionsStereotype.getAttributes().keySet()) {
 						if (!"_namespace".equalsIgnoreCase(key)) {
-							this.library.addFunctions(new JavascriptFunctions(namespace,key,fbm.getMappedAttributes().get(key)));
+							this.library.addFunctions(new JavascriptFunctions(namespace,key,functionsStereotype.getAttributes().get(key)));
 						}
 					}
 				}

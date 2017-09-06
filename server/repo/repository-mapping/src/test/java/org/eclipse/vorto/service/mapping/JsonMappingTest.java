@@ -14,6 +14,7 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
+import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
 import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
@@ -46,7 +47,7 @@ public class JsonMappingTest {
 		
 	}
 	
-	@Test
+//	@Test
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 			
 		DittoMapper mapper = IDataMapper.newBuilder()
@@ -85,23 +86,17 @@ public class JsonMappingTest {
 			digitalInputStateProperty.setType(PrimitiveType.BOOLEAN);
 			
 			digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-			digitalInputStateProperty.setStereotype("source");
-			Map<String, String> a1 = new HashMap<String, String>();
-			a1.put("value", "true");
-			digitalInputStateProperty.setMappedAttributes(a1);
 			
+			digitalInputStateProperty.addStereotype(Stereotype.createWithValue("source", "true"));
+						
 			ModelProperty digitalInputCount = new ModelProperty();
 			digitalInputCount.setMandatory(true);
 			digitalInputCount.setName("digital_input_count");
 			digitalInputCount.setType(PrimitiveType.INT);
 			
 			digitalInputCount.setTargetPlatformKey("iotbutton");
-			digitalInputCount.setStereotype("source");
-			Map<String, String> a2 = new HashMap<String, String>();
-			a2.put("expPath", "clickType");
-			a2.put("xpath", "custom:convertClickType(${expPath})"); //SINGLE -> 1, DOUBLE -> 2
-			digitalInputCount.setMappedAttributes(a2);
-			
+			digitalInputCount.addStereotype(Stereotype.createWithXpath("source", "custom:convertClickType(clickType)"));//SINGLE -> 1, DOUBLE -> 2
+						
 			buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty,digitalInputCount}));
 			
 			FBS.put(buttonModel.getId(), buttonModel);
@@ -116,10 +111,8 @@ public class JsonMappingTest {
 			sensorValueProperty.setType(PrimitiveType.FLOAT);
 			
 			sensorValueProperty.setTargetPlatformKey("iotbutton");
-			sensorValueProperty.setStereotype("source");
-			Map<String, String> sensorValueAttributes = new HashMap<String, String>();
-			sensorValueAttributes.put("xpath", "number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))");
-			sensorValueProperty.setMappedAttributes(sensorValueAttributes);
+			
+			sensorValueProperty.addStereotype(Stereotype.createWithXpath("source", "number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"));
 			
 			ModelProperty sensorUnitsProperty = new ModelProperty();
 			sensorUnitsProperty.setMandatory(false);
@@ -127,11 +120,7 @@ public class JsonMappingTest {
 			sensorUnitsProperty.setType(PrimitiveType.STRING);
 			
 			sensorUnitsProperty.setTargetPlatformKey("iotbutton");
-			sensorUnitsProperty.setStereotype("source");
-			Map<String, String> sensorUnitsAttributes = new HashMap<String, String>();
-			sensorUnitsAttributes.put("xpath", "string:substring(batteryVoltage,string:length(batteryVoltage)-2)");
-			sensorUnitsProperty.setMappedAttributes(sensorUnitsAttributes);
-			
+			sensorUnitsProperty.addStereotype(Stereotype.createWithXpath("source", "string:substring(batteryVoltage,string:length(batteryVoltage)-2)"));			
 			voltageModel.setStatusProperties(Arrays.asList(new ModelProperty[] {sensorValueProperty,sensorUnitsProperty}));
 			
 			FBS.put(voltageModel.getId(), voltageModel);

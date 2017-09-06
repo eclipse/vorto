@@ -14,13 +14,14 @@
  */
 package org.eclipse.vorto.repository.api.content;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Optional;
 
 public interface IMappedElement {
 	
 	String getTargetPlatformKey();
 
-	String getStereotype();
+	List<Stereotype> getStereotypes();
 	
-	Map<String,String> getMappedAttributes();
+	Optional<Stereotype> getStereotype(String name);
 }
