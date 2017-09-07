@@ -15,10 +15,12 @@
 package org.eclipse.vorto.codegen.artik
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
+import org.eclipse.vorto.codegen.artik.templates.DeviceManifestTemplate
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class ArtikGenerator implements IVortoCodeGenerator {
@@ -27,30 +29,13 @@ class ArtikGenerator implements IVortoCodeGenerator {
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		
-//		var metaTemplate = new GeneratorTaskFromFileTemplate(new ProtobufMetaTemplate())
-//		metaTemplate.generate(infomodel,context,output)
-//		
-//		var imTemplate = new GeneratorTaskFromFileTemplate(new ProtobufIMTemplate())
-//		imTemplate.generate(infomodel,context,output)
-//		
-//		for (FunctionblockProperty fbProperty : infomodel.properties) {
-//			var fbTemplate = new GeneratorTaskFromFileTemplate(new ProtobufFBTemplate())
-//			fbTemplate.generate(fbProperty.type,context,output)
-//			
-//			for (Entity entity : Utils.getReferencedEntities(fbProperty.type.functionblock)) {
-//				var entityTemplate = new GeneratorTaskFromFileTemplate(new ProtobufEntityTemplate())
-//				entityTemplate.generate(entity,context,output)
-//			}
-//			for (Enum en : Utils.getReferencedEnums(fbProperty.type.functionblock)) {
-//				var enumTemplate = new GeneratorTaskFromFileTemplate(new ProtobufEnumTemplate())
-//				enumTemplate.generate(en,context,output)
-//			}
-//		}
+		var manifestTemplate = new GeneratorTaskFromFileTemplate(new DeviceManifestTemplate())
+		manifestTemplate.generate(infomodel,context,output)
 		
 		return output
 	}
 	
 	override getServiceKey() {
-		return "protobuf";
+		return "artik";
 	}
 }
