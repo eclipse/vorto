@@ -50,11 +50,17 @@ By default, the local setup points to the Vorto Repository hosted on localhost. 
           path: ${vorto_repository_url}
 
 
-#### Step 4. Configure the web editor project location
+#### Step 4. Configure the persistence settings
 
-The web editor uses file based persistence to store the files on the server. The location can be configured at **application.properties** file.
+The web editor uses Modeshape as its persistence to store the files. The config file for Modeshape is specified at **application-local.yml** or **application-cloud.yml**
 
-    project.repository.path = ${new_location_path}
+    repo.configFile: vorto-repository-config-file.json
+
+Currently the web editor has Modeshape configs for file based and in-memory persistence.
+
+#### Note
+
+If you would like to use an alternate datastore for Persistence, you can take a look at [Custom Persistence](#custom-persistence).
 
 ## Build and Run
 
@@ -76,3 +82,6 @@ Use your browser to open the URL:
 
 ## Tutorial
 You can refer to the tutorial [here](https://github.com/eclipse/vorto/blob/development/tutorials/tutorial-create_and_publish_with_web_editor.md).
+
+## Custom Persistence
+If you want to use another datastore instead of Modeshape for persistence, you can implement the **IProjectRepositoryService** interface in the maven module **{project_root_directory/projectrepository-api}** and create a bean for the same in **EditorConfigurationLocal** or **EditorConfigurationCloud**
