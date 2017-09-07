@@ -19,6 +19,8 @@ Available Generators:
  - [AngularJS Web UI Generator](org.eclipse.vorto.codegen.webdevice/Readme.md)
  - [Eclipse Kura Generator](org.eclipse.vorto.codegen.kura/Readme.md)
  - [Arduino Generator](org.eclipse.vorto.codegen.arduino/Readme.md) 
+ - [Google Protobuf Generator](org.eclipse.vorto.codegen.protobuf/Readme.md)
+ - [Samsung ARTIK Generator](org.eclipse.vorto.codegen.artik/Readme.md)
 
 # Add your Code Generator
 
