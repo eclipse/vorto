@@ -46,8 +46,8 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 	
 	private FunctionLibrary library = new FunctionLibrary();
 	
-	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey) {
-		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl("http://vorto.eclipse.org");
+	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey, String endpoint) {
+		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl(endpoint);
 		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;
 		this.mappingKey = mappingKey;

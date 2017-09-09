@@ -21,9 +21,15 @@ public class MappingSpecificationBuilder {
 
 	private ModelId modelId;
 	private String key;
+	private String endpoint = "http://vorto.eclipse.org";
 	
 	public MappingSpecificationBuilder modelId(String infoModelId) {
 		this.modelId = ModelId.fromPrettyFormat(infoModelId);
+		return this;
+	}
+	
+	public MappingSpecificationBuilder endpoint(String endpoint) {
+		this.endpoint = endpoint;
 		return this;
 	}
 	
@@ -33,7 +39,7 @@ public class MappingSpecificationBuilder {
 	}
 	
 	public IMappingSpecification build() {
-		return new RemoteMappingSpecification(this.modelId, key);
+		return new RemoteMappingSpecification(this.modelId, key, endpoint);
 	}
 	
 }
