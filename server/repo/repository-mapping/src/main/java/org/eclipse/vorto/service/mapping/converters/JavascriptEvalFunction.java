@@ -76,8 +76,15 @@ public class JavascriptEvalFunction implements Function {
 	private Object[] unwrap(Object[] wrappedArgs) {
 		List<Object> unwrapped = new ArrayList<Object>();
 		for (Object o : wrappedArgs) {
-			List<?> args = (List<?>) o;
-			unwrapped.add(args.get(0));
+			if (o instanceof List<?>)
+			{
+				List<?> args = (List<?>) o;
+				unwrapped.add(args.get(0));
+			}
+			else
+			{
+				unwrapped.add(o);
+			}
 		}
 		return unwrapped.toArray();
 	}
