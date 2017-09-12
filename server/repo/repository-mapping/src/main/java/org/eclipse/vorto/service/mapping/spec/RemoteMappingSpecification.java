@@ -45,6 +45,7 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 	private Map<ModelId, FunctionblockModel> fbs = new HashMap<ModelId, FunctionblockModel>();
 	
 	private FunctionLibrary library = new FunctionLibrary();
+	private HashMap<String, JavascriptFunctions> namespaces = new HashMap<String, JavascriptFunctions>();
 	
 	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey, String endpoint, Optional<String> proxyHost, Optional<Integer> proxyPort) {
 		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl(endpoint);
@@ -69,14 +70,24 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
-				
-				
+								
 				if (fbm.getStereotype(STEREOTYPE).isPresent()) {
+					JavascriptFunctions functions;
 					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE).get();
 					String namespace = functionsStereotype.getAttributes().get("_namespace");
+					if (namespaces.containsKey(namespace))
+					{
+						functions = namespaces.get(namespace);
+					}
+					else
+					{
+						functions = new JavascriptFunctions(namespace);
+						this.library.addFunctions(functions);
+					}
+					
 					for (String key : functionsStereotype.getAttributes().keySet()) {
 						if (!"_namespace".equalsIgnoreCase(key)) {
-							this.library.addFunctions(new JavascriptFunctions(namespace,key,functionsStereotype.getAttributes().get(key)));
+							functions.addFunction(key,functionsStereotype.getAttributes().get(key));
 						}
 					}
 				}
@@ -84,9 +95,7 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 			}
 		} catch (Exception e) {
 			throw new MappingSpecificationProblem("Cannot create mapping specification", e);
-		}
-		
-		
+		}	
 	}
 
 	@Override
