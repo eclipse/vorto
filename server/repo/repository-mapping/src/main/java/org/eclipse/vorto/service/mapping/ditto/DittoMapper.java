@@ -35,6 +35,7 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
+import org.eclipse.vorto.service.mapping.MappingContext;
 
 /**
  * 
@@ -67,7 +68,7 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		}
 	}
 	
-	public DittoOutput map(DataInput input) {
+	public DittoOutput map(DataInput input, MappingContext mappingContext) {
 	
 		JXPathContext context = newContext(input.getValue());
 		context.setFunctions(converterLibrary);
@@ -77,7 +78,9 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		final Infomodel deviceInfoModel = specification.getInfoModel();
 		
 		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
-			output.withFeature(mapFunctionBlock(fbProperty, context));
+			if (mappingContext.isIncluded(fbProperty.getName())) {
+				output.withFeature(mapFunctionBlock(fbProperty, context));
+			}
 		}
 	
 		return output;
@@ -96,7 +99,6 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 					featureBuilder.withStatusProperty(statusProperty.getName(), toType(value,statusProperty.getType()));
 				} else if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_XPATH)) {
 					String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),sourceStereotype.get().getAttributes());
-					
 					featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
 				}
 			}
@@ -139,15 +141,11 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 			throw new UnsupportedOperationException();
 		}
 	}
-
-	private JXPathContext getSharedContext() {
-		JXPathContext context = JXPathContext.newContext(null);
-		context.setLenient(true);		       
-        return context;
-	}
 	
     private JXPathContext newContext(Object ctxObject) {
-    	return JXPathContext.newContext(getSharedContext(),ctxObject);
+    	JXPathContext context = JXPathContext.newContext(ctxObject);
+    	context.setLenient(true);	
+    	return context;
     }
 
 }

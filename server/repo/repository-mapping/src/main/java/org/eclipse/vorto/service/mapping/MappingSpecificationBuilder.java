@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.service.mapping;
 
+import java.util.Optional;
+
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.service.mapping.spec.RemoteMappingSpecification;
 
@@ -22,14 +24,27 @@ public class MappingSpecificationBuilder {
 	private ModelId modelId;
 	private String key;
 	private String endpoint = "http://vorto.eclipse.org";
+	private String proxyHost = null;
+	private int proxyPort = 8080;
 	
 	public MappingSpecificationBuilder modelId(String infoModelId) {
 		this.modelId = ModelId.fromPrettyFormat(infoModelId);
+		this.key = calculateKey(infoModelId);
 		return this;
+	}
+
+	private static String calculateKey(String modelId) {
+		return modelId.replace(".", "_").replace(":", "_");
 	}
 	
 	public MappingSpecificationBuilder endpoint(String endpoint) {
 		this.endpoint = endpoint;
+		return this;
+	}
+	
+	public MappingSpecificationBuilder proxy(String proxyHost, int proxyPort) {
+		this.proxyHost = proxyHost;
+		this.proxyPort = proxyPort;
 		return this;
 	}
 	
@@ -39,7 +54,7 @@ public class MappingSpecificationBuilder {
 	}
 	
 	public IMappingSpecification build() {
-		return new RemoteMappingSpecification(this.modelId, key, endpoint);
+		return new RemoteMappingSpecification(this.modelId, key, endpoint,Optional.ofNullable(proxyHost),Optional.ofNullable(proxyPort));
 	}
 	
 }

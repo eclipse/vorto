@@ -1,6 +1,7 @@
 package org.eclipse.vorto.service.mapping;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,9 +17,10 @@ import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
+import org.eclipse.vorto.service.mapping.ditto.DittoMapper;
 import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
-import org.eclipse.vorto.service.mapping.ditto.DittoMapper;
+import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.junit.Test;
 
 public class JsonMappingTest {
@@ -31,7 +33,7 @@ public class JsonMappingTest {
 		
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json));
+		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json),MappingContext.empty());
 		
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 				
@@ -48,16 +50,42 @@ public class JsonMappingTest {
 	}
 	
 	@Test
+	public void testDittoMappingOnlyOneFeature() throws Exception {
+			
+		DittoMapper mapper = IDataMapper.newBuilder()
+									.withSpecification(new TestMappingSpecification()).buildDittoMapper();
+		
+		String json = "{\"clickType\" : \"DOUBLE\"}";
+		
+		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json),MappingContext.functionblockProperties("button"));
+		
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
+				
+		assertEquals(true,(Boolean)buttonFeature.getProperty("digital_input_state"));
+		assertEquals(2,buttonFeature.getProperty("digital_input_count"));	
+		
+		assertNull(mappedDittoOutput.getFeatures().get("voltage"));
+						
+		System.out.println(mappedDittoOutput.toJson());
+		
+	}
+	
+	@Test(expected = MappingSpecificationProblem.class)
+	public void testBuildMappingSpecificationForInvalidModelId() {		
+		IMappingSpecification.newBuilder().modelId("devices.PhilipsLivingBloo:1.0.0").build();
+	}
+		
+	@Test
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 			
 		DittoMapper mapper = IDataMapper.newBuilder()
-									.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").key("awsiotbutton").build()).buildDittoMapper();
+									.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").build()).buildDittoMapper();
 		
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("clickType", "DOUBLE");
 		input.put("batteryVoltage", "2322mV");
 		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(input));
+		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(input),MappingContext.empty());
 		
 		
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
@@ -73,7 +101,7 @@ public class JsonMappingTest {
 		System.out.println(mappedDittoOutput.toJson());
 		
 	}
-
+	
 	private static class TestMappingSpecification implements IMappingSpecification {
 
 		private static Map<ModelId, FunctionblockModel> FBS = new HashMap<ModelId, FunctionblockModel>(2);

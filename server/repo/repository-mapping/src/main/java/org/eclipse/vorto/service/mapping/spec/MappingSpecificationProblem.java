@@ -12,13 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.service.mapping;
+package org.eclipse.vorto.service.mapping.spec;
 
-public interface IDataMapper<Output extends JsonPayload> {
+public class MappingSpecificationProblem extends RuntimeException {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public MappingSpecificationProblem(String msg, Throwable t) {
+		super(msg, t);
+	}
 	
-	Output map(DataInput input, MappingContext context);
-	
-	static DataMapperBuilder newBuilder() {
-		return new DataMapperBuilder();
+	public MappingSpecificationProblem(String msg) {
+		super(msg);
 	}
 }

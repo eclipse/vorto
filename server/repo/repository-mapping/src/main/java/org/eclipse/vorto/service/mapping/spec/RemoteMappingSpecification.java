@@ -46,8 +46,12 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 	
 	private FunctionLibrary library = new FunctionLibrary();
 	
-	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey, String endpoint) {
+	public RemoteMappingSpecification(ModelId infoModelId, String mappingKey, String endpoint, Optional<String> proxyHost, Optional<Integer> proxyPort) {
 		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl(endpoint);
+		if (proxyHost.isPresent() && proxyPort.isPresent()) {
+			builder.setProxyHost(proxyHost.get());
+			builder.setProxyPort(proxyPort.get());
+		}
 		this.repositoryClient = builder.buildModelRepositoryClient();
 		this.modelId = infoModelId;
 		this.mappingKey = mappingKey;
@@ -58,6 +62,10 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 	private void fetchModels() {
 		try {
 			this.infomodel = this.repositoryClient.getContent(this.modelId, Infomodel.class, this.mappingKey).get();
+			if (this.infomodel == null) {
+				throw new IllegalArgumentException("Information Model cannot be found with given model ID and/or key");
+			}
+			
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
@@ -75,7 +83,7 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 				this.fbs.put(fbModelId, fbm);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new MappingSpecificationProblem("Cannot create mapping specification", e);
 		}
 		
 		
