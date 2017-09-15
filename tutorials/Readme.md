@@ -6,4 +6,4 @@
 4. [Connect a device via Bluetooth with Vorto and Kura](tutorial_connect_xdk_ble.md)
 5. [Visualize device data in a web UI with Vorto](tutorial_create_webapp_dashboard.md)
 6. [Voice control a device via Amazon Alexa](tutorial_voicecontrol_alexa.md)
-
+7. [Connect a device via MQTT Python Generator to Bosch IoT Suite](tutorial_connect_device_using_mqtt_python.md)
