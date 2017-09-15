@@ -179,7 +179,10 @@ public class JsonMappingTest {
 
 		@Override
 		public Optional<Functions> getCustomFunctions() {
-			return Optional.of(new JavascriptFunctions("custom","convertClickType","function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}"));
+			JavascriptFunctions functions = new JavascriptFunctions("custom");
+			functions.addFunction("convertAccelType","function convertAccelType(value) { return (value > 32768 ? value - 65536 : value) / 500;}");
+			functions.addFunction("convertClickType","function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}");
+			return Optional.of(functions);
 		}
 		
 	}

@@ -15,6 +15,8 @@
 package org.eclipse.vorto.service.mapping.converters;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.jxpath.Function;
@@ -24,13 +26,16 @@ public class JavascriptFunctions implements Functions {
 	
 	private String namespace;
 	
-	private String functionName;
-	private String functionBody;
+	private Map<String, String> functions;
 	
-	public JavascriptFunctions(String namespace, String functionName, String functionBody) {
+	public JavascriptFunctions(String namespace)
+	{
 		this.namespace = namespace;
-		this.functionName = functionName;
-		this.functionBody = functionBody;
+		this.functions = new HashMap<String, String>();
+	}
+	
+	public void addFunction(String functionName, String functionBody) {
+		this.functions.put(functionName, functionBody);
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -45,7 +50,11 @@ public class JavascriptFunctions implements Functions {
 			return null;
 		}
 		
-		return new JavascriptEvalFunction(this.functionName, functionBody);
+		if (!this.functions.containsKey(name)) {
+			return null;
+		}
+		
+		return new JavascriptEvalFunction(name, functions.get(name));
 	}
 
 }
