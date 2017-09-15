@@ -91,7 +91,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    «ENDFOR»
 
 	    # Serializing information model
-	    payload = ser.serialize_infomodel("NewInfomodel", infomodel)
+	    payload = ser.serialize_infomodel(«model.name», infomodel)
 	    print(payload)
 
 	    ### END SAMPLE CODE

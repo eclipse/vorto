@@ -41,9 +41,9 @@ class PythonDittoSerializerTemplate implements IFileTemplate<Model> {
 		
 		    def serialize_infomodel(self, name, object):
 		        self.first_fb = True;
-		        self.payload = "{ \"features\" : {"
+		        self.payload = "{"
 		        object.serialize(self)
-		        self.payload += "} }"
+		        self.payload += "}"
 		        return self.payload
 		
 		    def serialize_functionblock(self, name, object):
