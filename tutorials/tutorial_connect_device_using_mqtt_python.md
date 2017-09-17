@@ -83,7 +83,7 @@ Now you have written the necessary application code. So you can run this on your
 		
 		python GENERATED_MAIN_PYTHON_FILE.py 
 
-### 11. Verify incoming sensor data
+### 7. Verify incoming sensor data
 
 To check if the sensor data was sent successfully to the cloud, just open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a> and navigate to the thing in the thing browser.
 
