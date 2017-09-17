@@ -1,4 +1,4 @@
-#How to connect device to Bosch IoT Suite via MQTT Python Generator?
+# Connect a device via MQTT with the Vorto Python Generator
 
 In this tutorial we are going to show you how to connect a device to Bosch IoT Suite using MQTT Python Generator. MQTT Python Generator generator allows for easy implementation of a device sending telemetry data to an MQTT broker based on Eclipse Paho for Python.
 
@@ -13,10 +13,10 @@ In this tutorial we are going to show you how to connect a device to Bosch IoT S
 * [Python 3.x](https://www.python.org/)
 * IDEs
 	* For Python [Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python) 
-	* For Vorto code generator [Eclipse IDE](https://eclipse.org/downloads/packages/release/Mars/2) 
+	* For Vorto code generator [Eclipse IDE](https://eclipse.org/downloads/packages/release/Mars/2)
+	* 
 * [Paho Python Client](https://eclipse.org/paho/clients/python/)
-* [Eclipse Vorto](http://www.eclipse.org/vorto/)
-* [Vorto Developer](http://vorto.eclipse.org/editor)
+* [Vorto Web Development Tool](http://vorto.eclipse.org/editor)
 * [Vorto Repository](http://vorto.eclipse.org/)
 
 ## Steps
@@ -83,9 +83,14 @@ Now you have written the necessary application code. So you can run this on your
 		
 		python GENERATED_MAIN_PYTHON_FILE.py 
 
-## Next steps
-  
-* [How to add GrovePi sensors to raspberry pi and send data to Bosch IoT Suite via MQTT?](tutorial-how_to_add_groove_pi_sensors_to_raspberry_pi_and_send_data_via_MQTT.md)
+### 11. Verify incoming sensor data
+
+To check if the sensor data was sent successfully to the cloud, just open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a> and navigate to the thing in the thing browser.
+
+## What's next ?
+
+- [Create a web application consuming the device telemetry data](tutorial_create_webapp_dashboard.md)
+- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_voicecontrol_alexa.md)
 
 
 
