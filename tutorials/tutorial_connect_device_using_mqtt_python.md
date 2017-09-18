@@ -89,7 +89,7 @@ To check if the sensor data was sent successfully to the cloud, just open the <a
 
 ## What's next ?
 
-- [How to add GrovePi sensors to raspberry pi and send data to Bosch IoT Suite via MQTT?](tutorial_how_to_add_groove_pi_sensors_to_raspberry_pi_and_send_data_via_MQTT.md)
+- [How to add GrovePi sensors to raspberry pi and send data to Bosch IoT Suite via MQTT?](tutorial_how_to_add_groove_pi_sensors_to_raspberry_pi_and_send_data_via_mqtt.md)
 - [Create a web application consuming the device telemetry data](tutorial_create_webapp_dashboard.md)
 - [Build an Amazon Alexa Skillset to voice-control the device](tutorial_voicecontrol_alexa.md)
 
