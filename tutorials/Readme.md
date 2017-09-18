@@ -7,3 +7,4 @@
 5. [Visualize device data in a web UI with Vorto](tutorial_create_webapp_dashboard.md)
 6. [Voice control a device via Amazon Alexa](tutorial_voicecontrol_alexa.md)
 7. [Connect a device via MQTT with the Vorto Python Generator](tutorial_connect_device_using_mqtt_python.md)
+8. [How to add GrovePi sensors to raspberry pi and send data to Bosch IoT Suite via MQTT](tutorial_how_to_add_groove_pi_sensors_to_raspberry_pi_and_send_data_via_mqtt.md)
