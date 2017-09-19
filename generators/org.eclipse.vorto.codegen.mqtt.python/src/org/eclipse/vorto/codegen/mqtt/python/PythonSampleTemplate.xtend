@@ -38,6 +38,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
     «ENDFOR»
 	import «model.namespace».«model.name» as «model.name»
 	import serializer.DittoSerializer as DittoSerializer
+	
+	hono_tenant = "DEFAULT_TENANT"
 
 	# Function that creates a unique client ID based on a prefix and a MAC address
 	def getClientId(prefix):
@@ -45,7 +47,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    for netif in netifs[:]:
 	        if netif != "lo":
 	            mac_addr = netifaces.ifaddresses(netif)[netifaces.AF_LINK][0]['addr']
-	            return prefix + mac_addr
+	            return prefix + mac_addr.replace(':', '')
 
 	# The callback for when the client receives a CONNACK response from the server.
 	def on_connect(client, userdata, flags, rc):
@@ -59,7 +61,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    # reconnect then subscriptions will be renewed.
 	
 	    # BEGIN SAMPLE CODE
-	    client.subscribe("commands/DEFAULT_TENANT/")
+	    client.subscribe("commands/" + hono_tenant + "/")
 	    # END SAMPLE CODE
 
 	    # Time stamp when the periodAction function shall be called again
@@ -122,8 +124,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	timePeriod = 10
 
 	# Configuration of client ID and publish topic
-	clientId = getClientId("RPi-")
-	publishTopic = "telemetry/DEFAULT_TENANT/" + clientId
+	clientId = getClientId("RPi")
+	publishTopic = "telemetry/" + hono_tenant + "/" + clientId
 
 	# Output relevant information for consumers of our information
 	print("Connecting client:    ", clientId)
