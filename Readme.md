@@ -23,19 +23,25 @@ Integrate a device for a given Information Model into IoT platforms with Vorto C
 2. Search for, e.g. [**Bosch XDK**](http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0)
 3. Select **Eclipse Kura Generator**, choose your configuration (e.g. **BLE**) and confirm with **Generate**.
 4. Download the generated Kura bundle and **import** it into your Eclipse
-5. That's it! Use the generated device-specific OSGI Kura bundle to connect the device for a given IoT cloud backend. 
+5. That's it! Use the generated device-specific OSGI Kura bundle to read XDK sensor values via Bluetooth and send the data to a cloud backend. 
 
 [Read Tutorial](tutorials/tutorial_connect_xdk_ble.md).
 
-## 3. Extend Vorto with the Generator SDK
+# Developer Guide
+
+## Generator SDK
 
 With the **Generator SDK** you can "_teach_" Vorto how to integrate an Information model, and thus device, into an IoT platform. [Read the Tutorial](tutorials/tutorial_create_generator.md)
 
 Here is a list of currently supported [Vorto Generators](http://vorto.eclipse.org/#/generators)
 
-## 4. Vorto Repository Java Client API
+## Repository Client API
 
-Access models and generate code via the [Java Client API ](server/repo/repository-java-client/Readme.md)
+Access models and generate code via the [Repository Client API](server/repo/repository-java-client/Readme.md)
+
+## Data Mapping API
+
+Learn more about, how to map arbitrary device data, such as JSON or BLE GATT, to Vorto compliant Eclipse Ditto payload. [Data Mapping API](server/repo/repository-mapping/Readme.md)  
 
 # Documentation
 
