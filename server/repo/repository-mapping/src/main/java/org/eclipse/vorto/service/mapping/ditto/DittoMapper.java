@@ -17,10 +17,15 @@ package org.eclipse.vorto.service.mapping.ditto;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.JXPathInvalidAccessException;
+import org.apache.commons.jxpath.JXPathNotFoundException;
+import org.apache.commons.jxpath.util.BasicTypeConverter;
+import org.apache.commons.jxpath.util.TypeUtils;
 import org.apache.commons.lang3.Conversion;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -86,7 +91,7 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		return output;
 	}
 	
-	private Feature mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {		
+	private Feature mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {	
 		FeatureBuilder featureBuilder = Feature.newBuilder(fbProperty.getName());
 		
 		FunctionblockModel fbModel = specification.getFunctionBlock((ModelId)fbProperty.getType());
@@ -99,7 +104,13 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 					featureBuilder.withStatusProperty(statusProperty.getName(), toType(value,statusProperty.getType()));
 				} else if (sourceStereotype.get().getAttributes().containsKey(ATTRIBUTE_XPATH)) {
 					String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),sourceStereotype.get().getAttributes());
-					featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+					try {
+						featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+					} catch (JXPathNotFoundException | JXPathInvalidAccessException ex) {
+						if (statusProperty.isMandatory()) {
+							return new EmptyFeature(fbProperty.getName());
+						}
+					}
 				}
 			}
 		}
@@ -120,7 +131,7 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		
 		return featureBuilder.build();
 	}
-	
+
 	private String replacePlaceHolders(String expression, Map<String, String> mappedAttributes) {
 		StrSubstitutor sub = new StrSubstitutor(mappedAttributes);
 		return sub.replace(expression);
@@ -144,8 +155,21 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 	
     private JXPathContext newContext(Object ctxObject) {
     	JXPathContext context = JXPathContext.newContext(ctxObject);
-    	context.setLenient(true);	
+    	TypeUtils.setTypeConverter(new MyTypeConverter());
+    	context.setLenient(false);	
     	return context;
+    }
+    
+    public static class MyTypeConverter extends BasicTypeConverter {
+    	
+    	 @Override
+    	 public Object convert(Object object, final Class toType) {
+    		 if (object instanceof BasicNodeSet && ((BasicNodeSet)object).getValues().isEmpty()) {
+    			 throw new JXPathNotFoundException("Could not find path in source");
+    		 } else {
+    			 return super.convert(object, toType);
+    		 }
+    	 }
     }
 
 }

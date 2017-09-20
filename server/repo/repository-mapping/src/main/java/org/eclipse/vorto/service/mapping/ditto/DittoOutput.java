@@ -29,7 +29,9 @@ public class DittoOutput implements JsonPayload {
 	private Map<String, Feature> features = new HashMap<>();
 	
 	public void withFeature(Feature feature) {
-		this.features.put(feature.getId(),feature);
+		if (!(feature instanceof EmptyFeature)) {
+			this.features.put(feature.getId(),feature);
+		} 
 	}
 
 	@Override
@@ -45,5 +47,5 @@ public class DittoOutput implements JsonPayload {
 	public Map<String,Feature> getFeatures() {
 		return Collections.unmodifiableMap(features);
 	}
-
+	
 }
