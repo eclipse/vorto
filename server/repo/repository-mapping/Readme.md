@@ -76,7 +76,7 @@ DittoMapper mapper = builder.buildDittoMapper();
 									
 String deviceJSON = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(deviceJSON));
+DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(deviceJSON),MappingContext.empty());
 
 Feature voltageFeature = mappedDittoOutput.getFeatures().get("batteryVoltage");
 		
@@ -220,7 +220,28 @@ Mapped Eclipse Ditto JSON Output:
 
 # What's next ?
 
-**Great!** You have just mapped a device specific payload to Eclipse Ditto payload via an Vorto Information Model. This mapped data can now be sent to the Bosch IoT Suite (which is based on Eclipse Ditto) using HTTP. 
+**Great!** You have just mapped a device specific payload to Eclipse Ditto payload via an Vorto Information Model. This mapped data can now be sent to the Bosch IoT Suite (which is based on Eclipse Ditto) using HTTP:
+
+	curl -X PUT 
+	https://things.apps.bosch-iot-cloud.com/api/1/things/ADD_THING_ID_HERE/features
+	-H 'authorization: Basic  ADD_CREDENTIALS_HERE' \
+	-H "Accept: application/json" \
+	-H 'x-cr-api-token: ADD_THINGS_API_TOKEN_HERE' \
+	-d '{
+    accelerometer": {
+        "properties": {
+            "y_value":-1.0,
+            "z_value":0.0,
+            "x_value":1.0
+        }
+    },
+    "barometer": {
+        "properties": {
+            "sensor_value":20.0
+        }
+    }
+	}'
+
 
 
 ## Appendix
