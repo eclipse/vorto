@@ -31,12 +31,12 @@ class DeviceToInformationModelTransformerTemplate implements IFileTemplate<Infor
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 '''
-package «Utils.javaPackage»;
+package «Utils.getJavaPackage(element)»;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -47,10 +47,10 @@ import org.eclipse.kura.bluetooth.BluetoothGatt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import «Utils.javaPackage».cloud.«element.name»;
+import «Utils.getJavaPackage(element)».model.«element.name»;
 
 «FOR fbProperty : element.properties»
-import «Utils.javaPackage».cloud.«fbProperty.type.name»;
+import «Utils.getJavaPackage(element)».model.«fbProperty.type.name»;
 «ENDFOR»
 
 public class DeviceTo«element.name»Transformer implements Function<BluetoothDevice, Optional<«element.name»>> {

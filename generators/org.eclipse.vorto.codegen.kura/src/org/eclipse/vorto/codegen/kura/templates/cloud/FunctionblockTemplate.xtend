@@ -16,23 +16,30 @@ package org.eclipse.vorto.codegen.kura.templates.cloud
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.codegen.kura.templates.Utils
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
 class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
+
+	private InformationModel informationModelContext;
+	
+	new(InformationModel context) {
+		this.informationModelContext = context;
+	}
 
     override getFileName(FunctionblockModel model) {
         return model.getName()+".java"
     }
     
     override getPath(FunctionblockModel model) {
-        '''«Utils.javaPackageBasePath»/cloud'''
+    	'''«Utils.getJavaPackageBasePath(informationModelContext)»/model'''
     }
     
 
     override getContent(FunctionblockModel model,InvocationContext context) {
 		'''
-		package «Utils.javaPackage».cloud;
+		package «Utils.getJavaPackage(informationModelContext)».model;
 		
 		public class «model.getName» {
 		    «FOR statusProperty : model.functionblock.status.properties»

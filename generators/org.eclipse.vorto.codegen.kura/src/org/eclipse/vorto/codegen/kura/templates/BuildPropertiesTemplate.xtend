@@ -25,7 +25,7 @@ class BuildPropertiesTemplate implements IFileTemplate<InformationModel>{
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.basePath»'''
+		'''«Utils.getBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
@@ -34,7 +34,8 @@ class BuildPropertiesTemplate implements IFileTemplate<InformationModel>{
 		bin.includes = META-INF/,\
 		               .,\
 		               OSGI-INF/,\
-		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true") ||
+		               	   context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
 		               lib/,\
 		               secret/,\
 		               «ENDIF»
@@ -43,7 +44,8 @@ class BuildPropertiesTemplate implements IFileTemplate<InformationModel>{
 		src.includes = bin/,\
 		               OSGI-INF/,\
 		               META-INF/,\
-		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+		               «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")  ||
+		               	   context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
 		               lib/,\
 		               secret/,\
 		               «ENDIF»

@@ -26,6 +26,7 @@ import org.eclipse.vorto.codegen.kura.templates.BuildPropertiesTemplate;
 import org.eclipse.vorto.codegen.kura.templates.DefaultAppTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseClasspathTemplate;
 import org.eclipse.vorto.codegen.kura.templates.EclipseProjectFileTemplate;
+import org.eclipse.vorto.codegen.kura.templates.IDataServiceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.KuraCloudDataServiceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.ManifestTemplate;
 import org.eclipse.vorto.codegen.kura.templates.PomTemplate;
@@ -33,11 +34,12 @@ import org.eclipse.vorto.codegen.kura.templates.bluetooth.ConfigurationTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceBluetoothFinderTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceFilterTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.DeviceToInformationModelTransformerTemplate;
-import org.eclipse.vorto.codegen.kura.templates.bluetooth.IDataServiceTemplate;
 import org.eclipse.vorto.codegen.kura.templates.bluetooth.InformationModelConsumerTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.FunctionblockTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.InformationModelTemplate;
 import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.BoschDataServiceTemplate;
+import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.BoschHubClientTemplate;
+import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.BoschHubDataService;
 import org.eclipse.vorto.codegen.kura.templates.cloud.bosch.ThingClientFactoryTemplate;
 import org.eclipse.vorto.codegen.kura.templates.osgiinf.ComponentXmlTemplate;
 import org.eclipse.vorto.codegen.kura.templates.osgiinf.MetatypeTemplate;
@@ -68,6 +70,10 @@ public class KuraGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ThingClientFactoryTemplate()));
+		} else if (invocationContext.getConfigurationProperties().getOrDefault("boschhub", "false").equalsIgnoreCase("true")) {
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschHubDataService()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschHubClientTemplate()));
 		} else {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new KuraCloudDataServiceTemplate()));
 		}
@@ -85,7 +91,7 @@ public class KuraGenerator implements IVortoCodeGenerator {
 		
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new InformationModelTemplate()));
 		for (FunctionblockProperty fbProperty : context.getProperties()) {
-			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate()).generate(fbProperty.getType(), invocationContext, outputter);
+			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(context)).generate(fbProperty.getType(), invocationContext, outputter);
 		}
 		
 		generator.generate(context,invocationContext, outputter);

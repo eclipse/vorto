@@ -11,7 +11,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.basePath»'''
+		'''«Utils.getBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
@@ -21,8 +21,8 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.example.kura</groupId>
-	<artifactId>com.example.kura.«element.name.toLowerCase»</artifactId>
+	<groupId>org.eclipse.vorto.kura</groupId>
+	<artifactId>«element.name.toLowerCase»</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	
@@ -34,7 +34,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-	
+	«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 	<repositories>
 		<repository>
 			<id>bosch-releases</id>
@@ -68,7 +68,27 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 			<artifactId>cr-json</artifactId>
 			<version>1.6.0</version>
 		</dependency>
+	«ELSE»
+	<repositories>
+		<repository>
+			<id>Eclipse Paho Repo</id>
+			<url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.0.2</version>
+		</dependency>
 		
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <version>2.8.1</version>
+		</dependency>
+	«ENDIF»
 	</dependencies>
 
 	<build>

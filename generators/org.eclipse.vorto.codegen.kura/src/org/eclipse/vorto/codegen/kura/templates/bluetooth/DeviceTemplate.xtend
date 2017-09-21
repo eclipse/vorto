@@ -31,12 +31,12 @@ class DeviceTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage»;
+		package «Utils.getJavaPackage(element)»;
 		
 		import org.eclipse.kura.KuraException;
 		import org.eclipse.kura.bluetooth.BluetoothDevice;
@@ -48,7 +48,7 @@ class DeviceTemplate implements IFileTemplate<InformationModel> {
 		
 		«FOR reference : element.references»
 		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
-		import «Utils.javaPackage».cloud.«modelId.name»;
+		import «Utils.getJavaPackage(element)».cloud.«modelId.name»;
 		«ENDFOR»
 		
 		public class «element.name»Device implements BluetoothLeNotificationListener {

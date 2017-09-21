@@ -31,12 +31,12 @@ class InformationModelConsumerTemplate implements IFileTemplate<InformationModel
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 '''
-package «Utils.javaPackage»;
+package «Utils.getJavaPackage(element)»;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -44,8 +44,8 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import «Utils.javaPackage».cloud.IDataService;
-import «Utils.javaPackage».cloud.«element.name»;
+import «Utils.getJavaPackage(element)».cloud.IDataService;
+import «Utils.getJavaPackage(element)».model.«element.name»;
 
 public class «element.name»Consumer implements Consumer<Optional<«element.name»>> {
 
