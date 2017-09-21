@@ -48,6 +48,7 @@ class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 				    	</div><!-- /.box-header -->
 						<div class="box-body">
 							<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
+							<p><input type="checkbox" ng-model="configParams.boschhub">&nbsp;Eclipse Hono (MQTT)</p>
 							<p><input type="checkbox" checked disabled="disabled">&nbsp;<i style="color:#999">Built-in Cloud Services</i></p>
 						</div><!-- /.box-body -->
 				  	</div><!-- /.box -->
