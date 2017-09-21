@@ -22,7 +22,7 @@ import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
 
 class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("bluetooth","boschcloud"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("bluetooth","boschcloud","boschhub"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
