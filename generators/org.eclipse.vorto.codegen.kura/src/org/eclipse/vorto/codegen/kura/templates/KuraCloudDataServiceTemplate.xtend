@@ -32,14 +32,15 @@ class KuraCloudDataServiceTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 '''
-package «Utils.javaPackage»;
+package «Utils.getJavaPackage(element)»;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.eclipse.kura.KuraException;
 import org.eclipse.kura.cloud.CloudClient;
@@ -52,10 +53,10 @@ import org.slf4j.LoggerFactory;
 
 «FOR reference : element.references»
 «var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
-import «Utils.javaPackage».cloud.«modelId.name»;
+import «Utils.getJavaPackage(element)».model.«modelId.name»;
 «ENDFOR»
 
-import «Utils.javaPackage».cloud.IDataService;
+import «Utils.getJavaPackage(element)».cloud.IDataService;
 
 public class KuraCloudDataService implements IDataService, CloudClientListener {
 	
@@ -63,9 +64,10 @@ public class KuraCloudDataService implements IDataService, CloudClientListener {
 	
 	private final String APP_ID = "BLE_APP_V1";
 	private CloudClient cloudClient;
-	private static String topic = "data";
+	private String topic = "data";
 	
-	public KuraCloudDataService(CloudService cloudService) {
+	public KuraCloudDataService(CloudService cloudService, «element.name»Configuration configuration) {
+		this.topic = Objects.requireNonNull(configuration.publishTopic);
 		try {
 			cloudClient = cloudService.newCloudClient(this.APP_ID);
 			cloudClient.addCloudClientListener(this);

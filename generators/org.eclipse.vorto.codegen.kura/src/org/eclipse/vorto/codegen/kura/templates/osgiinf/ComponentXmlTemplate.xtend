@@ -26,7 +26,7 @@ class ComponentXmlTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.basePath»/OSGI-INF'''
+		'''«Utils.getBasePath(context)»/OSGI-INF'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
@@ -34,28 +34,49 @@ class ComponentXmlTemplate implements IFileTemplate<InformationModel> {
 		<?xml version="1.0" encoding="UTF-8"?>
 		
 		«IF context.configurationProperties.getOrDefault("bluetooth","false").equalsIgnoreCase("true")»
-		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" enabled="true" immediate="true" modified="updated" name="«Utils.javaPackage».«element.name»BluetoothFinder">
-		   <implementation class="«Utils.javaPackage».«element.name»BluetoothFinder"/>
+		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+			activate="activate" 
+			configuration-policy="require" 
+			deactivate="deactivate" 
+			enabled="true" 
+			immediate="true" 
+			modified="updated" 
+			name="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder">
+			
+		   <implementation class="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder"/>
+		   
 		   <service>
 		      <provide interface="org.eclipse.kura.configuration.ConfigurableComponent"/>
 		   </service>
-		   <property name="service.pid" value="«Utils.javaPackage».«element.name»BluetoothFinder"/>
-		   «IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("false")»
+		   
+		   <property name="service.pid" value="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder"/>
+		   
+		   «IF !context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 		   <reference bind="setCloudService" 
 		    		  cardinality="1..1" 
 		    		  interface="org.eclipse.kura.cloud.CloudService"
 		    		  unbind="unsetCloudService"/>
-		    «ENDIF»
-		    <reference bind="setBluetoothService" 
+		    		  
+		   «ENDIF»
+		   <reference bind="setBluetoothService" 
 		              cardinality="1..1" 
 		              interface="org.eclipse.kura.bluetooth.BluetoothService" 
 		              name="BluetoothService" 
 		              policy="static" 
 		              unbind="unsetBluetoothService"/>
+		              
 		</scr:component>
 		«ELSE»
-		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" configuration-policy="require" deactivate="deactivate" enabled="true" immediate="true" modified="updated" name="«Utils.javaPackage».«element.name»App">
-			<implementation class="«Utils.javaPackage».«element.name»App"/>
+		<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" 
+			activate="activate" 
+			configuration-policy="require" 
+			deactivate="deactivate" 
+			enabled="true" 
+			immediate="true" 
+			modified="updated" 
+			name="«Utils.getJavaPackage(element)».«element.name»App">
+			
+			<implementation class="«Utils.getJavaPackage(element)».«element.name»App"/>
 		</scr:component>
 		«ENDIF»
 		'''

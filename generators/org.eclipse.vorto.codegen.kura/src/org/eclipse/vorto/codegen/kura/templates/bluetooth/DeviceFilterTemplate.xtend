@@ -31,22 +31,29 @@ class DeviceFilterTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 '''
-package «Utils.javaPackage»;
+package «Utils.getJavaPackage(element)»;
 
 import java.util.function.Predicate;
+import java.util.Objects;
 
 import org.eclipse.kura.bluetooth.BluetoothDevice;
 
 public class «element.name»DeviceFilter implements Predicate<BluetoothDevice> {
 
+	private String filter;
+		
+	public «element.name»DeviceFilter(«element.name»Configuration configuration) {
+		this.filter = Objects.requireNonNull(configuration.deviceFilter);
+	}
+
 	@Override
 	public boolean test(BluetoothDevice bluetoothDevice) {
-		return bluetoothDevice.getName().contains(" «element.name»");
+		return bluetoothDevice.getAdress().contains(filter);
 	}
 
 }

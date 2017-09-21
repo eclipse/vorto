@@ -28,79 +28,98 @@ class DefaultAppTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
-		'''
-		package «Utils.javaPackage»;
-		
-		import java.util.concurrent.Executors;
-		import java.util.concurrent.ScheduledExecutorService;
-		import java.util.concurrent.ScheduledFuture;
-		import java.util.concurrent.TimeUnit;
-		
-		import org.osgi.service.component.ComponentContext;
-		import org.slf4j.Logger;
-		import org.slf4j.LoggerFactory;
-		
-		«FOR reference : element.references»
-		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
-		import «Utils.javaPackage».cloud.«modelId.name»;
-		«ENDFOR»
-		import «Utils.javaPackage».cloud.bosch.BoschDataService;
-		
-		public class «element.name»App {
-		
-			private static final Logger s_logger = LoggerFactory.getLogger(«element.name»App.class);
-		    private static final String APP_ID = "«Utils.javaPackage»";
-		    
-		    private ScheduledExecutorService m_worker;
-		   	private ScheduledFuture<?> m_handle;
-		   	
-		   	private IDataService dataService;
-		   	
-		   	private String thingId = "INSERT THING ID HERE";
-		
-		   	public «element.name»App() {
-		   		m_worker = Executors.newSingleThreadScheduledExecutor();
-		   		dataService = new BoschDataService("","wss://events.apps.bosch-iot-cloud.com");
-		   	}
-		   	
-		    protected void activate(ComponentContext componentContext) {
-		        s_logger.info("Bundle " + APP_ID + " has started!");
-		        
-		     // cancel a current worker handle if one if active
-		   		if (m_handle != null) {
-		   			m_handle.cancel(true);
-		   		}
-		
-		   		// schedule a new worker
-		   		m_handle = m_worker.scheduleAtFixedRate(new Runnable() {
-		   			@Override
-		   			public void run() {
-		   				Thread.currentThread().setName(getClass().getSimpleName());
-		   				
-		   				«FOR fbProperty : element.properties»
-		   				«fbProperty.type.name» «fbProperty.name» = new «fbProperty.type.name»();
-		   				«FOR statusProperty : fbProperty.type.functionblock.status.properties»
-		   					«fbProperty.name».set«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»(«TypeMapper.getRandomValue(statusProperty.type)»);
-		   				«ENDFOR»
-		   				dataService.publish«fbProperty.name.toFirstUpper»(thingId, «fbProperty.name»);
-		   		    	«ENDFOR»
-		   				
-		   			}
-		   		}, 0, 300, TimeUnit.SECONDS);
-		        
-		        
-		    }
-		
-		    protected void deactivate(ComponentContext componentContext) {
-		        s_logger.info("Bundle " + APP_ID + " has stopped!");
-		    }
-		}
-		
-		'''
+'''
+package «Utils.getJavaPackage(element)»;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import org.osgi.service.component.ComponentContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+«FOR reference : element.references»
+«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+import «Utils.getJavaPackage(element)».model.«modelId.name»;
+«ENDFOR»
+import «Utils.getJavaPackage(element)».cloud.IDataService;
+«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+import «Utils.getJavaPackage(element)».cloud.bosch.BoschDataService;
+«ELSE»
+import org.eclipse.kura.cloud.CloudService;
+«ENDIF»
+
+public class «element.name»App {
+
+	private static final Logger s_logger = LoggerFactory.getLogger(«element.name»App.class);
+    private static final String APP_ID = "«Utils.getJavaPackage(element)»";
+    
+    private ScheduledExecutorService m_worker;
+   	private ScheduledFuture<?> m_handle;
+   	
+   	private IDataService dataService;
+   	
+   	private String thingId = "INSERT THING ID HERE";
+
+	«IF !context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+	private CloudService cloudService;
+	
+	public void setCloudService(CloudService cloudService) {
+		this.cloudService = cloudService;
+	}
+	
+	public void unsetCloudService(CloudService cloudService) {
+		this.cloudService = null;
+	}
+	«ENDIF»
+
+   	public «element.name»App() {
+   		m_worker = Executors.newSingleThreadScheduledExecutor();
+«IF context.configurationProperties.getOrDefault("boschcloud", "false").equalsIgnoreCase("true")»
+		dataService = new BoschDataService("","wss://events.apps.bosch-iot-cloud.com");
+«ELSE»
+		dataService = new KuraCloudDataService(cloudService);
+«ENDIF»
+   	}
+   	
+    protected void activate(ComponentContext componentContext) {
+        s_logger.info("Bundle " + APP_ID + " has started!");
+        
+     // cancel a current worker handle if one if active
+   		if (m_handle != null) {
+   			m_handle.cancel(true);
+   		}
+
+   		// schedule a new worker
+   		m_handle = m_worker.scheduleAtFixedRate(new Runnable() {
+   			@Override
+   			public void run() {
+   				Thread.currentThread().setName(getClass().getSimpleName());
+   				
+   				«FOR fbProperty : element.properties»
+   				«fbProperty.type.name» «fbProperty.name» = new «fbProperty.type.name»();
+   				«FOR statusProperty : fbProperty.type.functionblock.status.properties»
+   					«fbProperty.name».set«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»(«TypeMapper.getRandomValue(statusProperty.type)»);
+   				«ENDFOR»
+   				dataService.publish«fbProperty.name.toFirstUpper»(thingId, «fbProperty.name»);
+   				
+   		    	«ENDFOR»
+   			}
+   		}, 0, 300, TimeUnit.SECONDS);
+    }
+
+    protected void deactivate(ComponentContext componentContext) {
+        s_logger.info("Bundle " + APP_ID + " has stopped!");
+    }
+}
+
+'''
 	}
 	
 }

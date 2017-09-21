@@ -29,217 +29,245 @@ class DeviceBluetoothFinderTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»'''
+		'''«Utils.getJavaPackageBasePath(context)»'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
-		'''
-		package «Utils.javaPackage»;
-		
-		import java.util.ArrayList;
-		import java.util.List;
-		import java.util.Map;
-		import java.util.concurrent.Executors;
-		import java.util.concurrent.ScheduledExecutorService;
-		import java.util.concurrent.ScheduledFuture;
-		import java.util.concurrent.TimeUnit;
-		
-		import org.eclipse.kura.bluetooth.BluetoothAdapter;
-		import org.eclipse.kura.bluetooth.BluetoothDevice;
-		import org.eclipse.kura.bluetooth.BluetoothGattSecurityLevel;
-		import org.eclipse.kura.bluetooth.BluetoothLeScanListener;
-		import org.eclipse.kura.bluetooth.BluetoothService;
-		import org.eclipse.kura.configuration.ConfigurableComponent;
-		import org.osgi.service.component.ComponentContext;
-		import org.osgi.service.component.ComponentException;
-		import org.slf4j.Logger;
-		import org.slf4j.LoggerFactory;
-		
-		import «Utils.javaPackage».cloud.IDataService;
-		«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-		import «Utils.javaPackage».cloud.bosch.BoschDataService;
-		«ELSE»
-		import org.eclipse.kura.cloud.CloudService;
-		«ENDIF»
-		
-		public class «element.name»BluetoothFinder implements ConfigurableComponent, BluetoothLeScanListener {
-		
-			private static final Logger logger = LoggerFactory.getLogger(«element.name»BluetoothFinder.class);
-			private BluetoothAdapter bluetoothAdapter;
-			private ScheduledExecutorService worker;
-			private ScheduledFuture<?> handle;
-		
-			private long startTime;
-			private «element.name»Configuration configuration = null;
-			private IDataService dataService;
-		
-			private BluetoothService bluetoothService;
-			
-			public void setBluetoothService(BluetoothService bluetoothService) {
-				this.bluetoothService = bluetoothService;
-			}
-			
-			public void unsetBluetoothService(BluetoothService bluetoothService) {
-				this.bluetoothService = null;
-			}
-			
-			«IF !context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-			private CloudService cloudService;
-			
-			public void setCloudService(CloudService cloudService) {
-				this.cloudService = cloudService;
-			}
-			
-			public void unsetCloudService(CloudService cloudService) {
-				this.cloudService = null;
-			}
-			«ENDIF»
-		
-			// --------------------------------------------------------------------
-			//
-			// Activation APIs
-			//
-			// --------------------------------------------------------------------
-			protected void activate(ComponentContext context, Map<String, Object> properties) {
-				logger.info("Activating «element.name» App...");
-		
-				readProperties(properties);
-				runApplication();
-			}
-		
-			protected void deactivate(ComponentContext context) {
-				cleanup();		
-				logger.debug("Deactivating «element.name» App... Done.");
-			}
-		
-			protected void updated(Map<String, Object> properties) {
-				readProperties(properties);
-				cleanup();						
-				runApplication();
-				logger.debug("Updating Bluetooth Service... Done.");
-			}
-			
-			private void runApplication() {
-				if (configuration.enableScan) {
-					this.worker = Executors.newSingleThreadScheduledExecutor();
-					try {
-						// Get Bluetooth adapter and ensure it is enabled
-						this.bluetoothAdapter = this.bluetoothService.getBluetoothAdapter(configuration.iname);
-						if (this.bluetoothAdapter != null) {
-							logger.info("Bluetooth adapter interface => " + configuration.iname);
-							logger.info("Bluetooth adapter address => " + this.bluetoothAdapter.getAddress());
-							logger.info("Bluetooth adapter le enabled => " + this.bluetoothAdapter.isLeReady());
-		
-							if (!this.bluetoothAdapter.isEnabled()) {
-								logger.info("Enabling bluetooth adapter...");
-								this.bluetoothAdapter.enable();
-								logger.info("Bluetooth adapter address => " + this.bluetoothAdapter.getAddress());
-							}
-							this.startTime = 0;
-							this.handle = this.worker.scheduleAtFixedRate(new Runnable() {
-		
-								@Override
-								public void run() {
-									checkScan();
-								}
-							}, 0, 1, TimeUnit.SECONDS);
-						} else {
-							logger.warn("No Bluetooth adapter found ...");
-						}
-					} catch (Exception e) {
-						logger.error("Error starting component", e);
-						throw new ComponentException(e);
+'''
+package «Utils.getJavaPackage(element)»;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.eclipse.kura.bluetooth.BluetoothAdapter;
+import org.eclipse.kura.bluetooth.BluetoothDevice;
+import org.eclipse.kura.bluetooth.BluetoothLeScanListener;
+import org.eclipse.kura.bluetooth.BluetoothService;
+import org.eclipse.kura.configuration.ConfigurableComponent;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.ComponentException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import «Utils.getJavaPackage(element)».cloud.IDataService;
+«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+import «Utils.getJavaPackage(element)».cloud.bosch.BoschDataService;
+«ELSE»
+«IF context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
+import «Utils.getJavaPackage(element)».cloud.bosch.BoschHubDataService;
+«ELSE»
+import org.eclipse.kura.cloud.CloudService;
+«ENDIF»
+«ENDIF»
+
+public class «element.name»BluetoothFinder implements ConfigurableComponent {
+
+	private static final Logger logger = LoggerFactory.getLogger(«element.name»BluetoothFinder.class);
+	private BluetoothAdapter bluetoothAdapter;
+	private ScheduledExecutorService worker;
+	private ScheduledFuture<?> scannerHandler;
+	private ScheduledFuture<?> updateHandler;
+
+	private «element.name»Configuration configuration = null;
+	private IDataService dataService;
+
+	private BluetoothService bluetoothService;
+	
+	private Object physicalDevicesLock = new Object();
+	private List<BluetoothDevice> physicalDevices = Collections.emptyList();
+	
+	public void setBluetoothService(BluetoothService bluetoothService) {
+		this.bluetoothService = bluetoothService;
+	}
+	
+	public void unsetBluetoothService(BluetoothService bluetoothService) {
+		this.bluetoothService = null;
+	}
+	
+	«IF !context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true") && 
+		!context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
+	private CloudService cloudService;
+	
+	public void setCloudService(CloudService cloudService) {
+		this.cloudService = cloudService;
+	}
+	
+	public void unsetCloudService(CloudService cloudService) {
+		this.cloudService = null;
+	}
+	«ENDIF»
+
+	// --------------------------------------------------------------------
+	//
+	// Activation APIs
+	//
+	// --------------------------------------------------------------------
+	protected void activate(ComponentContext context, Map<String, Object> properties) {
+		logger.info("Activating «element.name» App...");
+		readProperties(properties);
+		runApplication();
+	}
+
+	protected void deactivate(ComponentContext context) {
+		cleanup();		
+		logger.debug("Deactivating «element.name» App... Done.");
+	}
+
+	protected void updated(Map<String, Object> properties) {
+		cleanup();
+		readProperties(properties);
+		runApplication();
+		logger.debug("Updating Bluetooth Service... Done.");
+	}
+	
+	private void runApplication() {
+		if (configuration.enableScan) {
+			this.worker = Executors.newSingleThreadScheduledExecutor();
+			try {
+				// Get Bluetooth adapter and ensure it is enabled
+				this.bluetoothAdapter = this.bluetoothService.getBluetoothAdapter(configuration.iname);
+				if (this.bluetoothAdapter != null) {
+					logger.info("Bluetooth adapter interface => " + configuration.iname);
+					logger.info("Bluetooth adapter address => " + this.bluetoothAdapter.getAddress());
+					logger.info("Bluetooth adapter le enabled => " + this.bluetoothAdapter.isLeReady());
+
+					if (!this.bluetoothAdapter.isEnabled()) {
+						logger.info("Enabling bluetooth adapter...");
+						this.bluetoothAdapter.enable();
+						logger.info("Bluetooth adapter address => " + this.bluetoothAdapter.getAddress());
 					}
-				}
-			}
-			
-			private void cleanup() {
-				logger.debug("Cleaning up «element.name» App...");
-				if (this.bluetoothAdapter != null && this.bluetoothAdapter.isScanning()) {
-					logger.debug("m_bluetoothAdapter.isScanning");
-					this.bluetoothAdapter.killLeScan();
-				}
-		
-				// cancel a current worker handle if one if active
-				if (this.handle != null) {
-					this.handle.cancel(true);
-				}
-		
-				// shutting down the worker and cleaning up the properties
-				if (this.worker != null) {
-					this.worker.shutdown();
-				}
-		
-				// cancel bluetoothAdapter
-				this.bluetoothAdapter = null;
-			}
-		
-			// --------------------------------------------------------------------
-			//
-			// Main task executed every second
-			//
-			// --------------------------------------------------------------------
-		
-			void checkScan() {
-		
-				// Scan for bluetooth devices
-				if (this.bluetoothAdapter.isScanning()) {
-					logger.info("m_bluetoothAdapter.isScanning");
-					if (System.currentTimeMillis() - this.startTime >= configuration.scantime * 1000) {
-						this.bluetoothAdapter.killLeScan();
-					}
+					
+					this.scannerHandler = this.worker.scheduleAtFixedRate(this::scan, 0, configuration.scaninterval, TimeUnit.SECONDS);
+					this.updateHandler = this.worker.scheduleAtFixedRate(this::update, 0, configuration.updateInterval, TimeUnit.SECONDS);
 				} else {
-					if (System.currentTimeMillis() - this.startTime >= configuration.period * 1000) {
-						logger.info("startLeScan");
-						this.bluetoothAdapter.startLeScan(this);
-						this.startTime = System.currentTimeMillis();
-					}
+					logger.warn("No Bluetooth adapter found ...");
 				}
-		
-			}
-		
-			// --------------------------------------------------------------------
-			//
-			// Private Methods
-			//
-			// --------------------------------------------------------------------
-		
-			private void readProperties(Map<String, Object> properties) {
-				if (properties != null) {
-					configuration = «element.name»Configuration.configurationFrom(properties);
-					«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-					dataService = new BoschDataService(configuration.solutionId, configuration.endpoint);
-					«ELSE»
-					dataService = new KuraCloudDataService(cloudService);
-					«ENDIF»
-				}
-			}
-		
-			// --------------------------------------------------------------------
-			//
-			// BluetoothLeScanListener APIs
-			//
-			// --------------------------------------------------------------------
-			@Override
-			public void onScanFailed(int errorCode) {
-				logger.error("Error during scan");
-		
-			}
-		
-			@Override
-			public void onScanResults(List<BluetoothDevice> scanResults) {
-				scanResults.stream()
-					// Filter for devices which are ours
-					.filter(new «element.name»DeviceFilter())
-					// This transformer 
-					.map(new DeviceTo«element.name»Transformer(configuration))
-					// Do something useful with the information model
-					.forEach(new «element.name»Consumer(configuration, dataService));
-		
+			} catch (Exception e) {
+				logger.error("Error starting component", e);
+				throw new ComponentException(e);
 			}
 		}
+	}
+	
+	private void cleanup() {
+		logger.debug("Cleaning up «element.name» App...");
+		if (this.bluetoothAdapter != null && this.bluetoothAdapter.isScanning()) {
+			logger.debug("m_bluetoothAdapter.isScanning");
+			this.bluetoothAdapter.killLeScan();
+		}
+
+		// cancel a current worker handle if one if active
+		if (this.scannerHandler != null) {
+			this.scannerHandler.cancel(true);
+		}
 		
-		'''
+		if (this.updateHandler != null) {
+			this.updateHandler.cancel(true);
+		}
+
+		// shutting down the worker and cleaning up the properties
+		if (this.worker != null) {
+			this.worker.shutdown();
+		}
+
+		// cancel bluetoothAdapter
+		this.bluetoothAdapter = null;
+	}
+
+	// --------------------------------------------------------------------
+	//
+	// Scanning task, performed every configuration.scaninterval seconds
+	//
+	// --------------------------------------------------------------------
+	private void scan() {
+		try {
+			logger.info("Starting bluetooth LE scan ...");
+			bluetoothAdapter.startLeScan(new BluetoothLeScanListener() {
+				public void onScanFailed(int arg0) {
+					logger.error("Error during scan");
+				}
+
+				public void onScanResults(List<BluetoothDevice> scanResults) {
+					List<BluetoothDevice> scannedDevices = 
+						scanResults.stream()
+							// Filter for devices which are ours
+							.filter(new «element.name»DeviceFilter(configuration))
+							// Add any device we haven't found yet
+							.collect(Collectors.toList());
+					synchronized(physicalDevicesLock) {
+						physicalDevices = scannedDevices;
+					}
+				}
+			});
+			
+			// Kill after configuration.scantime seconds
+			Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+					logger.info("Killing the bluetooth LE scan ...");
+					bluetoothAdapter.killLeScan();
+					return true;
+				}, configuration.scantime, TimeUnit.SECONDS);
+			
+		} catch (Throwable e) {
+			logger.error("Error in scan()", e);
+		}
+	}
+	
+	// --------------------------------------------------------------------
+	//
+	// Update task, performed every configuration.updateInterval seconds
+	//
+	// --------------------------------------------------------------------
+	private void update() {
+		try {
+			List<BluetoothDevice> updateDevices = Collections.emptyList();
+			synchronized(physicalDevicesLock) {
+				updateDevices =  physicalDevices;
+			}
+			
+			long startTime = System.currentTimeMillis();
+			
+			updateDevices.stream()
+				// Map physical BLE device to an «element.name» information model 
+				.map(new DeviceTo«element.name»Transformer(configuration))
+				// Do something useful with the information model
+				.forEach(new «element.name»Consumer(configuration, dataService));
+			
+			long estimatedTime = System.currentTimeMillis() - startTime;
+			
+			logger.info("Elapsed time in publishing - " + estimatedTime + " milliseconds");
+		} catch (Throwable e) {
+			logger.error("Error in update()", e);
+		}
+	}
+
+	// --------------------------------------------------------------------
+	//
+	// Private Methods
+	//
+	// --------------------------------------------------------------------
+	private void readProperties(Map<String, Object> properties) {
+		if (properties != null) {
+			configuration = «element.name»Configuration.configurationFrom(properties);
+			«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
+			dataService = new BoschDataService(configuration.solutionId, configuration.endpoint);
+			«ELSE»
+			«IF context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
+			dataService = new BoschHubDataService(configuration.hubUrl, configuration.hubTenant);
+			«ELSE»
+			dataService = new KuraCloudDataService(cloudService, configuration);
+			«ENDIF»
+			«ENDIF»
+		}
+	}
+}
+
+'''
 	}
 	
 }

@@ -34,12 +34,12 @@ class BoschDataServiceTemplate implements IFileTemplate<InformationModel>{
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/cloud/bosch'''
+		'''«Utils.getJavaPackageBasePath(context)»/cloud/bosch'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage».cloud.bosch;
+		package «Utils.getJavaPackage(element)».cloud.bosch;
 		
 		import java.util.concurrent.ExecutionException;
 		import java.util.concurrent.TimeUnit;
@@ -56,9 +56,9 @@ class BoschDataServiceTemplate implements IFileTemplate<InformationModel>{
 		import com.bosch.cr.model.things.Feature;
 		«FOR reference : element.references»
 		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
-		import «Utils.javaPackage».cloud.«modelId.name»;
+		import «Utils.getJavaPackage(element)».model.«modelId.name»;
 		«ENDFOR»
-		import «Utils.javaPackage».cloud.IDataService;
+		import «Utils.getJavaPackage(element)».cloud.IDataService;
 		
 		public class BoschDataService implements IDataService {
 		

@@ -31,12 +31,12 @@ class InformationModelTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/cloud'''
+		'''«Utils.getJavaPackageBasePath(context)»/model'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 '''
-package «Utils.javaPackage».cloud;
+package «Utils.getJavaPackage(element)».model;
 
 public class «element.name» {
 	«FOR fbProperty : element.properties»

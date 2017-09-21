@@ -25,7 +25,7 @@ class EclipseClasspathTemplate implements IFileTemplate<InformationModel> {
     }
     
     override getPath(InformationModel context) {
-        '''«Utils.basePath»'''
+        '''«Utils.getBasePath(context)»'''
     }
     
     override getContent(InformationModel context,InvocationContext invocationContext) {

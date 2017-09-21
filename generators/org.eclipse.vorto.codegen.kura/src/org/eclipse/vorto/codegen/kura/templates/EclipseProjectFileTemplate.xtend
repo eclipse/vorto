@@ -25,14 +25,14 @@ class EclipseProjectFileTemplate implements IFileTemplate<InformationModel> {
     }
     
     override getPath(InformationModel context) {
-        '''«Utils.basePath»'''
+        '''«Utils.getBasePath(context)»'''
     }
     
     override getContent(InformationModel context,InvocationContext invocationContext) {
         '''
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-    <name>«Utils.javaPackage»</name>
+    <name>«Utils.getJavaPackage(context)»</name>
     <comment></comment>
     <projects>
     </projects>

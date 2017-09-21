@@ -14,17 +14,19 @@
  */
 package org.eclipse.vorto.codegen.kura.templates;
 
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+
 public class Utils {
 
-	public static String getJavaPackageBasePath() {
-		return getBasePath()+"/src/com/example/kura";
+	public static String getJavaPackageBasePath(InformationModel context) {
+		return getBasePath(context)+"/src/org/eclipse/vorto/kura/" + context.getName().toLowerCase();
 	}
 	
-	public static String getJavaPackage() {
-		return "com.example.kura";
+	public static String getJavaPackage(InformationModel context) {
+		return "org.eclipse.vorto.kura." + context.getName().toLowerCase();
 	}
 	
-	public static String getBasePath() {
-		return "/kuraapp";
+	public static String getBasePath(InformationModel context) {
+		return "/" + context.getName().toLowerCase();
 	}
 }

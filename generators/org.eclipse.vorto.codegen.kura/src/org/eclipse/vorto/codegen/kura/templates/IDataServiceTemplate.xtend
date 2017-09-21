@@ -12,12 +12,13 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.kura.templates.bluetooth
+package org.eclipse.vorto.codegen.kura.templates
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.kura.templates.Utils
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
+import org.eclipse.vorto.core.api.model.model.ModelIdFactory
+import org.eclipse.vorto.core.api.model.model.ModelType
 
 /**
  * @author Alexander Edelmann
@@ -29,12 +30,17 @@ class IDataServiceTemplate implements IFileTemplate<InformationModel>{
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/cloud'''
+		'''«Utils.getJavaPackageBasePath(context)»/cloud'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage».cloud;
+		package «Utils.getJavaPackage(element)».cloud;
+		
+		«FOR reference : element.references»
+		«var modelId = ModelIdFactory.newInstance(ModelType.Functionblock,reference)»
+		import «Utils.getJavaPackage(element)».model.«modelId.name»;
+		«ENDFOR»
 		
 		public interface IDataService {
 			
