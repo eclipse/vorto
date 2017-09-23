@@ -16,9 +16,9 @@ package org.eclipse.vorto.repository.api.content;
 
 public class ReturnType {
 
-	private boolean isMultiple = false;
+	private boolean isMultiple;
 	
-	private boolean isPrimitive = false;
+	private boolean isPrimitive;
 	
 	private IReferenceType type = null;
 

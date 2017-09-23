@@ -19,10 +19,10 @@ import java.util.List;
 
 public class AbstractProperty extends DefaultMappedElement {
 
-	protected boolean isMandatory = true;
+	protected boolean isMandatory;
 	protected String name;
 	
-	protected boolean isMultiple = false;
+	protected boolean isMultiple;
 	protected String description;
 	
 	protected IReferenceType type = null;
