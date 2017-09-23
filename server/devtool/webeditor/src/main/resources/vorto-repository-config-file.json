@@ -15,7 +15,7 @@
         "cacheName" : "persisted-repository",
         "binaryStorage" : {
             "type" : "file",
-            "directory": "${user.home}/.vorto/repo/binaries",
+            "directory": "${user.home}/.vorto/editor/binaries",
             "minimumBinarySizeInBytes" : 999
         }
     },

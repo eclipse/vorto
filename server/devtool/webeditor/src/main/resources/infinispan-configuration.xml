@@ -30,7 +30,7 @@
                             shared="false"
                             preload="false"
                             purge="false"
-                            path="${user.home}/.vorto/repo/cache/content"/>
+                            path="${user.home}/.vorto/editor/cache/content"/>
             </persistence>
         </local-cache>
     </cache-container>
