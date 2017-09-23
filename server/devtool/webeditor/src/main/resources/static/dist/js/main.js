@@ -16,6 +16,7 @@ require.config({
 		"ngJsTree": "../../webjars/ng-js-tree/0.0.6/dist/ngJsTree.min",
 		"angular-toastr" : "../../webjars/angular-toastr/2.1.1/angular-toastr.tpls.min"
 	},
+	waitSeconds: 0,
 	shim: {
 		'angular': {
 			exports: "angular"
