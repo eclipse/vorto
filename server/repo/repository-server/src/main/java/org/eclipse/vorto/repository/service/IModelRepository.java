@@ -71,8 +71,9 @@ public interface IModelRepository {
 	 * Checks in a new model into the repository
 	 * @param uploadHandle
 	 * @param callerId
+	 * @return model that was been checked in
 	 */
-	void checkin(String handleId, String callerId);
+	ModelInfo checkin(String handleId, String callerId);
 		
 	/**
 	 * Adds a model image for the given model id

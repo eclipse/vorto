@@ -30,7 +30,7 @@ import org.eclipse.vorto.devtool.projectrepository.model.ModelResource;
 import org.eclipse.vorto.devtool.projectrepository.utils.ProjectRepositoryConstants;
 import org.eclipse.vorto.editor.web.resource.WebEditorResourceSetProvider;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
-import org.eclipse.vorto.repository.api.upload.ServerResponse;
+import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.server.devtool.service.IProjectService;
 import org.eclipse.vorto.server.devtool.utils.DevtoolRestClient;
 import org.eclipse.vorto.server.devtool.utils.DevtoolUtils;
@@ -75,7 +75,7 @@ public class PublisherController {
 
 	@ApiOperation(value = "Uploads models to the vorto repository for validation")
 	@RequestMapping(value = "/{projectName}/validate", method = RequestMethod.GET)
-	public ResponseEntity<ServerResponse> uploadModels(
+	public ResponseEntity<UploadModelResponse> uploadModels(
 			@ApiParam(value = "ProjectName", required = true) final @PathVariable String projectName,
 			@ApiParam(value = "Request", required = true) final HttpServletRequest request) {
 
@@ -98,20 +98,20 @@ public class PublisherController {
 		}
 		byte[] zipFileContent = createZipFileContent(resourceMap);
 		final String fileName = Long.toString(System.currentTimeMillis()) + ".zip";
-		ResponseEntity<ServerResponse> responseEntity = devtoolRestClient.uploadMultipleFiles(fileName, zipFileContent);
+		ResponseEntity<UploadModelResponse> responseEntity = devtoolRestClient.uploadMultipleFiles(fileName, zipFileContent);
 		return responseEntity;
 	}
 
 	@ApiOperation(value = "Checks in single model to the vorto repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkin(
+	public ResponseEntity<UploadModelResponse> checkin(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		return devtoolRestClient.checkInSingleFile(handleId);
 	}
 
 	@ApiOperation(value = "Checks in multiple models to the vorto repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkInMultiple(
+	public ResponseEntity<UploadModelResponse> checkInMultiple(
 			@ApiParam(value = "The file name of uploaded vorto model", required = true) final @RequestBody ModelHandle[] modelHandles) {
 		return devtoolRestClient.checkInMultipleFiles(modelHandles);
 	}

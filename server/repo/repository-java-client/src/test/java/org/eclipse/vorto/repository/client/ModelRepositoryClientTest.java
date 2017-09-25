@@ -20,9 +20,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+import org.eclipse.vorto.repository.api.IModelPublisher;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -32,7 +35,9 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
+import org.eclipse.vorto.repository.api.upload.ModelPublishException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -43,10 +48,13 @@ public class ModelRepositoryClientTest {
 	
 	private IModelRepository modelRepo;
 	private IMapping mapping;
+	private IModelPublisher publisher;
+	
 	@Before
 	public void setUp() {
 		modelRepo = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildModelRepositoryClient();
 		mapping = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildIMappingClient();
+		publisher = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildModelPublishClient();
 	}
 
 	@Test
@@ -105,4 +113,18 @@ public class ModelRepositoryClientTest {
 		assertEquals("x_value",properties.get(0).getName());
 	}
 	
+	@Test
+	@Ignore
+	public void testPublishModel() throws Exception {
+		File uploadableFile = new File("src/test/resources/Color3.type");
+		ModelId uploadedModelId = publisher.publish(ModelType.Datatype, FileUtils.readFileToString(uploadableFile));
+		assertEquals(new ModelId("Color","demo","1.0.0"),uploadedModelId);
+	}
+	
+	@Test (expected=ModelPublishException.class)
+	@Ignore
+	public void testPublishInvalidModel() throws Exception {
+		File uploadableFile = new File("src/test/resources/Color3_invalid.type");
+		publisher.publish(ModelType.Datatype, FileUtils.readFileToString(uploadableFile));
+	}
 }

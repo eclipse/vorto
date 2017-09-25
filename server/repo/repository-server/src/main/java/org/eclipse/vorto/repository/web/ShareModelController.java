@@ -18,8 +18,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
-import org.eclipse.vorto.repository.api.upload.ServerResponse;
+import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
 import org.eclipse.vorto.repository.internal.service.utils.BulkUploadHelper;
@@ -67,34 +69,34 @@ public class ShareModelController {
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<UploadModelResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
 			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
 			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
 			uploadModelResults.add(uploadModelResult);
 			String message = "Uploaded model " + file.getOriginalFilename() + (uploadModelResult.isValid() ? " is valid to check in." : " has errors. Cannot check in.") ;
-			return validResponse(new ServerResponse(message,true, uploadModelResults));
+			return validResponse(new UploadModelResponse(message,uploadModelResult.isValid(), uploadModelResults));
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
-			ServerResponse errorResponse = new ServerResponse("Error during upload. Try again. " + e.getMessage(),
+			UploadModelResponse errorResponse = new UploadModelResponse("Error during upload. Try again. " + e.getMessage(),
 					false, null);
-			return new ResponseEntity<ServerResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<UploadModelResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@ApiOperation(value = "Upload and validate multiple vorto models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
-	public ResponseEntity<ServerResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<UploadModelResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);
 			
 			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
-			ServerResponse serverResponse = (uploadModelResults.size() == 0)
-					? new ServerResponse("Uploaded file doesn't have any valid models.", false, uploadModelResults)
-					: new ServerResponse(constructUserResponseMessage(uploadModelResults), true, uploadModelResults);
+			UploadModelResponse serverResponse = (uploadModelResults.size() == 0)
+					? new UploadModelResponse("Uploaded file doesn't have any valid models.", false, uploadModelResults)
+					: createModelResponse(uploadModelResults);
 			return validResponse(serverResponse);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk upload models.",e);
@@ -104,50 +106,48 @@ public class ShareModelController {
 
 	@ApiOperation(value = "Checkin an uploaded vorto model into the repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
+	public ResponseEntity<ModelId> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
-		modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
-			ServerResponse successModelResponse = new ServerResponse("Model has been checkin successfully.",true, null);
-			return validResponse(successModelResponse);
+			ModelInfo result = modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
+			return new ResponseEntity<ModelId>(result.getId(),HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
-			return erroredResponse("Error during checkin. Try again. " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@ApiOperation(value = "Checkin multiple uploaded vorto models into the  repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<ServerResponse> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
+	public ResponseEntity<Void> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
 		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
 				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());
 			}
-			ServerResponse successModelResponse = new ServerResponse("All the models has been checked in Successfully.",true, null);
-			return validResponse(successModelResponse);
+			return new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk checkin models.", e);
-			return erroredResponse("Error during checkin. Try again. " + e.getMessage());
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	private ResponseEntity<ServerResponse> validResponse(ServerResponse successModelResponse) {
-		return new ResponseEntity<ServerResponse>(successModelResponse, HttpStatus.OK);
+	private ResponseEntity<UploadModelResponse> validResponse(UploadModelResponse successModelResponse) {
+		return new ResponseEntity<UploadModelResponse>(successModelResponse, HttpStatus.OK);
 	}
 
-	private ResponseEntity<ServerResponse> erroredResponse(String errorMessage) {
-		ServerResponse errorResponse = new ServerResponse("Error during checkin. Try again. " + errorMessage,
+	private ResponseEntity<UploadModelResponse> erroredResponse(String errorMessage) {
+		UploadModelResponse errorResponse = new UploadModelResponse("Error during checkin. Try again. " + errorMessage,
 				false, null);
-		return new ResponseEntity<ServerResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<UploadModelResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	private String constructUserResponseMessage(List<UploadModelResult> uploadModelResults) {
+	private UploadModelResponse createModelResponse(List<UploadModelResult> uploadModelResults) {
 		if(uploadModelResults.size() ==0)
-			return "No valid models found. Nothing to checkin";
+			return new UploadModelResponse("No valid models found. Nothing to checkin",false,null);
 		long noOfInvalidModels = uploadModelResults.stream().filter(result -> !result.isValid()).count();
 		
-		return (noOfInvalidModels) > 0 ? resolveMessage(ERROR_MSG_FORMAT, noOfInvalidModels) : resolveMessage(SUCCESS_MSG_FORMAT, uploadModelResults.size()); 
+		return (noOfInvalidModels) > 0 ? new UploadModelResponse(resolveMessage(ERROR_MSG_FORMAT, noOfInvalidModels),false,uploadModelResults) : new UploadModelResponse(resolveMessage(SUCCESS_MSG_FORMAT, uploadModelResults.size()),true,uploadModelResults); 
 	}
 
 	private String resolveMessage(String messageFormat, long occurences) {

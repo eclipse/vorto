@@ -59,6 +59,8 @@ public interface IModelRepository {
 	 */
 	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass, String targetPlatformKey);
 	
+	
+	
 	/**
 	 * Creates a new model query builder as a helper for searching models via {@link IModelRepository#search(ModelQuery)} 
 	 * @return

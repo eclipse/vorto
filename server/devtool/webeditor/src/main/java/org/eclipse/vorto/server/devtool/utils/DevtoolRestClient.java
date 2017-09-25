@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
-import org.eclipse.vorto.repository.api.upload.ServerResponse;
+import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.server.devtool.web.controller.publisher.FileMessageResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -90,31 +90,31 @@ public class DevtoolRestClient {
 		return modelResourceList;
 	}
 
-	public ResponseEntity<ServerResponse> uploadMultipleFiles(final String fileName, byte[] multipleFileContent) {
+	public ResponseEntity<UploadModelResponse> uploadMultipleFiles(final String fileName, byte[] multipleFileContent) {
 		LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 		map.add("file", new FileMessageResource(multipleFileContent, fileName));
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
 				map, httpHeaders);
-		return restTemplate.postForEntity(basePath + "/rest/secure/multiple", requestEntity, ServerResponse.class);
+		return restTemplate.postForEntity(basePath + "/rest/secure/multiple", requestEntity, UploadModelResponse.class);
 	}
 
-	public ResponseEntity<ServerResponse> checkInSingleFile(String handleId) {
+	public ResponseEntity<UploadModelResponse> checkInSingleFile(String handleId) {
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<LinkedMultiValueMap<String, Object>>(
 				httpHeaders);
 		return restTemplate.exchange(basePath + "/rest/secure/{handleId:.+}", HttpMethod.PUT, requestEntity,
-				ServerResponse.class, handleId);
+				UploadModelResponse.class, handleId);
 	}
 
-	public ResponseEntity<ServerResponse> checkInMultipleFiles(ModelHandle[] modelHandles) {
+	public ResponseEntity<UploadModelResponse> checkInMultipleFiles(ModelHandle[] modelHandles) {
 		String json = gson.toJson(modelHandles);
 		HttpHeaders httpHeaders = getAuthorisedHeaders();
 		httpHeaders.setContentType(MediaType.APPLICATION_JSON_UTF8);
 		HttpEntity<String> requestEntity = new HttpEntity<>(json, httpHeaders);
 		return restTemplate.exchange(basePath + "/rest/secure/checkInMultiple", HttpMethod.PUT, requestEntity,
-				ServerResponse.class);
+				UploadModelResponse.class);
 	}
 
 	private HttpHeaders getAuthorisedHeaders() {

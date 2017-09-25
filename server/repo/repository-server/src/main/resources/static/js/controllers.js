@@ -88,7 +88,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         $scope.uploadResult = {};
         $scope.resultMessage = "";
         $scope.showResultBox = false;
-        $rootScope.error = "";
+        $scope.error = null;
 
         var fileToUpload = document.getElementById('file').files[0];
         if(fileToUpload != undefined) {
@@ -123,7 +123,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0) {
                 angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {
                     var item =  (idx == 0) ? {active: false} : {active: true} ;
-                    var modelType = resultObject.modelResource.modelType;
+                    var modelType = resultObject.modelResource.type;
                     switch (modelType) {
                     case "Functionblock":
                         fbcount++;
@@ -152,15 +152,15 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         }).error(function(data, status, headers, config) {
             $scope.isLoading = false;
             if(status == 403){
-                $rootScope.error = "Operation is Forbidden";
+                $scope.error = "Operation is Forbidden";
             }else if(status == 401){
-                $rootScope.error = "Unauthorized Operation";
+                $scope.error= "Unauthorized Operation";
             }else if(status == 400){
-                $rootScope.error = "Bad Request. Server Down";
+                $scope.error = "Bad Request. Server Down";
             }else if(status == 500){
-                $rootScope.error = "Internal Server Error";
+                $scope.error = "Internal Server Error";
             }else{
-                $rootScope.error = "Failed Request with response status "+status;
+                $scope.error = "Failed Request with response status "+status;
             }
         });
     };
@@ -210,19 +210,20 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
-            $scope.resultMessage = result.message;
+            $scope.resultMessage = "Checkin was successful!";
+            $scope.showCheckin = false;
         }).error(function(data, status, headers, config) {
             $scope.isLoading = false;
             if(status == 403){
-                $rootScope.error = "Operation is Forbidden";
+                $scope.error = "Operation is Forbidden";
             }else if(status == 401){
-                $rootScope.error = "Unauthorized Operation";
+                $scope.error = "Unauthorized Operation";
             }else if(status == 400){
-                $rootScope.error = "Bad Request. Server Down";
+                $scope.error = "Bad Request. Server Down";
             }else if(status == 500){
-                $rootScope.error = "Internal Server Error";
+                $scope.error = "Internal Server Error";
             }else{
-                $rootScope.error = "Failed Request with response status "+status;
+                $scope.error = "Failed Request with response status "+status;
             }
         });
     };
@@ -232,18 +233,19 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
             $scope.showResultBox = true;
-            $scope.resultMessage = result.message;
+            $scope.resultMessage = "Checkin was successful!";
+            $scope.showCheckin = false;
         }).error(function(data, status, headers, config) {
             if(status == 403){
-                $rootScope.error = "Operation is Forbidden";
+                $scope.error = "Operation is Forbidden";
             }else if(status == 401){
-                $rootScope.error = "Unauthorized Operation";
+                $scope.error= "Unauthorized Operation";
             }else if(status == 400){
-                $rootScope.error = "Bad Request. Server Down";
+                $scope.error = "Bad Request. Server Down";
             }else if(status == 500){
-                $rootScope.error = "Internal Server Error";
+                $scope.error = "Internal Server Error";
             }else{
-                $rootScope.error = "Failed Request with response status "+status;
+                $scope.error = "Failed Request with response status "+status;
             }
         });;
     };

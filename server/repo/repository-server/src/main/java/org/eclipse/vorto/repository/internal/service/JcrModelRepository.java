@@ -230,7 +230,7 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public void checkin(String handleId, String author) {
+	public ModelInfo checkin(String handleId, String author) {
 		StorageItem uploadedItem = this.uploadStorage.get(handleId);
 		
 		if (uploadedItem == null) {
@@ -267,6 +267,8 @@ public class JcrModelRepository implements IModelRepository {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + resource.getId(), e);
 		}
+		
+		return resource;
 	}
 
 	private void notifyWatchers(ModelInfo resource, String author) {

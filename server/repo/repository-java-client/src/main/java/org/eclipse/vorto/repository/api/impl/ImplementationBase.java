@@ -42,10 +42,10 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 public class ImplementationBase {
-	private HttpClient httpClient;
-	private RequestContext requestContext;
+	protected HttpClient httpClient;
+	protected RequestContext requestContext;
 	
-	private Gson gson = new GsonBuilder()
+	protected Gson gson = new GsonBuilder()
 			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 			.registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
 				public IReferenceType deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)

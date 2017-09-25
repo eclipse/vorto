@@ -14,25 +14,26 @@
  */
 package org.eclipse.vorto.repository.api.upload;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * Generic server response type for client request.
- * @author Nagavijay Sivakumar - Robert Bosch (SEA) Pte. Ltd.
- *
+ * Generic server response type for client request. *
  */
-public class ServerResponse {
+public class UploadModelResponse {
 
 	private String message = null;
 	private Boolean isSuccess = null;
-	private Object obj = null;
+	private List<UploadModelResult> obj = new ArrayList<UploadModelResult>();
 
 	/*
 	 * Dummy constructor needed by ResponseEntity for JSON parsing of http response 
 	 */
-	public ServerResponse() {
+	public UploadModelResponse() {
 		
 	}
 		
-	public ServerResponse(String message, Boolean isSuccess, Object obj) {
+	public UploadModelResponse(String message, Boolean isSuccess, List<UploadModelResult> obj) {
 		this.message = message;
 		this.isSuccess = isSuccess;
 		this.obj = obj;
@@ -66,11 +67,11 @@ public class ServerResponse {
 	 * about request. Typically used for UI and returned as Map(key, value)
 	 * format.
 	 **/
-	public Object getObj() {
+	public List<UploadModelResult> getObj() {
 		return obj;
 	}
 
-	public void setObj(Object obj) {
+	public void setObj(List<UploadModelResult> obj) {
 		this.obj = obj;
 	}
 
