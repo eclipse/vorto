@@ -32,6 +32,10 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
 		this.id = modelId;
 		this.type = modelType;
 	}
+	
+	public AbstractModel() {
+		
+	}
 
 	public ModelId getId() {
 		return id;

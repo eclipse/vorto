@@ -28,7 +28,7 @@ define(["../init/AppController"], function(controllers) {
           } : {
             active: true
           };
-          var modelType = resultObject.modelResource.modelType;
+          var modelType = resultObject.modelResource.type;
           switch (modelType) {
             case "Functionblock":
               $scope.infoModelCount++;
@@ -90,7 +90,7 @@ define(["../init/AppController"], function(controllers) {
         .then(function(result) {
           $scope.isLoading = false;
           $scope.showResultBox = true;
-          $scope.resultMessage = result.message;
+          $scope.resultMessage = "Check in was successful";
           $scope.modelCheckedIn = true;
         }).catch(function(error) {
           var status = error.status;
@@ -114,7 +114,7 @@ define(["../init/AppController"], function(controllers) {
       PublishDataService.checkInSingle(params)
         .then(function(result) {
           $scope.showResultBox = true;
-          $scope.resultMessage = result.message;
+          $scope.resultMessage = "Check in was successful.";
           $scope.modelCheckedIn = true;
         }).catch(function(error) {
           var status = error.status;

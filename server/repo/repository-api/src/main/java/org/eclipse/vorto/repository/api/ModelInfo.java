@@ -35,6 +35,9 @@ public class ModelInfo extends AbstractModel {
 		super(modelId,modelType);
 	}
 	
+	public ModelInfo() {
+	}
+	
 	public List<ModelId> getReferencedBy() {
 		return referencedBy;
 	}
