@@ -1,15 +1,15 @@
 # Getting started with Vorto and the Bosch IoT Suite
 
-Vorto provides a variety of existing Bosch IoT Suite generators, for you to get started very easily. In this HowTo, we are going to show you:
+Vorto provides a variety of existing Bosch IoT Suite generators, for you to get started very easily. In this guide, we are going to show you:
 
 1. Create a very simple Information Model, describing a few properties of the device and publish the model to the Vorto Repository
 2. Register a specific device by creating a new thing in Bosch IoT Things Service
 3. Generate a Python Code that sends telemetry device data to the thing in the Bosch IoT Suite via MQTT
-4. Generate an AngularJS / SpringBoot Java Application that consumes the telemetry data from the thing and displays the data in a User Interface
+4. Generate an AngularJS / SpringBoot Java Application that consumes thing data from Bosch IoT Things and displays the data in a User Interface
 
 ## Prerequisite
 
-- [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
+- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
 
 ## Steps
 
@@ -36,10 +36,9 @@ Vorto provides a variety of existing Bosch IoT Suite generators, for you to get 
 - Filter for the information model from Step 1 and click for details
 - In the details page, choose **Python MQTT** from the list of **Generators**
 - Confirm with **Generate**. This will generate python code for a device that sends data to the Bosch IoT Suite via MQTT
+- Read the [Python MQTT Tutorial](tutorial_connect_device_using_mqtt_python.md) to learn how to configure and run the generated code.
 
-For more information about this, check out the [Python MQTT Tutorial](tutorial_connect_device_using_mqtt_python.md)
-
-Once you are sending data to the Suite, you can verify the incoming telemetry data in the [Developer Console](https://console.bosch-iot-suite). For that just browse to the thing you created in Step 2.
+Once you are sending data to the Suite, you can verify the telemetry data in the [Bosch IoT Developer Console](https://console.bosch-iot-suite). For that just browse to the thing you had created in Step 2.
 
 ### 4. Consume the data in a AngularJS/ Java Web Application
 
