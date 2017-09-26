@@ -17,12 +17,28 @@ Vorto provides a variety of existing Bosch IoT Suite generators, for you to get 
 
 - Open the [Bosch IoT Suite Developer Console](https://console.bosch-iot-suite.com) and log in with the credentials from your evaluation confirmation email.
 - Select **Connect device** in the home screen
+
+<img src="./images/gettingstarted_bosch/console_home.png" width="70%">
+
 - Select **Create a new thing type** in the first wizard page
+
+<img src="./images/gettingstarted_bosch/console_createthingtype_1.png" width="70%">
+
 - Define a 
 	- **namespace**, e.g. 'demo'
 	- **name** for the thing type, e.g. SensorXYZ
-	- Choose the properties **Accelerometer** and **Temperature** from the multi-select box
-	- Confirm with **Create** that takes you back to the Thing Type Selections
+	- Choose the properties **Accelerometer** and **Temperature** from the multi-select box:
+
+<img src="./images/gettingstarted_bosch/console_createthingtype_2.png" width="70%">
+
+- Confirm with **Create** that takes you back to the Thing Type Selections:
+
+<img src="./images/gettingstarted_bosch/console_createthingtype_3.png" width="70%">
+
+- You can see your newly created Vorto Model in the [Vorto Repository](http://vorto.eclipse.org):
+
+<img src="./images/gettingstarted_bosch/console_createthingtype_4.png" width="70%">
+
 
 **Great!** You have just created a Vorto Information Model for your device. If you want to create more sophisticated models, feel free to use the [Model Builder](http://vorto.eclipse.org/editor).
 
