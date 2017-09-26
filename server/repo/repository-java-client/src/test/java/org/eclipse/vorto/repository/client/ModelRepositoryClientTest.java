@@ -34,6 +34,7 @@ import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
+import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
 import org.eclipse.vorto.repository.api.upload.ModelPublishException;
 import org.junit.Before;
@@ -80,6 +81,19 @@ public class ModelRepositoryClientTest {
 		Infomodel xdkModel = modelRepo.getContent(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0"), Infomodel.class).get();
 		assertNotNull(xdkModel);
 		assertTrue(xdkModel.getFunctionblocks().size() > 0);
+	}
+	
+	@Test
+	public void testMandatoryFields() throws Exception {
+		FunctionblockModel model = modelRepo.getContent(ModelId.fromPrettyFormat("devices.fb.DistanceSensor:1.0.0"), FunctionblockModel.class).get();
+		assertNotNull(model);
+		assertEquals("distance",model.getStatusProperties().get(0).getName());
+		assertEquals(PrimitiveType.DOUBLE,model.getStatusProperties().get(0).getType());
+		assertEquals(true,model.getStatusProperties().get(0).isMandatory());
+		assertEquals(false,model.getStatusProperties().get(0).isMultiple());
+		
+		assertEquals("sensor_units",model.getStatusProperties().get(1).getName());
+		assertEquals(false,model.getStatusProperties().get(1).isMandatory());
 	}
 	
 	@Test

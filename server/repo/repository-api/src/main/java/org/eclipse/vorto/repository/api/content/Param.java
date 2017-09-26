@@ -18,7 +18,7 @@ public class Param extends AbstractProperty {
 
 	@Override
 	public String toString() {
-		return "Param [isMandatory=" + isMandatory + ", name=" + name + ", isMultiple=" + isMultiple + ", description="
+		return "Param [isMandatory=" + mandatory + ", name=" + name + ", isMultiple=" + isMultiple + ", description="
 				+ description + ", type=" + type + ", constraints=" + constraints + "]";
 	}
 	

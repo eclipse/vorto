@@ -31,7 +31,7 @@ public class ModelProperty extends AbstractProperty {
 
 	@Override
 	public String toString() {
-		return "ModelProperty [attributes=" + attributes + ", isMandatory=" + isMandatory + ", name=" + name
+		return "ModelProperty [attributes=" + attributes + ", isMandatory=" + mandatory + ", name=" + name
 				+ ", isMultiple=" + isMultiple + ", description=" + description + ", type=" + type + ", constraints="
 				+ constraints + "]";
 	}

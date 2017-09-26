@@ -19,7 +19,7 @@ import java.util.List;
 
 public class AbstractProperty extends DefaultMappedElement {
 
-	protected boolean isMandatory;
+	protected boolean mandatory;
 	protected String name;
 	
 	protected boolean isMultiple;
@@ -38,11 +38,11 @@ public class AbstractProperty extends DefaultMappedElement {
 	}
 
 	public boolean isMandatory() {
-		return isMandatory;
+		return mandatory;
 	}
 
-	public void setMandatory(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public void setMandatory(boolean mandatory) {
+		this.mandatory = mandatory;
 	}
 
 	public String getName() {
