@@ -44,7 +44,7 @@ Once you are sending data to the Suite, you can verify the telemetry data in the
 
 Once the data is in the cloud, you can use the same Vorto Information Model and generate a full-fledged SpringBoot / AngularJS App that is able to receive the telemetry data and display them in a User Interface.
 
-For more info, please visit the [Web Application Tutorial](tutorial_create_webapp_dashboard).
+For more info, please visit the [Web Application Tutorial](tutorial_create_webapp_dashboard.md).
 
 **Congratulations**. With just a single Vorto Information Model, you can connect a device and consume the device data in an application. 
 Feel free to check out the other tutorials from the [Tutorial Section](Readme.md)
