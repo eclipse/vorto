@@ -1,5 +1,7 @@
 # Vorto Tutorials
 
+- [Getting started with Vorto and the Bosch IoT Suite](tutorial_getting_started_with_boschiotsuite.md)
+
 ## Connecting a device
 
 - [Connect a device via Bluetooth with Vorto and Kura](tutorial_connect_xdk_ble.md)
