@@ -13,11 +13,7 @@ In this tutorial we are going to show you how to connect a device to Bosch IoT S
 * [Python 3.x](https://www.python.org/)
 * IDEs
 	* For Python [Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python) 
-	* For Vorto code generator [Eclipse IDE](https://eclipse.org/downloads/packages/release/Mars/2)
-	* 
 * [Paho Python Client](https://eclipse.org/paho/clients/python/)
-* [Vorto Web Development Tool](http://vorto.eclipse.org/editor)
-* [Vorto Repository](http://vorto.eclipse.org/)
 
 ## Steps
 
@@ -40,23 +36,10 @@ Now we have setup the device, next step is to setup the development environment 
 
 In this step you are going to generate the application code using the python generator. Assuming you have published an infromation model already to the vorto repository prior to this step (*see the pre-prequisite section*). There are two ways to generate code:
 
-* **Run the generator from the Eclipse IDE**
-	1. Download and install the [Eclipse IDE for Java and DSL Developers]		(http://www.eclipse.org/downloads/packages/)
-	2. Start the Eclipse IDE and install the Vorto Toolset
-	
-		2.a. [Download the package](http://www.eclipse.org/vorto/downloads/index.html) by 		     dragging the Install button onto the running IDE or
-	
-		2.b. By choosing the menu Help -> Eclipse Marketplace... and finding the Vorto 			  Toolset in the dialog. Click Install to install the Vorto Toolset in the 			  corresponding 	list entry.
-	3. Choose the Vorto Perspective and search for the desired Information Model for your 		project. 
+* **Invoke the generator from the Repository**
 
-	4. To generate the code for your implementation right-click on your information model and select the Python MQTT Generator
-	
-		1. Choose the directory where you want to have your generated code reside 
-
-* **Invoke the generator from the Repository directly**
-
-	1. Open the [vorto repository](http://vorto.eclipse.org/) in a browser
-	2. Navigate to your model using the search functionality of the repository and look for 	   the Python MQTT Generator in the panel on the right hand side of the screen. Click on 	   the generate button to generate code. 
+	1. Open the [Vorto Repository](http://vorto.eclipse.org/) in a browser
+	2. Navigate to your model using the search functionality of the repository and look for 	   the **Python MQTT Generator** in the panel on the right hand side of the screen. Click on the **generate button** to generate code. 
 	3. Store the ZIP file which will be downloaded and extract the source code.
 
 ### Step 4. Write the application
