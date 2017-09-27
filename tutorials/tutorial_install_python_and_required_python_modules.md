@@ -4,6 +4,8 @@
 
 * [Install pip](https://packaging.python.org/tutorials/installing-packages/#install-pip-setuptools-and-wheel)
 
+* Install Visual C++ Build Tools(http://landinghub.visualstudio.com/visual-cpp-build-tools). This is a pre-requisite for installing netifaces.
+
 * Install the required Python modules
 	 
 	* [Eclipse paho](https://www.eclipse.org/paho/clients/python/)
@@ -12,5 +14,6 @@
 		* open terminal or console and type the following command
 		
 				pip install paho-mqtt
-				pip install netinterfaces
+				pip install netifaces
+		
 	
