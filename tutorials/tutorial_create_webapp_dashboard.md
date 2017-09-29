@@ -29,10 +29,7 @@ In this tutorial, you are going to learn how you can build a small Spring-boot A
 - Download <a href="https://github.com/bsinno/iot-things-examples/blob/master/cr-integration-api-examples/common/src/main/resources/bosch-iot-cloud.jks">bosch-iot-cloud.jks</a> and store it in a "secure" folder of the project
 - Create a public and private key pair for your solution. Store the CRClient in the "secure" folder as well
 ```
-keytool -genkeypair -noprompt 
--dname "CN=-, OU=-, O=-, L=-, S=-, C=-" 
--keyalg EC -alias CR -sigalg SHA512withECDSA 
--validity 365 -keystore CRClient.jks
+keytool -genkeypair -noprompt -dname "CN=-, OU=-, O=-, L=-, S=-, C=-" -keyalg EC -alias CR -sigalg SHA512withECDSA -validity 365 -keystore CRClient.jks
 ```
 - Extract the public key information into a separate file
 ```
