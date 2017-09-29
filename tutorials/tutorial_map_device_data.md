@@ -1,4 +1,4 @@
-# Map arbitrary device json data to Vorto-compliant Eclipse Ditto format
+# Map arbitrary device payload to Eclipse Ditto format
 
 Often times, you are facing the situation that a device sends its data via e.g. MQTT in a very unique format. Then you look into the Vorto Repository and find functionblocks matching the semantics of the device data, but the device data format and the functionblock data format simply do not match.
 
@@ -27,8 +27,10 @@ The second approach of having only a single voltage functionality would simplify
 
 ## Prerequisite
 
-- [Create and Publish](tutorial-create_and_publish_with_web_editor.md) an information model matching the semantics of the device 
-- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- You have successfully booked the following services:
+	- Bosch IoT Things Service
+	- Bosch IoT Permissions Service 
+- [Create and Publish](tutorial-create_and_publish_with_web_editor.md) an information model matching the semantics of the device  
 - [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
 ## Steps

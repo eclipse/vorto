@@ -4,25 +4,28 @@
 ## Prerequisite
 
 - [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
-- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- You have successfully booked the following services:
+	- Bosch IoT Things Service
+	- Bosch IoT Permissions Service  
 
 ## Steps
 
 - Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
-- Log in to the console with your evaluation tenant, username and password.
+- Log in to the console with your tenant, username and password.
 - Open the **Thing Console -> Thing Browser** in the left navigation bar
 - Click **Connect thing**
 
 	<img src="./images/connect_xdk_kura/step2_connect.png" width="50%"/>
 
-- Search the Vorto Repository for the device type you would like to register, e.g. _XDK_. Select the device type and confirm with _Next_
+- Search the Vorto Repository for the device type you would like to register, e.g. _XDK_. Select the device type and confirm with **Next**
 
 	<img src="./images/connect_xdk_kura/step2_connect_vorto.png" width="50%"/>
 
-- Choose the protocol connector that the device connects to the Suite, e.g. **HTTP**. Confirm your selection with _Next_
+- Choose the protocol connector that the device connects to the Suite, e.g. **HTTP**. Confirm your selection with **Next**
 - Give your device a unique name. For example
-	- Namespace: com.mycompany
-	- Technical ID: For example the mac address of the device, like _FCD6BD100B88_. Confirm your settings with _Complete_
+	- **Namespace**: com.mycompany
+	- **Name** : MyXDK
+	- **Technical ID**: For example the mac address of the device, like _FCD6BD100B88_. Confirm your settings with **Complete**
 - Now you have successfully registered your device with the Suite for a given Vorto information model and you should be able to see it in the thing browser:
 	
 	<img src="./images/connect_xdk_kura/step2_7.png" width="50%"/>

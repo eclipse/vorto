@@ -4,8 +4,10 @@ In this tutorial we are going to show you how to connect a device to Bosch IoT S
 
 ## Pre-requisites
 
+* You have successfully booked the following services:
+	- Bosch IoT Things Service
+	- Bosch IoT Permissions Service 
 * [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.  
-* [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
 * [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
 ## Tools

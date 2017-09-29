@@ -9,13 +9,15 @@ Vorto provides a variety of existing Bosch IoT Suite generators, for you to get 
 
 ## Prerequisite
 
-- [Request](https://www.bosch-iot-suite.com/) an evaluation account for the Bosch IoT Suite.  
+- You have successfully booked the following services:
+	- Bosch IoT Things Service
+	- Bosch IoT Permissions Service 
 
 ## Steps
 
 ### 1. Create a simple Information Model for a device
 
-- Open the [Bosch IoT Suite Developer Console](https://console.bosch-iot-suite.com) and log in with the credentials from your evaluation confirmation email.
+- Open the [Bosch IoT Suite Developer Console](https://console.bosch-iot-suite.com) and log in with your Bosch IoT Permissions credentials.
 - Select **Connect device** in the home screen
 
 <img src="./images/gettingstarted_bosch/console_home.png" width="70%">
