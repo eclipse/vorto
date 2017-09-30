@@ -47,29 +47,36 @@ public class BleGattDeviceBuilder {
 
 		for (ModelProperty fbprop : infomodel.getFunctionblocks())
 		{
-			BleGattService service = new BleGattService();
 			FunctionblockModel fb = mappingSpec.getFunctionBlock((ModelId) fbprop.getType());
-			
-			Optional<Stereotype> stereotype = fb.getStereotype("source");
-			if (stereotype.isPresent()) {
-				String uuid = stereotype.get().getAttributes().get("uuid");
-				if (uuid != null) {
-					service.setUuid(UUID.fromString(uuid));
+
+			if ("blegatt".equals(fb.getTargetPlatformKey())) {
+				BleGattService service = new BleGattService();
+				
+				Optional<Stereotype> stereotype = fb.getStereotype("source");
+				if (stereotype.isPresent()) {
+					String uuid = stereotype.get().getAttributes().get("uuid");
+					if (uuid != null) {
+						service.setUuid(UUID.fromString(uuid));
+					}
 				}
+	
+				for (ModelProperty prop : fb.getConfigurationProperties())
+				{
+					BleGattCharacteristic ch = buildCharacteristic(prop);
+					if (ch.getUuid() != null) {
+						service.addCharacteristics(ch);
+					}
+				}
+				for (ModelProperty prop : fb.getStatusProperties())
+				{
+					BleGattCharacteristic ch = buildCharacteristic(prop);
+					if (ch.getUuid() != null) {
+						service.addCharacteristics(ch);
+					}
+				}
+				
+				device.addService(service);
 			}
-			
-			for (ModelProperty prop : fb.getConfigurationProperties())
-			{
-				BleGattCharacteristic ch = buildCharacteristic(prop); 
-				service.addCharacteristics(ch);
-			}
-			for (ModelProperty prop : fb.getStatusProperties())
-			{
-				BleGattCharacteristic ch = buildCharacteristic(prop); 
-				service.addCharacteristics(ch);
-			}	
-			
-			device.addService(service);
 		}
 		
 		return device;

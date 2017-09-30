@@ -12,6 +12,7 @@
  * Contributors:
  * - Oliver Meili <omi@ieee.org>
  */
+
 package org.eclipse.vorto.service.mapping;
 
 import java.util.Arrays;
@@ -47,6 +48,9 @@ public class BleGattCharacteristic {
 
 	public void setData(String data)
 	{
+		if (data == null) {
+			this.data = null;
+		}
 		String[] digits = data.split(" ");
 		if (digits != null)
 		{
