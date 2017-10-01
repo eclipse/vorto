@@ -39,7 +39,7 @@ class ArduinoImSourceTemplate extends ArduinoTemplate<InformationModel> {
 		
 		String «model.name»::serialize()
 		{
-            String result = "\"features\": {";
+            String result = "{";
 
             «FOR fb : model.properties»
                 result += "\"«fb.name»\": { ";
