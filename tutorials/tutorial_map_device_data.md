@@ -79,14 +79,14 @@ Let's use this info in order to create the mapping specifications for the Vorto 
 
 - Create a new file, e.g. awsbutton_buttonpayload.mapping and add the following:
 
-	```
-	namespace devices.aws.button
-	version 1.0.0
-	displayname "PayloadMapping"
-	description "Data Mapping model for AWS IoT Button"
-	using com.ipso.smartobjects.Push_button;0.0.1
+```
+namespace devices.aws.button
+version 1.0.0
+displayname "PayloadMapping"
+description "Data Mapping model for AWS IoT Button"
+using com.ipso.smartobjects.Push_button;0.0.1
 
-	functionblockmapping ButtonPayloadMapping {
+functionblockmapping ButtonPayloadMapping {
 	targetplatform devices_aws_button_AWSIoTButton_1_0_0
 	
 	from Push_button to functions with { _namespace: "custom", convertClickType : "function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}"}
@@ -97,15 +97,15 @@ Let's use this info in order to create the mapping specifications for the Vorto 
 - Create another file, e.g. awsbutton_voltagepayload.mapping and add the following:
 
 ```
-	namespace devices.aws.button
-	version 1.0.0
-	displayname "PayloadVoltageMapping"
-	description "Mapping model for PayloadVoltageMapping"
+namespace devices.aws.button
+version 1.0.0
+displayname "PayloadVoltageMapping"
+description "Mapping model for PayloadVoltageMapping"
 
-	using com.ipso.smartobjects.Voltage;0.0.1
+using com.ipso.smartobjects.Voltage;0.0.1
 
-	functionblockmapping PayloadVoltageMapping {
-		targetplatform devices_aws_button_AWSIoTButton_1_0_0
+functionblockmapping PayloadVoltageMapping {
+	targetplatform devices_aws_button_AWSIoTButton_1_0_0
 
 	from Voltage.status.sensor_value to source with {xpath: "number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"}
 	from Voltage.status.sensor_units to source with {xpath: "string:substring(batteryVoltage,string:length(batteryVoltage)-2)"}
