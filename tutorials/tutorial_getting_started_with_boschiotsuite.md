@@ -11,7 +11,8 @@ Vorto provides a variety of existing Bosch IoT Suite generators, for you to get 
 
 - You have successfully booked the following services:
 	- Bosch IoT Things Service
-	- Bosch IoT Permissions Service 
+	- Bosch IoT Permissions Service
+	- Bosch IoT Hub
 
 ## Steps
 
