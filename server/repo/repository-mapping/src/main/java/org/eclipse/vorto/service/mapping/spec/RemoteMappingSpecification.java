@@ -70,26 +70,30 @@ public class RemoteMappingSpecification implements IMappingSpecification {
 			for (ModelProperty fbProperty : this.infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.mappingKey).get();
-								
-				if (fbm.getStereotype(STEREOTYPE).isPresent()) {
-					JavascriptFunctions functions;
-					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE).get();
-					String namespace = functionsStereotype.getAttributes().get("_namespace");
-					if (namespaces.containsKey(namespace))
-					{
-						functions = namespaces.get(namespace);
-					}
-					else
-					{
-						functions = new JavascriptFunctions(namespace);
-						this.library.addFunctions(functions);
-					}
-					
-					for (String key : functionsStereotype.getAttributes().keySet()) {
-						if (!"_namespace".equalsIgnoreCase(key)) {
-							functions.addFunction(key,functionsStereotype.getAttributes().get(key));
+				
+				if (fbm != null) {
+					if (fbm.getStereotype(STEREOTYPE).isPresent()) {
+						JavascriptFunctions functions;
+						Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE).get();
+						String namespace = functionsStereotype.getAttributes().get("_namespace");
+						if (namespaces.containsKey(namespace))
+						{
+							functions = namespaces.get(namespace);
+						}
+						else
+						{
+							functions = new JavascriptFunctions(namespace);
+							this.library.addFunctions(functions);
+						}
+						
+						for (String key : functionsStereotype.getAttributes().keySet()) {
+							if (!"_namespace".equalsIgnoreCase(key)) {
+								functions.addFunction(key,functionsStereotype.getAttributes().get(key));
+							}
 						}
 					}
+				} else {
+					fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class).get();
 				}
 				this.fbs.put(fbModelId, fbm);
 			}

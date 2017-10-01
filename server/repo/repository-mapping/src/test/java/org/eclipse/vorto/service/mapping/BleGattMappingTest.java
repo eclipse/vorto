@@ -86,6 +86,7 @@ public class BleGattMappingTest {
 			
 			FunctionblockModel barometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Barometer:1.0.0"), ModelType.Functionblock);
 			barometerModel.setDisplayName("Barometer");
+			barometerModel.setTargetPlatformKey("blegatt");
 			
 			HashMap<String, String> barometerFunctionsAttributes = new HashMap<String, String>();
 			barometerFunctionsAttributes.put("_namespace", "custom");
@@ -152,6 +153,7 @@ public class BleGattMappingTest {
 
 			FunctionblockModel accelerometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Accelerometer:1.0.0"), ModelType.Functionblock);
 			accelerometerModel.setDisplayName("Accelerometer");
+			accelerometerModel.setTargetPlatformKey("blegatt");
 			
 			HashMap<String, String> accelerometerFunctionsAttributes = new HashMap<String, String>();
 			accelerometerFunctionsAttributes.put("_namespace", "custom");
@@ -257,7 +259,8 @@ public class BleGattMappingTest {
 		public Infomodel getInfoModel() {
 			
 			Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices.TiSensorTag:1.0.0"), ModelType.InformationModel);
-
+			infomodel.setTargetPlatformKey("blegatt");
+			
 			ModelProperty barometerProperty = new ModelProperty();
 			barometerProperty.setName("barometer");
 			barometerProperty.setType(ModelId.fromPrettyFormat("demo.fb.Barometer:1.0.0"));
