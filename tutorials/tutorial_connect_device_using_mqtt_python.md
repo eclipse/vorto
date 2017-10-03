@@ -37,7 +37,7 @@ Now we have setup the device, next step is to setup the development environment 
 
 ### Step 3. Generate code using Vorto Python generator
 
-In this step you are going to generate the application code using the python generator. Assuming you have published an infromation model already to the vorto repository prior to this step (*see the pre-prequisite section*). There are two ways to generate code:
+In this step you are going to generate the application code using the python generator. Assuming you have published an infromation model already to the vorto repository prior to this step (*see the pre-prequisite section*):
 
 * **Invoke the generator from the Repository**
 
