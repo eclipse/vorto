@@ -137,6 +137,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	client.on_message = on_message
 	
 	client.tls_set("<path to CA cert file>")
+	
+	client.username_pw_set("<username>", "<password>")
 
 	# Connect to the MQTT broker
 	client.connect("<MQTT broker>", 8883, 60)
