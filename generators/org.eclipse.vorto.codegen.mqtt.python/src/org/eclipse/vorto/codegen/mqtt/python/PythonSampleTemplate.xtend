@@ -17,6 +17,8 @@ package org.eclipse.vorto.codegen.mqtt.python
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 
 class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	
@@ -88,7 +90,14 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    # Setting properties of function blocks
 	    «FOR fb : model.properties»
 	        «FOR status : fb.type.functionblock.status.properties»
-	            infomodel.«fb.name».«status.name» += 1
+	        	«IF status.type instanceof PrimitivePropertyType»
+	        		«var primitiveType = status.type as PrimitivePropertyType»
+	        		«IF primitiveType.type == PrimitiveType.STRING»
+	        		infomodel.«fb.name».«status.name» = ""
+	        		«ELSE»
+	        		infomodel.«fb.name».«status.name» += 1
+	        		«ENDIF»
+	        	«ENDIF»
 	        «ENDFOR»
 	    «ENDFOR»
 
@@ -110,7 +119,14 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	infomodel = «model.name».«model.name»()
 	«FOR fb : model.properties»
 	    «FOR status : fb.type.functionblock.status.properties»
-	        infomodel.«fb.name».«status.name» = 0
+	        «IF status.type instanceof PrimitivePropertyType»
+	        	«var primitiveType = status.type as PrimitivePropertyType»
+	        	«IF primitiveType.type == PrimitiveType.STRING»
+	        	infomodel.«fb.name».«status.name» = ""
+	        	«ELSE»
+	        	infomodel.«fb.name».«status.name» = 0
+	        	«ENDIF»
+	        «ENDIF»
 	    «ENDFOR»
 	«ENDFOR»
 
