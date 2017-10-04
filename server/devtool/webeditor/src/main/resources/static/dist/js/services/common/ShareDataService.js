@@ -9,6 +9,7 @@ define(["../init/AppService"], function(services) {
     var unsavedFilesList;
     var publishResult;
     var deleteProjectName;
+    var isEditorServiceToggled = false;
 
     var service = {
       getAddEditorTypes: getAddEditorTypes,
@@ -18,6 +19,7 @@ define(["../init/AppService"], function(services) {
       getUnsavedFiles: getUnsavedFiles,
       getPublishResult: getPublishResult,
       getDeleteProjectName: getDeleteProjectName,
+      getIsEditorServiceToggled: getIsEditorServiceToggled,
 
       setAddEditorTypes: setAddEditorTypes,
       setCloseEditorIndex: setCloseEditorIndex,
@@ -25,12 +27,13 @@ define(["../init/AppService"], function(services) {
       setDescribeEditorType: setDescribeEditorType,
       setUnsavedFiles: setUnsavedFiles,
       setPublishResult: setPublishResult,
-      setDeleteProjectName: setDeleteProjectName
+      setDeleteProjectName: setDeleteProjectName,
+      setIsEditorServiceToggled: setIsEditorServiceToggled
     }
 
     return service;
 
-    function getAddEditorTypes(){
+    function getAddEditorTypes() {
       return addEditorTypes;
     }
 
@@ -56,6 +59,10 @@ define(["../init/AppService"], function(services) {
 
     function getDeleteProjectName() {
       return deleteProjectName;
+    }
+
+    function getIsEditorServiceToggled() {
+      return isEditorServiceToggled;
     }
 
     function setAddEditorTypes(editorTypes) {
@@ -84,6 +91,10 @@ define(["../init/AppService"], function(services) {
 
     function setDeleteProjectName(projectName) {
       deleteProjectName = projectName;
+    }
+
+    function setIsEditorServiceToggled(toggle) {
+      isEditorServiceToggled = toggle;
     }
   }
 });

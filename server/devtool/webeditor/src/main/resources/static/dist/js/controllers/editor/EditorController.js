@@ -37,6 +37,14 @@ define(["../init/AppController"], function(controllers) {
     $scope.valid = "valid";
     $scope.invalid = "invalid";
 
+    $scope.enableValidationService = true;
+    $scope.enableOccurrencesService = true;
+    $scope.enableHighlightingService = true;
+    $scope.sendFullText = false;
+
+    var DYNAMIC_VALIDATION = "Dynamic Validation";
+    $scope.toggleButtonText = DYNAMIC_VALIDATION;
+
     $scope.editorTypes = [{
       language: "infomodel",
       display: "Info Model",
@@ -148,6 +156,9 @@ define(["../init/AppController"], function(controllers) {
             return false;
           }
           if (op === "move_node" || op === "copy_node") {
+            if(!$scope.enableValidationService){
+              return false;
+            }
             var parentId = parseInt(par.id);
             var temp = {};
             for (var i = 0; i < $scope.projectResources.length; i++) {
@@ -222,11 +233,13 @@ define(["../init/AppController"], function(controllers) {
     $scope.openProject = function() {
       $scope.isTreeLoading = true;
       $scope.projectName = $routeParams.projectName;
-      var params = {projectName: $scope.projectName};
-      ProjectDataService.openProject(params).then(function(data){
+      var params = {
+        projectName: $scope.projectName
+      };
+      ProjectDataService.openProject(params).then(function(data) {
         $scope.showEditorBody = true;
         $scope.getResources();
-      }).catch(function(error){
+      }).catch(function(error) {
         $scope.showEditorBody = false;
         $scope.isTreeLoading = false;
       });
@@ -238,14 +251,18 @@ define(["../init/AppController"], function(controllers) {
       var unsavedFiles = $scope.getUnsavedFiles();
       if (unsavedFiles.length < 1) {
         $scope.isValidationInProcess = true;
-        var params = {projectName: $scope.projectName};
-        PublishDataService.validateProject(params).then(function(data){
+        var params = {
+          projectName: $scope.projectName
+        };
+        PublishDataService.validateProject(params).then(function(data) {
           $scope.isValidationInProcess = false;
           $scope.openPublishModal(data);
-        }).catch(function(error){
+        }).catch(function(error) {
           $scope.isValidationInProcess = false;
           var message = "Failed to upload resources";
-          var params = {message: message};
+          var params = {
+            message: message
+          };
           ToastrService.createErrorToast(params);
         });
       } else {
@@ -270,8 +287,10 @@ define(["../init/AppController"], function(controllers) {
     };
 
     $scope.getResources = function() {
-      var params = {projectName: $scope.projectName};
-      ProjectDataService.getProjectResources(params).then(function(data){
+      var params = {
+        projectName: $scope.projectName
+      };
+      ProjectDataService.getProjectResources(params).then(function(data) {
         var resources = [];
         var rootNode = {
           id: $scope.rootParentId,
@@ -291,10 +310,12 @@ define(["../init/AppController"], function(controllers) {
         }
         $scope.openResourceTree(resources);
         $scope.isTreeLoading = false;
-      }).catch(function(error){
+      }).catch(function(error) {
         $scope.isTreeLoading = false;
         var message = "Unable to load resources";
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createErrorToast(params);
       });
     }
@@ -355,62 +376,81 @@ define(["../init/AppController"], function(controllers) {
     });
 
     $scope.$on("deleteEditor", function(event, tab) {
-      var params = {projectName: $scope.projectName, resourceId: tab.resourceId};
-      ProjectDataService.deleteProjectResource(params).then(function(data){
+      var params = {
+        projectName: $scope.projectName,
+        resourceId: tab.resourceId
+      };
+      ProjectDataService.deleteProjectResource(params).then(function(data) {
         if (tab.index > -1) {
           $scope.closeTab(tab.index);
         }
         $scope.removeResource(tab);
-        $scope.editors.forEach(function(editor){
+        $scope.editors.forEach(function(editor) {
           var content = editor.getValue();
           editor.setValue(content);
         });
-      }).catch(function(error){
+      }).catch(function(error) {
         var message = "Unable to delete file";
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createErrorToast(params);
       });
     });
 
     $scope.$on("closeProject", function(event, save) {
       var promises = [];
-      if($scope.editors.length == 0){
+      if ($scope.editors.length == 0) {
         $scope.closeProject();
-      }else{
-        $scope.editors.forEach(function(editor){
-          if(!save){
+      } else {
+        $scope.editors.forEach(function(editor) {
+          if (!save) {
             editor.setValue(editor.lastSavedValue);
           }
           promises.push(editor.xtextServices.saveResource());
-          $q.all(promises).then(function(results){
+          $q.all(promises).then(function(results) {
             $scope.closeProject();
           });
         });
       }
     });
 
+    $scope.$on("closeAllEditors", function(event, save) {
+      $scope.closeAllEditors();
+    });
+
+    $scope.$on("saveAndCloseEditor", function(event, index, save) {
+      $scope.saveAndCloseEditor(index, save);
+    });
+
     $window.onbeforeunload = function() {
       var unsavedFiles = $scope.getUnsavedFiles();
-      if(unsavedFiles.length > 0){
+      if (unsavedFiles.length > 0) {
         return "Unsaved changes";
       }
     }
 
-    $scope.$on("closeEditor", function(event, index, save) {
+    $scope.closeProject = function() {
+      $location.path("/projects");
+      $location.replace();
+    }
+
+    $scope.saveAndCloseEditor = function(index, save) {
       var editor = $scope.editors[index];
       if (save) {
         var tab = $scope.tabs[index];
         $scope.saveEditor(editor, tab);
-      }else{
+      } else {
         editor.setValue(editor.lastSavedValue);
         editor.xtextServices.saveResource();
       }
       $scope.closeEditor(index);
-    });
+    }
 
-    $scope.closeProject = function() {
-      $location.path("/projects");
-      $location.replace();
+    $scope.closeAllEditors = function(save) {
+      $scope.editors.forEach(function(editor, index) {
+        $scope.saveAndCloseEditor(index, save);
+      });
     }
 
     $scope.loadResourceAtServer = function(resource) {
@@ -456,7 +496,7 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.openXtextEditor = function(tab) {
-      $scope.createEditor(tab).then(function(editor){
+      $scope.createEditor(tab).then(function(editor) {
         $scope.editors.push(editor);
         $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
         $scope.clearSearch();
@@ -474,11 +514,16 @@ define(["../init/AppController"], function(controllers) {
         modelType: model.modelType,
         description: model.description
       };
-      var params = {projectName: $scope.projectName, resource: resource};
-      ProjectDataService.createProjectResource(params).then(function(data){
+      var params = {
+        projectName: $scope.projectName,
+        resource: resource
+      };
+      ProjectDataService.createProjectResource(params).then(function(data) {
         if (data.message === "resource already exists") {
           var message = resource.filename + " already exists";
-          var params = {message: message};
+          var params = {
+            message: message
+          };
           ToastrService.createErrorToast(params);
         } else {
           $scope.counter++;
@@ -504,19 +549,21 @@ define(["../init/AppController"], function(controllers) {
           model.editorDivId = editorDivId;
           $scope.addXtextEditor(model);
         }
-      }).catch(function(error){
+      }).catch(function(error) {
         var message = resource.filename + " already exists";
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createErrorToast(params);
       });
     }
 
     $scope.addXtextEditor = function(model) {
-      $scope.createEditor(model).then(function(editor){
+      $scope.createEditor(model).then(function(editor) {
         $scope.editors.push(editor);
         $scope.selectedEditor = $scope.editors[$scope.selectedTabIndex];
         $scope.clearSearch();
-        var resourceId = $scope.selectedEditor.xtextServices.validationService._encodedResourceId;
+        var resourceId = $scope.selectedEditor.xtextServices.options.resourceId;
         var tab = $scope.tabs[$scope.selectedTabIndex];
         tab["text"] = model.name;
         tab["parent"] = $scope.rootParentId;
@@ -655,6 +702,15 @@ define(["../init/AppController"], function(controllers) {
     }
 
     $scope.importModel = function(model) {
+      if(!$scope.enableValidationService){
+        var message = "Models can only be imported in dynamic validation mode";
+        var params = {
+          message: message
+        };
+        ToastrService.createWarningToast(params);
+        $scope.showImportButton = true;
+        return;
+      }
       if ($scope.isValidModel($scope.selectedEditor)) {
         if (model) {
           $scope.showImportButton = false;
@@ -666,29 +722,38 @@ define(["../init/AppController"], function(controllers) {
             modelNamespace: modelId["namespace"],
             modelVersion: modelId["version"],
             projectName: $scope.projectName,
-            resourceId: editor.xtextServices.validationService._encodedResourceId
+            resourceId: editor.xtextServices.options.resourceId
           }
-          var params = {language: language, importModelRequest: importModelRequest};
-          EditorDataService.importModel(params).then(function(data){
-              editor.setValue(data);
-              $scope.showImportButton = true;
-          }).catch(function(error){
-              var message = "Failed to import model";
-              var params = {message: message};
-              ToastrService.createErrorToast(params);
-              $scope.showImportButton = true;
+          var params = {
+            language: language,
+            importModelRequest: importModelRequest
+          };
+          EditorDataService.importModel(params).then(function(data) {
+            editor.setValue(data);
+            $scope.showImportButton = true;
+          }).catch(function(error) {
+            var message = "Failed to import model";
+            var params = {
+              message: message
+            };
+            ToastrService.createErrorToast(params);
+            $scope.showImportButton = true;
           });
         } else {
-            var message = "Please select a model to import";
-            var params = {message: message};
-            ToastrService.createWarningToast(params);
-            $scope.showImportButton = true;
-        }
-      } else {
-          var message = "Your Vorto Model contains errors. Please correct and try again.";
-          var params = {message: message};
+          var message = "Please select a model to import";
+          var params = {
+            message: message
+          };
           ToastrService.createWarningToast(params);
           $scope.showImportButton = true;
+        }
+      } else {
+        var message = "Your Vorto Model contains errors. Please correct and try again.";
+        var params = {
+          message: message
+        };
+        ToastrService.createWarningToast(params);
+        $scope.showImportButton = true;
       }
     }
 
@@ -701,17 +766,24 @@ define(["../init/AppController"], function(controllers) {
           targetResourceId: targetResourceId,
           referenceResourceId: referenceResourceId
         };
-        var params = {language: language, referenceResourceRequest: referenceResourceRequest};
-        EditorDataService.referenceResource(params).then(function(data){
+        var params = {
+          language: language,
+          referenceResourceRequest: referenceResourceRequest
+        };
+        EditorDataService.referenceResource(params).then(function(data) {
           editor.setValue(data);
-        }).catch(function(error){
+        }).catch(function(error) {
           var message = "Failed to reference resource";
-          var params = {message: message};
+          var params = {
+            message: message
+          };
           ToastrService.createErrorToast(params);
         });
       } else {
         var message = "Your Vorto Model contains errors. Please correct and try again.";
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createWarningToast(params);
       }
     }
@@ -737,21 +809,28 @@ define(["../init/AppController"], function(controllers) {
         $scope.models = [];
         return;
       }
-      var params = {language: language, filter: filter};
+      var params = {
+        language: language,
+        filter: filter
+      };
       $scope.showSearchButton = false;
-      EditorDataService.searchRepository(params).then(function(data){
+      EditorDataService.searchRepository(params).then(function(data) {
         $scope.models = data;
         $scope.showSearchButton = true;
-        if(data.length == 0) {
+        if (data.length == 0) {
           var message = "No models found for filter " + filter + " in the Vorto repository";
-          var params = {message: message};
+          var params = {
+            message: message
+          };
           ToastrService.createWarningToast(params);
         }
-      }).catch(function(error){
+      }).catch(function(error) {
         $scope.models = [];
         $scope.showSearchButton = true;
         var message = "Failed to get search for models with filter " + filter;
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createErrorToast(params);
       });
     }
@@ -787,9 +866,13 @@ define(["../init/AppController"], function(controllers) {
       require(["webjars/ace/1.2.0/src/ace"], function() {
         require(["xtext/xtext-ace"], function(xtext) {
           var editor = xtext.createEditor({
-            enableFormattingAction: "true",
-            enableSaveAction: "true",
-            showErrorDialogs: "true",
+            enableFormattingAction: true,
+            enableSaveAction: true,
+            showErrorDialogs: false,
+            enableValidationService: $scope.enableValidationService,
+            enableOccurrencesService: $scope.enableOccurrencesService,
+            enableHighlightingService: $scope.enableHighlightingService,
+            // sendFullText: $scope.sendFullText,
             parent: model.editorDivId,
             xtextLang: model.language,
             resourceId: model.resourceId,
@@ -797,20 +880,25 @@ define(["../init/AppController"], function(controllers) {
             serviceUrl: $scope.editorConfig[model.language].serviceUrl
           });
           editor.commands.addCommand({
-              name: 'customSaveCommand',
-              bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-              exec: function(editor) {
+            name: 'customSaveCommand',
+            bindKey: {
+              win: 'Ctrl-S',
+              mac: 'Command-S'
+            },
+            exec: function(editor) {
+              editor.lastSavedValue = editor.getValue();
+              var tab = $scope.tabs[$scope.selectedTabIndex];
+              editor.xtextServices.saveResource().then(function(data) {
                 editor.lastSavedValue = editor.getValue();
-                var tab = $scope.tabs[$scope.selectedTabIndex];
-                editor.xtextServices.saveResource().then(function(data){
-                  editor.lastSavedValue = editor.getValue();
-                  var message = "Model " + tab.name + " saved";
-                  var params = {message: message};
-                  ToastrService.createSuccessToast(params);
-                });
-              }
+                var message = "Model " + tab.name + " saved";
+                var params = {
+                  message: message
+                };
+                ToastrService.createSuccessToast(params);
+              });
+            }
           });
-          editor.xtextServices.loadResource().then(function(data){
+          editor.xtextServices.loadResource().then(function(data) {
             editor.lastSavedValue = data.fullText;
             defer.resolve(editor);
           });
@@ -819,13 +907,79 @@ define(["../init/AppController"], function(controllers) {
       return defer.promise;
     }
 
-    $scope.saveEditor = function(editor, tab){
+    $scope.saveEditor = function(editor, tab) {
       editor.lastSavedValue = editor.getValue();
-      editor.xtextServices.saveResource().then(function(data){
+      editor.xtextServices.saveResource().then(function(data) {
         editor.lastSavedValue = editor.getValue();
         var message = "Model " + tab.name + " saved";
-        var params = {message: message};
+        var params = {
+          message: message
+        };
         ToastrService.createSuccessToast(params);
+      });
+    }
+
+    $scope.toggleEditorServices = function() {
+      var unsavedFiles = $scope.getUnsavedFiles();
+      if (unsavedFiles.length > 0) {
+        ShareDataService.setIsEditorServiceToggled(true);
+        $scope.openCloseProjectModal();
+      } else {
+        $scope.enableValidationService = !$scope.enableValidationService;
+        $scope.enableOccurrencesService = !$scope.enableOccurrencesService;
+        $scope.enableHighlightingService = !$scope.enableHighlightingService;
+        $scope.sendFullText = !$scope.sendFullText;
+        var tempTabs = [];
+        $scope.tabs.forEach(function(tab) {
+          tempTabs.push(tab);
+        });
+        $scope.closeAllEditors(false);
+        tempTabs.forEach(function(tab) {
+          $scope.openEditor(tab);
+        })
+      }
+    }
+
+    $scope.validateEditor = function() {
+      var editor = $scope.editors[$scope.selectedTabIndex];
+      var serverStateText = editor.xtextServices.editorContext.getServerState()["text"];
+      var currentText = editor.xtextServices.editorContext.getText();
+
+      var result = {};
+      editor.xtextServices.updateService.computeDelta(serverStateText, currentText, result);
+
+      var params = {};
+      params["language"] = editor.xtextServices.options.xtextLang;
+      params["resourceId"] = editor.xtextServices.options.resourceId;
+      params["deltaOffset"] = result["deltaOffset"] || 0;
+      params["stateId"] = editor.xtextServices.editorContext._serverState["stateId"];
+      params["deltaReplaceLength"] = result["deltaReplaceLength"] || 0;
+      params["deltaText"] = result["deltaText"] || "";
+
+      EditorDataService.validateResource(params).then(function(data) {
+        if (data.issues.length == 0) {
+          var message = "The model is valid";
+          var params = {
+            message: message
+          };
+          ToastrService.createSuccessToast(params);
+        } else {
+          var message = ""
+          data.issues.forEach(function(issue) {
+            message += "line: " + issue.line + " " + issue.description;
+            message += "\n";
+          });
+          var params = {
+            message: message
+          };
+          ToastrService.createErrorToast(params);
+        }
+      }).catch(function(error) {
+        var message = "Failed to validate resource";
+        var params = {
+          message: message
+        };
+        ToastrService.createErrorToast(params);
       });
     }
   }

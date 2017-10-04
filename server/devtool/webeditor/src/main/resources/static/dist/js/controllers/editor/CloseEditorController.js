@@ -9,14 +9,13 @@ define(["../init/AppController"], function(controllers) {
     $scope.index = ShareDataService.getCloseEditorIndex();
 
     $scope.no = function() {
-      $rootScope.$broadcast("closeEditor", $scope.index, false);
+      $rootScope.$broadcast("saveAndCloseEditor", $scope.index, false);
       $uibModalInstance.dismiss("cancel");
     };
 
     $scope.yes = function() {
-      $rootScope.$broadcast("closeEditor", $scope.index, true);
+      $rootScope.$broadcast("saveAndCloseEditor", $scope.index, true);
       $uibModalInstance.dismiss("cancel");
     };
-    
   }
 });
