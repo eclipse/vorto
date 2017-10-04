@@ -41,7 +41,12 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import «model.namespace».«model.name» as «model.name»
 	import serializer.DittoSerializer as DittoSerializer
 	
+	# DEVICE CONFIG GOES HERE
 	hono_tenant = "DEFAULT_TENANT"
+	hono_user = ""
+	hono_password = ""
+	hono_endpoint = ""
+	hono_certificatePath = ""
 
 	# Function that creates a unique client ID based on a prefix and a MAC address
 	def getClientId(prefix):
@@ -152,12 +157,12 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	client.on_connect = on_connect
 	client.on_message = on_message
 	
-	client.tls_set("<path to CA cert file>")
+	client.tls_set(hono_certificatePath)
 	
-	client.username_pw_set("<username>", "<password>")
+	client.username_pw_set(hono_user, hono_password)
 
 	# Connect to the MQTT broker
-	client.connect("<MQTT broker>", 8883, 60)
+	client.connect(hono_endpoint, 8883, 60)
 
 	# Blocking call that processes network traffic, dispatches callbacks and
 	# handles reconnecting.
