@@ -27,4 +27,12 @@ public interface IModelPublisher {
 	 */
 	ModelId publish(ModelType type, String content) throws ModelPublishException;
 	
+	/**
+	 * Uploads an information Model image
+	 * @param modelId
+	 * @param imageBas64
+	 * @throws ModelPublishException
+	 */
+	void uploadModelImage(ModelId modelId, String imageBas64) throws ModelPublishException;
+	
 }

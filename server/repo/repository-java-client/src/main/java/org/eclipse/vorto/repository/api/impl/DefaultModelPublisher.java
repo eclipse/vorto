@@ -16,13 +16,16 @@ package org.eclipse.vorto.repository.api.impl;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -30,6 +33,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.eclipse.vorto.repository.api.IModelPublisher;
 import org.eclipse.vorto.repository.api.ModelId;
@@ -121,5 +125,32 @@ public class DefaultModelPublisher extends ImplementationBase implements IModelP
 	public <Result> CompletableFuture<Result> execute(HttpUriRequest request) {
 		return execute(request, new TypeToken<Result>() {
 		}.getType());
+	}
+
+	@Override
+	public void uploadModelImage(ModelId modelId, String imageBas64) throws ModelPublishException {
+		String uploadImageUrl = String.format("%s/rest/model/image?namespace=%s&name=%s&version=%s", getRequestContext().getBaseUrl(),modelId.getNamespace(),modelId.getName(),modelId.getVersion());
+		HttpPost uploadImage = new HttpPost(uploadImageUrl);
+		HttpEntity entity = MultipartEntityBuilder.create()
+				.addPart("fileName", new StringBody("vortomodel.png", ContentType.DEFAULT_TEXT))
+				.addPart("fileDescription", new StringBody("", ContentType.DEFAULT_TEXT))
+				.addPart("file", new ByteArrayBody(Base64.getDecoder().decode(imageBas64.getBytes()), ContentType.APPLICATION_OCTET_STREAM,
+						"vortomodel.png"))
+				.build();
+		
+		
+		uploadImage.setEntity(entity);
+		
+		try {
+			execute(uploadImage, new TypeToken<Void>() {}.getType());
+		} catch (Throwable ex) {
+			if (!(ex instanceof ModelPublishException)) {
+				throw new RuntimeException(ex);
+			} else {
+				throw ((ModelPublishException)ex);
+			}
+			
+		}
+		
 	}
 }
