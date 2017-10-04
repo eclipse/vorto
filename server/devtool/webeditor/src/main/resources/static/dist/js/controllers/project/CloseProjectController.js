@@ -7,15 +7,29 @@ define(["../init/AppController"], function(controllers) {
 
   function CloseProjectController($rootScope, $scope, $uibModalInstance, ShareDataService) {
     $scope.unsavedFiles = ShareDataService.getUnsavedFiles();
+    $scope.isEditorServiceToggled = ShareDataService.getIsEditorServiceToggled();
+    $scope.message = "closing";
+    if($scope.isEditorServiceToggled){
+      $scope.message = "switching modes";
+    }
 
     $scope.yes = function() {
-      $rootScope.$broadcast("closeProject", true);
+      $scope.broadcast(true);
       $uibModalInstance.dismiss("cancel");
     };
 
     $scope.no = function() {
-      $rootScope.$broadcast("closeProject", false);
+      $scope.broadcast(false);
       $uibModalInstance.dismiss("cancel");
     };
+
+    $scope.broadcast = function(save) {
+      var broadcastString = "closeProject";
+      if($scope.isEditorServiceToggled){
+        ShareDataService.setIsEditorServiceToggled(false);
+        broadcastString = "closeAllEditors"
+      }
+      $rootScope.$broadcast(broadcastString, save);
+    }
   }
 });
