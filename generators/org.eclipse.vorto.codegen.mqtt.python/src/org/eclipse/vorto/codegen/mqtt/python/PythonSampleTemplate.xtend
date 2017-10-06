@@ -42,11 +42,11 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import serializer.DittoSerializer as DittoSerializer
 	
 	# DEVICE CONFIG GOES HERE
-	hono_tenant = "DEFAULT_TENANT"
-	hono_user = ""
-	hono_password = ""
-	hono_endpoint = ""
-	hono_certificatePath = ""
+	hono_tenant = "«context.configurationProperties.getOrDefault("hono_tenant","")»"
+	hono_user = "«context.configurationProperties.getOrDefault("hono_user","")»"
+	hono_password = "<ADD PASSWORD HERE>"
+	hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","")»"
+	hono_certificatePath = "<ADD PATH TO CERTIFICATE HERE>"
 
 	# Function that creates a unique client ID based on a prefix and a MAC address
 	def getClientId(prefix):
