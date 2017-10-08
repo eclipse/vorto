@@ -19,8 +19,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.model.Comment;
-import org.eclipse.vorto.repository.service.ICommentService;
+import org.eclipse.vorto.repository.comment.Comment;
+import org.eclipse.vorto.repository.comment.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

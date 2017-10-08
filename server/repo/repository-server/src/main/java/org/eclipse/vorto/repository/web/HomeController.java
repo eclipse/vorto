@@ -20,8 +20,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.vorto.repository.security.SecurityConfiguration;
-import org.eclipse.vorto.repository.service.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.config.SecurityConfiguration;
 import org.eclipse.vorto.repository.web.security.VortoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

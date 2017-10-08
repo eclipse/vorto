@@ -667,7 +667,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
 /*
  * TODO -
  */
-repositoryControllers.controller('SettingsController', [ '$scope','$http','$rootScope', '$location', function ($scope,$http,$rootScope,$location) {
+repositoryControllers.controller('SettingsController', [ '$scope','$http','$rootScope', '$location','$uibModal',function ($scope,$http,$rootScope,$location,$uibModal) {
 
     var currentEmailAddress = "";
 
@@ -696,9 +696,9 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
         .then(function(response) {
             $scope.user = response.data;
             if (response.status === 200){
-                $scope.update = true;
+                $scope.successMessage = "Settings have been updated successfully.";
             } else if (response.status !== 200){
-                $scope.update = false;
+                $scope.error = "Error updating user settings";
             }
             $scope.put=true;
         });
@@ -717,7 +717,34 @@ repositoryControllers.controller('SettingsController', [ '$scope','$http','$root
                 });
         }
     }
+    
+    $scope.openRemoveAccount = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "RemoveAccountModalController",
+        templateUrl: "deleteAccount.html",
+        size: "medium",
+      });
+    };
 
+}]);
+
+repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope','$rootScope','$http','$uibModalInstance', function ($location,$scope,$rootScope, $http,$uibModalInstance) {
+
+	 $scope.deleteAccount = function() {
+    	$http.delete('./rest/users/'+$rootScope.user)
+        .then(function(response) {
+            $scope.user = response.data;
+            if (response.status === 200){
+            	$rootScope.logout();
+            	$uibModalInstance.dismiss("cancel");
+            }
+        });
+    };
+
+    $scope.cancel = function() {
+    	$uibModalInstance.dismiss("cancel");
+    };
 }]);
 
 repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$http', function ($location,$scope,$http) {

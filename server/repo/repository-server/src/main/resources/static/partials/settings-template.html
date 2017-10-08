@@ -4,16 +4,16 @@
     <hr>
     <br/>
     <div ng-show="put">
-    	<div ng-show="update">
+    	<div ng-show="successMessage != null">
 		  	<p>
 		  		<div class="alert alert-success" role="alert">
 		  			<i class="glyphicon glyphicon-ok-sign"></i>
 		  			<span class="sr-only">Success:</span>
-				  	User Settings has been successfully updated.
+				  	{{successMessage}}
 		  		</div>
 		  	</p>
 	  	</div>	
-		<div ng-show="!update">
+		<div ng-show="error">
 		  	<p>
 		  		<div class="alert alert-danger" role="alert">
 				  	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
@@ -29,40 +29,6 @@
 
 	<form name="form">
 
-	  <div class="row">
-	  	<div class="col-xs-4">
-	  		 <label>First name</label>
-	  	</div>
-	  	
-        <div class="col-xs-6 form-group" >
-            <input 	type="text" 
-          			name="firstName"
-             		id="first_name"
-             		class="form-control" 
-             		placeholder="first name"
-             		ng-model="user.firstName" />      
-        </div>
-	  </div>
-	  
- 	<br/>
-	  
-	  <div class="row">
-		  <div class="col-xs-4">
-		  		<label>Last name</label>
-		  </div>		  
-	
-	      <div class="col-xs-6 form-group">
-          	<input 	type="text" 
-          			name="lastName"
-             		id="last_name"
-             		class="form-control" 
-             		placeholder="last name"
-             		ng-model="user.lastName" />
-	      </div>	  	
-   	  </div>
-	
-	<br/>
-	  
 	  <div class="row">
 	  	<div class="col-xs-4">
 	  		 <label>Username</label>
@@ -135,52 +101,30 @@
 	  </div>
        
       <div class="row">
-	  	<div class="col-xs-4">
+	  	<div class="col-xs-8">
 	    	<button class="btn btn-success" 
 	    			ng-disabled="form.$invalid || vm.dataLoading || emailAddressExists || usernameExists"
 	    			type="submit" 
             		ng-click="updateProfil(user)"><i class="glyphicon glyphicon-ok-sign"></i> Update</button>
+            <button class="btn btn-danger" 
+	    			type="submit" 
+            		ng-click="openRemoveAccount()"><i class="glyphicon glyphicon-remove-sign"></i> Delete Account</button>
   		</div>
 	  </div>
 	  
     </form>           
 </div>
 
+ <script type="text/ng-template" id="deleteAccount.html">
+        <div class="modal-header">
+            <h3 class="modal-title" id="modal-title-deleteAccount">Delete Account ?</h3>
+        </div>
+        <div class="modal-body" id="modal-body-deleteAccount">
+			Are you sure, you want to delete your account ? 
+        </div>
+         <div class="modal-footer">
+            <button class="btn btn-primary" type="button" ng-click="deleteAccount()">Yes, I want to delete my account!</button>
+            <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
+        </div>
+    </script>
 
-<!-- Modal -->
-<div id="update" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header" style="background-color:#3a5a82; color:white;">
-        <button type="button" class="close" data-dismiss="modal" style="color:white;">&times;</button>
-        <h4 class="modal-title"><b>User Settings Update</b></h4>
-      </div>
-      <div class="modal-body">
-      	<div ng-show="update">
-		  	<p>
-		  		<div class="alert alert-success" role="alert">
-		  			<i class="glyphicon glyphicon-ok-sign"></i>
-		  			<span class="sr-only">Success:</span>
-				  	User Settings has been successfully updated.
-		  		</div>
-		  	</p>
-	  	</div>	
-		<div ng-show="!update">
-		  	<p>
-		  		<div class="alert alert-danger" role="alert">
-				  	<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-				  	<span class="sr-only">Error:</span>
-				  	Error during User Settings update.
-				</div>
-		  	</p>
-		</div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
-      </div>
-    </div>
-
-  </div>
-</div>

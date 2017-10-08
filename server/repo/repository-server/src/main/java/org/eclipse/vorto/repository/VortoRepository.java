@@ -16,8 +16,8 @@ package org.eclipse.vorto.repository;
 
 import static com.google.common.base.Predicates.or;
 
-import org.eclipse.vorto.repository.internal.service.ITemporaryStorage;
-import org.eclipse.vorto.repository.internal.service.InMemoryTemporaryStorage;
+import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
+import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -74,10 +74,10 @@ public class VortoRepository {
 
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Vorto",
-				"Vorto is an open source tool that allows to create and manage technology agnostic, abstract device descriptions, so called information models. <br/>"
+				"Vorto provides tools and services that allow to create and manage technology agnostic, abstract device descriptions, so called information models. <br/>"
 						+ "Information models describe the attributes and the capabilities of real world devices. <br/>"
 						+ "These information models can be managed and shared within the Vorto Information Model Repository. <br/>"
-						+ " Code Generators for Information Models let you integrate devices into different platforms."
+						+ " Code Generators for Information Models let you integrate devices into different IoT platforms."
 						+ "<br/>",
 				"1.0.0", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}

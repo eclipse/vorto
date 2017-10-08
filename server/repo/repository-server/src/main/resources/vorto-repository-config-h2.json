@@ -23,7 +23,7 @@
     	"removeDerivedContentWithOriginal" : false,
         "sequencers" : {
             "XML Sequencer" : {
-                "classname" : "org.eclipse.vorto.repository.internal.service.sequencer.ModelSequencer",
+                "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",
                 "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
             }
         }

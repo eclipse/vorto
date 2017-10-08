@@ -12,7 +12,7 @@ public class VortoUser extends User {
 	
 	private String email;
 	
-	private org.eclipse.vorto.repository.model.User user;
+	private org.eclipse.vorto.repository.account.impl.User user;
 
 	public VortoUser(String username, String password, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
@@ -20,7 +20,7 @@ public class VortoUser extends User {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 	
-	public VortoUser(org.eclipse.vorto.repository.model.User user) {
+	public VortoUser(org.eclipse.vorto.repository.account.impl.User user) {
 		this(user.getUsername(), user.getPassword(), true, true, true, true,
         		  AuthorityUtils.createAuthorityList("ROLE_"+user.getRole().toString()));
 		this.email = user.getEmail();
@@ -35,11 +35,11 @@ public class VortoUser extends User {
 		this.email = email;
 	}
 
-	public org.eclipse.vorto.repository.model.User getUser() {
+	public org.eclipse.vorto.repository.account.impl.User getUser() {
 		return user;
 	}
 
-	public void setUser(org.eclipse.vorto.repository.model.User user) {
+	public void setUser(org.eclipse.vorto.repository.account.impl.User user) {
 		this.user = user;
 	}
 }
