@@ -27,7 +27,9 @@ public class GeneratorInfo {
 	private String image144x144;
 	private ServiceClassifier classifier;
 	private String[] tags;
+	@Deprecated
 	private GeneratorRating rating;
+	private int amountOfDownloads;
 	private String infoUrl;
 	private String configTemplate = null;
 	private Set<String> configKeys = null;
@@ -106,6 +108,7 @@ public class GeneratorInfo {
 
 	public void performRating(int invocationCount) {
 		this.rating = GeneratorRating.performRating(invocationCount);
+		this.amountOfDownloads = invocationCount;
 	}
 
 	public String getInfoUrl() {
@@ -138,6 +141,14 @@ public class GeneratorInfo {
 
 	public void setConfigKeys(Set<String> configKeys) {
 		this.configKeys = configKeys;
+	}
+
+	public int getAmountOfDownloads() {
+		return amountOfDownloads;
+	}
+
+	public void setAmountOfDownloads(int amountOfDownloads) {
+		this.amountOfDownloads = amountOfDownloads;
 	}
 
 	@Override

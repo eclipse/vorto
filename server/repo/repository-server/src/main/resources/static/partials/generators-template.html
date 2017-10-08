@@ -7,12 +7,7 @@
 			    <div href="#" class="col-md-10">
 			    	<h4>{{generator.name}}</h4>
 			        <ul>
-			        	<span class="rating">
-	                  		<span ng-class="isFilled(generator.rating,'FAIR') || isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	              		</span>
+			        	<li><small>(Downloads: {{generator.amountOfDownloads}})</small></li>
 			            <li>{{generator.description}}</li>
 			            <li class="author"><i class="fa fa-fw fa-user"> </i>{{generator.creator}}</li>
 			            <li class="doc"><a ng-href="{{generator.documentationUrl}}"> <i class="fa fa-fw fa-book"></i>Documentation</a></li>
@@ -31,14 +26,7 @@
 		    	<div class="gen-box">
 		           	<div class="gen-logo"><img ng-src="data:image/png;base64,{{generator.image32x32}}" width="32" height="32"></div>
 		           	<div class="gen-name"><span>{{generator.name}}</span></div>
-		           	<div class="gen-rating">
-		           		<span class="rating">
-	                  		<span ng-class="isFilled(generator.rating,'FAIR') || isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'GOOD') || isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'VERY_GOOD') || isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	                  		<span ng-class="isFilled(generator.rating,'EXCELLENT')" class="star"></span>
-	              		</span>
-		           	</div>
+		           	<small>Downloads: {{generator.amountOfDownloads}}</small>
 		        </div>
 			</div>
 		</div>

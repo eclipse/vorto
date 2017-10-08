@@ -83,7 +83,7 @@ public class GeneratorItem extends Composite {
 		Label lblStarImage = new Label(this, SWT.NONE);
 		lblStarImage.setAlignment(SWT.CENTER);
 		lblStarImage.setBounds(10, 83, 70, 23);
-		lblStarImage.setText("Rating: "+formatRating(codegen.getRating()));
+		lblStarImage.setText("Downloads: "+formatRating(codegen.getAmountOfDownloads()));
 		lblStarImage.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
 
 		lblGenerated.setBounds(320, 91, 85, 15);
@@ -134,17 +134,7 @@ public class GeneratorItem extends Composite {
 		};
 	}
 		
-	private String formatRating(String rating) {
-		if (rating.equalsIgnoreCase("fair")) {
-			return "*";
-		} else if (rating.equalsIgnoreCase("good")) {
-			return "**";
-		} else if (rating.equalsIgnoreCase("very_good")) {
-			return "***";
-		} else if (rating.equalsIgnoreCase("excellent")) {
-			return "****";
-		} else {
-			return "n/a";
-		}
+	private String formatRating(int downloads) {
+		return Integer.toString(downloads);
 	}
 }

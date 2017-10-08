@@ -26,6 +26,7 @@ public class GeneratorResource {
 	private String image32x32;
 	private String image144x144;
 	private String rating;
+	private int amountOfDownloads;
 	
 	public GeneratorResource(String key, 
 							String name, 
@@ -34,7 +35,8 @@ public class GeneratorResource {
 							String documentationUrl, 
 							String image32x32, 
 							String image144x144, 
-							String rating) {
+							String rating, 
+							int amountOfDownloads) {
 		this.key = key;
 		this.name = name;
 		this.description = description;
@@ -43,6 +45,7 @@ public class GeneratorResource {
 		this.image32x32 = image32x32;
 		this.image144x144 = image144x144;
 		this.rating = rating;
+		this.amountOfDownloads = amountOfDownloads;
 	}
 
 	public String getKey() {
@@ -75,6 +78,10 @@ public class GeneratorResource {
 
 	public String getRating() {
 		return rating;
+	}
+
+	public int getAmountOfDownloads() {
+		return amountOfDownloads;
 	}
 
 }
