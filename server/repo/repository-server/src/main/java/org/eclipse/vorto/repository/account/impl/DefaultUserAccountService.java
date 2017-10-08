@@ -109,4 +109,10 @@ public class DefaultUserAccountService implements IUserAccountService{
 	public void setModelRepository(IModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
 	}
+
+
+	@Override
+	public boolean exists(String userId) {
+		return userRepository.findByUsername(userId) != null;
+	}
 }

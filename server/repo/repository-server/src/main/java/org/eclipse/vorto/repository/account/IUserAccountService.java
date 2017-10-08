@@ -32,5 +32,12 @@ public interface IUserAccountService {
 	 * @param userId
 	 */
 	void delete(String userId);
+
+	/**
+	 * Checks if the account for the given user exists.
+	 * @param userId
+	 * @return
+	 */
+	boolean exists(String userId);
 	
 }

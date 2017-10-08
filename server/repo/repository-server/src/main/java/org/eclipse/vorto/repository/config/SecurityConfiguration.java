@@ -22,10 +22,10 @@ import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
-import org.eclipse.vorto.repository.sso.boschid.IsEidpUserRegisteredInterceptor;
 import org.eclipse.vorto.repository.sso.boschid.JwtTokenUserInfoServices;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
-import org.eclipse.vorto.repository.web.listeners.RESTAuthenticationEntryPoint;
+import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
+import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -67,7 +67,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private UserDetailsService userDetailsService;
 
 	@Autowired
-	private RESTAuthenticationEntryPoint authenticationEntryPoint;
+	private AuthenticationEntryPoint authenticationEntryPoint;
+	
+	@Autowired
+	private AuthenticationSuccessHandler successHandler;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -83,9 +86,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AccessTokenProvider accessTokenProvider;
-	
-	@Autowired
-	private IsEidpUserRegisteredInterceptor eidpInterceptor;
 	
 	@Autowired
 	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
@@ -119,7 +119,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.sameOrigin()
 					.httpStrictTransportSecurity()
 					.disable();
-
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 	}
 	
@@ -159,7 +158,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId(), eidpInterceptor);
+		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId());
 		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
 	}
@@ -169,6 +168,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		restTemplate.setAccessTokenProvider(accessTokenProvider);
 		
 		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(defaultFilterProcessesUrl);
+		filter.setAuthenticationSuccessHandler(successHandler);
 		
 		tokenService.setRestTemplate(restTemplate);
 		filter.setRestTemplate(restTemplate);

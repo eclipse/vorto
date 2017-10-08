@@ -89,7 +89,7 @@ public class HomeController {
 			
 			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()); 
 			//map.put("isRegistered", userDetails.get("isRegistered"));
-			map.put("isRegistered", Boolean.toString(userRepository.findByEmail(email) != null));
+			map.put("isRegistered", Boolean.toString(userRepository.findByUsername(oauth2User.getName()) != null));
 			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
