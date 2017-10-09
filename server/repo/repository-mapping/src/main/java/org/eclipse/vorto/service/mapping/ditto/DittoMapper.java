@@ -14,9 +14,13 @@
  */
 package org.eclipse.vorto.service.mapping.ditto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -29,6 +33,7 @@ import org.apache.commons.jxpath.util.TypeUtils;
 import org.apache.commons.lang3.Conversion;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.text.StrSubstitutor;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -41,6 +46,7 @@ import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.MappingContext;
+import org.eclipse.vorto.service.mapping.converters.DateUtils;
 
 /**
  * 
@@ -48,6 +54,8 @@ import org.eclipse.vorto.service.mapping.MappingContext;
  *
  */
 public class DittoMapper implements IDataMapper<DittoOutput> {
+
+	private static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 
 	private IMappingSpecification specification;
 	
@@ -66,6 +74,8 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 		this.converterLibrary.addFunctions(new ClassFunctions(Conversion.class, "conversion"));
 		this.converterLibrary.addFunctions(new ClassFunctions(StringUtils.class, "string"));
 		this.converterLibrary.addFunctions(new ClassFunctions(NumberUtils.class, "number"));
+		this.converterLibrary.addFunctions(new ClassFunctions(DateUtils.class, "date"));
+		this.converterLibrary.addFunctions(new ClassFunctions(ConvertUtils.class, "type"));
 		
 		Optional<Functions> functionsFromMappings = loader.getCustomFunctions();
 		if (functionsFromMappings.isPresent()) {
@@ -148,6 +158,8 @@ public class DittoMapper implements IDataMapper<DittoOutput> {
 			return Double.parseDouble(value);
 		} else if (type == PrimitiveType.STRING) {
 			return value;
+		} else if (type == PrimitiveType.DATETIME) {
+			return JSON_DATE_FORMAT.format(new Date(Integer.parseInt(value)));
 		} else {
 			throw new UnsupportedOperationException();
 		}
