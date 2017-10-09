@@ -1,21 +1,18 @@
 package org.eclipse.vorto.service.mapping;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonInput implements DataInput {
 
-	private Map<String,Object> value;
+	private Object value;
 	
 	public JsonInput(String json) {
 		this.value = parseJson(json);
 	}
 	
-	private Map<String,Object> parseJson(String json) {
-		TypeReference<HashMap<String,Object>> typeRef = new TypeReference<HashMap<String,Object>>() {};
+	private Object parseJson(String json) {
+		TypeReference<Object> typeRef = new TypeReference<Object>() {};
 
 		ObjectMapper mapper = new ObjectMapper(); 
 		try {
@@ -26,7 +23,7 @@ public class JsonInput implements DataInput {
 	}
 	
 	@Override
-	public Map<String, Object> getValue() {
+	public Object getValue() {
 		return this.value;
 	}
 

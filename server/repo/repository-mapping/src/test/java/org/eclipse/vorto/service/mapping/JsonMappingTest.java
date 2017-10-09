@@ -48,6 +48,32 @@ public class JsonMappingTest {
 		System.out.println(mappedDittoOutput.toJson());
 
 	}
+	
+	@Test
+	public void testDittoMappingUsingListInput() throws Exception {
+
+		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new TestMappingSpecification2())
+				.buildDittoMapper();
+
+		String json = "[{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\" }, {\"clickType\" : \"SINGLE\", \"batteryVoltage\": \"4444mV\" }]";
+		
+		
+		
+		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
+
+		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
+		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+
+		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
+
+		assertEquals(2322f, voltageFeature.getProperty("sensor_value"));
+		assertEquals("mV", voltageFeature.getProperty("sensor_units"));
+
+		System.out.println(mappedDittoOutput.toJson());
+
+	}
 
 	@Test
 	public void testDittoMappingOnlyOneFeature() throws Exception {
@@ -245,22 +271,105 @@ public class JsonMappingTest {
 		}
 
 	}
+	
+	private static class TestMappingSpecification2 implements IMappingSpecification {
 
-	/**
-	 * 
-	 * Custom functions for data mappers
-	 *
-	 */
-	public static class MyConverterFunctions {
+		private static final String PREFIX = "/@";
+		
+		private static Map<ModelId, FunctionblockModel> FBS = new HashMap<ModelId, FunctionblockModel>(2);
 
-		public static int clickType(String clickType) {
-			if (clickType.equalsIgnoreCase("single")) {
-				return 1;
-			} else if (clickType.equalsIgnoreCase("double")) {
-				return 2;
-			} else {
-				return -1;
-			}
+		static {
+			FunctionblockModel buttonModel = new FunctionblockModel(
+					ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+			ModelProperty digitalInputStateProperty = new ModelProperty();
+			digitalInputStateProperty.setMandatory(true);
+			digitalInputStateProperty.setName("digital_input_state");
+			digitalInputStateProperty.setType(PrimitiveType.BOOLEAN);
+
+			digitalInputStateProperty.setTargetPlatformKey("iotbutton");
+
+			digitalInputStateProperty.addStereotype(Stereotype.createWithValue("source", "true"));
+
+			ModelProperty digitalInputCount = new ModelProperty();
+			digitalInputCount.setMandatory(true);
+			digitalInputCount.setName("digital_input_count");
+			digitalInputCount.setType(PrimitiveType.INT);
+
+			digitalInputCount.setTargetPlatformKey("iotbutton");
+			digitalInputCount.addStereotype(Stereotype.createWithXpath("source", "custom:convertClickType("+PREFIX+"clickType[1])"));// SINGLE
+																														// ->
+																														// 1,
+																														// DOUBLE
+																														// ->
+																														// 2
+
+			buttonModel.setStatusProperties(
+					Arrays.asList(new ModelProperty[] { digitalInputStateProperty, digitalInputCount }));
+
+			FBS.put(buttonModel.getId(), buttonModel);
+
+			// ################# VOLTAGE Model ####################
+
+			FunctionblockModel voltageModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Voltage:1.0.0"),
+					ModelType.Functionblock);
+			ModelProperty sensorValueProperty = new ModelProperty();
+			sensorValueProperty.setMandatory(true);
+			sensorValueProperty.setName("sensor_value");
+			sensorValueProperty.setType(PrimitiveType.FLOAT);
+
+			sensorValueProperty.setTargetPlatformKey("iotbutton");
+
+			sensorValueProperty.addStereotype(Stereotype.createWithXpath("source",
+					"number:toFloat(string:substring("+PREFIX+"batteryVoltage[1],0,string:length("+PREFIX+"batteryVoltage[1])-2))"));
+
+			ModelProperty sensorUnitsProperty = new ModelProperty();
+			sensorUnitsProperty.setMandatory(false);
+			sensorUnitsProperty.setName("sensor_units");
+			sensorUnitsProperty.setType(PrimitiveType.STRING);
+
+			sensorUnitsProperty.setTargetPlatformKey("iotbutton");
+			sensorUnitsProperty.addStereotype(Stereotype.createWithXpath("source",
+					"string:substring("+PREFIX+"batteryVoltage[1],string:length("+PREFIX+"batteryVoltage[1])-2)"));
+			voltageModel.setStatusProperties(
+					Arrays.asList(new ModelProperty[] { sensorValueProperty, sensorUnitsProperty }));
+
+			FBS.put(voltageModel.getId(), voltageModel);
+
 		}
+
+		@Override
+		public Infomodel getInfoModel() {
+
+			Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices.AWSIoTButton:1.0.0"),
+					ModelType.InformationModel);
+
+			ModelProperty buttonProperty = new ModelProperty();
+			buttonProperty.setName("button");
+			buttonProperty.setType(ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"));
+			infomodel.getFunctionblocks().add(buttonProperty);
+
+			ModelProperty voltageProperty = new ModelProperty();
+			voltageProperty.setName("voltage");
+			voltageProperty.setType(ModelId.fromPrettyFormat("demo.fb.Voltage:1.0.0"));
+			infomodel.getFunctionblocks().add(voltageProperty);
+
+			return infomodel;
+		}
+
+		@Override
+		public FunctionblockModel getFunctionBlock(ModelId modelId) {
+			return FBS.get(modelId);
+		}
+
+		@Override
+		public Optional<Functions> getCustomFunctions() {
+			JavascriptFunctions functions = new JavascriptFunctions("custom");
+			functions.addFunction("convertAccelType",
+					"function convertAccelType(value) { return (value > 32768 ? value - 65536 : value) / 500;}");
+			functions.addFunction("convertClickType",
+					"function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}");
+			return Optional.of(functions);
+		}
+
 	}
 }
