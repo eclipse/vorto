@@ -15,16 +15,16 @@
 						</div-->
 				</div>
 				<div class="row action-btn">
-						<div class="col-md-4">
+						<div class="col-md-3">
 							 <button class="btn btn-app" type="button" ng-click="openAddEditorModal()"> <span class="fa fa-plus"></span> New Model</button>
-							 <button class="btn btn-app" type="button" ng-click="toggleEditorServices()" ng-show="isValidationInProcess==false && enableValidationService==true"> <i class="fa fa-toggle-on" aria-hidden="true"></i>{{toggleButtonText}}</button>
-							 <button class="btn btn-app" type="button" ng-click="toggleEditorServices()" ng-show="isValidationInProcess==false && enableValidationService==false"> <i class="fa fa-toggle-off" aria-hidden="true"></i>{{toggleButtonText}}</button>
-							 <button class="btn btn-app" type="button" ng-click="validateEditor()" ng-show="isValidationInProcess==false && isEditorOpen==true && enableValidationService==false"> <i class="fa fa-check" aria-hidden="true"></i>Validate</button>
+							 <!-- <button class="btn btn-app" type="button" ng-click="toggleEditorServices()" ng-show="isValidationInProcess==false && enableValidationService==true"> <i class="fa fa-toggle-on" aria-hidden="true"></i>{{toggleButtonText}}</button>
+							 <button class="btn btn-app" type="button" ng-click="toggleEditorServices()" ng-show="isValidationInProcess==false && enableValidationService==false"> <i class="fa fa-toggle-off" aria-hidden="true"></i>{{toggleButtonText}}</button> -->
+							 <!-- <button class="btn btn-app" type="button" ng-click="validateEditor()" ng-show="isValidationInProcess==false && isEditorOpen==true && enableValidationService==false"> <i class="fa fa-check" aria-hidden="true"></i>Validate</button> -->
 							 <button class="btn btn-app" type="button" ng-click="saveResource()" ng-show="isEditorOpen == true"> <span class="fa fa-floppy-o"></span> Save</button>
 							 <button class="btn btn-app" type="button" ng-click="uploadProject()" ng-show="isValidationInProcess==false && isEditorOpen==true"> <i class="fa fa-upload" aria-hidden="true"></i>Publish</button>
 							 <button class="btn btn-app validate-btn" ng-show="isValidationInProcess == true"> <i class="fa fa-cog fa-spin fa-2x"></i> </button>
 						 </div>
-							<div class="col-md-5">
+							<div class="col-md-6">
 									<div uib-alert ng-show="editorHint" close="closeHint()">{{editorHint}}</div>
 				  		</div>
 							<div class="col-md-3">
