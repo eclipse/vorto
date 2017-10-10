@@ -90,7 +90,7 @@ public class JsonMappingTest {
 		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
 				.buildDittoMapper();
 
-		String json = "{\"lng\" : 0.002322}";
+		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
 		
 		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 

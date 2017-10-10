@@ -20,7 +20,7 @@ public class SpecWithTypeConversion extends AbstractTestSpec {
 		digitalInputStateProperty.setName("sensor_value");
 		digitalInputStateProperty.setType(PrimitiveType.STRING);
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("source", "type:convert(lng)"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("source", "type:convertDouble(/@lng[1])"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty }));
