@@ -20,7 +20,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -33,7 +32,6 @@ import org.apache.commons.jxpath.util.TypeUtils;
 import org.apache.commons.lang3.Conversion;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.text.StrSubstitutor;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -46,6 +44,7 @@ import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.MappingContext;
+import org.eclipse.vorto.service.mapping.converters.ConvertUtils;
 import org.eclipse.vorto.service.mapping.converters.DateUtils;
 
 /**
