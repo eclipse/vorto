@@ -200,8 +200,10 @@ public class «element.name»BluetoothFinder implements ConfigurableComponent {
 							.filter(new «element.name»DeviceFilter(configuration))
 							// Add any device we haven't found yet
 							.collect(Collectors.toList());
-					synchronized(physicalDevicesLock) {
-						physicalDevices = scannedDevices;
+					if (!scannedDevices.isEmpty()) {
+						synchronized(physicalDevicesLock) {
+							physicalDevices = scannedDevices;
+						}
 					}
 				}
 			});
