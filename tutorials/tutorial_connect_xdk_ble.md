@@ -126,14 +126,6 @@ and several other configurable properties.
 
 ### 7. Read temperature from Bluetooth in the XDK Kura Bundle
 
-- First, we filter for the devices that belong to us. With the Virtual XDK Firmware, any devices whose name starts with 'BCDS' is an XDK flashed with Virtual XDK. We use that predefined name to filter for devices.
-	In _XDKDeviceFilter.java_, change the `test` method to
-	```
-	public boolean test(BluetoothDevice bluetoothDevice) {
-		return bluetoothDevice.getName().contains("BCDS");
-	}
-	```
-
 - In _DeviceToXDKTransformer.java_, in the method `getResourceId(...)`, modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in the Register step [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/tutorial_register_device.md">Register</a>]
 	```
 	private String getResourceId(BluetoothDevice device) {
@@ -320,6 +312,10 @@ Let us now deploy the XDK Kura bundle to the Kura gateway on the Raspberry Pi.
 - Configure the Bosch IoT Things Solution Id. You can lookup the solution Id in the Bosch IoT Things Admin Dashboard. Check the email that has been sent to you during the Evaluation Account Registration
 
 	<img src="./images/connect_xdk_kura/step5_9_2.png"/>
+
+- In the device_filter, type in the Bluetooth MAC Address of your XDK
+
+	<img src="./images/connect_xdk_kura/step5_9_2_1.png"/>
 
 - Enable scanning
 
