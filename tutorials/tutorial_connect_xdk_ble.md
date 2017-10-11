@@ -133,7 +133,7 @@ and several other configurable properties.
 	}
 	```
 
-- Create a new package in the Kura bundle, name it _com.example.kura.device_. We will put classes that implements reading from the XDK here.
+- Create a new package in the Kura bundle, name it _org.eclipse.vorto.kura.xdk.device_. We will put classes that implements reading from the XDK here.
 
 - In the new package, create a model class to hold the response data from the XDK. Let's also give it the responsibility to segregate string responses according to what type of sensor values it holds.
 
