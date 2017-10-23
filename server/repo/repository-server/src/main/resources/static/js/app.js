@@ -59,7 +59,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 $rootScope.authenticated = true;
                 $rootScope.authority = data.role;
                 if (data.isRegistered === "false") {
-                	$location.path("/signup").search("email", data.email).search("username", data.name);
+                    $location.path("/signup").search("email", data.email).search("username", data.name);
                 }
             }
         }).error(function(data, status, headers, config) {
