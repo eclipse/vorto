@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.config.SecurityConfiguration;
 import org.eclipse.vorto.repository.web.security.VortoUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,13 +84,18 @@ public class HomeController {
 		
 		if (user instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
-			String email = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email");
 			map.put("name", oauth2User.getName());
-			map.put("email",  email);
 			
-			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()); 
-			//map.put("isRegistered", userDetails.get("isRegistered"));
-			map.put("isRegistered", Boolean.toString(userRepository.findByUsername(oauth2User.getName()) != null));
+			User registeredUser = userRepository.findByUsername(oauth2User.getName())	;
+			if (registeredUser != null) {
+				map.put("email",  registeredUser.getEmail());
+				map.put("isRegistered", Boolean.toString(true));
+			} else {
+				map.put("email",  ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
+				map.put("isRegistered", Boolean.toString(false));
+			}
+			
+			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
 			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
