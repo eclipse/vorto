@@ -67,13 +67,13 @@ public class ModelRepositoryClientTest {
 	@Test
 	public void testSearchModelBySpecificName() throws Exception {
 		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().name("XDK").build()).get();
-		assertTrue(models.size() == 1);
+		assertTrue(models.size() > 0);
 	}
 	
 	@Test
 	public void testSearchModelBySpecificType() throws Exception {
 		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(ModelType.InformationModel).name("XDK").build()).get();
-		assertTrue(models.size() == 1);
+		assertTrue(models.size() > 0);
 	}
 	
 	@Test

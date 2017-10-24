@@ -15,14 +15,9 @@
 
 package org.eclipse.vorto.repository.client;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.vorto.repository.api.IModelGeneration;
 import org.eclipse.vorto.repository.api.IModelPublisher;
