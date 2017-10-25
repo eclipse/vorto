@@ -572,42 +572,17 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
                                                        function ($location, $rootScope, $scope, $http, $routeParams) {
 
     $scope.user = {}; 
-    if ($routeParams.email) {
+    if ($routeParams.username) {
         $scope.user.email = $routeParams.email;
         $scope.user.emailCon = $routeParams.email;
         $scope.user.username = $routeParams.username;
-        $scope.user.emailReadonly = true;
+        $scope.user.usernameReadonly = true;
     } else {
-        $scope.user.emailReadonly = false;
+        $scope.user.usernameReadonly = false;
     }
 
     $scope.emailAddressExists = false;
     $scope.usernameExists = false;
-
-    $scope.go = function (path, user) {
-
-        user.firstName = "";
-        user.lastName = "";
-        user.email = "";
-        user.emailCon = "";
-        user.username = "";
-        user.password = "";
-        user.passwordCon = "";
-
-        $location.path("/login");
-    };
-
-    $scope.clear = function (user) {
-
-        user.firstName = "";
-        user.lastName = "";
-        user.email = "";
-        user.emailCon = "";
-        user.username = "";
-        user.password = "";
-        user.passwordCon = "";
-    };
-
 
     /*
      * checking uniqueness of username and email
@@ -652,12 +627,8 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
             headers: {'Content-Type': "application/json"}
         })
         .success( function(data, status, headers, config) {
-            if ($scope.user.emailReadonly == true) {
-            	$rootScope.getUser();
-                $location.path('/');
-            } else {
-                $('#signup').modal('show');
-            }
+            $rootScope.getUser();
+            $location.path('/');
         }).error(function(data, status, headers, config) {
 
         });

@@ -27,7 +27,6 @@
             		class="form-control" 
             		ng-model="user.email"
             		ng-blur="checkEmailAlreadyExists(user)"
-            		ng-readonly="user.emailReadonly"
             		required />
             <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.email.$error.required &&
 																				!form.email.$error.email && 
@@ -52,7 +51,6 @@
                		name="emailCon"
             		class="form-control" 
             		ng-model="user.emailCon"
-            		ng-readonly="user.emailReadonly"
             		email-check="email"  
             		required />            		
             <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.emailCon.$error.emailmatch"></span>
@@ -78,7 +76,7 @@
             		class="form-control"            		 
             		ng-pattern="/^[a-zA-Z0-9@\.]*$/"
             		ng-model="user.username"
-            		ng-readonly="user.emailReadonly"
+            		ng-readonly="user.usernameReadonly"
             		ng-minlength="5" 
        				ng-maxlength="30" 
        				ng-blur="usernameAlreadyExists(user)"
@@ -161,29 +159,4 @@
         </div>
         
     </form>
-</div>
-
-<!-- Modal -->
-<div id="signup" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header" style="background-color:#3a5a82; color:white;">
-        <button type="button" class="close" data-dismiss="modal" style="color:white;">&times;</button>
-        <h4 class="modal-title"><b>Sign Up</b></h4>
-      </div>
-      <div class="modal-body">
-       	<div>
-	        <p>	You have signed up successfully, please login below.<br/> 
-	        	We send you an confirmation email with further information to get you started with Vorto.</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-       	<button type="button" class="btn btn-success" ng-click="go('./#/login', user)">Login</button>
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear(user)">Close</button>
-      </div>
-    </div>
-
-  </div>
 </div>
