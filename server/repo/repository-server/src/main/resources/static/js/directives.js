@@ -64,3 +64,106 @@ repositoryDirectives.directive( 'dynTemplate', function ( $compile ) {
     }
   };
 });
+
+function generateSearchUrl(tableState) {
+	var ret = {};
+    if(tableState.sort.predicate) {
+    	var order = (tableState.sort.reverse ? 'desc': 'asc');
+    	ret = {'p': tableState.sort.predicate, 'o': order};
+    }  
+    if(tableState.search.predicateObject) {
+    	if(tableState.search.predicateObject.$) {
+    		angular.extend(ret, {'s': 
+    			String(tableState.search.predicateObject.$)});
+    	}
+        if(tableState.search.predicateObject.type) {
+        	angular.extend(ret, {'t': 
+        		tableState.search.predicateObject.type});
+        }
+    }
+    if(tableState.pagination.start != 0) {
+    	ret.start = tableState.pagination.start;
+    }
+    return ret;
+}
+
+repository.directive('stPersist', ['$location', '$rootScope', function ($location, $rootScope) {
+    return {
+        require: '^stTable',
+        controller: 'SearchController',
+        link: function (scope, element, attr, ctrl) {
+            scope.$watch(function () {
+                return ctrl.tableState();
+            }, function (newValue, oldValue) {
+                if (newValue !== oldValue) {
+                	$location.search(generateSearchUrl(newValue));
+                	$rootScope.searchState = newValue;
+                }
+            }, true);
+
+            // load previous state
+            var tableState = ctrl.tableState();
+            console.log(tableState);
+            var savedState = {};
+            var hasState = false;
+            angular.copy(tableState, savedState);
+            var searchState = $location.search();
+            if(!savedState.search.predicateObject) {
+            	savedState.search.predicateObject = {};
+            }
+            if(searchState.s) {
+            	savedState.search.predicateObject.$ = searchState.s;
+            	hasState = true;
+            }
+            if(searchState.t) {
+            	savedState.search.predicateObject.type = searchState.t;
+            	hasState = true;
+            }
+            if(searchState.p) {
+            	savedState.sort.predicate = searchState.p;
+            	if(searchState.o === 'desc') {
+            		savedState.sort.reverse = true;
+            	} else {
+            		savedState.sort.reverse = false;
+            	}
+            	hasState = true;
+            }
+            if(searchState.page) {
+            	savedState.pagination.start = searchState.page;
+            	hasState = true;
+            }
+            angular.extend(tableState, savedState);
+            
+			if(!hasState) {
+				// restore default
+				tableState.search.predicateObject = {};
+				tableState.pagination.start = 0;
+				tableState.sort.predicate = undefined;
+			}
+			ctrl.pipe();
+        }
+    };
+}]);
+
+repository.directive('stBacklink', ['$rootScope', function ($rootScope) {
+	return {
+		controller: 'DetailsController',
+	    link: function (scope, element, attrs) {
+	    	if($rootScope.searchState) {
+	    		var savedState = generateSearchUrl($rootScope.searchState);
+	    		if(!angular.equals(savedState, {})) {
+	    			var hash = decodeURIComponent($.param(savedState));
+	    			attrs.$set('href', attrs.href + '?' + hash);
+	    		}
+	    	}
+	    }
+	};
+}]);
+
+repository.directive('stReset', ['$route', function($route){
+	return function(scope, element, attrs) {
+		element.bind('click',function(){
+			$route.reload();
+		});
+	}   
+}]);
