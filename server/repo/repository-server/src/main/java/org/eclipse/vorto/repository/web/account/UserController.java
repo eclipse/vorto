@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
+import java.security.Principal;
+import java.sql.Timestamp;
+
 import javax.validation.Valid;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -92,21 +95,54 @@ public class UserController {
 	@ApiOperation(value = "Update an existing User")
 	@RequestMapping(method = RequestMethod.PUT,
 					value = "/users/{username}")
-	public ResponseEntity<User> updateUser(	@ApiParam(value = "Username", required = true) @PathVariable String username, 
+	public ResponseEntity<User> updateUser(	Principal currentlyLoggedInUser,
+											@ApiParam(value = " Username", required = true) @PathVariable String username, 
 											@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody UserAccount userDto) {
-	
+		if (!isUpdateAllowed(currentlyLoggedInUser, username, userDto)) {
+			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+		}
+		
 		User user = userRepository.findByUsername(username);
 		
-		if (user == null)
+		if (user == null) {
 			throw new UsernameNotFoundException("User does not exists");
+		}
 		
 		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
-		user.setHasWatchOnRepository(userDto.getHasWatchOnRepository());
+		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+		
+		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
+			user.setHasWatchOnRepository(userDto.getHasWatchOnRepository());
+		}
 		
 		userRepository.save(user);
 		
-		return new ResponseEntity<User>(userRepository.findByUsername(username), HttpStatus.OK);
+		User updatedUser = userRepository.findByUsername(userDto.getUsername());
+		
+		return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
+	}
+	
+	private boolean isUpdateAllowed(Principal currentlyLoggedInUser, String username, UserAccount userDto) {
+		if(username == null || currentlyLoggedInUser == null || userDto == null) {
+			return false;
+		}
+		
+		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
+			/*
+			 * As an admin, your restriction is you cannot name someone else an admin and 
+			 * you cannot rename yourself to someone else
+			 */
+			if ("admin".equals(username)) {
+				return "admin".equals(userDto.getUsername());
+			} else {
+				return !"admin".equals(userDto.getUsername());
+			}
+		} else {
+			return UserUtils.sameUser(currentlyLoggedInUser, username) && 
+					username.equals(userDto.getUsername()) && 
+					!"admin".equals(userDto.getUsername());
+		}
 	}
 	
 	/* checking uniqueness of specific values

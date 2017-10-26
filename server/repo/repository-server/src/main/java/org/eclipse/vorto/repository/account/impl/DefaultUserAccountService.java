@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
@@ -52,9 +53,11 @@ public class DefaultUserAccountService implements IUserAccountService{
 		user.setPassword(account.getPassword());
 		user.setHasWatchOnRepository(false);
 		user.setEmail(account.getEmail());
+		user.setDateCreated(new Timestamp(System.currentTimeMillis()));
+		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		user.setRoles(Role.USER);
 		     
-		User registered = userRepository.save(user);	
+		User registered = userRepository.save(user);
 		
 		notificationService.sendNotification(new RegistrationMessage(registered));
 	}

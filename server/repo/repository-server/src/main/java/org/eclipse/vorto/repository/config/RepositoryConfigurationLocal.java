@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.config;
 
+import java.sql.Timestamp;
+
 import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.repository.account.Role;
@@ -52,6 +54,8 @@ public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.c
 		user.setHasWatchOnRepository(hasWatchOnRepo);
 		user.setEmail(email);
 		user.setRoles(role);
+		user.setDateCreated(new Timestamp(System.currentTimeMillis()));
+		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		
 		return user;
 	}
