@@ -5,7 +5,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
     $routeProvider.when("/", {
         templateUrl : "partials/search-template.html",
-        controller : "SearchController"
+        controller : "SearchController",
+        reloadOnSearch: false
     }).when("/upload", {
         templateUrl : "partials/upload-template.html",
         controller : "UploadController"

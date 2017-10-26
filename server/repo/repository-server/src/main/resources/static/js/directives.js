@@ -128,8 +128,8 @@ repository.directive('stPersist', ['$location', '$rootScope', function ($locatio
             	}
             	hasState = true;
             }
-            if(searchState.page) {
-            	savedState.pagination.start = searchState.page;
+            if(searchState.start) {
+            	savedState.pagination.start = parseInt(searchState.start);
             	hasState = true;
             }
             angular.extend(tableState, savedState);
