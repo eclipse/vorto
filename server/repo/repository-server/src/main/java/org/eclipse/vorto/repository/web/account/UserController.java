@@ -23,7 +23,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.UserAccount;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.internal.service.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,36 +98,21 @@ public class UserController {
 	public ResponseEntity<User> updateUser(	Principal currentlyLoggedInUser,
 											@ApiParam(value = " Username", required = true) @PathVariable String username, 
 											@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody UserAccount userDto) {
-		if(username == null || currentlyLoggedInUser == null) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		boolean isAdmin = UserUtils.isAdmin(currentlyLoggedInUser);
-		
-		// Only allow admin or the currently logged in user to change his/her account
-		if (!(UserUtils.sameUser(currentlyLoggedInUser, username) || isAdmin)) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		// You cannot modify a user account to have an "admin" username
-		if (!isAdmin && (!userDto.getUsername().equals(username) || userDto.getUsername().equals("admin"))) {
+		if (!isUpdateAllowed(currentlyLoggedInUser, username, userDto)) {
 			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		User user = userRepository.findByUsername(username);
 		
-		if (user == null)
+		if (user == null) {
 			throw new UsernameNotFoundException("User does not exists");
-		
-		// You can only change a username if the logged in user is an Admin and he is modifying a regular user
-		if (isAdmin && !username.equals("admin")) {
-			user.setUsername(userDto.getUsername());
 		}
 		
+		user.setUsername(userDto.getUsername());
 		user.setEmail(userDto.getEmail());
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		
-		if (isAdmin) {
+		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
 			user.setHasWatchOnRepository(userDto.getHasWatchOnRepository());
 		}
 		
@@ -137,6 +121,28 @@ public class UserController {
 		User updatedUser = userRepository.findByUsername(userDto.getUsername());
 		
 		return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
+	}
+	
+	private boolean isUpdateAllowed(Principal currentlyLoggedInUser, String username, UserAccount userDto) {
+		if(username == null || currentlyLoggedInUser == null || userDto == null) {
+			return false;
+		}
+		
+		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
+			/*
+			 * As an admin, your restriction is you cannot name someone else an admin and 
+			 * you cannot rename yourself to someone else
+			 */
+			if ("admin".equals(username)) {
+				return "admin".equals(userDto.getUsername());
+			} else {
+				return !"admin".equals(userDto.getUsername());
+			}
+		} else {
+			return UserUtils.sameUser(currentlyLoggedInUser, username) && 
+					username.equals(userDto.getUsername()) && 
+					!"admin".equals(userDto.getUsername());
+		}
 	}
 	
 	/* checking uniqueness of specific values
