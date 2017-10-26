@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -44,6 +46,12 @@ public class User {
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+    
+    @Column(nullable = false)
+    private Timestamp dateCreated;
+    
+    @Column(nullable = false)
+    private Timestamp lastUpdated;
     
     public User() {
        
@@ -108,10 +116,30 @@ public class User {
     	return this.username;
     }
     
-    @Override
+    public Timestamp getDateCreated() {
+		return dateCreated;
+	}
+
+	public void setDateCreated(Timestamp dateCreated) {
+		this.dateCreated = dateCreated;
+	}
+
+	public Timestamp getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Timestamp lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	@Override
     public String toString() {
         final StringBuilder builder = new StringBuilder();
-        builder.append("[username=").append(username).append("]").append("[email=").append(email).append("]").append("[password=").append(password).append("]");
+        builder.append("{[username=").append(username).append("],")
+        	.append("[email=").append(email).append("],")
+        	.append("[password=").append(password).append("],")
+        	.append("[dateCreated=").append(dateCreated).append("],")
+        	.append("[lastUpdated=").append(lastUpdated).append("]}");
         return builder.toString();
     }
    
