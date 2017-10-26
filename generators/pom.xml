@@ -33,6 +33,7 @@
 		<module>org.eclipse.vorto.codegen.arduino</module>
 		<module>org.eclipse.vorto.codegen.mqtt.python</module>
 		<module>org.eclipse.vorto.codegen.artik</module>
+		<module>org.eclipse.vorto.codegen.ble</module>
+		<module>org.eclipse.vorto.codegen.ble.alpwise</module>
   </modules>
-  
 </project>

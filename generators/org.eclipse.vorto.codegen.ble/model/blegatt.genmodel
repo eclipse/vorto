@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.codegen.ble/src" modelPluginID="org.eclipse.vorto.codegen.ble"
+    modelName="org.eclipse.vorto.codegen.ble.model" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
+    usedGenPackages="../../org.eclipse.vorto.core/model/Datatype.genmodel#//datatype ../../org.eclipse.vorto.core/model/Functionblock.genmodel#//functionblock ../../org.eclipse.vorto.core/model/Model.genmodel#//model"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>blegatt.ecore</foreignModel>
+  <genPackages prefix="Model" basePackage="org.eclipse.vorto.codegen.ble.model" disposableProviderFactory="true"
+      ecorePackage="blegatt.ecore#/">
+    <genClasses ecoreClass="blegatt.ecore#//Device">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference blegatt.ecore#//Device/deviceInfo"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference blegatt.ecore#//Device/services"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference blegatt.ecore#//Device/infomodel"/>
+    </genClasses>
+    <genClasses ecoreClass="blegatt.ecore#//DeviceInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//DeviceInfo/modelNumber"/>
+    </genClasses>
+    <genClasses ecoreClass="blegatt.ecore#//Service">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Service/uuid"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference blegatt.ecore#//Service/functionblocks"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference blegatt.ecore#//Service/characteristics"/>
+    </genClasses>
+    <genClasses ecoreClass="blegatt.ecore#//Characteristic">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/uuid"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference blegatt.ecore#//Characteristic/properties"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/isReadable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/isWritable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/isEventable"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//Characteristic/length"/>
+    </genClasses>
+    <genClasses ecoreClass="blegatt.ecore#//CharacteristicProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//CharacteristicProperty/offset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//CharacteristicProperty/length"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference blegatt.ecore#//CharacteristicProperty/property"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute blegatt.ecore#//CharacteristicProperty/datatype"/>
+    </genClasses>
+  </genPackages>
+  <genPackages prefix="InformationModel" basePackage="org.eclipse.vorto.core.api.model"
+      ecorePackage="../../org.eclipse.vorto.core/model/InformationModel.ecore#/">
+    <genClasses ecoreClass="../../org.eclipse.vorto.core/model/InformationModel.ecore#//InformationModel">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ../../org.eclipse.vorto.core/model/InformationModel.ecore#//InformationModel/properties"/>
+    </genClasses>
+    <genClasses ecoreClass="../../org.eclipse.vorto.core/model/InformationModel.ecore#//FunctionblockProperty">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ../../org.eclipse.vorto.core/model/InformationModel.ecore#//FunctionblockProperty/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ../../org.eclipse.vorto.core/model/InformationModel.ecore#//FunctionblockProperty/description"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference ../../org.eclipse.vorto.core/model/InformationModel.ecore#//FunctionblockProperty/type"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

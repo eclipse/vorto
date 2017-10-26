@@ -1,0 +1,33 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+        <groupId>org.eclipse.vorto</groupId>
+        <artifactId>generators</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+        <relativePath>../</relativePath>
+	</parent>
+    
+	<artifactId>org.eclipse.vorto.codegen.ble.alpwise</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	
+    <name>Vorto Alpwise BLE Generator</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>xtend-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+	
+    <dependencies>
+    	<dependency>
+    		<groupId>org.eclipse.vorto</groupId>
+    		<artifactId>org.eclipse.vorto.codegen.ble</artifactId>
+    		<version>0.10.0-SNAPSHOT</version>
+    		<type>eclipse-plugin</type>
+    		<scope>runtime</scope>
+    	</dependency>
+    </dependencies>
+</project>
