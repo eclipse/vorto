@@ -90,20 +90,25 @@ function generateSearchUrl(tableState) {
 repository.directive('stPersist', ['$location', '$rootScope', function ($location, $rootScope) {
     return {
         require: '^stTable',
-        controller: 'SearchController',
         link: function (scope, element, attr, ctrl) {
             scope.$watch(function () {
                 return ctrl.tableState();
             }, function (newValue, oldValue) {
-                if (newValue !== oldValue) {
+            	if (newValue.pagination.start2) {
+            	    if (newValue.pagination.start2 < newValue.pagination.totalItemCount) {
+            		newValue.pagination.start = newValue.pagination.start2;
+            		newValue.pagination.start2 = undefined;
+            		ctrl.pipe();
+            	    }
+                }
+                if (newValue !== oldValue) {        	
                 	$location.search(generateSearchUrl(newValue));
                 	$rootScope.searchState = newValue;
                 }
             }, true);
-
+            
             // load previous state
             var tableState = ctrl.tableState();
-            console.log(tableState);
             var savedState = {};
             var hasState = false;
             angular.copy(tableState, savedState);
@@ -129,7 +134,7 @@ repository.directive('stPersist', ['$location', '$rootScope', function ($locatio
             	hasState = true;
             }
             if(searchState.start) {
-            	savedState.pagination.start = parseInt(searchState.start);
+            	savedState.pagination.start2 = parseInt(searchState.start);
             	hasState = true;
             }
             angular.extend(tableState, savedState);
