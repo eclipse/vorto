@@ -182,6 +182,11 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.ble</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.codegen.ble.alpwise</artifactId>
 			<version>${project.version}</version>
 		</dependency>
