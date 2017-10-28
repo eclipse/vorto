@@ -66,7 +66,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr ng-repeat="model in displayedModels" ng-click="go(model)">
+						<tr ng-repeat="model in displayedModels track by $index" ng-click="go(model)">
 							<td ng-show="model.type === 'InformationModel'"><img src="images/im.png" /></td>
 							<td ng-show="model.type === 'Functionblock'"><img src="images/fb.png" /></td>
 							<td ng-show="model.type === 'Datatype'"><img src="images/dt.png" /></td>
