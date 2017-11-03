@@ -67,11 +67,11 @@ public class UserController {
 							@ApiResponse(code = 200, message = "OK")})
 	@RequestMapping(method = RequestMethod.GET,
 					value = "/users/{username:.+}")
-	public ResponseEntity<User> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
+	public ResponseEntity<UserDto> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
 		LOGGER.debug("User {} - {} ", username, userRepository.findByUsername(username));
 		
-		return new ResponseEntity<User>(userRepository.findByUsername(username), HttpStatus.OK);
+		return new ResponseEntity<UserDto>(UserDto.fromUser(userRepository.findByUsername(username)), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "Creates a new User")
@@ -95,11 +95,11 @@ public class UserController {
 	@ApiOperation(value = "Update an existing User")
 	@RequestMapping(method = RequestMethod.PUT,
 					value = "/users/{username}")
-	public ResponseEntity<User> updateUser(	Principal currentlyLoggedInUser,
+	public ResponseEntity<UserDto> updateUser(	Principal currentlyLoggedInUser,
 											@ApiParam(value = " Username", required = true) @PathVariable String username, 
-											@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody UserAccount userDto) {
+											@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody UserDto userDto) {
 		if (!isUpdateAllowed(currentlyLoggedInUser, username, userDto)) {
-			return new ResponseEntity<User>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<UserDto>(HttpStatus.UNAUTHORIZED);
 		}
 		
 		User user = userRepository.findByUsername(username);
@@ -113,17 +113,17 @@ public class UserController {
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		
 		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
-			user.setHasWatchOnRepository(userDto.getHasWatchOnRepository());
+			user.setHasWatchOnRepository(userDto.isHasWatchOnRepository());
 		}
 		
 		userRepository.save(user);
 		
 		User updatedUser = userRepository.findByUsername(userDto.getUsername());
 		
-		return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
+		return new ResponseEntity<UserDto>(UserDto.fromUser(updatedUser), HttpStatus.OK);
 	}
 	
-	private boolean isUpdateAllowed(Principal currentlyLoggedInUser, String username, UserAccount userDto) {
+	private boolean isUpdateAllowed(Principal currentlyLoggedInUser, String username, UserDto userDto) {
 		if(username == null || currentlyLoggedInUser == null || userDto == null) {
 			return false;
 		}
