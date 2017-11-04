@@ -41,7 +41,8 @@ class DeviceManifestTemplate implements IFileTemplate<InformationModel> {
 		import com.samsung.sami.manifest.fields.*
 		import com.samsung.sami.manifest.actions.Action
 		import com.samsung.sami.manifest.actions.Actionable
-		
+		import static com.samsung.sami.manifest.groovy.JsonUtil.*
+
 		public class «model.name»Manifest implements Manifest, Actionable {
 		  «FOR fbProperty : model.properties»
 		  	«IF fbProperty.type.functionblock.status != null»
@@ -99,7 +100,7 @@ class DeviceManifestTemplate implements IFileTemplate<InformationModel> {
 		    return [
 		      «FOR fbProperty : model.properties»
 		      	«FOR operation : fbProperty.type.functionblock.operations SEPARATOR ","»
-		      		new Action("«fbProperty.name»_«operation.name»",«IF operation.description != null»«operation.description»«ELSE»""«ENDIF»)
+		      		new Action("«fbProperty.name»_«operation.name»",«IF operation.description != null»"«operation.description»"«ELSE»""«ENDIF»)
 		      	«ENDFOR»
 		      «ENDFOR»
 		    ]
