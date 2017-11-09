@@ -17,7 +17,6 @@
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.core</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -27,17 +26,14 @@
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -57,7 +53,6 @@
 		<dependency>
 			<groupId>org.eclipse.xtend</groupId>
 			<artifactId>org.eclipse.xtend.lib</artifactId>
-			<version>${xtext.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
@@ -68,7 +63,6 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.config;
+package org.eclipse.vorto.repository.web.config;
 
 import java.util.Arrays;
 
@@ -29,8 +29,8 @@ import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
-import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -40,6 +40,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
@@ -60,8 +61,6 @@ import org.springframework.web.filter.CompositeFilter;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-	public static final String LOGIN_TYPE = "loginType";
 	
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -120,6 +119,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.httpStrictTransportSecurity()
 					.disable();
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
+	}
+	
+	@Bean
+	public static PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder(11);
 	}
 	
 	private CsrfTokenRepository csrfTokenRepository() {

@@ -19,6 +19,7 @@
 		<module>repository-api</module>
 		<module>repository-java-client</module>	
 		<module>repository-mapping</module>	
+		<module>repository-web</module>
 	</modules>
 	
 </project>

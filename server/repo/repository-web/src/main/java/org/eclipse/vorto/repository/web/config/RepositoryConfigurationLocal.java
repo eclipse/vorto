@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.config;
+package org.eclipse.vorto.repository.web.config;
 
 import java.sql.Timestamp;
 
@@ -30,8 +30,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
 @Configuration
-@Profile({"local", "local-https"})
-public class RepositoryConfigurationLocal extends org.eclipse.vorto.repository.config.RepositoryConfiguration {
+@Profile({"local"})
+public class RepositoryConfigurationLocal extends RepositoryConfiguration {
 	
 	@Autowired
 	private IUserRepository userRepository;

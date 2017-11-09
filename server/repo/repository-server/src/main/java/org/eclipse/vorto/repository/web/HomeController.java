@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.config.SecurityConfiguration;
 import org.eclipse.vorto.repository.web.security.VortoUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +43,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value="Home Controller", description="REST API to get currently logged in User ")
 @RestController
 public class HomeController {
+	
+	private static final String LOGIN_TYPE = "loginType";
 
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled;
@@ -96,7 +97,7 @@ public class HomeController {
 			}
 			
 			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
-			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
+			map.put("loginType", userDetails.get(LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
 			map.put("name", vortoUser.getUsername());

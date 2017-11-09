@@ -10,13 +10,12 @@
 	<artifactId>repository-server</artifactId>
 	<packaging>jar</packaging>
 
-	<description>Vorto Model Repository UI</description>
+	<description>Vorto Model Repository Backend</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
@@ -26,7 +25,6 @@
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.7.0</version>
 		</dependency>
 
 		<!-- Vorto DSL Dependencies -->
@@ -86,7 +84,6 @@
 		<dependency>
 			<groupId>javax.interceptor</groupId>
 			<artifactId>javax.interceptor-api</artifactId>
-			<version>1.2</version>
 		</dependency>
 
 		<!--Java Content Repository API -->
@@ -109,11 +106,6 @@
 		<dependency>
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-unit-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- Email -->
@@ -161,18 +153,39 @@
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
+
+		<!-- Swagger -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-models</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-annotations</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.swagger</groupId>
+					<artifactId>swagger-models</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
 
-		<!-- Testing -->
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -192,99 +205,10 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Swagger -->
 		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-annotations</artifactId>
-			<version>1.5.6</version>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-models</artifactId>
-			<version>1.5.6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>2.3.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-models</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.webjars.bower</groupId>
-			<artifactId>angular-swagger-ui</artifactId>
-			<version>0.2.7</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.webjars.bower</groupId>
-					<artifactId>jquery</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bower</groupId>
-					<artifactId>bootstrap-less-only</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.webjars.bower</groupId>
-					<artifactId>angular</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>angular-ui-bootstrap</artifactId>
-			<version>0.14.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars.bower</groupId>
-			<artifactId>angular-sanitize</artifactId>
-			<version>1.5.2</version>
+			<groupId>org.modeshape</groupId>
+			<artifactId>modeshape-unit-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<finalName>infomodelrepository</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>repackage</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>org.eclipse.vorto.repository.VortoRepository</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

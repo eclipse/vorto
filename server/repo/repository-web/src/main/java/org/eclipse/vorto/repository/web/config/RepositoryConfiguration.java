@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.config;
+package org.eclipse.vorto.repository.web.config;
 
 import org.eclipse.vorto.repository.sso.boschid.EidpUtils;
 import org.springframework.beans.factory.annotation.Value;
