@@ -118,7 +118,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 		when(userRepository.findAll()).thenReturn(recipients);
 
-		verify(notificationService);
+//		verify(notificationService);
 
 		modelRepository.checkin(uploadResult.getHandleId(), user1.getUsername());
 
