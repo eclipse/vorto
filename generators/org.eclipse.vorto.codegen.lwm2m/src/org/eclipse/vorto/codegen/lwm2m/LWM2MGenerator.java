@@ -21,7 +21,6 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.lwm2m.tasks.FunctionBlockLeshanGeneratorTask;
-import org.eclipse.vorto.codegen.lwm2m.tasks.FunctionBlockXmlGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 

@@ -201,8 +201,8 @@ public class InvocationContext {
 	}
 
 	private boolean matchesOperation(final Operation srcOp, final Operation tgtOp) {
-		FunctionBlock srcFb = (FunctionBlock) srcOp.eContainer().eContainer();
-		FunctionBlock tgtFb = (FunctionBlock) tgtOp.eContainer().eContainer();
+		FunctionBlock srcFb = (FunctionBlock) srcOp.eContainer();
+		FunctionBlock tgtFb = (FunctionBlock) tgtOp.eContainer();
 		FunctionblockModel srcFbModel = (FunctionblockModel) srcFb.eContainer();
 		FunctionblockModel tgtFbModel = (FunctionblockModel) tgtFb.eContainer();
 		return EcoreUtil.equals(srcOp, tgtOp) && EcoreUtil.equals(srcFbModel, tgtFbModel);
