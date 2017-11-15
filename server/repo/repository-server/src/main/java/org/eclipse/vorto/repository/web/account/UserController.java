@@ -67,6 +67,7 @@ public class UserController {
 							@ApiResponse(code = 200, message = "OK")})
 	@RequestMapping(method = RequestMethod.GET,
 					value = "/users/{username:.+}")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
 	public ResponseEntity<UserDto> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
 		LOGGER.debug("User {} - {} ", username, userRepository.findByUsername(username));
