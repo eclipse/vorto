@@ -63,7 +63,7 @@ public class BackupController extends AbstractRepositoryController {
 	}
 	
 	@RequestMapping(value = "/content", method = RequestMethod.GET)
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void backupRepository(final HttpServletResponse response) throws Exception {
 		byte[] backup = this.backupService.backup();
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + "vortobackup_"+SIMPLEDATEFORMAT.format(new Date())+".xml");
@@ -78,7 +78,7 @@ public class BackupController extends AbstractRepositoryController {
 	}
 	
 	@RequestMapping(value = "/content", method = RequestMethod.POST)
-	@Secured("ROLE_ADMIN")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void restoreRepository(@RequestParam("file") MultipartFile file) throws Exception {
 		this.backupService.restore(file.getBytes());
 		
