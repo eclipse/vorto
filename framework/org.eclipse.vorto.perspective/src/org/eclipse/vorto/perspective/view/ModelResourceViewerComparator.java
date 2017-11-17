@@ -63,6 +63,7 @@ class ModelResourceViewerComparator extends ViewerComparator {
 			break;
 		default:
 			ret = p1.getId().getModelType().compareTo(p2.getId().getModelType());
+			break;
 		}
 
 		if (direction == SWT.UP) {
