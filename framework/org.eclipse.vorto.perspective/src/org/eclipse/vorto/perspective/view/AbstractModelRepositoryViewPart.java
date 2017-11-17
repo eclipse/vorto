@@ -103,7 +103,7 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 	protected abstract String getDatatypeEditorId();
 
 	
-	private SelectionAdapter getSelectionAdapter(TableColumn column) {
+	private SelectionAdapter getSelectionAdapter(final TableColumn column) {
         SelectionAdapter selectionAdapter = new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
