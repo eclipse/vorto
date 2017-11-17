@@ -28,7 +28,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
@@ -74,13 +73,13 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 
 	//private static final String DATATYPE_EDITOR_ID = "org.eclipse.vorto.editor.datatype.Datatype";
 
-	private static final String VERSION = "Version";
+	public static final String VERSION = "Version";
 
-	private static final String NAME = "Name";
+	public static final String NAME = "Name";
 
-	private static final String NAMESPACE = "Namespace";
+	public static final String NAMESPACE = "Namespace";
 
-	private static final String DESCRIPTION = "Description";
+	public static final String DESCRIPTION = "Description";
 
 	/**
 	 * The ID of the view as specified by the extension.
@@ -90,6 +89,8 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 	private TableViewer viewer;
 
 	private Text searchField;
+	
+	protected ModelResourceViewerComparator comparator;
 
 	
 	protected abstract String getInfoModelEditorId();
@@ -97,11 +98,20 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 	protected abstract String getFunctionblockEditorId();
 	
 	protected abstract String getDatatypeEditorId();
+
 	
-	
-	
-	class NameSorter extends ViewerSorter {
-	}
+	private SelectionAdapter getSelectionAdapter(final TableColumn column) {
+        SelectionAdapter selectionAdapter = new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                comparator.setColumn(column);
+                viewer.getTable().setSortDirection(comparator.getSortDirection());
+                viewer.getTable().setSortColumn(column);
+                viewer.refresh();
+            }
+        };
+        return selectionAdapter;
+    }
 
 	public AbstractModelRepositoryViewPart() {
 	}
@@ -289,7 +299,9 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 
 		viewer.setContentProvider(new ModelRepositoryContentProvider());
 		viewer.setLabelProvider(new ModelRepositoryLabelProvider());
-		viewer.setSorter(new NameSorter());
+		
+		comparator = new ModelResourceViewerComparator();
+		viewer.setComparator(comparator);
 		viewer.setInput(getViewSite());
 		viewer.addDragSupport(DND.DROP_COPY | DND.DROP_MOVE, new Transfer[] { LocalSelectionTransfer.getTransfer() },
 				new ModelDragListener(viewer));
@@ -304,6 +316,7 @@ public abstract class AbstractModelRepositoryViewPart extends ViewPart {
 		column.setWidth(bound);
 		column.setResizable(true);
 		column.setMoveable(true);
+		column.addSelectionListener(getSelectionAdapter(column));
 		return viewerColumn;
 	}
 
