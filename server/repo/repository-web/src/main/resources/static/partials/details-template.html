@@ -40,7 +40,7 @@
 										<div class="placeHolder">
 											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
 											<img ng-if="model.hasImage" ng-src="rest/model/image/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}" width="200" height="200"/>
-											<div class="upload" ng-show="model.type === 'InformationModel'">
+											<div class="upload" ng-show="model.type === 'InformationModel' && authenticated">
 												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
 											</div>
 										</div>
