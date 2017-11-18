@@ -9,7 +9,7 @@
 
 Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md).
  
- <img src="./tutorials/images/vorto_overview.png" width="80%"/>
+ <img src="./tutorials/images/vorto_overview.png" width="90%"/>
 
 ## 1. Describe a device with Vorto
 
