@@ -83,16 +83,24 @@
 								  <dt>Created By:</dt>
 								  <dd class="ng-binding">{{model.author}}</dd>
 								  <dt>References: </label></dt>
-								  <dd><ul class="list-inline">
+								  <dd><ul>
 									  <li ng-repeat="reference in model.references" class="ng-scope"><a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></li>
 								  </ul>
 								  </dd>
 								  <dt>Used By: </dt>
 								  <dd>
-							   <ul class="list-inline">
+							   <ul>
 									  <li ng-repeat="usage in model.referencedBy" class="ng-scope"><a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a></li>
 								  </ul>
 							   </dd>
+							   <div ng-hide="model.type === 'Mapping'">
+							   <dt>Mappings: </dt>
+								  <dd>
+							   		<ul>
+									  <li ng-repeat="(key, value) in model.platformMappings" class="ng-scope"><a ng-href="./#/details/{{value.namespace}}/{{value.name}}/{{value.version}}" class="ng-binding">{{key}}</a></li>
+								   </ul>
+							      </dd>
+							   </div>
 								  <dt>Other Formats:</dt>
 								  <dd> 
 							   <a ng-href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}?output=XMI" class="pull-center"><i class="fa fa-fw fa-download"></i>XMI</a>

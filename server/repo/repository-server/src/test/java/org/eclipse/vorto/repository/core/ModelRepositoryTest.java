@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
@@ -35,7 +34,6 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
-import org.eclipse.vorto.repository.core.IModelContent;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -275,6 +273,18 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals("org.eclipse.vorto.examples.type.Color_ios:1.0.0",
 				modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
 						.getReferencedBy().get(0).getPrettyFormat());
+		
+		assertEquals(1,modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0")).getPlatformMappings().size());
+	}
+	
+	@Test
+	public void testGetPlatformMappingsOfEntity() throws Exception {
+		checkinModel("Color.type");
+		checkinModel("sample.mapping");
+		Thread.sleep(2000);
+		ModelInfo colorInfo = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		assertEquals(1,colorInfo.getPlatformMappings().size());
+		assertEquals("ios",colorInfo.getPlatformMappings().keySet().iterator().next());
 	}
 
 	@Test

@@ -86,7 +86,7 @@ public class ModelDtoFactory {
 		dto.setHasImage(resource.isHasImage());
 		dto.setReferencedBy(resource.getReferencedBy().stream().map(r -> createDto(r)).collect(Collectors.toList()));
 		dto.setReferences(resource.getReferences().stream().map(r -> createDto(r)).collect(Collectors.toList()));
-		dto.setSupportedTargetPlatforms(resource.getSupportedTargetPlatforms());
+		dto.setPlatformMappings(resource.getPlatformMappings());
 		return dto;
 	}
 

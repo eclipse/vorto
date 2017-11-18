@@ -164,6 +164,11 @@ public class JcrModelRepository implements IModelRepository {
 			Node referencedByFileNode = prop.getParent();
 			final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
 			resource.getReferencedBy().add(referencedById);
+			
+			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
+				ModelEMFResource emfResource = getEMFResource(referencedById);
+				resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
+			}
 		}
 
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
@@ -316,10 +321,6 @@ public class JcrModelRepository implements IModelRepository {
 				NodeIterator imageNodeIterator = folderNode.getNodes("img.png*");
 				if (imageNodeIterator.hasNext()) {
 					modelResource.setHasImage(true);
-				}
-				for (ModelId referencedById : modelResource.getReferencedBy()) {
-					ModelEMFResource emfResource = getEMFResource(referencedById);
-					modelResource.addTargetPlatform(emfResource.getTargetPlatform());
 				}
 			}
 			return modelResource;
