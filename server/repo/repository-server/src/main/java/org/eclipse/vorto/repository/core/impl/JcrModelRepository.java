@@ -115,7 +115,7 @@ public class JcrModelRepository implements IModelRepository {
 				Node currentNode = row.getNode();
 				if (currentNode.hasProperty("vorto:type")) {
 					try {
-						modelResources.add(createModelResource(currentNode));
+						modelResources.add(createMinimalModelInfo(currentNode));
 					} catch (Exception ex) {
 						// model is corrupt ,ignoring....
 					}
@@ -127,8 +127,8 @@ public class JcrModelRepository implements IModelRepository {
 			throw new RuntimeException("Could not create query manager", e);
 		}
 	}
-
-	private ModelInfo createModelResource(Node node) throws RepositoryException {
+	
+	private ModelInfo createMinimalModelInfo(Node node) throws RepositoryException {
 		ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(node.getParent().getPath()),
 				ModelType.valueOf(node.getProperty("vorto:type").getString()));
 		resource.setDescription(node.getProperty("vorto:description").getString());
@@ -137,6 +137,17 @@ public class JcrModelRepository implements IModelRepository {
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
+		
+		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
+		if (imageNodeIterator.hasNext()) {
+			resource.setHasImage(true);
+		}
+		
+		return resource;
+	}
+
+	private ModelInfo createModelResource(Node node) throws RepositoryException {
+		ModelInfo resource = createMinimalModelInfo(node);
 
 		if (node.hasProperty("vorto:references")) {
 			Value[] referenceValues = null;
@@ -169,11 +180,6 @@ public class JcrModelRepository implements IModelRepository {
 				ModelEMFResource emfResource = getEMFResource(referencedById);
 				resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
 			}
-		}
-
-		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
-		if (imageNodeIterator.hasNext()) {
-			resource.setHasImage(true);
 		}
 
 		return resource;

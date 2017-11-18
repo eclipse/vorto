@@ -101,13 +101,6 @@
 								   </ul>
 							      </dd>
 							   </div>
-								  <dt>Other Formats:</dt>
-								  <dd> 
-							   <a ng-href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}?output=XMI" class="pull-center"><i class="fa fa-fw fa-download"></i>XMI</a>
-								 <a ng-href="rest/model/file/{{ model.id.namespace }}/{{ model.id.name }}/{{ model.id.version }}" class="pull-center"><i class="fa fa-fw fa-download"></i>DSL</a>
-								  <a ng-hide="model.type === 'Datatype'" ng-repeat="documentationGenerator in documentationGenerators" ng-href="rest/generation-router/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{documentationGenerator.key}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{documentationGenerator.name}}</a>
-								 
-							</dd>
 							</dl>
 							<div class="modelFilePreview">
 							  <h4>Model Preview</h4>
