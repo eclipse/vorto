@@ -1,10 +1,6 @@
 server:
   port: 8080
   contextPath: /infomodelrepository
-  config:
-    maxModelSize: 2000000
-    maxModelImageSize: 32000
-    maxBackupSize: 10000000
 
 github:
   oauth2:
