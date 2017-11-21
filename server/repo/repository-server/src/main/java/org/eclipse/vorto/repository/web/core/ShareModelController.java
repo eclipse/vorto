@@ -26,9 +26,11 @@ import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
+import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -65,11 +67,18 @@ public class ShareModelController {
 	@Autowired
 	private ITemporaryStorage uploadStorage;
 	
+	@Value("${server.config.maxModelSize}")
+	private long maxModelSize;
+	
 	private UploadModelResult uploadModelResult;
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
 	public ResponseEntity<UploadModelResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
+		if (file.getSize() > maxModelSize) {
+			throw new UploadTooLargeException("model", maxModelSize);
+		}
+		
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
 			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
@@ -88,6 +97,10 @@ public class ShareModelController {
 	@ApiOperation(value = "Upload and validate multiple vorto models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
 	public ResponseEntity<UploadModelResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
+		if (file.getSize() > maxModelSize) {
+			throw new UploadTooLargeException("model", maxModelSize);
+		}
+		
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);

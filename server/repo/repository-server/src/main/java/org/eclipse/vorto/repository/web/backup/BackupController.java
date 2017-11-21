@@ -27,8 +27,9 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.backup.IModelBackupService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,9 @@ public class BackupController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IModelRepository repositoryService;
+	
+	@Value("${server.config.maxBackupSize}")
+	private long maxBackupSize;
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -80,6 +84,10 @@ public class BackupController extends AbstractRepositoryController {
 	@RequestMapping(value = "/content", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void restoreRepository(@RequestParam("file") MultipartFile file) throws Exception {
+		if (file.getSize() > maxBackupSize) {
+			throw new UploadTooLargeException("backup", maxBackupSize);
+		}
+		
 		this.backupService.restore(file.getBytes());
 		
 	}

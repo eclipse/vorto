@@ -38,9 +38,11 @@ import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
 import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,6 +70,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	private static final String CONTENT_DISPOSITION = "content-disposition";
 
+	@Value("${server.config.maxModelImageSize}")
+	private long maxModelImageSize;
+	
 	@Autowired
 	private IModelRepository modelRepository;
 
@@ -166,7 +171,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 									@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @RequestParam String namespace,
 									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @RequestParam String name,
 									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @RequestParam String version) {
-		logger.info("uploadImage: [" + file.getOriginalFilename() + "]");
+		if (file.getSize() > maxModelImageSize) {
+			throw new UploadTooLargeException("model image", maxModelImageSize);
+		}
+		
+		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
+		
 		try {
 			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
 		} catch (IOException e) {
