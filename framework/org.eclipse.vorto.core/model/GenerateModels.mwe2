@@ -33,31 +33,31 @@ Workflow {
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
         genModel = "platform:/resource/org.eclipse.vorto.core/model/Datatype.genmodel"
-        srcPath = "platform:/src"   
+        srcPath = "platform:/src-gen"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
         genModel = "platform:/resource/org.eclipse.vorto.core/model/Functionblock.genmodel"
-        srcPath = "platform:/src"   
+        srcPath = "platform:/src-gen"   
     }
     
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
         genModel = "platform:/resource/org.eclipse.vorto.core/model/InformationModel.genmodel"
-        srcPath = "platform:/src"   
+        srcPath = "platform:/src-gen"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
         genModel = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
-        srcPath = "platform:/src"   
+        srcPath = "platform:/src-gen"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
         genModel = "platform:/resource/org.eclipse.vorto.core/model/Model.genmodel"
-        srcPath = "platform:/src"   
+        srcPath = "platform:/src-gen"   
     }
 
 }
