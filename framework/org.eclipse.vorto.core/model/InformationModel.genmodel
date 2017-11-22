@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src" editDirectory="/org.eclipse.vorto.informationmodeleditor.edit/src"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src-gen" editDirectory="/org.eclipse.vorto.informationmodeleditor.edit/src"
     editorDirectory="/org.eclipse.vorto.informationmodeleditor.editor/src" modelPluginID="org.eclipse.vorto.metamodel"
-    forceOverwrite="true" modelName="InformationModel" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.vorto.informationmodeleditor.edit"
+    forceOverwrite="true" modelName="InformationModel" modelPluginClass="" updateClasspath="false"
+    rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container" complianceLevel="5.0"
+    copyrightFields="false" editPluginID="org.eclipse.vorto.informationmodeleditor.edit"
     editorPluginID="org.eclipse.vorto.informationmodeleditor.editor" runtimeVersion="2.10"
     usedGenPackages="Functionblock.genmodel#//functionblock Datatype.genmodel#//datatype">
   <genPackages prefix="InformationModel" basePackage="org.eclipse.vorto.core.api.model"

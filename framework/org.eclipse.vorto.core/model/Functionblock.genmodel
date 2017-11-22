@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src" editDirectory="/org.eclipse.vorto.fbeditor.edit/src"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.vorto.core/src-gen" editDirectory="/org.eclipse.vorto.fbeditor.edit/src"
     editorDirectory="/org.eclipse.vorto.fbeditor.editor/src" modelPluginID="org.eclipse.vorto.metamodel.functionblock"
     forceOverwrite="true" modelName="Functionblock" modelPluginClass="" updateClasspath="false"
     nonNLSMarkers="true" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
@@ -12,6 +12,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//FunctionblockModel/functionblock"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//FunctionblockModel/entities"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//FunctionblockModel/enums"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Functionblock.ecore#//FunctionblockModel/superType"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//FunctionBlock">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//FunctionBlock/configuration"/>
@@ -34,6 +35,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//Operation/params"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//Operation/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Operation/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Operation/breakable"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//ReturnType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//ReturnType/multiplicity"/>
@@ -43,9 +45,11 @@
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//ReturnPrimitiveType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//ReturnPrimitiveType/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//ReturnPrimitiveType/constraintRule"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//PrimitiveParam">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute Functionblock.ecore#//PrimitiveParam/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//PrimitiveParam/constraintRule"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//RefParam">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//RefParam/type"/>
@@ -53,6 +57,7 @@
     <genClasses ecoreClass="Functionblock.ecore#//Param">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Param/multiplicity"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Param/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Param/description"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//Event">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Event/name"/>
