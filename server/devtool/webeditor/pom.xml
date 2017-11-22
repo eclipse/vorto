@@ -55,7 +55,7 @@
 				<groupId>com.bosch.tina</groupId>
 				<artifactId>tina-maven-plugin</artifactId>
 				<configuration>
-					<applicationId>dx-webeditor</applicationId>
+					<applicationId>vorto-editor</applicationId>
 					<filesToScanPattern>
 						<param>${project.build.directory}/*.jar</param>
 					</filesToScanPattern>
@@ -64,22 +64,32 @@
 					<clmUsername>${env.clmusername}</clmUsername>
 					<clmUserPassword>${env.clmpassword}</clmUserPassword>
 
-					<clmPdfPath>${project.build.directory}/tina-maven-plugin/ThingTypeWebeditorClmReport.pdf</clmPdfPath>
+					<clmPdfPath>${project.build.directory}/tina-maven-plugin/EclipseVortoWebeditorClmReport.pdf</clmPdfPath>
 					<configFiles>
 						<param> ${basedir}/clmconfig.xml </param>
 					</configFiles>
 
 					<!--Properties for Disclosure Document -->
-					<productName>Thing Type Web Editor</productName>
-					<productFullname>Thing Type - Web Editor</productFullname>
+					<productName>EclipseVorto Web Editor</productName>
+					<productFullname>EclipseVorto - Web Editor</productFullname>
 					<version>0.10.0</version>
-					<disclosureDocPath>${project.build.directory}/ThingTypeWebeditor_Disclosure.pdf</disclosureDocPath>
-					<sourceZipPath>${project.build.directory}/thirdparty/ThingTypeWebeditor_3rdPartySources.zip</sourceZipPath>
+					<disclosureDocPath>${project.build.directory}/EclipseVortoWebeditor_Disclosure.pdf</disclosureDocPath>
+					<sourceZipPath>${project.build.directory}/thirdparty/EclipseVortoWebeditor_3rdPartySources.zip</sourceZipPath>
 					<!--Properties for attaching Artifacts -->
 					<attachAll>true</attachAll>
 					<filesToAttach>
 						<param>sources-zip,zip,OSS-sources</param>
 					</filesToAttach>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.sonatype.clm</groupId>
+				<artifactId>clm-maven-plugin</artifactId>
+				<version>2.6.0-01</version>
+				<configuration>
+					<serverUrl>http://clmserver.bosch-si.com</serverUrl>
+					<applicationId>vorto-editor</applicationId>
+					<stage>build</stage>
 				</configuration>
 			</plugin>
 		</plugins>
