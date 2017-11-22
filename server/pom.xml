@@ -384,11 +384,6 @@
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>com.bosch.tina</groupId>
-					<artifactId>tina-maven-plugin</artifactId>
-					<version>1.6.0</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
