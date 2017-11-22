@@ -231,6 +231,50 @@
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.bosch.tina</groupId>
+				<artifactId>tina-maven-plugin</artifactId>
+				<configuration>
+					<applicationId>vorto-generators</applicationId>
+					<filesToScanPattern>
+						<param>${project.build.directory}/*.jar</param>
+					</filesToScanPattern>
+					<clmServer>http://clmserver.bosch-si.com</clmServer>
+					<clmScanResultPath>${project.build.directory}/clm-scan-result.json</clmScanResultPath>
+					<clmUsername>${env.clmusername}</clmUsername>
+					<clmUserPassword>${env.clmpassword}</clmUserPassword>
+
+					<clmPdfPath>${project.build.directory}/tina-maven-plugin/EclipseVortoGeneratorsClmReport.pdf</clmPdfPath>
+					<configFiles>
+						<param> ${basedir}/clmconfig.xml </param>
+					</configFiles>
+
+					<!--Properties for Disclosure Document -->
+					<productName>Eclipse Vorto Generators</productName>
+					<productFullname>Eclipse Vorto - Generators</productFullname>
+					<version>${project.version}</version>
+					<disclosureDocPath>${project.build.directory}/EclipseVortoGenerators_Disclosure.pdf</disclosureDocPath>
+					<sourceZipPath>${project.build.directory}/thirdparty/EclipseVortoGenerators_3rdPartySources.zip</sourceZipPath>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.sonatype.clm</groupId>
+				<artifactId>clm-maven-plugin</artifactId>
+				<version>2.6.0-01</version>
+				<configuration>
+					<serverUrl>http://clmserver.bosch-si.com</serverUrl>
+					<applicationId>vorto-generators</applicationId>
+					<stage>build</stage>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 

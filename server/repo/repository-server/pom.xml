@@ -211,4 +211,54 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<finalName>eclipse-vorto-repository</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.bosch.tina</groupId>
+				<artifactId>tina-maven-plugin</artifactId>
+				<configuration>
+					<applicationId>vorto-repository</applicationId>
+					<filesToScanPattern>
+						<param>${project.build.directory}/*.jar</param>
+					</filesToScanPattern>
+					<clmServer>http://clmserver.bosch-si.com</clmServer>
+					<clmScanResultPath>${project.build.directory}/clm-scan-result.json</clmScanResultPath>
+					<clmUsername>${env.clmusername}</clmUsername>
+					<clmUserPassword>${env.clmpassword}</clmUserPassword>
+
+					<clmPdfPath>${project.build.directory}/tina-maven-plugin/EclipseVortoRepoClmReport.pdf</clmPdfPath>
+					<configFiles>
+						<param> ${basedir}/clmconfig.xml </param>
+					</configFiles>
+
+					<!--Properties for Disclosure Document -->
+					<productName>Eclipse Vorto Repository</productName>
+					<productFullname>Eclipse Vorto - Repository</productFullname>
+					<version>${project.version}</version>
+					<disclosureDocPath>${project.build.directory}/EclipseVortoRepository_Disclosure.pdf</disclosureDocPath>
+					<sourceZipPath>${project.build.directory}/thirdparty/EclipseVortoRepository_3rdPartySources.zip</sourceZipPath>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.sonatype.clm</groupId>
+				<artifactId>clm-maven-plugin</artifactId>
+				<version>2.6.0-01</version>
+				<configuration>
+					<serverUrl>http://clmserver.bosch-si.com</serverUrl>
+					<applicationId>vorto-repository</applicationId>
+					<stage>build</stage>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
