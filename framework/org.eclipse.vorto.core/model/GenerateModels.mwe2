@@ -24,8 +24,13 @@ var projectName = "org.eclipse.vorto.core"
 Workflow {
      
     bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
-    	platformUri = "../../"
+    	platformUri = "./"
 		scanClassPath = true
+		registerGenModelFile = "platform:/resource/${projectName}/model/Datatype.genmodel"
+		registerGenModelFile = "platform:/resource/${projectName}/model/Functionblock.genmodel"
+		registerGenModelFile = "platform:/resource/${projectName}/model/InformationModel.genmodel"
+		registerGenModelFile = "platform:/resource/${projectName}/model/Mapping.genmodel"
+		registerGenModelFile = "platform:/resource/${projectName}/model/Model.genmodel"
     }
    
     component = org.eclipse.emf.mwe.utils.DirectoryCleaner {
