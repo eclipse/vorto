@@ -29,7 +29,7 @@ Workflow {
 		scanClassPath = true
 		projectMapping = { // instead of a .project file
     		projectName = '${projectName}' 
-    		path = '../${projectName}'
+    		path = '${rootPath}'
   		}
     }
    

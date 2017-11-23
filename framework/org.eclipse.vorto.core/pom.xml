@@ -36,7 +36,7 @@
 							-p
 						</argument>
 						<argument>
-							rootPath=${project.basedir}/..
+							rootPath=${project.basedir}
 						</argument>
 					</arguments>
 					<classpathScope>compile</classpathScope>
