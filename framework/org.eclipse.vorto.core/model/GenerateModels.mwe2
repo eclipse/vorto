@@ -27,11 +27,10 @@ Workflow {
     bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
     	platformUri = "${rootPath}"
 		scanClassPath = true
-		registerGenModelFile = "platform:/resource/${projectName}/model/Datatype.genmodel"
-		registerGenModelFile = "platform:/resource/${projectName}/model/Functionblock.genmodel"
-		registerGenModelFile = "platform:/resource/${projectName}/model/InformationModel.genmodel"
-		registerGenModelFile = "platform:/resource/${projectName}/model/Mapping.genmodel"
-		registerGenModelFile = "platform:/resource/${projectName}/model/Model.genmodel"
+		projectMapping = { // instead of a .project file
+    		projectName = '${projectName}' 
+    		path = '../${projectName}'
+  		}
     }
    
     component = org.eclipse.emf.mwe.utils.DirectoryCleaner {
