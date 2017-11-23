@@ -145,7 +145,7 @@
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.5</version>
 					<configuration>
-						<filesets>
+						<filesets combine.children="append">
 							<fileset>
 								<directory>${basedir}/xtend-gen</directory>
 								<includes>
