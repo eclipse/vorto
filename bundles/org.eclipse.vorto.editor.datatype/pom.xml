@@ -40,7 +40,7 @@
 							-p
 						</argument>
 						<argument>
-							rootPath=/${project.basedir}/..
+							rootPath=/${project.basedir}/
 						</argument>
 					</arguments>
 				</configuration>
