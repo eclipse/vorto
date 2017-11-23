@@ -32,6 +32,8 @@
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
 						<argument>file://${project.basedir}/model/GenerateModels.mwe2</argument>
+						<argument>-p</argument>
+						<argument>rootPath=/${project.basedir}</argument>
 					</arguments>
 					<classpathScope>compile</classpathScope>
 				</configuration>

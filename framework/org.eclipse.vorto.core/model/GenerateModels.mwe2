@@ -20,11 +20,12 @@ import org.eclipse.emf.mwe.utils.DirectoryCleaner
 import org.eclipse.emf.mwe2.ecore.EcoreGenerator
   
 var projectName = "org.eclipse.vorto.core"
+var rootPath = ".." // overwritten by pom.xml
 
 Workflow {
      
     bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
-    	platformUri = "./"
+    	platformUri = "${rootPath}"
 		scanClassPath = true
 		registerGenModelFile = "platform:/resource/${projectName}/model/Datatype.genmodel"
 		registerGenModelFile = "platform:/resource/${projectName}/model/Functionblock.genmodel"
