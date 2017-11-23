@@ -18,46 +18,48 @@ module GenerateModels
 import org.eclipse.emf.mwe.utils.StandaloneSetup
 import org.eclipse.emf.mwe.utils.DirectoryCleaner
 import org.eclipse.emf.mwe2.ecore.EcoreGenerator
- 
+  
+var projectName = "org.eclipse.vorto.core"
+
 Workflow {
      
     bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
-        platformUri = ".."
+    	platformUri = "."
+		scanClassPath = true
     }
-    
    
     component = org.eclipse.emf.mwe.utils.DirectoryCleaner {
-        directory = "src-gen"
+        directory = "${projectName}/src-gen"
     }
      
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
-        genModel = "platform:/resource/org.eclipse.vorto.core/model/Datatype.genmodel"
-        srcPath = "platform:/src-gen"   
+        genModel = "platform:/resource/${projectName}/model/Datatype.genmodel"
+        srcPath = "platform:/resource/${projectName}/src"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
-        genModel = "platform:/resource/org.eclipse.vorto.core/model/Functionblock.genmodel"
-        srcPath = "platform:/src-gen"   
+        genModel = "platform:/resource/${projectName}/model/Functionblock.genmodel"
+        srcPath = "platform:/resource/${projectName}/src"   
     }
     
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
-        genModel = "platform:/resource/org.eclipse.vorto.core/model/InformationModel.genmodel"
-        srcPath = "platform:/src-gen"   
+        genModel = "platform:/resource/${projectName}/model/InformationModel.genmodel"
+        srcPath = "platform:/resource/${projectName}/src"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
-        genModel = "platform:/resource/org.eclipse.vorto.core/model/Mapping.genmodel"
-        srcPath = "platform:/src-gen"   
+        genModel = "platform:/resource/${projectName}/model/Mapping.genmodel"
+        srcPath = "platform:/resource/${projectName}/src"   
     }
 
     component = org.eclipse.emf.mwe2.ecore.EcoreGenerator {
         generateCustomClasses = false
-        genModel = "platform:/resource/org.eclipse.vorto.core/model/Model.genmodel"
-        srcPath = "platform:/src-gen"   
+        genModel = "platform:/resource/${projectName}/model/Model.genmodel"
+        srcPath = "platform:/resource/${projectName}/src"   
     }
 
 }
