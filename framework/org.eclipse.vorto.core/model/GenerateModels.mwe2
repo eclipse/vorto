@@ -24,7 +24,7 @@ var projectName = "org.eclipse.vorto.core"
 Workflow {
      
     bean = org.eclipse.emf.mwe.utils.StandaloneSetup {
-    	platformUri = "."
+    	platformUri = "../../"
 		scanClassPath = true
     }
    
@@ -61,5 +61,4 @@ Workflow {
         genModel = "platform:/resource/${projectName}/model/Model.genmodel"
         srcPath = "platform:/resource/${projectName}/src"   
     }
-
 }
