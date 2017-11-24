@@ -72,7 +72,7 @@ Fault:
 ;
  
 Operation :
-	 (breakable ?= 'breakable')? name=ID '(' (params += Param (',' params+=Param)*)?')' ('returns'  returnType = ReturnType)? (description=STRING)?
+	 (presence = Presence)? (breakable ?= 'breakable')? name=ID '(' (params += Param (',' params+=Param)*)?')' ('returns'  returnType = ReturnType)? (description=STRING)?
 ;
 
 ReturnType :
