@@ -71,6 +71,9 @@ public class CodeGeneratorInvocationHandler extends AbstractHandler {
 
 		IModelElement selectedElement = ModelProjectFactory.getInstance().getModelElementFromSelection();
 		if (selectedElement == null) {
+			selectedElement = ModelProjectFactory.getInstance().getSelectedModel();
+		}
+		if (selectedElement == null) {
 			MessageDisplayFactory.getMessageDisplay()
 					.displayWarning("Model was not properly selected. Please try again.");
 			return false;
