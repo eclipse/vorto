@@ -15,6 +15,8 @@
 package org.eclipse.vorto.codegen.ui.handler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -60,8 +62,13 @@ public class PopulateGeneratorsMenu extends CompoundContributionItem {
 			}
 		}
 		
-		return contributionItems
-				.toArray(new IContributionItem[contributionItems.size()]);
+		Collections.sort(contributionItems, new Comparator<CommandContributionItem>() {
+			@Override
+			public int compare(CommandContributionItem a, CommandContributionItem b) {
+				return a.getData().label.compareTo(b.getData().label);
+			}
+		});
+		return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
 	}
 
 	private CommandContributionItem constructCommandForGenerator(
