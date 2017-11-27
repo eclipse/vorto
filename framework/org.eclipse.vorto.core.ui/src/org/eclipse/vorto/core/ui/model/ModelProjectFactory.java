@@ -30,6 +30,8 @@ import org.eclipse.ui.PlatformUI;
 public class ModelProjectFactory {
 
 	private static ModelProjectFactory singleton = null;
+	
+	private IModelElement selectedModel;
 
 	private ModelProjectFactory() {
 	}
@@ -92,5 +94,13 @@ public class ModelProjectFactory {
 		} else {
 			throw new IllegalStateException("Could not retrieve Model Project from selection");
 		}
+	}
+
+	public IModelElement getSelectedModel() {
+		return selectedModel;
+	}
+
+	public void setSelectedModel(IModelElement selectedModel) {
+		this.selectedModel = selectedModel;
 	}
 }

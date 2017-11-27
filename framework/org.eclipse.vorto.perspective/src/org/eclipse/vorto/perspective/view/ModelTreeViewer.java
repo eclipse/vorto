@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.vorto.core.ui.model.IModelElement;
+import org.eclipse.vorto.core.ui.model.ModelProjectFactory;
 import org.eclipse.vorto.perspective.contentprovider.DefaultTreeModelContentProvider;
 import org.eclipse.vorto.perspective.labelprovider.DefaultTreeModelLabelProvider;
 
@@ -125,6 +126,7 @@ public abstract class ModelTreeViewer {
 						if (selection.getFirstElement() instanceof IModelElement) {
 							IModelElement modelElement = (IModelElement) selection.getFirstElement();
 							if (modelElement.getModelFile() != null) {
+								ModelProjectFactory.getInstance().setSelectedModel(modelElement);
 								openFileInEditor(modelElement.getModelFile());
 							}
 						}
