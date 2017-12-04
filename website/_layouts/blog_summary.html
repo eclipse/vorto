@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+
 {% include base.html %}
 <div class="container content">
   <div class="row">
@@ -16,7 +17,15 @@ layout: default
     
        </div>
   </div>
-<!--{% assign sorted_pages = (site.pages | sort: 'page.sequence') %}-->
+
+{% comment %}
+```html
+<!-- 
+   {% assign sorted_pages = (site.pages | sort: 'page.sequence') %}
+-->
+```
+{% endcomment %}
+
 <div class="row">
  
           <div class="col-md-9">
