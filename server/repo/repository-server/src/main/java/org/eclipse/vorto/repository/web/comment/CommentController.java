@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -70,16 +71,9 @@ public class CommentController {
     @RequestMapping(method = RequestMethod.POST,
     				value = "/comments",
     				consumes = "application/json")
+    @PreAuthorize("isAuthenticated()")
     public void addCommentforModelResource(@RequestBody @Valid Comment comment) throws Exception {
        	commentService.createComment(comment);
     }
-    
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
-    public void exceptionHandlerException() {}
-    
-    @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(code=HttpStatus.INTERNAL_SERVER_ERROR)
-    public void exceptionHandlerUsernameNotFoundException() {}
 
 }
