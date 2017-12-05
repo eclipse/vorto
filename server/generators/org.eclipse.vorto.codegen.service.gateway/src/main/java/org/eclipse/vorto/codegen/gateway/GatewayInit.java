@@ -20,6 +20,7 @@ import org.eclipse.vorto.codegen.aws.AWSGenerator;
 import org.eclipse.vorto.codegen.ble.alpwise.AlpwiseBtStackGenerator;
 import org.eclipse.vorto.codegen.bosch.things.BoschIoTThingsGenerator;
 import org.eclipse.vorto.codegen.coap.CoAPGenerator;
+import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
@@ -86,6 +87,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/pythonmqtt.properties", PythonGenerator.class));
 			generatorRepo.add(Generator.create("/generators/artik.properties", ArtikGenerator.class));
 			generatorRepo.add(Generator.create("/generators/alpwiseBt.properties", AlpwiseBtStackGenerator.class));
+			generatorRepo.add(Generator.create("/generators/ditto.properties", EclipseDittoGenerator.class));
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			
 			generatorRepo.list().stream().forEach(vorto::register);
