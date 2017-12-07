@@ -48,15 +48,14 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void generateForFunctionblock(
+	private void generateForFunctionblock(
 			FunctionBlock fb, 
 			InvocationContext context,
 			String targetPath, 
 			String jsonFileExt,
 			IGeneratedWriter outputter) {
 		if (fb == null) {
-			throw new RuntimeException("fb is null");
+			throw new IllegalArgumentException("fb must not be null null");
 		}
 		
 		String stateTargetPath = targetPath + "/properties";
@@ -69,6 +68,16 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 		if (configuration != null || status != null || fault != null) {
 			generateTask(fb, context, outputter, ValidationTaskFactory.getPropertiesValidationTask(jsonFileExt, stateTargetPath));
 		}
+		generateConfiguration(context, jsonFileExt, outputter, stateTargetPath, configuration);
+		generateStatus(context, jsonFileExt, outputter, stateTargetPath, status);
+		generateFault(context, jsonFileExt, outputter, stateTargetPath, fault);
+		
+		generateEvents(fb, context, jsonFileExt, outputter, eventTargetPath);
+		generateOperations(fb, context, jsonFileExt, outputter, operationTargetPath);
+	}
+	
+	private void generateConfiguration(InvocationContext context, String jsonFileExt, IGeneratedWriter outputter,
+			String stateTargetPath, Configuration configuration) {
 		if (configuration != null) {
 			generateTask(configuration, context, outputter, ValidationTaskFactory.getPropertiesConfigValidationTask(jsonFileExt, stateTargetPath));
 			
@@ -78,6 +87,10 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 								"-config-" + property.getName() + jsonFileExt, stateTargetPath));
 			}
 		}
+	}
+	
+	private void generateStatus(InvocationContext context, String jsonFileExt, IGeneratedWriter outputter,
+			String stateTargetPath, Status status) {
 		if (status != null) {
 			generateTask(status, context, outputter, ValidationTaskFactory.getPropertiesStatusValidationTask(jsonFileExt, stateTargetPath));
 			
@@ -87,6 +100,10 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 								"-status-" + property.getName() + jsonFileExt, stateTargetPath));
 			}
 		}
+	}
+	
+	private void generateFault(InvocationContext context, String jsonFileExt, IGeneratedWriter outputter,
+			String stateTargetPath, Fault fault) {
 		if (fault != null) {
 			generateTask(fault, context, outputter, ValidationTaskFactory.getPropertiesFaultValidationTask(jsonFileExt, stateTargetPath));
 			
@@ -96,13 +113,19 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 								"-fault-" + property.getName() + jsonFileExt, stateTargetPath));
 			}
 		}
-		
+	}
+	
+	private void generateEvents(FunctionBlock fb, InvocationContext context, String jsonFileExt,
+			IGeneratedWriter outputter, String eventTargetPath) {
 		if (fb.getEvents() != null) {
 			for (Event event : fb.getEvents()) {
 				generateTask(event, context, outputter, ValidationTaskFactory.getEventValidationTask(jsonFileExt, eventTargetPath));
 			}
 		}
-		
+	}
+
+	private void generateOperations(FunctionBlock fb, InvocationContext context, String jsonFileExt,
+			IGeneratedWriter outputter, String operationTargetPath) {
 		if (fb.getOperations() != null) {
 			for (Operation op : fb.getOperations()) {
 				generateTask(op, context, outputter, 
@@ -111,9 +134,9 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 			}
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
-	private <K> void generateTask(K element, InvocationContext context, IGeneratedWriter outputter, ICodeGeneratorTask<K>... tasks) {
+
+	@SafeVarargs
+	private final <K> void generateTask(K element, InvocationContext context, IGeneratedWriter outputter, ICodeGeneratorTask<K>... tasks) {
 		ChainedCodeGeneratorTask<K> generator = new ChainedCodeGeneratorTask<K>();
 		for(ICodeGeneratorTask<K> task : tasks) {
 			generator.addTask(task);

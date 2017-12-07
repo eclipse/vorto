@@ -29,28 +29,28 @@ import org.eclipse.vorto.codegen.ditto.schema.tasks.template.PropertiesStatusVal
 import org.eclipse.vorto.codegen.ditto.schema.tasks.template.PropertiesValidationTemplate;
 
 final class ValidationTemplates {
-	static EnumValidationTemplate enumValidationTemplate = new EnumValidationTemplate();
+	public static EnumValidationTemplate enumValidationTemplate = new EnumValidationTemplate();
 	
-	static PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate = new PrimitiveTypeValidationTemplate();
+	public static PrimitiveTypeValidationTemplate primitiveTypeValidationTemplate = new PrimitiveTypeValidationTemplate();
 	
-	static ConstraintTemplate constraintTemplate = new ConstraintTemplate();
+	public static ConstraintTemplate constraintTemplate = new ConstraintTemplate();
 	
-	static EntityValidationTemplate entityValidationTemplate = new EntityValidationTemplate();
+	public static EntityValidationTemplate entityValidationTemplate = new EntityValidationTemplate();
 	
-	static PropertiesValidationTemplate propertiesValidationTemplate = new PropertiesValidationTemplate();
-	static PropertiesConfigurationValidationTemplate propertiesConfigValidationTemplate = new PropertiesConfigurationValidationTemplate();
-	static PropertiesStatusValidationTemplate propertiesStatusValidationTemplate = new PropertiesStatusValidationTemplate();
-	static PropertiesFaultValidationTemplate propertiesFaultValidationTemplate = new PropertiesFaultValidationTemplate();
-	static PropertiesSinglePropertyValidationTemplate propertiesSinglePropertyValidationTemplate = new PropertiesSinglePropertyValidationTemplate();
+	public static PropertiesValidationTemplate propertiesValidationTemplate = new PropertiesValidationTemplate();
+	public static PropertiesConfigurationValidationTemplate propertiesConfigValidationTemplate = new PropertiesConfigurationValidationTemplate();
+	public static PropertiesStatusValidationTemplate propertiesStatusValidationTemplate = new PropertiesStatusValidationTemplate();
+	public static PropertiesFaultValidationTemplate propertiesFaultValidationTemplate = new PropertiesFaultValidationTemplate();
+	public static PropertiesSinglePropertyValidationTemplate propertiesSinglePropertyValidationTemplate = new PropertiesSinglePropertyValidationTemplate();
 	
-	static EventValidationTemplate eventValidationTemplate = new EventValidationTemplate();
+	public static EventValidationTemplate eventValidationTemplate = new EventValidationTemplate();
 	
-	static OperationSingleParameterValidationTemplate operationSingleParameterValidationTemplate = 
+	public static OperationSingleParameterValidationTemplate operationSingleParameterValidationTemplate = 
 			new OperationSingleParameterValidationTemplate();
 	
-	static OperationPayloadValidationTemplate operationPayloadValidationTemplate = new OperationPayloadValidationTemplate();
+	public static OperationPayloadValidationTemplate operationPayloadValidationTemplate = new OperationPayloadValidationTemplate();
 	
-	static OperationResponseValidationTemplate operationResponseValidationTemplate = new OperationResponseValidationTemplate();
+	public static OperationResponseValidationTemplate operationResponseValidationTemplate = new OperationResponseValidationTemplate();
 	
 	private ValidationTemplates() {
 		throw new AssertionError();
