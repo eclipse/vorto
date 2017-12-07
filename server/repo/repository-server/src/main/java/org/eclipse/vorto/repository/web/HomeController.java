@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.base.Strings;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -85,9 +87,17 @@ public class HomeController {
 		
 		if (user instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
-			map.put("name", oauth2User.getName());
 			
-			User registeredUser = userRepository.findByUsername(oauth2User.getName())	;
+			String name = oauth2User.getName();
+			if (Strings.nullToEmpty(name).trim().isEmpty() || "unknown".equals(name)) {
+				String email = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email");
+				if (email != null) {
+					name = email.split("@")[0];
+				}
+			}
+			
+			map.put("name", name);
+			User registeredUser = userRepository.findByUsername(name);
 			if (registeredUser != null) {
 				map.put("email",  registeredUser.getEmail());
 				map.put("isRegistered", Boolean.toString(true));
