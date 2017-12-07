@@ -4,7 +4,7 @@ Vorto Code Generators convert an Information Model into executable code that is 
 
 Available Generators:
 
- - [Bosch IoT Suite Generator](org.eclipse.vorto.codegen.bosch.things/Readme.md)
+ - [Bosch IoT Suite Generator](org.eclipse.vorto.codegen.ditto/Readme.md)
  - [ProSyst Functional Items Generator](org.eclipse.vorto.codegen.prosystfi/Readme.md)
  - [AWS IoT Generator](org.eclipse.vorto.codegen.aws/Readme.md)
  - [Eclipse Californium Generator](org.eclipse.vorto.codegen.coap/Readme.md)
@@ -21,6 +21,7 @@ Available Generators:
  - [Arduino Generator](org.eclipse.vorto.codegen.arduino/Readme.md) 
  - [Google Protobuf Generator](org.eclipse.vorto.codegen.protobuf/Readme.md)
  - [Samsung ARTIK Generator](org.eclipse.vorto.codegen.artik/Readme.md)
+ - [Eclipse Ditto Generator](org.eclipse.vorto.codegen.ditto/Readme.md)
 
 # Add your Code Generator
 
