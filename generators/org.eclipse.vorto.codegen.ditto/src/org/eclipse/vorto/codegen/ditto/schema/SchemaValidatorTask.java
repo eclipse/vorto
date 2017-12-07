@@ -19,6 +19,7 @@ import org.eclipse.vorto.codegen.api.ICodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.ditto.schema.tasks.ValidationTaskFactory;
+import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.Configuration;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.Fault;
@@ -71,29 +72,29 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 		if (configuration != null) {
 			generateTask(configuration, context, outputter, ValidationTaskFactory.getPropertiesConfigValidationTask(jsonFileExt, stateTargetPath));
 			
-			configuration.getProperties().forEach(property -> 
+			for (Property property : configuration.getProperties()) {
 				generateTask(property, context, outputter, 
 						ValidationTaskFactory.getPropertiesSinglePropertyValidationTask(
-								"-config-" + property.getName() + jsonFileExt, stateTargetPath))
-				);
+								"-config-" + property.getName() + jsonFileExt, stateTargetPath));
+			}
 		}
 		if (status != null) {
 			generateTask(status, context, outputter, ValidationTaskFactory.getPropertiesStatusValidationTask(jsonFileExt, stateTargetPath));
 			
-			status.getProperties().forEach(property -> 
+			for (Property property : status.getProperties()) {
 				generateTask(property, context, outputter, 
 						ValidationTaskFactory.getPropertiesSinglePropertyValidationTask(
-								"-status-" + property.getName() + jsonFileExt, stateTargetPath))
-				);
+								"-status-" + property.getName() + jsonFileExt, stateTargetPath));
+			}
 		}
 		if (fault != null) {
 			generateTask(fault, context, outputter, ValidationTaskFactory.getPropertiesFaultValidationTask(jsonFileExt, stateTargetPath));
 			
-			fault.getProperties().forEach(property -> 
+			for (Property property : fault.getProperties()) {
 				generateTask(property, context, outputter, 
 						ValidationTaskFactory.getPropertiesSinglePropertyValidationTask(
-								"-fault-" + property.getName() + jsonFileExt, stateTargetPath))
-				);
+								"-fault-" + property.getName() + jsonFileExt, stateTargetPath));
+			}
 		}
 		
 		if (fb.getEvents() != null) {
