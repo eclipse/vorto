@@ -115,7 +115,7 @@ public class ModelRepositoryClientTest {
 	@Test
 	public void testGetModelForNotAvailableTargetPlatform() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"omadm").get();
-		assertNull(accelerometer);
+		assertNotNull(accelerometer);
 	}
 		
 	@Test
