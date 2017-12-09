@@ -28,6 +28,10 @@ public class EnumModel extends AbstractModel {
 	public EnumModel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
 	}
+	
+	protected EnumModel() {
+		
+	}
 
 	public List<EnumLiteral> getLiterals() {
 		return literals;

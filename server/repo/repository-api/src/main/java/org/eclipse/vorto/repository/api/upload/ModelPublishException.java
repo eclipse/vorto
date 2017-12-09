@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.api.upload;
 
-public class ModelPublishException extends Exception {
+public class ModelPublishException extends RuntimeException {
 
 	/**
 	 * 

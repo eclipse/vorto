@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +40,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
-import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
-import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -113,8 +113,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
 		
 		byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
-		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
-		return ModelDtoFactory.createResource(extractor.extract(name),Optional.empty());
+		
+		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+		return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(),Optional.empty());
 	}
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes")
@@ -128,13 +129,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
 		if (!mappingResources.isEmpty()) {
 			byte[] mappingContentZip = createZipWithAllDependencies(mappingResources.get(0).getId(), ContentType.DSL);
-			MappingZipFileExtractor mappingExtractor = new MappingZipFileExtractor(mappingContentZip);
-			
-			MappingModel mappingModel = mappingExtractor.extract().get(0);
+			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
+
+			MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
 			
 			byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
-			ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
-			return ModelDtoFactory.createResource(extractor.extract(name),Optional.of(mappingModel));
+			
+		    workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+
+			return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(),Optional.of(mappingModel));
 		} else {
 			return getModelContent(namespace,name,version);
 		}

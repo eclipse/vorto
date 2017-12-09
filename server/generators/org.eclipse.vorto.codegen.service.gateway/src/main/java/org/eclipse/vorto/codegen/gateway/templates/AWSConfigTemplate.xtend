@@ -18,7 +18,7 @@ import java.util.Arrays
 import java.util.HashSet
 import java.util.Set
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
+import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate
 
 class AWSConfigTemplate implements IGeneratorConfigUITemplate {
 	

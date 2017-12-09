@@ -21,7 +21,7 @@ public class SpecWithTimestamp extends AbstractTestSpec {
 		digitalInputStateProperty.setType(PrimitiveType.DATETIME);
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("source", "date:format(time)"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("date:format(time)"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty }));

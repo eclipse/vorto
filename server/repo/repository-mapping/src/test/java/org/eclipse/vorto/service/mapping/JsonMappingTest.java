@@ -9,12 +9,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.vorto.service.mapping.ditto.DittoMapper;
-import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
+import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
+import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
+import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
+import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
 import org.junit.Test;
@@ -24,12 +27,12 @@ public class JsonMappingTest {
 	@Test
 	public void testDittoMapping() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
 				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -48,13 +51,13 @@ public class JsonMappingTest {
 	@Test
 	public void testDittoMappingUsingListInput() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload())
 				.buildDittoMapper();
 
 		String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 		
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -68,13 +71,13 @@ public class JsonMappingTest {
 	@Test
 	public void testDittoMappingTimestamp() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
 				.buildDittoMapper();
 
 		final Date timestamp = new Date();
 		String json = "{\"time\" : "+timestamp.getTime()+"}";
 		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -87,12 +90,12 @@ public class JsonMappingTest {
 	@Test
 	public void testDittoMappingTypeConversion() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
 				.buildDittoMapper();
 
 		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
 		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -105,12 +108,12 @@ public class JsonMappingTest {
 	@Test
 	public void testDittoMappingOnlyOneFeature() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
 				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json),
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json),
 				MappingContext.functionblockProperties("button"));
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
@@ -126,22 +129,25 @@ public class JsonMappingTest {
 
 	@Test(expected = MappingSpecificationProblem.class)
 	public void testBuildMappingSpecificationForInvalidModelId() {
-		IMappingSpecification.newBuilder().modelId("devices.PhilipsLivingBloo:1.0.0").build();
+		MappingSpecificationBuilder.create()
+			.infomodelId("devices.PhilipsLivingBloo:1.0.0")
+			.targetPlatformKey("button")
+			.build();
 	}
 
 	@Test
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 
-		DittoMapper mapper = IDataMapper.newBuilder()
-				.withSpecification(
-						IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").build())
-				.buildDittoMapper();
+		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
+											.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
+											.targetPlatformKey("devices_aws_button_AWSIoTButton_1_0_0").build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification).buildDittoMapper();
 
 		Map<String, Object> input = new HashMap<String, Object>();
 		input.put("clickType", "DOUBLE");
 		input.put("batteryVoltage", "2322mV");
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -156,15 +162,44 @@ public class JsonMappingTest {
 		System.out.println(mappedDittoOutput.toJson());
 
 	}
+	
+	@Test
+	public void testCreateDynamicMappingSpec() throws Exception {
+
+		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+		
+		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
+		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get().addStereotype(Stereotype.createWithXpath("/@incl"));
+		
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification).buildDittoMapper();
+
+		Map<String, Object> input = new HashMap<String, Object>();
+		input.put("dist", 5.3);
+		input.put("incl", 38.8);
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
+
+		Feature distance = mappedDittoOutput.getFeatures().get("distancesensor");
+
+		assertEquals(5.3, distance.getProperty("distance"));
+
+		Feature incline = mappedDittoOutput.getFeatures().get("inclinesensor");
+
+		assertEquals(38.8, incline.getProperty("degree"));
+
+		System.out.println(mappedDittoOutput.toJson());
+
+	}
 
 	@Test
 	public void testMapDevicePayloadWithInitialValue() {
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
 				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -181,12 +216,12 @@ public class JsonMappingTest {
 		
 	@Test
 	public void testMapSingleFunctionblockOfInfomodel() {
-		DittoMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
 				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\"}";
 
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 		
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
@@ -198,6 +233,28 @@ public class JsonMappingTest {
 		assertNull(voltageFeature);
 
 		System.out.println(mappedDittoOutput.toJson());
+	}
+	
+	@Test
+	public void testDittoMappingWithInfoModelUsingSameFunctionblock() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithSameFunctionblock())
+				.buildDittoMapper();
+
+		String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("btn1");
+
+		assertEquals(2, buttonFeature.getProperty("sensor_value"));
+
+		Feature button2Feature = mappedDittoOutput.getFeatures().get("btn2");
+
+		assertEquals(10, button2Feature.getProperty("sensor_value"));
+
+		System.out.println(mappedDittoOutput.toJson());
+
 	}
 
 }

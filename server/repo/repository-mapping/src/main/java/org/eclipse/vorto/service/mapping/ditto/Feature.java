@@ -16,6 +16,8 @@ package org.eclipse.vorto.service.mapping.ditto;
 
 import java.util.Map;
 
+import org.eclipse.vorto.service.mapping.internal.ditto.FeatureBuilder;
+
 public interface Feature {
 
 	/**

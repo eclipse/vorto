@@ -32,7 +32,7 @@ import org.eclipse.vorto.repository.api.impl.RequestContext;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
 
 public class RepositoryClientBuilder {
-	private String baseUrl;
+	private String baseUrl = "http://vorto.eclipse.org";
 	private String proxyHost;
 	private int proxyPort = 8080;
 	

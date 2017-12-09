@@ -21,19 +21,23 @@ import java.util.Map;
 public class Stereotype {
 
 	private String name;
+	
+	private static final String SOURCE = "source";
+	private static final String XPATH_ATT = "xpath";
+	private static final String VALUE_ATT = "value";
 
 	private Map<String, String> attributes = new HashMap<String, String>();
 	
-	public static Stereotype createWithValue(String name, String value) {
+	public static Stereotype createWithValue(String value) {
 		Map<String,String> attributes = new HashMap<String, String>(1);
-		attributes.put("value",value);
-		return new Stereotype(name, attributes);
+		attributes.put(VALUE_ATT,value);
+		return new Stereotype(SOURCE, attributes);
 	}
 	
-	public static Stereotype createWithXpath(String name, String xpath) {
+	public static Stereotype createWithXpath(String xpath) {
 		Map<String,String> attributes = new HashMap<String, String>(1);
-		attributes.put("xpath",xpath);
-		return new Stereotype(name, attributes);
+		attributes.put(XPATH_ATT,xpath);
+		return new Stereotype(SOURCE, attributes);
 	}
 	
 	public static Stereotype create(String name, Map<String,String> attributes) {
@@ -43,6 +47,10 @@ public class Stereotype {
 	Stereotype(String name, Map<String,String> attributes) {
 		this.name = name;
 		this.attributes = attributes;
+	}
+	
+	protected Stereotype() {
+		
 	}
 	
 	public String getName() {
@@ -65,6 +73,38 @@ public class Stereotype {
 	public String toString() {
 		return "Stereotype [name=" + name + ", attributes=" + attributes + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Stereotype other = (Stereotype) obj;
+		if (attributes == null) {
+			if (other.attributes != null)
+				return false;
+		} else if (!attributes.equals(other.attributes))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		return true;
+	}
+	
 	
 	
 }

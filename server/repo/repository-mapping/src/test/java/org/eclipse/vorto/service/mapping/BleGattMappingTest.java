@@ -34,10 +34,13 @@ import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.api.content.Stereotype;
-import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
-import org.eclipse.vorto.service.mapping.ditto.DittoMapper;
-import org.eclipse.vorto.service.mapping.ditto.DittoOutput;
+import org.eclipse.vorto.service.mapping.ble.BleGattCharacteristic;
+import org.eclipse.vorto.service.mapping.ble.BleGattDevice;
+import org.eclipse.vorto.service.mapping.ble.BleGattDeviceBuilder;
+import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
+import org.eclipse.vorto.service.mapping.internal.converter.JavascriptFunctions;
+import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.junit.Test;
 
 public class BleGattMappingTest {
@@ -50,7 +53,7 @@ public class BleGattMappingTest {
 		
 		BleGattDevice bleGattDevice = BleGattDeviceBuilder.newBuilder()
 									.withSpecification(mapping).build();		
-		DittoMapper mapper = IDataMapper.newBuilder()
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder()
 									.withSpecification(mapping).buildDittoMapper();
 		
 		// RUNTIME
@@ -60,7 +63,7 @@ public class BleGattMappingTest {
 		BleGattCharacteristic accelerometerValue = bleGattDevice.getCharacteristics().get("f000aa81-0451-4000-b000-000000000000");
 		accelerometerValue.setData(new Short[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* X Value = 1.0 */0x00, 0x40, /* Y Value = -1 */ 0x00, 0xC0, /* Z Value  = 0.0 */ 0x00, 0x00 });
 		
-		DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
 		
 		// TEST
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("accelerometer");
@@ -78,7 +81,7 @@ public class BleGattMappingTest {
 
 	private static class TestMappingSpecification implements IMappingSpecification {
 
-		private static Map<ModelId, FunctionblockModel> FBS = new HashMap<ModelId, FunctionblockModel>(2);
+		private static Map<String, FunctionblockModel> FBS = new HashMap<String, FunctionblockModel>(2);
 		
 		static {
 			
@@ -147,7 +150,7 @@ public class BleGattMappingTest {
 			
 			barometerModel.setStatusProperties(Arrays.asList(new ModelProperty[] {barometerValueProperty}));
 			
-			FBS.put(barometerModel.getId(), barometerModel);
+			FBS.put("barometer", barometerModel);
 			
 			//################# ACELLEROMETER Function Block ####################
 
@@ -252,7 +255,7 @@ public class BleGattMappingTest {
 
 			accelerometerModel.setStatusProperties(Arrays.asList(new ModelProperty[] {accelerometerXValueProperty, accelerometerYValueProperty, accelerometerZValueProperty}));
 			
-			FBS.put(accelerometerModel.getId(), accelerometerModel);			
+			FBS.put("accelerometer", accelerometerModel);			
 		}
 		
 		@Override
@@ -275,8 +278,8 @@ public class BleGattMappingTest {
 		}
 
 		@Override
-		public FunctionblockModel getFunctionBlock(ModelId modelId) {	
-			return FBS.get(modelId);
+		public FunctionblockModel getFunctionBlock(String name) {	
+			return FBS.get(name);
 		}
 
 		@Override

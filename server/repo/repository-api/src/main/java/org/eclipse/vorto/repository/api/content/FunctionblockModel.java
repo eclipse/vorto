@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.api.content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
@@ -32,7 +33,10 @@ public class FunctionblockModel extends AbstractModel {
 
 	public FunctionblockModel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
-
+	}
+	
+	protected FunctionblockModel() {
+		
 	}
 
 	public List<ModelProperty> getConfigurationProperties() {
@@ -45,6 +49,18 @@ public class FunctionblockModel extends AbstractModel {
 
 	public List<ModelProperty> getStatusProperties() {
 		return statusProperties;
+	}
+	
+	public Optional<ModelProperty> getStatusProperty(String propertyName) {
+		return statusProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+	}
+	
+	public Optional<ModelProperty> getConfigurationProperty(String propertyName) {
+		return configurationProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+	}
+	
+	public Optional<ModelProperty> getFaultProperty(String propertyName) {
+		return faultProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
 	}
 
 	public void setStatusProperties(List<ModelProperty> statusProperties) {

@@ -10,11 +10,10 @@ import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.service.mapping.IMappingSpecification;
 
 public abstract class AbstractTestSpec implements IMappingSpecification {
 	
-	private static Map<ModelId, FunctionblockModel> FBS = new HashMap<ModelId, FunctionblockModel>(2);
+	private static Map<String, FunctionblockModel> FBS = new HashMap<String, FunctionblockModel>(2);
 	
 	private Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices.AWSIoTButton:1.0.0"),
 			ModelType.InformationModel);
@@ -31,7 +30,7 @@ public abstract class AbstractTestSpec implements IMappingSpecification {
 	protected abstract void createFBSpec();
 	
 	protected void addFunctionblockProperty(final String name, final FunctionblockModel fbm) {
-		FBS.put(fbm.getId(), fbm);
+		FBS.put(name, fbm);
 		ModelProperty prop = new ModelProperty();
 		prop.setName(name);
 		prop.setType(fbm.getId());
@@ -39,8 +38,8 @@ public abstract class AbstractTestSpec implements IMappingSpecification {
 	}
 
 	@Override
-	public FunctionblockModel getFunctionBlock(ModelId modelId) {
-		return FBS.get(modelId);
+	public FunctionblockModel getFunctionBlock(String name) {
+		return FBS.get(name);
 	}
 
 	@Override

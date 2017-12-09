@@ -10,7 +10,7 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.api.content.Stereotype;
-import org.eclipse.vorto.service.mapping.converters.JavascriptFunctions;
+import org.eclipse.vorto.service.mapping.internal.converter.JavascriptFunctions;
 
 public class SpecWithCustomFunction extends AbstractTestSpec {
 
@@ -30,7 +30,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
 
-		digitalInputStateProperty.addStereotype(Stereotype.createWithValue("source", "true"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithValue("true"));
 
 		ModelProperty digitalInputCount = new ModelProperty();
 		digitalInputCount.setMandatory(true);
@@ -38,7 +38,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 		digitalInputCount.setType(PrimitiveType.INT);
 
 		digitalInputCount.setTargetPlatformKey("iotbutton");
-		digitalInputCount.addStereotype(Stereotype.createWithXpath("source", "custom:convertClickType(clickType)"));
+		digitalInputCount.addStereotype(Stereotype.createWithXpath("custom:convertClickType(clickType)"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty, digitalInputCount }));
@@ -56,7 +56,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 
 		sensorValueProperty.setTargetPlatformKey("iotbutton");
 
-		sensorValueProperty.addStereotype(Stereotype.createWithXpath("source",
+		sensorValueProperty.addStereotype(Stereotype.createWithXpath(
 				"number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"));
 
 		ModelProperty sensorUnitsProperty = new ModelProperty();
@@ -65,7 +65,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 		sensorUnitsProperty.setType(PrimitiveType.STRING);
 
 		sensorUnitsProperty.setTargetPlatformKey("iotbutton");
-		sensorUnitsProperty.addStereotype(Stereotype.createWithXpath("source",
+		sensorUnitsProperty.addStereotype(Stereotype.createWithXpath(
 				"string:substring(batteryVoltage,string:length(batteryVoltage)-2)"));
 		voltageModel
 				.setStatusProperties(Arrays.asList(new ModelProperty[] { sensorValueProperty, sensorUnitsProperty }));

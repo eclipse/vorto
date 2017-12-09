@@ -14,9 +14,9 @@
  */
 package org.eclipse.vorto.service.mapping;
 
-public interface IDataMapper<Output extends JsonPayload> {
+public interface IDataMapper<MappedData extends JsonData> {
 	
-	Output map(DataInput input, MappingContext context);
+	MappedData map(DataInput input, MappingContext context);
 	
 	static DataMapperBuilder newBuilder() {
 		return new DataMapperBuilder();

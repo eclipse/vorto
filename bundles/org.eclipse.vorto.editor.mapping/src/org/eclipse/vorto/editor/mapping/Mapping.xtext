@@ -53,7 +53,7 @@ InfomodelSource:
 ;
 
 InfoModelPropertySource:
-	model=[infomodel::InformationModel]  ('.' property =[infomodel::FunctionblockProperty])?  
+	model=[infomodel::InformationModel]  '.' 'functionblocks' '.' property =[infomodel::FunctionblockProperty]
 ;
 
 InfoModelAttributeSource:

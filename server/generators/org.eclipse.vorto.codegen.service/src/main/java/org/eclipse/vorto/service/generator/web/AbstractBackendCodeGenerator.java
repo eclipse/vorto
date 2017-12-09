@@ -19,8 +19,8 @@ import javax.annotation.PreDestroy;
 
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.ServiceClassifier;
-import org.eclipse.vorto.server.commons.DefaultConfigTemplate;
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
+import org.eclipse.vorto.server.commons.ui.DefaultConfigTemplate;
+import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

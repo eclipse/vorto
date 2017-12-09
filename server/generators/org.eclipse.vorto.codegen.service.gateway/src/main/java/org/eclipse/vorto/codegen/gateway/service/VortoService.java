@@ -14,10 +14,13 @@
  */
 package org.eclipse.vorto.codegen.gateway.service;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 
@@ -39,8 +42,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
-import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,9 +103,9 @@ public class VortoService {
 			return Optional.empty();
 		}
 		
-		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelResources.get());
+		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelResources.get()))).read();
 		
-		return toInformationModel(extractor.extract(name));
+		return toInformationModel(workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get());
 	}
 	
 	private String urlForModel(String namespace, String name, String version) {
@@ -126,7 +128,9 @@ public class VortoService {
 		Optional<byte[]> mappingResources = downloadUrl(urlForMapping(generatorKey, namespace, name, version));
 		
 		if (mappingResources.isPresent()) {
-			return new MappingZipFileExtractor(mappingResources.get()).extract();
+			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingResources.get()))).read();
+			List<Model> models = workspace.get().stream().filter(p -> p instanceof MappingModel).collect(Collectors.toList());
+			return models.stream().map(MappingModel.class::cast).collect(Collectors.toList());
 		} else {
 			return Collections.emptyList();
 		}

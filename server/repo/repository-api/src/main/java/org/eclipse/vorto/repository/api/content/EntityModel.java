@@ -29,6 +29,10 @@ public class EntityModel extends AbstractModel {
 		super(modelId, modelType);
 	}
 		
+	protected EntityModel() {
+		
+	}
+	
 	public List<ModelProperty> getProperties() {
 		return properties;
 	}
