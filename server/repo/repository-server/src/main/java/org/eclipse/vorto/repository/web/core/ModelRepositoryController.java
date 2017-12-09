@@ -135,9 +135,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
 			ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelContent);
 			return ModelDtoFactory.createResource(extractor.extract(name),Optional.of(mappingModel));
+		} else {
+			return getModelContent(namespace,name,version);
 		}
-		
-		return null;
 	}
 	
 	@ApiOperation(value = "Returns the image of a vorto model")
