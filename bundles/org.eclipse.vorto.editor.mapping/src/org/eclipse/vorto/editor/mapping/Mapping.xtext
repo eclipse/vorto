@@ -57,7 +57,7 @@ InfoModelPropertySource:
 ;
 
 InfoModelAttributeSource:
-	model=[infomodel::InformationModel]  '.' attribute = ModelAttribute 
+	model=[infomodel::InformationModel]  ('.' attribute = ModelAttribute)?
 ;
 
 /*----------------------End Information Model Mapping Definition---------------------------*/
