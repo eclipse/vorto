@@ -48,10 +48,15 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		functionblockmapping «specification.infoModel.id.name»«propertyName»PayloadMapping {
 			targetplatform «createTargetPlatformKey()»
 			«FOR statusProperty : fbm.statusProperties»
-			«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
-			from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
-			«ENDFOR»		
-		«ENDFOR»
+				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
+				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				«ENDFOR»		
+			«ENDFOR»
+			«FOR configProperty : fbm.configurationProperties»
+				«FOR stereotype : filterEmptyStereotypes(configProperty.stereotypes)»
+				from «fbm.id.name».configuration.«configProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				«ENDFOR»		
+			«ENDFOR»
 		}
 		'''
 	}

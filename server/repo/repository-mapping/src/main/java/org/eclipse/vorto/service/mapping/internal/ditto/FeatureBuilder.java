@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.service.mapping.internal.ditto;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FeatureBuilder {
@@ -30,35 +31,19 @@ public class FeatureBuilder {
 	}
 	
 	public FeatureBuilder withStatusProperty(String name, Object value) {
-		this.feature.getProperties().put(name, value);
+		Map<String,Object> statusProperties = new HashMap<>(this.feature.getStatusProperties());
+		statusProperties.put(name, value);
+		this.feature.getProperties().put("status", statusProperties);
 		return this;
 	}
 	
 	public FeatureBuilder withConfigurationProperty(String name, Object value) {
-		this.feature.getProperties().put(name, value);
+		Map<String,Object> statusProperties = new HashMap<>(this.feature.getConfigurationProperties());
+		statusProperties.put(name, value);
+		this.feature.getProperties().put("config", statusProperties);
 		return this;
 	}
-	
-	public FeatureBuilder setFaultProperties(Map<String,Object> properties) {
-		this.feature.getProperties().putAll(properties);
-		return this;
-	}
-	
-	public FeatureBuilder setConfigurationProperties(Map<String,Object> properties) {
-		this.feature.getProperties().putAll(properties);
-		return this;
-	}
-	
-	public FeatureBuilder setStatusProperties(Map<String,Object> properties) {
-		this.feature.getProperties().putAll(properties);
-		return this;
-	}
-	
-	public FeatureBuilder withFaultProperty(String name, Object value) {
-		this.feature.getProperties().put(name, value);
-		return this;
-	}
-	
+		
 	public FeatureImpl build() {
 		return feature;
 	}

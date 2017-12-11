@@ -13,13 +13,17 @@
  * Bosch Software Innovations GmbH - Please refer to git log
  */package org.eclipse.vorto.service.mapping.internal.ditto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.vorto.service.mapping.ditto.Feature;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties({ "id","content"})
 public class FeatureImpl implements Feature {
@@ -65,10 +69,28 @@ public class FeatureImpl implements Feature {
 	@JsonGetter("properties")
 	public Map<String, Object> getProperties() {
 		return properties;
-	}	
-	
-	public Object getProperty(String propertyName) {
-		return properties.get(propertyName);
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
+	@Override
+	public Map<String, Object> getStatusProperties() {
+		if (properties.containsKey("status")) {
+			return Collections.unmodifiableMap((Map<String, Object>)properties.get("status"));
+		} else {
+			return Collections.unmodifiableMap(Collections.emptyMap());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@JsonIgnore
+	@Override
+	public Map<String, Object> getConfigurationProperties() {
+		if (properties.containsKey("config")) {
+			return Collections.unmodifiableMap((Map<String, Object>)properties.get("config"));
+		} else {
+			return Collections.unmodifiableMap(Collections.emptyMap());
+		}
+	}	
+		
 }

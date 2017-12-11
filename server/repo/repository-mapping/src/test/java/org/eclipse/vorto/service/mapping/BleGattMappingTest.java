@@ -68,12 +68,12 @@ public class BleGattMappingTest {
 		// TEST
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("accelerometer");
 		
-		assertEquals(1.0,buttonFeature.getProperty("x_value"));
-		assertEquals(-1.0,buttonFeature.getProperty("y_value"));	
+		assertEquals(1.0,buttonFeature.getStatusProperties().get("x_value"));
+		assertEquals(-1.0,buttonFeature.getStatusProperties().get("y_value"));	
 		
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("barometer");
 		
-		assertEquals(20.00,voltageFeature.getProperty("sensor_value"));
+		assertEquals(20.00,voltageFeature.getStatusProperties().get("sensor_value"));
 		
 		System.out.println(mappedDittoOutput.toJson());
 		

@@ -37,8 +37,13 @@ public class EmptyFeature implements Feature {
 	}
 
 	@Override
-	public Object getProperty(String propertyName) {
-		return null;
+	public Map<String, Object> getStatusProperties() {
+		return Collections.emptyMap();
+	}
+
+	@Override
+	public Map<String, Object> getConfigurationProperties() {
+		return Collections.emptyMap();
 	}
 
 }

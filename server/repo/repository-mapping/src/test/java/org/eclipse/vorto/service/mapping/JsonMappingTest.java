@@ -36,13 +36,13 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
-		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
-		assertEquals(2322f, voltageFeature.getProperty("sensor_value"));
-		assertEquals("mV", voltageFeature.getProperty("sensor_units"));
+		assertEquals(2322f, voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals("mV", voltageFeature.getStatusProperties().get("sensor_units"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -61,7 +61,7 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals("DOUBLE", buttonFeature.getProperty("sensor_value"));
+		assertEquals("DOUBLE", buttonFeature.getStatusProperties().get("sensor_value"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -81,7 +81,7 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFeature.getProperty("sensor_value"));
+		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFeature.getStatusProperties().get("sensor_value"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -99,7 +99,7 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals("0.002322", buttonFeature.getProperty("sensor_value"));
+		assertEquals("0.002322", buttonFeature.getStatusProperties().get("sensor_value"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -118,8 +118,8 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
-		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
 		assertNull(mappedDittoOutput.getFeatures().get("voltage"));
 
@@ -151,13 +151,13 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
-		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("batteryVoltage");
 
-		assertEquals(2322f, voltageFeature.getProperty("sensor_value"));
-		assertEquals("mV", voltageFeature.getProperty("sensor_units"));
+		assertEquals(2322f, voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals("mV", voltageFeature.getStatusProperties().get("sensor_units"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -182,11 +182,11 @@ public class JsonMappingTest {
 
 		Feature distance = mappedDittoOutput.getFeatures().get("distancesensor");
 
-		assertEquals(5.3, distance.getProperty("distance"));
+		assertEquals(5.3, distance.getStatusProperties().get("distance"));
 
 		Feature incline = mappedDittoOutput.getFeatures().get("inclinesensor");
 
-		assertEquals(38.8, incline.getProperty("degree"));
+		assertEquals(38.8, incline.getStatusProperties().get("degree"));
 
 		System.out.println(mappedDittoOutput.toJson());
 
@@ -203,13 +203,13 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
-		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
-		assertEquals(0f, voltageFeature.getProperty("sensor_value"));
-		assertEquals("mV", voltageFeature.getProperty("sensor_units"));
+		assertEquals(0f, voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals("mV", voltageFeature.getStatusProperties().get("sensor_units"));
 
 		System.out.println(mappedDittoOutput.toJson());
 	}
@@ -225,8 +225,8 @@ public class JsonMappingTest {
 		
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFeature.getProperty("digital_input_state"));
-		assertEquals(2, buttonFeature.getProperty("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
 		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
@@ -247,11 +247,11 @@ public class JsonMappingTest {
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("btn1");
 
-		assertEquals(2, buttonFeature.getProperty("sensor_value"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("sensor_value"));
 
 		Feature button2Feature = mappedDittoOutput.getFeatures().get("btn2");
 
-		assertEquals(10, button2Feature.getProperty("sensor_value"));
+		assertEquals(10, button2Feature.getStatusProperties().get("sensor_value"));
 
 		System.out.println(mappedDittoOutput.toJson());
 

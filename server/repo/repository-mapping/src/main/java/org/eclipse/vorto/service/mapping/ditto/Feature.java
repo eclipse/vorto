@@ -20,20 +20,26 @@ import org.eclipse.vorto.service.mapping.internal.ditto.FeatureBuilder;
 
 public interface Feature {
 
-	/**
-	 * 
-	 * @return
-	 */
 	String getId();
 	
 	/**
-	 * 
+	 * Fetches all properties of the feature
 	 * @return
 	 */
 	Map<String,Object> getProperties();
 	
-	Object getProperty(String propertyName);
+	/**
+	 * Fetches only status properties
+	 * @return
+	 */
+	Map<String,Object> getStatusProperties();
 	
+	/**
+	 * Fetches only configuration properties
+	 * @return
+	 */
+	Map<String,Object> getConfigurationProperties();
+		
 	static FeatureBuilder newBuilder(String id) {
 		return new FeatureBuilder(id);
 	}
