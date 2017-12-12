@@ -22,8 +22,6 @@ import org.eclipse.vorto.service.mapping.ditto.Feature;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonIgnoreProperties({ "id","content"})
 public class FeatureImpl implements Feature {

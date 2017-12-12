@@ -30,7 +30,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
 
-		digitalInputStateProperty.addStereotype(Stereotype.createWithValue("true"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("boolean:toBoolean(\"true\")"));
 
 		ModelProperty digitalInputCount = new ModelProperty();
 		digitalInputCount.setMandatory(true);
@@ -38,7 +38,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 		digitalInputCount.setType(PrimitiveType.INT);
 
 		digitalInputCount.setTargetPlatformKey("iotbutton");
-		digitalInputCount.addStereotype(Stereotype.createWithXpath("custom:convertClickType(clickType)"));
+		digitalInputCount.addStereotype(Stereotype.createWithXpath("button:convertClickType(clickType)"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty, digitalInputCount }));
@@ -75,9 +75,7 @@ public class SpecWithCustomFunction extends AbstractTestSpec {
 	
 	@Override
 	public Optional<Functions> getCustomFunctions() {
-		JavascriptFunctions functions = new JavascriptFunctions("custom");
-		functions.addFunction("convertAccelType",
-				"function convertAccelType(value) { return (value > 32768 ? value - 65536 : value) / 500;}");
+		JavascriptFunctions functions = new JavascriptFunctions("button");
 		functions.addFunction("convertClickType",
 				"function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}");
 		return Optional.of(functions);

@@ -24,15 +24,8 @@ public class Stereotype {
 	
 	private static final String SOURCE = "source";
 	private static final String XPATH_ATT = "xpath";
-	private static final String VALUE_ATT = "value";
 
 	private Map<String, String> attributes = new HashMap<String, String>();
-	
-	public static Stereotype createWithValue(String value) {
-		Map<String,String> attributes = new HashMap<String, String>(1);
-		attributes.put(VALUE_ATT,value);
-		return new Stereotype(SOURCE, attributes);
-	}
 	
 	public static Stereotype createWithXpath(String xpath) {
 		Map<String,String> attributes = new HashMap<String, String>(1);

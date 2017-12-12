@@ -14,8 +14,6 @@
  */
 package org.eclipse.vorto.service.mapping.spec;
 
-import java.util.HashMap;
-
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
@@ -35,11 +33,9 @@ public class MappingSpecificationBuilder {
 	
 	private String targetPlatformKey;
 	
-	private HashMap<String, JavascriptFunctions> namespaces = new HashMap<String, JavascriptFunctions>();
 	private FunctionLibrary library = new FunctionLibrary();
 	
-	private static final String STEREOTYPE = "functions";
-	private static final String ATT_NAMESPACE = "_namespace";
+	private static final String STEREOTYPE_FUNCTIONS = "functions";
 
 	private MappingSpecificationBuilder(IModelRepository repository) {
 		this.repositoryClient = repository;
@@ -72,24 +68,17 @@ public class MappingSpecificationBuilder {
 			DefaultMappingSpecification specification = new DefaultMappingSpecification();
 			specification.setInfomodel(infomodel);
 			
+			
 			for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
 				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.targetPlatformKey).get();
 				
-				if (fbm.getStereotype(STEREOTYPE).isPresent()) {
-					JavascriptFunctions functions;
-					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE).get();
-					String namespace = functionsStereotype.getAttributes().get(ATT_NAMESPACE);
-					if (namespaces.containsKey(namespace)) {
-						functions = namespaces.get(namespace);
-					} else {
-						functions = new JavascriptFunctions(namespace);
-						this.library.addFunctions(functions);
-					}
-					
-					for (String key : functionsStereotype.getAttributes().keySet()) {
-						if (!ATT_NAMESPACE.equalsIgnoreCase(key)) {
-							functions.addFunction(key,functionsStereotype.getAttributes().get(key));
+				if (fbm.getStereotype(STEREOTYPE_FUNCTIONS).isPresent()) {			
+					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE_FUNCTIONS).get();
+					JavascriptFunctions functions = new JavascriptFunctions(fbProperty.getName().toLowerCase());
+					for (String functionName : functionsStereotype.getAttributes().keySet()) {
+						if (!"_namespace".equalsIgnoreCase(functionName)) {
+							functions.addFunction(functionName,functionsStereotype.getAttributes().get(functionName));
 						}
 					}
 				}
