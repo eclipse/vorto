@@ -31,7 +31,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		'''
 		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
-		displayname «specification.infoModel.id.name»PayloadMapping
+		displayname "«specification.infoModel.id.name»PayloadMapping"
 		description "Payload Mapping Specification for «specification.infoModel.displayName»"
 		category payloadmapping
 		
@@ -47,7 +47,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		infomodelmapping «specification.infoModel.id.name»PayloadMapping {
 			targetplatform «createTargetPlatformKey()»
 			«FOR fbProperty : specification.infoModel.functionblocks»
-			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «(fbProperty.type as ModelId).name+"PayloadMapping"»
+			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «specification.infoModel.id.name+fbProperty.name+"PayloadMapping"»
 			«ENDFOR»
 		}
 		'''

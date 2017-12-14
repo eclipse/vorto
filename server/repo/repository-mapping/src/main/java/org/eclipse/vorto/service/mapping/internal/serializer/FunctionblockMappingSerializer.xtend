@@ -39,7 +39,7 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		'''
 		namespace «fbm.id.namespace».mapping
 		version 1.0.0
-		displayname «specification.infoModel.id.name»«propertyName»PayloadMapping
+		displayname "«specification.infoModel.id.name»«propertyName»PayloadMapping"
 		description "Payload Mapping for «specification.infoModel.displayName» «propertyName»"
 		category payloadmapping
 		
