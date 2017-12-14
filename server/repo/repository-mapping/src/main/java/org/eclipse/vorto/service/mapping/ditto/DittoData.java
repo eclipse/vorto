@@ -18,8 +18,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.vorto.service.mapping.JsonData;
 import org.eclipse.vorto.service.mapping.internal.ditto.EmptyFeature;
+import org.eclipse.vorto.service.mapping.json.JsonData;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.core.JsonProcessingException;

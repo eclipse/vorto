@@ -52,11 +52,10 @@ Excerpt of the Button Mapping:
 
 ```
 ... to functions with {
-	_namespace: "custom", 
-	convertClickType: "function convertClickType(clickType) { conversion code } "
+		convertClickType: "function convertClickType(clickType) { conversion code } "
 	}
 
-... to source with {xpath: custom:convertClickType(xpathToValue)}
+... to source with {xpath: button:convertClickType(xpathToValue)}
 ```
 
 Here we declare the convertClickType function that converts the JSON clickType property value , e.g. 'DOUBLE' to an Integer value. That function is then used by the functionblock property mapping. 
@@ -72,11 +71,11 @@ DataMapperBuilder builder = IDataMapper.newBuilder();
 // add Loader to load Information Model and AWS IoT Button mappings from the Vorto Repository
 builder.withSpecification(IMappingSpecification.newBuilder().modelId("devices.aws.button.AWSIoTButton:1.0.0").key("awsiotbutton").build());
 
-DittoMapper mapper = builder.buildDittoMapper();
+IDataMapper<DittoData> mapper = builder.buildDittoMapper();
 									
 String deviceJSON = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(deviceJSON),MappingContext.empty());
+DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(deviceJSON),MappingContext.empty());
 
 Feature voltageFeature = mappedDittoOutput.getFeatures().get("batteryVoltage");
 		
@@ -94,14 +93,18 @@ Mapped Eclipse Ditto JSON Output:
 {
 	"button": { 
 		"properties":{ 
-			"digital_input_count":2,
-			"digital_input_state":true
+			"status: {
+				"digital_input_count":2,
+				"digital_input_state":true
+			}
 		}
 	},
 	"batteryVoltage":{
 		"properties":{
-			"sensor_units":"mV",
-			"sensor_value":2322.0
+			"status: {
+				"sensor_units":"mV",
+				"sensor_value":2322.0
+			}
 	 	}
 	}
 }
@@ -137,7 +140,6 @@ The data sent by a Bluetooth device is typically an array of bytes. The values v
 To illustrate the above, take a look at the excerpt of the Humidity functionblock mapping for the TI SensorTag:
 ```
     from Barometer to functions with {
-        _namespace: "custom",
         convertSensorValue: "function convertSensorValue(value) { return value*0.01; }"
     }
     
@@ -148,7 +150,7 @@ To illustrate the above, take a look at the excerpt of the Humidity functionbloc
         offset: "3",
         length: "3",
         datatype: "uint32",
-        xpath: "custom:convertSensorValue(conversion:byteArrayToInt(characteristics/${uuid}/data, ${offset}, 0, 0, ${length}))"
+        xpath: "barometer:convertSensorValue(conversion:byteArrayToInt(characteristics/${uuid}/data, ${offset}, 0, 0, ${length}))"
     }
 ```
 The expression `characteristics/${uuid}/data` refers to the byte array which is read from the characteristic with the UUID. The expressions `${...}` are placeholders for the attributes defined above, e.g. `${length}` would be replaced by `3` in this example.
@@ -177,7 +179,7 @@ BleGattDevice bleGattDevice = BleGattDeviceBuilder.newBuilder()
                                   .withSpecification(mapping).build();
                                   
 // Create a new mapper for Eclipse Ditto        
-DittoMapper mapper = IDataMapper.newBuilder()
+IDataMapper<DittoData> mapper = IDataMapper.newBuilder()
                                   .withSpecification(mapping).buildDittoMapper();
                                   
 // Retrieve references for your Bluetooth characteristics from the object model
@@ -191,7 +193,7 @@ Short[] accelerometerData = <...>
 accelerometerValue.setData(accelerometerData);
 
 // Pass the object model to the mapper and execute the mapping        
-DittoOutput mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
+DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
 
 // Serialize mapped Eclipse Ditto format to JSON
 System.out.println(mappedDittoOutput.toJson());
@@ -203,14 +205,18 @@ Mapped Eclipse Ditto JSON Output:
 {
     accelerometer": {
         "properties": {
-            "y_value":-1.0,
-            "z_value":0.0,
-            "x_value":1.0
+        	"status": {
+            	"y_value":-1.0,
+            	"z_value":0.0,
+            	"x_value":1.0
+            }
         }
     },
     "barometer": {
         "properties": {
-            "sensor_value":20.0
+        	"status":{
+            	"sensor_value":20.0
+            }
         }
     }
     ...
@@ -230,14 +236,18 @@ Mapped Eclipse Ditto JSON Output:
 	-d '{
     accelerometer": {
         "properties": {
-            "y_value":-1.0,
-            "z_value":0.0,
-            "x_value":1.0
+        	"status":{
+            	"y_value":-1.0,
+            	"z_value":0.0,
+            	"x_value":1.0
+            }
         }
     },
     "barometer": {
         "properties": {
-            "sensor_value":20.0
+        	"status": {
+            	"sensor_value":20.0
+            }
         }
     }
 	}'

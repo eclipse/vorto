@@ -135,7 +135,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 http.get(httpRequest, function(response) {
 						 	response.on('data', function(data) {
 						 		var result = JSON.parse(data);
-						 		speechOutput = result.features.«fbProperty.name».properties.«statusProperty.name»;
+						 		speechOutput = result.features.«fbProperty.name».properties.status.«statusProperty.name»;
 						 		//say the results
 						 		callback(sessionAttributes, buildSpeechletResponse("«fbProperty.name»", speechOutput, "", true));
 						 	});

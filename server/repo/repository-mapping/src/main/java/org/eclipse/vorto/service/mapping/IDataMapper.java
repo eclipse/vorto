@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.service.mapping;
 
+import org.eclipse.vorto.service.mapping.json.JsonData;
+
 public interface IDataMapper<MappedData extends JsonData> {
 	
 	MappedData map(DataInput input, MappingContext context);
