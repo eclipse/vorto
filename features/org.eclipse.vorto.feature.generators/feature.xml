@@ -34,8 +34,8 @@ Description here.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-  <plugin
+
+   <plugin
          id="org.eclipse.vorto.codegen.ditto"
          download-size="0"
          install-size="0"
@@ -163,6 +163,20 @@ Description here.
 
    <plugin
          id="org.eclipse.vorto.codegen.artik"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.codegen.ble"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.codegen.ble.alpwise"
          download-size="0"
          install-size="0"
          version="0.0.0"
