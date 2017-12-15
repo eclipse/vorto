@@ -52,10 +52,14 @@ public class BoschHubDataService implements IDataService {
 	}
 	«ENDFOR»
 	
-	private <T> Map<String, Map<String, T>> wrap(String name, T functionBlock) {
-		Map<String, T> properties = new HashMap<String, T>();
-		properties.put("properties", functionBlock);
-		Map<String, Map<String, T>> wrapper = new HashMap<String, Map<String, T>>();
+	private <T> Map<String, Map<String, Map<String, T>>> wrap(String name, T functionBlock) {
+		Map<String, T> status = new HashMap<String, T>();
+		status.put("status", functionBlock);
+		
+		Map<String, Map<String, T>> properties = new HashMap<String, Map<String, T>>();
+		properties.put("properties", status);
+		
+		Map<String, Map<String, Map<String, T>>> wrapper = new HashMap<String, Map<String, Map<String, T>>>();
 		wrapper.put(name, properties);
 		return wrapper; 
 	}
