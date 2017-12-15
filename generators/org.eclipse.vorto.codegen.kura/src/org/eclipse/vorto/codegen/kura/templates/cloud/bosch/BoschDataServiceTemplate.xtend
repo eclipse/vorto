@@ -89,15 +89,16 @@ class BoschDataServiceTemplate implements IFileTemplate<InformationModel>{
 			            featureHandle.retrieve()
 			                .exceptionally(addMissingFeature(thingHandle, featureId))
 			                .thenCompose(feature -> {
-			                     return featureHandle.setProperties(JsonObject.newBuilder()
-			                     «FOR statusProperty : fbProperty.type.functionblock.status.properties»
-			                        	«IF statusProperty.type instanceof PrimitivePropertyType && (statusProperty.type as PrimitivePropertyType).type == PrimitiveType.DATETIME»
-			                        	.set("«statusProperty.name»", JSON_DATE_FORMAT.format(data.get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»()))
-			                            «ELSE»
-			                        	.set("«statusProperty.name»", data.get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»())
-			                            «ENDIF»
-			                        «ENDFOR»
-			                     .build());
+			                     JsonObject status = JsonObject.newBuilder()
+			                     	«FOR statusProperty : fbProperty.type.functionblock.status.properties»
+			                     	«IF statusProperty.type instanceof PrimitivePropertyType && (statusProperty.type as PrimitivePropertyType).type == PrimitiveType.DATETIME»
+			                     	.set("«statusProperty.name»", JSON_DATE_FORMAT.format(data.get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»()))
+			                     	«ELSE»
+			                     	.set("«statusProperty.name»", data.get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»())
+			                     	«ENDIF»
+			                     	«ENDFOR»
+			                     	.build();
+			                     return featureHandle.setProperties(JsonObject.newBuilder().set("status", status).build());
 			                 }).whenComplete((aVoid, throwable) -> {
 			                     if (null == throwable) {
 			                         LOGGER.info("Thing with ID '{}' feature «fbProperty.name» was updated with values {}", thingId,data);
