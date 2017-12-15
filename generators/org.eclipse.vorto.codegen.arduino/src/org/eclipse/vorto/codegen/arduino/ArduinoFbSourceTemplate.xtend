@@ -56,7 +56,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		
 		String «fb.name»::serialize()
 		{
-		    String result = "\"properties\" : {";
+		    String result = "\"properties\" : { \"status\" : { ";
             «FOR status : fb.functionblock.status.properties»
                 if («status.name»Updated)
                 {
@@ -69,7 +69,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
                 }
             «ENDFOR»
 			
-    		result += "}";
+    		result += "} }";
 
             return result;
         }
