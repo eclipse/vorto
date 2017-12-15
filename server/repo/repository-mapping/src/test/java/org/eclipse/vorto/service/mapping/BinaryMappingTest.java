@@ -2,13 +2,14 @@ package org.eclipse.vorto.service.mapping;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.apache.commons.lang3.Conversion;
 import org.eclipse.vorto.service.mapping.ble.json.GattCharacteristic;
 import org.eclipse.vorto.service.mapping.ble.json.GattDevice;
+import org.eclipse.vorto.service.mapping.ble.json.GattService;
 import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.spec.SpecGattConverter;
@@ -43,14 +44,26 @@ public class BinaryMappingTest {
 
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecGattConverter())
 				.buildDittoMapper();
+
+		
+		GattDevice gattDevice = new GattDevice();
+				
+		GattService gattService = new GattService();
+		List<GattCharacteristic> characteristics = new ArrayList<GattCharacteristic>();
 		
 		byte[] dest = new byte[6];
 		byte[] value = Conversion.intToByteArray(2000, 0, dest, 3, 3);
+		System.out.println(Base64.getEncoder().encodeToString(value));
 		
-		GattDevice gattDevice = new GattDevice();
-		Map<String, GattCharacteristic> characteristics = new HashMap<String, GattCharacteristic>();
-		characteristics.put("abc", new GattCharacteristic("abc",value));
+		characteristics.add(new GattCharacteristic("abc",value));
 		
+		gattService.setCharacteristics(characteristics);
+		
+		List<GattService> services = new ArrayList<GattService>();
+		
+		services.add(gattService);
+		gattDevice.setModelNumber("23-23-23");
+		gattDevice.setServices(services);
 		gattDevice.setCharacteristics(characteristics);
 		
 		ObjectMapper objMapper = new ObjectMapper();
