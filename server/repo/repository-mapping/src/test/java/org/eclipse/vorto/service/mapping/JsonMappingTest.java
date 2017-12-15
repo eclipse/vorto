@@ -20,7 +20,6 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JsonMappingTest {
@@ -137,11 +136,13 @@ public class JsonMappingTest {
 	}
 
 	@Test
-	@Ignore
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 
+//		IModelRepository remoteClient = RepositoryClientBuilder.newBuilder().setProxyHost("rb-proxy-apac.bosch.com").setProxyPort(8080).buildModelRepositoryClient();
+		
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 											.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
+//											.remoteClient(remoteClient)
 											.targetPlatformKey("devices_aws_button_AWSIoTButton_1_0_0").build();
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification).buildDittoMapper();
 

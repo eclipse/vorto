@@ -25,7 +25,7 @@ public class SpecGattConverter extends AbstractTestSpec {
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
 
-		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("button:convertSensorValue(conversion:byteArrayToInt(characteristics[uuid='abc']/data, 3, 0, 0, 3))"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("button:convertSensorValue(conversion:byteArrayToInt(characteristics[@uuid='23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00']/data, 3, 0, 0, 3))"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty }));

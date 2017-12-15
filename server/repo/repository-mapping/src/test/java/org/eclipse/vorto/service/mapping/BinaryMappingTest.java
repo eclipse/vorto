@@ -3,7 +3,6 @@ package org.eclipse.vorto.service.mapping;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 
 import org.apache.commons.lang3.Conversion;
@@ -26,9 +25,7 @@ public class BinaryMappingTest {
 
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithByteArrayConverter())
 				.buildDittoMapper();
-		byte[] dest = new byte[6];
-		byte[] value = Conversion.intToByteArray(2000, 0, dest, 3, 3);
-		String json = "{\"data\" : \""+Base64.getEncoder().encodeToString(value)+"\"}";
+		String json = "{\"data\" : [0, 0, 0, -48, 7, 0]}";
 		
 		DittoData mappedDittoOutput = mapper.map(DataInputFactory.getInstance().fromJson(json), MappingContext.empty());
 
@@ -53,9 +50,8 @@ public class BinaryMappingTest {
 		
 		byte[] dest = new byte[6];
 		byte[] value = Conversion.intToByteArray(2000, 0, dest, 3, 3);
-		System.out.println(Base64.getEncoder().encodeToString(value));
 		
-		characteristics.add(new GattCharacteristic("abc",value));
+		characteristics.add(new GattCharacteristic("23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00",value));
 		
 		gattService.setCharacteristics(characteristics);
 		
