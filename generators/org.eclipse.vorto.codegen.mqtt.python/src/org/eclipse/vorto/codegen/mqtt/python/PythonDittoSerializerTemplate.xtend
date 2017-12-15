@@ -52,9 +52,9 @@ class PythonDittoSerializerTemplate implements IFileTemplate<Model> {
 		        else:
 		            self.first_fb = False
 		        self.first_prop = True
-		        self.payload += "\"" + name + "\" : { \"properties\": {"
+		        self.payload += "\"" + name + "\" : { \"properties\": { \"status\" : {"
 		        object.serialize(self)
-		        self.payload += "} } "
+		        self.payload += "} } } "
 		
 		    def serialize_property(self, name, value):
 		        if not self.first_prop:
