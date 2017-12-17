@@ -16,10 +16,10 @@ package org.eclipse.vorto.service.mapping.internal.serializer
 
 import java.util.List
 import java.util.Map
+import java.util.stream.Collectors
 import org.eclipse.vorto.repository.api.content.FunctionblockModel
 import org.eclipse.vorto.repository.api.content.Stereotype
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
-import java.util.stream.Collectors
 
 /**
  * Creates a Functionblock Model Payload Mapping DSL File 
@@ -37,16 +37,19 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	
 	def override String serialize() {
 		'''
-		namespace «fbm.id.namespace».mapping
+		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
-		displayname "«specification.infoModel.id.name»«propertyName»PayloadMapping"
-		description "Payload Mapping for «specification.infoModel.displayName» «propertyName»"
+		displayname "«propertyName»PayloadMapping"
+		description "Payload Mapping for the «propertyName» property of the «specification.infoModel.displayName»"
 		category payloadmapping
 		
 		using «fbm.id.prettyFormat.replace(":",";")»
 		
-		functionblockmapping «specification.infoModel.id.name»«propertyName»PayloadMapping {
+		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
 			targetplatform «createTargetPlatformKey()»
+			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present»
+				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
+			«ENDIF»
 			«FOR statusProperty : fbm.statusProperties»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
 				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
@@ -59,6 +62,20 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«ENDFOR»
 		}
 		'''
+	}
+	
+	private def String createFunctions(Stereotype functionsStereotype) {
+		var content = new StringBuilder();
+		for (var iter = functionsStereotype.attributes.keySet.iterator;iter.hasNext;) {
+			var key = iter.next;
+			if (!"_namespace".equals(key)) {
+				content.append(key).append(":").append("\""+functionsStereotype.attributes.get(key)+"\"");
+				if (iter.hasNext) {
+					content.append(",");
+				}
+			}
+		}
+		return content.toString;
 	}
 	
 	private def filterEmptyStereotypes(List<Stereotype> stereotypes) {

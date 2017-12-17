@@ -23,10 +23,10 @@ public class MappingSpecificationSerializer  {
 	
 	public Iterator<IMappingSerializer> iterator() {
 		List<IMappingSerializer> serializers = new ArrayList<IMappingSerializer>();
-		serializers.add(new InformationModelMappingSerializer(specification));
 		for (ModelProperty fbProperty : specification.getInfoModel().getFunctionblocks()) {
 			serializers.add(new FunctionblockMappingSerializer(specification, fbProperty.getName()));
 		}
+		serializers.add(new InformationModelMappingSerializer(specification));
 		return serializers.iterator();
 	}
 	

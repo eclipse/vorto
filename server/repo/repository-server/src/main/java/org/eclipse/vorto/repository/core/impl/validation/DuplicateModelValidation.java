@@ -32,9 +32,17 @@ public class DuplicateModelValidation implements IModelValidator {
 	@Override
 	public void validate(ModelInfo modelResource, InvocationContext context)
 			throws ValidationException {
-		if (modelRepository.getById(modelResource.getId()) != null && !context.getUsername().equalsIgnoreCase("admin")) {
+		ModelInfo existingModel = modelRepository.getById(modelResource.getId());
+		if (existingModel != null && (!isAdmin(context) && !isAuthor(existingModel, context))) {
 			throw new ValidationException("Model already exists", modelResource);
 		}
 	}
 
+	private boolean isAdmin(InvocationContext context) {
+		return context.getUsername().equalsIgnoreCase("admin");
+	}
+	
+	private boolean isAuthor(ModelInfo model, InvocationContext context) {
+		return model.getAuthor().equalsIgnoreCase(context.getUsername());
+	}
 }

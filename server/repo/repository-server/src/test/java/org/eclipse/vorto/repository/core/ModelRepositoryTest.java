@@ -49,10 +49,18 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testUploadSameModelTwiceByUser() throws Exception {
+	public void testUploadSameModelTwiceByAuthor() throws Exception {
 		checkinModel("Color.type", "alex");
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", "alex");
+		assertTrue(uploadResult.isValid());
+	}
+	
+	@Test
+	public void testUploadSameModelTwiceByDifferent() throws Exception {
+		checkinModel("Color.type", "alex");
+		UploadModelResult uploadResult = modelRepository.upload(
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", "stefan");
 		assertFalse(uploadResult.isValid());
 	}
 	
