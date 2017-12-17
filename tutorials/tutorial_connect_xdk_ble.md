@@ -4,11 +4,8 @@ In this tutorial you are going to learn how you can connect a bluetooth device t
 
 ## Prerequisite
 
-- You have successfully booked the following services:
-	- Bosch IoT Things Service
-	- Bosch IoT Permissions Service
-- [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.    
-- [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
+- [Book](https://www.bosch-iot-suite.com) the following Bosch IoT Suite services :
+	- Bosch IoT Things
 
 ## Tools
 - [Eclipse Oxygen](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygenr)
@@ -18,6 +15,15 @@ In this tutorial you are going to learn how you can connect a bluetooth device t
 
 
 ## Steps
+
+Before you start integrating the XDK with Kura and Bosch IoT Suite, make sure that you have successfully [registered the XDK](tutorial_register_device.md) via the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a> using the following details:
+
+* **Thing type Model**: Bosch XDK
+* **Thing namespace**: demo
+* **Technical Device ID**: Bluetooth MAC Address
+* **Connector Type**: Custom
+
+Once completed, you are all set to start the development of your integration. Let's begin. 
 
 ### 1. Install Kura on a Raspberry Pi
 
@@ -126,10 +132,11 @@ and several other configurable properties.
 
 ### 7. Read temperature from Bluetooth in the XDK Kura Bundle
 
-- In _DeviceToXDKTransformer.java_, in the method `getResourceId(...)`, modify the method to how you intend to generate the ThingID of your XDK Thing. Make sure this aligns with the ThingID of the Thing you precommissioned in the Register step [<a href="https://github.com/eclipse/vorto/blob/development/tutorials/tutorial_register_device.md">Register</a>]
+- In _DeviceToXDKTransformer.java_, in the method `getResourceId(...)`, modify the method to how you intend to generate the deviceId of your XDK Thing. Make sure this aligns with the technical deviceID of the Thing you had precommissioned in the very beginning:
+
 	```
 	private String getResourceId(BluetoothDevice device) {
-		return "XDK:" + device.getAdress().replace(":", "");
+		return "demo:" + device.getAdress();
 	}
 	```
 
@@ -327,15 +334,7 @@ Let us now deploy the XDK Kura bundle to the Kura gateway on the Raspberry Pi.
 
 ### 11. Verify incoming sensor data
 
-To check if the temperature sensor data is being sent successfully to the cloud, just execute the following curl command:
-
-```
-curl -X GET https://things.apps.bosch-iot-cloud.com/api/1/things?ids=ADD_THINGID_HERE
--H "Authorization: Basic credentials"
--H "Accept: application/json"
--H "x-cr-api-token: apiToken"
-```
-Alternatively, you can the see the incoming sensor data via the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a>
+Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Console</a> and navigate to the registered device to see its data.
 
 ## What's next ?
 

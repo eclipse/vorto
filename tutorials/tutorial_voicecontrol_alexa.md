@@ -4,9 +4,9 @@ In this tutorial, you are going to learn how you can build an Amazon Alexa Skill
 
 ## Prerequisite
 
-- You have successfully booked the following services:
-	- Bosch IoT Things Service
-	- Bosch IoT Permissions Service 
+* [Book](https://www.bosch-iot-suite.com) the following Bosch IoT Suite services :
+	- Bosch IoT Hub
+	- Bosch IoT Permissions
 - [Publish](tutorial-create_and_publish_with_web_editor.md) an information model for the device to the Vorto Repository.    
 - [Register](tutorial_register_device.md) the device in the Bosch IoT Suite.
 
