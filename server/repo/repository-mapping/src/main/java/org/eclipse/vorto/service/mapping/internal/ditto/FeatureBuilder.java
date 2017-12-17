@@ -17,6 +17,8 @@ package org.eclipse.vorto.service.mapping.internal.ditto;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.vorto.service.mapping.ditto.Feature;
+
 public class FeatureBuilder {
 
 	private FeatureImpl feature;
@@ -44,7 +46,7 @@ public class FeatureBuilder {
 		return this;
 	}
 		
-	public FeatureImpl build() {
-		return feature;
+	public Feature build() {
+		return feature.getProperties().size() == 0 ? new EmptyFeature(feature.getId()) : feature;
 	}
 }
