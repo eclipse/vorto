@@ -48,12 +48,12 @@ The examples show how to design simple IoT applications.
 
 1) Sensor monitoring system from smartphone
 
-<img alt="Sensor monitoring system from smartphone" class="noshadow" src="{{$base}}/img/blogpics/VortoWebPhone.gif" width="380" alt="Sensor monitoring system from smartphone">
+<img alt="Sensor monitoring system from smartphone" class="noshadow" src="{{base}}/img/blogpics/VortoWebPhone.gif" width="380" alt="Sensor monitoring system from smartphone">
 
 
 2) Autonomous controlling of Air conditioner based on temperature.
 
-<img alt="Autonomous controlling of Air conditioner" class="noshadow" src="{{$base}}/img/blogpics/VortoWebAircon.gif" width="380" alt="Autonomous controlling of Air conditioner">
+<img alt="Autonomous controlling of Air conditioner" class="noshadow" src="{{base}}/img/blogpics/VortoWebAircon.gif" width="380" alt="Autonomous controlling of Air conditioner">
 
 
 

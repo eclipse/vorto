@@ -152,7 +152,7 @@ As you can see, the Vorto model mapping definition greatly enhances the capabili
 
 <div class="thumb5">
 <a title="Defining a new Mapping" data-rel="prettyPhoto" href="https://youtu.be/C5c5tTFwG0U&width=1500&height=1000" rel="prettyPhoto" >
-<img src="{{ $base}}/img/documentation/defineinfomap.jpg"  class="box-img img-responsive zoom1">
+<img src="{{ base}}/img/documentation/defineinfomap.jpg"  class="box-img img-responsive zoom1">
 <i class="fa fa-play-circle fa-5 play-icon"></i>
 </a>
 </div>

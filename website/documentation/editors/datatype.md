@@ -20,7 +20,7 @@ A data type is a reusable entity that can be shared between function blocks. We 
 
 <div class="thumb5">
   <a title="Defining a Data Type" data-rel="prettyPhoto" href="https://youtu.be/zZBwPKJTR-4&width=1500&height=1000" rel="prettyPhoto" >
-  <img src="{{ $base}}/img/documentation/definedt.jpg"  class="box-img img-responsive zoom1">
+  <img src="{{ base}}/img/documentation/definedt.jpg"  class="box-img img-responsive zoom1">
   <i class="fa fa-play-circle fa-5 play-icon"></i>
   </a>
 </div>

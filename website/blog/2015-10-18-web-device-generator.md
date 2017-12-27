@@ -28,7 +28,7 @@ Lets say you want to build a "Weather Station" which measures humidity and tempe
 <div class="blogstep">
   <div class="blogpicture">
   <a href="https://youtu.be/HUljUdg4PpU&width=1500&height=1000" rel="prettyPhoto" title="Create a Function Block">
-    <img alt="Create Function Block" class="noshadow" src="{{$base}}/img/blogpics/CreateFunctionBlock.gif" width="380" alt="Create a Function Block" >
+    <img alt="Create Function Block" class="noshadow" src="{{base}}/img/blogpics/CreateFunctionBlock.gif" width="380" alt="Create a Function Block" >
   </a>
   </div>
   <div class="blogtext">
@@ -54,7 +54,7 @@ Lets say you want to build a "Weather Station" which measures humidity and tempe
 <div class="blogstep">
   <div class="blogpicture">
   <a href="https://youtu.be/SsDBns6MBf0&width=1500&height=1000" rel="prettyPhoto" title="Create a Information Model">
-    <img alt="Create Information Model" class="noshadow" src="{{$base}}/img/blogpics/InformationModel.gif" width="380" alt="Create a Information Model">
+    <img alt="Create Information Model" class="noshadow" src="{{base}}/img/blogpics/InformationModel.gif" width="380" alt="Create a Information Model">
   </a>
   </div>
   <div class="blogtext">
