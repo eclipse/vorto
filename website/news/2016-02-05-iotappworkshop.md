@@ -12,9 +12,9 @@ Alexander Edelmann</a> and about 50 IoT developers from various companies met up
 
 Here are some pictures from this great event. To find out more, visit the organizers page on <a href="https://www.facebook.com/atcalliance/posts/710984922371287">Facebook</a>.
 
-<a href="{{ $base}}/img/news/IOTAppWorkshop/workshop1.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
-<img src="{{ $base}}/img/news/IOTAppWorkshop/workshop1.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
+<a href="{{ base}}/img/news/IOTAppWorkshop/workshop1.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
+<img src="{{ base}}/img/news/IOTAppWorkshop/workshop1.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
 </a>
-<a href="{{ $base}}/img/news/IOTAppWorkshop/workshop2.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
-<img src="{{ $base}}/img/news/IOTAppWorkshop/workshop2.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
+<a href="{{ base}}/img/news/IOTAppWorkshop/workshop2.jpg" rel="prettyPhoto" title="Vorto Hands-on Workshop">
+<img src="{{ base}}/img/news/IOTAppWorkshop/workshop2.jpg" style="width:15%;height15%;margin-top:0px;" title="click to view higher resolution"/>
 </a>
