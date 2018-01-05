@@ -85,7 +85,7 @@ More comprehensive tutorial here: <a href="http://eclipse.github.io/kura/dev/kur
 
 ### 4. Configure the bundle for the Bosch IoT Suite
 
-- Download <a href="https://github.com/bsinno/iot-things-examples/blob/master/cr-integration-api-examples/common/src/main/resources/bosch-iot-cloud.jks">bosch-iot-cloud.jks</a> and store it in a "secret" folder of the kura project
+- Download <a href="https://github.com/bsinno/iot-things-examples/blob/master/historian/src/main/resources/bosch-iot-cloud.jks">bosch-iot-cloud.jks</a> and store it in a "secret" folder of the kura project
 - Create a public and private key pair for your solution. Store the CRClient in the "secret" folder as well
 ```
 keytool -genkeypair -noprompt
