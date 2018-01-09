@@ -45,7 +45,7 @@ class ArduinoImSourceTemplate extends ArduinoTemplate<InformationModel> {
             	«var c = counter++»
                 result += "\"«fb.name»\": { ";
                 result += «fb.name».serialize();
-                result += " }«IF c < model.properties.length»,«ENDIF»";
+                result += " }«IF c < model.properties.length-1»,«ENDIF»";
             «ENDFOR»
 		
             result += "}"; 
