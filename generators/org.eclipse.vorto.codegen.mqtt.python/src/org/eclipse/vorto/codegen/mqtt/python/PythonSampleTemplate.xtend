@@ -55,6 +55,14 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	        if netif != "lo":
 	            mac_addr = netifaces.ifaddresses(netif)[netifaces.AF_LINK][0]['addr']
 	            return prefix + mac_addr.replace(':', '')
+	
+	def getClientId():
+		«var deviceId = context.configurationProperties.getOrDefault("deviceId",null)»
+		«IF deviceId !== null»
+		return "«deviceId»";
+		«ELSE»
+		return getClientId("RPi");
+		«ENDIF»
 
 	# The callback for when the client receives a CONNACK response from the server.
 	def on_connect(client, userdata, flags, rc):
@@ -145,7 +153,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	timePeriod = 10
 
 	# Configuration of client ID and publish topic
-	clientId = getClientId("RPi")
+	clientId = getClientId()
 	publishTopic = "telemetry/" + hono_tenant + "/" + clientId
 
 	# Output relevant information for consumers of our information

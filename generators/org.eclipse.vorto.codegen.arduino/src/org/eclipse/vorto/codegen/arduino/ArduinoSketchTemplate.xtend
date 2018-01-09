@@ -191,7 +191,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		  
 		    /* Create a the MQTT client from the deviceId prefix and the MAC address of the WiFi chip */
 		    mqttClientId = deviceId;
-		    mqttClientId += WiFi.macAddress();
+		    //mqttClientId += WiFi.macAddress();
 		    
 		    Serial.print("Device ID: ");
 		    Serial.println(mqttClientId);
