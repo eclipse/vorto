@@ -72,7 +72,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		const char* password = "<ENTER YOUR WIFI PASSWORD>";
 		
 		/* Device Configuration */
-		String deviceId = "«context.configurationProperties.getOrDefault("deviceId","nodemcu-")»»";
+		String deviceId = "«context.configurationProperties.getOrDefault("deviceId","nodemcu-")»";
 			
 		/* BEGIN SAMPLE CODE */
 		/* Sample numeric */

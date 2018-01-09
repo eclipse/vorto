@@ -58,13 +58,12 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		    String result = "\"properties\" : { \"status\" : { ";
 		    «var counter = 0»
             «FOR status : fb.functionblock.status.properties»
-            	«counter++»
                 if («status.name»Updated)
                 {
                     «IF isNumericType(status.type)»
-                        result += "\"«status.name»\" : " + String(«status.name») + "«IF counter < fb.functionblock.status.properties.length»,«ENDIF»";
+                        result += "\"«status.name»\" : " + String(«status.name») + "«IF counter++ < fb.functionblock.status.properties.length»,«ENDIF»";
                     «ELSE»
-                       result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF counter < fb.functionblock.status.properties.length»,«ENDIF» ";
+                       result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF counter++ < fb.functionblock.status.properties.length»,«ENDIF» ";
                     «ENDIF» 
                     «status.name»Updated = false;
                 }
