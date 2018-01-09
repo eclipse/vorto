@@ -48,7 +48,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		/**************************************************************************/
 		
 		/* Your tenant in Eclipse Hono / Bosch IoT Hub */
-		#define TENANT "DEFAULT_TENANT"
+		#define TENANT "«context.configurationProperties.getOrDefault("tenant","DEFAULT_TENANT")»"
 		
 		/* Define the period of data transmission in ms */
 		#define MQTT_DATA_PERIOD 10000
@@ -57,10 +57,13 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		#define MQTT_MAX_SIZE  50
 		
 		/* MQTT broker endpoint */
-		const char* mqttServer = "<ENTER YOUR MQTT BROKER DNS NAME>";
+		const char* mqttServer = "«context.configurationProperties.getOrDefault("mqttServer","<ENTER YOUR MQTT BROKER DNS NAME>")»";
+		const char* usernameDevice = "«context.configurationProperties.getOrDefault("mqttUsername","<ENTER THE DEVICE USERNAME HERE>")»";
+		const char* passwordDevice = "«context.configurationProperties.getOrDefault("mqttPassword","<ENTER THE DEVICE PASSWORD HERE>")»";
+		
 		
 		#if (USE_SECURE_CONNECTION == 1)
-		    /* SHA-1 fingerprint of the server certificate of the MQTT broker */
+		    /* SHA-1 fingerprint of the server certificate of the MQTT broker, UPPERCASE and spacing */
 		    const char* mqttServerFingerprint = "<xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx>";
 		#endif
 
@@ -68,9 +71,9 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		const char* ssid = "<ENTER YOUR WIFI SSID>";
 		const char* password = "<ENTER YOUR WIFI PASSWORD>";
 		
-		/* Device prefix */
-		String deviceId = "nodemcu-";
-		
+		/* Device Configuration */
+		String deviceId = "«context.configurationProperties.getOrDefault("deviceId","nodemcu-")»»";
+			
 		/* BEGIN SAMPLE CODE */
 		/* Sample numeric */
 		long value = 0;
@@ -164,7 +167,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    {		    
 		
 		        /* If connected to the MQTT broker... */
-		        if (mqttClient.connect(mqttClientId.c_str()))
+		        if (mqttClient.connect(mqttClientId.c_str(),usernameDevice,passwordDevice))
 		        {
 		            /* Re-subscribe */
 		            /* SAMPLE CODE */

@@ -16,7 +16,6 @@ package org.eclipse.vorto.codegen.arduino
 
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.core.api.model.model.Model
 
 class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
@@ -42,28 +41,30 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		}
 		
 		«FOR status : fb.functionblock.status.properties»
-        	void «fb.name»::set«status.name»(«type(status.type)» value)
-            {
-                «status.name» = value;
-                «status.name»Updated = true;
-            }
-        
-            «type(status.type)» «fb.name»::get«status.name»()
-            {
-                return «status.name»;
-            }
+		void «fb.name»::set«status.name»(«type(status.type)» value)
+		{
+			«status.name» = value;
+			«status.name»Updated = true;
+		}
+		
+		«type(status.type)» «fb.name»::get«status.name»()
+		{
+			return «status.name»;
+		}
         «ENDFOR»
 		
 		String «fb.name»::serialize()
 		{
 		    String result = "\"properties\" : { \"status\" : { ";
+		    «var counter = 0»
             «FOR status : fb.functionblock.status.properties»
+            	«counter++»
                 if («status.name»Updated)
                 {
                     «IF isNumericType(status.type)»
-                        result += "\"«status.name»\" : " + String(«status.name») + "; ";
+                        result += "\"«status.name»\" : " + String(«status.name») + "«IF counter < fb.functionblock.status.properties.length»,«ENDIF»";
                     «ELSE»
-                        result += "\"«status.name»\" : \"" + String(«status.name») + "\"; ";
+                       result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF counter < fb.functionblock.status.properties.length»,«ENDIF» ";
                     «ENDIF» 
                     «status.name»Updated = false;
                 }
