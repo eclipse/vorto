@@ -14,8 +14,11 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.arduino
 
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.codegen.api.InvocationContext
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.Property
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
+import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 
 class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
@@ -62,7 +65,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
                 if («status.name»Updated)
                 {
                     «IF isNumericType(status.type)»
-                        result += "\"«status.name»\" : " + String(«status.name») + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
+                        result += "\"«status.name»\" : " + «convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
                     «ELSE»
                        result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
                     «ENDIF» 
@@ -75,6 +78,14 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
             return result;
         }
 		'''
+	}
+	
+	def String convertNumericValue(Property property)  {
+		if ((property.type as PrimitivePropertyType).type == PrimitiveType.BOOLEAN) {
+			return "("+property.name+" == 1 ? true : false)";
+		} else {
+			return "String("+property.name+")";
+		}
 	}
 	
 }
