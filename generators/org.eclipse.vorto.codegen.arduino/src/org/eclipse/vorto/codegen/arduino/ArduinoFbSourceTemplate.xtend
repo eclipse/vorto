@@ -84,7 +84,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		if ((property.type as PrimitivePropertyType).type == PrimitiveType.BOOLEAN) {
 			return "("+property.name+" == 1 ? true : false)";
 		} else {
-			return "String("+property.name+")";
+			return "("+property.name+")";
 		}
 	}
 	
