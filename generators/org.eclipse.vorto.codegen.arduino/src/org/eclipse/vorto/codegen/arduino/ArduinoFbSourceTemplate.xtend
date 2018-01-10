@@ -82,7 +82,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	def String convertNumericValue(Property property)  {
 		if ((property.type as PrimitivePropertyType).type == PrimitiveType.BOOLEAN) {
-			return "("+property.name+" == 1 ? true : false)";
+			return "("+property.name+" == 1 ? \"true\" : \"false\")";
 		} else {
 			return "("+property.name+")";
 		}
