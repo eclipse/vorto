@@ -84,10 +84,12 @@ class AppTemplate implements IFileTemplate<InformationModel> {
 		} ]).run(function($rootScope, $http, $location) {
 		
 			$rootScope.currentUser = 'undefined';
+			$rootScope.currentUserSub = 'undefined';
 		
 			$rootScope.getUser = function() {
 				$http.get('rest/identities/user').success(function(data,status,headers,config) {
 					$rootScope.currentUser = data.userId;
+					$rootScope.currentUserSub = data.userSub;
 					$rootScope.authenticated = true;
 				}).error(function(data,status,headers,config) {
 					$rootScope.authenticated = false;
