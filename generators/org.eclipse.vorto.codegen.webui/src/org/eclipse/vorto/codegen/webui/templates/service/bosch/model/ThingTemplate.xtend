@@ -69,12 +69,6 @@ class ThingTemplate implements IFileTemplate<InformationModel> {
 			 * 
 			 * @return
 			 */
-			Map<String,AclEntry> listPermissions();
-			
-			/**
-			 * 
-			 * @return
-			 */
 			Map<String,Feature> listFeatures();
 			
 			static ThingBuilder newBuilder() {

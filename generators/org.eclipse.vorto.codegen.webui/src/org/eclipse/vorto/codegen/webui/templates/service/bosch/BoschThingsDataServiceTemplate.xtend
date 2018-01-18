@@ -34,6 +34,7 @@ class BoschThingsDataServiceTemplate implements IFileTemplate<InformationModel> 
 		import com.example.iot.«element.name.toLowerCase».model.*;
 		import com.example.iot.«element.name.toLowerCase».service.DataService;
 		import com.example.iot.«element.name.toLowerCase».service.Query;
+		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Feature;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Thing;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.ThingSearchResult;
 		import com.fasterxml.jackson.databind.ObjectMapper;
@@ -114,11 +115,20 @@ class BoschThingsDataServiceTemplate implements IFileTemplate<InformationModel> 
 			};
 		
 			private static <T> T convert(Thing thing, String propertyName, Class<T> expectedClass) {
-				Map<String, Object> statusProperty = thing.listFeatures().get(propertyName).getProperties();
-				statusProperty.remove("_modelId");
-				final ObjectMapper mapper = new ObjectMapper();
-				mapper.setDateFormat(Thing.JSON_DATE_FORMAT);
-				return mapper.convertValue(statusProperty, expectedClass);
+				Feature feature = thing.listFeatures().get(propertyName);
+						
+				if (feature != null && feature.getProperties() != null) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> statusProperty = (Map<String, Object>) feature.getProperties().get("status");
+					if (statusProperty != null) {
+						statusProperty.remove("_modelId");
+						final ObjectMapper mapper = new ObjectMapper();
+						mapper.setDateFormat(Thing.JSON_DATE_FORMAT);
+						return mapper.convertValue(statusProperty, expectedClass);
+					}
+				}
+				
+				return null;
 			}
 			
 			

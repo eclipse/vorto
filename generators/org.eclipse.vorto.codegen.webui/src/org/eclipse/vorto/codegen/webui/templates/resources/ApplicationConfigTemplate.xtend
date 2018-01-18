@@ -40,10 +40,6 @@ class ApplicationConfigTemplate implements IFileTemplate<InformationModel>{
 		  contextPath: /
 		«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
 		bosch:
-		  permissions:
-		    endpointUrl: https://permissions-api.apps.bosch-iot-cloud.com
-		    clientId: 
-		    clientSecret: 
 		  things:
 		    alias: CR
 		    alias.password:

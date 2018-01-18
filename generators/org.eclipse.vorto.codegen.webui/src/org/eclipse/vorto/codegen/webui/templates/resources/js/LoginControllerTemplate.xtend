@@ -38,42 +38,6 @@ class LoginControllerTemplate implements IFileTemplate<InformationModel> {
 				$scope.isLoading = false;
 				$scope.error = false;
 				
-				
-				$scope.authenticate = function() {
-					$http.get('rest/identities/user').success(function(data) {	
-						if (data.userId) {
-							$rootScope.currentUser = data.userId;
-							$rootScope.authenticated = true;
-							$location.path("/");
-						} else {
-							$rootScope.authenticated = false;
-							$scope.error = true;
-						}
-					}).error(function() {
-						$rootScope.authenticated = false;
-						$scope.error = true;
-					});
-				}
-				
-				$scope.login = function() {
-				
-					$scope.isLoading = true;
-					
-					$scope.credentials.username = $scope.credentials.userId;
-			
-					$http.post('login', $.param(JSON.parse(JSON.stringify($scope.credentials))), {
-						headers : {
-							"content-type" : "application/x-www-form-urlencoded"
-						}
-					}).success(function(data) {
-						$scope.authenticate();
-					}).error(function(data) {
-						$scope.error = true;
-						$rootScope.authenticated = false
-						$scope.isLoading = false;
-					});
-				};
-				
 			}]);
 		'''
 	}

@@ -46,7 +46,6 @@ class WebSecurityConfigTemplate implements IFileTemplate<InformationModel> {
 		import org.springframework.context.annotation.Bean;
 		import org.springframework.context.annotation.Configuration;
 		import org.springframework.core.annotation.Order;
-		import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 		import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 		import org.springframework.security.config.annotation.web.builders.WebSecurity;
 		import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -63,33 +62,15 @@ class WebSecurityConfigTemplate implements IFileTemplate<InformationModel> {
 		import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 		import org.springframework.web.filter.CompositeFilter;
 		
-		«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-		import com.example.iot.«element.name.toLowerCase».service.bosch.permissions.IM3AuthenticationProvider;
-		«ENDIF»
-		
 		@Configuration
 		@EnableWebSecurity
 		@EnableOAuth2Client
 		@Order(6)
 		public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			
-			«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-			@Value("${bosch.permissions.clientId}")
-			private String clientId;
-			
-			@Value("${bosch.permissions.clientSecret}")
-			private String clientSecret;
-			
-			@Value("${bosch.permissions.endpointUrl}")
-			private String endpointUrl;
-			«ENDIF»
-			
 			@Autowired
 			private OAuth2ClientContext oauth2ClientContext;
 				
-			@Autowired
-			private AuthorizationCodeResourceDetails google;
-			
 			@Value("${google.oauth2.resource.userInfoUri}")
 			private String googleUserInfoUri;
 					
@@ -115,6 +96,7 @@ class WebSecurityConfigTemplate implements IFileTemplate<InformationModel> {
 			}
 			
 			private Filter googleFilter() {
+				AuthorizationCodeResourceDetails google = google();
 				UserInfoTokenServices tokenService = new UserInfoTokenServices(googleUserInfoUri, google.getClientId());
 				return newSsoFilter("/google/login", google, tokenService, Optional.empty(), 
 				new OAuth2RestTemplate(google, oauth2ClientContext));		
@@ -133,22 +115,6 @@ class WebSecurityConfigTemplate implements IFileTemplate<InformationModel> {
 				
 				return filter;
 			}
-			
-			«IF context.configurationProperties.getOrDefault("boschcloud","false").equalsIgnoreCase("true")»
-			@Autowired
-			public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-				auth.authenticationProvider(authenticationProvider());
-			}
-			
-			@Bean
-			public IM3AuthenticationProvider authenticationProvider() {
-				IM3AuthenticationProvider auth = new IM3AuthenticationProvider();
-				auth.setClientId(clientId);
-				auth.setClientSecret(clientSecret);
-				auth.setServiceUrl(endpointUrl);
-				return auth;
-			}
-			«ENDIF»
 			
 			@Bean
 			public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {

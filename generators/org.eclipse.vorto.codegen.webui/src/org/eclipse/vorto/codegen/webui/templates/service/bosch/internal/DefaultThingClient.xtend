@@ -47,7 +47,7 @@ class DefaultThingClient implements IFileTemplate<InformationModel> {
 		
 			@Override
 			public CompletableFuture<ThingSearchResult> searchThings(String query) {
-				HttpGet getAllThings = new HttpGet(String.format("%s/api/1/search/things?%s", this.thingRestUrl, query));
+				HttpGet getAllThings = new HttpGet(String.format("%s/api/2/search/things?%s", this.thingRestUrl, query));
 				
 				if (requestConfig != null) {
 					getAllThings.setConfig(requestConfig);
@@ -59,7 +59,7 @@ class DefaultThingClient implements IFileTemplate<InformationModel> {
 		
 			@Override
 			public CompletableFuture<Thing> getThing(String thingId) {
-				HttpGet getThing = new HttpGet(String.format("%s/api/1/things/%s", this.thingRestUrl, thingId));
+				HttpGet getThing = new HttpGet(String.format("%s/api/2/things/%s", this.thingRestUrl, thingId));
 		
 				if (requestConfig != null) {
 					getThing.setConfig(requestConfig);

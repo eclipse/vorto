@@ -26,7 +26,6 @@ class ThingImplTemplate implements IFileTemplate<InformationModel> {
 		
 		import org.apache.commons.lang3.builder.ToStringBuilder;
 		
-		import com.example.iot.«element.name.toLowerCase».service.bosch.model.AclEntry;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Feature;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Thing;
 		import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,8 +33,6 @@ class ThingImplTemplate implements IFileTemplate<InformationModel> {
 		public class ThingImpl implements Thing {
 		
 			private String thingId;
-		
-			private Map<String, AclEntry> acl = new HashMap<String, AclEntry>();
 		
 			private Map<String, Object> attributes = new HashMap<String, Object>();
 		
@@ -59,14 +56,6 @@ class ThingImplTemplate implements IFileTemplate<InformationModel> {
 		
 			public void setThingId(String thingId) {
 				this.thingId = thingId;
-			}
-		
-			public Map<String, AclEntry> getAcl() {
-				return acl;
-			}
-		
-			public void setAcl(Map<String, AclEntry> acl) {
-				this.acl = acl;
 			}
 		
 			public Map<String, Object> getAttributes() {
@@ -105,11 +94,6 @@ class ThingImplTemplate implements IFileTemplate<InformationModel> {
 			@Override
 			public Map<String, Object> listAttributes() {
 				return this.attributes;
-			}
-		
-			@Override
-			public Map<String, AclEntry> listPermissions() {
-				return this.acl;
 			}
 		
 			@SuppressWarnings("unchecked")
