@@ -1,6 +1,6 @@
 var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
-repositoryControllers.controller('SearchController', [ '$scope','$http', '$location', function ($scope,$http,$location) {
+repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', function ($scope,$rootScope,$http,$location) {
 
     $scope.models = [];
     $scope.modelType = 'all';
@@ -24,9 +24,15 @@ repositoryControllers.controller('SearchController', [ '$scope','$http', '$locat
         } else {
             filter = $scope.queryFilter + " "+$scope.modelType;
         }
+        if ($rootScope.modelsSaved && $rootScope.modelsSaved.filter === filter) {
+        	// models are already fetched
+        	$scope.models = $rootScope.modelsSaved.models;
+        	return;
+        }
         $http.get('./rest/model/query=' + filter).success(
             function(data, status, headers, config) {
-                $scope.models = data;
+            	$rootScope.modelsSaved = {'filter': filter, 'models': data};
+            	$scope.models = data;
             }).error(function(data, status, headers, config) {
                 $scope.models = [];
             });
