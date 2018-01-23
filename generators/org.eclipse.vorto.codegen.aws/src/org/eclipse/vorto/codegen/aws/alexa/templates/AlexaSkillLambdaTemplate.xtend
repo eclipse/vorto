@@ -33,11 +33,11 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 		 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("bosch")»
 		 var thingsApiToken = "INSERT API TOKEN OF BOSCH IOT THINGS HERE";
 		 var thingId = "«context.configurationProperties.getOrDefault("thingId","INSERT THING ID HERE")»";
-		 var username= "INSERT USERNAME HERE";
+		 var username= "INSERT USERNAME HERE"; // escape special characters here example: '\' 
 		 var password= "INSERT PASSWORD HERE";
 		 
 		 
-		 var http = require('http');
+		 var http = require('https');
 		 «ENDIF»
 		 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("aws")»
 		 var config = {
@@ -122,7 +122,7 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("bosch")»
 						  var httpRequest = {
 						 	 host : "things.apps.bosch-iot-cloud.com",
-						 	 path: "/api/1/things/"+thingId,
+						 	 path: "/api/2/things/"+thingId,
 						 	 method: 'GET',
 						 	 headers: {
 						 	 	'Content-Type': 'application/json',
@@ -133,12 +133,17 @@ class AlexaSkillLambdaTemplate extends AbstractAlexaTemplate {
 						 
 						 console.log("url: "+JSON.stringify(httpRequest));
 						 http.get(httpRequest, function(response) {
-						 	response.on('data', function(data) {
-						 		var result = JSON.parse(data);
-						 		speechOutput = result.features.«fbProperty.name».properties.status.«statusProperty.name»;
-						 		//say the results
-						 		callback(sessionAttributes, buildSpeechletResponse("«fbProperty.name»", speechOutput, "", true));
-						 	});
+						 	var bufferedData = [];
+						    response.on('data', function(data) {
+						       bufferedData.push(data);
+						    });
+						    response.on('end', function() {
+						       let buf = Buffer.concat(bufferedData);
+						       var result = JSON.parse(buf.toString('utf8'));
+						       speechOutput = result.features.«fbProperty.name».properties.status.«statusProperty.name»;
+						       //say the results
+						       callback(sessionAttributes, buildSpeechletResponse("«fbProperty.name»", speechOutput, "", true));
+						    });
 						 });
 						 «ENDIF»
 						 «IF context.configurationProperties.getOrDefault("cloud","").equalsIgnoreCase("aws")»
