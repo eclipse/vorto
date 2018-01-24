@@ -21,7 +21,7 @@ Information Model DSL import function block model DSL.
         'version' version
         (modelReference)*
         'infomodel' id '{'
-        'displayname' stirng
+        'displayname' string
         ('description' string)?
         'category' category
         'functionblocks' '{'
