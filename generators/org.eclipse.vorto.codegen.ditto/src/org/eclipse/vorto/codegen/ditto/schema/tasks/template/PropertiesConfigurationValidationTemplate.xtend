@@ -30,7 +30,7 @@ class PropertiesConfigurationValidationTemplate implements ITemplate<Configurati
 				'''
 			{
 				"$schema": "http://json-schema.org/draft-04/schema#",
-				"title": "Properties validation of definition <«definition»> for <config> properties",
+				"title": "Properties validation of definition <«definition»> for <configuration> properties",
 				"type": "object",
 				"properties": {
 					«EntityValidationTemplate.handleProperties(configuration.properties, invocationContext).toString.trim»

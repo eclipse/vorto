@@ -36,7 +36,7 @@ class PropertiesSinglePropertyValidationTemplate implements ITemplate<Property> 
 		'''
 			{
 				"$schema": "http://json-schema.org/draft-04/schema#",
-				"title": "Property validation of definition <«definition»> for <«IF property.eContainer instanceof Configuration»config«ENDIF»«IF property.eContainer instanceof Status»status«ENDIF»«IF property.eContainer instanceof Fault»fault«ENDIF»> property <«property.name»>",
+				"title": "Property validation of definition <«definition»> for <«IF property.eContainer instanceof Configuration»configuration«ENDIF»«IF property.eContainer instanceof Status»status«ENDIF»«IF property.eContainer instanceof Fault»fault«ENDIF»> property <«property.name»>",
 				«theStringContent»
 			}
 		'''

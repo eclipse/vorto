@@ -30,10 +30,10 @@ class PropertiesValidationTemplate implements ITemplate<FunctionBlock> {
 		var fbm = fb.eContainer as FunctionblockModel;
 		var definition = fbm.namespace + ":" + fbm.name + ":" + fbm.version;
 		
-		val configProperties = new ArrayList<Property>();
+		val configurationProperties = new ArrayList<Property>();
 		if (fb.configuration !== null && fb.configuration.properties !== null) {
 			for(property : fb.configuration.properties) {
-				configProperties.add(property);	
+				configurationProperties.add(property);	
 			}	
 		}
 		
@@ -57,13 +57,13 @@ class PropertiesValidationTemplate implements ITemplate<FunctionBlock> {
 			"title": "Properties validation of definition <«definition»>",
 			"type": "object",
 			"properties": {
-				«IF !configProperties.empty»
-				"config": {
+				«IF !configurationProperties.empty»
+				"configuration": {
 					"type": "object",
 					"properties": {
-						«EntityValidationTemplate.handleProperties(configProperties, invocationContext).toString.trim»
+						«EntityValidationTemplate.handleProperties(configurationProperties, invocationContext).toString.trim»
 					},
-					«EntityValidationTemplate.calculateRequired(configProperties)»
+					«EntityValidationTemplate.calculateRequired(configurationProperties)»
 				}«IF !statusProperties.empty || !faultProperties.empty»,«ENDIF»«ENDIF»
 				«IF !statusProperties.empty»
 				"status": {
@@ -82,7 +82,7 @@ class PropertiesValidationTemplate implements ITemplate<FunctionBlock> {
 					«EntityValidationTemplate.calculateRequired(statusProperties)»
 				}«ENDIF»
 			},
-			"required" : [«IF configProperties.exists[presence !== null && presence.mandatory]»"config"«IF statusProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF statusProperties.exists[presence !== null && presence.mandatory]»"status"«IF faultProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF faultProperties.exists[presence !== null && presence.mandatory]»"fault"«ENDIF»]
+			"required" : [«IF configurationProperties.exists[presence !== null && presence.mandatory]»"config"«IF statusProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF statusProperties.exists[presence !== null && presence.mandatory]»"status"«IF faultProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF faultProperties.exists[presence !== null && presence.mandatory]»"fault"«ENDIF»]
 		}
 		'''
 	}
