@@ -20,7 +20,7 @@ import org.eclipse.vorto.codegen.api.InvocationContext
 class ArduinoImHeaderTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
-		return model.name + ".h";
+		return model.namespace.replace(".", "_") + "_" + model.name + ".h";
 	}
 	
 	override getPath(InformationModel model) {
@@ -29,31 +29,31 @@ class ArduinoImHeaderTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// «model.name»
+		// «model.namespace.replace(".", "_")»_«model.name»
 		
-		#ifndef __«model.name.toUpperCase»_H__
-		#define __«model.name.toUpperCase»_H__
+		#ifndef __«model.namespace.replace(".", "_").toUpperCase»_«model.name.toUpperCase»_H__
+		#define __«model.namespace.replace(".", "_").toUpperCase»_«model.name.toUpperCase»_H__
 		
 		#include <WString.h>
 		
 		«FOR fb : model.properties»
-		#include "«fb.type.name».h"
+		#include "«fb.type.namespace.replace(".", "_")»_«fb.type.name».h"
 		«ENDFOR»
 		
-		class «model.name»
+		class «model.namespace.replace(".", "_")»_«model.name»
 		{
             public:
-                «model.name»();
+                «model.namespace.replace(".", "_")»_«model.name»();
 
                 «FOR fb : model.properties»
-                    «fb.type.name» «fb.name»;
+                    «fb.type.namespace.replace(".", "_")»_«fb.type.name» «fb.name»;
                 «ENDFOR»
 
                 String serialize();
             private:
 		};
 		
-		#endif // __«model.name.toUpperCase»_H__
+		#endif // __«model.namespace.replace(".", "_").toUpperCase»_«model.name.toUpperCase»_H__
 		'''
 	}
 	

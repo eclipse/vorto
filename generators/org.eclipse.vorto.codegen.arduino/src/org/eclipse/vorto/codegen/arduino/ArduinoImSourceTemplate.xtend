@@ -20,7 +20,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class ArduinoImSourceTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
-		return model.name + ".cpp";
+		return model.namespace.replace(".", "_") + "_" + model.name + ".cpp";
 	}
 	
 	override getPath(InformationModel model) {
@@ -29,15 +29,15 @@ class ArduinoImSourceTemplate extends ArduinoTemplate<InformationModel> {
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// «model.name»
+		// «model.namespace.replace(".", "_")»_«model.name»
 		
-		#include "«model.name».h"
+		#include "«model.namespace.replace(".", "_")»_«model.name».h"
 		
-		«model.name»::«model.name»() 
+		«model.namespace.replace(".", "_")»_«model.name»::«model.namespace.replace(".", "_")»_«model.name»() 
 		{
 		}
 		
-		String «model.name»::serialize()
+		String «model.namespace.replace(".", "_")»_«model.name»::serialize()
 		{
             String result = "{";
 			«var counter = 0»
