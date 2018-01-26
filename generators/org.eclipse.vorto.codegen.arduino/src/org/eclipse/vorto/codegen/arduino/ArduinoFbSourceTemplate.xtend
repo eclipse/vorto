@@ -23,7 +23,7 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getFileName(FunctionblockModel fb) {
-		return fb.name + ".cpp";
+		return fb.namespace.replace(".", "_") + "_" + fb.name + ".cpp";
 	}
 	
 	override getPath(FunctionblockModel fb) {
@@ -32,11 +32,11 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getContent(FunctionblockModel fb, InvocationContext context) {
 		'''
-		// «fb.name»
+		// «fb.namespace.replace(".", "_")»_«fb.name»
 		
-		#include "«fb.name».h"
+		#include "«fb.namespace.replace(".", "_")»_«fb.name».h"
 		
-		«fb.name»::«fb.name»()
+		«fb.namespace.replace(".", "_")»_«fb.name»::«fb.namespace.replace(".", "_")»_«fb.name»()
 		{
             «FOR status : fb.functionblock.status.properties»
                 «status.name»Updated = false;
@@ -44,19 +44,19 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		}
 		
 		«FOR status : fb.functionblock.status.properties»
-		void «fb.name»::set«status.name»(«type(status.type)» value)
+		void «fb.namespace.replace(".", "_")»_«fb.name»::set«status.name»(«type(status.type)» value)
 		{
 			«status.name» = value;
 			«status.name»Updated = true;
 		}
 		
-		«type(status.type)» «fb.name»::get«status.name»()
+		«type(status.type)» «fb.namespace.replace(".", "_")»_«fb.name»::get«status.name»()
 		{
 			return «status.name»;
 		}
         «ENDFOR»
 		
-		String «fb.name»::serialize()
+		String «fb.namespace.replace(".", "_")»_«fb.name»::serialize()
 		{
 		    String result = "\"properties\" : { \"status\" : { ";
 		    «var counter = 0»

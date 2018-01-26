@@ -21,7 +21,7 @@ import org.eclipse.vorto.core.api.model.model.Model
 class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getFileName(FunctionblockModel fb) {
-		return fb.name + ".h";
+		return fb.namespace.replace(".", "_") + "_" + fb.name + ".h";
 	}
 	
 	override getPath(FunctionblockModel fb) {
@@ -30,17 +30,17 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 	
 	override getContent(FunctionblockModel fb, InvocationContext context) {
 		'''
-		// «fb.name»
+		// «fb.namespace.replace(".", "_")»_«fb.name»
 		
-		#ifndef __«fb.name.toUpperCase»_H__
-		#define __«fb.name.toUpperCase»_H__
+		#ifndef __«fb.namespace.replace(".", "_").toUpperCase»_«fb.name.toUpperCase»_H__
+		#define __«fb.namespace.replace(".", "_").toUpperCase»_«fb.name.toUpperCase»_H__
 		
 		#include <WString.h>
 		
-		class «fb.name»
+		class «fb.namespace.replace(".", "_")»_«fb.name»
 		{
             public:
-                «fb.name»();
+                «fb.namespace.replace(".", "_")»_«fb.name»();
 				
                 «FOR status : fb.functionblock.status.properties»
                 void set«status.name»(«type(status.type)» value);
@@ -55,7 +55,7 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
                 «ENDFOR»				
         };
 		
-        #endif // __«fb.name.toUpperCase»_H__
+        #endif // __«fb.namespace.replace(".", "_").toUpperCase»_«fb.name.toUpperCase»_H__
 		'''
 	}
 	

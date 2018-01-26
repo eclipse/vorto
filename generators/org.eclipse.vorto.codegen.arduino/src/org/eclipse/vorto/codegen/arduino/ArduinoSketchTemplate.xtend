@@ -39,9 +39,9 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    #include <WiFiClientSecure.h>
 		#endif
 		«FOR fb : model.properties»
-		#include "«fb.type.name».h"
+		#include "«fb.type.namespace.replace(".", "_")»_«fb.type.name».h"
 		«ENDFOR»
-		#include "«model.name».h"
+		#include "«model.namespace.replace(".", "_")»_«model.name».h"
 		
 		/**************************************************************************/
 		/* Configuration section, adjust to your settings                         */
@@ -111,7 +111,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		PubSubClient mqttClient(wifiClient);
 		
 		/* The information model object */
-		«model.name» infoModel;
+		«model.namespace.replace(".", "_")»_«model.name» infoModel;
 		
 		/**************************************************************************/
 		/* Function to connect to the WiFi network                                */
