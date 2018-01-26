@@ -36,7 +36,7 @@ public final class ValidationTaskFactory {
 				ValidationTemplates.propertiesValidationTemplate);
 	}
 	public static ICodeGeneratorTask<Configuration> getPropertiesConfigValidationTask(String fileExt, String path) {
-		return new ValidationGeneratorTask<Configuration>("properties-config" + fileExt, path, 
+		return new ValidationGeneratorTask<Configuration>("properties-configuration" + fileExt, path, 
 				ValidationTemplates.propertiesConfigValidationTemplate);
 	}
 	public static ICodeGeneratorTask<Status> getPropertiesStatusValidationTask(String fileExt, String path) {

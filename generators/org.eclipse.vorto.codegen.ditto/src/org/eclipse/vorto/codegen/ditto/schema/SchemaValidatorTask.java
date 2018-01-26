@@ -84,7 +84,7 @@ public final class SchemaValidatorTask implements ICodeGeneratorTask<Information
 			for (Property property : configuration.getProperties()) {
 				generateTask(property, context, outputter, 
 						ValidationTaskFactory.getPropertiesSinglePropertyValidationTask(
-								"-config-" + property.getName() + jsonFileExt, stateTargetPath));
+								"-configuration-" + property.getName() + jsonFileExt, stateTargetPath));
 			}
 		}
 	}
