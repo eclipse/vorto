@@ -24,11 +24,19 @@ public class Stereotype {
 	
 	private static final String SOURCE = "source";
 	private static final String XPATH_ATT = "xpath";
+	private static final String CONDITION_ATT = "condition";
 
 	private Map<String, String> attributes = new HashMap<String, String>();
 	
 	public static Stereotype createWithXpath(String xpath) {
 		Map<String,String> attributes = new HashMap<String, String>(1);
+		attributes.put(XPATH_ATT,xpath);
+		return new Stereotype(SOURCE, attributes);
+	}
+	
+	public static Stereotype createWithConditionalXpath(String condition, String xpath) {
+		Map<String,String> attributes = new HashMap<String, String>(2);
+		attributes.put(CONDITION_ATT,condition);
 		attributes.put(XPATH_ATT,xpath);
 		return new Stereotype(SOURCE, attributes);
 	}

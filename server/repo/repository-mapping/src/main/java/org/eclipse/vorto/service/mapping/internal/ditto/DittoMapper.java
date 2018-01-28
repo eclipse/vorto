@@ -14,9 +14,14 @@
  */
 package org.eclipse.vorto.service.mapping.internal.ditto;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.jexl2.Expression;
+import org.apache.commons.jexl2.JexlContext;
+import org.apache.commons.jexl2.JexlEngine;
+import org.apache.commons.jexl2.MapContext;
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -58,6 +63,10 @@ public class DittoMapper implements IDataMapper<DittoData> {
 	private static final String STEREOTYPE = "source";
 	private static final String ATTRIBUTE_XPATH = "xpath";
 
+	private static final Object ATTRIBUTE_CONDITION = "condition";
+	
+	private static final JexlEngine JEXL = createJexlEngine();
+
 	public DittoMapper(IMappingSpecification mappingSpecification) {
 		this.specification = mappingSpecification;
 		this.converterLibrary = new FunctionLibrary();
@@ -73,6 +82,19 @@ public class DittoMapper implements IDataMapper<DittoData> {
 		if (functionsFromMappings.isPresent()) {
 			converterLibrary.addFunctions(functionsFromMappings.get());
 		}
+	}
+	
+	private static JexlEngine createJexlEngine() {
+		JexlEngine jexl = new JexlEngine();
+		Map<String, Object> funcs = new HashMap<String, Object>();
+        funcs.put("conversion", Conversion.class);
+        funcs.put("string", StringUtils.class);
+        funcs.put("number", NumberUtils.class);
+        funcs.put("date", DateUtils.class);
+        funcs.put("type", ConvertUtils.class);
+        funcs.put("boolean", BooleanUtils.class);
+        jexl.setFunctions(funcs);
+		return jexl;
 	}
 
 	public DittoData map(DataInput input, MappingContext mappingContext) {
@@ -104,7 +126,9 @@ public class DittoMapper implements IDataMapper<DittoData> {
 				String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),
 						sourceStereotype.get().getAttributes());
 				try {
-					featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+					if (matchesCondition(sourceStereotype.get().getAttributes(),context)) {
+						featureBuilder.withStatusProperty(statusProperty.getName(), context.getValue(expression));
+					}
 				} catch (JXPathNotFoundException | JXPathInvalidAccessException ex) {
 					if (statusProperty.isMandatory()) {
 						return new EmptyFeature(fbProperty.getName());
@@ -133,6 +157,17 @@ public class DittoMapper implements IDataMapper<DittoData> {
 		}
 
 		return featureBuilder.build();
+	}
+
+	private boolean matchesCondition(Map<String, String> attributes, JXPathContext context) {
+		if (attributes.containsKey(ATTRIBUTE_CONDITION) && !attributes.get(ATTRIBUTE_CONDITION).equals("")) {
+			Expression e = JEXL.createExpression( attributes.get(ATTRIBUTE_CONDITION) );
+			JexlContext jc = new MapContext();
+			jc.set("value", context.getContextBean());
+			return (boolean)e.evaluate(jc);		
+		} else {
+			return true;
+		}
 	}
 
 	private boolean hasXpath(Map<String, String> stereotypeAttributes) {
