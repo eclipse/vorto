@@ -26,10 +26,10 @@ public class SpecWithCondition extends AbstractTestSpec {
 		digitalInputStateProperty2.setType(PrimitiveType.FLOAT);
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-		digitalInputStateProperty.addStereotype(Stereotype.createWithConditionalXpath("value.count == 0","/count"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithConditionalXpath("count == 0","/count"));
 		
 		digitalInputStateProperty2.setTargetPlatformKey("iotbutton");
-		digitalInputStateProperty2.addStereotype(Stereotype.createWithConditionalXpath("value.count > 1","/count"));
+		digitalInputStateProperty2.addStereotype(Stereotype.createWithConditionalXpath("count > 1","/count"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty,digitalInputStateProperty2 }));

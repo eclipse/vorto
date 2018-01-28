@@ -21,7 +21,7 @@ import java.util.Optional;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
-import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.jexl2.ObjectContext;
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -161,13 +161,16 @@ public class DittoMapper implements IDataMapper<DittoData> {
 
 	private boolean matchesCondition(Map<String, String> attributes, JXPathContext context) {
 		if (attributes.containsKey(ATTRIBUTE_CONDITION) && !attributes.get(ATTRIBUTE_CONDITION).equals("")) {
-			Expression e = JEXL.createExpression( attributes.get(ATTRIBUTE_CONDITION) );
-			JexlContext jc = new MapContext();
-			jc.set("value", context.getContextBean());
+			Expression e = JEXL.createExpression( normalizeCondition(attributes.get(ATTRIBUTE_CONDITION) ) );
+			JexlContext jc = new ObjectContext<Object>(JEXL, context.getContextBean());
 			return (boolean)e.evaluate(jc);		
 		} else {
 			return true;
 		}
+	}
+
+	private String normalizeCondition(final String expression) {
+		return expression.replaceAll("/", "\\.");
 	}
 
 	private boolean hasXpath(Map<String, String> stereotypeAttributes) {
