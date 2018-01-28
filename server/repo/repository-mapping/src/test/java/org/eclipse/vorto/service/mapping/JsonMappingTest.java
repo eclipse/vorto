@@ -16,6 +16,7 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
+import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
@@ -47,6 +48,25 @@ public class JsonMappingTest {
 		System.out.println(mappedDittoOutput.toJson());
 
 	}
+	
+	@Test
+	public void testMapWithSimpleCondition() throws Exception {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCondition())
+				.buildDittoMapper();
+
+		String json = "{\"count\" : 2 }";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+		assertEquals(2,mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
+		
+		json = "{\"count\" : 0 }";
+
+		mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals(0,mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
+	}
+
 	
 	@Test
 	public void testDittoMappingUsingListInput() throws Exception {
