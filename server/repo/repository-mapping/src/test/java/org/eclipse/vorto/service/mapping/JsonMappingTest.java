@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
@@ -16,6 +17,7 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
+import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
@@ -65,6 +67,18 @@ public class JsonMappingTest {
 		mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 		assertEquals(0,mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
 		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
+	}
+	
+	@Test
+	public void testMapUsingBase64Converter() throws Exception {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithBase64Converter())
+				.buildDittoMapper();
+
+		String json = "{\"data\" : \""+Base64.encodeBase64String("20".getBytes())+"\"}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals("20",new String((byte[])mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("digital_input_state")));
+		
 	}
 
 	

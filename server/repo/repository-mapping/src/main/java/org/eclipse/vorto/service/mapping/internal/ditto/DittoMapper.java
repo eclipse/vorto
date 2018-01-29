@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -46,6 +45,7 @@ import org.eclipse.vorto.service.mapping.IDataMapper;
 import org.eclipse.vorto.service.mapping.MappingContext;
 import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
+import org.eclipse.vorto.service.mapping.internal.converter.Base64;
 import org.eclipse.vorto.service.mapping.internal.converter.ConvertUtils;
 import org.eclipse.vorto.service.mapping.internal.converter.DateUtils;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
