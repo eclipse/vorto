@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.service.mapping;
 
-import org.eclipse.vorto.service.mapping.ble.json.GattDevice;
 import org.eclipse.vorto.service.mapping.json.JsonInput;
 
 public class DataInputFactory {

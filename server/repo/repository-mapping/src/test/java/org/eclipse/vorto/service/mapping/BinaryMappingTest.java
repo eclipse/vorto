@@ -16,6 +16,8 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithByteArrayConverter;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class BinaryMappingTest {
 
@@ -62,10 +64,8 @@ public class BinaryMappingTest {
 		gattDevice.setServices(services);
 		gattDevice.setCharacteristics(characteristics);
 		
-		ObjectMapper objMapper = new ObjectMapper();
-		String json = objMapper.writeValueAsString(gattDevice);
+		String json = new Gson().toJson(gattDevice);
 			
-		
 		DittoData mappedDittoOutput = mapper.map(DataInputFactory.getInstance().fromJson(json), MappingContext.empty());
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 		assertEquals(20.00,buttonFeature.getStatusProperties().get("sensor_value"));
