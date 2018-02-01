@@ -15,9 +15,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecGattConverter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithByteArrayConverter;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class BinaryMappingTest {
 

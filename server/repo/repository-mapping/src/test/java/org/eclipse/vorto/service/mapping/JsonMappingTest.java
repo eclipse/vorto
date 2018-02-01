@@ -19,6 +19,8 @@ import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
@@ -67,6 +69,30 @@ public class JsonMappingTest {
 		mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 		assertEquals(0,mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
 		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
+	}
+	
+	@Test
+	public void testMapWithCustomFunctionCondition() throws Exception {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction())
+				.buildDittoMapper();
+
+		String json = "{\"data\" : \"aGFsbG8=\"}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals("hallo",mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+
+	}
+	
+	@Test
+	public void testMapWithJxpathCondition() throws Exception {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath())
+				.buildDittoMapper();
+
+		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals(100.0,mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+
 	}
 	
 	@Test

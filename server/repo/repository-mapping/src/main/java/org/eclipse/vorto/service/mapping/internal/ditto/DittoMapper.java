@@ -48,6 +48,7 @@ import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.internal.converter.Base64;
 import org.eclipse.vorto.service.mapping.internal.converter.ConvertUtils;
 import org.eclipse.vorto.service.mapping.internal.converter.DateUtils;
+import org.eclipse.vorto.service.mapping.internal.converter.Jxpath;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 
 /**
@@ -96,6 +97,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
         funcs.put("type", ConvertUtils.class);
         funcs.put("boolean", BooleanUtils.class);
         funcs.put("base64", Base64.class);
+        funcs.put("xpath", Jxpath.class);
         jexl.setFunctions(funcs);
 		return jexl;
 	}
@@ -166,6 +168,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
 		if (attributes.containsKey(ATTRIBUTE_CONDITION) && !attributes.get(ATTRIBUTE_CONDITION).equals("")) {
 			Expression e = JEXL.createExpression( normalizeCondition(attributes.get(ATTRIBUTE_CONDITION) ) );
 			JexlContext jc = new ObjectContext<Object>(JEXL, context.getContextBean());
+			jc.set("this", context.getContextBean());
 			return (boolean)e.evaluate(jc);		
 		} else {
 			return true;
