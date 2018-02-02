@@ -258,7 +258,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 
 }]);
 
-repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal) {
+repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal','$timeout','$window',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal,$timeout,$window) {
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
     $scope.chosenFile = false;
@@ -274,7 +274,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
             headers: {'Content-Type': undefined}
         })
         .success(function(result){
-            $location.path("/details/"+$scope.model.id.namespace+"/"+$scope.model.id.name+"/"+$scope.model.id.version);
+        	$timeout(function() {
+        		$window.location.reload();
+        	},500);
         }).error(function(data, status, headers, config) {
             if(status == 403){
                 $rootScope.error = "Operation is Forbidden";
