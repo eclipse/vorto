@@ -14,7 +14,7 @@ Extracts a value by evaluating an xpath expression with a given context object:
 ### Example Usage
 
 Extracts the english greeting from a list of all greetings and checks if the value matches 'hello':
-````xpath:eval("greetings[@lang = 'english']",this) == "hello"```
+```xpath:eval("greetings[@lang = 'english']",this) == "hello"```
 
 ## String functions
 
