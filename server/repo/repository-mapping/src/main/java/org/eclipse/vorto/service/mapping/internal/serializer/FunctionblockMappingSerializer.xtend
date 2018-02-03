@@ -47,7 +47,7 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		
 		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
 			targetplatform «createTargetPlatformKey()»
-			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present»
+			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
 			«ENDIF»
 			«FOR statusProperty : fbm.statusProperties»

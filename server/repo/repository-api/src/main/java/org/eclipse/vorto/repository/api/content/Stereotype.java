@@ -23,10 +23,17 @@ public class Stereotype {
 	private String name;
 	
 	private static final String SOURCE = "source";
+	private static final String FUNCTIONS = "functions";
 	private static final String XPATH_ATT = "xpath";
 	private static final String CONDITION_ATT = "condition";
 
 	private Map<String, String> attributes = new HashMap<String, String>();
+	
+	public static Stereotype createWithFunction(String functionName, String functionBody) {
+		Map<String,String> attributes = new HashMap<String, String>(1);
+		attributes.put(functionName,functionBody);
+		return new Stereotype(FUNCTIONS, attributes);
+	}
 	
 	public static Stereotype createWithXpath(String xpath) {
 		Map<String,String> attributes = new HashMap<String, String>(1);
