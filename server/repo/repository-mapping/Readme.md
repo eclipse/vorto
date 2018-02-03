@@ -60,7 +60,7 @@ Excerpt of the Button Mapping:
 
 Here we declare the convertClickType function that converts the JSON clickType property value , e.g. 'DOUBLE' to an Integer value. That function is then used by the functionblock property mapping. 
 
-The Vorto Mapping Engine already provides some standard functions that you can use in your mapping specification to do e.g. string manipulations or type conversions. For more info, check out the Appendix chapter. 
+The Vorto Mapping Engine already provides some standard functions that you can use in your mapping specification to do e.g. string manipulations or type conversions. For more info, click [here](docs/built_in_converters.md)
 
 ### Step 3: Use Vorto Mapping Engine to map data 
 
@@ -251,21 +251,3 @@ Mapped Eclipse Ditto JSON Output:
         }
     }
 	}'
-
-
-
-## Appendix
-
-The Vorto Mapping Engine supports some standard converter functions that you can use in your mapping specification to do e.g. string manipulations or datatype conversions:
-
-String Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html) 
-
-Example: ```string:substring(employee/name,0,10)```
-
-Number Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html) 
-
-Example: ```number:toFloat(invoice/value)```
-
-Conversion Converters: [API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html) 
-
-Example: ```conversion:byteArrayToInt(data/value,0,0,0,3)```
