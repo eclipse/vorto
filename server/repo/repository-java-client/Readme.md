@@ -14,14 +14,16 @@ Use the Client API to
 <dependency>
    <groupId>org.eclipse.vorto</groupId>
    <artifactId>repository-java-client</artifactId>
-   <version>0.10.0.M2</version>
+   <version>0.10.0.M1</version>
 </dependency>
 
 ```
 
-# Vorto Search
+# Features
 
-## Search by free text
+## Vorto Model Search
+
+### Search by free text
 The following code snippet searches for all devices that have 'sensors'
 
 ```
@@ -32,7 +34,7 @@ Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(Mod
 
 ```
 
-## Fetch a specific model 
+### Fetch a specific model 
 
 The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
 
@@ -41,7 +43,7 @@ ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
 InformationModel boschGlmModelContent = modelRepo.getContent(boschGlm, InformationModel.class).get();
 ```
 
-## Fetch a model containing platform attributes 
+### Fetch a model containing platform attributes 
 
 The following code snippet illustrates how to get a Vorto functionblock model that contains LWM2M attributes [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml):
 
@@ -51,7 +53,7 @@ FunctionBlockModel temperatureSensorContent = modelRepo.getContent(ModelId.fromP
 String lwM2MObjectId = temperatureSensorContent.getMappedAttributes("ObjectID");
 ```
 
-## Search model properties by platform attributes
+### Search model properties by platform attributes
 
 ```
 IModelRepository modelRepository = builder.buildModelRepositoryClient();
@@ -64,7 +66,7 @@ List<ModelProperty> properties = mapping.newPropertyQuery(temperatureSensorConte
 
 ```
 
-## Fetch Vorto Model by platform-specific attribute
+### Fetch Vorto Model by platform-specific attribute
 
 The following code snippet illustrates how to get the Vorto functionblock model for a [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml) object ID:
 
@@ -77,9 +79,9 @@ FunctionBlockModel temperatureSensorContent = modelRepo.getContent(temperatureSe
 
 ```
 
-# Code Generation
+## Code Generation
 
-## Generate code for a specific IoT platform
+### Generate code for a specific IoT platform
 
 The following snippet shows how to generate a Eclipse Kura application for a Bosch GLM information model, that reads data via Bluetooth and sends 
 the data to the Bosch IoT Suite cloud platform.  
@@ -95,3 +97,6 @@ invocationConfig.put("boschcloud", "true");
 GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "kura", invocationConfig).get();
 ```
 
+### Example of Validating JSON data against Generated JSON Schema for Eclipse Ditto
+
+[Click here for Sample Code](sample)
