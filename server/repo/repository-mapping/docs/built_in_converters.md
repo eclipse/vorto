@@ -112,3 +112,13 @@ Converts the given string to a boolean:
 ```boolean:toBoolean(String str)```
 
 Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/BooleanUtils.html)
+
+## String Binary functions
+
+### API Documentation
+
+Encodes the given string into a sequence of bytes using the UTF-16LE charset, storing the result into a new byte array:
+
+```stringBinary:getBytesUtf16Le(String str)```
+
+Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/binary/StringUtils.html)
