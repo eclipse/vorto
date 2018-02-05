@@ -26,6 +26,7 @@ public class Jxpath {
 		converterLibrary.addFunctions(new ClassFunctions(ConvertUtils.class, "type"));
 		converterLibrary.addFunctions(new ClassFunctions(BooleanUtils.class, "boolean"));
 		converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
+		converterLibrary.addFunctions(new ClassFunctions(org.apache.commons.codec.binary.StringUtils.class, "binaryString"));
 	}
 	
 	public static Object eval(String exp, Object value) {
