@@ -1,5 +1,7 @@
 package org.eclipse.vorto.service.mapping.internal.converter;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -26,7 +28,7 @@ public class Jxpath {
 		converterLibrary.addFunctions(new ClassFunctions(ConvertUtils.class, "type"));
 		converterLibrary.addFunctions(new ClassFunctions(BooleanUtils.class, "boolean"));
 		converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
-		converterLibrary.addFunctions(new ClassFunctions(org.apache.commons.codec.binary.StringUtils.class, "binaryString"));
+		converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
 	}
 	
 	public static Object eval(String exp, Object value) {

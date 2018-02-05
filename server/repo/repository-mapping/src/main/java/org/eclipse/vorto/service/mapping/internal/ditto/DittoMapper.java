@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.xml.bind.DatatypeConverter;
+
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -80,7 +82,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
 		this.converterLibrary.addFunctions(new ClassFunctions(ConvertUtils.class, "type"));
 		this.converterLibrary.addFunctions(new ClassFunctions(BooleanUtils.class, "boolean"));
 		this.converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
-		this.converterLibrary.addFunctions(new ClassFunctions(org.apache.commons.codec.binary.StringUtils.class, "binaryString"));
+		this.converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
 
 		Optional<Functions> functionsFromMappings = mappingSpecification.getCustomFunctions();
 		if (functionsFromMappings.isPresent()) {
@@ -98,7 +100,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
         funcs.put("type", ConvertUtils.class);
         funcs.put("boolean", BooleanUtils.class);
         funcs.put("base64", Base64.class);
-        funcs.put("stringBinary", org.apache.commons.codec.binary.StringUtils.class);
+        funcs.put("stringBinary", DatatypeConverter.class);
         funcs.put("xpath", Jxpath.class);
         jexl.setFunctions(funcs);
 		return jexl;

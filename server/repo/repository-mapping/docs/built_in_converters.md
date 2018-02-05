@@ -117,8 +117,8 @@ Other functions, see [Complete API Documentation](https://commons.apache.org/pro
 
 ### API Documentation
 
-Encodes the given string into a sequence of bytes using the UTF-16LE charset, storing the result into a new byte array:
+Converts the hex string argument into an array of bytes:
 
-```stringBinary:getBytesUtf16Le(String str)```
+```stringBinary:parseHexBinary(String str)```
 
-Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-codec/apidocs/org/apache/commons/codec/binary/StringUtils.html)
+Other functions, see [Complete API Documentation](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/DatatypeConverter.html)
