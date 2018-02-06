@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		"jquery" : "../../webjars/jquery/3.2.1/dist/jquery.min",
+		"jquery" : "../../webjars/jquery/jquery.min",
 		"angular": "../../webjars/angularjs/1.3.13/angular.min",
 		"angular-route" : "../../webjars/angular-route/1.3.13/angular-route.min",
 		"angular-animate" : "../../webjars/angular-animate/1.3.13/angular-animate.min",
