@@ -100,7 +100,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
         funcs.put("type", ConvertUtils.class);
         funcs.put("boolean", BooleanUtils.class);
         funcs.put("base64", Base64.class);
-        funcs.put("stringBinary", DatatypeConverter.class);
+        funcs.put("binaryString", DatatypeConverter.class);
         funcs.put("xpath", Jxpath.class);
         jexl.setFunctions(funcs);
 		return jexl;

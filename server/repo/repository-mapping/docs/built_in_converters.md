@@ -119,6 +119,6 @@ Other functions, see [Complete API Documentation](https://commons.apache.org/pro
 
 Converts the hex string argument into an array of bytes:
 
-```stringBinary:parseHexBinary(String str)```
+```binaryString:parseHexBinary(String str)```
 
 Other functions, see [Complete API Documentation](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/DatatypeConverter.html)
