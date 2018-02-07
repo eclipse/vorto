@@ -197,6 +197,12 @@
 			<version>${project.version}</version>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.hono</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 		<!-- Generator dependencies -->
 		
 		<dependency>

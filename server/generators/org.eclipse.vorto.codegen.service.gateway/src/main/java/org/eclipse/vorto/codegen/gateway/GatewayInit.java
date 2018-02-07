@@ -29,6 +29,7 @@ import org.eclipse.vorto.codegen.gateway.templates.BoschThingsConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.KuraConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
+import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.codegen.ios.IOSPlatformGenerator;
 import org.eclipse.vorto.codegen.javabean.JavabeanGenerator;
 import org.eclipse.vorto.codegen.kura.KuraGenerator;
@@ -88,6 +89,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/artik.properties", ArtikGenerator.class));
 			generatorRepo.add(Generator.create("/generators/alpwiseBt.properties", AlpwiseBtStackGenerator.class));
 			generatorRepo.add(Generator.create("/generators/ditto.properties", EclipseDittoGenerator.class));
+			generatorRepo.add(Generator.create("/generators/hono.properties", EclipseHonoGenerator.class));
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			
 			generatorRepo.list().stream().forEach(vorto::register);

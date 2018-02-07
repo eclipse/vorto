@@ -22,6 +22,7 @@ Available Generators:
  - [Google Protobuf Generator](org.eclipse.vorto.codegen.protobuf/Readme.md)
  - [Samsung ARTIK Generator](org.eclipse.vorto.codegen.artik/Readme.md)
  - [Eclipse Ditto Generator](org.eclipse.vorto.codegen.ditto/Readme.md)
+ - [Eclipse Hono Generator](org.eclipse.vorto.codegen.hono/Readme.md)
 
 # Add your Code Generator
 
