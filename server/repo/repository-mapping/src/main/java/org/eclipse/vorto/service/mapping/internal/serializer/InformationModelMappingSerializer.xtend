@@ -15,7 +15,6 @@
 package org.eclipse.vorto.service.mapping.internal.serializer
 
 import java.util.HashSet
-import org.eclipse.vorto.repository.api.ModelId
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
 
 /**

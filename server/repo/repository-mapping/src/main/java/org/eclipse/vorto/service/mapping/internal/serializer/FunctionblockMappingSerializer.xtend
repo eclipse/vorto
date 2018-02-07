@@ -17,6 +17,7 @@ package org.eclipse.vorto.service.mapping.internal.serializer
 import java.util.List
 import java.util.Map
 import java.util.stream.Collectors
+import org.apache.commons.text.StringEscapeUtils
 import org.eclipse.vorto.repository.api.content.FunctionblockModel
 import org.eclipse.vorto.repository.api.content.Stereotype
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
@@ -69,13 +70,17 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		for (var iter = functionsStereotype.attributes.keySet.iterator;iter.hasNext;) {
 			var key = iter.next;
 			if (!"_namespace".equals(key)) {
-				content.append(key).append(":").append("\""+functionsStereotype.attributes.get(key)+"\"");
+				content.append(key).append(":").append("\""+escapeQuotes(functionsStereotype.attributes.get(key))+"\"");
 				if (iter.hasNext) {
 					content.append(",");
 				}
 			}
 		}
 		return content.toString;
+	}
+	
+	def escapeQuotes(String value) {
+		return StringEscapeUtils.escapeJava(value)
 	}
 	
 	private def filterEmptyStereotypes(List<Stereotype> stereotypes) {
@@ -86,7 +91,7 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		var content = new StringBuilder();
 		for (var iter = attributes.keySet.iterator;iter.hasNext;) {
 			var key = iter.next;
-			content.append(key).append(":").append("\""+attributes.get(key)+"\"");
+			content.append(key).append(":").append("\""+escapeQuotes(attributes.get(key))+"\"");
 			if (iter.hasNext) {
 				content.append(",");
 			}

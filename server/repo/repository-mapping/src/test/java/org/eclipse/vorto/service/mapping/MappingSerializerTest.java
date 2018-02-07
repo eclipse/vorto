@@ -67,4 +67,33 @@ public class MappingSerializerTest {
 		MappingSpecificationSerializer.create(mappingSpecification).iterator().forEachRemaining(p -> System.out.println(p.serialize()));
 
 	}
+	
+	@Test
+	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesFunction() throws Exception {
+
+		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+		
+		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
+		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
+		mappingSpecification.getFunctionBlock("distancesensor").addStereotype(Stereotype.createWithFunction("convert", "function convert(value) { return \"\"}"));
+		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get().addStereotype(Stereotype.createWithXpath("/@incl"));
+		
+		MappingSpecificationSerializer.create(mappingSpecification).iterator().forEachRemaining(p -> System.out.println(p.serialize()));
+
+	}
+	
+	@Test
+	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesCondition() throws Exception {
+
+		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+		
+		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
+		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
+		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get().addStereotype(Stereotype.createWithConditionalXpath("xpath:eval(\"value/x\",this) == 2", "/@incl"));
+		
+		MappingSpecificationSerializer.create(mappingSpecification).iterator().forEachRemaining(p -> System.out.println(p.serialize()));
+
+	}
 }
