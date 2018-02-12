@@ -74,8 +74,8 @@ public class MappingTest extends AbstractIntegrationTest {
 		checkinModel("Color.type");
 		checkinModel("sample.mapping");
 		Thread.sleep(2000);
-		assertEquals(true, modelRepository.getMappingModelForTargetPlatform(
-				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios").isPresent());
+		assertEquals(1, modelRepository.getMappingModelsForTargetPlatform(
+				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios").size());
 	}
 
 	@Test

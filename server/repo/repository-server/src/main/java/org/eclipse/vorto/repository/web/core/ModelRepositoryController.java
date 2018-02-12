@@ -126,9 +126,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
 			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
 		
-		Optional<ModelInfo> mappingResource = modelRepository.getMappingModelForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
-		if (mappingResource.isPresent() ) {
-			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get().getId(), ContentType.DSL);
+		List<ModelInfo> mappingResource = modelRepository.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
+		if (!mappingResource.isEmpty()) {
+			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId(), ContentType.DSL);
 			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
 
 			MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
@@ -322,7 +322,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 		
 		final ModelId modelId = new ModelId(name, namespace, version);
-		Optional<ModelInfo> mappingResource = modelRepository.getMappingModelForTargetPlatform(modelId, targetPlatform);
+		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelId, targetPlatform);
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
@@ -330,12 +330,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		final ContentType contentType = ContentType.DSL;
 		
 		try {
-			if (mappingResource.isPresent()) {
-				addModelToZip(zos, mappingResource.get().getId(), contentType);
-	
-				zos.close();
-				baos.close();
-			}
+		for (ModelInfo mappingResource : mappingResources) {
+			addModelToZip(zos, mappingResource.getId(), contentType);
+		}
+
+		zos.close();
+		baos.close();
 		} catch(Exception ex) {
 			throw new RuntimeException(ex);
 		}

@@ -95,7 +95,7 @@ public interface IModelRepository {
 	 * @param targetPlatform
 	 * @return
 	 */
-	Optional<ModelInfo> getMappingModelForTargetPlatform(ModelId modelId, String targetPlatform);
+	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform);
 	
 	/**
 	 * Removes the model for the given ModelID

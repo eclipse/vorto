@@ -350,19 +350,22 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public Optional<ModelInfo> getMappingModelForTargetPlatform(ModelId vortoModelId, String targetPlatform) {
-		ModelInfo modelResource = getById(vortoModelId);
+	public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
+		List<ModelInfo> mappingResources = new ArrayList<>();
+		ModelInfo modelResource = getById(modelId);
 		if (modelResource != null) {
 			for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
 				ModelInfo referenceeModelResources = getById(referenceeModelId);
 				if (referenceeModelResources.getType() == ModelType.Mapping
 						&& isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
-					return Optional.of(referenceeModelResources);
+					mappingResources.add(referenceeModelResources);
 				}
 			}
+			for (ModelId referencedModelId : modelResource.getReferences()) {
+				mappingResources.addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform));
+			}
 		}
-		
-		return Optional.empty();
+		return mappingResources;
 	}
 
 	private boolean isTargetPlatformMapping(ModelInfo model, String targetPlatform) {
