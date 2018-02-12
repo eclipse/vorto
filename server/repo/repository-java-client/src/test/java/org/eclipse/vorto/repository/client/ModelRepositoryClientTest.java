@@ -102,7 +102,7 @@ public class ModelRepositoryClientTest {
 		assertEquals(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0"),xdkModel.getId());
 	}
 	
-	@Test @Ignore
+	@Test
 	public void testGetModelForTargetPlatform() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
 		assertNotNull(accelerometer);
@@ -111,13 +111,13 @@ public class ModelRepositoryClientTest {
 		assertEquals(7,accelerometer.getStereotype("Object").get().getAttributes().size());
 	}
 	
-	@Test  @Ignore //FIXME : Repository REST URL Changes might have an impact on this test case. REST Endpoints should be tested along with repository
+	@Test  //FIXME : Repository REST URL Changes might have an impact on this test case. REST Endpoints should be tested along with repository
 	public void testGetModelForNotAvailableTargetPlatform() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"omadm").get();
 		assertNotNull(accelerometer);
 	}
 		
-	@Test  @Ignore
+	@Test
 	public void testQueryModelPropertyByMappedAttribute() throws Exception {
 		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
 		
