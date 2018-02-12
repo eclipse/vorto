@@ -71,7 +71,8 @@ public class MappingSpecificationBuilder {
 			
 			for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
 				ModelId fbModelId = (ModelId)fbProperty.getType();
-				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class,this.targetPlatformKey).get();
+				ModelId mappingId = fbProperty.getMappingReference();
+				FunctionblockModel fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class, mappingId).get();
 				
 				if (fbm.getStereotype(STEREOTYPE_FUNCTIONS).isPresent()) {			
 					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE_FUNCTIONS).get();

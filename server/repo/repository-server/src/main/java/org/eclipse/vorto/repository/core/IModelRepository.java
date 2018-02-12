@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.core;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -89,12 +90,12 @@ public interface IModelRepository {
 	byte[] getModelImage(ModelId modelId);
 	
 	/**
-	 * Gets all mapping model resources for the given modelId
+	 * Gets the mapping model for the given modelId and the given target platform
 	 * @param modelId
 	 * @param targetPlatform
 	 * @return
 	 */
-	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform);
+	Optional<ModelInfo> getMappingModelForTargetPlatform(ModelId modelId, String targetPlatform);
 	
 	/**
 	 * Removes the model for the given ModelID

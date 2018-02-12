@@ -1,0 +1,10 @@
+namespace bcx.demo.mapping
+version 1.0.0
+displayname "indoorTemperaturePayloadMapping"
+description "Payload Mapping for the indoorTemperature property of the DualTemperatureSensor"
+category payloadmapping
+using demo.fbs.Temperature ; 0.0.1
+
+functionblockmapping IndoorTemperaturePayloadMapping {
+	targetplatform bcx_demo_DualTemperatureSensor_1_0_0
+}

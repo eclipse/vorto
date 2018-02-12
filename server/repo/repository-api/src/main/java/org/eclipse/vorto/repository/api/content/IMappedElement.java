@@ -17,11 +17,34 @@ package org.eclipse.vorto.repository.api.content;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.vorto.repository.api.ModelId;
+
 public interface IMappedElement {
 	
+	/**
+	 * Target Platform of the mapping
+	 * @return
+	 */
 	String getTargetPlatformKey();
 
+	/**
+	 * Gets all stereotypes that are associated with the current model element
+	 * @return
+	 */
 	List<Stereotype> getStereotypes();
 	
+	/**
+	 * Gets a specific stereotype by name for the current model element
+	 * @param name
+	 * @return
+	 */
 	Optional<Stereotype> getStereotype(String name);
+	
+	/**
+	 * Gets the referenced mapping model Id for the current model element
+	 * @return
+	 */
+	ModelId getMappingReference();
+	
+	
 }

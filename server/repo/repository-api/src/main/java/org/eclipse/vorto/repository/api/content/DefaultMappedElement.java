@@ -18,11 +18,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.vorto.repository.api.ModelId;
+
 public class DefaultMappedElement implements IMappedElement {
 
 	protected String targetPlatformKey;
 	
 	protected List<Stereotype> stereotypes = new ArrayList<Stereotype>();
+	
+	protected ModelId mappingReference = null;
 
 	public String getTargetPlatformKey() {
 		return targetPlatformKey;
@@ -48,5 +52,13 @@ public class DefaultMappedElement implements IMappedElement {
 	
 	public void setStereotypes(List<Stereotype> stereotypes) {
 		this.stereotypes = stereotypes;
+	}
+	
+	public void setMappingReference(ModelId mappingReference) {
+		this.mappingReference = mappingReference;
+	}
+
+	public ModelId getMappingReference() {
+		return this.mappingReference;
 	}
 }

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -349,22 +350,19 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
-		List<ModelInfo> mappingResources = new ArrayList<>();
-		ModelInfo modelResource = getById(modelId);
+	public Optional<ModelInfo> getMappingModelForTargetPlatform(ModelId vortoModelId, String targetPlatform) {
+		ModelInfo modelResource = getById(vortoModelId);
 		if (modelResource != null) {
 			for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
 				ModelInfo referenceeModelResources = getById(referenceeModelId);
 				if (referenceeModelResources.getType() == ModelType.Mapping
 						&& isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
-					mappingResources.add(referenceeModelResources);
+					return Optional.of(referenceeModelResources);
 				}
 			}
-			for (ModelId referencedModelId : modelResource.getReferences()) {
-				mappingResources.addAll(getMappingModelsForTargetPlatform(referencedModelId, targetPlatform));
-			}
 		}
-		return mappingResources;
+		
+		return Optional.empty();
 	}
 
 	private boolean isTargetPlatformMapping(ModelInfo model, String targetPlatform) {

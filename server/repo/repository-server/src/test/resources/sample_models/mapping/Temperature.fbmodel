@@ -1,0 +1,21 @@
+namespace demo.fbs
+version 0.0.1
+displayname "Temperature"
+description ""
+category iot
+
+functionblock Temperature {
+
+	status {
+		mandatory sensor_value as float with { readable: true} "Last or Current Measured Value from the Sensor"
+		optional min_measured_value as float with { readable: true} "The minimum value measured by the sensor since power ON or reset"
+		optional max_measured_value as float with { readable: true} "The maximum value measured by the sensor since power ON or reset"
+		optional min_range_value as float with { readable: true} "The minimum value that can be measured by the sensor"
+		optional max_range_value as float with { readable: true} "The maximum value that can be measured by the sensor"
+		optional sensor_units as string with { readable: true} "Measurement Units Definition e.g. “Cel” for Temperature in Celsius."
+	}
+
+	operations {
+		reset_min_and_max_measured_values()  "Reset the Min and Max Measured Values to Current Value"
+	}
+}

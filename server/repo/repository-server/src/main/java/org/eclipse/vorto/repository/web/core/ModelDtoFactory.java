@@ -42,8 +42,11 @@ import org.eclipse.vorto.core.api.model.mapping.EntitySource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
+import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
@@ -96,7 +99,7 @@ public class ModelDtoFactory {
 
 	public static AbstractModel createResource(Model model,Optional<MappingModel> mappingModel) {
 		if (model instanceof InformationModel) {
-			return createResource((InformationModel) model);
+			return createResource((InformationModel) model, mappingModel);
 		} else if (model instanceof FunctionblockModel) {
 			return createResource((FunctionblockModel) model,mappingModel);
 		} else if (model instanceof Entity) {
@@ -111,12 +114,12 @@ public class ModelDtoFactory {
 		}
 	}
 
-	public static Infomodel createResource(InformationModel model) {
+	public static Infomodel createResource(InformationModel model, Optional<MappingModel> mappingModel) {
 		Infomodel infoResource = new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
 				ModelType.InformationModel);
 
 		for (FunctionblockProperty property : model.getProperties()) {
-			infoResource.getFunctionblocks().add(createProperty(property));
+			infoResource.getFunctionblocks().add(createProperty(property,mappingModel));
 		}
 
 		infoResource.setDescription(model.getDescription());
@@ -124,7 +127,24 @@ public class ModelDtoFactory {
 		infoResource.setReferences(
 				model.getReferences().stream().map(reference -> createModelId(reference)).collect(Collectors.toList()));
 
+		if (mappingModel.isPresent()) {
+			MappingModel _mappingModel = mappingModel.get();
+			infoResource.setTargetPlatformKey(_mappingModel.getTargetPlatform());
+			for (MappingRule rule : getInfoModelRule(_mappingModel.getRules())) {
+				if (rule.getTarget() instanceof StereoTypeTarget) {
+					StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+					infoResource.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+				} else if (rule.getTarget() instanceof ReferenceTarget) {
+					ReferenceTarget target = (ReferenceTarget)rule.getTarget();
+					infoResource.setMappingReference(createModelId(target.getMappingModel()));
+				}
+			}
+		}
 		return infoResource;
+	}
+	
+	private static List<MappingRule> getInfoModelRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof InfoModelAttributeSource).collect(Collectors.toList());
 	}
 
 	private static ModelId createModelId(Model model) {
@@ -233,11 +253,25 @@ public class ModelDtoFactory {
 		return param;
 	}
 
-	private static ModelProperty createProperty(FunctionblockProperty property) {
+	private static ModelProperty createProperty(FunctionblockProperty property,Optional<MappingModel> mappingModel) {
 		ModelProperty p = new ModelProperty();
 		p.setDescription(property.getDescription());
 		p.setName(property.getName());
 		p.setType(createModelId(property.getType()));
+		
+		if (mappingModel.isPresent()) {
+			p.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			for (MappingRule rule : getPropertyRule(p.getName(),mappingModel.get().getRules())) {
+				if (rule.getTarget() instanceof StereoTypeTarget) {
+					StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+					p.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+				} else if (rule.getTarget() instanceof ReferenceTarget) {
+					ReferenceTarget target = (ReferenceTarget)rule.getTarget();
+					p.setMappingReference(createModelId(target.getMappingModel()));
+				}
+			}
+		}
+		
 		return p;
 	}
 
@@ -278,7 +312,7 @@ public class ModelDtoFactory {
 	}
 	
 	private static List<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
-		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockPropertySource && matchesProperty(r.getSources().get(0),propertyName)).collect(Collectors.toList());
+		return rules.stream().filter(r -> ( r.getSources().get(0) instanceof FunctionBlockPropertySource || r.getSources().get(0) instanceof InfoModelPropertySource ) && matchesProperty(r.getSources().get(0),propertyName)).collect(Collectors.toList());
 	}
 
 	
@@ -288,6 +322,8 @@ public class ModelDtoFactory {
 		} else if (source instanceof StatusSource && ((StatusSource)source).getProperty().getName().equals(propertyName)) {
 			return true;
 		} else if (source instanceof FaultSource && ((FaultSource)source).getProperty().getName().equals(propertyName)) {
+			return true;
+		} else if (source instanceof InfoModelPropertySource && ((InfoModelPropertySource)source).getProperty().getName().equals(propertyName)) {
 			return true;
 		}
 		return false;

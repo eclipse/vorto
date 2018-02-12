@@ -1,0 +1,15 @@
+namespace bcx.demo
+version 1.0.0
+displayname "DualTemperatureSensor"
+description "Information Model for DualTemperatureSensor"
+category iot
+
+using demo.fbs.Temperature; 0.0.1
+
+infomodel DualTemperatureSensor {
+	
+	functionblocks {
+		outdoorTemperature as Temperature
+		indoorTemperature as Temperature
+	}
+}

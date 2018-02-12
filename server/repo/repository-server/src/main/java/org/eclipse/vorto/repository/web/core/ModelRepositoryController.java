@@ -120,15 +120,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}/{targetplatformKey}", method = RequestMethod.GET)
+	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}/mapping/{targetplatformKey}", method = RequestMethod.GET)
 	public AbstractModel getModelContentForTargetPlatform(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
 			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
 		
-		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
-		if (!mappingResources.isEmpty()) {
-			byte[] mappingContentZip = createZipWithAllDependencies(mappingResources.get(0).getId(), ContentType.DSL);
+		Optional<ModelInfo> mappingResource = modelRepository.getMappingModelForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
+		if (mappingResource.isPresent() ) {
+			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get().getId(), ContentType.DSL);
 			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
 
 			MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
@@ -141,6 +141,33 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		} else {
 			return getModelContent(namespace,name,version);
 		}
+	}
+	
+	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@RequestMapping(value = "/content/{modelId:.+}/mapping/{mappingId:.+}", method = RequestMethod.GET)
+	public AbstractModel getModelContentByModelAndMappingId(@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId, 
+			@ApiParam(value = "The mapping Model ID (prettyFormat)", required = true) final @PathVariable String mappingId) {
+		
+		ModelInfo vortoModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(modelId));
+		ModelInfo mappingModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(mappingId));
+		
+		if (vortoModelInfo == null) {
+			throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
+		} else if (mappingModelInfo == null)  {
+			throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
+
+		}
+		
+		byte[] mappingContentZip = createZipWithAllDependencies(mappingModelInfo.getId(), ContentType.DSL);
+		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
+		MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
+
+		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId(), ContentType.DSL);
+	    workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+
+		return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),Optional.of(mappingModel));
+
 	}
 	
 	@ApiOperation(value = "Returns the image of a vorto model")
@@ -295,7 +322,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 		
 		final ModelId modelId = new ModelId(name, namespace, version);
-		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelId, targetPlatform);
+		Optional<ModelInfo> mappingResource = modelRepository.getMappingModelForTargetPlatform(modelId, targetPlatform);
 		
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
@@ -303,12 +330,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		final ContentType contentType = ContentType.DSL;
 		
 		try {
-		for (ModelInfo mappingResource : mappingResources) {
-			addModelToZip(zos, mappingResource.getId(), contentType);
-		}
-
-		zos.close();
-		baos.close();
+			if (mappingResource.isPresent()) {
+				addModelToZip(zos, mappingResource.get().getId(), contentType);
+	
+				zos.close();
+				baos.close();
+			}
 		} catch(Exception ex) {
 			throw new RuntimeException(ex);
 		}
