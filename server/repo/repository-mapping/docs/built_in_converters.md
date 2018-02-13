@@ -122,3 +122,17 @@ Converts the hex string argument into an array of bytes:
 ```binaryString:parseHexBinary(String str)```
 
 Other functions, see [Complete API Documentation](https://docs.oracle.com/javase/8/docs/api/javax/xml/bind/DatatypeConverter.html)
+
+## Endian functions
+
+### API Documentation
+
+Converts a "short" value between endian systems
+
+```endian:swapShort(short value)```
+
+Converts a "float" value between endian systems
+
+```endian:swapFloat(float value)```
+
+Other functions, see [Complete API Documentation](https://commons.apache.org/proper/commons-io/javadocs/api-2.4/org/apache/commons/io/EndianUtils.html)

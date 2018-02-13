@@ -2,6 +2,7 @@ package org.eclipse.vorto.service.mapping.internal.converter;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.io.EndianUtils;
 import org.apache.commons.jxpath.BasicNodeSet;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -29,6 +30,7 @@ public class Jxpath {
 		converterLibrary.addFunctions(new ClassFunctions(BooleanUtils.class, "boolean"));
 		converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
 		converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
+		converterLibrary.addFunctions(new ClassFunctions(EndianUtils.class, "endian"));
 	}
 	
 	public static Object eval(String exp, Object value) {

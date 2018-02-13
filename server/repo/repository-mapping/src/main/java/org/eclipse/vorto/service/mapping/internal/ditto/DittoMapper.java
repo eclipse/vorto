@@ -20,6 +20,8 @@ import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.EndianUtils;
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
 import org.apache.commons.jexl2.JexlEngine;
@@ -83,6 +85,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
 		this.converterLibrary.addFunctions(new ClassFunctions(BooleanUtils.class, "boolean"));
 		this.converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
 		this.converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
+		this.converterLibrary.addFunctions(new ClassFunctions(EndianUtils.class, "endian"));
 
 		Optional<Functions> functionsFromMappings = mappingSpecification.getCustomFunctions();
 		if (functionsFromMappings.isPresent()) {
@@ -102,6 +105,7 @@ public class DittoMapper implements IDataMapper<DittoData> {
         funcs.put("base64", Base64.class);
         funcs.put("binaryString", DatatypeConverter.class);
         funcs.put("xpath", Jxpath.class);
+        funcs.put("endian", EndianUtils.class);
         jexl.setFunctions(funcs);
 		return jexl;
 	}
