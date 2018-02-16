@@ -42,8 +42,11 @@ class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 		'''
 		package «Utils.getJavaPackage(informationModelContext)».model;
 		
+		import com.google.gson.annotations.SerializedName;
+		
 		public class «model.getName» {
 		    «FOR statusProperty : model.functionblock.status.properties»
+		    @SerializedName("«statusProperty.name»")
 		    private «TypeMapper.mapSimpleDatatype(statusProperty.type)» «TypeMapper.checkKeyword(statusProperty.name)»;
 		    «ENDFOR»
 		    
