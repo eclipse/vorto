@@ -129,10 +129,14 @@ Constraint:
 	type = ConstraintIntervalType constraintValues = IntervalType
 ;
 
-enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = 'MIMETYPE' | scaling = 'SCALING' | default = 'DEFAULT'; 
+enum ConstraintIntervalType: min = 'MIN' | max = 'MAX' | strlen = 'STRLEN' | regex = 'REGEX' | mimetype = 'MIMETYPE' | scaling = 'SCALING' | default = 'DEFAULT' | nullable = 'NULLABLE' ; 
 
 IntervalType:
-	INT | SIGNEDINT | FLOAT | DATETIME | STRING
+	INT | SIGNEDINT | FLOAT | DATETIME | STRING | BOOLEAN
+;
+
+BOOLEAN:
+	'true' | 'false'
 ;
 
 CATEGORY: ID ('/' ID)*;

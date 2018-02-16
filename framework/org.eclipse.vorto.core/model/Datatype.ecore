@@ -53,6 +53,7 @@
     <eLiterals name="mimetype" value="4" literal="MIMETYPE"/>
     <eLiterals name="scaling" value="5" literal="SCALING"/>
     <eLiterals name="default" value="6" literal="DEFAULT"/>
+    <eLiterals name="nullable" value="7" literal="NULLABLE"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Enum" eSuperTypes="#//Type">
     <eStructuralFeatures xsi:type="ecore:EReference" name="enums" upperBound="-1"
