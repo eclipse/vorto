@@ -21,6 +21,7 @@ import org.eclipse.vorto.editor.datatype.internal.validation.AccordinglyValueVal
 import org.eclipse.vorto.editor.datatype.internal.validation.ConstraintValueValidator
 import org.eclipse.vorto.editor.datatype.internal.validation.RegexValueValidator
 import org.eclipse.vorto.editor.datatype.internal.validation.ScalarValueValidator
+import org.eclipse.vorto.editor.datatype.internal.validation.NullableValueValidator
 
 class ConstraintValidatorFactory {
 	
@@ -41,6 +42,8 @@ class ConstraintValidatorFactory {
 					new ScalarValueValidator 
 				case 'DEFAULT' :
 					new AccordinglyValueValidator
+				case 'NULLABLE' :
+					new NullableValueValidator
 				default:
 					throw new IllegalArgumentException('Not supported constraint type')
 			}
