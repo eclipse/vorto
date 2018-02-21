@@ -74,9 +74,13 @@ public class DefaultModelBackupService implements IModelBackupService {
 	private void removeAll() throws Exception {
 		Set<String> rootNodes = new HashSet<>();
 		for (ModelInfo resource : this.modelRepository.search("*")) {
-			final String org = resource.getId().getNamespace().substring(0,
-					resource.getId().getNamespace().indexOf("."));
-			rootNodes.add(org);
+			int namespaceIdx = resource.getId().getNamespace().indexOf(".");
+			if (namespaceIdx != -1) {
+				final String org = resource.getId().getNamespace().substring(0,namespaceIdx);
+		        rootNodes.add(org);
+			} else {
+				rootNodes.add(resource.getId().getNamespace());
+			}
 		}
 
 		for (String rootNode : rootNodes) {
