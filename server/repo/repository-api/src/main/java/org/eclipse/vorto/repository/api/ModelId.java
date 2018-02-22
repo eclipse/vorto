@@ -42,7 +42,11 @@ public class ModelId implements IReferenceType {
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
 		final int versionIndex = prettyFormat.indexOf(":");
-		return ModelId.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
+		if (versionIndex != -1) {
+			return ModelId.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
+		} else {
+			return ModelId.fromReference(prettyFormat, "");
+		}
 	}
 					
 	public String getName() {
