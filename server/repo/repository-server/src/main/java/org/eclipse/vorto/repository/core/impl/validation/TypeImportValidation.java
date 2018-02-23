@@ -64,7 +64,7 @@ public class TypeImportValidation  implements IModelValidator {
 					model.getReferences()));
 		}
 		
-		unImportedReferences.forEach(ref -> System.out.println("-erle- Missing : " + ref));
+		unImportedReferences.forEach(ref -> System.out.println("Missing : " + ref));
 		
 		if (!unImportedReferences.isEmpty()) {
 			throw new ValidationException(errorMessage(unImportedReferences), modelResource);
@@ -167,11 +167,13 @@ public class TypeImportValidation  implements IModelValidator {
 	}
 
 	private String getReturnObjectTypeSignature(Operation operation) {
-		return NodeModelUtils.getTokenText(NodeModelUtils.getNode(operation.getReturnType()));
+		//Getting last child as composite node may contain 'multiple' keyword
+		return NodeModelUtils.getTokenText(NodeModelUtils.getNode(operation.getReturnType()).getLastChild());
 	}
 	
 	private String getRefParamTypeSignature(Param refParam) {
-		return getNamespace(NodeModelUtils.getTokenText(NodeModelUtils.getNode(refParam)));
+		//Getting last child as composite node may contain 'multiple' keyword
+		return getNamespace(NodeModelUtils.getTokenText(NodeModelUtils.getNode(refParam).getLastChild()));
 	}
 	
 	private String getPropertyTypeSignature(Property property) {
