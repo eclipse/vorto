@@ -15,4 +15,4 @@ fadeduration: "4"
 releaseinfo: "no"
 ---
 
-The IoT Tool Set lets **Device Manufacturers** to describe the devices using Information Models in a textual DSL editor. The editor provides several features e.g. auto completion, syntax highlighting, and content assistance.
+The IoT Tool Set lets **Device Manufacturers** describe devices using Information Models in a textual DSL editor. The editor provides several features e.g. auto completion, syntax highlighting, and content assistance.
