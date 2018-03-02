@@ -39,10 +39,20 @@ public class FeatureBuilder {
 		return this;
 	}
 	
+	public FeatureBuilder withStatus(Map<String,Object> statusProperties) {
+		this.feature.getProperties().put("status", statusProperties);
+		return this;
+	}
+	
 	public FeatureBuilder withConfigurationProperty(String name, Object value) {
 		Map<String,Object> statusProperties = new HashMap<>(this.feature.getConfigurationProperties());
 		statusProperties.put(name, value);
-		this.feature.getProperties().put("config", statusProperties);
+		this.feature.getProperties().put("configuration", statusProperties);
+		return this;
+	}
+	
+	public FeatureBuilder withConfiguration(Map<String,Object> configurationProperties) {
+		this.feature.getProperties().put("configuration", configurationProperties);
 		return this;
 	}
 		

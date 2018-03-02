@@ -25,7 +25,6 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class JsonMappingTest {
