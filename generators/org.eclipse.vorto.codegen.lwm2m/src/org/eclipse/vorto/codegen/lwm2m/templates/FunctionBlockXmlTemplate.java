@@ -54,10 +54,9 @@ import org.eclipse.vorto.core.api.model.functionblock.Status;
  */
 public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplate<FunctionblockModel> {
 
-   private static final String    STR_ABORT_GENERATOR                              = " - abort Generator!";
+   private static final String STR_ABORT_GENERATOR  = " - abort Generator!";
 
-   private final SortedSet<Item>  resourceIdSet                                    = new TreeSet<Item>(
-                                                                                      new ResourceIdComparator() );
+   private final SortedSet<Item> resourceIdSet  = new TreeSet<Item>(new ResourceIdComparator() );
    /**
     * Retrieves the content of the XML generation template.
     * 

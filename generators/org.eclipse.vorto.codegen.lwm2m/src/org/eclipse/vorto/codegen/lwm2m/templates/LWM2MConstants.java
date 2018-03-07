@@ -16,24 +16,24 @@ package org.eclipse.vorto.codegen.lwm2m.templates;
 
 public class LWM2MConstants {
 
-	protected static final String STEREOTYPE_OBJECT = "Object";
-	protected static final String STEREOTYPE_RESOURCE = "Resources";
+	public static final String STEREOTYPE_OBJECT = "Object";
+	public static final String STEREOTYPE_RESOURCE = "Resources";
 
-	protected static final String OBJECT_ID = "ObjectID";
-	protected static final String OBJECT_URN = "ObjectURN";
+	public static final String OBJECT_ID = "ObjectID";
+	public static final String OBJECT_URN = "ObjectURN";
 
-	protected static final String ATTRIBUTE_ID = "ID";
-	protected static final String ATTRIBUTE_OPERATIONS = "Operations";
-	protected static final String ATTRIBUTE_UNITS = "Units";
-	protected static final String ATTRIBUTE_MULTIPLE_INSTANCES = "MultipleInstances";
-	protected static final String ATTRIBUTE_MANDATORY = "Mandatory";
-	protected static final String ATTRIBUTE_RANGE_ENUMERATION = "RangeEnumeration";
-	protected static final String ATTRIBUTE_TYPE = "Type";
-	protected static final String ATTRIBUTE_DESCRIPTION2 = "Description2";
+	public static final String ATTRIBUTE_ID = "ID";
+	public static final String ATTRIBUTE_OPERATIONS = "Operations";
+	public static final String ATTRIBUTE_UNITS = "Units";
+	public static final String ATTRIBUTE_MULTIPLE_INSTANCES = "MultipleInstances";
+	public static final String ATTRIBUTE_MANDATORY = "Mandatory";
+	public static final String ATTRIBUTE_RANGE_ENUMERATION = "RangeEnumeration";
+	public static final String ATTRIBUTE_TYPE = "Type";
+	public static final String ATTRIBUTE_DESCRIPTION2 = "Description2";
 
-	protected static final String ATTR_MANDATORY_MANDATORY_VALUE = "Mandatory";
-	protected static final String ATTR_MANDATORY_OPTIONAL_VALUE = "Optional";
+	public static final String ATTR_MANDATORY_MANDATORY_VALUE = "Mandatory";
+	public static final String ATTR_MANDATORY_OPTIONAL_VALUE = "Optional";
 
-	protected static final String ATTR_MULTIPLE_INSTANCES_MULTIPLE_VALUE = "Multiple";
-	protected static final String ATTR_MULTIPLE_INSTANCES_SINGLE_VALUE = "Single";
+	public static final String ATTR_MULTIPLE_INSTANCES_MULTIPLE_VALUE = "Multiple";
+	public static final String ATTR_MULTIPLE_INSTANCES_SINGLE_VALUE = "Single";
 }
