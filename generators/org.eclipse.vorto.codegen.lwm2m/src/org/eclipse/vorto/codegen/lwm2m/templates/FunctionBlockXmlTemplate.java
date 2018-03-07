@@ -176,6 +176,9 @@ public class FunctionBlockXmlTemplate extends LWM2MConstants implements ITemplat
    private void handleOperations( final FunctionBlock functionblock, final Object lwm2mObject, final InvocationContext context) {
       final EList<Operation> operations = functionblock.getOperations();
       for( final Operation operation : operations ) {
+    	 if (!context.getMappedElement(operation, STEREOTYPE_RESOURCE).isMapped()) {
+    		continue; 
+    	 }
          final Item item = new Item();
 
          handleMappingRulesForOperations( lwm2mObject, operation, item, context );
