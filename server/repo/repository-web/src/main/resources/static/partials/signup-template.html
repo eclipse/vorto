@@ -74,11 +74,10 @@
             <input 	type="text" 
             		name="username"
             		class="form-control"            		 
-            		ng-pattern="/^[a-zA-Z0-9@\.]*$/"
             		ng-model="user.username"
             		ng-readonly="user.usernameReadonly"
             		ng-minlength="5" 
-       				ng-maxlength="30" 
+       				ng-maxlength="30"
        				ng-blur="usernameAlreadyExists(user)"
             		required>
             <span class="glyphicon glyphicon-ok form-control-feedback" ng-show="!form.username.$error.required &&
