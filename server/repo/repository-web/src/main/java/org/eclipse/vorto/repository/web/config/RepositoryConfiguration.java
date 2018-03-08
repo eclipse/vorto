@@ -24,6 +24,18 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 @Configuration
 public class RepositoryConfiguration {
 
+	@Value("${http.proxyHost:#{null}}")
+	private String proxyHost;
+	
+	@Value("${http.proxyPort:8080}")
+	private int    proxyPort;
+	
+	@Value("${http.proxyUser:#{null}}")
+	private String proxyUsername;
+	
+	@Value("${http.proxyPassword:#{null}}")
+	private String proxyPassword;
+	
 	@Value("${repo.configFile}")
 	private String repositoryConfigFile = null;
 	
@@ -34,6 +46,10 @@ public class RepositoryConfiguration {
 	
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
-		return EidpUtils.accessTokenProvider();
+		if (proxyHost != null) {
+			return EidpUtils.proxiedAccessTokenProvider(proxyHost, proxyPort, proxyUsername, proxyPassword);
+		} else {
+			return EidpUtils.accessTokenProvider();
+		}
 	}
 }
