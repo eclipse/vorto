@@ -14,13 +14,13 @@ addons:
     token:
       secure: $SONAR_TOKEN
     branches:
-      - development 
+      - development
 
 before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
 
 install: true
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -f pom.xml
+  - mvn clean install -f pom.xml
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -f server/pom.xml
 cache:
   directories:
