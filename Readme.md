@@ -12,7 +12,7 @@ Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md)
  <img src="./tutorials/images/vorto_overview.png" width="90%"/>
 
 
-# Getting started with Vorto
+# Getting started with Vorto 
 
 ## 1. Create Account and Install Vorto Toolset
 
