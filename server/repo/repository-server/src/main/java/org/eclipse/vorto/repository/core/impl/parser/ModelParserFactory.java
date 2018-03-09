@@ -36,11 +36,7 @@ public class ModelParserFactory {
 	}
 	
 	public static boolean hasParserFor(String fileName) {
-		if (fileName.endsWith(ModelType.Datatype.getExtension()) || fileName.endsWith(ModelType.Functionblock.getExtension()) 
-				|| fileName.endsWith(ModelType.InformationModel.getExtension()) || fileName.endsWith(ModelType.Mapping.getExtension())) {
-			return true;
-		} 
-		
-		return false;
+		return fileName.endsWith(ModelType.Datatype.getExtension()) || fileName.endsWith(ModelType.Functionblock.getExtension()) 
+				|| fileName.endsWith(ModelType.InformationModel.getExtension()) || fileName.endsWith(ModelType.Mapping.getExtension());
 	}
 }
