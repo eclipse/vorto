@@ -74,13 +74,14 @@ public class BulkUploadHelper {
 			while ((entry = zis.getNextEntry()) != null) {
 				if (!entry.isDirectory()) {
 					final String fileName = entry.getName();
-					try {
-						parsedModels.add(ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(copyStream(zis,entry))));
-					} catch (ValidationException grammarProblem) {
-						invalidResult.add(UploadModelResultFactory.create(grammarProblem));
+					if (ModelParserFactory.hasParserFor(fileName)) {
+						try {
+							parsedModels.add(ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(copyStream(zis,entry))));
+						} catch (ValidationException grammarProblem) {
+							invalidResult.add(UploadModelResultFactory.create(grammarProblem));
+						}
 					}
 				}
-
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
