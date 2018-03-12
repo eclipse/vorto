@@ -34,4 +34,9 @@ public class ModelParserFactory {
 			throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");
 		}
 	}
+	
+	public static boolean hasParserFor(String fileName) {
+		return fileName.endsWith(ModelType.Datatype.getExtension()) || fileName.endsWith(ModelType.Functionblock.getExtension()) 
+				|| fileName.endsWith(ModelType.InformationModel.getExtension()) || fileName.endsWith(ModelType.Mapping.getExtension());
+	}
 }

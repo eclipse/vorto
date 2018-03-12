@@ -46,6 +46,14 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		assertEquals(3, uploadResults.size());
 		verifyAllModelsAreValid(uploadResults);
 	}
+	
+	@Test
+	public void testUploadValidModelWithAlienFile() throws IOException {
+		String fileName = "sample_models/valid-models-with-alien-file.zip";
+		List<UploadModelResult> uploadResults = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
+		assertEquals(3, uploadResults.size());
+		verifyAllModelsAreValid(uploadResults);
+	}
 
 	@Test
 	public void testUploadOneMissingModels() throws IOException {
