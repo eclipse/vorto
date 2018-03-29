@@ -82,7 +82,7 @@ class PropertiesValidationTemplate implements ITemplate<FunctionBlock> {
 					«EntityValidationTemplate.calculateRequired(statusProperties)»
 				}«ENDIF»
 			},
-			"required" : [«IF configurationProperties.exists[presence !== null && presence.mandatory]»"config"«IF statusProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF statusProperties.exists[presence !== null && presence.mandatory]»"status"«IF faultProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF faultProperties.exists[presence !== null && presence.mandatory]»"fault"«ENDIF»]
+			"required" : [«IF configurationProperties.exists[presence !== null && presence.mandatory]»"configuration"«IF statusProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF statusProperties.exists[presence !== null && presence.mandatory]»"status"«IF faultProperties.exists[presence !== null && presence.mandatory]»,«ENDIF»«ENDIF»«IF faultProperties.exists[presence !== null && presence.mandatory]»"fault"«ENDIF»]
 		}
 		'''
 	}
