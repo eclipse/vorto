@@ -37,6 +37,5 @@
 		<module>org.eclipse.vorto.codegen.ble.alpwise</module>
 		<module>org.eclipse.vorto.codegen.ditto</module>
 		<module>org.eclipse.vorto.codegen.hono</module>
-		<module>org.eclipse.vorto.codegen.json</module>
   </modules>
 </project>
