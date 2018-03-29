@@ -1,40 +1,23 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1522248558182
-Build-Jdk: 1.8.0_92
-Built-By: simon
-Bundle-ClassPath: .,target/dependency/jackson-databind-2.7.5.jar,target/
- dependency/jackson-annotations-2.7.0.jar,target/dependency/jackson-core
- -2.7.5.jar
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto JSON Generator (Incubation)
 Bundle-Description: Vorto JSON Generator lets you generate JSON from an 
  information model.
 Bundle-DocURL: http://www.eclipse.org/vorto
 Bundle-License: http://www.eclipse.org/legal/epl-v10.html
-Bundle-ManifestVersion: 2
-Bundle-Name: Vorto JSON Generator (Incubation)
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: Eclipse.org/Vorto
 Bundle-SymbolicName: org.eclipse.vorto.codegen.json;singleton:=true
-Bundle-Vendor: Eclipse.org
 Bundle-Version: 0.10.0.qualifier
-Created-By: Apache Maven Bundle Plugin
-Embed-Dependency: *;scope=compile|runtime;inline=false
-Embed-Directory: target/dependency
-Embed-StripGroup: true
-Embed-Transitive: true
-Embedded-Artifacts: target/dependency/jackson-databind-2.7.5.jar;g="com.
- fasterxml.jackson.core";a="jackson-databind";v="2.7.5",target/dependenc
- y/jackson-annotations-2.7.0.jar;g="com.fasterxml.jackson.core";a="jacks
- on-annotations";v="2.7.0",target/dependency/jackson-core-2.7.5.jar;g="c
- om.fasterxml.jackson.core";a="jackson-core";v="2.7.5"
-Export-Package: org.eclipse.vorto.codegen.json;uses:="org.eclipse.vorto.
- codegen.api,org.eclipse.vorto.core.api.model.informationmodel";version=
- "0.10.0",org.eclipse.vorto.codegen.json.templates;version="0.10.0.SNAPS
- HOT";uses:="org.eclipse.vorto.codegen.api,org.eclipse.vorto.core.api.mo
- del.informationmodel"
-Import-Package: javax.xml.datatype,javax.xml.namespace,javax.xml.parsers
- ,org.apache.log4j,org.eclipse.vorto.codegen.api,org.eclipse.vorto.core.
- api.model.informationmodel,org.w3c.dom,org.w3c.dom.bootstrap,org.w3c.do
- m.ls,org.xml.sax
-Require-Bundle: org.eclipse.vorto.core,com.google.guava,org.eclipse.vort
- o.codegen,org.apache.commons.lang3
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
-Tool: Bnd-3.0.0.201509101326
+Require-Bundle: org.eclipse.vorto.core,
+ com.google.guava,
+ org.eclipse.vorto.codegen,
+ org.apache.commons.lang3,
+ org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.json
+Bundle-ClassPath: .,
+ lib/jackson-core-2.7.5.jar,
+ lib/jackson-annotations-2.7.0.jar,
+ lib/jackson-databind-2.7.5.jar
+
