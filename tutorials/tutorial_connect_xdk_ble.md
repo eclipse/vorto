@@ -338,5 +338,4 @@ Open the <a href="https://console.bosch-iot-suite.com">Bosch IoT Developer Conso
 
 ## What's next ?
 
-- [Create a web application consuming the device telemetry data](tutorial_create_webapp_dashboard.md)
-- [Build an Amazon Alexa Skillset to voice-control the device](tutorial_voicecontrol_alexa.md)
+- [Create a web application consuming the device telemetry data](tutorial-create_webapp_with_vorto.md)
