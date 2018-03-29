@@ -165,10 +165,18 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
 			}
 		}
 
-		return fbData;
+		return onlyReturnIfPopulated(fbData);
 	}
 
 	
+	private FunctionblockData onlyReturnIfPopulated(FunctionblockData fbData) {
+		if (!fbData.getConfiguration().isEmpty() || !fbData.getStatus().isEmpty()) {
+			return fbData;
+		} else {
+			return null;
+		}
+	}
+
 	private JXPathContext newContext(Object ctxObject) {
 		JXPathContext context = JXPathContext.newContext(ctxObject);
 		TypeUtils.setTypeConverter(new MyTypeConverter());
