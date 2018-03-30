@@ -17,7 +17,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.codegen.json
 Bundle-ClassPath: .,
- lib/jackson-core-2.7.5.jar,
+ lib/jackson-core-2.7.7.jar,
  lib/jackson-annotations-2.7.0.jar,
- lib/jackson-databind-2.7.5.jar
+ lib/jackson-databind-2.7.7.jar
 
