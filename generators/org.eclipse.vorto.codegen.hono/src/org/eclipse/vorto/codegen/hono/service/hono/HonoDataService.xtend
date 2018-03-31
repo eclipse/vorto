@@ -54,15 +54,17 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 		
 		private String mqttHostUrl;
 		private String honoTenant;
+		private String dittoNamespace;
 		private String authId;
 		private String deviceId;
 		private String password;
 		private Map<String, HonoMqttClient> deviceClients = new HashMap<String, HonoMqttClient>();
 		private Gson gson = new Gson();
 		
-		public HonoDataService(String mqttHostUrl, String honoTenant, String deviceId, String authId, String password) {
+		public HonoDataService(String mqttHostUrl, String honoTenant, String dittoNamespace, String deviceId, String authId, String password) {
 			this.mqttHostUrl = Objects.requireNonNull(mqttHostUrl);
 			this.honoTenant = Objects.requireNonNull(honoTenant);
+			this.dittoNamespace = Objects.requireNonNull(dittoNamespace);
 			this.deviceId = Objects.requireNonNull(deviceId);
 			this.authId = Objects.requireNonNull(authId);
 			this.password = Objects.requireNonNull(password);
@@ -79,7 +81,7 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 			headers.put("response-required", Boolean.FALSE);
 			
 			Map<String, Object> wrapper = new HashMap<String, Object>();
-			wrapper.put("topic", honoTenant + "/" + deviceId + "/things/twin/commands/modify");
+			wrapper.put("topic", dittoNamespace + "/" + deviceId + "/things/twin/commands/modify");
 			wrapper.put("path", "/features/"+featureName+"/properties/status");
 			wrapper.put("value", functionBlock);		
 			wrapper.put("headers", headers);

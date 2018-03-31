@@ -65,6 +65,9 @@ class AppTemplate implements IFileTemplate<InformationModel> {
 		
 		// Device authentication ID
 		private static final String AUTH_ID = "«context.configurationProperties.getOrDefault("hono_user","<INSERT DEVICE AUTH ID HERE>")»";
+		
+		// Ditto Namespace
+		private static final String DITTO_NAMESPACE = "«context.configurationProperties.getOrDefault("ditto_namespace","com.mycompany")»";
 	
 		// Device authentication Password
 		private static final String PASSWORD = "ENTER_DEVICE_PASSWORD";
@@ -72,7 +75,7 @@ class AppTemplate implements IFileTemplate<InformationModel> {
 		private static final long SEND_INTERVAL_IN_SECONDS = 2;
 	
 		public static void main(final String... args) {
-			HonoDataService honoDataService = new HonoDataService(MQTT_ENDPOINT, HONO_TENANT,
+			HonoDataService honoDataService = new HonoDataService(MQTT_ENDPOINT, HONO_TENANT, DITTO_NAMESPACE, 
 					DEVICE_ID, AUTH_ID,PASSWORD);
 			
 			while (true) {
