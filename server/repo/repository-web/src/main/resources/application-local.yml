@@ -43,6 +43,10 @@ webEditor:
 
 mail:
   smtp:
+    auth: false
     host: localhost
     port: 25
   from: vorto-dev@eclipse.org
+  login:
+    username: 
+    password: 
