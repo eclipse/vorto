@@ -25,13 +25,14 @@ public class BinaryMappingTest {
 
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithByteArrayConverter())
 				.buildDittoMapper();
-		String json = "{\"data\" : [0, 0, 0, -48, 7, 0]}";
+		String x = "4f00630063007500700061006e0063007900200002";
+		String json = "{\"data\" : \""+x+"\"}";
 		
 		DittoData mappedDittoOutput = mapper.map(DataInputFactory.getInstance().fromJson(json), MappingContext.empty());
 
 		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 		
-		assertEquals(20.00,buttonFeature.getStatusProperties().get("sensor_value"));
+		assertEquals(2,buttonFeature.getStatusProperties().get("sensor_value"));
 
 		System.out.println(mappedDittoOutput.toJson());
 	}

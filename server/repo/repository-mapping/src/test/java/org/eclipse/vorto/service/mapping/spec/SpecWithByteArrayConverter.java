@@ -25,7 +25,7 @@ public class SpecWithByteArrayConverter extends AbstractTestSpec {
 
 		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
 
-		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("button:convertSensorValue(conversion:byteArrayToInt(/data, 3, 0, 0, 3))"));
+		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("button:convertSensorValue(conversion:byteArrayToInt(binaryString:parseHexBinary(/data),array:length(binaryString:parseHexBinary(/data))-1,0,0,1))"));
 
 		buttonModel.setStatusProperties(
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty }));
@@ -36,7 +36,7 @@ public class SpecWithByteArrayConverter extends AbstractTestSpec {
 	@Override
 	public Optional<Functions> getCustomFunctions() {
 		JavascriptFunctions functions = new JavascriptFunctions("button");
-		functions.addFunction("convertSensorValue","function convertSensorValue(value) { return value*0.01; }");
+		functions.addFunction("convertSensorValue","function convertSensorValue(value) { return value; }");
 		return Optional.of(functions);
 	}
 

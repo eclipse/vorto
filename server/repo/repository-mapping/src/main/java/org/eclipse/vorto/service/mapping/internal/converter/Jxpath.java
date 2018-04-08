@@ -31,6 +31,7 @@ public class Jxpath {
 		converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
 		converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
 		converterLibrary.addFunctions(new ClassFunctions(EndianUtils.class, "endian"));
+		converterLibrary.addFunctions(new ClassFunctions(Arrays.class, "array"));
 	}
 	
 	public static Object eval(String exp, Object value) {

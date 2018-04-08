@@ -43,6 +43,7 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.service.mapping.internal.converter.Arrays;
 import org.eclipse.vorto.service.mapping.internal.converter.Base64;
 import org.eclipse.vorto.service.mapping.internal.converter.ConvertUtils;
 import org.eclipse.vorto.service.mapping.internal.converter.DateUtils;
@@ -84,6 +85,7 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
 		this.converterLibrary.addFunctions(new ClassFunctions(Base64.class, "base64"));
 		this.converterLibrary.addFunctions(new ClassFunctions(DatatypeConverter.class, "binaryString"));
 		this.converterLibrary.addFunctions(new ClassFunctions(EndianUtils.class, "endian"));
+		this.converterLibrary.addFunctions(new ClassFunctions(Arrays.class, "array"));
 
 		Optional<Functions> functionsFromMappings = mappingSpecification.getCustomFunctions();
 		if (functionsFromMappings.isPresent()) {
@@ -104,6 +106,7 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
         funcs.put("binaryString", DatatypeConverter.class);
         funcs.put("xpath", Jxpath.class);
         funcs.put("endian", EndianUtils.class);
+        funcs.put("array", Arrays.class);
         jexl.setFunctions(funcs);
 		return jexl;
 	}
