@@ -146,11 +146,14 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
 				if (mapped != null) {
 					fbData.withStatusProperty(statusProperty.getName(), mapped);
 				}
-			} catch (JXPathNotFoundException | JXPathInvalidAccessException ex) {
+			} catch (JXPathNotFoundException  | JXPathInvalidAccessException ex) {
+				if (ex.getCause() instanceof MappingException) {
+					throw (MappingException)ex.getCause();
+				}
 				if (statusProperty.isMandatory()) {
 					return null;
 				}
-			}
+			} 
 
 		}
 

@@ -15,20 +15,28 @@
 package org.eclipse.vorto.service.mapping.internal.converter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.script.Bindings;
 import javax.script.Invocable;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
 import org.apache.commons.jxpath.ExpressionContext;
 import org.apache.commons.jxpath.Function;
 import org.apache.commons.jxpath.JXPathException;
-import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.util.TypeUtils;
+import org.eclipse.vorto.service.mapping.MappingException;
 
+import jdk.nashorn.api.scripting.ClassFilter;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+
+@SuppressWarnings("restriction")
 public class JavascriptEvalFunction implements Function {
+	
+	private static final List<String> MALICIOUS_KEYWORDS = Arrays.asList("while","for","foreach");
 
 	private String functionName;
 
@@ -42,11 +50,26 @@ public class JavascriptEvalFunction implements Function {
 	@Override
 	@SuppressWarnings({ "rawtypes" })
 	public Object invoke(ExpressionContext context, Object[] parameters) {
-		ScriptEngineManager manager = new ScriptEngineManager();
-		ScriptEngine engine = manager.getEngineByName("JavaScript");
+		checkScriptForMaliciousContent();
+		
+		NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
+		ScriptEngine engine = factory.getScriptEngine(new ClassFilter() {
 
+			@Override
+			public boolean exposeToScripts(String s) {
+				return false;
+			}
+			
+		});
 		try {
+			final Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
+			bindings.remove("print");
+			bindings.remove("load");
+			bindings.remove("loadWithNewGlobal");
+			bindings.remove("exit");
+			bindings.remove("quit");
 			engine.eval(functionBody);
+
 		} catch (ScriptException e) {
 			throw new JXPathException("Problem evaluating " + functionName, e);
 		}
@@ -69,8 +92,17 @@ public class JavascriptEvalFunction implements Function {
 
 			return inv.invokeFunction(functionName, unwrap(args));
 		} catch (Throwable ex) {
-			throw new JXPathInvalidAccessException("Cannot invoke " + functionName, ex);
+			throw new MappingException("Cannot invoke " + functionName, ex);
 		}
+	}
+
+	private void checkScriptForMaliciousContent() {
+		for (String maliciousKeyword : MALICIOUS_KEYWORDS) {
+			if (this.functionBody.contains(maliciousKeyword)) {
+				throw new MappingException("The keyword "+maliciousKeyword + " is not allowed in javascript function.");
+			}
+ 		}
+		
 	}
 
 	private Object[] unwrap(Object[] wrappedArgs) {

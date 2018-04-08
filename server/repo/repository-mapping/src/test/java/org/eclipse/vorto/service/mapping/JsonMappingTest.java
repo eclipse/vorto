@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.ditto.DittoData;
 import org.eclipse.vorto.service.mapping.ditto.Feature;
@@ -24,6 +25,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
+import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
@@ -53,6 +55,74 @@ public class JsonMappingTest {
 
 		System.out.println(mappedDittoOutput.toJson());
 
+	}
+	
+	@Test(expected = MappingException.class)
+	public void testMappingWithMalicousScript() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+
+			@Override
+			protected String getMaliciousFunctionBody() {
+				return "return quit();";
+			}
+			
+		}).buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+	}
+	
+	@Test(expected = MappingException.class)
+	public void testMappingWithMalicousScript2() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+
+			@Override
+			protected String getMaliciousFunctionBody() {
+				return "return exit();";
+			}
+			
+		}).buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+	}
+	
+	@Test(expected = MappingException.class)
+	public void testMappingWithMalicousScript3() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+
+			@Override
+			protected String getMaliciousFunctionBody() {
+				return "while (true) { }";
+			}
+			
+		}).buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+	}
+	
+	@Test(expected = MappingException.class)
+	public void testMappingWithMalicousScript4() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+
+			@Override
+			protected String getMaliciousFunctionBody() {
+				return "for (;;) { }";
+			}
+			
+		}).buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 	}
 
 	@Test
