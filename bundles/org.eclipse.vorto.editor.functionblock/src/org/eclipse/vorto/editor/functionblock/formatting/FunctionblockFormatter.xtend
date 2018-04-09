@@ -33,7 +33,7 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_4)
 		c.setLinewrap(1).after(f.functionblockModelAccess.displaynameAssignment_6)
 		c.setLinewrap(1).after(f.functionblockModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_9)
+		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_8_1)
 		
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
