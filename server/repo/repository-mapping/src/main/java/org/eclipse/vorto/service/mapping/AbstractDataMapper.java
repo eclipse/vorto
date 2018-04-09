@@ -146,14 +146,18 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
 				if (mapped != null) {
 					fbData.withStatusProperty(statusProperty.getName(), mapped);
 				}
-			} catch (JXPathNotFoundException  | JXPathInvalidAccessException ex) {
-				if (ex.getCause() instanceof MappingException) {
-					throw (MappingException)ex.getCause();
-				}
+			} catch (JXPathNotFoundException  ex) {
 				if (statusProperty.isMandatory()) {
 					return null;
 				}
-			} 
+			} catch(JXPathInvalidAccessException ex) {
+				if (ex.getCause() instanceof JXPathNotFoundException) {
+					if (statusProperty.isMandatory()) {
+						return null;
+					}
+				}
+				throw new MappingException("A problem occured during mapping",ex);
+			}
 
 		}
 
@@ -164,10 +168,17 @@ public abstract class AbstractDataMapper<MappedData extends JsonData> implements
 				if (mapped != null) {
 					fbData.withConfigurationProperty(configProperty.getName(), mapped);
 				}
-			} catch (JXPathNotFoundException | JXPathInvalidAccessException ex) {
+			} catch (JXPathNotFoundException  ex) {
 				if (configProperty.isMandatory()) {
 					return null;
 				}
+			} catch(JXPathInvalidAccessException ex) {
+				if (ex.getCause() instanceof JXPathNotFoundException) {
+					if (configProperty.isMandatory()) {
+						return null;
+					}
+				}
+				throw new MappingException("A problem occured during mapping",ex);
 			}
 		}
 

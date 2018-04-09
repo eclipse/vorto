@@ -27,6 +27,7 @@ import javax.script.ScriptException;
 import org.apache.commons.jxpath.ExpressionContext;
 import org.apache.commons.jxpath.Function;
 import org.apache.commons.jxpath.JXPathException;
+import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.util.TypeUtils;
 import org.eclipse.vorto.service.mapping.MappingException;
 
@@ -35,8 +36,8 @@ import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
 
 @SuppressWarnings("restriction")
 public class JavascriptEvalFunction implements Function {
-	
-	private static final List<String> MALICIOUS_KEYWORDS = Arrays.asList("while","for","foreach");
+
+	private static final List<String> MALICIOUS_KEYWORDS = Arrays.asList("while", "for", "foreach");
 
 	private String functionName;
 
@@ -51,7 +52,7 @@ public class JavascriptEvalFunction implements Function {
 	@SuppressWarnings({ "rawtypes" })
 	public Object invoke(ExpressionContext context, Object[] parameters) {
 		checkScriptForMaliciousContent();
-		
+
 		NashornScriptEngineFactory factory = new NashornScriptEngineFactory();
 		ScriptEngine engine = factory.getScriptEngine(new ClassFilter() {
 
@@ -59,7 +60,7 @@ public class JavascriptEvalFunction implements Function {
 			public boolean exposeToScripts(String s) {
 				return false;
 			}
-			
+
 		});
 		try {
 			final Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
@@ -75,46 +76,46 @@ public class JavascriptEvalFunction implements Function {
 		}
 
 		Invocable inv = (Invocable) engine;
-		try {
-			Object[] args;
-			int pi = 0;
-			Class[] types = toTypes(parameters);
-			if (types.length >= 1 && ExpressionContext.class.isAssignableFrom(types[0])) {
-				pi = 1;
-			}
-			args = new Object[parameters.length + pi];
-			if (pi == 1) {
-				args[0] = context;
-			}
-			for (int i = 0; i < parameters.length; i++) {
-				args[i + pi] = TypeUtils.convert(parameters[i], types[i + pi]);
-			}
+		Object[] args;
+		int pi = 0;
+		Class[] types = toTypes(parameters);
+		if (types.length >= 1 && ExpressionContext.class.isAssignableFrom(types[0])) {
+			pi = 1;
+		}
+		args = new Object[parameters.length + pi];
+		if (pi == 1) {
+			args[0] = context;
+		}
+		for (int i = 0; i < parameters.length; i++) {
+			args[i + pi] = TypeUtils.convert(parameters[i], types[i + pi]);
+		}
 
+		try {
 			return inv.invokeFunction(functionName, unwrap(args));
-		} catch (Throwable ex) {
-			throw new MappingException("Cannot invoke " + functionName, ex);
+		} catch (NoSuchMethodException e) {
+			throw new JXPathInvalidAccessException("Cannot find function with the list of parameters", e);
+		} catch (ScriptException e) {
+			throw new JXPathInvalidAccessException("Problem executing javascript", e);
 		}
 	}
 
 	private void checkScriptForMaliciousContent() {
 		for (String maliciousKeyword : MALICIOUS_KEYWORDS) {
 			if (this.functionBody.contains(maliciousKeyword)) {
-				throw new MappingException("The keyword "+maliciousKeyword + " is not allowed in javascript function.");
+				throw new MappingException(
+						"The keyword " + maliciousKeyword + " is not allowed in javascript function.");
 			}
- 		}
-		
+		}
+
 	}
 
 	private Object[] unwrap(Object[] wrappedArgs) {
 		List<Object> unwrapped = new ArrayList<Object>();
 		for (Object o : wrappedArgs) {
-			if (o instanceof List<?>)
-			{
+			if (o instanceof List<?>) {
 				List<?> args = (List<?>) o;
 				unwrapped.add(args.get(0));
-			}
-			else
-			{
+			} else {
 				unwrapped.add(o);
 			}
 		}
@@ -123,7 +124,8 @@ public class JavascriptEvalFunction implements Function {
 
 	private Class<?>[] toTypes(Object[] parameters) {
 		List<Class<?>> result = new ArrayList<>();
-		for (@SuppressWarnings("unused") Object o : parameters) {		
+		for (@SuppressWarnings("unused")
+		Object o : parameters) {
 			result.add(Object.class);
 		}
 		return result.toArray(new Class[parameters.length]);
