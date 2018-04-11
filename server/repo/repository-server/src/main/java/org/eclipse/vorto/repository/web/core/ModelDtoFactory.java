@@ -46,6 +46,7 @@ import org.eclipse.vorto.core.api.model.mapping.InfoModelAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingRule;
+import org.eclipse.vorto.core.api.model.mapping.OperationSource;
 import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget;
 import org.eclipse.vorto.core.api.model.mapping.Source;
 import org.eclipse.vorto.core.api.model.mapping.StatusSource;
@@ -184,7 +185,7 @@ public class ModelDtoFactory {
 		}
 
 		if (model.getFunctionblock().getOperations() != null) {
-			resource.setOperations(model.getFunctionblock().getOperations().stream().map(o -> createOperation(o))
+			resource.setOperations(model.getFunctionblock().getOperations().stream().map(o -> createOperation(o,mappingModel))
 					.collect(Collectors.toList()));
 		}
 		
@@ -208,12 +209,12 @@ public class ModelDtoFactory {
 		return rules.stream().filter(r -> r.getSources().get(0) instanceof FunctionBlockAttributeSource).collect(Collectors.toList());
 	}
 
-	private static Operation createOperation(org.eclipse.vorto.core.api.model.functionblock.Operation o) {
+	private static Operation createOperation(org.eclipse.vorto.core.api.model.functionblock.Operation o,Optional<MappingModel> mappingModel) {
 		Operation operation = new Operation();
 		operation.setBreakable(o.isBreakable());
 		operation.setDescription(o.getDescription());
 		operation.setName(o.getName());
-		operation.setParams(o.getParams().stream().map(p -> createParam(p)).collect(Collectors.toList()));
+		operation.setParams(o.getParams().stream().map(p -> createParam(p,mappingModel)).collect(Collectors.toList()));
 
 		if (o.getReturnType() != null) {
 			ReturnType returnType = new ReturnType();
@@ -228,10 +229,23 @@ public class ModelDtoFactory {
 			}
 			operation.setResult(returnType);
 		}
+		
+		if (mappingModel.isPresent()) {
+			operation.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			for (MappingRule rule : getOperationRule(operation.getName(),mappingModel.get().getRules())) {
+				if (rule.getTarget() instanceof StereoTypeTarget) {
+					StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+					operation.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+				} else if (rule.getTarget() instanceof ReferenceTarget) {
+					ReferenceTarget target = (ReferenceTarget)rule.getTarget();
+					operation.setMappingReference(createModelId(target.getMappingModel()));
+				}
+			}
+		}
 		return operation;
 	}
 
-	private static Param createParam(org.eclipse.vorto.core.api.model.functionblock.Param p) {
+	private static Param createParam(org.eclipse.vorto.core.api.model.functionblock.Param p,Optional<MappingModel> mappingModel) {
 		Param param = new Param();
 		param.setDescription(p.getDescription());
 		param.setMultiple(p.isMultiplicity());
@@ -248,6 +262,19 @@ public class ModelDtoFactory {
 			}
 		} else {
 			param.setType(createModelId(((RefParam) p).getType()));
+		}
+		
+		if (mappingModel.isPresent()) {
+			param.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			for (MappingRule rule : getParamRule(((org.eclipse.vorto.core.api.model.functionblock.Operation)p.eContainer()).getName(),param.getName(),mappingModel.get().getRules())) {
+				if (rule.getTarget() instanceof StereoTypeTarget) {
+					StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+					param.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+				} else if (rule.getTarget() instanceof ReferenceTarget) {
+					ReferenceTarget target = (ReferenceTarget)rule.getTarget();
+					param.setMappingReference(createModelId(target.getMappingModel()));
+				}
+			}
 		}
 
 		return param;
@@ -314,6 +341,14 @@ public class ModelDtoFactory {
 	private static List<MappingRule> getPropertyRule(String propertyName, List<MappingRule> rules) {
 		return rules.stream().filter(r -> ( r.getSources().get(0) instanceof FunctionBlockPropertySource || r.getSources().get(0) instanceof InfoModelPropertySource ) && matchesProperty(r.getSources().get(0),propertyName)).collect(Collectors.toList());
 	}
+	
+	private static List<MappingRule> getOperationRule(String operationName, List<MappingRule> rules) {
+		return rules.stream().filter(r -> ( r.getSources().get(0) instanceof FunctionBlockPropertySource) && matchesOperation(r.getSources().get(0),operationName)).collect(Collectors.toList());
+	}
+	
+	private static List<MappingRule> getParamRule(String operationName, String paramName, List<MappingRule> rules) {
+		return rules.stream().filter(r -> ( r.getSources().get(0) instanceof OperationSource) && matchesOperation(r.getSources().get(0),operationName) && matchesParam(r.getSources().get(0), paramName)).collect(Collectors.toList());
+	}
 
 	
 	private static boolean matchesProperty(Source source, String propertyName) {
@@ -326,6 +361,20 @@ public class ModelDtoFactory {
 		} else if (source instanceof InfoModelPropertySource && ((InfoModelPropertySource)source).getProperty().getName().equals(propertyName)) {
 			return true;
 		}
+		return false;
+	}
+	
+	private static boolean matchesOperation(Source source, String operationName) {
+		if (source instanceof OperationSource && ((OperationSource)source).getOperation().getName().equals(operationName)) {
+			return true;
+		} 
+		return false;
+	}
+	
+	private static boolean matchesParam(Source source,String paramName) {
+		if (source instanceof OperationSource && ((OperationSource)source).getParam() != null && ((OperationSource)source).getParam().getName().equals(paramName)) {
+			return true;
+		} 
 		return false;
 	}
 

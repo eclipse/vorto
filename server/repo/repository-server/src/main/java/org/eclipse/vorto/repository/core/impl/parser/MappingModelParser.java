@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 
@@ -26,6 +28,8 @@ public class MappingModelParser extends AbstractModelParser {
 
 	public MappingModelParser(String fileName) {
 		super(fileName);
+		FunctionblockPackage.eINSTANCE.eClass();
+		InformationModelPackage.eINSTANCE.eClass();
 		MappingPackage.eINSTANCE.eClass();
 	}
 
