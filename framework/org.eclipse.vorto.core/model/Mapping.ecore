@@ -35,6 +35,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OperationSource" eSuperTypes="#//FunctionBlockSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="operation" eType="ecore:EClass Functionblock.ecore#//Operation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="param" eType="ecore:EClass Functionblock.ecore#//Param"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="EventSource" eSuperTypes="#//FunctionBlockSource">
     <eStructuralFeatures xsi:type="ecore:EReference" name="event" eType="ecore:EClass Functionblock.ecore#//Event"/>

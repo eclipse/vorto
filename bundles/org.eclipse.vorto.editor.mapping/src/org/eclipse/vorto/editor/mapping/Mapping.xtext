@@ -109,7 +109,7 @@ FaultSource:
 ;
 
 OperationSource:
-	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation]
+	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation] ('.' 'params' '.' + param=[functionblock::Param])?
 ;
 
 EventSource:
