@@ -15,6 +15,7 @@
 package org.eclipse.vorto.service.mapping;
 
 import org.eclipse.vorto.service.mapping.ditto.DittoData;
+import org.eclipse.vorto.service.mapping.internal.cc.CommandMapper;
 import org.eclipse.vorto.service.mapping.internal.ditto.DittoMapper;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 
@@ -27,10 +28,16 @@ public class DataMapperBuilder {
 	public IDataMapper<DittoData> buildDittoMapper() {
 		return new DittoMapper(specification);
 	}
+	
+	public CommandMapper buildCommandMapper() {
+		return new CommandMapper(specification);
+	}
 
 	public DataMapperBuilder withSpecification(IMappingSpecification specification) {
 		this.specification = specification;
 		return this;
 	}
+	
+	
 	
 }

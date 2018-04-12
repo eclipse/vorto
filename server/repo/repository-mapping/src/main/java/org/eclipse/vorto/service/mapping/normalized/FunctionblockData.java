@@ -10,7 +10,6 @@ public class FunctionblockData {
 	private Map<String, Object> status = new HashMap<String, Object>();
 	private Map<String,Object> configuration = new HashMap<String, Object>();
 	private Map<String,Object> fault = new HashMap<String, Object>();
-	
 		
 	public FunctionblockData(String id) {
 		this.id = id;
