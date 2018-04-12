@@ -64,6 +64,6 @@ class FunctionblockRuntimeModule extends AbstractFunctionblockRuntimeModule {
 	}
 
 	override bindIFormatter() {
-		FunctionblockFormatter
+		return FunctionblockFormatter
 	}
 }
