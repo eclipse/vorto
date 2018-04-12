@@ -82,5 +82,9 @@ class DatatypeFormatter extends AbstractDeclarativeFormatter {
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_3_0)	
 		
 		c.setNoSpace().before(f.enumAccess.commaKeyword_11_1_0)
+		
+		//Property description
+		c.setNoLinewrap().before(f.propertyAccess.descriptionAssignment_7)
+		c.setLinewrap(2).after(f.propertyAccess.descriptionAssignment_7)
 	}
 }

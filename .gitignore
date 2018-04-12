@@ -16,3 +16,6 @@ generated-sources
 *.orig
 
 devtool-project-repository/
+
+.idea
+*.iml
