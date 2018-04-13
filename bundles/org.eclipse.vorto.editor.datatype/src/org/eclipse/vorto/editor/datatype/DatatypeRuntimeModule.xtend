@@ -41,6 +41,6 @@ class DatatypeRuntimeModule extends AbstractDatatypeRuntimeModule {
 	}
 	
 	override bindIFormatter() {
-		DatatypeFormatter
+		return DatatypeFormatter
 	}
 }
