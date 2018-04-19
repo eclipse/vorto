@@ -65,6 +65,16 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
 } ]);
 
 repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+    
+    $scope.removeImages = function() {
+    	$http.delete('./rest/admin/content/images')
+        .success(function(result){
+            $location.path('/');
+        }).error(function(data, status, headers, config) {
+            $location.path('/');
+        });
+    };
+    
     $scope.restore = function () {
         $scope.restoreResult = {};
         $scope.resultMessage = "";

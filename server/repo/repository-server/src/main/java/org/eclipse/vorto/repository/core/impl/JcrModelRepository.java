@@ -391,7 +391,6 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	@Override
 	public void addModelImage(ModelId modelId, byte[] imageContent) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -410,6 +409,23 @@ public class JcrModelRepository implements IModelRepository {
 			session.save();
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Problem when trying to add image to model", e);
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Something severe went wrong when accessing the repository", e);
+		}
+	}
+	
+	@Override
+	public void removeModelImage(ModelId modelId) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+			if (modelFolderNode.hasNode("img.png")) {
+				Node imageNode = (Node) modelFolderNode.getNode("img.png");
+				imageNode.remove();
+				session.save();
+			}
+		} catch (PathNotFoundException e) {
+			throw new ModelNotFoundException("Problem when trying to remove image to model", e);
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something severe went wrong when accessing the repository", e);
 		}

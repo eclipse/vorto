@@ -36,19 +36,6 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testBackupFilesWithImage() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
-		this.modelRepository.addModelImage(new ModelId("HueLightStrips","com.mycompany","1.0.0"), IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
-		byte[] backedUpContent = repositoryManager.backup();
-		assertNotNull(backedUpContent);
-		assertTrue(new String(backedUpContent).contains(".png"));
-	}
-
-	
-	@Test
 	public void testRestoreBackup1() throws Exception {
 		this.repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		assertEquals(4,this.modelRepository.search("*").size());

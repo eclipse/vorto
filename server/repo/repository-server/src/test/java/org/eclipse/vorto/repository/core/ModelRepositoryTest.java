@@ -235,6 +235,21 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
 		assertEquals(true, this.modelRepository.getById(modelId).isHasImage());
 	}
+	
+	@Test
+	public void testRemoveModelImage() throws Exception {
+		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
+		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("HueLightStrips.infomodel");
+		this.modelRepository.addModelImage(modelId, modelContent);
+		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
+		
+		this.modelRepository.removeModelImage(modelId);
+		assertFalse(this.modelRepository.getById(modelId).isHasImage());
+	}
 
 	@Test
 	public void testGetModelImage() throws Exception {

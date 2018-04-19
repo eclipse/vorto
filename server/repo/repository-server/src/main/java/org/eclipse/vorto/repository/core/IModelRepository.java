@@ -15,7 +15,6 @@
 package org.eclipse.vorto.repository.core;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -76,11 +75,10 @@ public interface IModelRepository {
 	ModelInfo checkin(String handleId, String callerId);
 		
 	/**
-	 * Adds a model image for the given model id
+	 * Removes a model image for the given model id
 	 * @param modelId
-	 * @param image
 	 */
-	void addModelImage(ModelId modelId, byte[] image);
+	void removeModelImage(ModelId modelId);
 	
 	/**
 	 * 
