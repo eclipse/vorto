@@ -60,15 +60,6 @@ func (this *HelpCommand) Execute() error {
 
 	fmt.Println()
 
-	fmt.Println("vorto [share] [value] -optional flag parameters ----------------------------------------------------------------------------------")
-	fmt.Println()
-	fmt.Println("  -username		(Default: username in config.yml)")
-	fmt.Println("  -password		(Default: username in config.yml)")
-	fmt.Println()
-	fmt.Println("  -Example: vorto share D:\\Workspace\\Capacity\\src\\models\\Capacity.type -username xxxxx -password xxxxx")
-
-	fmt.Println()
-	fmt.Println()
 
 	return nil
 }
