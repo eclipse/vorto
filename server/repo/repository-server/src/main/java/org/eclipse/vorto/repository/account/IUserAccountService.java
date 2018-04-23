@@ -23,7 +23,7 @@ public interface IUserAccountService {
 	 * creates a new account in the Vorto Repository
 	 * @param account
 	 */
-	void create(UserAccount account);
+	void create(String username);
 	
 	/**
 	 * @post Information Models that had been created by the user are made anonymous

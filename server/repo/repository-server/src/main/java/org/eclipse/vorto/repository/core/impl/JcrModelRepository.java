@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -43,7 +42,6 @@ import javax.jcr.query.RowIterator;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
@@ -62,8 +60,6 @@ import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.notification.INotificationService;
-import org.eclipse.vorto.repository.notification.message.CheckinMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -85,9 +81,6 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
-
-	@Autowired
-	private INotificationService notificationService;
 
 	@Autowired
 	private ITemporaryStorage uploadStorage;
@@ -275,23 +268,12 @@ public class JcrModelRepository implements IModelRepository {
 			session.save();
 			logger.info("Checkin successful");
 			this.uploadStorage.remove(handleId);
-			// Email Notification
-			notifyWatchers(resource, author);
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + resource.getId(), e);
 		}
 
 		return resource;
-	}
-
-	private void notifyWatchers(ModelInfo resource, String author) {
-		resource.setAuthor(author);
-		for (User recipient : userRepository.findAll()) {
-			if (recipient.getHasWatchOnRepository()) {
-				notificationService.sendNotification(new CheckinMessage(recipient, resource));
-			}
-		}
 	}
 
 	private Node createNodeForModelId(ModelId id) throws RepositoryException {
@@ -502,15 +484,7 @@ public class JcrModelRepository implements IModelRepository {
 	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-
-	public INotificationService getNotificationService() {
-		return notificationService;
-	}
-
-	public void setNotificationService(INotificationService notificationService) {
-		this.notificationService = notificationService;
-	}
-
+	
 	public ITemporaryStorage getUploadStorage() {
 		return uploadStorage;
 	}

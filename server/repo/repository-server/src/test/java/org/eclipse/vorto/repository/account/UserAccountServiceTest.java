@@ -16,7 +16,6 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 	@Before
 	public void setUp() {
 		accountService = new DefaultUserAccountService();
-		accountService.setNotificationService(notificationService);
 		accountService.setModelRepository(modelRepository);
 		accountService.setUserRepository(userRepository);
 	}

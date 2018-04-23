@@ -10,7 +10,6 @@ import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
-import org.eclipse.vorto.repository.notification.INotificationService;
 import org.junit.Before;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,10 +22,10 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 
 	@InjectMocks
 	protected JcrModelRepository modelRepository;
+	
 	@InjectMocks
 	protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
-	@Mock
-	protected INotificationService notificationService;
+	
 	@Mock
 	protected IUserRepository userRepository;
 	

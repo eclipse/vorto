@@ -15,7 +15,6 @@
 package org.eclipse.vorto.repository.web.listeners;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -61,26 +60,14 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 	
 	protected String determineTargetUrl(Authentication authentication) {
 		OAuth2Authentication auth = (OAuth2Authentication)authentication;
-		@SuppressWarnings("unchecked")
-		Map<String,Object> details = (Map<String,Object>)auth.getUserAuthentication().getDetails();
-		final String username =  getUsername(details);
-		final String email = (String)details.get("email");
-        boolean isRegistered = accountService.exists(authentication.getName());
+		boolean isRegistered = accountService.exists(authentication.getName());
         
         if (!isRegistered) {
-            return "/#/signup?email="+email+"&username="+username;
+            return "/#/signup";
         } else {
             return "/#/";
         }
     }
-
-	private String getUsername(Map<String, Object> details) {
-		if (details.containsKey("sub")) {
-			return (String)details.get("sub");
-		} else {
-			return (String)details.get("login");
-		}
-	}
 
 	public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
 		this.redirectStrategy = redirectStrategy;

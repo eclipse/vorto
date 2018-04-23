@@ -19,9 +19,6 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/api", {
         templateUrl : "partials/rest-api-template.html",
         controller : "SwaggerController"
-    }).when("/settings", {
-        templateUrl : "partials/settings-template.html",
-        controller : "SettingsController"
     }).when("/login", {
         templateUrl : "partials/login-template.html",
         controller : "AuthenticateController"
@@ -45,10 +42,6 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         if ($location.path() === "/upload" && $rootScope.authenticated === false) {
             $location.path("/login");
         }
-
-        if ($location.path() === "/settings" && $rootScope.authenticated === false) {
-            $location.path("/login");
-        }
     });
 
     $rootScope.user = [];
@@ -60,7 +53,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 $rootScope.authenticated = true;
                 $rootScope.authority = data.role;
                 if (data.isRegistered === "false") {
-                    $location.path("/signup").search("email", data.email).search("username", data.name);
+                    $location.path("/signup");
                 }
             }
         }).error(function(data, status, headers, config) {

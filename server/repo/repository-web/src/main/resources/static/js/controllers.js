@@ -1,6 +1,7 @@
 var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
-repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', function ($scope,$rootScope,$http,$location) {
+repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', 
+	function ($scope,$rootScope,$http,$location) {
 
     $scope.models = [];
     $scope.modelType = 'all';
@@ -64,7 +65,8 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
     };
 } ]);
 
-repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http','$location', 
+	function ($scope, $rootScope, $http, $location) {
     
     $scope.removeImages = function() {
     	$http.delete('./rest/admin/content/images')
@@ -96,9 +98,11 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
             $rootScope.error = "Choose backup to restore and click Restore.";
         }
     };
+    
 } ]);
 
-repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', function ($scope, $rootScope, $http, $location) {
+repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', 
+	function ($scope, $rootScope, $http, $location) {
 
     $scope.uploadModel = function () {
         $scope.uploadResult = {};
@@ -268,7 +272,9 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 
 }]);
 
-repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal','$timeout','$window',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal,$timeout,$window) {
+repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal','$timeout','$window',
+	function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal,$timeout,$window) {
+	
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
     $scope.chosenFile = false;
@@ -455,7 +461,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 }]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', function ($scope,$http,generator,model,$uibModalInstance) {
+repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', 
+	function ($scope,$http,generator,model,$uibModalInstance) {
 
 	$scope.model = model;
 	$scope.generator = generator;
@@ -514,7 +521,8 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
     };
 }]);
 
-repositoryControllers.controller('GeneratorController', [ '$scope','$http', function ($scope,$http) {
+repositoryControllers.controller('GeneratorController', [ '$scope','$http', 
+	function ($scope,$http) {
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
@@ -544,202 +552,41 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http', func
 
 } ]);
 
-repositoryControllers.controller('AuthenticateController', 
-    ['$scope', '$rootScope', '$location', '$http',
+repositoryControllers.controller('AuthenticateController',['$scope', '$rootScope', '$location', '$http',
      function($scope, $rootScope, $location, $http) {
+    	
+}]);
 
-        var authenticate = function(credentials, callback) {
-
-            var headers = credentials ? {authorization : "Basic " + btoa(credentials.username + ":" + credentials.password) } : {};
-
-            $http.get('user', {headers : headers}).success(function(data) {
-                if (data.name) {
-                    $rootScope.authenticated = true;
-                    $rootScope.getUser();
-                    $rootScope.auth = btoa(credentials.username + ":" + credentials.password);
-                } else {
-                    $rootScope.authenticated = false;
-                }
-                callback && callback();
-            }).error(function(data) {
-                $rootScope.authenticated = false;
-                callback && callback();
-            });
-        }
-
-        authenticate();
-        $scope.credentials = {};
-        $scope.login = function() {
-            authenticate($scope.credentials, function() {
-                if ($rootScope.authenticated) {
-                    $location.path("/");
-                    $scope.error = false;
-                } else {
-                    $location.path("/login");
-                    $scope.error = true;
-                }
-            });
-        };
-
-    }]);
-
-/*
- * TODO -
- */
 repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', 
-                                                       function ($location, $rootScope, $scope, $http, $routeParams) {
+	function ($location, $rootScope, $scope, $http, $routeParams) {
 
-    $scope.user = {}; 
-    if ($routeParams.username) {
-        $scope.user.email = $routeParams.email;
-        $scope.user.emailCon = $routeParams.email;
-        $scope.user.username = $routeParams.username;
-        $scope.user.usernameReadonly = true;
-    } else {
-        $scope.user.usernameReadonly = false;
-    }
-
-    $scope.emailAddressExists = false;
-    $scope.usernameExists = false;
-
-    /*
-     * checking uniqueness of username and email
-     */
-    $scope.checkEmailAlreadyExists = function(user){
-
-        $http.post('./rest/users/unique/email', user.email , {
-            headers: {'Content-Type': "application/json"}
-        }).success(
-            function(data, status, headers, config) {
-                $scope.emailAddressExists = data;
-            })
-
-            .error(function(data, status, headers, config) {
-            });
-    }
-
-    $scope.usernameAlreadyExists = function(user){
-
-        $http.post('./rest/users/unique/username', user.username , {
-            headers: {'Content-Type': "application/json"}
-        }).success(
-            function(data, status, headers, config) {
-                $scope.usernameExists = data;
-            }).error(function(data, status, headers, config) {
-            });
-    }
-
-    /*
-     * create new user
-     */
-    $scope.register = function(user) {
-        var userData = {
-            "firstName":user.firstName,
-            "lastName":user.lastName,
-            "email":user.email,
-            "username":user.username,
-            "password":user.password
-        };
-
-        $http.post('./rest/users', userData, {
+	$scope.acceptTerms = false;
+	
+	var isAcceptingTermsAndCondition = false;
+	
+    $scope.acceptTermsAndConditions = function() {
+    	isAcceptingTermsAndCondition = true;
+    	
+        $http.post('./rest/user/acceptTermsAndCondition', {
             headers: {'Content-Type': "application/json"}
         })
         .success( function(data, status, headers, config) {
-            $rootScope.getUser();
+        	isAcceptingTermsAndCondition = false;
+        	$rootScope.getUser();
             $location.path('/');
         }).error(function(data, status, headers, config) {
-
+        	isAcceptingTermsAndCondition = false;
         });
     }
 }]);
 
-/*
- * TODO -
- */
-repositoryControllers.controller('SettingsController', [ '$scope','$http','$rootScope', '$location','$uibModal',function ($scope,$http,$rootScope,$location,$uibModal) {
-
-    var currentEmailAddress = "";
-
-    $http.get('./rest/users/'+$rootScope.user).success(
-        function(data, status, headers, config) {
-
-            if(data === ""){
-                $scope.userExists = false;
-            } else {
-                $scope.user = data;
-
-                currentEmailAddress = data.email;
-                currentUsername = data.username;
-
-                $scope.userExists = true;
-            }
-
-        }).error(function(data, status, headers, config) {
-        });
-
-    $scope.updateProfil = function(user){
-
-        $scope.put = null;
-
-        $http.put('./rest/users/'+$rootScope.user, user)
-        .then(function(response) {
-            $scope.user = response.data;
-            if (response.status === 200){
-                $scope.successMessage = "Settings have been updated successfully.";
-            } else if (response.status !== 200){
-                $scope.error = "Error updating user settings";
-            }
-            $scope.put=true;
-        });
-    }
-
-    $scope.checkEmailAlreadyExists = function(user){
-
-        if (currentEmailAddress === user.email) {
-            $scope.emailAddressExists = false;
-        } else {
-            $http.post('./rest/users/unique/email', user.email)
-                .success(function(data, status, headers, config) {
-                    $scope.emailAddressExists = data;
-                })
-                .error(function(data, status, headers, config) {
-                });
-        }
-    }
-    
-    $scope.openRemoveAccount = function() {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: "RemoveAccountModalController",
-        templateUrl: "deleteAccount.html",
-        size: "medium",
-      });
-    };
-
-}]);
-
-repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope','$rootScope','$http','$uibModalInstance', function ($location,$scope,$rootScope, $http,$uibModalInstance) {
-
-	 $scope.deleteAccount = function() {
-    	$http.delete('./rest/users/'+$rootScope.user)
-        .then(function(response) {
-            $scope.user = response.data;
-            if (response.status === 200){
-            	$rootScope.logout();
-            	$uibModalInstance.dismiss("cancel");
-            }
-        });
-    };
-
-    $scope.cancel = function() {
-    	$uibModalInstance.dismiss("cancel");
-    };
-}]);
-
-repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$http', function ($location,$scope,$http) {
+repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$http', 
+	function ($location,$scope,$http) {
+	
     $scope.isLoading = true;
     $scope.url = $scope.swaggerUrl = 'v2/api-docs';
     $scope.defaultErrorHandler = function(data, status) {
         alert('Error Loading Swagger API!');
     };
+    
 }]);
