@@ -91,10 +91,8 @@ public class MappingSpecificationBuilder {
 							functions.addFunction(functionName,
 									functionsStereotype.getAttributes().get(functionName));
 						}
-						this.library.addFunctions(functions);
 					}
-
-					specification.getFbs().put(fbProperty.getName(), fbm);
+					this.library.addFunctions(functions);
 				}
 
 				specification.getFbs().put(fbProperty.getName(), fbm);
