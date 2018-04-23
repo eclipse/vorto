@@ -1529,3 +1529,17 @@ legend.results-border {
 .box.box-primary {
     border-top-color: #008ecf;
 }
+
+footer {
+    padding: 12px 10px 25px;
+    background-color: #3a5a82;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: 100% 15px;
+    border-top: 1px solid #dadada;
+    color: #fff;
+}
+
+footer ul.quicklinks a {
+    color: #fff;
+}
