@@ -374,8 +374,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     }
 
     /*
-     * Start - Handling Comments
-     */
+	 * Start - Handling Comments
+	 */
     $scope.comments = null;
     $authority		= $rootScope.authority;
 
@@ -439,8 +439,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     }
 
     /*
-     * Stop - Handling Comments
-     */
+	 * Stop - Handling Comments
+	 */
 
 	$scope.openGeneratorConfig = function(generator) {
       var modalInstance = $uibModal.open({
@@ -555,6 +555,39 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
 repositoryControllers.controller('AuthenticateController',['$scope', '$rootScope', '$location', '$http',
      function($scope, $rootScope, $location, $http) {
     	
+}]);
+
+repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', 
+	function ($location, $rootScope, $scope, $http, $uibModal, ) {
+
+	$scope.openRemoveAccount = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: "RemoveAccountModalController",
+        templateUrl: "deleteAccount.html",
+        size: "medium",
+      });
+    };
+    
+}]);
+
+repositoryControllers.controller('RemoveAccountModalController', [ '$location', '$scope', '$rootScope', '$http', '$uibModalInstance', 
+	function ($location, $scope, $rootScope, $http, $uibModalInstance) {
+
+	$scope.deleteAccount = function() {
+	   	$http.delete('./rest/users/'+$rootScope.user)
+	       .then(function(response) {
+	           $scope.user = response.data;
+	           if (response.status === 200){
+	        	   $rootScope.logout();
+	        	   $uibModalInstance.dismiss("cancel");
+	           }
+	       });
+	};
+
+	$scope.cancel = function() {
+		$uibModalInstance.dismiss("cancel");
+	};
 }]);
 
 repositoryControllers.controller('SignUpController', [ '$location', '$rootScope', '$scope', '$http', '$routeParams', 

@@ -25,6 +25,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/signup", {
         templateUrl : "partials/signup-template.html",
         controller : "SignUpController"
+    }).when("/settings", {
+        templateUrl : "partials/settings-template.html",
+        controller : "SettingsController"
     }).when("/manage", {
         templateUrl : "partials/admin-template.html",
         controller : "AdminController"
