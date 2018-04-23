@@ -49,7 +49,6 @@ public class MappingTest extends AbstractIntegrationTest {
 
 		User user = new User();
 		user.setUsername("alex");
-		user.setHasWatchOnRepository(true);
 
 		Collection<User> users = new ArrayList<User>();
 		users.add(user);

@@ -16,10 +16,7 @@ package org.eclipse.vorto.repository;
 
 import java.io.IOException;
 
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.auth.AuthScope;
@@ -33,12 +30,10 @@ import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
 import org.eclipse.vorto.core.api.repository.Attachment;
 import org.eclipse.vorto.core.api.repository.AuthenticationException;
-import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.ConfigurationException;
 import org.eclipse.vorto.core.api.repository.RepositoryException;
 import org.osgi.framework.BundleContext;
@@ -94,40 +89,7 @@ public class RestClient {
 			}
 		});
 	}
-
-	public <Result> Result executePost(String query, HttpEntity content,
-			final Function<String, Result> responseConverter) throws ClientProtocolException, IOException {
-		ProxyConfiguration proxyProvider = getProxyConfiguration();
-		
-		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
-
-		HttpUriRequest request = RequestBuilder.post().setConfig(proxyProvider.requestConfig).setUri(createQuery(query))
-				.addHeader(createSecurityHeader()).setEntity(content).build();
-		
-		return client.execute(request, new DefaultResponseHandler<Result>() {
-			
-			@Override
-			public Result handleSuccess(HttpResponse response) throws ClientProtocolException, IOException {
-				return responseConverter.apply(IOUtils.toString(response.getEntity().getContent()));
-			}
-
-			@Override
-			protected Result handleFailure(HttpResponse response) throws ClientProtocolException, IOException {
-				throw new CheckInModelException("Error in uploading file to remote repository");
-			}
-		});
-	}
-
-	public void executePut(String query) throws ClientProtocolException, IOException {
-		ProxyConfiguration proxyProvider = getProxyConfiguration();
-		
-		CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(proxyProvider.credentialsProvider).build();
-
-		HttpUriRequest request = RequestBuilder.put().setConfig(proxyProvider.requestConfig).setUri(createQuery(query))
-				.addHeader(createSecurityHeader()).build();
-		client.execute(request);
-	}
-
+	
 	private String createQuery(String queryFragment) {
 		StringBuilder connectionUrl = new StringBuilder();
 		connectionUrl.append(connectionInfo.getUrl()).append(RESOURCE_URL);
@@ -166,22 +128,6 @@ public class RestClient {
 		ServiceReference serviceReference = bc.getServiceReference(IProxyService.class.getName());
 		IProxyService service = (IProxyService) bc.getService(serviceReference);
 		return service;
-	}
-
-	/**
-	 * TODO: Currently the repo only supports form based authentication. That
-	 * way a REST controller authenticate would need to be invoked and session
-	 * needs to be passed along.
-	 * 
-	 * @return
-	 */
-	private Header createSecurityHeader() {
-		return new BasicHeader("Authorization", "Basic " + createAuth());
-	}
-
-	private String createAuth() {
-		return new String(Base64.encodeBase64((connectionInfo.getUserName() + ":" + connectionInfo.getPassword())
-				.getBytes()));
 	}
 	
 	private abstract class DefaultResponseHandler<T> implements ResponseHandler<T> {

@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository.preferences;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.vorto.repository.Activator;
@@ -33,15 +32,6 @@ public class RemoteRepositoryPreferencePage
 	
 	public void createFieldEditors() {
 		addField(new StringFieldEditor(ConnectionInfoPreferences.P_REMOTE_REPO_URL, "&URL:", getFieldEditorParent()));
-		addField(new StringFieldEditor(ConnectionInfoPreferences.P_USER_REPO, "&User:", getFieldEditorParent()));
-		addField(new StringFieldEditor(ConnectionInfoPreferences.P_PASS_REPO, "&Password", getFieldEditorParent()) {
-
-			@Override
-		    protected void doFillIntoGrid(Composite parent, int numColumns) {
-		        super.doFillIntoGrid(parent, numColumns);
-		        getTextControl().setEchoChar('*');
-		    }
-		});
 	}
 
 	public void init(IWorkbench workbench) {

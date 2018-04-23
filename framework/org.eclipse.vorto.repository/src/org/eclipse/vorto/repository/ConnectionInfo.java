@@ -26,11 +26,11 @@ public interface ConnectionInfo {
 	 * username to access the repository
 	 * @return
 	 */
-	String getUserName();
+	//String getUserName();
 	
 	/**
 	 * password to access the repository
 	 * @return
 	 */
-	String getPassword();
+	//String getPassword();
 }

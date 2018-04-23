@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
 @Configuration
@@ -36,25 +35,20 @@ public class RepositoryConfigurationLocal extends RepositoryConfiguration {
 	@Autowired
 	private IUserRepository userRepository;
 	
-	@Autowired
-	private PasswordEncoder encoder;
-	
 	@PostConstruct
 	public void setUpTestUser() {
-		userRepository.save(newUser("admin", "admin", false, "alexander.edelmann@bosch-si.com", Role.ADMIN));
-		userRepository.save(newUser("testuser", "testuser", false, "erleczars.mantos@bosch-si.com", Role.USER));
-		userRepository.save(newUser("testuser2", "testuser2", false, "testuser2@my.com", Role.USER));
+		userRepository.save(newUser("admin", Role.ADMIN));
+		userRepository.save(newUser("testuser", Role.USER));
+		userRepository.save(newUser("testuser2", Role.USER));
 	}
 	
-	private User newUser(String username, String password, boolean hasWatchOnRepo, String email, Role role) {
+	private User newUser(String username, Role role) {
 		User user = new User();
 		
 		user.setUsername(username);
-		user.setPassword(encoder.encode(password));
-		user.setHasWatchOnRepository(hasWatchOnRepo);
-		user.setEmail(email);
-		user.setRoles(role);
+		user.setRole(role);
 		user.setDateCreated(new Timestamp(System.currentTimeMillis()));
+		user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		
 		return user;

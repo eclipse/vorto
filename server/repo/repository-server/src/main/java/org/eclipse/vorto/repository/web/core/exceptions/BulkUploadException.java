@@ -12,18 +12,14 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification;
+package org.eclipse.vorto.repository.web.core.exceptions;
 
-import org.eclipse.vorto.repository.account.impl.User;
+public class BulkUploadException extends RuntimeException {
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public interface IMessage {
+	private static final long serialVersionUID = -5865600232611276950L;
 
-	User getRecipient();
-	
-	String getSubject();
-	
-	String getContent();
+	public BulkUploadException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

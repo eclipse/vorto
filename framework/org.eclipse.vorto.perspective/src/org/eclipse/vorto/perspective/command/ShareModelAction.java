@@ -15,24 +15,15 @@
 package org.eclipse.vorto.perspective.command;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
-import org.eclipse.vorto.core.api.repository.IModelRepository;
-import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
-import org.eclipse.vorto.core.api.repository.UploadResult;
-import org.eclipse.vorto.core.ui.MessageDisplayFactory;
-import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
+import org.eclipse.swt.SWT;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.util.ImageUtil;
-import org.eclipse.vorto.perspective.view.ModelUploadDialog;
-
-import com.google.common.io.ByteStreams;
 
 public abstract class ShareModelAction extends Action {
 
-	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
-	
 	public ShareModelAction() {
 		super("Share",ImageDescriptor.createFromImage(ImageUtil.getImage("share.gif")));
 	}
@@ -53,21 +44,8 @@ public abstract class ShareModelAction extends Action {
 	
 	@Override
 	public void run() {
-		IModelElement modelElement = getSelectedElement();
-		try {
-			UploadResult uploadResult = modelRepo.upload(modelElement.getModelFile().getName(),
-					ByteStreams.toByteArray(modelElement.getModelFile().getContents()));
-			ModelUploadDialog uploadDialog = new ModelUploadDialog(getViewer().getControl().getShell(), uploadResult);
-			uploadDialog.create();
-			int result = uploadDialog.open();
-			if (uploadResult.statusOk() && result == Window.OK) {
-				modelRepo.commit(uploadResult.getHandleId());
-				MessageDisplayFactory.getMessageDisplay().displaySuccess(
-						"Model " + modelElement.getModelFile().getName() + " saved to repository.");
-			}
-		} catch (Exception e) {
-			ExceptionHandlerFactory.getHandler().handle(e);
-		}
+		MessageDialog.open(MessageDialog.INFORMATION, getViewer().getControl().getShell(),
+				"Share Model", "To upload your model, please go to http://vorto.eclipse.org", SWT.NONE);
 	}
 	
 	protected abstract IModelElement getSelectedElement();

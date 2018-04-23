@@ -112,11 +112,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 		User user1 = new User();
 		user1.setUsername("alex");
-		user1.setHasWatchOnRepository(true);
 
 		User user2 = new User();
 		user2.setUsername("andi");
-		user2.setHasWatchOnRepository(false);
 
 		Collection<User> recipients = new ArrayList<User>();
 		recipients.add(user1);

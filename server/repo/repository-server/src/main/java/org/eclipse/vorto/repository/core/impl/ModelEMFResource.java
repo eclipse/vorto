@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.core.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class ModelEMFResource extends ModelInfo {
 		return references;
 	}
 	
-	public byte[] toXMI() throws Exception {
+	public byte[] toXMI() throws IOException {
 		Resource resource = model.eResource().getResourceSet().createResource(URI.createURI(model.getName()+".xmi"));
 		resource.getContents().add(model);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -85,7 +86,7 @@ public class ModelEMFResource extends ModelInfo {
 		return baos.toByteArray();
 	}
 	
-	public byte[] toDSL() throws Exception {
+	public byte[] toDSL() throws IOException {
 		Resource resource = model.eResource().getResourceSet().createResource(URI.createURI(model.getName()+this.type.getExtension()));
 		resource.getContents().add(model);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
