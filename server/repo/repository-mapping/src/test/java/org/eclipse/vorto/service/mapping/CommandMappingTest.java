@@ -1,7 +1,5 @@
 package org.eclipse.vorto.service.mapping;
 
-import org.eclipse.vorto.repository.api.IModelRepository;
-import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
 import org.eclipse.vorto.service.mapping.json.JsonData;
 import org.eclipse.vorto.service.mapping.normalized.Command;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
