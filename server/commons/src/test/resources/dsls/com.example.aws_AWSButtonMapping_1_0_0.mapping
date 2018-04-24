@@ -1,0 +1,13 @@
+namespace com.example.aws
+version 1.0.0
+displayname "AWSButtonMapping"
+description "Mapping model for AWSButtonMapping"
+using com.example.AWSIoTButton;1.0.0
+using com.example.aws.Button1Mapping;1.0.0
+using com.example.aws.Button2Mapping;1.0.0
+
+infomodelmapping AWSButtonMapping {
+	targetplatform awsbutton
+	from AWSIoTButton.functionblocks.button1 to reference Button1Mapping
+	from AWSIoTButton.functionblocks.button2 to reference Button2Mapping
+}

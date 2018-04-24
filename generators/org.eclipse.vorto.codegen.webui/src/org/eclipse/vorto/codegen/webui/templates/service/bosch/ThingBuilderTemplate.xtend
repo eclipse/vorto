@@ -23,7 +23,6 @@ class ThingBuilderTemplate implements IFileTemplate<InformationModel> {
 		
 		import com.example.iot.«element.name.toLowerCase».service.bosch.internal.model.FeatureImpl;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.internal.model.ThingImpl;
-		import com.example.iot.«element.name.toLowerCase».service.bosch.model.AclEntry;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Feature;
 		import com.example.iot.«element.name.toLowerCase».service.bosch.model.Thing;
 		import com.google.gson.Gson;
@@ -77,11 +76,6 @@ class ThingBuilderTemplate implements IFileTemplate<InformationModel> {
 		
 			public ThingBuilder withFeature(Feature feature) {
 				this.thing.getFeatures().put(feature.getId(), ((FeatureImpl)feature).getContent());
-				return this;
-			}
-		
-			public ThingBuilder withPermission(String authorizationSubject, AclEntry acl) {
-				this.thing.getAcl().put(authorizationSubject, acl);
 				return this;
 			}
 			

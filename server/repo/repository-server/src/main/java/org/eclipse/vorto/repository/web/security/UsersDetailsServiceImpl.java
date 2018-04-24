@@ -16,8 +16,8 @@ package org.eclipse.vorto.repository.web.security;
 
 import javax.transaction.Transactional;
 
-import org.eclipse.vorto.repository.model.User;
-import org.eclipse.vorto.repository.service.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

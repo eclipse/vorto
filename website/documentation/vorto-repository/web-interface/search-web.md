@@ -46,7 +46,7 @@ The model table displayes the model(s) you want to display details of (refer to 
 
 **Proceed as follows**
 
-1. In the **Details** column of the model you want to get more information on, click the <img src="{{$base}}/img/documentation/repo_details_icon.jpg"> icon.  
+1. In the **Details** column of the model you want to get more information on, click the <img src="{{base}}/img/documentation/repo_details_icon.jpg"> icon.  
    The information page of the model opens with the active **Model** tab.  
    ![Model Details]({{base}}/img/documentation/vorto_repository_model_details.png)  
    Among other information on the model, the following data is essential:  

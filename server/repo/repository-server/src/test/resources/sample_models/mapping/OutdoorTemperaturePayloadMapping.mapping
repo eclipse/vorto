@@ -1,0 +1,15 @@
+namespace bcx.demo.mapping
+version 1.0.0
+displayname "outdoorTemperaturePayloadMapping"
+description "Payload Mapping for the outdoorTemperature property of the DualTemperatureSensor"
+category payloadmapping
+using demo.fbs.Temperature ; 0.0.1
+
+functionblockmapping OutdoorTemperaturePayloadMapping {
+	targetplatform bcx_demo_DualTemperatureSensor_1_0_0
+
+	from Temperature.status.sensor_value to source with {
+	xpath : "number:toFloat(string:substring(t,0,string:length(t)-1))" }
+
+	from Temperature.status.sensor_units to source with { xpath : "string:substring(t,string:length(t)-1)" }
+}

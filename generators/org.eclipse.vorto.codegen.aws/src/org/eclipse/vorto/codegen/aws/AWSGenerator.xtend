@@ -40,9 +40,7 @@ class AWSGenerator implements IVortoCodeGenerator {
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		var chainedGenerators = new ChainedCodeGeneratorTask<InformationModel>();
-		
-//		chainedGenerators.addTask(new ThingShadowForOperationsTask());
-		
+				
 		// Adds Generators for Speech to Command using Alexa Skill Service.
 		// That way it is possible to update a thing shadow by various speech command variations defined as mapping rules
 		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaIndentSchemaTemplate()));

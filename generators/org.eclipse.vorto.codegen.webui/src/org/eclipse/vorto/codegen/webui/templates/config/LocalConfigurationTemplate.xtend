@@ -39,7 +39,6 @@ class LocalConfigurationTemplate implements IFileTemplate<InformationModel> {
 		import org.springframework.beans.factory.annotation.Value;
 		import org.springframework.context.annotation.Bean;
 		import org.springframework.context.annotation.Configuration;
-		import org.springframework.context.annotation.Profile;
 		import org.springframework.security.oauth2.client.OAuth2ClientContext;
 		import com.example.iot.«element.name.toLowerCase».service.DataService;
 		

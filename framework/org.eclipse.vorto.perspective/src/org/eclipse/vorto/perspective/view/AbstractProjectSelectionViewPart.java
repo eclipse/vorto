@@ -60,6 +60,7 @@ import org.eclipse.vorto.core.ui.model.IModelProject;
 import org.eclipse.vorto.core.ui.model.ModelParserFactory;
 import org.eclipse.vorto.core.ui.model.VortoModelProject;
 import org.eclipse.vorto.perspective.listener.ErrorDiagnosticListener;
+import org.eclipse.vorto.perspective.listener.RemoveImportListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelListener;
 import org.eclipse.vorto.perspective.listener.RemoveModelProjectListener;
 import org.eclipse.vorto.perspective.util.ImageUtil;
@@ -86,6 +87,7 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart
 	private IResourceChangeListener removeModelListener = null;
 	private IResourceChangeListener removeProjectListener = null;
 	private IResourceChangeListener errorDiagnosticsListener = null;
+	private IResourceChangeListener removeImportListener = null;
 
 	// public AbstractProjectSelectionViewPart() {
 	// }
@@ -177,6 +179,8 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart
 		removeProjectListener = new RemoveModelProjectListener(this);
 		errorDiagnosticsListener = new ErrorDiagnosticListener(newRefreshCurrentProjectRunnable());
 		removeModelListener = new RemoveModelListener(newRefreshCurrentProjectRunnable());
+		removeImportListener = new RemoveImportListener(newRefreshCurrentProjectRunnable());
+		workspace.addResourceChangeListener(removeImportListener, IResourceChangeEvent.POST_CHANGE);
 		workspace.addResourceChangeListener(removeProjectListener, IResourceChangeEvent.PRE_DELETE);
 		workspace.addResourceChangeListener(errorDiagnosticsListener, IResourceChangeEvent.POST_CHANGE);
 		workspace.addResourceChangeListener(removeModelListener, IResourceChangeEvent.POST_CHANGE);
@@ -385,6 +389,7 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart
 		workspace.removeResourceChangeListener(removeProjectListener);
 		workspace.removeResourceChangeListener(errorDiagnosticsListener);
 		workspace.removeResourceChangeListener(removeModelListener);
+		workspace.removeResourceChangeListener(removeImportListener);		
 	}
 
 	public IModelProject getSelectedProject() {

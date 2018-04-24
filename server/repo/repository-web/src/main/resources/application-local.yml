@@ -1,0 +1,52 @@
+server:
+  port: 8080
+  contextPath: /infomodelrepository
+
+github:
+  oauth2:
+    enabled: true
+    client:
+      clientId: ${github_clientid}
+      clientSecret: ${github_secret}
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      clientAuthenticationScheme: form
+      scope:
+         - user:email
+    resource:
+      userInfoUri: https://api.github.com/user
+    
+eidp:
+  oauth2:
+    enabled: false
+    client:
+      clientId: ${eidp_clientid}
+      clientSecret: ${eidp_secret}
+      accessTokenUri: https://accounts.bosch.com/adfs/oauth2/token
+      userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
+      clientAuthenticationScheme: form
+      resource: https://vorto.eclipse.org
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: https://accounts.bosch.com/adfs/userinfo
+      preferTokenInfo: true
+
+webEditor:
+  enabled: true
+  loginUrl:
+    default: http://localhost:9080/editor/#/project
+    github: http://localhost:9080/editor/github/login
+    eidp: http://localhost:9080/editor/login/eidp
+
+mail:
+  smtp:
+    auth: false
+    host: localhost
+    port: 25
+  from: vorto-dev@eclipse.org
+  login:
+    username: 
+    password: 

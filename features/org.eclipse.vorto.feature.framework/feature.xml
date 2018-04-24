@@ -18,7 +18,7 @@
 <feature
       id="org.eclipse.vorto.feature.framework"
       label="Vorto Framework (Incubation)"
-      version="0.10.0.M1"
+      version="0.10.0.M2"
       provider-name="Eclipse.org/Vorto">
 
    <description>

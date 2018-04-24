@@ -53,11 +53,11 @@ InfomodelSource:
 ;
 
 InfoModelPropertySource:
-	model=[infomodel::InformationModel]  ('.' property =[infomodel::FunctionblockProperty])?  
+	model=[infomodel::InformationModel]  '.' 'functionblocks' '.' property =[infomodel::FunctionblockProperty]
 ;
 
 InfoModelAttributeSource:
-	model=[infomodel::InformationModel]  '.' attribute = ModelAttribute 
+	model=[infomodel::InformationModel]  ('.' attribute = ModelAttribute)?
 ;
 
 /*----------------------End Information Model Mapping Definition---------------------------*/
@@ -109,7 +109,7 @@ FaultSource:
 ;
 
 OperationSource:
-	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation]
+	model = [functionblock::FunctionblockModel] '.'  'operation' '.' operation=[functionblock::Operation] ('.' 'params' '.' + param=[functionblock::Param])?
 ;
 
 EventSource:

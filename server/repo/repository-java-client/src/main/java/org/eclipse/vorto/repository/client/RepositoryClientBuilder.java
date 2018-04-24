@@ -20,17 +20,24 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.HttpClients;
 import org.eclipse.vorto.repository.api.IModelGeneration;
+import org.eclipse.vorto.repository.api.IModelPublisher;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.IModelResolver;
+import org.eclipse.vorto.repository.api.impl.DefaultMappingClient;
 import org.eclipse.vorto.repository.api.impl.DefaultModelGeneration;
+import org.eclipse.vorto.repository.api.impl.DefaultModelPublisher;
 import org.eclipse.vorto.repository.api.impl.DefaultModelRepository;
 import org.eclipse.vorto.repository.api.impl.DefaultModelResolver;
 import org.eclipse.vorto.repository.api.impl.RequestContext;
+import org.eclipse.vorto.repository.api.mapping.IMapping;
 
 public class RepositoryClientBuilder {
-	private String baseUrl;
+	private String baseUrl = "http://vorto.eclipse.org";
 	private String proxyHost;
 	private int proxyPort = 8080;
+	
+	private String username;
+	private String password;
 	
 	public static RepositoryClientBuilder newBuilder() {
 		return new RepositoryClientBuilder();
@@ -53,6 +60,12 @@ public class RepositoryClientBuilder {
 		return this;
 	}
 	
+	public RepositoryClientBuilder setCredentials(String username, String password) {
+		this.username = username;
+		this.password = password;
+		return this;
+	}
+	
 	public IModelGeneration buildModelGenerationClient() {
 		return new DefaultModelGeneration(buildHttpClient(), buildRequestContext());
 	}
@@ -61,10 +74,18 @@ public class RepositoryClientBuilder {
 		return new DefaultModelRepository(buildHttpClient(), buildRequestContext());
 	}
 	
+	public IModelPublisher buildModelPublishClient() {
+		return new DefaultModelPublisher(buildHttpClient(), buildRequestContext(),this.username,this.password);
+	}
+	
 	public IModelResolver buildModelResolverClient() {
 		HttpClient client = buildHttpClient();
 		RequestContext context = buildRequestContext();
 		return new DefaultModelResolver(client, context, new DefaultModelRepository(client, context));
+	}
+	
+	public IMapping buildIMappingClient() {
+		return new DefaultMappingClient();
 	}
 	
 	private HttpClient buildHttpClient() {

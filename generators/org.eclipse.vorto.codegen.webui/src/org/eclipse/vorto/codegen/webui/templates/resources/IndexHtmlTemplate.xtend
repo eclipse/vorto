@@ -129,6 +129,7 @@ class IndexHtmlTemplate implements IFileTemplate<InformationModel> {
 					                  <i class="fa fa-angle-left pull-right"></i>
 					                </a>
 					                <ul class="treeview-menu menu-open" style="display: block;">
+					                    <li><a href="#"><strong>Subject: </strong></a><span style="color: white">{{ currentUserSub }}</span></li>
 										<li><a href="#" ng-click="logout();"><i class="fa fa-sign-out"></i> Sign out</a></li>
 									</ul>
 				              </li>

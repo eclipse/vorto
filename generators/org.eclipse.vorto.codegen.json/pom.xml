@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<properties>
+		<bundle.symbolicName>org.eclipse.vorto.codegen.json</bundle.symbolicName>
+		<bundle.namespace>org.eclipse.vorto</bundle.namespace>
+	</properties>
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>generators</artifactId>
+		<version>0.10.0.M2</version>
+	</parent>
+
+	<name>Vorto JSON Generator (Incubation)</name>
+	<artifactId>org.eclipse.vorto.codegen.json</artifactId>
+	<packaging>eclipse-plugin</packaging>
+</project>

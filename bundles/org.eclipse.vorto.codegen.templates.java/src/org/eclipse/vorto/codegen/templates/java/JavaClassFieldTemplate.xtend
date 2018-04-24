@@ -31,15 +31,22 @@ class JavaClassFieldTemplate implements ITemplate<Property> {
 		* «property.description»
 		*/
 		«IF property.type instanceof PrimitivePropertyType»
-			private «ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «property.name»;
+			«addFieldAnnotations(property)»
+			private «ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «ValueMapper.normalize(property.name)»;
 		«ELSEIF property.type instanceof ObjectPropertyType»
 			«var ObjectPropertyType object = property.type as ObjectPropertyType»
-			«IF object.type instanceof Entity» 
-				private «(object.type as Entity).name.toFirstUpper» «property.name»;
+			«IF object.type instanceof Entity»
+				«addFieldAnnotations(property)»
+				private «(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
 			«ELSEIF object.type instanceof Enum»
-				private «(object.type as Enum).name.toFirstUpper» «property.name»;
+				«addFieldAnnotations(property)»
+				private «(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
 			«ENDIF»
 		«ENDIF»
 		'''
+	}
+	
+	protected def addFieldAnnotations(Property property) {
+		''''''
 	}
 }

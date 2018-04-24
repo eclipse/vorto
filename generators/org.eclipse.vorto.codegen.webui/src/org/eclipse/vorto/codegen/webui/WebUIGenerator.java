@@ -30,7 +30,6 @@ import org.eclipse.vorto.codegen.webui.templates.config.SwaggerConfigurationTemp
 import org.eclipse.vorto.codegen.webui.templates.config.WebSecurityConfigTemplate;
 import org.eclipse.vorto.codegen.webui.templates.config.WebSocketConfigTemplate;
 import org.eclipse.vorto.codegen.webui.templates.dao.CrudRepositoryTemplate;
-import org.eclipse.vorto.codegen.webui.templates.model.FeatureStatusPropertyTemplate;
 import org.eclipse.vorto.codegen.webui.templates.model.FeatureTemplate;
 import org.eclipse.vorto.codegen.webui.templates.model.JavaClassGeneratorTask;
 import org.eclipse.vorto.codegen.webui.templates.model.JavaEnumGeneratorTask;
@@ -57,15 +56,12 @@ import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingBuilderTempl
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientBuilderTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingClientTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.ThingsQueryTemplate;
-import org.eclipse.vorto.codegen.webui.templates.service.bosch.auth.IM3AuthenticationProviderTemplate;
-import org.eclipse.vorto.codegen.webui.templates.service.bosch.auth.IMUserInfoTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.AsyncInvocationTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.DefaultThingClient;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.ThingsInvocationTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.FeatureImplTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.ThingImplTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.internal.model.ThingSearchResultImplTemplate;
-import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.AclEntryTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingSearchResultTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTypeAwareTemplate;
 import org.eclipse.vorto.codegen.webui.templates.service.sample.SampleDataServiceTemplate;
@@ -164,9 +160,6 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientBuilderTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingBuilderTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IM3AuthenticationProviderTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IMUserInfoTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AclEntryTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.FeatureTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingSearchResultTemplate()));
@@ -187,7 +180,6 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		
 		ChainedCodeGeneratorTask<FunctionblockProperty> fbPropertyGenerators = new ChainedCodeGeneratorTask<FunctionblockProperty>();
 		for (FunctionblockProperty property : model.getProperties()) {
-			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new FeatureStatusPropertyTemplate()));
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new FeatureTemplate()));
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new LocationControllerTemplate()));
 			

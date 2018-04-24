@@ -19,7 +19,11 @@ Use the Client API to
 
 ```
 
-## Search information models
+# Features
+
+## Vorto Model Search
+
+### Search by free text
 The following code snippet searches for all devices that have 'sensors'
 
 ```
@@ -30,7 +34,7 @@ Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(Mod
 
 ```
 
-## Fetch a specific information model and its content
+### Fetch a specific model 
 
 The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
 
@@ -39,7 +43,45 @@ ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
 InformationModel boschGlmModelContent = modelRepo.getContent(boschGlm, InformationModel.class).get();
 ```
 
-## Generate code for a specific IoT platform
+### Fetch a model containing platform attributes 
+
+The following code snippet illustrates how to get a Vorto functionblock model that contains LWM2M attributes [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml):
+
+```
+IModelRepository modelRepository = builder.buildModelRepositoryClient();	
+FunctionBlockModel temperatureSensorContent = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Temperature:0.0.1"), FunctionblockModel.class,"lwm2m").get();
+String lwM2MObjectId = temperatureSensorContent.getMappedAttributes("ObjectID");
+```
+
+### Search model properties by platform attributes
+
+```
+IModelRepository modelRepository = builder.buildModelRepositoryClient();
+			
+FunctionBlockModel temperatureSensorContent = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Temperature:0.0.1"), FunctionblockModel.class,"lwm2m").get();
+
+IMapping mapping = builder.buildMappingClient();
+
+List<ModelProperty> properties = mapping.newPropertyQuery(temperatureSensorContent).stereotype("Resource").attribute("ID", "5602").list();
+
+```
+
+### Fetch Vorto Model by platform-specific attribute
+
+The following code snippet illustrates how to get the Vorto functionblock model for a [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml) object ID:
+
+```
+IModelResolver modelResolver = builder.buildModelResolverClient();
+			
+// where "3303" is the object id for the OMA LWM2M/IPSO TemperatureSensor
+ModelInfo temperatureSensorInfo = modelResolver.resolve(new LWM2MQuery("3303")).get();
+FunctionBlockModel temperatureSensorContent = modelRepo.getContent(temperatureSensorInfo, FunctionblockModel.class).get();
+
+```
+
+## Code Generation
+
+### Generate code for a specific IoT platform
 
 The following snippet shows how to generate a Eclipse Kura application for a Bosch GLM information model, that reads data via Bluetooth and sends 
 the data to the Bosch IoT Suite cloud platform.  
@@ -55,15 +97,6 @@ invocationConfig.put("boschcloud", "true");
 GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "kura", invocationConfig).get();
 ```
 
-## Resolve Vorto Models by platform-specific attributes
+### Example of Validating JSON data against Generated JSON Schema for Eclipse Ditto
 
-The following code snippet illustrates how to get the Vorto functionblock model for a [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml) object ID:
-
-```
-IModelResolver modelResolver = builder.buildModelResolverClient();
-			
-// where "3303" is the object id for the OMA LWM2M/IPSO TemperatureSensor
-ModelInfo temperatureSensorInfo = modelResolver.resolve(new LWM2MQuery("3303")).get();
-FunctionBlockModel temperatureSensorContent = modelRepo.getContent(temperatureSensorInfo, FunctionblockModel.class).get();
-
-```
+[Click here for Sample Code](sample)

@@ -31,13 +31,7 @@ class FeatureImplTemplate implements IFileTemplate<InformationModel> {
 			private Map<String,Object> content = new HashMap<String, Object>();
 			
 			private Map<String,Object> properties = new HashMap<String, Object>();
-			
-			public static final String FAULT = "fault";
-		
-			public static final String CONFIGURATION = "configuration";
-		
-			public static final String STATUS = "status";
-			
+						
 			public FeatureImpl(String id) {
 				this.id = id;
 				this.content.put("properties", properties);

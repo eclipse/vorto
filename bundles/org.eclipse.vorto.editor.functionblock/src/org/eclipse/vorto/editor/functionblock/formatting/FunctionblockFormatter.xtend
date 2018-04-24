@@ -33,7 +33,7 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		c.setLinewrap(1).after(f.functionblockModelAccess.versionAssignment_4)
 		c.setLinewrap(1).after(f.functionblockModelAccess.displaynameAssignment_6)
 		c.setLinewrap(1).after(f.functionblockModelAccess.descriptionAssignment_7_1)
-		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_9)
+		c.setLinewrap(1).after(f.functionblockModelAccess.categoryAssignment_8_1)
 		
 		//Comments
 		c.setLinewrap(1, 1, 2).before(SL_COMMENTRule)
@@ -83,8 +83,11 @@ class FunctionblockFormatter extends AbstractDeclarativeFormatter {
 		c.setNoSpace().after(f.propertyAccess.commaKeyword_5_3_0)
 		
 		//Operation parameters.
-		c.setNoSpace().before(f.operationAccess.commaKeyword_3_1_0)
-		c.setLinewrap(1).after(f.operationAccess.commaKeyword_3_1_0)
+		c.setNoSpace().before(f.operationAccess.commaKeyword_4_1_0)
+		c.setLinewrap(1).after(f.operationAccess.commaKeyword_4_1_0)
 		
+		//Property description
+		c.setNoLinewrap().before(f.propertyAccess.descriptionAssignment_7)
+		c.setLinewrap(2).after(f.propertyAccess.descriptionAssignment_7)
 	}
 }

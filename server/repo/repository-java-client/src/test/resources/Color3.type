@@ -1,0 +1,8 @@
+namespace demo
+version 1.0.0
+
+entity Color {
+	mandatory r as int
+	mandatory g as int
+	mandatory b as int
+}

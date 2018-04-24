@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Vorto
 Bundle-SymbolicName: org.eclipse.vorto.perspective.vorto;singleton:=true
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.10.0.M1
+Bundle-Version: 0.10.0.M2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui.workbench,

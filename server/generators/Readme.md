@@ -19,6 +19,7 @@ Currently available Generators:
  - [Eclipse Leshan Generator](../../generators/org.eclipse.vorto.codegen.lwm2m/Readme.md)
  - [Eclipse Paho Generator](../../generators/org.eclipse.vorto.codegen.mqtt/Readme.md)
  - [Eclipse Kura Generator](../../generators/org.eclipse.vorto.codegen.kura/Readme.md)
+ - [Eclipse Ditto Generator](../../generators/org.eclipse.vorto.codegen.ditto/Readme.md)
 
 ### iOS
 

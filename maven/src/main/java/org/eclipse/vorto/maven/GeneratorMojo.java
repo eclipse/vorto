@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.maven;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,9 +23,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
@@ -43,9 +47,10 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.ZipContentExtractCodeGeneratorTask;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelType;
-import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
-import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 
 @Mojo(name = "generate",defaultPhase= LifecyclePhase.GENERATE_SOURCES)
 public class GeneratorMojo extends AbstractMojo {
@@ -70,13 +75,13 @@ public class GeneratorMojo extends AbstractMojo {
 		getLog().info("Executing Generator of class '"+getGeneratorClass());
 		
 		try {
-			final ModelZipFileExtractor extractor = new ModelZipFileExtractor(loadInformationModels());
-			final MappingZipFileExtractor mappingsExtractor =  new MappingZipFileExtractor(loadMappingModels());
+			final IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(loadInformationModels()))).read();
 			
-			for (String fileName : extractor.list(ModelType.InformationModel.getExtension())) {
-				InformationModel model = (InformationModel)extractor.extract(fileName);
+			List<MappingModel> mappingModels = workspace.get().stream().filter(p -> p instanceof MappingModel).map(MappingModel.class::cast).collect(Collectors.toList());
+			for (Model model : workspace.get().stream().filter(p -> p instanceof InformationModel).collect(Collectors.toList())) {
+				InformationModel infomodel = (InformationModel)model;
 				IVortoCodeGenerator codeGenerator = (IVortoCodeGenerator)Class.forName(generatorClass).newInstance();
-				IGenerationResult result = codeGenerator.generate(model, new InvocationContext(mappingsExtractor.extract(),null, new HashMap<String, String>()),null);
+				IGenerationResult result = codeGenerator.generate(infomodel, new InvocationContext(mappingModels,null, new HashMap<String, String>()),null);
 				if (result.getMediatype().equalsIgnoreCase("application/zip")) {
 					final ZipContentExtractCodeGeneratorTask task = new ZipContentExtractCodeGeneratorTask(result.getContent());
 					task.generate(null, InvocationContext.simpleInvocationContext(),new IGeneratedWriter() {
@@ -134,28 +139,8 @@ public class GeneratorMojo extends AbstractMojo {
 				return !path.toFile().isDirectory() && 
 						(path.getFileName().toString().endsWith(ModelType.InformationModel.getExtension()) ||
 						path.getFileName().toString().endsWith(ModelType.Functionblock.getExtension()) || 
-						path.getFileName().toString().endsWith(ModelType.Datatype.getExtension()));
-			}
-		}).forEach(new Consumer<Path>() {
-
-			public void accept(Path t) {
-				addToZip(zaos, t);
-			}
-		});
-		
-		return baos.toByteArray();
-	}
-	
-	private byte[] loadMappingModels() throws Exception {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		final ZipOutputStream zaos = new ZipOutputStream(baos);
-		
-		Files.walk(Paths.get((project.getBasedir().toURI()))).filter(new Predicate<Path>() {
-
-			public boolean test(Path path) {
-				return !path.toFile().isDirectory() && 
-						(path.getFileName().toString().endsWith(ModelType.Mapping.getExtension()) ||
-						 path.getFileName().toString().endsWith(ModelType.Functionblock.getExtension()));
+						path.getFileName().toString().endsWith(ModelType.Datatype.getExtension()) || 
+						path.getFileName().toString().endsWith(ModelType.Mapping.getExtension()));
 			}
 		}).forEach(new Consumer<Path>() {
 

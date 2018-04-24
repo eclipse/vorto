@@ -1,0 +1,31 @@
+{
+    "name" : "vorto",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "storage" : {
+        "cacheConfiguration" : "infinispan-configuration.xml",
+        "cacheName" : "persisted-repository",
+        "binaryStorage" : {
+            "type" : "file",
+            "directory": "${user.home}/.vorto/repo/binaries",
+            "minimumBinarySizeInBytes" : 999
+        }
+    },
+    "sequencing" : {
+    	"removeDerivedContentWithOriginal" : false,
+        "sequencers" : {
+            "XML Sequencer" : {
+                "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",
+                "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
+            }
+        }
+    }
+}

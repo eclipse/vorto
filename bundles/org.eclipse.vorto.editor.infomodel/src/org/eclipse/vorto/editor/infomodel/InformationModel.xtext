@@ -25,7 +25,7 @@ InformationModel:
     'version' version = VERSION
     'displayname' displayname=STRING      
     ('description' description=STRING)? 
-    'category' category=CATEGORY 
+    ('category' category=CATEGORY)?
     (references += ModelReference)*
 	'infomodel' name=ID '{'
 	('functionblocks' '{'

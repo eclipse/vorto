@@ -22,18 +22,18 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class MetatypeTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel context) {
-		'''«Utils.javaPackage».«context.name»BluetoothFinder.xml'''
+		'''«Utils.getJavaPackage(context)».«context.name»BluetoothFinder.xml'''
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.basePath»/OSGI-INF/metatype'''
+		'''«Utils.getBasePath(context)»/OSGI-INF/metatype'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
 		<?xml version="1.0" encoding="UTF-8"?>
 		<MetaData xmlns="http://www.osgi.org/xmlns/metatype/v1.2.0" localization="en_us">
-		    <OCD id="«Utils.javaPackage».«element.name»BluetoothFinder"
+		    <OCD id="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder"
 		         name="«element.displayname» Bluetooth Finder" 
 		         description="App that reads «element.displayname» data via bluetooth and sends it to the IoT cloud backend.">
 		         
@@ -55,40 +55,77 @@ class MetatypeTemplate implements IFileTemplate<InformationModel> {
 					required="true"
 					default="wss://events.apps.bosch-iot-cloud.com"
 					description="Bosch IoT Suite Endpoint" />
-					«ENDIF»
-					<AD id="scan_enable"
-					name="scan_enable"
-					type="Boolean"
-					cardinality="0"
-					required="true"
-					default="false"
-					description="Enable scan for BoschGlm devices." />
 					
-					<AD id="scan_time"
-					name="scan_time"
-					type="Integer"
-					cardinality="0"
+				«ELSE»
+				«IF context.configurationProperties.getOrDefault("boschhub","false").equalsIgnoreCase("true")»
+				<AD id="mqttHostUrl"  
+					name="mqttHostUrl"
+					type="String"
+					cardinality="0" 
 					required="true"
-					default="5"
-					description="Scan for devices duration in seconds." />
+					default="ssl://mqtt.bosch-iot-hub.com:8883" 
+					description="The Bosch IoT Suite Hub URL"/>
 					
-					<AD id="period"
-					name="period"
-					type="Integer"
-					cardinality="0"
+				<AD id="hubTenant"  
+					name="hubTenant"
+					type="String"
+					cardinality="0" 
 					required="true"
-					default="120"
-					description="Period in seconds between 2 publishes. It must be greater than scan_time."/>
+					default="DEFAULT_TENANT" 
+					description="The Bosch IoT Hub Tenant"/>
 					
-					<AD id="publishTopic"  
+				«ELSE»
+				<AD id="publishTopic"  
 					name="publishTopic"
 					type="String"
 					cardinality="0" 
 					required="true"
 					default="" 
 					description="The topic to publish data to the Cloud."/>
+				
+				«ENDIF»										
+				«ENDIF»
+				<AD id="scan_enable"
+					name="scan_enable"
+					type="Boolean"
+					cardinality="0"
+					required="true"
+					default="false"
+					description="Enable scan for «element.displayname» devices." />
+				
+				<AD id="scan_interval"
+					name="scan_interval"
+					type="Integer"
+					cardinality="0"
+					required="true"
+					default="60"
+					description="Interval of scan for devices in seconds." />
+				
+				<AD id="scan_time"
+					name="scan_time"
+					type="Integer"
+					cardinality="0"
+					required="true"
+					default="10"
+					description="Duration of scan for devices in seconds." />
 					
-					<AD id="iname"
+				<AD id="update_interval"
+					name="update_interval"
+					type="Integer"
+					cardinality="0"
+					required="true"
+					default="10"
+					description="Interval of device update to Cloud in seconds"/>
+				
+				<AD id="device_filter"  
+					name="device_filter"
+					type="String"
+					cardinality="0" 
+					required="true"
+					default="FC:D6:BD" 
+					description="Filter for «element.displayname» bluetooth devices"/>
+					
+				<AD id="iname"
 					name="iname"
 					type="String"
 					cardinality="0"
@@ -96,19 +133,20 @@ class MetatypeTemplate implements IFileTemplate<InformationModel> {
 					default="hci0"
 					description="Name of bluetooth adapter."/>
 					
-					«FOR fbProperty : element.properties»
-					<AD id="enable«fbProperty.name.toFirstUpper»"
+				«FOR fbProperty : element.properties»
+				<AD id="enable«fbProperty.name.toFirstUpper»"
 					name="enable«fbProperty.name.toFirstUpper»"
 					type="Boolean"
 					cardinality="0"
 					required="true"
 					default="false"
 					description="Enable «fbProperty.name»."/>
+					
 		         «ENDFOR»
 		    </OCD>
 		
-		    <Designate pid="«Utils.javaPackage».«element.name»BluetoothFinder">
-		        <Object ocdref="«Utils.javaPackage».«element.name»BluetoothFinder"/>
+		    <Designate pid="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder">
+		        <Object ocdref="«Utils.getJavaPackage(element)».«element.name»BluetoothFinder"/>
 		    </Designate>
 		</MetaData>
 		

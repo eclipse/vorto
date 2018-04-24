@@ -31,7 +31,7 @@ public class GenerationResultBuilder {
 		GenerationResultBuilder builder = new GenerationResultBuilder(result);
 		return builder;
 	}
-	
+		
 	public GenerationResultBuilder append(IGenerationResult result) {
 		if (result == null) {
 			return this;

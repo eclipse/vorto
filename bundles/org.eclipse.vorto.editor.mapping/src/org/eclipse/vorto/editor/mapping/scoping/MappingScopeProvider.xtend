@@ -26,9 +26,7 @@ import org.eclipse.vorto.core.api.model.mapping.EventSource
 import org.eclipse.vorto.core.api.model.mapping.FaultSource
 import org.eclipse.vorto.core.api.model.mapping.InfoModelPropertySource
 import org.eclipse.vorto.core.api.model.mapping.OperationSource
-import org.eclipse.vorto.core.api.model.mapping.ReferenceTarget
 import org.eclipse.vorto.core.api.model.mapping.StatusSource
-import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.xtext.scoping.IScope
 import org.eclipse.xtext.scoping.Scopes
 import org.eclipse.xtext.scoping.impl.AbstractDeclarativeScopeProvider
@@ -84,5 +82,9 @@ class MappingScopeProvider extends AbstractDeclarativeScopeProvider {
 
 	def IScope scope_EventSource_eventProperty(EventSource exp, EReference ref) {
 		return Scopes::scopeFor(exp.event.properties);
+	}
+	
+	def IScope scope_OperationSource_param(OperationSource exp, EReference ref) {
+		return Scopes::scopeFor(exp.operation.params);
 	}
 }

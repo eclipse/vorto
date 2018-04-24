@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>server</artifactId>
-		<version>0.10.0.M1</version>
+		<version>0.10.0.M2</version>
 	</parent>
 	<artifactId>repo</artifactId>
 
@@ -17,22 +17,9 @@
 	<modules>
 		<module>repository-server</module>
 		<module>repository-api</module>
-		<module>repository-java-client</module>		
+		<module>repository-java-client</module>	
+		<module>repository-mapping</module>	
+		<module>repository-web</module>
 	</modules>
 	
-	<properties>
-		<modeshape.version>4.3.0.Final</modeshape.version>
-	</properties>
-	
-	<dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.modeshape.bom</groupId>
-        <artifactId>modeshape-bom-embedded</artifactId>
-        <version>${modeshape.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 </project>

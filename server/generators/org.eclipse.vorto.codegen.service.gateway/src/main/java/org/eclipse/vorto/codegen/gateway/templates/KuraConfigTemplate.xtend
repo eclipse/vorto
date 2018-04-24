@@ -18,11 +18,11 @@ import java.util.Arrays
 import java.util.HashSet
 import java.util.Set
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate
+import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate
 
 class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("bluetooth","boschcloud"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("bluetooth","boschcloud","boschhub"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
@@ -48,6 +48,7 @@ class KuraConfigTemplate implements IGeneratorConfigUITemplate {
 				    	</div><!-- /.box-header -->
 						<div class="box-body">
 							<p><input type="checkbox" ng-model="configParams.boschcloud">&nbsp;Bosch IoT Suite</p>
+							<p><input type="checkbox" ng-model="configParams.boschhub">&nbsp;Eclipse Hono (MQTT)</p>
 							<p><input type="checkbox" checked disabled="disabled">&nbsp;<i style="color:#999">Built-in Cloud Services</i></p>
 						</div><!-- /.box-body -->
 				  	</div><!-- /.box -->

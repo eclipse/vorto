@@ -1,0 +1,66 @@
+<div class="row">
+	<div class="col-sm-12 main">
+		<div class="row" id="searchResult">
+			
+			<div>
+				<table st-persist st-table="displayedModels" st-safe-src="models" class="table table-striped">
+					<thead>
+						<tr>
+							<th colspan="10">
+								<div class="form-group search-box-spacing" >
+									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="80"
+										ng-model="queryFilter"
+										st-search="" autofocus class="queryFilter input-sm" />
+									<a uib-popover-html="'<b>Describe</b> a new device and <b>Publish</b> it as an information model.'" popover-trigger="mouseenter" ng-show="context.webEditor.enabled" class="btn btn-default btn-primary pull-right" target="_blank" href="{{ webEditorLink() }}" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;New Information Model</a>
+									
+								</div>
+							</th>
+						</tr>
+						<tr>
+							<th colspan="6" >
+							<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary></th>
+						</tr>
+						<tr>
+							<th>
+                				<select style="font-size:12px" st-search="type">
+                    				<option value="">All</option>
+                    				<option value="InformationModel">Information Model</option>
+                    				<option value="Functionblock">Functionblock</option>
+                    				<option value="Datatype">Datatype</option>
+                    				<option value="Mapping">Mapping</option>
+                				</select>
+            				</th>
+							<th id="onName" st-sort="id.name"><a href="">Name <i class="fa fa-sort"></i></a></th>
+							<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace <i class="fa fa-sort"></i>
+							</a></th>
+							<th id="onVersion" st-sort="id.version"><a href="">Version <i class="fa fa-sort"></i>
+							</a></th>
+							<th>Description</th>
+							<th class="action">Details</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="model in displayedModels track by $index" ng-click="go(model)">
+							<td ng-show="model.type === 'InformationModel'"><img src="images/im.png" /></td>
+							<td ng-show="model.type === 'Functionblock'"><img src="images/fb.png" /></td>
+							<td ng-show="model.type === 'Datatype'"><img src="images/dt.png" /></td>
+							<td ng-show="model.type === 'Mapping'"><i class="fa fa-exchange" aria-hidden="true"></i></td>
+							<td>{{ model.id.name }}</td>
+							<td>{{ model.id.namespace }}</td>
+							<td>{{ model.id.version }}</td>
+							<td>{{ model.description }}</td>
+							<td class="action"><a class="action"><i class="fa fa-info-circle"></i></a></td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="6" class="text-center">
+								<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="displayedModels.length"></div>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

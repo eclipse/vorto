@@ -41,6 +41,7 @@ import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteral;
 import org.eclipse.vorto.core.api.model.datatype.Property;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -157,6 +158,14 @@ public class InvocationContext {
 	private boolean matchesStereoType(final String stereoType, final StereoTypeTarget stereoTypeTarget) {
 		return stereoTypeTarget.getName().equalsIgnoreCase(stereoType);
 	}
+	
+	private boolean matchesProperty(final Property srcProp, final Property tgtProp) {
+		FunctionBlock srcFb = (FunctionBlock) srcProp.eContainer().eContainer();
+		FunctionBlock tgtFb = (FunctionBlock) tgtProp.eContainer().eContainer();
+		FunctionblockModel srcFbModel = (FunctionblockModel) srcFb.eContainer();
+		FunctionblockModel tgtFbModel = (FunctionblockModel) tgtFb.eContainer();
+		return EcoreUtil.equals(srcProp, tgtProp) && EcoreUtil.equals(srcFbModel, tgtFbModel);
+	}
 
 	/**
 	 * Finds the mapped element by a stereotype for a given property
@@ -169,19 +178,19 @@ public class InvocationContext {
 		for (MappingRule rule : mappingRules) {
 			for (Source ruleSource : rule.getSources()) {
 				if (ruleSource instanceof ConfigurationSource
-						&& EcoreUtil.equals(((ConfigurationSource) ruleSource).getProperty(), property)
+						&& matchesProperty(((ConfigurationSource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				} else if (ruleSource instanceof StatusSource
-						&& EcoreUtil.equals(((StatusSource) ruleSource).getProperty(), property)
+						&& matchesProperty(((StatusSource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				} else if (ruleSource instanceof FaultSource
-						&& EcoreUtil.equals(((FaultSource) ruleSource).getProperty(), property)
+						&& matchesProperty(((FaultSource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				} else if (ruleSource instanceof EntityPropertySource
-						&& EcoreUtil.equals(((EntityPropertySource) ruleSource).getProperty(), property)
+						&& matchesProperty(((EntityPropertySource) ruleSource).getProperty(), property)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Property>(property, (StereoTypeTarget) rule.getTarget());
 				}
@@ -191,6 +200,14 @@ public class InvocationContext {
 		return new NullMapped<Property>(property);
 	}
 
+	private boolean matchesOperation(final Operation srcOp, final Operation tgtOp) {
+		FunctionBlock srcFb = (FunctionBlock) srcOp.eContainer();
+		FunctionBlock tgtFb = (FunctionBlock) tgtOp.eContainer();
+		FunctionblockModel srcFbModel = (FunctionblockModel) srcFb.eContainer();
+		FunctionblockModel tgtFbModel = (FunctionblockModel) tgtFb.eContainer();
+		return EcoreUtil.equals(srcOp, tgtOp) && EcoreUtil.equals(srcFbModel, tgtFbModel);
+	}
+	
 	/**
 	 * Finds the mapped element by a stereotype for a given operation
 	 * @param operation
@@ -201,7 +218,7 @@ public class InvocationContext {
 		for (MappingRule rule : mappingRules) {
 			for (Source ruleSource : rule.getSources()) {
 				if (ruleSource instanceof OperationSource
-						&& EcoreUtil.equals(((OperationSource) ruleSource).getOperation(), operation)
+						&& matchesOperation(((OperationSource) ruleSource).getOperation(), operation)
 						&& matchesStereoType(stereoType, (StereoTypeTarget) rule.getTarget())) {
 					return new DefaultMapped<Operation>(operation, (StereoTypeTarget) rule.getTarget());
 				}

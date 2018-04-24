@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.api.content;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Operation {
+public class Operation extends DefaultMappedElement {
 
 	private String name;
 	private String description;

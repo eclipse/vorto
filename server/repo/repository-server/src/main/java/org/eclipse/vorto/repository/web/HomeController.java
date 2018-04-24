@@ -20,8 +20,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.vorto.repository.security.SecurityConfiguration;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.web.security.VortoUser;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +43,8 @@ import io.swagger.annotations.ApiResponses;
 @Api(value="Home Controller", description="REST API to get currently logged in User ")
 @RestController
 public class HomeController {
+	
+	private static final String LOGIN_TYPE = "loginType";
 
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled;
@@ -59,6 +63,9 @@ public class HomeController {
 	
 	@Value("${webEditor.loginUrl.default}")
 	private String defaultLoginUrl;
+	
+	@Autowired
+    private IUserRepository userRepository;
 	
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Returns the currently logged in User")
@@ -79,11 +86,18 @@ public class HomeController {
 		if (user instanceof OAuth2Authentication) {
 			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 			map.put("name", oauth2User.getName());
-			map.put("email", ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
 			
-			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()); 
-			map.put("isRegistered", userDetails.get("isRegistered"));
-			map.put("loginType", userDetails.get(SecurityConfiguration.LOGIN_TYPE));
+			User registeredUser = userRepository.findByUsername(oauth2User.getName())	;
+			if (registeredUser != null) {
+				map.put("email",  registeredUser.getEmail());
+				map.put("isRegistered", Boolean.toString(true));
+			} else {
+				map.put("email",  ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
+				map.put("isRegistered", Boolean.toString(false));
+			}
+			
+			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
+			map.put("loginType", userDetails.get(LOGIN_TYPE));
 		} else {
 			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
 			map.put("name", vortoUser.getUsername());

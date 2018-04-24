@@ -17,12 +17,12 @@ package org.eclipse.vorto.repository.api.content;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractProperty {
+public class AbstractProperty extends DefaultMappedElement {
 
-	protected boolean isMandatory = true;
+	protected boolean mandatory;
 	protected String name;
 	
-	protected boolean isMultiple = false;
+	protected boolean isMultiple;
 	protected String description;
 	
 	protected IReferenceType type = null;
@@ -38,11 +38,11 @@ public class AbstractProperty {
 	}
 
 	public boolean isMandatory() {
-		return isMandatory;
+		return mandatory;
 	}
 
-	public void setMandatory(boolean isMandatory) {
-		this.isMandatory = isMandatory;
+	public void setMandatory(boolean mandatory) {
+		this.mandatory = mandatory;
 	}
 
 	public String getName() {

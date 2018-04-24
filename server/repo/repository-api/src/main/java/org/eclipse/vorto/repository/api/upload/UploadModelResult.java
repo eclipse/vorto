@@ -36,6 +36,10 @@ public class UploadModelResult {
 		this.valid = valid;
 		this.errorMessage = errorMessage;
 	}
+	
+	public UploadModelResult() {
+		
+	}
 
 	public UploadModelResult(String handleId, ModelInfo modelResource, boolean valid, String errorMessage,
 			Collection<ModelId> missingReferences) {

@@ -17,7 +17,9 @@ package org.eclipse.vorto.repository.api;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractModel implements IModel {
+import org.eclipse.vorto.repository.api.content.DefaultMappedElement;
+
+public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 	
 	protected ModelId id;
 	protected ModelType type;
@@ -29,6 +31,10 @@ public abstract class AbstractModel implements IModel {
 	public AbstractModel(ModelId modelId,ModelType modelType) {
 		this.id = modelId;
 		this.type = modelType;
+	}
+	
+	public AbstractModel() {
+		
 	}
 
 	public ModelId getId() {

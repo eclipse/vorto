@@ -20,12 +20,15 @@ import java.util.Optional;
 
 import org.eclipse.vorto.codegen.api.IGeneratorLookup;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
-import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class GeneratorRepository {
+	
+	@Autowired
+	private IGeneratorLookup generatorLookup;
 	
 	private Collection<Generator> generators = new ArrayList<Generator>();
 	
@@ -42,10 +45,7 @@ public class GeneratorRepository {
 	}
 	
 	public IGeneratorLookup newGeneratorLookup() {
-		return (key) -> {
-			Generator generator = get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
-			return generator.getInstance();
-		};
+		return generatorLookup;
 	}
 	
 }

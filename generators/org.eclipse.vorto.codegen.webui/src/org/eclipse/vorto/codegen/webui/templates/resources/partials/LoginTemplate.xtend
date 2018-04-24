@@ -45,21 +45,6 @@ class LoginTemplate implements IFileTemplate<InformationModel> {
 				<a href="google/login">
 					<i class="fa fa-google fa-2x" aria-hidden="true"></i> Login with Google
 				</a>
-				<form ng-submit="login()">
-					<div class="form-group has-feedback">
-						<input type="text" class="form-control" placeholder="Username" id="username" ng-model="credentials.userId" />
-					</div>
-					<div class="form-group has-feedback">
-						<input type="password" class="form-control" placeholder="Password" id="password" ng-model="credentials.password" />
-					</div>
-					<div class="row">
-						<!-- /.col -->
-						<div class="col-xs-4">
-							<button type="submit" ng-disabled="isLoading" class="btn btn-primary" ng-click="login()">Sign In <i ng-show="isLoading" class="fa fa-refresh fa-spin"></i></button>
-						</div>
-						<!-- /.col -->
-					</div>
-				</form>
 			</div>
 		</div>
 		</section>

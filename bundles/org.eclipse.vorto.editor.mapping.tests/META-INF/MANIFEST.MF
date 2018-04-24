@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Mapping Editor Tests (Incubation)
 Bundle-Vendor: Eclipse.org/Vorto
-Bundle-Version: 0.10.0.M1
+Bundle-Version: 0.10.0.M2
 Bundle-SymbolicName: org.eclipse.vorto.editor.mapping.tests; singleton:=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.vorto.editor.mapping.ui,

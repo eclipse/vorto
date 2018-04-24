@@ -1,0 +1,15 @@
+namespace bcx.demo.mapping
+version 1.0.0
+displayname "DualTemperatureSensorPayloadMapping"
+description "Payload Mapping for DualTemperatureSensor"
+category payloadmapping
+
+using bcx.demo.DualTemperatureSensor;1.0.0
+using bcx.demo.mapping.OutdoorTemperaturePayloadMapping;1.0.0
+using bcx.demo.mapping.IndoorTemperaturePayloadMapping;1.0.0
+
+infomodelmapping DualTemperatureSensorPayloadMapping {
+	targetplatform bcx_demo_DualTemperatureSensor_1_0_0
+	from DualTemperatureSensor.functionblocks.outdoorTemperature to reference OutdoorTemperaturePayloadMapping
+	from DualTemperatureSensor.functionblocks.indoorTemperature to reference IndoorTemperaturePayloadMapping
+}

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>generators</artifactId>
-		<version>0.10.0.M1</version>
+		<version>0.10.0.M2</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.codegen.service</artifactId>
@@ -81,7 +81,6 @@
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>
-			<version>3.7.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>

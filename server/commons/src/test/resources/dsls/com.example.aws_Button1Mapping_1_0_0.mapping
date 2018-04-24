@@ -1,0 +1,10 @@
+namespace com.example.aws
+version 1.0.0
+displayname "Button1Mapping"
+description "Mapping model for Button1Mapping"
+using com.ipso.smartobjects.Push_button;0.0.1
+
+functionblockmapping Button1Mapping {
+	targetplatform awsbutton
+	from Push_button.status.digital_input_count to source with {xpath:"/@button1"}
+}

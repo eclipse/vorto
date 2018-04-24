@@ -16,7 +16,9 @@ package org.eclipse.vorto.repository.api;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -29,10 +31,13 @@ public class ModelInfo extends AbstractModel {
 		
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 	
-	protected List<String> supportedTargetPlatforms = new ArrayList<String>();
+	protected Map<String,ModelId> platformMappings = new HashMap<>();
 	
 	public ModelInfo(ModelId modelId,ModelType modelType) {
 		super(modelId,modelType);
+	}
+	
+	public ModelInfo() {
 	}
 	
 	public List<ModelId> getReferencedBy() {
@@ -59,12 +64,12 @@ public class ModelInfo extends AbstractModel {
 		this.creationDate = creationDate;
 	}
 
-	public List<String> getSupportedTargetPlatforms() {
-		return supportedTargetPlatforms;
+	public Map<String,ModelId> getPlatformMappings() {
+		return this.platformMappings;
 	}
 
-	public void setSupportedTargetPlatforms(List<String> supportedTargetPlatforms) {
-		this.supportedTargetPlatforms = supportedTargetPlatforms;
+	public void setPlatformMappings(Map<String,ModelId> platformMappings) {
+		this.platformMappings = platformMappings;
 	}
 
 	public boolean isHasImage() {
@@ -108,9 +113,9 @@ public class ModelInfo extends AbstractModel {
 		return (type == other.type);
 	}
 
-	public void addTargetPlatform(String targetPlatform) {
+	public void addPlatformMapping(String targetPlatform,ModelId mappingId) {
 		if (targetPlatform != null && !targetPlatform.equals("")) {
-			this.supportedTargetPlatforms.add(targetPlatform);
+			this.platformMappings.put(targetPlatform,mappingId);
 		}
 	}
 

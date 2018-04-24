@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.eclipse.vorto</groupId>
     <artifactId>org.eclipse.vorto.parent</artifactId>
-    <version>0.10.0.M1</version>
+    <version>0.10.0.M2</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -29,6 +29,14 @@
 		<module>org.eclipse.vorto.codegen.lwm2m</module>
 		<module>org.eclipse.vorto.codegen.prosystfi</module>
 		<module>org.eclipse.vorto.codegen.kura</module>
+		<module>org.eclipse.vorto.codegen.protobuf</module>
+		<module>org.eclipse.vorto.codegen.arduino</module>
+		<module>org.eclipse.vorto.codegen.mqtt.python</module>
+		<module>org.eclipse.vorto.codegen.artik</module>
+		<module>org.eclipse.vorto.codegen.ble</module>
+		<module>org.eclipse.vorto.codegen.ble.alpwise</module>
+		<module>org.eclipse.vorto.codegen.ditto</module>
+		<module>org.eclipse.vorto.codegen.hono</module>
+		<module>org.eclipse.vorto.codegen.json</module>
   </modules>
-  
 </project>

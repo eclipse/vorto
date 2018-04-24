@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto ARTIK Generator (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.codegen.artik;singleton:=true
+Bundle-Version: 0.10.0.M2
+Require-Bundle: org.eclipse.vorto.core,
+ com.google.guava,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib,
+ org.eclipse.xtend.lib.macro,
+ org.eclipse.vorto.codegen,
+ org.apache.commons.lang3
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Eclipse.org/Vorto
+Export-Package: org.eclipse.vorto.codegen.artik

@@ -44,7 +44,13 @@ class AccordinglyValueValidator extends ConstraintValueValidator {
 						this.setErrorMessage(DatatypeSystemMessage.ERROR_CONSTRAINT_VALUE_LONG)
 						return false
 					}	
-					
+				case 'boolean' :
+					if(rawValue.equalsIgnoreCase("\"true\"") || rawValue.equalsIgnoreCase("\"false\"")) {
+						return true
+					} else {
+						this.setErrorMessage(DatatypeSystemMessage.ERROR_CONSTRAINT_VALUE_SHORT)
+						return false
+					}
 				case 'short' :
 					try{
 						Short.parseShort(rawValue)

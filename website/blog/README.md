@@ -28,7 +28,7 @@ Steps:
 		---
   * Store the image files under **vorto\docs\img\blogpics**
   * Prefix the path of the image files with **{{base}}**
-	 - _e.g_  {{$base}}/img/blogpics/sampleimage.png
+	 - _e.g_  {{base}}/img/blogpics/sampleimage.png
 
 
 Support

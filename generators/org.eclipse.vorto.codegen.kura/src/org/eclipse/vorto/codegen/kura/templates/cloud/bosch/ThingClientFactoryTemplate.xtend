@@ -29,12 +29,12 @@ class ThingClientFactoryTemplate implements IFileTemplate<InformationModel>{
 	}
 	
 	override getPath(InformationModel context) {
-		'''«Utils.javaPackageBasePath»/cloud/bosch'''
+		'''«Utils.getJavaPackageBasePath(context)»/cloud/bosch'''
 	}
 	
 	override getContent(InformationModel element, InvocationContext context) {
 		'''
-		package «Utils.javaPackage».cloud.bosch;
+		package «Utils.getJavaPackage(element)».cloud.bosch;
 		
 		import java.net.URL;
 		

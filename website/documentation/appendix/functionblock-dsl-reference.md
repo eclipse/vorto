@@ -50,7 +50,7 @@ The following code represents the Function Block Model DSL syntax. Function bloc
     ;
 
     operation :
-        ('breakable')? id '(' (param (paramDescription)?)? ')' ('returns'  returnType)? (returnTypeDescription)?
+        ('presence')? ('breakable')? id '(' (param (paramDescription)?)? ')' ('returns'  returnType)? (returnTypeDescription)?
     ;
 
     returnType :

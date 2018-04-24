@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.zip.ZipInputStream;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -39,9 +41,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
-import org.eclipse.vorto.server.commons.MappingZipFileExtractor;
-import org.eclipse.vorto.server.commons.ModelZipFileExtractor;
+import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
+import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,9 +113,9 @@ public class CodeGenerationController {
 
 		byte[] modelResources = downloadModelWithReferences(namespace, name, version);
 		
-		ModelZipFileExtractor extractor = new ModelZipFileExtractor(modelResources);
+		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelResources))).read();
 		
-		Model model = extractor.extract(name);
+		Model model = workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get();
 		
 		InformationModel infomodel = null;
 		
@@ -146,7 +147,10 @@ public class CodeGenerationController {
 	
 	private InvocationContext createInvocationContext(InformationModel model, String targetPlatform, Map<String, String> requestParams) {
 		byte[] mappingResources = downloadMappingModel(model, targetPlatform);
-		List<MappingModel> mappingModels =  new MappingZipFileExtractor(mappingResources).extract();
+		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingResources))).read();
+		List<MappingModel> mappingModels = workspace.get().stream().filter(p -> p instanceof MappingModel)
+													   .map(MappingModel.class::cast)
+													   .collect(Collectors.toList());
 		
 		return new InvocationContext(mappingModels, lookupService, requestParams);
 	}

@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.api.generation;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Deprecated
 public enum GeneratorRating {
 	NONE,
 	FAIR,

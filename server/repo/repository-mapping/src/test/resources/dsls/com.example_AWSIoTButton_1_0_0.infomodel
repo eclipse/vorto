@@ -1,0 +1,14 @@
+namespace com.example
+version 1.0.0
+displayname "AWSIoTButton"
+description "Information model for AWSIoTButton"
+category demo
+using com.ipso.smartobjects.Push_button ; 0.0.1
+
+infomodel AWSIoTButton {
+
+	functionblocks {
+		button1 as Push_button
+		button2 as Push_button
+	}
+}

@@ -107,7 +107,10 @@ public class ModelUploadDialog extends TitleAreaDialog {
 		createField(container, MODELTYPE_LABEL, modelType);
 		createField(container, DISPLAY_NAME_LABEL, displayName);
 		createField(container, DESCRIPTION_LABEL, description);
-		createReferencesTable(container, modelResource.getReferences());
+		
+		if (modelResource != null) {
+			createReferencesTable(container, modelResource.getReferences());
+		}
 
 		return composite;
 	}

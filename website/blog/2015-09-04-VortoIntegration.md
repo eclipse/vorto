@@ -35,7 +35,7 @@ Before we can use the toolset integration with the Model Repository, we must add
 2. Enter the URL of the Model Repository
 3. Optionally, you can also enter the username and password if you want to save models to the repository.
 
-![Preferences]({{$base}}/img/blogpics/Preferences.png)
+![Preferences]({{base}}/img/blogpics/Preferences.png)
 
 ## Adding the Model Repository view to the workspace
 
@@ -45,37 +45,37 @@ There are two ways to add the **Model Repository** view. You can either switch t
 
 Click the Vorto perspective button on the upper right corner. When the perspective change is completed, you'll see the **Model Repository** view on the bottom right corner along with the **Console**
 
-![VortoPerspective]({{$base}}/img/blogpics/VortoPerspective.png)
+![VortoPerspective]({{base}}/img/blogpics/VortoPerspective.png)
 
 ### Manually adding the Model Repository view to the workspace
 
 1. Go to *Window > Show View > Other*.
 2. Look for *Vorto*, click on *Model Repository*
 
-![ShowView]({{$base}}/img/blogpics/ShowView.png)
+![ShowView]({{base}}/img/blogpics/ShowView.png)
 
 ## Searching for models
 
 Searching for models is as simple as typing a filter and clicking the **Search** button. Without a filter, **Search** will return *ALL* models in the **Model Repository**.
 
-![ModelRepositoryView]({{$base}}/img/blogpics/ModelRepositoryView.png)
+![ModelRepositoryView]({{base}}/img/blogpics/ModelRepositoryView.png)
 
 ## Sharing models
 
 After you have created your model, you can open the context menu of the project (by right clicking on it) to see the *Share* button. This require credentials to be entered in the Vorto preferences first.
 
-![SavingModel]({{$base}}/img/blogpics/SavingModel.png)
+![SavingModel]({{base}}/img/blogpics/SavingModel.png)
 
 ## Using shared models as references
 
 Dragging a shared model from the **Model Repository** view and dropping it to a local model project will add the shared model to the list of references of the local model project. It will also download the shared model from the **Model Repository** to the **shared folder** of the local model project.
 
-![SharedModelsReferences]({{$base}}/img/blogpics/SharedModelsReferences.png)
+![SharedModelsReferences]({{base}}/img/blogpics/SharedModelsReferences.png)
 
 ## Importing a shared model to the local workspace
 
 Dragging a shared model from the **Model Repository** view and dropping it to one of the three model views (**Datatype Models**, **Function Block Models**, **Information Models**), and not to any particular local model project will import the shared model as a project to the local workspace.
 
-![SharedModelImport]({{$base}}/img/blogpics/SharedModelImport.png)
+![SharedModelImport]({{base}}/img/blogpics/SharedModelImport.png)
 
 ## Demo Video

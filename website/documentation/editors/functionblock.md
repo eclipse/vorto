@@ -19,7 +19,7 @@ A function block provides an abstract view on a device to applications that want
 
 <div class="thumb5">
 <a title="Defining a Function Block" data-rel="prettyPhoto" href="https://youtu.be/bcmXZN3IPmI&width=1500&height=1000" rel="prettyPhoto" >
-<img src="{{ $base}}/img/documentation/definefb.jpg"  class="box-img img-responsive zoom1">
+<img src="{{ base}}/img/documentation/definefb.jpg"  class="box-img img-responsive zoom1">
 <i class="fa fa-play-circle fa-5 play-icon"></i>
 </a>
 </div>

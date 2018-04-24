@@ -38,18 +38,18 @@ class JavaClassFieldGetterTemplate implements ITemplate<Property> {
 		* Getter for «property.name».
 		*/
 		«IF property.type instanceof PrimitivePropertyType»
-			public «ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «getterPrefix»«property.name.toFirstUpper»() {
-				return this.«property.name»;
+			public «ValueMapper.mapSimpleDatatype((property.type as PrimitivePropertyType).type as PrimitiveType)» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+				return this.«ValueMapper.normalize(property.name)»;
 			}
 		«ELSEIF property.type instanceof ObjectPropertyType»
 				«var ObjectPropertyType object = property.type as ObjectPropertyType»
 				«IF object.type instanceof Entity» 
-					public «(object.type as Entity).name.toFirstUpper» «getterPrefix»«property.name.toFirstUpper»() {
-						return this.«property.name»;
+					public «(object.type as Entity).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+						return this.«ValueMapper.normalize(property.name)»;
 					}
 				«ELSEIF object.type instanceof Enum»
-					public «(object.type as Enum).name.toFirstUpper» «getterPrefix»«property.name.toFirstUpper»() {
-						return this.«property.name»;
+					public «(object.type as Enum).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+						return this.«ValueMapper.normalize(property.name)»;
 					}
 				«ENDIF»
 		«ENDIF»

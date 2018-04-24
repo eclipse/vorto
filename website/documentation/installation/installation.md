@@ -4,7 +4,7 @@ title: Installation
 ---
 {% include base.html %}
 
-##Installation
+## Installation
 
 This section details the following topics:
 
@@ -12,7 +12,7 @@ This section details the following topics:
 
 [Upgrading the Vorto Toolset](./upgrade.html)  
 
-##Installing the Vorto Toolset
+## Installing the Vorto Toolset
 
 This section lists the steps required to install the Vorto Toolset.
 

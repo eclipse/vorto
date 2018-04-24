@@ -42,6 +42,14 @@ public class Predicates {
 			return delta.getKind() == IResourceDelta.REMOVED && isVortoModel.apply(delta.getResource());
 		}
 	};
+	
+	public static Predicate<IResourceDelta> isVortoModelChanged = new Predicate<IResourceDelta>() {
+		public boolean apply(IResourceDelta delta) {
+			return (delta.getKind() == IResourceDelta.CHANGED) && 
+					((delta.getFlags() & IResourceDelta.CONTENT) != 0) &&
+					isVortoModel(delta.getResource());
+		}
+	};
 
 	private static boolean isVortoModel(IResource res) {
 		return res.getFileExtension().equals("type") || res.getFileExtension().equals("fbmodel")

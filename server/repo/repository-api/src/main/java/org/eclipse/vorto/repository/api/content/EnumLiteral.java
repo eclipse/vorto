@@ -25,6 +25,10 @@ public class EnumLiteral {
 		this.description = description;
 	}
 	
+	protected EnumLiteral() {
+		
+	}
+	
 	public String getName() {
 		return name;
 	}

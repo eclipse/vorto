@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>org.eclipse.vorto.parent</artifactId>
-	<version>0.10.0.M1</version>
+	<version>0.10.0.M2</version>
 	<packaging>pom</packaging>
 
 	<name>Eclipse Vorto Toolset</name>
-    	<description>Eclipse Vorto Toolset lets you describe IoT device characteristics and functionality as Information Models</description>
+    <description>Eclipse Vorto Toolset lets you describe IoT device characteristics and functionality as Information Models</description>
 	<url>http://www.eclipse.org/vorto</url>
 	
 	<organization>
@@ -145,7 +145,7 @@
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.5</version>
 					<configuration>
-						<filesets>
+						<filesets combine.children="append">
 							<fileset>
 								<directory>${basedir}/xtend-gen</directory>
 								<includes>

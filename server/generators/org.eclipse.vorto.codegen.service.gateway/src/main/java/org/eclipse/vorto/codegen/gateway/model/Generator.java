@@ -20,8 +20,8 @@ import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.gateway.exception.GeneratorCreationException;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
-import org.eclipse.vorto.server.commons.DefaultConfigTemplate;
-import org.eclipse.vorto.server.commons.IGeneratorConfigUITemplate;
+import org.eclipse.vorto.server.commons.ui.DefaultConfigTemplate;
+import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate;
 
 public class Generator {
 	private GeneratorServiceInfo info;

@@ -30,6 +30,10 @@ public class Infomodel extends AbstractModel {
 		super(modelId, modelType);
 	}
 	
+	protected Infomodel() {
+		
+	}
+	
 	public List<ModelProperty> getFunctionblocks() {
 		return functionblocks;
 	}

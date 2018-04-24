@@ -50,6 +50,6 @@ class InformationModelRuntimeModule extends org.eclipse.vorto.editor.infomodel.A
 	}
 	
 	override bindIFormatter(){
-		InformationModelFormatter
+		return InformationModelFormatter
 	}
 }
