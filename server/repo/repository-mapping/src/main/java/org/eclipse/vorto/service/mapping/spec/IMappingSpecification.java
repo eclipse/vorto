@@ -20,6 +20,10 @@ import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 
+/**
+ * Mapping Specification that combines the Information Model properties merged with the target platform attributes defined in the mapping models. 
+ *
+ */
 public interface IMappingSpecification {
 
 	/**

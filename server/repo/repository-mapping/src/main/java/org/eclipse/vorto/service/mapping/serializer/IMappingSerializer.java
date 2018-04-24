@@ -14,6 +14,10 @@
  */
 package org.eclipse.vorto.service.mapping.serializer;
 
+/**
+ * Serializer for serializing a mapping specification 
+ *
+ */
 public interface IMappingSerializer {
 
 	String serialize();

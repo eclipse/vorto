@@ -16,8 +16,19 @@ package org.eclipse.vorto.service.mapping;
 
 import org.eclipse.vorto.service.mapping.json.JsonData;
 
+/**
+ * Data Mapper that maps specific device payload to IoT platform specific data or vica versa.
+ *
+ * @param <MappedData>
+ */
 public interface IDataMapper<MappedData extends JsonData> {
 	
+	/**
+	 * Performs the actual platform specific mapping for the given input.
+	 * @param input source input data that is supposed to get mapped.
+	 * @param context providing more meta - data for the mapper
+	 * @return mapped data that complies to the target platform.
+	 */
 	MappedData map(DataInput input, MappingContext context);
 	
 	static DataMapperBuilder newBuilder() {

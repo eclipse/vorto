@@ -14,8 +14,15 @@
  */
 package org.eclipse.vorto.service.mapping;
 
+/**
+ * Data Input that is processed by the {@link IDataMapper}
+ *
+ */
 public interface DataInput {
-
+	
+	/**
+	 * gets the actual data object 
+	 */
 	Object getValue();
 	
 	static DataInputFactory newInstance() {
