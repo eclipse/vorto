@@ -14,13 +14,23 @@
 
 <script type="text/ng-template" id="deleteAccount.html">
 	<div class="modal-header">
-		<h3 class="modal-title" id="modal-title-deleteAccount">Delete Account ?</h3>
+  		<h3 class="modal-title" id="modal-title-deleteAccount">Delete Account</h3>
 	</div>
-    <div class="modal-body" id="modal-body-deleteAccount">
-		Are you sure, you want to delete your account ? 
+  	<div class="modal-body" id="modal-body-deleteAccount">
+      <div class="row">
+      	<div class="col-md-12">
+        	Are you sure you want to delete your account?
+      	</div>
+    	</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+        		<div class="alert alert-warning" role="alert">Note: Your information models will be anonymized if you delete your account.</div>
+      	</div>
+    	</div>
 	</div>
-    <div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="deleteAccount()">Yes, I want to delete my account!</button>
-		<button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
-	</div>
+	<div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="deleteAccount()">Delete account</button>
+			<button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
+  	</div>
 </script>
