@@ -9,14 +9,16 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.junit.Test;
 
-public class UnideMappingTest {
+public class UnideMappingTest extends AbstractMappingTest  {
 
 	
 	@Test
 	public void testMapUnideMessageToDitto() throws Exception {
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 											.infomodelId("org.eclipse.unide.devices.MobilePhone:1.0.0")
-											.targetPlatformKey("org_eclipse_unide_devices_MobilePhone_1_0_0").build();
+											.targetPlatformKey("org_eclipse_unide_devices_MobilePhone_1_0_0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification).buildDittoMapper();
 
 		final String unideMessage = IOUtils.toString(UnideMappingTest.class.getClassLoader().getResourceAsStream("unide.json"));
