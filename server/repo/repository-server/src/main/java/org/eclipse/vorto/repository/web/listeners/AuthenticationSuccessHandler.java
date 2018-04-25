@@ -15,12 +15,15 @@
 package org.eclipse.vorto.repository.web.listeners;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.UserUtils;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -35,7 +38,7 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 	private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@Autowired
-    private IUserAccountService accountService;
+	private IUserRepository userRepository;
 	
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -48,7 +51,14 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 	protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException {
 
-		String targetUrl = determineTargetUrl(authentication);
+		OAuth2Authentication auth = (OAuth2Authentication)authentication;
+		
+		Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
+		
+		String targetUrl = _user.map(user -> {
+			UserUtils.refreshSpringSecurityUser(user);
+			return "/#/";
+		}).orElse("/#/signup");
 
 		if (response.isCommitted()) {
 			logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
@@ -57,17 +67,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 
 		redirectStrategy.sendRedirect(request, response, targetUrl);
 	}
-	
-	protected String determineTargetUrl(Authentication authentication) {
-		OAuth2Authentication auth = (OAuth2Authentication)authentication;
-		boolean isRegistered = accountService.exists(authentication.getName());
-        
-        if (!isRegistered) {
-            return "/#/signup";
-        } else {
-            return "/#/";
-        }
-    }
 
 	public void setRedirectStrategy(RedirectStrategy redirectStrategy) {
 		this.redirectStrategy = redirectStrategy;

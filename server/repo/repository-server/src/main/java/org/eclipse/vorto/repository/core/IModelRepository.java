@@ -60,7 +60,7 @@ public interface IModelRepository {
 	 * @param callerId
 	 * @return result about information of the uploaded content and the upload handle. 
 	 */
-	UploadModelResult upload(byte[] content, String fileName, String callerId);
+	UploadModelResult upload(byte[] content, String fileName, IUserContext userContext);
 	
 	/**
 	 * @pre {@link UploadModelResult#isValid() == true}}
@@ -72,7 +72,7 @@ public interface IModelRepository {
 	 * @param callerId
 	 * @return model that was been checked in
 	 */
-	ModelInfo checkin(String handleId, String callerId);
+	ModelInfo checkin(String handleId, IUserContext userContext);
 		
 	/**
 	 * Removes a model image for the given model id

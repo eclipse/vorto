@@ -16,6 +16,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -24,7 +25,7 @@ public class MappingTest extends AbstractIntegrationTest {
 	@Test
 	public void tesUploadMapping() throws IOException {
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
 		assertNull(uploadResult.getErrorMessage());
 		assertNotNull(uploadResult.getHandleId());
@@ -43,7 +44,7 @@ public class MappingTest extends AbstractIntegrationTest {
 	@Test
 	public void testCheckinValidMapping() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
 		assertEquals(0, modelRepository.search("*").size());
 
@@ -55,16 +56,16 @@ public class MappingTest extends AbstractIntegrationTest {
 
 		when(userRepository.findAll()).thenReturn(users);
 
-		modelRepository.checkin(uploadResult.getHandleId(), "alex");
+		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user("alex"));
 		Thread.sleep(2000); // hack coz it might take awhile until index is
 							// updated to do a search
 		assertEquals(1, modelRepository.search("*").size());
 
 		uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.mapping").getInputStream()),
-				"sample.mapping", "admin");
+				"sample.mapping", UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
-		modelRepository.checkin(uploadResult.getHandleId(), "alex");
+		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user("alex"));
 		assertEquals(1, modelRepository.search("-Mapping").size());
 	}
 

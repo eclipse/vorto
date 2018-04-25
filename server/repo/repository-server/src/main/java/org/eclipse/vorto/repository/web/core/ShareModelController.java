@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.List;
 
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
@@ -25,6 +26,7 @@ import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.slf4j.Logger;
@@ -70,6 +72,9 @@ public class ShareModelController {
 	@Value("${server.config.maxModelSize}")
 	private long maxModelSize;
 	
+	@Autowired
+	private IUserRepository userRepository;
+	
 	private UploadModelResult uploadModelResult;
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
@@ -81,7 +86,7 @@ public class ShareModelController {
 		
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
-			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
+			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
 			uploadModelResults.add(uploadModelResult);
 			String message = "Uploaded model " + file.getOriginalFilename() + (uploadModelResult.isValid() ? " is valid to check in." : " has errors. Cannot check in.") ;
@@ -103,7 +108,7 @@ public class ShareModelController {
 		
 		LOGGER.info("Bulk upload Models: [" + file.getOriginalFilename() + "]");
 		try {
-			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository,uploadStorage);
+			BulkUploadHelper bulkUploadService = new BulkUploadHelper(this.modelRepository, uploadStorage, userRepository);
 			
 			List<UploadModelResult> uploadModelResults = bulkUploadService.uploadMultiple(file.getBytes(),file.getOriginalFilename(),SecurityContextHolder.getContext().getAuthentication().getName());
 			LOGGER.info("Models Uploaded: [" + uploadModelResults.size() + "]");
@@ -122,7 +127,7 @@ public class ShareModelController {
 	public ResponseEntity<ModelId> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
-			ModelInfo result = modelRepository.checkin(handleId, SecurityContextHolder.getContext().getAuthentication().getName());
+			ModelInfo result = modelRepository.checkin(handleId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 			return new ResponseEntity<ModelId>(result.getId(),HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
@@ -136,7 +141,7 @@ public class ShareModelController {
 		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
-				modelRepository.checkin(handle.getHandleId(), SecurityContextHolder.getContext().getAuthentication().getName());
+				modelRepository.checkin(handle.getHandleId(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 			}
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (Exception e) {

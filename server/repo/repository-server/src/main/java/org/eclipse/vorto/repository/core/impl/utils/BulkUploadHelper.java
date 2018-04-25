@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
@@ -38,6 +39,7 @@ import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.vorto.repository.core.impl.UploadModelResultFactory;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
@@ -56,12 +58,15 @@ public class BulkUploadHelper {
 	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
 	
 	private IModelRepository repositoryService;
+	
+	private IUserRepository userRepository;
 
 	private ITemporaryStorage uploadStorage;
 	
-	public BulkUploadHelper(IModelRepository modelRepository, ITemporaryStorage storage) {
+	public BulkUploadHelper(IModelRepository modelRepository, ITemporaryStorage storage, IUserRepository userRepository) {
 		this.repositoryService = modelRepository;
 		this.uploadStorage = storage;
+		this.userRepository = userRepository;
 	}
 	
 	public List<UploadModelResult> uploadMultiple(byte[] content, String zipFileName, String callerId) {
@@ -79,7 +84,7 @@ public class BulkUploadHelper {
 			 * Create mapping function that will convert from a ModelInfo to an UploadModelResult using validators
 			 */
 			Function<ModelInfo, UploadModelResult> convertToUploadModelResult = createConvertToUploadModelResultFn(constructBulkUploadValidators(parseResult.validModels),
-					InvocationContext.create(callerId));
+					InvocationContext.create(UserContext.user(callerId)));
 			
 			/*
 			 * Convert parsed models tp UploadModelResult
@@ -178,7 +183,7 @@ public class BulkUploadHelper {
 
 	private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
 		List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
-		bulkUploadValidators.add(new DuplicateModelValidation(this.repositoryService));
+		bulkUploadValidators.add(new DuplicateModelValidation(this.repositoryService, this.userRepository));
 		bulkUploadValidators.add(new BulkModelDuplicateIdValidation(this.repositoryService, modelResources));
 		bulkUploadValidators.add(new BulkModelReferencesValidation(this.repositoryService, modelResources));
 		return bulkUploadValidators;

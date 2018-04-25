@@ -38,10 +38,12 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -80,7 +82,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) throws UnsupportedEncodingException {
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
-		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource)).collect(Collectors.toList());
+		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource,
+				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()))).collect(Collectors.toList());
 	}
 	
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
@@ -99,7 +102,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
-		return ModelDtoFactory.createDto(resource);
+		return ModelDtoFactory.createDto(resource, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 	
 	@ApiOperation(value = "Returns the model content")
