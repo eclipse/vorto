@@ -20,14 +20,12 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,21 +57,8 @@ public class DefaultUserAccountService implements IUserAccountService {
 
 		user = userRepository.save(user);
 		if (user != null) {
-			refreshSpringSecurityUser(user);
+			UserUtils.refreshSpringSecurityUser(user);
 		}
-	}
-
-	private void refreshSpringSecurityUser(User user) {
-		// We only need to replace the authorities as that might be the only thing that changed
-		OAuth2Authentication oauth2Auth = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-
-		UsernamePasswordAuthenticationToken oldAuth = (UsernamePasswordAuthenticationToken) oauth2Auth.getUserAuthentication();
-
-		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(oldAuth.getPrincipal(),
-				oldAuth.getCredentials(), AuthorityUtils.createAuthorityList("ROLE_" + user.getRole().toString()));
-		newAuth.setDetails(oldAuth.getDetails());
-
-		SecurityContextHolder.getContext().setAuthentication(new OAuth2Authentication(oauth2Auth.getOAuth2Request(), newAuth));
 	}
 
 	private Role toRole(String username) {
@@ -97,7 +82,7 @@ public class DefaultUserAccountService implements IUserAccountService {
 	}
 
 	private void makeModelsAnonymous(String username) {
-		List<ModelInfo> userModels = this.modelRepository.search("author:" + username);
+		List<ModelInfo> userModels = this.modelRepository.search("author:" + UserContext.user(username).getHashedUsername());
 
 		for (ModelInfo model : userModels) {
 			model.setAuthor(USER_ANONYMOUS);

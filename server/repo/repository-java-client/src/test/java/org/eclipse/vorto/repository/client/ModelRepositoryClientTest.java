@@ -52,9 +52,17 @@ public class ModelRepositoryClientTest {
 	
 	@Before
 	public void setUp() {
-		modelRepo = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildModelRepositoryClient();
-		mapping = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildIMappingClient();
-		publisher = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL).buildModelPublishClient();
+		RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder().setBaseUrl(PUBLIC_ECLIPSE_REPO_URL);
+		
+		if (System.getProperty("http.proxyHost") != null) {
+			builder.setProxyHost(System.getProperty("http.proxyHost"));
+			builder.setProxyPort(Integer.valueOf(System.getProperty("http.proxyPort")));
+			System.out.println("Using proxy -> " + System.getProperty("http.proxyHost") + ":" + Integer.valueOf(System.getProperty("http.proxyPort")));
+		}
+		
+		modelRepo = builder.buildModelRepositoryClient();
+		mapping = builder.buildIMappingClient();
+		publisher = builder.buildModelPublishClient();
 	}
 
 	@Test

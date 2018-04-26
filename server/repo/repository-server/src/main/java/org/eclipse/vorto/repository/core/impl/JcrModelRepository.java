@@ -50,6 +50,7 @@ import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IModelContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
@@ -203,7 +204,7 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public UploadModelResult upload(byte[] content, String fileName, String callerId) {
+	public UploadModelResult upload(byte[] content, String fileName, IUserContext userContext) {
 
 		try {
 			ModelInfo resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
@@ -211,7 +212,7 @@ public class JcrModelRepository implements IModelRepository {
 			List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
 			for (IModelValidator validator : validators) {
 				try {
-					validator.validate(resource, InvocationContext.create(callerId));
+					validator.validate(resource, InvocationContext.create(userContext));
 				} catch (ValidationException validationException) {
 					validationExceptions.add(validationException);
 				}
@@ -234,7 +235,7 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public ModelInfo checkin(String handleId, String author) {
+	public ModelInfo checkin(String handleId, IUserContext userContext) {
 		StorageItem uploadedItem = this.uploadStorage.get(handleId);
 
 		if (uploadedItem == null) {
@@ -253,7 +254,7 @@ public class JcrModelRepository implements IModelRepository {
 						"nt:file");
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
-				fileNode.setProperty("vorto:author", author);
+				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
@@ -322,7 +323,7 @@ public class JcrModelRepository implements IModelRepository {
 
 	@PostConstruct
 	public void createValidators() {
-		this.validators.add(new DuplicateModelValidation(this));
+		this.validators.add(new DuplicateModelValidation(this, userRepository));
 		this.validators.add(new ModelReferencesValidation(this));
 		this.validators.add(new TypeImportValidation());
 	}

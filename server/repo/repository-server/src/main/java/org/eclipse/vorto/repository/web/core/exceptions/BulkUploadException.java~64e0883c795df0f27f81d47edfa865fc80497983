@@ -12,23 +12,14 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.core.impl;
+package org.eclipse.vorto.repository.web.core.exceptions;
 
-import org.eclipse.vorto.repository.core.IUserContext;
+public class BulkUploadException extends RuntimeException {
 
-public final class InvocationContext {
+	private static final long serialVersionUID = -5865600232611276950L;
 
-	private IUserContext userContext;
-	
-	public static InvocationContext create(IUserContext userContext) {
-		return new InvocationContext(userContext);
-	}
-	
-	private InvocationContext(IUserContext userContext) {
-		this.userContext = userContext;
+	public BulkUploadException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
-	public IUserContext getUserContext() {
-		return userContext;
-	}
 }

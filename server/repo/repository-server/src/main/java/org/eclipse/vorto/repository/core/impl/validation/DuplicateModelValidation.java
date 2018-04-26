@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
+import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
@@ -24,9 +27,12 @@ import org.eclipse.vorto.repository.core.impl.InvocationContext;
 public class DuplicateModelValidation implements IModelValidator {
 
 	private IModelRepository modelRepository;
+	
+	private IUserRepository userRepository;
 
-	public DuplicateModelValidation(IModelRepository modelRepository) {
+	public DuplicateModelValidation(IModelRepository modelRepository, IUserRepository userRepo) {
 		this.modelRepository = modelRepository;
+		this.userRepository = userRepo;
 	}
 	
 	@Override
@@ -39,10 +45,20 @@ public class DuplicateModelValidation implements IModelValidator {
 	}
 
 	private boolean isAdmin(InvocationContext context) {
-		return context.getUsername().equalsIgnoreCase("admin");
+		assert(context != null);
+		assert(context.getUserContext() != null);
+		assert(context.getUserContext().getUsername() != null);
+		assert(userRepository != null);
+		
+		User user = userRepository.findByUsername(context.getUserContext().getUsername()); 
+		
+		return user != null && user.getRole() != null && user.getRole().equals(Role.ADMIN);
 	}
 	
 	private boolean isAuthor(ModelInfo model, InvocationContext context) {
-		return model.getAuthor().equalsIgnoreCase(context.getUsername());
+		assert(context != null);
+		assert(context.getUserContext() != null);
+		
+		return model.getAuthor().equalsIgnoreCase(context.getUserContext().getHashedUsername());
 	}
 }

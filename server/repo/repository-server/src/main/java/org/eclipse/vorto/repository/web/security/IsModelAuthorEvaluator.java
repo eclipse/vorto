@@ -19,6 +19,7 @@ import java.io.Serializable;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
@@ -40,7 +41,7 @@ public class IsModelAuthorEvaluator implements PermissionEvaluator {
 		if (targetDomainObject instanceof ModelId) {
 			ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
 			if (modelInfo != null) {
-				return modelInfo.getAuthor().equalsIgnoreCase(callerId);
+				return modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getHashedUsername());
 			}
 		} else if (targetDomainObject instanceof String) {
 			return callerId.equalsIgnoreCase((String)targetDomainObject);

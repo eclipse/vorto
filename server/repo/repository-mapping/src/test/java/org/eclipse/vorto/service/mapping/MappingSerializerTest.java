@@ -8,13 +8,15 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.junit.Test;
 
-public class MappingSerializerTest {
+public class MappingSerializerTest extends AbstractMappingTest {
 
 	@Test
 	public void testCreateAndSerializeMappingSpec() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get().addStereotype(Stereotype.createWithXpath("/@incl"));
@@ -28,7 +30,9 @@ public class MappingSerializerTest {
 	public void testCreateAndSerializeMappingSpec2() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
@@ -42,7 +46,9 @@ public class MappingSerializerTest {
 	public void testCreateAndSerializeMappingSpecContainingCustomFunctions() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
@@ -57,7 +63,9 @@ public class MappingSerializerTest {
 	public void testCreateAndSerializeMappingSpecContainingEmptyFunctions() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
@@ -72,7 +80,9 @@ public class MappingSerializerTest {
 	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesFunction() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));
@@ -87,7 +97,9 @@ public class MappingSerializerTest {
 	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesCondition() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.remoteClient(this.getModelRepository())
+											.build();
 		
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get().addStereotype(Stereotype.createWithXpath("/@dist"));
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("sensor_units").get().addStereotype(Stereotype.createWithXpath(""));

@@ -59,6 +59,13 @@ public class User {
 		user.role = Role.USER;
 		return user;
 	}
+	
+	public static User create(String username, Role role) {
+		User user = new User();
+		user.username = username;
+		user.role = role;
+		return user;
+	}
 
 	public Long getId() {
 		return id;

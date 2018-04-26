@@ -74,6 +74,7 @@ import org.eclipse.vorto.repository.api.content.Operation;
 import org.eclipse.vorto.repository.api.content.Param;
 import org.eclipse.vorto.repository.api.content.ReturnType;
 import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.repository.core.IUserContext;
 
 /**
  * Converts the EMF Model to POJO's
@@ -81,9 +82,15 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
  */
 public class ModelDtoFactory {
 
-	public static ModelInfo createDto(ModelInfo resource) {
+	public static ModelInfo createDto(ModelInfo resource, IUserContext userContext) {
 		ModelInfo dto = new ModelInfo(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
-		dto.setAuthor(resource.getAuthor());
+		
+		if (userContext.getHashedUsername().equals(resource.getAuthor())) {
+			dto.setAuthor(userContext.getUsername());
+		} else {
+			dto.setAuthor(resource.getAuthor());
+		}
+		
 		dto.setCreationDate(resource.getCreationDate());
 		dto.setDescription(resource.getDescription());
 		dto.setDisplayName(resource.getDisplayName());
