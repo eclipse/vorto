@@ -23,8 +23,10 @@ public class Stereotype {
 	private String name;
 	
 	private static final String SOURCE = "source";
+	private static final String TARGET = "target";
 	private static final String FUNCTIONS = "functions";
 	private static final String XPATH_ATT = "xpath";
+	private static final String KEY_ATT = "key";
 	private static final String VALUE_ATT = "value";
 	private static final String CONDITION_ATT = "condition";
 
@@ -42,11 +44,11 @@ public class Stereotype {
 		return new Stereotype(SOURCE, attributes);
 	}
 	
-	public static Stereotype createWithXpathAndValue(String xpath, String value) {
+	public static Stereotype createOperationTarget(String key, String value) {
 		Map<String,String> attributes = new HashMap<String, String>(1);
-		attributes.put(XPATH_ATT,xpath);
+		attributes.put(KEY_ATT,key);
 		attributes.put(VALUE_ATT, value);
-		return new Stereotype(SOURCE, attributes);
+		return new Stereotype(TARGET, attributes);
 	}
 	
 	public static Stereotype createWithConditionalXpath(String condition, String xpath) {

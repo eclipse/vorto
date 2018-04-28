@@ -25,6 +25,22 @@ import org.apache.commons.jxpath.JXPathContext;
 public class DynamicBean {
 
 	private Map<String, Object> properties = new HashMap<String, Object>();
+	
+	private JxPathFactory jxpathFactory;
+	
+	public DynamicBean(JxPathFactory jxpathFactory) {
+		this.jxpathFactory = jxpathFactory;
+	}
+	
+	public DynamicBean() {
+		this(defaultContext());
+	}
+	
+	private static JxPathFactory defaultContext() {
+		JxPathFactory factory = new JxPathFactory();
+		factory.setLenient(true);
+		return factory;
+	}
 
 	public void setProperty(String path, Object value) {
 		setProperty(properties, path, value, path);
@@ -81,8 +97,7 @@ public class DynamicBean {
 	}
 
 	private Object getValue(Object ctx, String path) {
-		JXPathContext jxpathCtx = JXPathContext.newContext(ctx);
-		jxpathCtx.setLenient(true);
+		JXPathContext jxpathCtx = jxpathFactory.newContext(ctx);
 		return jxpathCtx.getValue(path);
 	}
 
