@@ -23,6 +23,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConfigMapping;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
@@ -32,6 +33,20 @@ import org.junit.Test;
 
 public class JsonMappingTest {
 
+	@Test
+	public void testDittoConfigMapping() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
+				.buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+
+		System.out.println(mappedDittoOutput.toJson());
+
+	}
+	
 	@Test
 	public void testDittoMapping() throws Exception {
 
