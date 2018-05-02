@@ -260,6 +260,7 @@ public class JcrModelRepository implements IModelRepository {
 						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
 				contentNode.setProperty("jcr:data", binary);
 			} else {
+				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
 				Node contentNode = fileNode.getNode("jcr:content");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
