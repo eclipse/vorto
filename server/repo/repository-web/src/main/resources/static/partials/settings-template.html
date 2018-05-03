@@ -4,6 +4,12 @@
 	<br />
 	<div class="row">
 		<div class="col-xs-8">
+			<a class="btn btn-primary" ng-href="rest/model/mine" role="button"><i class="fa fa-fw fa-download"></i>Export Information Models</a>
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-xs-8">
 			<button class="btn btn-danger" type="submit"
 				ng-click="openRemoveAccount()">
 				<i class="glyphicon glyphicon-remove-sign"></i> Delete Account
@@ -21,13 +27,13 @@
       	<div class="col-md-12">
         	Are you sure you want to delete your account?
       	</div>
-    	</div>
-			<hr>
-			<div class="row">
-				<div class="col-md-12">
-        		<div class="alert alert-warning" role="alert">Note: Your information models will be anonymized if you delete your account.</div>
+      </div>
+	  <hr>
+	  <div class="row">
+		<div class="col-md-12">
+          <div class="alert alert-warning" role="alert">Note: If you delete your account, the author of the information models you created will be set to Anonymous, and your information will be deleted from our user database.</div>
       	</div>
-    	</div>
+      </div>
 	</div>
 	<div class="modal-footer">
       <button class="btn btn-primary" type="button" ng-click="deleteAccount()">Delete account</button>

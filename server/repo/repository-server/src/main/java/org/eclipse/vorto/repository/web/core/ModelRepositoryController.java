@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -301,16 +302,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 		
 		final ModelId modelId = new ModelId(name, namespace, version);
+		
 		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelId, targetPlatform);
 		
+		final String fileName = modelId.getNamespace() + "_" + modelId.getName() + "_" + modelId.getVersion() + ".zip";
+		
+		sendAsZipFile(response, fileName, mappingResources);
+	}
+
+	@RequestMapping(value ={ "/mine" }, method = RequestMethod.GET)
+	public void getUserModels(Principal user, final HttpServletResponse response) {
+		List<ModelInfo> userModels = this.modelRepository.search("author:" + UserContext.user(user.getName()).getHashedUsername());
+		
+		logger.info("Exporting information models for " + user.getName() + " results: " + userModels.size());
+		
+		sendAsZipFile(response, user.getName() + "-models.zip", userModels);
+	}
+	
+	private void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 
 		final ContentType contentType = ContentType.DSL;
 		
 		try {
-		for (ModelInfo mappingResource : mappingResources) {
-			addModelToZip(zos, mappingResource.getId(), contentType);
+		for (ModelInfo modelInfo : modelInfos) {
+			addModelToZip(zos, modelInfo.getId(), contentType);
 		}
 
 		zos.close();
@@ -319,8 +336,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException(ex);
 		}
 		
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
-				+ modelId.getName() + "_" + modelId.getVersion() + ".zip");
+		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
 		response.setContentType(APPLICATION_OCTET_STREAM);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
@@ -329,5 +345,4 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-
 }
