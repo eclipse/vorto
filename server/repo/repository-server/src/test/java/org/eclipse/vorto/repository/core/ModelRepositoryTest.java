@@ -397,4 +397,16 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 			assertEquals(1, ex.getReferencedBy().size());
 		}
 	}
+	
+	@Test
+	public void testAuthorSearch() {
+		IUserContext erle = UserContext.user("erle");
+		IUserContext admin = UserContext.user("admin");
+		checkinModel("Color.type", erle);
+		checkinModel("Colorlight.fbmodel", erle);
+		checkinModel("Switcher.fbmodel", admin);
+		
+		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
+		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());
+	}
 }
