@@ -25,6 +25,7 @@ import java.util.TreeSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
@@ -67,7 +68,11 @@ public abstract class AbstractModelElement implements IModelElement,
 	
 	@Override
 	public ModelId getId() {
-		return ModelIdFactory.newInstance(getModel());
+		Model model = getModel();
+		if(model != null) {
+			return ModelIdFactory.newInstance(model);
+		}
+		return null;
 	}
 
 	@Override
@@ -77,7 +82,11 @@ public abstract class AbstractModelElement implements IModelElement,
 	
 	public Set<IModelElement> getReferences() {
 		Set<IModelElement> references = new TreeSet<>();
-		for (ModelReference modelReference : getModel().getReferences()) {
+		Model model = getModel();
+		if(model == null) {
+			return references;
+		}
+		for (ModelReference modelReference : model.getReferences()) {
 			for(ModelType possibleType : getPossibleReferenceTypes()) {
 				ModelId modelId = ModelIdFactory.newInstance(possibleType, modelReference);
 				IModelElement modelElementReference = this.modelProject.getModelElementById(modelId);
