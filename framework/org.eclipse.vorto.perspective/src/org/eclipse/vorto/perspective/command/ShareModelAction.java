@@ -56,7 +56,7 @@ public abstract class ShareModelAction extends Action {
 		MessageDialog dialog =
 			    new MessageDialog(getViewer().getControl().getShell(), "Share Model", null, 
 			    		"To upload your model, please follow the following steps:",
-			    		MessageDialog.INFORMATION, 0, new String[] { IDialogConstants.OK_LABEL }) {
+			    		MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0) {
 			protected Control createCustomArea(Composite parent) {
 				FillLayout fillLayout = new FillLayout();
 				fillLayout.type = SWT.VERTICAL;
