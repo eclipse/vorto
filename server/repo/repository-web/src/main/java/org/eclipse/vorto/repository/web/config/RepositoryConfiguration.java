@@ -14,7 +14,10 @@
  */
 package org.eclipse.vorto.repository.web.config;
 
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.sso.boschid.EidpUtils;
+import org.eclipse.vorto.repository.upgrade.IUpgradeService;
+import org.eclipse.vorto.repository.upgrade.impl.DefaultUpgradeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -51,5 +54,14 @@ public class RepositoryConfiguration {
 		} else {
 			return EidpUtils.accessTokenProvider();
 		}
+	}
+	
+	@Bean
+	public IUpgradeService upgradeService(IModelRepository modelRepository) {
+		DefaultUpgradeService upgradeService = new DefaultUpgradeService();
+		/*
+		 * ADD UPGRADE TASKS HERE
+		 */
+		return upgradeService;
 	}
 }
