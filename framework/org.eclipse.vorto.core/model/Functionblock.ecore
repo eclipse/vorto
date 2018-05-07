@@ -51,6 +51,8 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReturnObjectType" eSuperTypes="#//ReturnType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="ecore:EClass Datatype.ecore#//Type"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="ecore:EClass Datatype.ecore#//ConstraintRule"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ReturnPrimitiveType" eSuperTypes="#//ReturnType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="returnType" eType="ecore:EEnum Datatype.ecore#//PrimitiveType"/>
@@ -74,5 +76,17 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
         eType="ecore:EClass Datatype.ecore#//Property" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReturnDictonaryType" eSuperTypes="#//ReturnType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="returnType" eType="ecore:EClass Datatype.ecore#//DictionaryPropertyType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="ecore:EClass Datatype.ecore#//ConstraintRule"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DictonaryParam" eSuperTypes="#//Param">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Datatype.ecore#//DictionaryPropertyType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="ecore:EClass Datatype.ecore#//ConstraintRule"
+        containment="true"/>
   </eClassifiers>
 </ecore:EPackage>
