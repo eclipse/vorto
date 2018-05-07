@@ -10,5 +10,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Functionblock.ecore#//FunctionblockModel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="presence" eType="ecore:EClass Datatype.ecore#//Presence"
+        containment="true"/>
   </eClassifiers>
 </ecore:EPackage>
