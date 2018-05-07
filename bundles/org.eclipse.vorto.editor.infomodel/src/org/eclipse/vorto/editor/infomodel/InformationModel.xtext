@@ -15,7 +15,6 @@
  *******************************************************************************/
 grammar org.eclipse.vorto.editor.infomodel.InformationModel with org.eclipse.vorto.editor.datatype.Datatype
 
-import "http://www.eclipse.org/vorto/metamodel/Datatype" as datatype
 import "http://www.eclipse.org/vorto/metamodel/InformationModel"
 import "http://www.eclipse.org/vorto/metamodel/Model" as model
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as fbs
