@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -128,7 +127,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new RuntimeException("Could not create query manager", e);
 		}
 	}
-	
+
 	private ModelInfo createMinimalModelInfo(Node node) throws RepositoryException {
 		ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(node.getParent().getPath()),
 				ModelType.valueOf(node.getProperty("vorto:type").getString()));
@@ -138,12 +137,12 @@ public class JcrModelRepository implements IModelRepository {
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
-		
+
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
 		if (imageNodeIterator.hasNext()) {
 			resource.setHasImage(true);
 		}
-		
+
 		return resource;
 	}
 
@@ -176,7 +175,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node referencedByFileNode = prop.getParent();
 			final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
 			resource.getReferencedBy().add(referencedById);
-			
+
 			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
 				ModelEMFResource emfResource = getEMFResource(referencedById);
 				resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
@@ -377,7 +376,7 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	private ModelEMFResource getEMFResource(ModelId modelId) {
+	public ModelEMFResource getEMFResource(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
@@ -462,11 +461,26 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
 					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
 			fileNode.setProperty("vorto:author", model.getAuthor());
-			
+
 			session.save();
-			
+
 			return model;
 		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		}
+	}
+
+	public void saveModel(ModelEMFResource resource) {
+		try {
+			Node folderNode = createNodeForModelId(resource.getId());
+			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
+					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
+			Node contentNode = fileNode.getNode("jcr:content");
+			Binary binary = session.getValueFactory()
+					.createBinary(new ByteArrayInputStream(resource.toDSL()));
+			contentNode.setProperty("jcr:data", binary);
+			session.save();
+		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		}
 	}
