@@ -26,6 +26,9 @@ import org.eclipse.xtext.scoping.IScopeProvider
 import com.google.inject.Binder
 import com.google.inject.Singleton
 import org.eclipse.vorto.editor.infomodel.formatting.InformationModelFormatter
+import com.google.inject.Provides
+import org.eclipse.vorto.editor.functionblock.validation.TypeHelper
+import org.eclipse.vorto.editor.functionblock.validation.TypeFileAccessingHelper
 
 /** 
  * Use this class to register components to be used at runtime / without the
@@ -39,6 +42,10 @@ class InformationModelRuntimeModule extends org.eclipse.vorto.editor.infomodel.A
 
 	override Class<? extends IScopeProvider> bindIScopeProvider() {
 		return InformationModelScopeProvider
+	}
+	
+	@Provides def TypeHelper getTypeHelper() {
+		return new TypeFileAccessingHelper()
 	}
 
 	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {

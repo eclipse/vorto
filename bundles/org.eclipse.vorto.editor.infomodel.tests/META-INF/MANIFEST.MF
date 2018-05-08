@@ -9,7 +9,9 @@ Require-Bundle: org.eclipse.vorto.editor.infomodel,
  org.eclipse.xtext.junit4,
  org.eclipse.vorto.core,
  org.eclipse.xtext.xbase.junit,
- org.eclipse.xtext.xbase.lib
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.vorto.editor.functionblock,
+ org.eclipse.vorto.editor.functionblock.tests
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.formatting,
  org.hamcrest.core,

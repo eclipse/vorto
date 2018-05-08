@@ -13,11 +13,11 @@
  * Bosch Software Innovations GmbH - Please refer to git log
  *
  *******************************************************************************/
-grammar org.eclipse.vorto.editor.infomodel.InformationModel with org.eclipse.vorto.editor.datatype.Datatype
+grammar org.eclipse.vorto.editor.infomodel.InformationModel with org.eclipse.vorto.editor.functionblock.Functionblock
+
 
 import "http://www.eclipse.org/vorto/metamodel/InformationModel"
-import "http://www.eclipse.org/vorto/metamodel/Model" as model
-import "http://www.eclipse.org/vorto/metamodel/Functionblock" as fbs
+import "http://www.eclipse.org/vorto/metamodel/Functionblock" as fb
 
 InformationModel:
 	{InformationModel}
@@ -33,19 +33,9 @@ InformationModel:
 	'}')?
 	'}';
 
-CATEGORY:
-	ID ('/' ID)*;
-	
-QualifiedName:
-	ID ('.' ID)*
-;
-
 FunctionblockProperty:
-	(presence = Presence)? name = ID 'as' type = [fbs::FunctionblockModel|QualifiedName] (description=STRING)?
-;
-
-terminal VERSION : ('0'..'9')* '.' ('0'..'9')* '.' ('0'..'9')*('-'ID)?;
-
-ModelReference returns model::ModelReference: 
-	'using' importedNamespace=QualifiedName';'version=VERSION
+	(presence = Presence)? name = ID 'as' type = [fb::FunctionblockModel | QualifiedName] ('extend' '{' 
+		extendedFunctionBlock = FunctionBlock
+		'}'
+	)? (description=STRING)?
 ;
