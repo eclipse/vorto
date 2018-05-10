@@ -86,9 +86,7 @@ public class ModelDtoFactory {
 		ModelInfo dto = new ModelInfo(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
 		
 		if (userContext.getHashedUsername().equals(resource.getAuthor())) {
-			dto.setAuthor("You");
-		} else {
-			dto.setAuthor("other User");
+			dto.setAuthor(userContext.getUsername());
 		}
 		
 		dto.setCreationDate(resource.getCreationDate());

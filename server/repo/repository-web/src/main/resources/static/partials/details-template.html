@@ -76,7 +76,8 @@
 								  <dt>Created On: </label></dt>
 								  <dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
 								  <dt>Created By:</dt>
-								  <dd class="ng-binding">{{model.author}}</dd>
+								  <dd class="ng-binding" ng-show="model.author === user">You</dd>
+								  <dd class="ng-binding" ng-show="model.author != user">Other user</dd>
 								  <dt>References: </label></dt>
 								  <dd><ul>
 									  <li ng-repeat="reference in model.references" class="ng-scope"><a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></li>
