@@ -29,8 +29,8 @@ func (c *ConfigCommand) GetCommandName() string {
 func NewConfigCommand(commandArgs []string, cfg *config.Configuration, client *config.Client) (*ConfigCommand, error) {
 
 	flg := flag.NewFlagSet("config context", flag.ContinueOnError)
-	proxy := flg.String("proxy", cfg.Password, "networks proxy settings")
-	repository := flg.String("repo", cfg.Password, "repo to get access to your models")
+	proxy := flg.String("proxy", cfg.Proxy, "networks proxy settings")
+	repository := flg.String("repo", cfg.Repository, "repo to get access to your models")
 
 	if err := flg.Parse(commandArgs); err == nil {
 
