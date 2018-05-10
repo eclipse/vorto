@@ -22,9 +22,11 @@ import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class DefaultUpgradeService implements IUpgradeService {
 
+	@Autowired
 	private List<IUpgradeTask> tasks;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DefaultUpgradeService.class);
@@ -33,11 +35,15 @@ public class DefaultUpgradeService implements IUpgradeService {
 	public void installUpgrades() {
 		logger.info("Performing upgrade to the Vorto Repository and its content...");
 		for (IUpgradeTask task : tasks) {
-			logger.info("Executing task - "+task.getShortDescription());
-			try {
-				task.doUpgrade();
-			} catch (UpgradeProblem problem ) {
-				logger.error("Problem executing upgrade task",problem);
+			if (!task.condition().isPresent() || task.condition().get().shouldExecuteTask()) {
+				logger.info("Executing task - " + task.getShortDescription());
+				try {
+					task.doUpgrade();
+				} catch (UpgradeProblem problem ) {
+					logger.error("Problem executing upgrade task", problem);
+				}
+			} else {
+				logger.info("NOT Executing task - " + task.getShortDescription() + ". Conditions not met.");
 			}
 		}
 	}
