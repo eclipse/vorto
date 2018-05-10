@@ -19,7 +19,7 @@ func (this *HelpCommand) Execute() error {
 
 	fmt.Println()
 	fmt.Println("Commands -------------------------------------------------------------------------------------------------------------------------")
-	fmt.Println("vorto [info|query|download|generate|generators|share] [default value] -optional flag parameters")
+	fmt.Println("vorto [info|query|download|generate|generators] [default value] -optional flag parameters")
 
 	fmt.Println()
 
@@ -59,7 +59,7 @@ func (this *HelpCommand) Execute() error {
 	fmt.Println("  -Example: vorto generators")
 
 	fmt.Println()
-
+	fmt.Println()
 
 	return nil
 }
