@@ -35,9 +35,9 @@ class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 						      		<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
 						    	</div><!-- /.box-header -->
 								<div class="box-body">
-									<p><input type="radio" ng-model="configParams.language" value="arduino">&nbsp;Arduino-based Device</p>
-									<p><input type="radio" ng-model="configParams.language" value="python">&nbsp;Python-based Device</p>
-									<p><input type="radio" ng-model="configParams.language" value="java">&nbsp;Java-based Device</p>
+									<p><input type="radio" ng-model="configParams.language" value="arduino">&nbsp;Arduino</p>
+									<p><input type="radio" ng-model="configParams.language" value="python">&nbsp;Python</p>
+									<p><input type="radio" ng-model="configParams.language" value="java">&nbsp;Java</p>
 								</div><!-- /.box-body -->
 						  	</div><!-- /.box -->
 						</div>
