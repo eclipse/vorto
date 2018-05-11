@@ -14,91 +14,67 @@
  */
 package org.eclipse.vorto.codegen.bosch.things;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
-import org.eclipse.vorto.codegen.bosch.things.javaclient.JavaClientTask;
+import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
+import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
-	private static final String FALSE = "false";
-	private static final String TRUE = "true";
-	private static final String SIMULATOR = "simulator";
-	private static final String SCHEMAVALIDATOR = "validation";
-
-	public IGenerationResult generate(InformationModel infomodel,
-			InvocationContext invocationContext,
+	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 
-		GenerationResultZip zipOutputter = new GenerationResultZip(infomodel, getServiceKey());
-		
-		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
-		
-		GenerationResultBuilder result = GenerationResultBuilder.from(zipOutputter);
-		
-		if (hasNoTarget(invocationContext)) {
-			result.append(generateSchema(infomodel,monitor,invocationContext));
+		GenerationResultZip output = new GenerationResultZip(infomodel, getServiceKey());
+
+		GenerationResultBuilder result = GenerationResultBuilder.from(output);
+
+		String platform = invocationContext.getConfigurationProperties().get("language");
+		String gateway = invocationContext.getConfigurationProperties().getOrDefault("gateway", "false");
+		if (platform.equalsIgnoreCase("arduino")) {
+			result.append(generateArduino(infomodel, invocationContext, monitor));
+		} else if (platform.equalsIgnoreCase("python")) {
+			result.append(generatePython(infomodel, invocationContext, monitor));
+		} else if (platform.equalsIgnoreCase("java")) {
+			result.append(generateJava(infomodel, invocationContext, monitor));
+		} else if ("true".equalsIgnoreCase(gateway)) {
+			result.append(generateGateway(infomodel, invocationContext, monitor));
 		} else {
-			if (invocationContext.getConfigurationProperties().getOrDefault(SIMULATOR, FALSE).equalsIgnoreCase(TRUE)) {
-				generator.addTask(new JavaClientTask());
-			}
-			
-			if (invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(TRUE)) {
-				result.append(generateSchema(infomodel,monitor,invocationContext));
-			}
+			result.append(generateJava(infomodel, invocationContext, monitor));
 		}
-		
-		generator.generate(infomodel, invocationContext, zipOutputter);
-				
-		if (invocationContext.getConfigurationProperties().getOrDefault("kura", FALSE).equalsIgnoreCase(TRUE)) {
-			Map<String, String> props = new HashMap<>();
-			props.put("boschcloud", "true");
-			props.put("bluetooth", "true");
-			IGenerationResult kuraResult = invocationContext.lookupGenerator("kura").generate(infomodel,
-					InvocationContext.simpleInvocationContext(props), monitor);
-			result.append(kuraResult);
-		}
-		
-		if (invocationContext.getConfigurationProperties().getOrDefault("alexa", FALSE).equalsIgnoreCase(TRUE)) {
-			Map<String, String> props = new HashMap<>();
-			props.put("cloud", "bosch");
-			props.put("thingId", invocationContext.getConfigurationProperties().getOrDefault("thingId", ""));
-			IGenerationResult awsResult = invocationContext.lookupGenerator("aws").generate(infomodel,
-					InvocationContext.simpleInvocationContext(props), monitor);
-			result.append(awsResult);
-		
-		}
-		
-		if (invocationContext.getConfigurationProperties().getOrDefault("webui", FALSE).equalsIgnoreCase(TRUE)) {
-			Map<String, String> props = new HashMap<>();
-			props.put("boschcloud", "true");
-			props.put("swagger", "true");
-			props.put("persistence", "true");
-			IGenerationResult webuiResult = invocationContext.lookupGenerator("webui").generate(infomodel,
-					InvocationContext.simpleInvocationContext(props), monitor);
-			result.append(webuiResult);
-		}
-		
-		return result.build();
+
+		return output;
 	}
 
-	private IGenerationResult generateSchema(InformationModel infomodel, IVortoCodeGenProgressMonitor monitor, InvocationContext context) throws VortoCodeGeneratorException {
-		return context.lookupGenerator("eclipseditto").generate(infomodel,InvocationContext.simpleInvocationContext(), monitor);
+	private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+
+		EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
+		return honoGenerator.generate(infomodel, context, monitor);
 	}
-	
-	private boolean hasNoTarget(InvocationContext invocationContext) {
-		return (invocationContext.getConfigurationProperties().getOrDefault(SIMULATOR, FALSE).equalsIgnoreCase(FALSE) &&
-		        invocationContext.getConfigurationProperties().getOrDefault(SCHEMAVALIDATOR, FALSE).equalsIgnoreCase(FALSE) &&
-		        invocationContext.getConfigurationProperties().getOrDefault("alexa", FALSE).equalsIgnoreCase(FALSE));
+
+	private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+		EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
+		return honoGenerator.generate(infomodel, context, monitor);
+	}
+
+	private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+		EclipseHonoGenerator honoGenerator = new EclipseHonoGenerator();
+		return honoGenerator.generate(infomodel, context, monitor);
+	}
+
+	private IGenerationResult generateGateway(InformationModel infomodel, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+		ProSystGenerator generator = new ProSystGenerator();
+		return generator.generate(infomodel, context, monitor);
+
 	}
 
 	@Override

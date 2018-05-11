@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.vorto.codegen
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.mqtt.python

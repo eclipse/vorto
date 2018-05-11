@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: arduino
+Bundle-Name: hono
 Bundle-SymbolicName: org.eclipse.vorto.codegen.hono;singleton:=true
 Bundle-Version: 0.10.0.qualifier
 Require-Bundle: org.eclipse.vorto.core,
@@ -8,6 +8,10 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.eclipse.vorto.codegen
+ org.eclipse.vorto.codegen,
+ org.eclipse.emf.common,
+ org.eclipse.vorto.codegen.arduino,
+ org.eclipse.vorto.codegen.mqtt.python
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.hono

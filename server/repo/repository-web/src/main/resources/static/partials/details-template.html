@@ -112,9 +112,33 @@
 						  </div>
 						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
 							<div class="row">
-								<label>Available Generators: </label>
+								<label>Stable Generators: </label>
 							</div>
 							<div class="row" ng-repeat="row in platformGeneratorMatrix">
+								<!--genbox-->
+								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
+										<a ng-click="openGeneratorConfig(generator)">
+		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
+		                					<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
+											</span>
+		               						<div class="tiny-box-name">
+												<span>{{generator.name}}</span>
+											</div>
+		               						<div class="tiny-box-action">
+												<span>
+													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
+												</span>
+											</div>
+		               					</div>
+	               						</a>
+								</div>
+							   <!-- end genbox -->            
+							</div>
+							<div class="row">
+								<label>Demo Generators: </label>
+							</div>
+							<div class="row" ng-repeat="row in platformDemoGeneratorMatrix">
 								<!--genbox-->
 								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
 										<a ng-click="openGeneratorConfig(generator)">

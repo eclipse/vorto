@@ -9,7 +9,11 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
  org.eclipse.vorto.codegen,
- org.apache.commons.lang3
+ org.apache.commons.lang3,
+ org.eclipse.vorto.codegen.arduino,
+ org.eclipse.vorto.codegen.mqtt.python,
+ org.eclipse.vorto.codegen.hono,
+ org.eclipse.vorto.codegen.prosystfi
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.vorto.editor.infomodel

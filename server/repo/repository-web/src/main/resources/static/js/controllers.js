@@ -261,6 +261,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
 repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '$http','$routeParams','$location', '$route','$uibModal','$timeout','$window',function ($rootScope,$scope, $http,$routeParams,$location,$route,$uibModal,$timeout,$window) {
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
+    $scope.platformDemoGeneratorMatrix = null;
     $scope.chosenFile = false;
 
     $scope.uploadImage = function () {
@@ -321,8 +322,21 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getPlatformGenerators = function () {
         $http.get('./rest/generation-router/platform')
         .success(function(result){
-            $scope.platformGeneratorMatrix = $scope.listToMatrix(result, 2);
+        	var productionGenerators = $scope.filterByTag(result,"production");
+        	var demoGenerators = $scope.filterByTag(result,"demo");
+            $scope.platformGeneratorMatrix = $scope.listToMatrix(productionGenerators, 2);
+            $scope.platformDemoGeneratorMatrix = $scope.listToMatrix(demoGenerators, 2);
         });
+    };
+    
+    $scope.filterByTag = function(result, tag) {
+    	var filteredList = [];
+    	result.forEach(function(e) {
+    	   if (e.tags.includes(tag)) {
+    	   	filteredList.push(e);
+    	   }
+    	});
+    	return filteredList;
     };
 
     $scope.isFilled = function(rating, value) {

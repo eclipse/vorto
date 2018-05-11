@@ -22,81 +22,40 @@ import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate
 
 class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
 	
-	private static final Set<String> KEYS = new HashSet(Arrays.asList("simulator","validation","alexa", "kura", "webui","thingId"));
+	private static final Set<String> KEYS = new HashSet(Arrays.asList("language", "gateway"));
 	
 	override getContent(GeneratorServiceInfo info) {
 		'''
 		<div class="form-group">
-			<div class="row">
-				<div class="col-sm-12">
-					<p>Thing ID: <input type="text" size="50" ng-model="configParams.thingId" placeholder="Optional Thing ID, e.g com.mycompany:4711"></p>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="box box-primary">
+						    	<div class="box-header with-border">
+						      		<h3 class="box-title">Choose device platform:</h3>
+						      		<span class="label label-primary pull-right"><i class="fa fa-cloud"></i></span>
+						    	</div><!-- /.box-header -->
+								<div class="box-body">
+									<p><input type="radio" ng-model="configParams.language" value="arduino">&nbsp;Arduino-based Device</p>
+									<p><input type="radio" ng-model="configParams.language" value="python">&nbsp;Python-based Device</p>
+									<p><input type="radio" ng-model="configParams.language" value="java">&nbsp;Java-based Device</p>
+								</div><!-- /.box-body -->
+						  	</div><!-- /.box -->
+						</div>
+					</div>
+					<div class="row">
+								<div class="col-sm-6">
+									<div class="box box-primary">
+								    	<div class="box-header with-border">
+								      		<h3 class="box-title">Bosch IoT Suite Gateway</h3>
+								      		<span class="label label-primary pull-right"><i class="fa fa-play-circle"></i></span>
+								    	</div><!-- /.box-header -->
+										<div class="box-body">
+											<p>Generates an OSGI bundle that can run on the Bosch IoT Suite Gateway.</p>
+											<input type="checkbox" ng-model="configParams.gateway"><i>&nbsp;Include</i>
+										</div><!-- /.box-body -->
+								  	</div><!-- /.box -->
+								</div>
 				</div>
-			</div>
-			<div class="row">
-			<div class="col-sm-4">
-				<div class="box box-primary">
-			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Device Simulator</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-play-circle"></i></span>
-			    	</div><!-- /.box-header -->
-					<div class="box-body">
-						<p>Creates a thing client that sends {{model.id.name}} data to Bosch IoT Things via HTTP</p>
-						<input type="checkbox" ng-model="configParams.simulator"><i>&nbsp;Yes, I need that</i>
-					</div><!-- /.box-body -->
-			  	</div><!-- /.box -->
-			</div>
-			<div class="col-sm-4">
-				<div class="box box-primary">
-			    	<div class="box-header with-border">
-			      		<h3 class="box-title">Device Voice-Control</h3>
-			      		<span class="label label-primary pull-right"><i class="fa fa-microphone"></i></span>
-			    	</div><!-- /.box-header -->
-					<div class="box-body">
-						<p>Creates an Alexa Skillset that fetches {{model.id.name}} properties from Bosch IoT Things via voice commands.</p>
-						<input type="checkbox" ng-model="configParams.alexa" ><i>&nbsp;Yes, I need that</i>
-					</div><!-- /.box-body -->
-			  	</div><!-- /.box -->
-			</div>
-			<div class="col-sm-4">
-				<div class="box box-primary">
-					<div class="box-header with-border">
-						<h3 class="box-title">Device Validation</h3>
-						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
-					</div><!-- /.box-header -->
-					<div class="box-body">
-						<p>Creates JSON Schema files to validate {{model.id.name}} properties in Bosch IoT Things</p>
-						<input type="checkbox" ng-model="configParams.validation" ><i>&nbsp;Yes, I need that</i>
-					</div><!-- /.box-body -->
-				</div><!-- /.box -->
-			</div>
-			</div>
-			<div class="row">
-			<div class="col-sm-4">
-				<div class="box box-primary">
-					<div class="box-header with-border">
-						<h3 class="box-title">Device Gateway</h3>
-						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
-					</div><!-- /.box-header -->
-					<div class="box-body">
-						<p>Reads device data via BLE using Eclipse Kura and sends it to Bosch IoT Things</p>
-						<input type="checkbox" ng-model="configParams.kura" ><i>&nbsp;Yes, I need that</i>
-					</div><!-- /.box-body -->
-				</div><!-- /.box -->
-			</div>
-			<div class="col-sm-4">
-				<div class="box box-primary">
-					<div class="box-header with-border">
-						<h3 class="box-title">Device Visualization</h3>
-						<span class="label label-primary pull-right"><i class="fa fa-dashboard"></i></span>
-					</div><!-- /.box-header -->
-					<div class="box-body">
-						<p>Consumes {{model.id.name}} data from Bosch IoT Things and displays it in a Web UI</p>
-						<input type="checkbox" ng-model="configParams.webui" ><i>&nbsp;Yes, I need that</i>
-					</div><!-- /.box-body -->
-				</div><!-- /.box -->
-			</div>
-			</div>
-		</div>
 		'''
 	}
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2017 Oliver Meili
+ *  Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -9,8 +9,6 @@
  *  The Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
  *   
- *  Contributors:
- *  Oliver Meili <omi@ieee.org>
  *******************************************************************************/
 package org.eclipse.vorto.codegen.mqtt.python
 
@@ -25,46 +23,40 @@ class PythonDittoSerializerTemplate implements IFileTemplate<Model> {
 	}
 	
 	override getPath(Model model) {
-		return "serializer";
+		return "model";
 	}
 	
 	override getContent(Model fb, InvocationContext context) {
-		'''
-		import numbers
-		
-		class DittoSerializer(object):
-		    
-		    def __init__(self):
-		        self.payload = ""
-		        self.first_fb = True;
-		        self.first_prop = True;
-		
-		    def serialize_infomodel(self, name, object):
-		        self.first_fb = True;
-		        self.payload = "{"
-		        object.serialize(self)
-		        self.payload += "}"
-		        return self.payload
-		
-		    def serialize_functionblock(self, name, object):
-		        if not self.first_fb:
-		            self.payload += ", "
-		        else:
-		            self.first_fb = False
-		        self.first_prop = True
-		        self.payload += "\"" + name + "\" : { \"properties\": { \"status\" : {"
-		        object.serialize(self)
-		        self.payload += "} } } "
-		
-		    def serialize_property(self, name, value):
-		        if not self.first_prop:
-		            self.payload += ", "
-		        else:
-		            self.first_prop = False
-		        if isinstance(value, numbers.Number):
-		            self.payload += "\"" + name + "\": " + str(value)
-		        else:
-		            self.payload += "\"" + name + "\": \"" + str(value) + "\""
+	'''
+	import numbers
+	
+	class DittoSerializer(object):
+	    
+	    def __init__(self):
+	        self.payload = ""
+	        self.first_prop = True
+	
+	    def serialize_functionblock(self, name, object, ditto_nameSpace, hono_clientId):
+	        self.payload += "{\"topic\": \"" + ditto_nameSpace + "/" + hono_clientId + "/things/twin/commands/modify\","
+	        self.payload += "\"headers\": {\"response-required\": false},"
+	        self.payload += "\"path\": \"/features/" + name +"/properties/status\", \"value\" : {"
+	        object.serialize(self)
+	        self.payload += "} }"
+	        returnPayload = self.payload
+	        # RESET
+	        self.payload = ""
+	        self.first_prop = True
+	        return returnPayload
+	
+	    def serialize_property(self, name, value):
+	        if not self.first_prop:
+	            self.payload += ", "
+	        else:
+	            self.first_prop = False
+	        if isinstance(value, numbers.Number):
+	            self.payload += "\"" + name + "\": " + str(value)
+	        else:
+	            self.payload += "\"" + name + "\": \"" + str(value) + "\""
 		'''
 	}
 	

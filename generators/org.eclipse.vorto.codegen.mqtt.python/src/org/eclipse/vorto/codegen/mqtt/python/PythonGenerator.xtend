@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2017 Oliver Meili
+ *  Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -9,8 +9,6 @@
  *  The Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
  *   
- *  Contributors:
- *  Oliver Meili <omi@ieee.org>
  *******************************************************************************/
 package org.eclipse.vorto.codegen.mqtt.python
 
@@ -29,18 +27,21 @@ class PythonGenerator implements IVortoCodeGenerator {
 
 		var output = new GenerationResultZip(infomodel,getServiceKey());
 		
-		var imTemplateGen = new GeneratorTaskFromFileTemplate(new PythonImTemplate())
-		imTemplateGen.generate(infomodel,context,output)
+		var imTemplateGen = new GeneratorTaskFromFileTemplate(new org.eclipse.vorto.codegen.mqtt.python.PythonImTemplate())
+		imTemplateGen.generate(infomodel,context,output)		
 		
-		var sampleTemplateGen = new GeneratorTaskFromFileTemplate(new PythonSampleTemplate())
+		var initTemplateGen = new GeneratorTaskFromFileTemplate(new org.eclipse.vorto.codegen.mqtt.python.PythonInitTemplate())
+       	initTemplateGen.generate(infomodel,context,output) 
+		
+		var sampleTemplateGen = new GeneratorTaskFromFileTemplate(new org.eclipse.vorto.codegen.mqtt.python.PythonSampleTemplate())
 		sampleTemplateGen.generate(infomodel,context,output)
 		
-		var dittoSerializerTemplateGen = new GeneratorTaskFromFileTemplate(new PythonDittoSerializerTemplate())
-        dittoSerializerTemplateGen.generate(infomodel,context,output)
+		var dittoSerializerTemplateGen = new GeneratorTaskFromFileTemplate(new org.eclipse.vorto.codegen.mqtt.python.PythonDittoSerializerTemplate())
+        dittoSerializerTemplateGen.generate(infomodel,context,output)        
 		
 		for (FunctionblockProperty fbProperty : infomodel.properties) {
-			var fbTemplateGen = new GeneratorTaskFromFileTemplate(new PythonFbTemplate());
-			fbTemplateGen.generate(fbProperty.type,context,output)
+			var fbTemplateGen = new GeneratorTaskFromFileTemplate(new org.eclipse.vorto.codegen.mqtt.python.PythonFbTemplate());
+			fbTemplateGen.generate(fbProperty.type,context,output)											
 		}
 		
 		return output
