@@ -20,4 +20,10 @@
 class SystemMessage {
 	public static final String ERROR_DUPLICATED_FUNCTIONBLOCK_NAME = 'Function Block is already defined'
 	public static final String ERROR_FUNCTIONBLOCK_NOT_IMPORTED = 'This Function Block has not yet been imported.'
+	public static final String ERROR_INCOMPATIBLE_TYPE = 'The property type is incompatible to base type.'
+	public static final String ERROR_INCOMPATIBLE_PRESENCE = 'The presence is incompatible to presence of the base type.'
+	public static final String ERROR_INCOMPATIBLE_MULTIPLICITY = 'The multiplicity is incompatible to multiplicity of the base type.'
+	public static final String ERROR_INCOMPATIBLE_BREAKABLE = 'The breakable definition is incompatible to base operation.'
+	public static final String ERROR_INCOMPATIBLE_PARMS = 'The parameters are incompatible to base operation parameters.'
+	public static final String ERROR_INCOMPATIBLE_RETURN_TYPE = 'The return type is incompatible to base type.'
 }
