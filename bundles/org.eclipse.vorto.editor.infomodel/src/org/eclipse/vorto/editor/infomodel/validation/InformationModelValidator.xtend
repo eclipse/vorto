@@ -16,24 +16,11 @@
 package org.eclipse.vorto.editor.infomodel.validation
 
 import java.util.HashSet
-import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 import org.eclipse.xtext.validation.Check
-import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
-import org.eclipse.vorto.core.api.model.datatype.PropertyType
-import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
-import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
-import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
-import org.eclipse.emf.common.util.EList
-import org.eclipse.emf.ecore.util.EcoreUtil
-import org.eclipse.vorto.core.api.model.functionblock.Operation
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage
-import java.util.List
-import org.eclipse.vorto.core.api.model.functionblock.Param
-import org.eclipse.vorto.core.api.model.functionblock.Event
 
 /**
  * Information Model Validation rules. 
@@ -59,95 +46,6 @@ class InformationModelValidator extends AbstractInformationModelValidator {
 		if (topParent !== null && !ValidatorUtils.isTypeInReferences(property.type, topParent.references)) {
 			error(SystemMessage.ERROR_FUNCTIONBLOCK_NOT_IMPORTED, property,
 				InformationModelPackage.Literals.FUNCTIONBLOCK_PROPERTY__TYPE)
-		}
-	}
-
-	def String getPropertyName(PropertyType propertyType) {
-		if (propertyType instanceof PrimitivePropertyType) {
-			return propertyType.type.literal
-		} else if (propertyType instanceof DictionaryPropertyType) {
-			return "dict" + getPropertyName(propertyType.keyType) + getPropertyName(propertyType.valueType)
-		} else if (propertyType instanceof ObjectPropertyType) {
-			return propertyType.getType().name
-		}
-	}
-
-	def validateOverriddenProperties(EList<Property> properties, EList<Property> extProperties) {
-		var propertiesMap = properties.toMap[name].mapValues[it]
-
-		var equalHelper = new EcoreUtil.EqualityHelper()
-		for (property : extProperties) {
-			var baseProperty = propertiesMap.get(property.name)
-			if (baseProperty !== null) {
-				if (!equalHelper.equals(property.presence, baseProperty.presence)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, property,
-						DatatypePackage.Literals.PROPERTY__PRESENCE)
-				}
-				if (property.multiplicity != baseProperty.multiplicity) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_MULTIPLICITY, property,
-						DatatypePackage.Literals.PROPERTY__MULTIPLICITY)
-				}
-				if (!equalHelper.equals(property.type, baseProperty.type)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_TYPE, property,
-						DatatypePackage.Literals.PROPERTY__TYPE)
-				}
-			}
-		}
-	}
-
-	def equalsParamList(List<Param> list1, List<Param> list2) {
-		var size = list1.size();
-		if (size != list2.size()) {
-			return false;
-		}
-		var equalHelper = new EcoreUtil.EqualityHelper();
-		for (var i = 0; i < size; i++) {
-			if (!equalHelper.equals(list1.get(i), list2.get(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	def validateOverriddenOperations(EList<Operation> operations, EList<Operation> extOperations) {
-		var operationsMap = operations.toMap[name].mapValues[it]
-		var equalHelper = new EcoreUtil.EqualityHelper()
-
-		for (operation : extOperations) {
-
-			var baseOperation = operationsMap.get(operation.name)
-			if (baseOperation !== null) {
-				if (!equalHelper.equals(operation.presence, baseOperation.presence)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, operation,
-						FunctionblockPackage.Literals.OPERATION__PRESENCE)
-				}
-				if (operation.breakable != baseOperation.breakable) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_BREAKABLE, operation,
-						FunctionblockPackage.Literals.OPERATION__BREAKABLE)
-				}
-				if (!equalHelper.equals(operation.presence, baseOperation.presence)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, operation,
-						FunctionblockPackage.Literals.OPERATION__PRESENCE)
-				}
-				if (!equalsParamList(operation.params, baseOperation.params)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_PARMS, operation,
-						FunctionblockPackage.Literals.OPERATION__PARAMS)
-				}
-				if (!equalHelper.equals(operation.returnType, baseOperation.returnType)) {
-					error(SystemMessage.ERROR_INCOMPATIBLE_RETURN_TYPE, operation,
-						FunctionblockPackage.Literals.OPERATION__RETURN_TYPE)
-				}
-			}
-		}
-	}
-
-	def validateOverriddenEvents(EList<Event> events, EList<Event> extEvents) {
-		var eventsMap = events.toMap[name].mapValues[it]
-		for (event : extEvents) {
-			var baseEvent = eventsMap.get(event.name)
-			if (baseEvent !== null) {
-				validateOverriddenProperties(baseEvent.properties, event.properties)
-			}
 		}
 	}
 
