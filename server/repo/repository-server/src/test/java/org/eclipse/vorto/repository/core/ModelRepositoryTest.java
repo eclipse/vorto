@@ -35,6 +35,7 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
  
@@ -50,28 +51,30 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testUploadSameModelTwiceByAuthor() throws Exception {
-		checkinModel("Color.type", "alex");
+		IUserContext alex = UserContext.user("alex");
+		checkinModel("Color.type", alex);
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", "alex");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", alex);
 		assertTrue(uploadResult.isValid());
 	}
 	
 	@Test
 	public void testUploadSameModelTwiceByDifferent() throws Exception {
-		checkinModel("Color.type", "alex");
+		checkinModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", "stefan");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", UserContext.user("stefan"));
 		assertFalse(uploadResult.isValid());
 	}
 	
 	@Test
 	public void testUploadSameModelByAdmin() throws Exception {
-		checkinModel("Color.type", "alex");
+		IUserContext admin = UserContext.user("admin");
+		checkinModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", admin);
 		assertTrue(uploadResult.isValid());
 		
-		modelRepository.checkin(uploadResult.getHandleId(), "admin");
+		modelRepository.checkin(uploadResult.getHandleId(), admin);
 		IModelContent content = modelRepository.getModelContent(uploadResult.getModelResource().getId(), ContentType.DSL);
 		assertTrue(new String(content.getContent(),"utf-8").contains("mandatory b as int"));
 	}
@@ -79,16 +82,16 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testOverwriteInvalidModelByAdmin() throws Exception {
-		checkinModel("Color.type", "alex");
+		checkinModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color3.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color3.type").getInputStream()), "Color.type", UserContext.user("admin"));
 		assertFalse(uploadResult.isValid());
 	}
 	
 	@Test
 	public void tesUploadValidModel() throws IOException {
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
 		assertNull(uploadResult.getErrorMessage());
 		assertNotNull(uploadResult.getHandleId());
@@ -106,17 +109,15 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	@Test
 	public void testCheckinValidModel() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", "admin");
+				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
 		assertEquals(0, modelRepository.search("*").size());
 
 		User user1 = new User();
 		user1.setUsername("alex");
-		user1.setHasWatchOnRepository(true);
 
 		User user2 = new User();
 		user2.setUsername("andi");
-		user2.setHasWatchOnRepository(false);
 
 		Collection<User> recipients = new ArrayList<User>();
 		recipients.add(user1);
@@ -126,7 +127,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 //		verify(notificationService);
 
-		modelRepository.checkin(uploadResult.getHandleId(), user1.getUsername());
+		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
 
 		Thread.sleep(1000);
 		assertEquals(1, modelRepository.search("*").size());
@@ -136,7 +137,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testCheckinInvalidModel() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Colorlight.fbmodel").getInputStream()),
-				"Colorlight.fbmodel", "admin");
+				"Colorlight.fbmodel", UserContext.user("admin"));
 		assertEquals(false, uploadResult.isValid());
 		assertNotNull(uploadResult.getErrorMessage());
 	}
@@ -235,6 +236,21 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
 		assertEquals(true, this.modelRepository.getById(modelId).isHasImage());
 	}
+	
+	@Test
+	public void testRemoveModelImage() throws Exception {
+		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
+		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("HueLightStrips.infomodel");
+		this.modelRepository.addModelImage(modelId, modelContent);
+		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
+		
+		this.modelRepository.removeModelImage(modelId);
+		assertFalse(this.modelRepository.getById(modelId).isHasImage());
+	}
 
 	@Test
 	public void testGetModelImage() throws Exception {
@@ -307,20 +323,21 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testSearchModelsByCreator() {
-		checkinModel("Color.type","alex");
-		checkinModel("Colorlight.fbmodel","alex");
-		checkinModel("Switcher.fbmodel","admin");
-		checkinModel("ColorLightIM.infomodel","admin");
-		checkinModel("HueLightStrips.infomodel","admin");
+		IUserContext alex = UserContext.user("alex");
+		checkinModel("Color.type", alex);
+		checkinModel("Colorlight.fbmodel", alex);
+		checkinModel("Switcher.fbmodel", UserContext.user("admin"));
+		checkinModel("ColorLightIM.infomodel", UserContext.user("admin"));
+		checkinModel("HueLightStrips.infomodel", UserContext.user("admin"));
 		
-		assertEquals(2, modelRepository.search("author:alex").size());
+		assertEquals(2, modelRepository.search("author:" + alex.getHashedUsername()).size());
 	}
 	
 	@Test
 	public void testUploadCorruptModelMissingVersion() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_missingVersion.type").getInputStream()),
-				"sample_models/Corrupt-model_missingVersion.type", "admin");
+				"sample_models/Corrupt-model_missingVersion.type", UserContext.user("admin"));
 		assertEquals(false,uploadResult.isValid());
 		assertNotNull(uploadResult.getErrorMessage());
 	}
@@ -329,7 +346,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testUploadCorruptModelVersion() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_namespace.type").getInputStream()),
-				"sample_models/Corrupt-model_namespace.type", "admin");
+				"sample_models/Corrupt-model_namespace.type", UserContext.user("admin"));
 		assertEquals(false,uploadResult.isValid());
 		assertNotNull(uploadResult.getErrorMessage());
 	}
@@ -338,14 +355,14 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testUploadInvalidFileName() throws Exception {
 		modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.typ").getInputStream()),
-				"sample_models/Bogus.type", "admin");
+				"sample_models/Bogus.type", UserContext.user("admin"));
 	}
 	
 	@Test
 	public void testUploadModelThatCompliesToOlderVersionOfMetaModel() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel").getInputStream()),
-				"sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel", "admin");
+				"sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel", UserContext.user("admin"));
 		assertEquals(false,uploadResult.isValid());
 		assertNotNull(uploadResult.getErrorMessage());
 	}
@@ -379,5 +396,17 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		} catch (ModelReferentialIntegrityException ex) {
 			assertEquals(1, ex.getReferencedBy().size());
 		}
+	}
+	
+	@Test
+	public void testAuthorSearch() {
+		IUserContext erle = UserContext.user("erle");
+		IUserContext admin = UserContext.user("admin");
+		checkinModel("Color.type", erle);
+		checkinModel("Colorlight.fbmodel", erle);
+		checkinModel("Switcher.fbmodel", admin);
+		
+		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
+		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());
 	}
 }

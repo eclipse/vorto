@@ -11,8 +11,6 @@ import (
 )
 
 type Configuration struct {
-	Username   string `yaml:"username"`
-	Password   string `yaml:"password"`
 	Proxy      string `yaml:"proxy"`
 	Repository string `yaml:"repository"`
 }
@@ -23,18 +21,8 @@ func NewConfiguration() *Configuration {
 
 	var config Configuration
 
-	username, errUsername := data.Get("username")
-	password, errPassword := data.Get("password")
 	proxy, errProxy := data.Get("proxy")
 	repository, errRepository := data.Get("repository")
-
-	if errUsername != nil {
-		username = ""
-	}
-
-	if errPassword != nil {
-		password = ""
-	}
 
 	if errProxy != nil {
 		proxy = ""
@@ -44,8 +32,6 @@ func NewConfiguration() *Configuration {
 		repository = ""
 	}
 
-	config.Username = username
-	config.Password = password
 	config.Proxy = proxy
 	config.Repository = repository
 
@@ -56,18 +42,12 @@ func NewConfiguration() *Configuration {
 		}
 	} else {
 		//default repo
-		config.Repository = "http://vorto.eclipse.org/repo/"
+		config.Repository = "http://vorto.eclipse.org"
 	}
 
 	return &config
 }
 
-func (this *Configuration) GetConfigurationUsername() string {
-	return this.Username
-}
-func (this *Configuration) GetConfigurationPassword() string {
-	return this.Password
-}
 func (this *Configuration) GetConfigurationProxy() string {
 	return this.Proxy
 }
@@ -108,10 +88,10 @@ func initializeConfigYaml() *yaml.File {
 			file.Chmod(0755)
 		}
 
-		content := "username: \npassword: \nproxy: \nrepository: \n"
+		content := "proxy: \nrepository: \n"
 		n1, err1 := io.WriteString(file, content)
 
-		contentExample := "# username: models\n# password: models\n# proxy: http://myProxy.com:3128\n# repository: http://localhost:8080/infomodelrepository"
+		contentExample := "# proxy: http://myProxy.com:3128\n# repository: http://localhost:8080/infomodelrepository"
 		n2, err2 := io.WriteString(file, contentExample)
 
 		if err1 != nil {

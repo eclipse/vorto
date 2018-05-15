@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.upgrade;
 
+import java.util.Optional;
+
 /**
  * An UpgradeTask is executed when the repository is started up.
  *
@@ -25,6 +27,14 @@ public interface IUpgradeTask {
 	 * @throws UpgradeProblem
 	 */
 	void doUpgrade() throws UpgradeProblem;
+	
+	/**
+	 * Contains the condition to be checked if the task is to be executed or not.
+	 * If this condition is empty, the upgrade task is always executed
+	 * 
+	 * @return task condition
+	 */
+	Optional<IUpgradeTaskCondition> condition();
 	
 	/**
 	 * @return a short description of the task being performed

@@ -19,8 +19,4 @@ import org.eclipse.vorto.repository.ConnectionInfo;
 public interface MutableConnectionInfo extends ConnectionInfo {
 
 	void setUrl(String url);
-	
-	void setUser(String user);
-	
-	void setPassword(String password);
 }

@@ -15,7 +15,6 @@
 package org.eclipse.vorto.repository.core;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -61,7 +60,7 @@ public interface IModelRepository {
 	 * @param callerId
 	 * @return result about information of the uploaded content and the upload handle. 
 	 */
-	UploadModelResult upload(byte[] content, String fileName, String callerId);
+	UploadModelResult upload(byte[] content, String fileName, IUserContext userContext);
 	
 	/**
 	 * @pre {@link UploadModelResult#isValid() == true}}
@@ -73,14 +72,13 @@ public interface IModelRepository {
 	 * @param callerId
 	 * @return model that was been checked in
 	 */
-	ModelInfo checkin(String handleId, String callerId);
+	ModelInfo checkin(String handleId, IUserContext userContext);
 		
 	/**
-	 * Adds a model image for the given model id
+	 * Removes a model image for the given model id
 	 * @param modelId
-	 * @param image
 	 */
-	void addModelImage(ModelId modelId, byte[] image);
+	void removeModelImage(ModelId modelId);
 	
 	/**
 	 * 

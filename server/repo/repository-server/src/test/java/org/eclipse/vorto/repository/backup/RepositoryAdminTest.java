@@ -2,11 +2,9 @@ package org.eclipse.vorto.repository.backup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -34,19 +32,6 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 		byte[] backedUpContent = repositoryManager.backup();
 		assertNotNull(backedUpContent);
 	}
-	
-	@Test
-	public void testBackupFilesWithImage() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
-		this.modelRepository.addModelImage(new ModelId("HueLightStrips","com.mycompany","1.0.0"), IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
-		byte[] backedUpContent = repositoryManager.backup();
-		assertNotNull(backedUpContent);
-		assertTrue(new String(backedUpContent).contains(".png"));
-	}
-
 	
 	@Test
 	public void testRestoreBackup1() throws Exception {

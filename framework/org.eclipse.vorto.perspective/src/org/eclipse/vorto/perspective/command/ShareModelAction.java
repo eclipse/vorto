@@ -15,30 +15,31 @@
 package org.eclipse.vorto.perspective.command;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
-import org.eclipse.vorto.core.api.repository.IModelRepository;
-import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
-import org.eclipse.vorto.core.api.repository.UploadResult;
-import org.eclipse.vorto.core.ui.MessageDisplayFactory;
-import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.program.Program;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.perspective.util.ImageUtil;
-import org.eclipse.vorto.perspective.view.ModelUploadDialog;
-
-import com.google.common.io.ByteStreams;
+import org.eclipse.vorto.repository.preferences.ConnectionInfoFactory;
 
 public abstract class ShareModelAction extends Action {
 
-	private IModelRepository modelRepo = ModelRepositoryFactory.getModelRepository();
-	
 	public ShareModelAction() {
 		super("Share",ImageDescriptor.createFromImage(ImageUtil.getImage("share.gif")));
 	}
 	
 	public static Action newInstance(final TreeViewer viewer, final IModelElement model) {
-		return new ShareModelAction() {
+		return new ShareModelAction() { 
 			@Override
 			protected TreeViewer getViewer() {
 				return viewer;
@@ -53,21 +54,42 @@ public abstract class ShareModelAction extends Action {
 	
 	@Override
 	public void run() {
-		IModelElement modelElement = getSelectedElement();
-		try {
-			UploadResult uploadResult = modelRepo.upload(modelElement.getModelFile().getName(),
-					ByteStreams.toByteArray(modelElement.getModelFile().getContents()));
-			ModelUploadDialog uploadDialog = new ModelUploadDialog(getViewer().getControl().getShell(), uploadResult);
-			uploadDialog.create();
-			int result = uploadDialog.open();
-			if (uploadResult.statusOk() && result == Window.OK) {
-				modelRepo.commit(uploadResult.getHandleId());
-				MessageDisplayFactory.getMessageDisplay().displaySuccess(
-						"Model " + modelElement.getModelFile().getName() + " saved to repository.");
+		MessageDialog dialog =
+			    new MessageDialog(getViewer().getControl().getShell(), "Share Model", null, 
+			    		"To share your model, please follow the following steps:",
+			    		MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0) {
+			protected Control createCustomArea(Composite parent) {
+				FillLayout fillLayout = new FillLayout();
+				fillLayout.type = SWT.VERTICAL;
+				
+				Composite composite = new Composite(parent, SWT.NONE);
+				composite.setLayout(fillLayout);
+				
+				Link link = new Link(composite, SWT.WRAP );
+				link.setText("1. Go to <a href=\""+ConnectionInfoFactory.getConnectionInfo().getUrl()+"\">Vorto Repository</a>." );
+				link.addSelectionListener(new SelectionAdapter()  {
+					public void widgetSelected(SelectionEvent e) {
+				        Program.launch(ConnectionInfoFactory.getConnectionInfo().getUrl());
+				    }  
+				});
+				
+				String[] instructions = new String[] {
+					"2. Click on 'Login'",
+					"3. Login with your User Account",
+					"4. Click on 'Share'.",
+					"4. Upload a zip file containing the models and confirm with 'Check In'."
+				};
+				
+				for (String instruction: instructions) {
+					Label label = new Label(composite, SWT.NONE);
+				    label.setText(instruction);
+				}
+				
+				return composite;
 			}
-		} catch (Exception e) {
-			ExceptionHandlerFactory.getHandler().handle(e);
-		}
+		};
+		
+		dialog.open();
 	}
 	
 	protected abstract IModelElement getSelectedElement();

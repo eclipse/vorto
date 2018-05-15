@@ -20,13 +20,6 @@ import org.springframework.data.repository.CrudRepository;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public interface IUserRepository extends CrudRepository<User, Long> {
-    /**
-     * finds the user by the specified email address
-     * @param email
-     * @return
-     */
-	User findByEmail(String email);
-	
 	/**
 	 * Finds the user by the specified username
 	 * @param username

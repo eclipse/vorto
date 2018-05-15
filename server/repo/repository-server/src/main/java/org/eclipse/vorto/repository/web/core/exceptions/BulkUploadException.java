@@ -12,22 +12,14 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.notification.message;
+package org.eclipse.vorto.repository.web.core.exceptions;
 
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.notification.IMessage;
+public class BulkUploadException extends RuntimeException {
 
-public abstract class AbstractMessage implements IMessage {
+	private static final long serialVersionUID = -5865600232611276950L;
 
-	protected User recipient;
-	
-	public AbstractMessage(User recipient) {
-		this.recipient = recipient;
+	public BulkUploadException(String message, Throwable cause) {
+		super(message, cause);
 	}
-	
-	@Override
-	public User getRecipient() {
-		return recipient;
-	}
-	
+
 }

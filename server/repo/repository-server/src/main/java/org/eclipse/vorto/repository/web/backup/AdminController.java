@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.backup.IModelBackupService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -40,7 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping(value = "/rest/admin")
-public class BackupController extends AbstractRepositoryController {
+public class AdminController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IModelBackupService backupService;
@@ -88,7 +89,16 @@ public class BackupController extends AbstractRepositoryController {
 			throw new UploadTooLargeException("backup", maxBackupSize);
 		}
 		
-		this.backupService.restore(file.getBytes());
-		
+		this.backupService.restore(file.getBytes());		
+	}
+	
+	@RequestMapping(value = "/content/images", method = RequestMethod.DELETE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void removeImages() {
+		for (ModelInfo model : repositoryService.search("*")) {
+			if (model.isHasImage()) {
+				repositoryService.removeModelImage(model.getId());
+			}
+		}
 	}
 }

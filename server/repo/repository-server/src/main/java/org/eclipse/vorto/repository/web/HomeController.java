@@ -20,16 +20,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.web.security.VortoUser;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,7 +60,7 @@ public class HomeController {
 	private String defaultLoginUrl;
 	
 	@Autowired
-    private IUserRepository userRepository;
+	private IUserAccountService accountService;
 	
 	@SuppressWarnings("unchecked")
 	@ApiOperation(value = "Returns the currently logged in User")
@@ -79,32 +74,14 @@ public class HomeController {
 		if(user == null)
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
 		
-		for (GrantedAuthority authority : SecurityContextHolder.getContext().getAuthentication().getAuthorities()){
-			map.put("role", authority.getAuthority());
-		}
+		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 		
-		if (user instanceof OAuth2Authentication) {
-			OAuth2Authentication oauth2User = (OAuth2Authentication) user;
-			map.put("name", oauth2User.getName());
-			
-			User registeredUser = userRepository.findByUsername(oauth2User.getName())	;
-			if (registeredUser != null) {
-				map.put("email",  registeredUser.getEmail());
-				map.put("isRegistered", Boolean.toString(true));
-			} else {
-				map.put("email",  ((Map<String, String>) oauth2User.getUserAuthentication().getDetails()).get("email"));
-				map.put("isRegistered", Boolean.toString(false));
-			}
-			
-			Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
-			map.put("loginType", userDetails.get(LOGIN_TYPE));
-		} else {
-			VortoUser vortoUser = (VortoUser) ((UsernamePasswordAuthenticationToken) user).getPrincipal();
-			map.put("name", vortoUser.getUsername());
-			map.put("email", vortoUser.getEmail());
-			map.put("isRegistered", "true");
-			map.put("loginType", "default");
-		}
+		oauth2User.getAuthorities().stream().findFirst().ifPresent(role -> map.put("role", role.getAuthority()));
+		
+		map.put("name", oauth2User.getName());
+		map.put("isRegistered", Boolean.toString(accountService.exists(oauth2User.getName())));
+		Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
+		map.put("loginType", userDetails.get(LOGIN_TYPE));
 		
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}

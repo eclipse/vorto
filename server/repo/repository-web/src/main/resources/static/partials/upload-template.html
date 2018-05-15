@@ -50,7 +50,9 @@
 				</div>
 				<div class="row errorbox-spacing">
 					<div ng-show="showResultBox" ng-class="uploadResult.isSuccess? 'alert alert-success' : 'alert alert-danger'">
-				  		{{resultMessage}}
+				  		{{resultMessage}}</p>
+				  		<small ng-show="showResultBox && uploadResult.isSuccess">Note: The models you check-in here can be viewed / downloaded by other users of Vorto</small>
+				  	</p>	
 					</div>
 				</div>
 

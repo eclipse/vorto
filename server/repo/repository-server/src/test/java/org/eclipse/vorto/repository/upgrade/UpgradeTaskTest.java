@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.impl.DefaultUpgradeService;
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class UpgradeTaskTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUpgradeFileContent() {
-		checkinModel("Color.type", "alex");
+		checkinModel("Color.type", UserContext.user("alex")); 
 		ModelEMFResource resource = (ModelEMFResource)modelRepository.getEMFResource(modelRepository.search("*").get(0).getId());
 		assertNull(resource.getModel().getCategory());
 		DefaultUpgradeService service = new DefaultUpgradeService();

@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,18 +39,17 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,7 +83,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) throws UnsupportedEncodingException {
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
 		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
-		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource)).collect(Collectors.toList());
+		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource,
+				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()))).collect(Collectors.toList());
 	}
 	
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
@@ -102,7 +103,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
-		return ModelDtoFactory.createDto(resource);
+		return ModelDtoFactory.createDto(resource, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 	
 	@ApiOperation(value = "Returns the model content")
@@ -192,28 +193,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-	
-	@ApiOperation(value = "Adds an image for a vorto model",hidden=true)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@RequestMapping(value = "/image", method = RequestMethod.POST)
-	@PreAuthorize("isAuthenticated()")
-	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
-									@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @RequestParam String namespace,
-									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @RequestParam String name,
-									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @RequestParam String version) {
-		if (file.getSize() > maxModelImageSize) {
-			throw new UploadTooLargeException("model image", maxModelImageSize);
-		}
 		
-		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
-		
-		try {
-			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
 	@ApiOperation(value = "Downloads the model content in a specific output format")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
 	@RequestMapping(value = "/file/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
@@ -322,16 +302,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 		
 		final ModelId modelId = new ModelId(name, namespace, version);
+		
 		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelId, targetPlatform);
 		
+		final String fileName = modelId.getNamespace() + "_" + modelId.getName() + "_" + modelId.getVersion() + ".zip";
+		
+		sendAsZipFile(response, fileName, mappingResources);
+	}
+
+	@RequestMapping(value ={ "/mine" }, method = RequestMethod.GET)
+	public void getUserModels(Principal user, final HttpServletResponse response) {
+		List<ModelInfo> userModels = this.modelRepository.search("author:" + UserContext.user(user.getName()).getHashedUsername());
+		
+		logger.info("Exporting information models for " + user.getName() + " results: " + userModels.size());
+		
+		sendAsZipFile(response, user.getName() + "-models.zip", userModels);
+	}
+	
+	private void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 
 		final ContentType contentType = ContentType.DSL;
 		
 		try {
-		for (ModelInfo mappingResource : mappingResources) {
-			addModelToZip(zos, mappingResource.getId(), contentType);
+		for (ModelInfo modelInfo : modelInfos) {
+			addModelToZip(zos, modelInfo.getId(), contentType);
 		}
 
 		zos.close();
@@ -340,8 +336,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException(ex);
 		}
 		
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
-				+ modelId.getName() + "_" + modelId.getVersion() + ".zip");
+		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
 		response.setContentType(APPLICATION_OCTET_STREAM);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
@@ -350,5 +345,4 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-
 }

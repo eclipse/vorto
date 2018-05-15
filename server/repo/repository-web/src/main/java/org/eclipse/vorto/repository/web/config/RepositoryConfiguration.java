@@ -28,25 +28,25 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 public class RepositoryConfiguration {
 
 	@Value("${http.proxyHost:#{null}}")
-	private String proxyHost;
-	
+	String proxyHost;
+
 	@Value("${http.proxyPort:8080}")
-	private int    proxyPort;
-	
+	protected int proxyPort;
+
 	@Value("${http.proxyUser:#{null}}")
 	private String proxyUsername;
-	
+
 	@Value("${http.proxyPassword:#{null}}")
 	private String proxyPassword;
-	
+
 	@Value("${repo.configFile}")
 	private String repositoryConfigFile = null;
-	
+
 	@Bean
 	public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
 		return org.modeshape.jcr.RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
 	}
-	
+
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
 		if (proxyHost != null) {

@@ -1,106 +1,128 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="repository">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Central Repository for standardized IoT device descriptions">
-    <meta name="author" content="Eclipse Vorto Team">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description"
+	content="Central Repository for standardized IoT device descriptions">
+<meta name="author" content="Eclipse Vorto Team">
 
-    <title>Vorto Repository - Manages standardized IoT device descriptions</title>
+<title>Vorto Repository - Manages standardized IoT device
+	descriptions</title>
 
-	<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
+<link rel="shortcut icon" type="image/x-icon" href="images/favicon.png">
 
-    <!-- Bootstrap core CSS -->
-    <link href="webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap core CSS -->
+<link href="webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
-    <link href="css/dashboard.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+<!-- Custom styles for this template -->
+<link href="css/dashboard.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
 
-   	<link href="webjars/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-   	<link rel="stylesheet" href="webjars/angular-swagger-ui/dist/css/swagger-ui.min.css">
+<link href="webjars/font-awesome/css/font-awesome.min.css"
+	rel="stylesheet" type="text/css" />
+<link rel="stylesheet"
+	href="webjars/angular-swagger-ui/dist/css/swagger-ui.min.css">
 
-    <script src="webjars/jquery/jquery.min.js"></script>
-    <script src="webjars/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="webjars/jquery/jquery.min.js"></script>
+<script src="webjars/bootstrap/js/bootstrap.min.js"
+	type="text/javascript"></script>
 
-	<!-- Angular JS -->	
-	<script type="text/javascript" src="webjars/angular/angular.min.js"></script>
-	<script type="text/javascript" src="webjars/angular-route/angular-route.min.js"></script>
-	<script type="text/javascript" src="webjars/angular-animate/angular-animate.min.js"></script>
+<!-- Angular JS -->
+<script type="text/javascript" src="webjars/angular/angular.min.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-route/angular-route.min.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-animate/angular-animate.min.js"></script>
 
-	<script type="text/javascript" src="webjars/angular-smart-table/dist/smart-table.min.js"></script>
-	<script type="text/javascript" src="webjars/angular-swagger-ui/dist/scripts/swagger-ui.min.js"></script>
-	
-	<script type="text/javascript" src="webjars/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
-	<script type="text/javascript" src="webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-smart-table/dist/smart-table.min.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-swagger-ui/dist/scripts/swagger-ui.min.js"></script>
 
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/controllers.js"></script>
-    <script type="text/javascript" src="js/directives.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-ui-bootstrap/ui-bootstrap.min.js"></script>
+<script type="text/javascript"
+	src="webjars/angular-ui-bootstrap/ui-bootstrap-tpls.min.js"></script>
 
-  </head>
+<script type="text/javascript" src="js/app.js"></script>
+<script type="text/javascript" src="js/controllers.js"></script>
+<script type="text/javascript" src="js/directives.js"></script>
 
-  <body>
+</head>
 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="./#/">Eclipse Vorto <span class="navbar-brand-suffix">Repository</span></a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-          	<li><a href="./#/" st-reset>Search</a></li>
-          	<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a href="./#/upload">Share</a></li>
-          	<li ng-show="authority == 'ROLE_ADMIN'"><a href="./#/manage">Manage</a></li>
-          	<li><a href="./#/generators">Generators</a></li>
-          	<li><a href="http://www.eclipse.org/vorto">About Vorto</a></li>
-          	<li><a href="./#/api">REST API</a></li>
-          </ul>
-          <div id="navbar-right" class="navbar-right">
-            <ul class="nav navbar-nav">
-				<li ng-show="authenticated"><a id="userWelcome" href="./#/settings">Welcome, {{user}}</a></li>
-				<li ng-show="authenticated"><a href="#" ng-click="logout()"><i class="fa fa-sign-out"></i> Log Out</a></li>
-				<li ng-show="!authenticated"><a href="#/login"><i class="fa fa-sign-in"></i> Login</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </nav>
+<body>
 
-    <div class="container-fluid">
-    	<div class="row">
-	        <div class="col-sm-12 main">
-	        	<div class="row" ng-view></div>
-	    	</div>
-        </div>
-    </div>
-    <footer>
-        
-        <div class="row">
-            <div class="col-md-3">
-                <span class="copyright">Copyright © Eclipse Vorto</span>
-            </div>
-            <div class="col-md-5">
-                <ul class="list-inline quicklinks">
-                    
-                    <li><a target="_blank" href="https://www.eclipse.org/legal/copyright.php">Copyright Agent</a></li>
-                    
-                    <li><a target="_blank" href="https://www.eclipse.org/legal/">Legal</a></li>
-                    
-                    <li><a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">Terms of Use</a></li>
-                    
-                    <li><a target="_blank" href="https://www.eclipse.org/legal/privacy.php">Privacy</a></li>
-                    
-                </ul>
-            </div>
-        </div>
-</footer>
-  </body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed"
+					data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+					aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="./#/">Eclipse Vorto <span
+					class="navbar-brand-suffix">Repository</span></a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a href="./#/" st-reset>Search</a></li>
+					<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a
+						href="./#/upload">Share</a></li>
+					<li ng-show="authority == 'ROLE_ADMIN'"><a href="./#/manage">Manage</a></li>
+					<li><a href="./#/generators">Generators</a></li>
+					<li><a href="http://www.eclipse.org/vorto">About Vorto</a></li>
+					<li><a href="./#/api">REST API</a></li>
+				</ul>
+				<div id="navbar-right" class="navbar-right">
+					<ul class="nav navbar-nav">
+						<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a id="userWelcome"
+							href="./#/settings">Welcome, {{user}}</a></li>
+						<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a href="#" ng-click="logout()"><i
+								class="fa fa-sign-out"></i> Log Out</a></li>
+						<li ng-show="!authenticated"><a href="#/login"><i
+								class="fa fa-sign-in"></i> Login</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-12 main">
+				<div class="row" ng-view></div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="navbar navbar-fixed-bottom">
+		<div class="row">
+			<div class="col-md-3">
+				<span class="copyright">Copyright © Eclipse Vorto</span>
+			</div>
+			<div class="col-md-5">
+				<ul class="list-inline quicklinks">
+
+					<li><a target="_blank"
+						href="https://www.eclipse.org/legal/copyright.php">Copyright
+							Agent</a></li>
+
+					<li><a target="_blank" href="https://www.eclipse.org/legal/">Legal</a></li>
+
+					<li><a target="_blank"
+						href="https://www.eclipse.org/legal/termsofuse.php">Terms of
+							Use</a></li>
+
+					<li><a target="_blank"
+						href="https://www.eclipse.org/legal/privacy.php">Privacy</a></li>
+
+				</ul>
+			</div>
+		</div>
+	</footer>
+</body>
 </html>
