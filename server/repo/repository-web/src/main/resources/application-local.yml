@@ -7,8 +7,8 @@ github:
   oauth2:
     enabled: true
     client:
-      clientId: 12
-      clientSecret: 12
+      clientId: ${github_clientid}
+      clientSecret: ${github_secret}
       accessTokenUri: https://github.com/login/oauth/access_token
       userAuthorizationUri: https://github.com/login/oauth/authorize
       clientAuthenticationScheme: form
@@ -21,8 +21,8 @@ eidp:
   oauth2:
     enabled: false
     client:
-      clientId: 12
-      clientSecret: 12
+      clientId: ${eidp_clientid}
+      clientSecret: ${eidp_secret}
       accessTokenUri: https://accounts.bosch.com/adfs/oauth2/token
       userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
       clientAuthenticationScheme: form
