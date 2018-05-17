@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.vorto.editor.infomodel,
  org.eclipse.xtext.xbase.junit,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.vorto.editor.functionblock,
- org.eclipse.vorto.editor.functionblock.tests
+ org.eclipse.vorto.editor.functionblock.tests,
+ org.eclipse.vorto.editor.datatype;bundle-version="0.10.0"
 Import-Package: org.apache.log4j,
  org.eclipse.xtext.formatting,
  org.hamcrest.core,
@@ -22,5 +23,5 @@ Import-Package: org.apache.log4j,
  org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ClassPath: resources/,.
+Bundle-ClassPath: .
 Export-Package: org.eclipse.vorto.editor.infomodel.tests
