@@ -20,4 +20,5 @@
 class SystemMessage {
 	public static final String ERROR_DUPLICATED_FUNCTIONBLOCK_NAME = 'Function Block is already defined'
 	public static final String ERROR_FUNCTIONBLOCK_NOT_IMPORTED = 'This Function Block has not yet been imported.'
+	public static final String ERROR_IMNAME_INVALID = 'Information model name must begin with a capital letter'
 }

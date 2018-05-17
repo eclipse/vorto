@@ -21,11 +21,20 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 import org.eclipse.xtext.validation.Check
+import org.eclipse.vorto.core.api.model.model.ModelPackage
 
 /**
  * Information Model Validation rules. 
  */
 class InformationModelValidator extends AbstractInformationModelValidator {
+	
+	@Check
+	def checkInformationModelName(InformationModel model) {
+		val name = model.name
+		if (isCamelCasedName(name)) {
+			error(SystemMessage.ERROR_IMNAME_INVALID, model, ModelPackage.Literals.MODEL__NAME)
+		}
+	}
 
 	@Check
 	def checkDuplicateFunctionBlock(InformationModel informationModel) {
