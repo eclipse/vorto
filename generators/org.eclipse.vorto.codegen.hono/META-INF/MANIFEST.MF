@@ -10,6 +10,7 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.xtend.lib.macro,
  org.eclipse.vorto.codegen,
  org.eclipse.emf.common,
+ org.eclipse.vorto.codegen.templates.java,
  org.eclipse.vorto.codegen.arduino,
  org.eclipse.vorto.codegen.mqtt.python
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

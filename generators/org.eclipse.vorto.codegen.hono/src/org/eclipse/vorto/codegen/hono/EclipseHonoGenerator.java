@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.hono;
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
+import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -25,11 +26,17 @@ import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
 import org.eclipse.vorto.codegen.arduino.ArduinoCodeGenerator;
 import org.eclipse.vorto.codegen.hono.model.FunctionblockTemplate;
 import org.eclipse.vorto.codegen.hono.model.InformationModelTemplate;
+import org.eclipse.vorto.codegen.hono.model.JavaClassGeneratorTask;
+import org.eclipse.vorto.codegen.hono.model.JavaEnumGeneratorTask;
 import org.eclipse.vorto.codegen.hono.service.IDataServiceTemplate;
 import org.eclipse.vorto.codegen.hono.service.hono.HonoDataService;
 import org.eclipse.vorto.codegen.hono.service.hono.HonoMqttClientTemplate;
 import org.eclipse.vorto.codegen.mqtt.python.PythonGenerator;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
+import org.eclipse.vorto.codegen.utils.Utils;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.Enum;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -47,7 +54,7 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 
 		GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-		String platform = context.getConfigurationProperties().get("language");
+		String platform = context.getConfigurationProperties().getOrDefault("language","java");
 		if (platform.equalsIgnoreCase("arduino")) {
 			result.append(generateArduino(model, context, monitor));
 		} else if (platform.equalsIgnoreCase("python")) {
@@ -79,6 +86,15 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
 			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(infomodel)).generate(fbProperty.getType(),
 					context, output);
+			
+			FunctionBlock fb = fbProperty.getType().getFunctionblock();
+			
+			for (Entity entity : Utils.getReferencedEntities(fb)) {
+				generateForEntity(infomodel, entity, output);
+			}
+			for (Enum en : Utils.getReferencedEnums(fb)) {
+				generateForEnum(infomodel, en, output);
+			}
 		}
 
 		return output;
@@ -94,6 +110,15 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		ArduinoCodeGenerator arduinoGenerator = new ArduinoCodeGenerator();
 		return arduinoGenerator.generate(infomodel,context,monitor);
+	}
+	
+	private void generateForEntity(InformationModel infomodel, Entity entity, IGeneratedWriter outputter) {
+		new JavaClassGeneratorTask(infomodel).generate(entity, null, outputter);
+	}
+
+	private void generateForEnum(InformationModel infomodel, Enum en, IGeneratedWriter outputter) {
+		new JavaEnumGeneratorTask(infomodel).generate(en,null, outputter);
+				
 	}
 
 	@Override

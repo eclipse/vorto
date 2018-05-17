@@ -30,7 +30,7 @@ class CertificateTemplate implements IFileTemplate<InformationModel> {
 	}
 	
 	override getFileName(InformationModel context) {
-		'''iothub.crt'''
+		'''hono.crt'''
 	}
 	
 	override getPath(InformationModel context) {
