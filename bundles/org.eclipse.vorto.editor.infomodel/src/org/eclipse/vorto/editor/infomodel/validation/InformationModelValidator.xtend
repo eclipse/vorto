@@ -22,6 +22,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 import org.eclipse.xtext.validation.Check
 import org.eclipse.vorto.core.api.model.model.ModelPackage
+import java.util.ArrayList
 
 /**
  * Information Model Validation rules. 
@@ -60,33 +61,36 @@ class InformationModelValidator extends AbstractInformationModelValidator {
 
 	@Check
 	def checkStatusExtendOverriddenProperties(InformationModel informationModel) {
+		var validatedConstraints = new ArrayList<String>()
 		for (fbProperty : informationModel.properties) {
 			if (fbProperty.extendedFunctionBlock !== null) {
 				var baseFb = fbProperty.type.functionblock;
 				var extendedFb = fbProperty.extendedFunctionBlock;
-				validateOverriddenProperties(baseFb.status.properties, extendedFb.status.properties)
+				validateOverriddenProperties(baseFb.status.properties, extendedFb.status.properties, validatedConstraints)
 			}
 		}
 	}
 
 	@Check
 	def checkConfigurationExtendOverriddenProperties(InformationModel informationModel) {
+		var validatedConstraints = new ArrayList<String>()
 		for (fbProperty : informationModel.properties) {
 			if (fbProperty.extendedFunctionBlock !== null) {
 				var baseFb = fbProperty.type.functionblock;
 				var extendedFb = fbProperty.extendedFunctionBlock;
-				validateOverriddenProperties(baseFb.configuration.properties, extendedFb.configuration.properties)
+				validateOverriddenProperties(baseFb.configuration.properties, extendedFb.configuration.properties, validatedConstraints)
 			}
 		}
 	}
 
 	@Check
 	def checkFaultExtendOverriddenProperties(InformationModel informationModel) {
+		var validatedConstraints = new ArrayList<String>()
 		for (fbProperty : informationModel.properties) {
 			if (fbProperty.extendedFunctionBlock !== null) {
 				var baseFb = fbProperty.type.functionblock;
 				var extendedFb = fbProperty.extendedFunctionBlock;
-				validateOverriddenProperties(baseFb.fault.properties, extendedFb.fault.properties)
+				validateOverriddenProperties(baseFb.fault.properties, extendedFb.fault.properties, validatedConstraints)
 			}
 		}
 	}

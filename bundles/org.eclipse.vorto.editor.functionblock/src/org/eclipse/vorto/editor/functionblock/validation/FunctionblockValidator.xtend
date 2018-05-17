@@ -52,6 +52,7 @@ import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
 import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.emf.ecore.util.EcoreUtil
 import java.util.ArrayList
+import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
 
 /**
  * Custom validation rules. 
@@ -284,7 +285,57 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 		}
 	}
 
-	def validateOverriddenProperties(EList<Property> properties, EList<Property> extProperties) {
+	def ArrayList<String> validateOverriddenConstraints(Property baseProperty, Property extProperty) {
+		var validatedConstraints = new ArrayList<String>()
+		if (baseProperty.constraintRule === null) {
+			return validatedConstraints
+		}
+		var constraintsMap = baseProperty.constraintRule.constraints.toMap[type].mapValues[it]
+		for (costraint : extProperty.constraintRule.constraints) {
+			var constraintId = baseProperty.name + costraint.type.getName
+			if (!validatedConstraints.contains(constraintId)) {
+				validatedConstraints.add(constraintId)
+				var baseConstraint = constraintsMap.get(costraint.type)
+				if (baseConstraint !== null) {
+					if (costraint.type == ConstraintIntervalType.MIN) {
+						if (Double.parseDouble(costraint.constraintValues) <
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_MIN_TOO_SMALL, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.MAX) {
+						if (Double.parseDouble(costraint.constraintValues) >
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_MAX_TOO_BIG, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.STRLEN) {
+						if (Double.parseDouble(costraint.constraintValues) >
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_STRLEN, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.NULLABLE) {
+						if (costraint.constraintValues.equals("true") &&
+							baseConstraint.constraintValues.equals("false")) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_NULLABLE, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						} else {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else {
+						error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED, costraint,
+							DatatypePackage.Literals.CONSTRAINT__TYPE)
+					}
+				}
+			}
+		}
+		return validatedConstraints
+	}
+
+	def ArrayList<String> validateOverriddenProperties(EList<Property> properties, EList<Property> extProperties,
+		ArrayList<String> validatedConstraints) {
 		var propertiesMap = properties.toMap[name].mapValues[it]
 
 		var equalHelper = new EcoreUtil.EqualityHelper()
@@ -302,8 +353,10 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 				if (!equalHelper.equals(property.type, baseProperty.type)) {
 					error(SystemMessage.ERROR_INCOMPATIBLE_TYPE, property, DatatypePackage.Literals.PROPERTY__TYPE)
 				}
+				validatedConstraints.addAll(validateOverriddenConstraints(baseProperty, property))
 			}
 		}
+		return validatedConstraints
 	}
 
 	def equalsParamList(List<Param> list1, List<Param> list2) {
@@ -325,7 +378,6 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 		var equalHelper = new EcoreUtil.EqualityHelper()
 
 		for (operation : extOperations) {
-
 			var baseOperation = operationsMap.get(operation.name)
 			if (baseOperation !== null) {
 				if (!equalHelper.equals(operation.presence, baseOperation.presence)) {
@@ -353,11 +405,13 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	}
 
 	def validateOverriddenEvents(EList<Event> events, EList<Event> extEvents) {
+		var validatedConstraints = new ArrayList<String>()
 		var eventsMap = events.toMap[name].mapValues[it]
 		for (event : extEvents) {
 			var baseEvent = eventsMap.get(event.name)
 			if (baseEvent !== null) {
-				validateOverriddenProperties(baseEvent.properties, event.properties)
+				validatedConstraints = validateOverriddenProperties(baseEvent.properties, event.properties,
+					validatedConstraints)
 			}
 		}
 	}
@@ -377,33 +431,37 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 
 	@Check
 	def checkConfigurationOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
 		var baseFb = baseFunctionblockModel.functionblock;
 		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
 		for (parentFb : parentFunctionBlocks) {
 			if (parentFb.configuration !== null && baseFb.configuration !== null) {
-				validateOverriddenProperties(parentFb.configuration.properties, baseFb.configuration.properties)
+				validateOverriddenProperties(parentFb.configuration.properties, baseFb.configuration.properties,
+					validatedConstraints)
 			}
 		}
 	}
 
 	@Check
 	def checkStatusOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
 		var baseFb = baseFunctionblockModel.functionblock;
 		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
 		for (parentFb : parentFunctionBlocks) {
 			if (parentFb.status !== null && baseFb.status !== null) {
-				validateOverriddenProperties(parentFb.status.properties, baseFb.status.properties)
+				validateOverriddenProperties(parentFb.status.properties, baseFb.status.properties, validatedConstraints)
 			}
 		}
 	}
 
 	@Check
 	def checkFaultOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
 		var baseFb = baseFunctionblockModel.functionblock;
 		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
 		for (parentFb : parentFunctionBlocks) {
 			if (parentFb.fault !== null && baseFb.fault !== null) {
-				validateOverriddenProperties(parentFb.fault.properties, baseFb.fault.properties)
+				validateOverriddenProperties(parentFb.fault.properties, baseFb.fault.properties, validatedConstraints)
 			}
 		}
 	}

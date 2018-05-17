@@ -43,4 +43,10 @@ class SystemMessage {
 	public static final String ERROR_INCOMPATIBLE_PARMS = 'The parameters are incompatible to base operation parameters.'
 	public static final String ERROR_INCOMPATIBLE_RETURN_TYPE = 'The return type is incompatible to base type.'
 	
+	public static final String ERROR_OVERWRITTEN_CONSTRAINT_MIN_TOO_SMALL = 'The given MIN constraint needs to be bigger or equal as the base MIN value.'
+	public static final String ERROR_OVERWRITTEN_CONSTRAINT_MAX_TOO_BIG = 'The given MAX constraint needs to be smaller or equal as the base MAX value.'
+	public static final String ERROR_OVERWRITTEN_CONSTRAINT_NULLABLE = 'If the constraint NULLABLE of the base type is false than it can not changed.'
+	public static final String ERROR_OVERWRITTEN_CONSTRAINT_STRLEN = 'The given STRLEN constraint needs to be smaller or equal as the base STRLEN value.'
+	public static final String ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED = 'The constraint is already defined in the base property.'
+	
 }
