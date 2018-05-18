@@ -48,5 +48,5 @@ class SystemMessage {
 	public static final String ERROR_OVERWRITTEN_CONSTRAINT_NULLABLE = 'If the constraint NULLABLE of the base type is false than it can not changed.'
 	public static final String ERROR_OVERWRITTEN_CONSTRAINT_STRLEN = 'The given STRLEN constraint needs to be smaller or equal as the base STRLEN value.'
 	public static final String ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED = 'The constraint is already defined in the base property.'
-	
+	public static final String ERROR_OVERWRITTEN_PROPERTY_ATTRIBUTE_TYPE = 'Property attributes can not be overwritten.'
 }

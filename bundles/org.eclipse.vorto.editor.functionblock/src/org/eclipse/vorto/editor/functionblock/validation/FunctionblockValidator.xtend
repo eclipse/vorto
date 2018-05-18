@@ -53,6 +53,9 @@ import org.eclipse.vorto.core.api.model.functionblock.Param
 import org.eclipse.emf.ecore.util.EcoreUtil
 import java.util.ArrayList
 import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
+import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute
 
 /**
  * Custom validation rules. 
@@ -285,6 +288,27 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 		}
 	}
 
+	def validateOvewrittenPropertyAttr(Property baseProperty, Property extProperty) {
+		for (propAttr : extProperty.propertyAttributes) {
+			for (basePropAttr : baseProperty.propertyAttributes) {
+				if (propAttr instanceof BooleanPropertyAttribute && basePropAttr instanceof BooleanPropertyAttribute) {
+					if ((propAttr as BooleanPropertyAttribute).getType().equals(
+						(basePropAttr as BooleanPropertyAttribute).getType())) {
+						error(SystemMessage.ERROR_OVERWRITTEN_PROPERTY_ATTRIBUTE_TYPE, extProperty,
+							DatatypePackage.Literals.PROPERTY__PROPERTY_ATTRIBUTES)
+					}
+				} else if (propAttr instanceof EnumLiteralPropertyAttribute &&
+					basePropAttr instanceof EnumLiteralPropertyAttribute) {
+					if ((propAttr as EnumLiteralPropertyAttribute).getType().getName().equals(
+						(basePropAttr as EnumLiteralPropertyAttribute).getType().getName())) {
+						error(SystemMessage.ERROR_OVERWRITTEN_PROPERTY_ATTRIBUTE_TYPE, extProperty,
+							DatatypePackage.Literals.PROPERTY__PROPERTY_ATTRIBUTES)
+					}
+				}
+			}
+		}
+	}
+
 	def ArrayList<String> validateOverriddenConstraints(Property baseProperty, Property extProperty) {
 		var validatedConstraints = new ArrayList<String>()
 		if (baseProperty.constraintRule === null) {
@@ -353,6 +377,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 				if (!equalHelper.equals(property.type, baseProperty.type)) {
 					error(SystemMessage.ERROR_INCOMPATIBLE_TYPE, property, DatatypePackage.Literals.PROPERTY__TYPE)
 				}
+				validateOvewrittenPropertyAttr(baseProperty, property)
 				validatedConstraints.addAll(validateOverriddenConstraints(baseProperty, property))
 			}
 		}
