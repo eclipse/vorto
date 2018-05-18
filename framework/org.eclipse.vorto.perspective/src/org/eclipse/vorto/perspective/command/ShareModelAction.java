@@ -56,7 +56,7 @@ public abstract class ShareModelAction extends Action {
 	public void run() {
 		MessageDialog dialog =
 			    new MessageDialog(getViewer().getControl().getShell(), "Share Model", null, 
-			    		"To share your model, please follow the following steps:",
+			    		"To share your model, please follow the steps below:",
 			    		MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0) {
 			protected Control createCustomArea(Composite parent) {
 				FillLayout fillLayout = new FillLayout();
@@ -66,7 +66,7 @@ public abstract class ShareModelAction extends Action {
 				composite.setLayout(fillLayout);
 				
 				Link link = new Link(composite, SWT.WRAP );
-				link.setText("1. Go to <a href=\""+ConnectionInfoFactory.getConnectionInfo().getUrl()+"\">Vorto Repository</a>." );
+				link.setText("1. Go to the <a href=\""+ConnectionInfoFactory.getConnectionInfo().getUrl()+"\">Information model repository</a>." );
 				link.addSelectionListener(new SelectionAdapter()  {
 					public void widgetSelected(SelectionEvent e) {
 				        Program.launch(ConnectionInfoFactory.getConnectionInfo().getUrl());
@@ -77,7 +77,7 @@ public abstract class ShareModelAction extends Action {
 					"2. Click on 'Login'",
 					"3. Login with your User Account",
 					"4. Click on 'Share'.",
-					"4. Upload a zip file containing the models and confirm with 'Check In'."
+					"4. Upload a zip file containing the models and confirm with 'Check-in'."
 				};
 				
 				for (String instruction: instructions) {
