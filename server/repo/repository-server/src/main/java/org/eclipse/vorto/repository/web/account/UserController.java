@@ -84,7 +84,7 @@ public class UserController {
 	}
 	
 	@ApiOperation(value = "Deletes the user's user account")
-	@RequestMapping(value = "/users/{username}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/users/{username:.+}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
 	public ResponseEntity<Void> deleteAccount(@PathVariable("username") final String username) {	
 		accountService.delete(username);
