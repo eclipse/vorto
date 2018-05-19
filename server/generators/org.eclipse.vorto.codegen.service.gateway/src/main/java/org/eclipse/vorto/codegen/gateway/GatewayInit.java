@@ -23,11 +23,6 @@ import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
-import org.eclipse.vorto.codegen.gateway.templates.AWSConfigTemplate;
-import org.eclipse.vorto.codegen.gateway.templates.BoschConfigTemplate;
-import org.eclipse.vorto.codegen.gateway.templates.HonoConfigTemplate;
-import org.eclipse.vorto.codegen.gateway.templates.KuraConfigTemplate;
-import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.codegen.ios.IOSPlatformGenerator;
@@ -66,8 +61,8 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 	public void run(ApplicationArguments args) throws Exception {
 		
 		try {
-			generatorRepo.add(Generator.create("/generators/aws.properties", AWSGenerator.class, new AWSConfigTemplate()));
-			generatorRepo.add(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class, new BoschConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/aws.properties", AWSGenerator.class));
+			generatorRepo.add(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class));
 			generatorRepo.add(Generator.create("/generators/coap.properties", CoAPGenerator.class));
 			generatorRepo.add(Generator.create("/generators/ios.properties", IOSPlatformGenerator.class));
 			generatorRepo.add(Generator.create("/generators/javabean.properties", JavabeanGenerator.class));
@@ -75,14 +70,14 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 			generatorRepo.add(Generator.create("/generators/lwm2m.properties", LWM2MGenerator.class));
 			generatorRepo.add(Generator.create("/generators/markdown.properties", MarkdownGenerator.class));
 			generatorRepo.add(Generator.create("/generators/thingworx.properties", ThingWorxCodeGenerator.class));
-			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class, new WebUIConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/webui.properties", WebUIGenerator.class));
 			generatorRepo.add(Generator.create("/generators/webdevice.properties", WebDeviceGenerator.class));
-			generatorRepo.add(Generator.create("/generators/kura.properties", KuraGenerator.class, new KuraConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/kura.properties", KuraGenerator.class));
 			generatorRepo.add(Generator.create("/generators/protobuf.properties", ProtobufGenerator.class));
 			generatorRepo.add(Generator.create("/generators/artik.properties", ArtikGenerator.class));
 			generatorRepo.add(Generator.create("/generators/alpwiseBt.properties", AlpwiseBtStackGenerator.class));
 			generatorRepo.add(Generator.create("/generators/ditto.properties", EclipseDittoGenerator.class));
-			generatorRepo.add(Generator.create("/generators/hono.properties", EclipseHonoGenerator.class, new HonoConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/hono.properties", EclipseHonoGenerator.class));
 			generatorRepo.list().stream().forEach(GatewayUtils.checkEnvModifications(env));
 			
 			generatorRepo.list().stream().forEach(vorto::register);

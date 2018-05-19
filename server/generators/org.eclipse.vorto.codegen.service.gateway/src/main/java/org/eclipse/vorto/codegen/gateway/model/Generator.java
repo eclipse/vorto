@@ -14,13 +14,15 @@
  */
 package org.eclipse.vorto.codegen.gateway.model;
 
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.gateway.exception.GeneratorCreationException;
+import org.eclipse.vorto.codegen.gateway.templates.DefaultGeneratorConfigUI;
 import org.eclipse.vorto.codegen.gateway.utils.GatewayUtils;
-import org.eclipse.vorto.server.commons.ui.DefaultConfigTemplate;
 import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate;
 
 public class Generator {
@@ -28,25 +30,39 @@ public class Generator {
 	private IVortoCodeGenerator instance;
 	private IGeneratorConfigUITemplate configUi = null;
 	
-	private static final IGeneratorConfigUITemplate DEFAULT_TEMPLATE = new DefaultConfigTemplate();
+	private static final IGeneratorConfigUITemplate EMPTY_TEMPLATE = new IGeneratorConfigUITemplate() {
+		
+		@Override
+		public Set<String> getKeys() {
+			return Collections.emptySet();
+		}
+		
+		@Override
+		public String getContent(GeneratorServiceInfo serviceInfo) {
+			return "";
+		}
+	};
 	
-	public static Generator create(String configFile, Class<? extends IVortoCodeGenerator> generatorClass, IGeneratorConfigUITemplate configTemplate) {
+	public static Generator create(String configFile, Class<? extends IVortoCodeGenerator> generatorClass) {
 		Objects.requireNonNull(configFile);
 		Objects.requireNonNull(generatorClass);
-		Objects.requireNonNull(configTemplate);
 		
 		try {
 			IVortoCodeGenerator instance = generatorClass.newInstance(); 
-			return new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance), instance,configTemplate);
+			return new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance), instance, createConfigUI(instance));
 		} catch (Exception e) {
 			throw new GeneratorCreationException("Error in instantiating Generator", e);
 		}
 	}
 	
-	public static Generator create(String configFile, Class<? extends IVortoCodeGenerator> generatorClass) {
-		return create(configFile,generatorClass,DEFAULT_TEMPLATE);
+	private static IGeneratorConfigUITemplate createConfigUI(IVortoCodeGenerator generator) {
+		if (generator.getInfo().isConfigurable()) {
+			return new DefaultGeneratorConfigUI(generator.getInfo());
+		} else {
+			return EMPTY_TEMPLATE;
+		}
 	}
-	
+
 	private Generator(GeneratorServiceInfo info, IVortoCodeGenerator instance, IGeneratorConfigUITemplate configTemplate) {
 		this.info = Objects.requireNonNull(info);
 		this.instance = Objects.requireNonNull(instance);
