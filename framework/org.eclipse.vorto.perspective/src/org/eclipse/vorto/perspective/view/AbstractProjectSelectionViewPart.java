@@ -71,9 +71,6 @@ import org.eclipse.vorto.wizard.AbstractProjectWizardPage;
 public abstract class AbstractProjectSelectionViewPart extends ViewPart
 		implements ILocalModelWorkspace, IModelProjectBrowser {
 
-	// public static final String PROJECT_SELECT_VIEW_ID =
-	// "org.eclipse.vorto.perspective.view.ProjectSelectionViewPart";
-
 	protected ComboViewer projectSelectionViewer;
 
 	protected MultipleSelectionProvider multipleSelectionProvider;
@@ -88,10 +85,6 @@ public abstract class AbstractProjectSelectionViewPart extends ViewPart
 	private IResourceChangeListener removeProjectListener = null;
 	private IResourceChangeListener errorDiagnosticsListener = null;
 	private IResourceChangeListener removeImportListener = null;
-
-	// public AbstractProjectSelectionViewPart() {
-	// }
-	//
 
 	protected abstract ModelTreeViewer getDataTypeTreeViewer(Composite modelPanel);
 
