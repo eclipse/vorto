@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IGeneratorLookup;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -113,6 +114,11 @@ public class BleInvocationContext extends InvocationContext {
     	public String getServiceKey() {
     		return "noop";
     	}
+
+		@Override
+		public GeneratorInfo getInfo() {
+			return null;
+		}
     }
 
 }

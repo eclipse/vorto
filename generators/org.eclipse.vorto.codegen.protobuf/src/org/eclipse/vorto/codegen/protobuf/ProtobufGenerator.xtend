@@ -30,6 +30,7 @@ import org.eclipse.vorto.core.api.model.datatype.Enum
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.protobuf.templates.ProtobufMetaTemplate
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 
 class ProtobufGenerator implements IVortoCodeGenerator {
 
@@ -62,5 +63,10 @@ class ProtobufGenerator implements IVortoCodeGenerator {
 	
 	override getServiceKey() {
 		return "protobuf";
+	}
+	
+	override GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Google Protobuf",
+			"Generates Google RPC services and protobuf messages for Vorto Information Models", "Vorto Community");
 	}
 }

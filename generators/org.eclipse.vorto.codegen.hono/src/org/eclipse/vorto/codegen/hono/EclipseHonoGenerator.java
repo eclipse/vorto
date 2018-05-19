@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.hono;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -41,8 +42,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector. The
- * data is compliant to a Vorto & Ditto format.
+ * Generates source code for various device platforms that sends a JSON to the
+ * Hono MQTT Connector. The data is compliant to a Vorto & Ditto format.
  *
  */
 public class EclipseHonoGenerator implements IVortoCodeGenerator {
@@ -54,7 +55,7 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 
 		GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-		String platform = context.getConfigurationProperties().getOrDefault("language","java");
+		String platform = context.getConfigurationProperties().getOrDefault("language", "java");
 		if (platform.equalsIgnoreCase("arduino")) {
 			result.append(generateArduino(model, context, monitor));
 		} else if (platform.equalsIgnoreCase("python")) {
@@ -86,9 +87,9 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
 			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(infomodel)).generate(fbProperty.getType(),
 					context, output);
-			
+
 			FunctionBlock fb = fbProperty.getType().getFunctionblock();
-			
+
 			for (Entity entity : Utils.getReferencedEntities(fb)) {
 				generateForEntity(infomodel, entity, output);
 			}
@@ -103,26 +104,34 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 	private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		PythonGenerator pythonGenerator = new PythonGenerator();
-		return pythonGenerator.generate(infomodel,context,monitor);
+		return pythonGenerator.generate(infomodel, context, monitor);
 	}
 
 	private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
 		ArduinoCodeGenerator arduinoGenerator = new ArduinoCodeGenerator();
-		return arduinoGenerator.generate(infomodel,context,monitor);
+		return arduinoGenerator.generate(infomodel, context, monitor);
 	}
-	
+
 	private void generateForEntity(InformationModel infomodel, Entity entity, IGeneratedWriter outputter) {
 		new JavaClassGeneratorTask(infomodel).generate(entity, null, outputter);
 	}
 
 	private void generateForEnum(InformationModel infomodel, Enum en, IGeneratedWriter outputter) {
-		new JavaEnumGeneratorTask(infomodel).generate(en,null, outputter);
-				
+		new JavaEnumGeneratorTask(infomodel).generate(en, null, outputter);
+
 	}
 
 	@Override
 	public String getServiceKey() {
 		return "eclipsehono";
+	}
+
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Hono",
+				"Generates device code (Arduino, Python, Java) that integrates with Eclipse Hono and Eclipse Ditto.",
+				"Eclipse Vorto Team").production()
+				.withChoiceConfigurationItem("language", "Device Platform", "Arduino","Python","Java");
 	}
 }

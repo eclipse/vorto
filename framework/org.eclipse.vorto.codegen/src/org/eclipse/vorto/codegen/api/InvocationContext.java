@@ -302,6 +302,11 @@ public class InvocationContext {
     	public String getServiceKey() {
     		return "noop";
     	}
+
+		@Override
+		public GeneratorInfo getInfo() {
+			return null;
+		}
     }
 
 }

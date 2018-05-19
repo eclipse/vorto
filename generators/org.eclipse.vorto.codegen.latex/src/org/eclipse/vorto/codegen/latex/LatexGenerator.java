@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.latex;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -47,6 +48,10 @@ public class LatexGenerator implements IVortoCodeGenerator {
 		return "latex";
 	}
 
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("LaTeX Documentation","Generates a full documentation of information models in the LaTeX format which can then be converted to other output formats.","Vorto Community");
+	}
 	
 
 }

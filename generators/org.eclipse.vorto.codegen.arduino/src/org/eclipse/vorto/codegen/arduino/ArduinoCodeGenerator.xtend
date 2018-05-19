@@ -20,6 +20,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 
 class ArduinoCodeGenerator implements IVortoCodeGenerator {
 
@@ -53,6 +54,10 @@ class ArduinoCodeGenerator implements IVortoCodeGenerator {
 		
 	override getServiceKey() {
 		return "arduinocodegenerator";
+	}
+	
+	override getInfo() {
+		return GeneratorInfo.basicInfo("Arduino","Generates Arduino C code that connects to Eclipse Hono via MQTT","Vorto Community").production();
 	}
 
 }

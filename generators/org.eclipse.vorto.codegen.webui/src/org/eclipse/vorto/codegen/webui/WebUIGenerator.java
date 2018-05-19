@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.webui;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -210,5 +211,11 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "webui";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Web-based Device Dashboard",
+			"Generates a web-based dashboard that integrates with IoT Cloud backends and visualizes device data", "Vorto Community");
 	}
 }

@@ -17,6 +17,7 @@ package org.eclipse.vorto.codegen.ios;
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.DatatypeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -59,5 +60,10 @@ public class IOSPlatformGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "ios";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("iOS","Generates Swift code that can be executed on the iOS Platform.","Vorto Community");
 	}
 }

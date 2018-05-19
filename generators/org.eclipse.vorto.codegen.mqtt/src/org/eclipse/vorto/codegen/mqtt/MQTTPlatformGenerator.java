@@ -30,6 +30,7 @@ package org.eclipse.vorto.codegen.mqtt;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -77,5 +78,10 @@ public class MQTTPlatformGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "mqtt";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Paho for MQTT","Generates Paho MQTT client that subscribes to device status data.","Vorto Community");
 	}
 }

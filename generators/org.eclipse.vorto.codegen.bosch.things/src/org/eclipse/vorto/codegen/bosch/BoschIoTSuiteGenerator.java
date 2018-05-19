@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.bosch;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -34,7 +35,7 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 
 		GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-		String platform = invocationContext.getConfigurationProperties().get("language");
+		String platform = invocationContext.getConfigurationProperties().getOrDefault("language", "");
 		String gateway = invocationContext.getConfigurationProperties().getOrDefault("gateway", "false");
 		if (platform.equalsIgnoreCase("arduino")) {
 			result.append(generateArduino(infomodel, invocationContext, monitor));
@@ -42,10 +43,12 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 			result.append(generatePython(infomodel, invocationContext, monitor));
 		} else if (platform.equalsIgnoreCase("java")) {
 			result.append(generateJava(infomodel, invocationContext, monitor));
-		} else if ("true".equalsIgnoreCase(gateway)) {
-			result.append(generateGateway(infomodel, invocationContext, monitor));
 		} else {
 			result.append(generateJava(infomodel, invocationContext, monitor));
+		}
+
+		if (gateway.equalsIgnoreCase("true")) {
+			result.append(generateGateway(infomodel, invocationContext, monitor));
 		}
 
 		return output;
@@ -80,6 +83,16 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "boschiotsuite";
+	}
+
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo
+				.basicInfo("Bosch IoT Suite",
+						"Generates device code (Java, Arduino, Python) that connects via the Bosch IoT Gateway or directly to Bosch IoT Hub and Bosch IoT Things.",
+						"Eclipse Vorto Team")
+				.production().withChoiceConfigurationItem("language", "Device Platform", "Arduino", "Python", "Java")
+				.withBinaryConfigurationItem("gateway", "Bosch IoT Gateway");
 	}
 
 }

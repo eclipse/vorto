@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.kura;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -102,5 +103,10 @@ public class KuraGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "kura";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Kura","Generates a Kura Gateway application that reads data from the device (e.g. via bluetooth) and sends the data to a IoT Cloud backend.","Vorto Community");
 	}
 }

@@ -38,4 +38,14 @@ public interface IVortoCodeGenerator {
 	 * @return
 	 */
 	String getServiceKey();
+	
+	/**
+	 * Gets more information about the generator.
+	 * @return
+	 */
+	GeneratorInfo getInfo();
+	
+	
+	
+	
 }

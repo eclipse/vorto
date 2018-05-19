@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.artik
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator
@@ -38,4 +39,9 @@ class ArtikGenerator implements IVortoCodeGenerator {
 	override getServiceKey() {
 		return "artik";
 	}
+	
+	override getInfo() {
+		return GeneratorInfo.basicInfo("Samsung ARTIK","Generates ARTIK IoT device manifests from Vorto Information Models","Vorto Community");
+	}
+	
 }

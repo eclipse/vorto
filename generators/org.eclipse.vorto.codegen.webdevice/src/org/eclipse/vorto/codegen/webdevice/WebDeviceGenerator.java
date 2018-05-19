@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.webdevice;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -80,6 +81,12 @@ public class WebDeviceGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "webdevice";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("AngularJS Web UI",
+			"Generates an AngularJS based web application and REST controllers to visualize device data", "Vorto Community");
 	}
 
 }

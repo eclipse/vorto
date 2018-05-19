@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.aws
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
@@ -69,5 +70,9 @@ class AWSGenerator implements IVortoCodeGenerator {
 	
 	override getServiceKey() {
 		return "aws";
+	}
+	
+	override getInfo() {
+		return GeneratorInfo.basicInfo("AWS IoT","Generates an Alexa skillset that updates and reads device data to/from the AWS IoT Thing Shadow Service.","Vorto Community");
 	}
 }
