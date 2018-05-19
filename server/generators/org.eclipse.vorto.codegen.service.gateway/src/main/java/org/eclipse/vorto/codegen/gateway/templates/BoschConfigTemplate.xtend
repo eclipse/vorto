@@ -20,7 +20,7 @@ import java.util.Set
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
 import org.eclipse.vorto.server.commons.ui.IGeneratorConfigUITemplate
 
-class BoschThingsConfigTemplate implements IGeneratorConfigUITemplate {
+class BoschConfigTemplate implements IGeneratorConfigUITemplate {
 	
 	private static final Set<String> KEYS = new HashSet(Arrays.asList("language", "gateway"));
 	

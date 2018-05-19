@@ -80,7 +80,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.bosch.things</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.bosch</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

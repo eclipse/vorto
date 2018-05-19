@@ -17,14 +17,14 @@ package org.eclipse.vorto.codegen.gateway;
 import org.eclipse.vorto.codegen.artik.ArtikGenerator;
 import org.eclipse.vorto.codegen.aws.AWSGenerator;
 import org.eclipse.vorto.codegen.ble.alpwise.AlpwiseBtStackGenerator;
-import org.eclipse.vorto.codegen.bosch.things.BoschIoTThingsGenerator;
+import org.eclipse.vorto.codegen.bosch.BoschIoTSuiteGenerator;
 import org.eclipse.vorto.codegen.coap.CoAPGenerator;
 import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.gateway.model.Generator;
 import org.eclipse.vorto.codegen.gateway.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.gateway.service.VortoService;
 import org.eclipse.vorto.codegen.gateway.templates.AWSConfigTemplate;
-import org.eclipse.vorto.codegen.gateway.templates.BoschThingsConfigTemplate;
+import org.eclipse.vorto.codegen.gateway.templates.BoschConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.HonoConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.KuraConfigTemplate;
 import org.eclipse.vorto.codegen.gateway.templates.WebUIConfigTemplate;
@@ -67,7 +67,7 @@ public class GatewayInit implements ApplicationRunner, EnvironmentAware {
 		
 		try {
 			generatorRepo.add(Generator.create("/generators/aws.properties", AWSGenerator.class, new AWSConfigTemplate()));
-			generatorRepo.add(Generator.create("/generators/bosch-things.properties", BoschIoTThingsGenerator.class, new BoschThingsConfigTemplate()));
+			generatorRepo.add(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class, new BoschConfigTemplate()));
 			generatorRepo.add(Generator.create("/generators/coap.properties", CoAPGenerator.class));
 			generatorRepo.add(Generator.create("/generators/ios.properties", IOSPlatformGenerator.class));
 			generatorRepo.add(Generator.create("/generators/javabean.properties", JavabeanGenerator.class));

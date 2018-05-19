@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.codegen.bosch.things;
+package org.eclipse.vorto.codegen.bosch;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -25,7 +25,7 @@ import org.eclipse.vorto.codegen.prosystfi.ProSystGenerator;
 import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
-public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
+public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 
 	public IGenerationResult generate(InformationModel infomodel, InvocationContext invocationContext,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
@@ -79,7 +79,7 @@ public class BoschIoTThingsGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "boschiotthings";
+		return "boschiotsuite";
 	}
 
 }

@@ -2,17 +2,14 @@
 
 ### Overview
 
-<img src="img/BoschIoTSuiteGenerator.png" width="80%"/>
+This generator generates source code that sends telemetry data to Bosch IoT Hub and Bosch IoT Things Service. 
+It supports the following device platforms:
 
-This generator features
+- Arduino
+- Python
+- Java
 
-- JSON Schema files for validating things managed in Bosch IoT Things
-- Alexa Skillset that fetches device data from Bosch IoT Suite
-- Simulator generating device test data and sends it to Bosch IoT Suite
-- Eclipse Kura Gateway OSGI bundle consuming bluetooth data and sends it to Bosch IoT Suite
-- Spring Boot Web application that visualizes the device data in UI widgets
-
-
+For devices that need to be connected via the Bosch IoT Gateway Software, this generator generates an OSGi bundle.
 ----------
 
 List of other available [Code Generators](../Readme.md).
