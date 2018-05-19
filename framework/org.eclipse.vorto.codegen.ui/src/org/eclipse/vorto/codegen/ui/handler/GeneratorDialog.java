@@ -14,14 +14,9 @@
  */
 package org.eclipse.vorto.codegen.ui.handler;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.emf.common.util.Diagnostic;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.util.Diagnostician;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -49,11 +44,9 @@ import org.eclipse.vorto.codegen.ui.progressmonitor.VortoProgressMonitor;
 import org.eclipse.vorto.codegen.ui.utils.PlatformUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
-import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelIdFactory;
-import org.eclipse.vorto.core.ui.MessageDisplayFactory;
 import org.eclipse.vorto.core.ui.exception.ExceptionHandlerFactory;
 import org.eclipse.vorto.core.ui.model.IModelElement;
 import org.eclipse.vorto.core.ui.model.IModelProject;
@@ -128,7 +121,7 @@ public class GeneratorDialog extends TitleAreaDialog {
 	}
 
 	private void createGeneratorConfigUI(Composite container) {
-		for (ConfigurationItem item : this.generator.getInfo().getConfigurationItems()) {
+		for (final ConfigurationItem item : this.generator.getInfo().getConfigurationItems()) {
 			
 			Group genderGroup = new Group(container, SWT.NONE);
 			genderGroup.setLayout(new RowLayout(SWT.HORIZONTAL));
