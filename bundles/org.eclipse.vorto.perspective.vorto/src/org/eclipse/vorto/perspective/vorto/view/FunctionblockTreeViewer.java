@@ -17,6 +17,7 @@ package org.eclipse.vorto.perspective.vorto.view;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
@@ -70,7 +71,9 @@ public class FunctionblockTreeViewer extends ModelTreeViewer {
 
 					if (model.getId().getModelType() == ModelType.Functionblock) {
 						MenuManager generatorMenuMgr = new MenuManager("Generate Code");
-						generatorMenuMgr.add(new PopulateGeneratorsMenu());
+						generatorMenuMgr.add(new PopulateGeneratorsMenu("production"));
+						generatorMenuMgr.add(new Separator());
+						generatorMenuMgr.add(new PopulateGeneratorsMenu("demo"));
 						menuMgr.add(generatorMenuMgr);
 						menuMgr.add(ShareModelAction.newInstance(treeViewer, model));
 						menuMgr.add(DeleteModelAction.newInstance(localModelWorkspace, treeViewer, model));

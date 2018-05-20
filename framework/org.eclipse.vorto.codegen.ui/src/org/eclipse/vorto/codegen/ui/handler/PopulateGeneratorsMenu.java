@@ -34,6 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.CompoundContributionItem;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.eclipse.vorto.codegen.api.IGeneratorLookup;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.ui.Activator;
 import org.osgi.framework.Bundle;
@@ -43,12 +44,17 @@ public class PopulateGeneratorsMenu extends CompoundContributionItem {
 	private static final String CLASS = "class";
 	private static final String MENU_LABEL = "menuLabel";
 
+	private String tag;
 	
-	public PopulateGeneratorsMenu() {
+	private static final IGeneratorLookup lookupService = new GeneratorLookupLocal();
+	
+	public PopulateGeneratorsMenu(String tag) {
+		this.tag = tag;
 	}
 
-	public PopulateGeneratorsMenu(String id) {
+	public PopulateGeneratorsMenu(String id, String tag) {
 		super(id);
+		this.tag = tag;
 	}
 
 	@Override
@@ -57,7 +63,7 @@ public class PopulateGeneratorsMenu extends CompoundContributionItem {
 		List<IConfigurationElement> registeredGenerators = getAllRegisteredGeneratorNames();
 		for (IConfigurationElement aGenerator : registeredGenerators) {
 			CommandContributionItem commandForGenerator = constructCommandForGenerator(aGenerator);
-			if (commandForGenerator != null) {
+			if (commandForGenerator != null && hasTag(commandForGenerator)) {
 				contributionItems.add(commandForGenerator);
 			}
 		}
@@ -69,6 +75,12 @@ public class PopulateGeneratorsMenu extends CompoundContributionItem {
 			}
 		});
 		return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
+	}
+	
+	private boolean hasTag(CommandContributionItem item) {
+		String generatorKey = (String)item.getCommand().getParameterMap().get("org.eclipse.vorto.codegen.generator.commandParameter");
+		IVortoCodeGenerator generator = lookupService.lookupByKey(generatorKey);
+		return generator.getInfo().getTags().contains(this.tag);
 	}
 
 	private CommandContributionItem constructCommandForGenerator(

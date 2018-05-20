@@ -9,6 +9,10 @@
    <feature url="features/org.eclipse.vorto.feature.generators_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.generators" version="0.10.0.qualifier">
       <category name="Vorto Generators"/>
    </feature>
+   <feature url="features/org.eclipse.vorto.feature.generators.thirdparty_0.10.0.qualifier.jar" id="org.eclipse.vorto.feature.generators.thirdparty" version="0.10.0.qualifier">
+      <category name="Third-Party Code Generators"/>
+   </feature>
    <category-def name="Vorto" label="Vorto"/>
    <category-def name="Vorto Generators" label="Vorto Generators"/>
+   <category-def name="Third-Party Vorto Generators" label="Third-Party Code Generators"/>
 </site>

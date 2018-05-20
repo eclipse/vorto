@@ -70,6 +70,11 @@ class GeneratorTemplate implements IFileTemplate<IGeneratorProjectContext> {
 				override getServiceKey() {
 					return "«context.generatorName.toLowerCase»";
 				}
+				
+				override GeneratorInfo getInfo() {
+					return GeneratorInfo.basicInfo("«context.generatorName»",
+						"Short description of the «context.generatorName»", "Vorto Community");
+				}
 			}
 		'''
 	}

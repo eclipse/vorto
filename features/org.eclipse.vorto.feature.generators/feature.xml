@@ -6,7 +6,7 @@
       provider-name="Eclipse.org/Vorto">
 
    <description url="http://www.example.com/description">
-      This feature defines the bundles for the Vorto Generators
+      This feature contains Vorto Code Generators.
    </description>
 
    <copyright url="http://www.example.com/copyright">

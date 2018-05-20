@@ -24,5 +24,6 @@
 		<module>org.eclipse.vorto.feature.repository</module>
 		<module>org.eclipse.vorto.feature.codegen.mqtt</module>
 		<module>org.eclipse.vorto.feature.generators</module>
+		<module>org.eclipse.vorto.feature.generators.thirdparty</module>
 	</modules>
 </project>
