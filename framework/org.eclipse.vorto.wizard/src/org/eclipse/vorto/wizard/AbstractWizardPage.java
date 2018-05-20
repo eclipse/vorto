@@ -28,7 +28,7 @@ import com.google.common.base.Strings;
 
 public abstract class AbstractWizardPage extends WizardPage {
 
-	public static final String PROJECTNAME_REGEX = "[^a-zA-Z0-9 \\._]";
+	public static final String PROJECTNAME_REGEX = "[A-Z][a-zA-Z0-9_]*$";
 	public static final String MODEL_NAME_REGEX = "[A-Z][a-zA-Z0-9_]*$";
 	public static final String VERSION_REGEX = "^\\d+\\.\\d+\\.\\d+(-\\w+)*$";
 
@@ -45,7 +45,7 @@ public abstract class AbstractWizardPage extends WizardPage {
 	}
 
 	protected boolean checkProjectName(String projectName) {
-		if (checkForRegexPattern(projectName, true, PROJECTNAME_REGEX)) {
+		if (checkForRegexPattern(projectName, false, PROJECTNAME_REGEX)) {
 			setErrorMessage("Project name should not contain special characters.");
 			return false;
 		}
@@ -66,6 +66,9 @@ public abstract class AbstractWizardPage extends WizardPage {
 	}
 
 	protected boolean validateExistingSameProjectName(String projectName) {
+		if (projectName.length() == 0 ) {
+			return false;
+		}
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 
 		if (workspace.getRoot().getProject(getProjectName()).exists()) {
