@@ -15,12 +15,10 @@
 package org.eclipse.vorto.perspective.dnd.dropaction;
 
 import java.io.ByteArrayInputStream;
-import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.core.resources.ResourceAttributes;
 import org.eclipse.vorto.core.api.model.model.ModelId;
-import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelRepositoryFactory;
 import org.eclipse.vorto.core.api.repository.ModelResource;
@@ -66,7 +64,7 @@ public class RepositoryResourceDropAction implements IDropAction<IModelProject,M
 						downloadAndSaveModel(modelProject, reference);
 					}
 					
-					downloadMappings(modelProject, model.getReferencedBy());
+//					downloadMappings(modelProject, model.getReferencedBy());
 					
 					MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
 					byte[] modelContent = modelRepo.downloadContent(model.getId());
@@ -85,16 +83,16 @@ public class RepositoryResourceDropAction implements IDropAction<IModelProject,M
 		return modelElement;
 	}
 
-	private void downloadMappings(IModelProject modelProject, List<ModelId> referencedBy) {
-		for(ModelId modelId : referencedBy) {
-			ModelResource model = modelRepo.getModel(modelId);
-			if (model != null && model.getId().getModelType() == ModelType.Mapping) {
-				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
-				byte[] modelContent = modelRepo.downloadContent(model.getId());
-				saveToProject(modelProject, modelContent, model.getId());
-			}
-		}
-	}
+//	private void downloadMappings(IModelProject modelProject, List<ModelId> referencedBy) {
+//		for(ModelId modelId : referencedBy) {
+//			ModelResource model = modelRepo.getModel(modelId);
+//			if (model != null && model.getId().getModelType() == ModelType.Mapping) {
+//				MessageDisplayFactory.getMessageDisplay().display("Downloading " + modelId.toString());
+//				byte[] modelContent = modelRepo.downloadContent(model.getId());
+//				saveToProject(modelProject, modelContent, model.getId());
+//			}
+//		}
+//	}
 
 	private IModelElement saveToProject(IModelProject project, byte[] modelContent, ModelId modelId) {			
 		return project.addModelElement(modelId,new ByteArrayInputStream(modelContent));
