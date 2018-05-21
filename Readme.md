@@ -34,6 +34,8 @@ Switch to the Vorto perspective in Eclipse, create a new Model Project and begin
 			status {
 				mandatory value as float
 				mandatory unit as string
+				optional minValue as float
+				optional maxValue as float
 			}
 		}
 		
@@ -41,14 +43,14 @@ Switch to the Vorto perspective in Eclipse, create a new Model Project and begin
 
 		namespace com.ci.simonsGrovePi
 		version 1.0.0
-		displayname "SimonsGrovePi"
+		displayname "GrovePi Device"
 		
 		using com.mycompany.TemperatureSensor ; 1.0.0
 
 		infomodel GrovePiDevice {
 
 			functionblocks {
-				temperature as Temperature
+				mandatory temperature as Temperature
 			}
 		}
 
