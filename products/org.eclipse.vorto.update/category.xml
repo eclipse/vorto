@@ -14,5 +14,5 @@
    </feature>
    <category-def name="Vorto" label="Vorto"/>
    <category-def name="Vorto Generators" label="Vorto Generators"/>
-   <category-def name="Third-Party Vorto Generators" label="Third-Party Code Generators"/>
+   <category-def name="Third-Party Code Generators" label="Third-Party Code Generators"/>
 </site>
