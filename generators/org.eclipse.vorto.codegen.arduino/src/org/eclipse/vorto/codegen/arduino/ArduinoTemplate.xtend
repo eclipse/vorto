@@ -19,6 +19,8 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 import org.eclipse.vorto.core.api.model.datatype.PropertyType
 import org.eclipse.vorto.core.api.model.model.Model
+import org.eclipse.vorto.codegen.utils.Utils
+import org.eclipse.vorto.core.api.model.functionblock.FunctionBlock
 
 abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 	
@@ -30,9 +32,10 @@ abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 		} else if (type instanceof DictionaryPropertyType){
 			return "map<"+type((type as DictionaryPropertyType).keyType)+","+type((type as DictionaryPropertyType).valueType)+">";
 		} else {
-			return (type as ObjectPropertyType).getType().name
+			return (type as ObjectPropertyType).getType().namespace.replace(".","_") + "::" + (type as ObjectPropertyType).getType().name
 		}
 	}
+	
 	
 	def String toCppPrimitive(PrimitiveType primitiveType) {
 		switch (primitiveType) {
@@ -97,4 +100,77 @@ abstract class ArduinoTemplate<T extends Model> implements IFileTemplate<T> {
 			return false
 		}
 	}
+	
+	def boolean isAlphabetical (PropertyType type) {
+	    if (type instanceof PrimitivePropertyType) {
+            switch ((type as PrimitivePropertyType).getType) {
+                case (PrimitiveType.STRING): {
+                    return true
+                }
+                case (PrimitiveType.BASE64_BINARY): {
+                    return true
+                }
+                default: {
+                    return false
+                }
+            }
+        }
+        else
+        {
+            return false
+        }
+	}
+	
+	def boolean isEnum (FunctionBlock fb, PropertyType type) {
+        if((type instanceof ObjectPropertyType) && 
+            !Utils.getReferencedEnums(fb).empty) {
+            for (enum : Utils.getReferencedEnums(fb)) {
+                if (enum.displayname.equals((type as ObjectPropertyType).getType().name) && 
+                    enum.namespace.equals((type as ObjectPropertyType).getType().namespace)) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        } else {
+            return false
+        }
+    }
+    
+	def String getFirstValueEnum (FunctionBlock fb, PropertyType type) {
+	    for (enum : Utils.getReferencedEnums(fb)) {
+	        if (enum.displayname.equals((type as ObjectPropertyType).getType().name) && 
+	            enum.namespace.equals((type as ObjectPropertyType).getType().namespace)
+	        ) {
+	            return enum.enums.get(0).name
+	        }
+	    }
+	    return ""
+	}
+	
+    def boolean isEntity (FunctionBlock fb, PropertyType type) {
+        if((type instanceof ObjectPropertyType) &&
+            !Utils.getReferencedEntities(fb).empty) {
+            for (entity : Utils.getReferencedEntities(fb)) {
+                if (entity.displayname.equals((type as ObjectPropertyType).getType().name) && 
+                    entity.namespace.equals((type as ObjectPropertyType).getType().namespace)) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+        } else {
+            return false
+        }
+    }
+    
+    def getEntity (FunctionBlock fb, PropertyType type) {
+        for (entity : Utils.getReferencedEntities(fb)) {
+            if (entity.displayname.equals((type as ObjectPropertyType).getType().name) && 
+                entity.namespace.equals((type as ObjectPropertyType).getType().namespace)) {
+                return entity.properties
+            }
+        }
+        return null;
+    }
 }

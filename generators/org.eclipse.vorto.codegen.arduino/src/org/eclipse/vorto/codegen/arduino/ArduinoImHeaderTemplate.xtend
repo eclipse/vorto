@@ -18,40 +18,42 @@ import org.eclipse.vorto.codegen.api.InvocationContext
 class ArduinoImHeaderTemplate extends org.eclipse.vorto.codegen.arduino.ArduinoTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
-		return "infomodel_" + model.name + ".h";
+		return model.name + ".h";
 	}
 	
 	override getPath(InformationModel model) {
-		return model.name + "App";
+		return model.name + "App/src/model/infomodel";
 	}
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// infomodel_«model.name»
+		// «model.name»
 		
-		#ifndef __infomodel_«model.name.toUpperCase»_H__
-		#define __infomodel_«model.name.toUpperCase»_H__
+		#ifndef __INFOMODEL_«model.name.toUpperCase»_H__
+		#define __INFOMODEL_«model.name.toUpperCase»_H__
 		
 		#include <WString.h>
 		
 		«FOR fb : model.properties»
-		#include "«fb.type.name».h"
+		#include "../functionblock/«fb.type.name».h"
 		«ENDFOR»
 		
-		class infomodel_«model.name»
-		{
-		    public:
-		        infomodel_«model.name»();
-
-                «FOR fb : model.properties»
-		            «fb.type.name» «fb.name»;
-                «ENDFOR»
-
-		        String serialize();
-		    private:
-		};
+		namespace «model.namespace.replace(".","_")» {
+		    class «model.name»
+		    {
+		       public:
+		            «model.name»();
 		
-		#endif // __infomodel_«model.name.toUpperCase»_H__
+		            «FOR fb : model.properties»
+		                «fb.type.namespace.replace(".","_")»::«fb.type.name» «fb.name»;
+		            «ENDFOR»
+		
+		            String serialize();
+		        private:
+		    };
+		}
+		
+		#endif // __INFOMODEL_«model.name.toUpperCase»_H__
 		'''
 	}
 	

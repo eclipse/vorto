@@ -18,24 +18,24 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class ArduinoImSourceTemplate extends org.eclipse.vorto.codegen.arduino.ArduinoTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
-		return "infomodel_" + model.name + ".cpp";
+		return model.name + ".cpp";
 	}
 	
 	override getPath(InformationModel model) {
-		return model.name + "App";
+		return model.name + "App/src/model/infomodel";
 	}
 	
 	override getContent(InformationModel model, InvocationContext context) {
 		'''
-		// infomodel_«model.name»
+		// «model.name»
 		
-		#include "infomodel_«model.name».h"
+		#include "«model.name».h"
 		
-		infomodel_«model.name»::infomodel_«model.name»() 
-		{
-		}
+		using namespace «model.namespace.replace(".","_")»;
 		
-		String infomodel_«model.name»::serialize() {}
+		«model.name»::«model.name»() {}
+		
+		String «model.name»::serialize() {}
 		'''
 	}
 	

@@ -12,17 +12,16 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.mqtt.python
 
-import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.vorto.codegen.api.InvocationContext
 
-class PythonInitTemplate implements IFileTemplate<Model> {
+class PythonInitTemplate extends PythonTemplate <Model> {
 	override getFileName(Model model) {
 		return "__init__.py";
 	}
 	
 	override getPath(Model model) {
-		return "model";
+		return rootPath;
 	}
 	
 	override getContent(Model element, InvocationContext context) {

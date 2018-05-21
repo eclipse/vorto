@@ -25,7 +25,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 	}
 	
 	override getPath(FunctionblockModel fb) {
-		return rootPath;
+		return rootPath + "/src/model/functionblock";
 	}
 	
 	override getContent(FunctionblockModel fb, InvocationContext context) {
@@ -34,39 +34,43 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		
 		#include "«fb.name».h"
 		
+		using namespace «fb.namespace.replace(".","_")»;
+		
 		«fb.name»::«fb.name»(){}
 		
-		«FOR status : fb.functionblock.status.properties»
-		void «fb.name»::set«status.name»(«type(status.type)» value)
-		{
-			«status.name» = value;			
-		}
-		
-		«type(status.type)» «fb.name»::get«status.name»()
-		{
-			return «status.name»;
-		}
-        «ENDFOR»
-		
-		String «fb.name»::serialize(String nameSpace, String deviceId, String fbName)
-		{
-		    String result = "{\"topic\":\""+ nameSpace + "/" + deviceId +"/things/twin/commands/modify\",";
-		    		result += "\"headers\":{\"response-required\": false},";
-		    		result += "\"path\":\"/features/" + fbName + "/properties/status\",\"value\": {";
-		    «var counter = 0»
-		    «FOR status : fb.functionblock.status.properties»
-            	«var c = counter++»                                
-                «IF isNumericType(status.type)»
-                    result += "\"«status.name»\" : " + String«convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
-                «ELSE»
-                   result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
-                «ENDIF»                                    
-            «ENDFOR»
+		«IF fb.functionblock.status != null»
+			«FOR status : fb.functionblock.status.properties»
+			void «fb.name»::set«status.name»(«type(status.type)» value) {
+				«status.name» = value;			
+			}
 			
-    		result += "} }";
+			«type(status.type)» «fb.name»::get«status.name»() {
+				return «status.name»;
+			}
+			«ENDFOR»
+		«ENDIF»
+		
+		String «fb.name»::serialize(String ditto_namespace, String hono_deviceId, String fbName) {
+		    String result = "{\"topic\":\""+ ditto_namespace + "/" + hono_deviceId +"/things/twin/commands/modify\",";
+		    		result += "\"headers\":{\"response-required\": false},";
+		    		result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": { \"status\": {";
+		    «var counter = 0»
+		        «IF fb.functionblock.status != null»
+		        «FOR status : fb.functionblock.status.properties»
+		            «var c = counter++»
+		            «IF isNumericType(status.type)»
+		                result += "\"«status.name»\" : " + String«convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
+		             «ELSEIF isEntity(fb.functionblock, status.type)»
+		                result += «status.name».serialize();
+		             «ELSE»
+		                result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
+		            «ENDIF»                                    
+		        «ENDFOR»
+		        «ENDIF»
+		        result += "} } } }";
 
-            return result;
-        }
+		    return result;
+		}
 		'''
 	}
 	

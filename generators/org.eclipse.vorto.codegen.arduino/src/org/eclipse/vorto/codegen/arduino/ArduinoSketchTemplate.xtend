@@ -37,9 +37,9 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    #include <WiFiClientSecure.h>
 		#endif
 		«FOR fb : model.properties»
-		#include "«fb.type.name».h"
+		#include "src/model/functionblock/«fb.type.name».h"
 		«ENDFOR»
-		#include "infomodel_«model.name».h"
+		#include "src/model/infomodel/«model.name».h"
 		
 		/**************************************************************************/
 		/* Configuration section, adjust to your settings                         */
@@ -109,7 +109,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		PubSubClient mqttClient(wifiClient);
 		
 		/* The information model object */
-		infomodel_«model.name» infoModel;
+		«model.namespace.replace(".","_")»::«model.name» infoModel;
 		
 		/**************************************************************************/
 		/* Function to connect to the WiFi network                                */
@@ -260,15 +260,29 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        snprintf(msg, MQTT_MAX_SIZE - 1, "hello world #%ld", value);
 		        
 		        «FOR fb : model.properties»
-		        	«FOR status : fb.type.functionblock.status.properties»
-		        		«IF isNumericType(status.type)»
+		        	«IF fb.type.functionblock.status != null»
+		        		«FOR status : fb.type.functionblock.status.properties»
+		        			«IF isNumericType(status.type)»
 		        			infoModel.«fb.name».set«status.name»(value);
-		        		«ELSE»
+		        			«ELSEIF isAlphabetical(status.type)»
 		        			infoModel.«fb.name».set«status.name»(msg);
-		        		«ENDIF»
-		        	«ENDFOR»
+		        			«ELSEIF isEnum(fb.type.functionblock, status.type)»
+		        			infoModel.«fb.name».set«status.name»(«type(status.type)»::«getFirstValueEnum(fb.type.functionblock, status.type)»);
+		        			«ELSEIF isEntity(fb.type.functionblock, status.type)»
+		        			«type(status.type)» «status.name»;
+		        			«FOR Entity : getEntity(fb.type.functionblock, status.type)»
+		        			    «IF isNumericType(Entity.type)»
+		        			        «status.name».set«Entity.name»(value);
+		        			    «ELSEIF isAlphabetical(Entity.type)»
+		        			        «status.name».set«Entity.name»(msg);
+		        			    «ENDIF»
+		        			«ENDFOR»
+		        			infoModel.«fb.name».set«status.name»(«status.name»);
+		        			«ENDIF»
+		        		«ENDFOR»
+		        	«ENDIF»
 		        «ENDFOR»				
-		
+		        
 		        «FOR fb : model.properties»
 		        publish«fb.name.toFirstUpper»();
                 «ENDFOR»                 

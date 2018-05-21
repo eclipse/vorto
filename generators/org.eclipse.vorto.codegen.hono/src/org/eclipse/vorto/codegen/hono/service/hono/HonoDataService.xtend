@@ -82,8 +82,8 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 			
 			Map<String, Object> wrapper = new HashMap<String, Object>();
 			wrapper.put("topic", dittoNamespace + "/" + deviceId + "/things/twin/commands/modify");
-			wrapper.put("path", "/features/"+featureName);
-			wrapper.put("value", createValue(functionBlock));		
+		    wrapper.put("path", "/features/"+featureName);
+		    wrapper.put("value", createValue(functionBlock));
 			wrapper.put("headers", headers);
 	
 			return wrapper; 

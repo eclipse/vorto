@@ -34,9 +34,9 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import paho.mqtt.client as mqtt
 	import datetime, threading, time
 	«FOR fb : model.properties»
-	import model.«fb.type.name» as «fb.name» 
+	import model.functionblock.«fb.type.name» as «fb.name» 
 	«ENDFOR»
-	import model.«model.name» as «model.name»
+	import model.infomodel.«model.name» as «model.name»
 	import model.DittoSerializer as DittoSerializer
 	
 	# DEVICE CONFIG GOES HERE
@@ -96,8 +96,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	
 	    # Setting properties of function blocks
 	    «FOR fb : model.properties»
-	        «FOR status : fb.type.functionblock.status.properties»
-	        	«IF fb.type.functionblock.status != null»
+	        «IF fb.type.functionblock.status != null»
+	        	«FOR status : fb.type.functionblock.status.properties»
 	        		«IF status.type instanceof PrimitivePropertyType»
 	        			«var primitiveType = status.type as PrimitivePropertyType»
 	        			«IF primitiveType.type == PrimitiveType.STRING»
@@ -106,8 +106,8 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	        			infomodel.«fb.name».«status.name» += 1
 	        			«ENDIF»
 	        		«ENDIF»
-	        	«ENDIF»
-	        «ENDFOR»
+	        	«ENDFOR»
+	        «ENDIF»
 	    «ENDFOR»
 
 	    ### END SAMPLE CODE
