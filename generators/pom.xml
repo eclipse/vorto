@@ -23,6 +23,7 @@
 		<module>org.eclipse.vorto.codegen.markdown</module>
 		<module>org.eclipse.vorto.codegen.ios</module>
 		<module>org.eclipse.vorto.codegen.latex</module>
+		<module>org.eclipse.vorto.codegen.bosch</module>
 		<module>org.eclipse.vorto.codegen.bosch.things</module>
 		<module>org.eclipse.vorto.codegen.coap</module>
 		<module>org.eclipse.vorto.codegen.aws</module>
