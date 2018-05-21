@@ -50,7 +50,7 @@ Switch to the Vorto perspective in Eclipse, create a new Model Project and begin
 		infomodel GrovePiDevice {
 
 			functionblocks {
-				mandatory temperature as Temperature
+				mandatory temperature as TemperatureSensor
 			}
 		}
 
