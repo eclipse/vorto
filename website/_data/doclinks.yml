@@ -93,8 +93,6 @@
           href: "/documentation/vorto-repository/eclipse-vorto-integration/setting-preferences-eclipse.html"
         - title: "Searching Models"
           href: "/documentation/vorto-repository/eclipse-vorto-integration/search-eclipse.html"
-        - title: "Sharing Models"
-          href: "/documentation/vorto-repository/eclipse-vorto-integration/share-eclipse.html"
         - title: "Generating Code"
           href: "/documentation/vorto-repository/eclipse-vorto-integration/generate-code-eclipse.html"
     - title: "Vorto CLI Tool"
@@ -116,6 +114,8 @@
     - title: "Release Notes"
       href: ""
       sub:
+        - title: "0.10.0-M3"
+          href: "/documentation/appendix/releasenotes/0.10.0-M3.html"
         - title: "0.10.0-M2"
           href: "/documentation/appendix/releasenotes/0.10.0-M2.html"
         - title: "0.10.0-M1"

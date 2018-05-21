@@ -14,31 +14,28 @@ Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md)
 
 # Getting started with Vorto 
 
-## 1. Create Account and Install Vorto Toolset
+## 1. Install Vorto Toolset
 
-1. Log-in to [Vorto Repository](http://vorto.eclipse.org) with your Github account and complete the sign-up process.
 2. Download the [Vorto Eclipse Toolset](https://marketplace.eclipse.org/content/vorto-toolset)
 3. Restart Eclipse
-4. Go to Eclipse Settings --> Vorto Repository and configure your Vorto username and password
 
 ## 2. Describe a device with Vorto
 
-Switch to the Vorto perspective and start describing the functionality of a device.
+Switch to the Vorto perspective and start describing the functionality of a device as an Information Model and Function Blocks.
 
-## 3. Publish the Information Model
+## 3. Generate Java Code that integrates with Eclipse Hono via MQTT
 
-Use the Vorto Eclipse Toolset to share the model with the [Vorto Repository](http://vorto.eclipse.org), by right-clicking on the Information Model in the Vorto perspective.
+Integrate the device with Eclipse Hono by sending Vorto Information Model specific data as JSON to the Eclipse Hono MQTT Connector.
 
-## 4. Generate Source Code for Eclipse Hono
+1. Right-Click on your Information Model -> **Generate Code** -> Eclipse Hono Generator
+2. Choose **Java** confirm with **Generate**. This generates a Maven Java Project and switches to the Java Perspective automatically.
+3. Open the generated project and configure it by specifying the Eclipse Hono Sandbox endpoint configuration
+	> Please take a look at the [Eclipse Hono Sandbox](https://www.eclipse.org/hono/sandbox/) configuration for more details.
+4. Run as a Java Application and verify the incoming data by consuming the Eclipse Hono Sandbox AMQP topic.
+	> Please take a look at the [Eclipse Hono Developer Guide](https://www.eclipse.org/hono/dev-guide/java_client_consumer/) for more info
 
-Integrate the device by sending a Vorto message to Eclipse Hono via MQTT.
-
-1. Open the [Vorto Repository](http://vorto.eclipse.org)
-2. Select your Information Model
-3. Choose **Eclipse Hono Generator** and confirm with **Generate**.
-4. Download the generated Device client stub and **import** it into your IDE
-5. Send data to hono.eclipse.org sandbox for your preconfigured tenant and registered device ID.
-	> Please take a look at the Eclipse Hono Web Site for the sandbox configuration parameters
+**Hint:** The JSON data, sent by the device is already compliant to Eclipse Ditto. Therefore, you can directly update a Ditto-based thing with the JSON via Web Sockets.
+	 > Please take a look at the [Eclipse Ditto Sandbox](https://ditto.eclipse.org/) for more info
 
 # Developer Guide
 
