@@ -65,7 +65,7 @@ class HonoMqttClientTemplate implements IFileTemplate<InformationModel> {
 	public class HonoMqttClient {
 		private static final Logger logger = Logger.getLogger(HonoMqttClient.class);
 		
-		private static final URL CERTIFICATE_LOCATION = HonoMqttClient.class.getResource("/certificate/iothub.crt");
+		private static final URL CERTIFICATE_LOCATION = HonoMqttClient.class.getResource("/certificate/hono.crt");
 	
 		private String mqttHostUrl;
 		private String clientId;

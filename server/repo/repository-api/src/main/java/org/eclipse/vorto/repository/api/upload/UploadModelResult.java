@@ -83,7 +83,7 @@ public class UploadModelResult {
 	@Override
 	public String toString() {
 		return "UploadModelResult [handleId=" + handleId + ", modelResource=" + modelResource + ", valid=" + valid
-				+ "]";
+				+ ", errorMessage=" + errorMessage + ", unresolvedReferences=" + unresolvedReferences + "]";
 	}
 
 	@Override

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto CoAP Generator (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.coap;singleton:=true
-Bundle-Version: 0.10.0.M2
+Bundle-Version: 0.10.0.M3
 Require-Bundle: org.eclipse.vorto.core,
  com.google.guava,
  org.eclipse.xtext.xbase.lib,

@@ -9,7 +9,7 @@ The Data Mapping API allows to map arbitrary JSON device data to platform - spec
 <dependency>
    <groupId>org.eclipse.vorto</groupId>
    <artifactId>repository-mapping</artifactId>
-   <version>0.10.0.M2</version>
+   <version>0.10.0.M3</version>
 </dependency>
 
 ```

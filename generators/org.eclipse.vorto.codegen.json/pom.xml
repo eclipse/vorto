@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>generators</artifactId>
-		<version>0.10.0.M2</version>
+		<version>0.10.0.M3</version>
 	</parent>
 
 	<name>Vorto JSON Generator (Incubation)</name>

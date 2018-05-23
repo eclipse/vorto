@@ -14,7 +14,7 @@ Use the Client API to
 <dependency>
    <groupId>org.eclipse.vorto</groupId>
    <artifactId>repository-java-client</artifactId>
-   <version>0.10.0.M1</version>
+   <version>0.10.0.M3</version>
 </dependency>
 
 ```

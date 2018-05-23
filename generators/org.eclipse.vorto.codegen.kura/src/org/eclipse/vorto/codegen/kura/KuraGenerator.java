@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.kura;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -52,33 +53,36 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
  *
  */
 public class KuraGenerator implements IVortoCodeGenerator {
-	
+
 	@Override
 	public IGenerationResult generate(InformationModel context, InvocationContext invocationContext,
 			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		GenerationResultZip outputter = new GenerationResultZip(context,getServiceKey());
+		GenerationResultZip outputter = new GenerationResultZip(context, getServiceKey());
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
-		
+
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new EclipseClasspathTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new EclipseProjectFileTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ManifestTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new BuildPropertiesTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new ComponentXmlTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new IDataServiceTemplate()));
-		
-		if (invocationContext.getConfigurationProperties().getOrDefault("boschcloud", "false").equalsIgnoreCase("true")) {
+
+		if (invocationContext.getConfigurationProperties().getOrDefault("boschcloud", "false")
+				.equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschDataServiceTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ThingClientFactoryTemplate()));
-		} else if (invocationContext.getConfigurationProperties().getOrDefault("boschhub", "false").equalsIgnoreCase("true")) {
+		} else if (invocationContext.getConfigurationProperties().getOrDefault("boschhub", "false")
+				.equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new PomTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschHubDataService()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new BoschHubClientTemplate()));
 		} else {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new KuraCloudDataServiceTemplate()));
 		}
-		
-		if (invocationContext.getConfigurationProperties().getOrDefault("bluetooth", "false").equalsIgnoreCase("true")) {
+
+		if (invocationContext.getConfigurationProperties().getOrDefault("bluetooth", "false")
+				.equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new MetatypeTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DeviceBluetoothFinderTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new ConfigurationTemplate()));
@@ -88,19 +92,29 @@ public class KuraGenerator implements IVortoCodeGenerator {
 		} else {
 			generator.addTask(new GeneratorTaskFromFileTemplate<>(new DefaultAppTemplate()));
 		}
-		
+
 		generator.addTask(new GeneratorTaskFromFileTemplate<>(new InformationModelTemplate()));
 		for (FunctionblockProperty fbProperty : context.getProperties()) {
-			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(context)).generate(fbProperty.getType(), invocationContext, outputter);
+			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(context)).generate(fbProperty.getType(),
+					invocationContext, outputter);
 		}
-		
-		generator.generate(context,invocationContext, outputter);
-		
+
+		generator.generate(context, invocationContext, outputter);
+
 		return outputter;
 	}
 
 	@Override
 	public String getServiceKey() {
 		return "kura";
+	}
+
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Kura",
+				"Generates a Kura Gateway application that reads data from the device (e.g. via bluetooth) and sends the data to a IoT Cloud backend.",
+				"Vorto Community")
+				.withBinaryConfigurationItem("bluetooth", "Bluetooth LE")
+				.withBinaryConfigurationItem("boschhub", "Eclipse Hono (MQTT)");
 	}
 }

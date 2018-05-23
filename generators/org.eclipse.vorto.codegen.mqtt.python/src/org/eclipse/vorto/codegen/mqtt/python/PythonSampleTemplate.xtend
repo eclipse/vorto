@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2017 Oliver Meili
+ *  Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
  *  and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -9,8 +9,6 @@
  *  The Eclipse Distribution License is available at
  *  http://www.eclipse.org/org/documents/edl-v10.php.
  *   
- *  Contributors:
- *  Oliver Meili <omi@ieee.org>
  *******************************************************************************/
 package org.eclipse.vorto.codegen.mqtt.python
 
@@ -23,7 +21,7 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
 class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	
 	override getFileName(InformationModel model) {
-		return model.name + ".py";
+		return model.name + "App.py";
 	}
 	
 	override getPath(InformationModel model) {
@@ -36,40 +34,28 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	import paho.mqtt.client as mqtt
 	import datetime, threading, time
 	«FOR fb : model.properties»
-	import «fb.type.namespace».«fb.type.name» as «fb.type.name» 
-    «ENDFOR»
-	import «model.namespace».«model.name» as «model.name»
-	import serializer.DittoSerializer as DittoSerializer
+	import model.functionblock.«fb.type.name» as «fb.name» 
+	«ENDFOR»
+	import model.infomodel.«model.name» as «model.name»
+	import model.DittoSerializer as DittoSerializer
 	
 	# DEVICE CONFIG GOES HERE
-	hono_tenant = "«context.configurationProperties.getOrDefault("hono_tenant","")»"
-	hono_user = "«context.configurationProperties.getOrDefault("hono_user","")»"
+	hono_tenant = "«context.configurationProperties.getOrDefault("hono_tenant","<hono_tenant>")»"
 	hono_password = "<ADD PASSWORD HERE>"
-	hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","")»"
+	hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","<hono_endpoint>")»"
+	hono_deviceId = "«context.configurationProperties.getOrDefault("hono_deviceId","<hono_deviceId>")»"
+	hono_clientId = hono_deviceId
+	hono_authId = hono_deviceId + "@" + hono_tenant
 	hono_certificatePath = "<ADD PATH TO CERTIFICATE HERE>"
+	ditto_namespace = "«context.configurationProperties.getOrDefault("ditto_namespace","com.mycompany")»"
 
-	# Function that creates a unique client ID based on a prefix and a MAC address
-	def getClientId(prefix):
-	    netifs = netifaces.interfaces()
-	    for netif in netifs[:]:
-	        if netif != "lo":
-	            mac_addr = netifaces.ifaddresses(netif)[netifaces.AF_LINK][0]['addr']
-	            return prefix + mac_addr.replace(':', '')
-	
-	def getClientId():
-		«var deviceId = context.configurationProperties.getOrDefault("deviceId",null)»
-		«IF deviceId !== null»
-		return "«deviceId»";
-		«ELSE»
-		return getClientId("RPi");
-		«ENDIF»
 
 	# The callback for when the client receives a CONNACK response from the server.
 	def on_connect(client, userdata, flags, rc):
 	    global next_call
 
 	    if rc != 0:
-	        print("Connection to MQTT broker failed: "+connack_string(rc))
+	        print("Connection to MQTT broker failed: " + str(rc))
 	        return
 	
 	    # Subscribing in on_connect() means that if we lose the connection and
@@ -81,7 +67,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 
 	    # Time stamp when the periodAction function shall be called again
 	    next_call = time.time()
-		
+	    
 	    # Start the periodic task for publishing MQTT messages
 	    periodicAction()
 	
@@ -93,7 +79,15 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	    print(msg.topic+" "+str(msg.payload))
 
 	    ### END SAMPLE CODE
-	    	
+	
+	# The functions to publish the functionblocks data
+	«FOR fb : model.properties»
+	def publish«fb.name.toFirstUpper»():
+	    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_namespace, hono_deviceId)
+	    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
+	    client.publish(publishTopic, payload)
+	    
+	«ENDFOR» 
 	# The function that will be executed periodically once the connection to the MQTT broker was established
 	def periodicAction():
 	    global next_call
@@ -102,26 +96,26 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	
 	    # Setting properties of function blocks
 	    «FOR fb : model.properties»
-	        «FOR status : fb.type.functionblock.status.properties»
-	        	«IF status.type instanceof PrimitivePropertyType»
-	        		«var primitiveType = status.type as PrimitivePropertyType»
-	        		«IF primitiveType.type == PrimitiveType.STRING»
-	        		infomodel.«fb.name».«status.name» = ""
-	        		«ELSE»
-	        		infomodel.«fb.name».«status.name» += 1
+	        «IF fb.type.functionblock.status != null»
+	        	«FOR status : fb.type.functionblock.status.properties»
+	        		«IF status.type instanceof PrimitivePropertyType»
+	        			«var primitiveType = status.type as PrimitivePropertyType»
+	        			«IF primitiveType.type == PrimitiveType.STRING»
+	        			infomodel.«fb.name».«status.name» = ""
+	        			«ELSE»
+	        			infomodel.«fb.name».«status.name» += 1
+	        			«ENDIF»
 	        		«ENDIF»
-	        	«ENDIF»
-	        «ENDFOR»
+	        	«ENDFOR»
+	        «ENDIF»
 	    «ENDFOR»
-
-	    # Serializing information model
-	    payload = ser.serialize_infomodel(«model.name», infomodel)
-	    print(payload)
 
 	    ### END SAMPLE CODE
 
 	    # Publish payload
-	    client.publish(publishTopic, payload)
+	    «FOR fb : model.properties»
+	    publish«fb.name.toFirstUpper»()
+	    «ENDFOR»
 
 	    # Schedule next call
 	    next_call = next_call + timePeriod;
@@ -131,16 +125,18 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	# Initialization of Information Model 
 	infomodel = «model.name».«model.name»()
 	«FOR fb : model.properties»
-	    «FOR status : fb.type.functionblock.status.properties»
-	        «IF status.type instanceof PrimitivePropertyType»
-	        	«var primitiveType = status.type as PrimitivePropertyType»
-	        	«IF primitiveType.type == PrimitiveType.STRING»
-	        	infomodel.«fb.name».«status.name» = ""
-	        	«ELSE»
-	        	infomodel.«fb.name».«status.name» = 0
-	        	«ENDIF»
-	        «ENDIF»
-	    «ENDFOR»
+	    «IF fb.type.functionblock.status != null»
+	        «FOR status : fb.type.functionblock.status.properties»
+	            «IF status.type instanceof PrimitivePropertyType»
+	            	«var primitiveType = status.type as PrimitivePropertyType»
+	            	«IF primitiveType.type == PrimitiveType.STRING»
+	            	infomodel.«fb.name».«status.name» = ""
+	            	«ELSE»
+	            	infomodel.«fb.name».«status.name» = 0
+	            	«ENDIF»
+	            «ENDIF»
+	        «ENDFOR»
+	    «ENDIF»
 	«ENDFOR»
 
 	# Create a serializer for the MQTT payload from the Information Model
@@ -152,22 +148,21 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	# Period for publishing data to the MQTT broker in seconds
 	timePeriod = 10
 
-	# Configuration of client ID and publish topic
-	clientId = getClientId()
-	publishTopic = "telemetry/" + hono_tenant + "/" + clientId
+	# Configuration of client ID and publish topic	
+	publishTopic = "telemetry/" + hono_tenant + "/" + hono_clientId
 
 	# Output relevant information for consumers of our information
-	print("Connecting client:    ", clientId)
+	print("Connecting client:    ", hono_clientId)
 	print("Publishing to topic:  ", publishTopic)
 
 	# Create the MQTT client
-	client = mqtt.Client(clientId)
+	client = mqtt.Client(hono_clientId)
 	client.on_connect = on_connect
 	client.on_message = on_message
 	
 	client.tls_set(hono_certificatePath)
 	
-	client.username_pw_set(hono_user, hono_password)
+	client.username_pw_set(hono_authId, hono_password)
 
 	# Connect to the MQTT broker
 	client.connect(hono_endpoint, 8883, 60)

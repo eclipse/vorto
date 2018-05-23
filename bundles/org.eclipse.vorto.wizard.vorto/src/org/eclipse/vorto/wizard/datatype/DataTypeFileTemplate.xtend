@@ -37,9 +37,7 @@ class DataTypeFileTemplate implements ITemplate<IModelProjectContext> {
 		version «context.modelId.version»
 		displayname "«context.modelId.name»"
 		description "«context.modelDescription»"
-		category demo		
 		«typeName» «context.modelId.name» {
-			//Enter «typeName» details
 		}
 		'''
 	}

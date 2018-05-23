@@ -62,8 +62,6 @@ func (f *CommandFactory) GetCommand(osArgs []string, cfg *Configuration, client 
 		cmd, err = NewDownloadCommand(commandValue, commandArgs, cfg, client)
 	case commandText == "generate" && commandValue != "":
 		cmd, err = NewGenerateCommand(commandValue, commandArgs, cfg, client)
-	case commandText == "share":
-		cmd, err = NewShareCommand(commandValue, commandArgs, cfg, client)
 	default:
 		err = errorMessages.ERR_NO_VALID_COMMAND
 	}

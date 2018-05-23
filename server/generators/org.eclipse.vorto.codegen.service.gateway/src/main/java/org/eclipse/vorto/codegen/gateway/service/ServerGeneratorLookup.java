@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.gateway.service;
 
 import java.util.List;
 
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IGeneratorLookup;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
@@ -93,6 +94,11 @@ public class ServerGeneratorLookup implements IGeneratorLookup {
 					return entity.getBody();
 				}
 			};
+		}
+
+		@Override
+		public GeneratorInfo getInfo() {
+			return null;
 		}
 		
 	}

@@ -15,22 +15,22 @@
 package org.eclipse.vorto.repository.web.comment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
+import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -59,10 +59,10 @@ public class CommentController {
     public List<Comment> getCommentsforModelId(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
 									    		@ApiParam(value = "name", required = true) @PathVariable String name,
 									    		@ApiParam(value = "version", required = true) @PathVariable String version) {
-    	
     	final ModelId modelId = new ModelId(name, namespace, version);
-    	List<Comment> comments = commentService.getCommentsforModelId(modelId);
-    	return comments;
+    	return commentService.getCommentsforModelId(modelId).stream()
+    						 .map(comment -> ModelDtoFactory.createDto(comment, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName())))
+    						 .collect(Collectors.toList());
     }
     
     @ApiOperation(value = "Returns comments for a specific Model Resource")

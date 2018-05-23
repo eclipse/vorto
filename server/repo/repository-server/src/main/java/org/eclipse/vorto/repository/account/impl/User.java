@@ -29,99 +29,82 @@ import org.eclipse.vorto.repository.account.Role;
 @Entity
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(unique=true)
-    private String username;
-    
-    private String email;
-    
-    private boolean hasWatchOnRepository;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(length = 60)
-    private String password;
+	@Column(unique = true)
+	private String username;
 
-    @Column(name = "role", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Role role;
-    
-    @Column(nullable = false)
-    private Timestamp dateCreated;
-    
-    @Column(nullable = false)
-    private Timestamp lastUpdated;
-    
-    public User() {
-       
-    }    
-    
-    public static User create(String username) {
-    	User user = new User();
-    	user.username = username;
-    	user.role = Role.USER;
-    	return user;
-    }
+	@Column(name = "role", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
-    public Long getId() {
-        return id;
-    }
+	@Column(nullable = false)
+	private Timestamp dateCreated;
 
-    public void setId(final Long id) {
-        this.id = id;
-    }
+	@Column(nullable = false)
+	private Timestamp ackOfTermsAndCondTimestamp;
 
-    public String getUsername() {
-        return username;
-    }
+	@Column(nullable = false)
+	private Timestamp lastUpdated;
 
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-    
-    public boolean getHasWatchOnRepository() {
-        return hasWatchOnRepository;
-    }
+	public User() {
 
-    public void setHasWatchOnRepository(boolean hasWatchOnRepository) {
-        this.hasWatchOnRepository = hasWatchOnRepository;
-    }
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public static User create(String username) {
+		User user = new User();
+		user.username = username;
+		user.role = Role.USER;
+		return user;
+	}
+	
+	public static User create(String username, Role role) {
+		User user = new User();
+		user.username = username;
+		user.role = role;
+		return user;
+	}
 
-    public void setEmail(final String username) {
-        this.email = username;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setPassword(final String password) {
-        this.password = password;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public Role getRole() {
-        return role;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public void setRoles(Role role) {
-        this.role = role;
-    }
+	public Role getRole() {
+		return role;
+	}
 
-    public String getSalutation() {
-    	return this.username;
-    }
-    
-    public Timestamp getDateCreated() {
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public Timestamp getDateCreated() {
 		return dateCreated;
 	}
 
 	public void setDateCreated(Timestamp dateCreated) {
 		this.dateCreated = dateCreated;
+	}
+
+	public Timestamp getAckOfTermsAndCondTimestamp() {
+		return ackOfTermsAndCondTimestamp;
+	}
+
+	public void setAckOfTermsAndCondTimestamp(Timestamp ackOfTermsAndCondTimestamp) {
+		this.ackOfTermsAndCondTimestamp = ackOfTermsAndCondTimestamp;
 	}
 
 	public Timestamp getLastUpdated() {
@@ -133,15 +116,8 @@ public class User {
 	}
 
 	@Override
-    public String toString() {
-        final StringBuilder builder = new StringBuilder();
-        builder.append("{[username=").append(username).append("],")
-        	.append("[email=").append(email).append("],")
-        	.append("[password=").append(password).append("],")
-        	.append("[dateCreated=").append(dateCreated).append("],")
-        	.append("[lastUpdated=").append(lastUpdated).append("]}");
-        return builder.toString();
-    }
-   
-
+	public String toString() {
+		return "User [id=" + id + ", username=" + username + ", role=" + role + ", dateCreated=" + dateCreated
+				+ ", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp + ", lastUpdated=" + lastUpdated + "]";
+	}
 }

@@ -21,7 +21,7 @@ public class SpecWithOperationRule extends AbstractTestSpec {
 		operation.setTargetPlatformKey("iotbutton");
 
 		
-		operation.addStereotype(Stereotype.createWithXpathAndValue("data/key","Pressed"));
+		operation.addStereotype(Stereotype.createOperationTarget("data/key","Pressed"));
 
 		buttonModel.setOperations(
 				Arrays.asList(new Operation[] { operation }));

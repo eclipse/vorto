@@ -60,7 +60,7 @@ public class Command {
 			return this;
 		}
 		
-		public CommandBuilder param(String name, String value) {
+		public CommandBuilder param(String name, Object value) {
 			this.cmd.getParams().put(name, value);
 			return this;
 		}

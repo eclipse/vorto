@@ -44,15 +44,19 @@ class JavaClassFieldSetterTemplate implements ITemplate<Property> {
 		«ELSEIF property.type instanceof ObjectPropertyType»
 			«var ObjectPropertyType object = property.type as ObjectPropertyType»
 			«IF object.type instanceof Entity» 
-				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
+				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«namespaceOfDatatype»«(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
 					this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 				}
 			«ELSEIF object.type instanceof Enum»
-				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
+				public void «setterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»(«namespaceOfDatatype»«(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)») {
 					this.«ValueMapper.normalize(property.name)» = «ValueMapper.normalize(property.name)»;
 				}
 			«ENDIF»
 		«ENDIF»
 		'''
+	}
+	
+	protected def getNamespaceOfDatatype() {
+		''''''
 	}
 }

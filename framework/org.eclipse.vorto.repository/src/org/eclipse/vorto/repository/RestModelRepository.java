@@ -19,12 +19,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Observable;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.eclipse.vorto.core.api.model.model.ModelId;
 import org.eclipse.vorto.core.api.repository.Attachment;
-import org.eclipse.vorto.core.api.repository.CheckInModelException;
 import org.eclipse.vorto.core.api.repository.GeneratorResource;
 import org.eclipse.vorto.core.api.repository.IModelRepository;
 import org.eclipse.vorto.core.api.repository.ModelResource;
@@ -34,10 +30,7 @@ import org.eclipse.vorto.repository.function.ModelViewToModelResource;
 import org.eclipse.vorto.repository.function.StringToGeneratorList;
 import org.eclipse.vorto.repository.function.StringToModelResourceResult;
 import org.eclipse.vorto.repository.function.StringToSearchResult;
-import org.eclipse.vorto.repository.function.StringToUploadResult;
-import org.eclipse.vorto.repository.function.UploadResultViewToUploadResult;
 import org.eclipse.vorto.repository.model.ModelView;
-import org.eclipse.vorto.repository.model.UploadResultView;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -46,18 +39,14 @@ import com.google.common.collect.Lists;
 
 public class RestModelRepository extends Observable implements IModelRepository {
 
-	private static final String FILE_PARAMETER_NAME = "file";
 	private static final String FILE_DOWNLOAD_FORMAT = "file/%s/%s/%s";
 	private static final String MODELID_RESOURCE_FORMAT = "%s/%s/%s";
 	private static final String CHECKIN_FORMAT = "%s";
 
-	private Function<String, UploadResultView> uploadResponseConverter = new StringToUploadResult();
 	private Function<ModelView, ModelResource> modelViewToModelResource = new ModelViewToModelResource();
 	private Function<String, ModelView> contentConverters = new StringToModelResourceResult();
 	private Function<String, ModelResource> stringToModelResource = Functions.compose(modelViewToModelResource,
 			contentConverters);
-	private Function<UploadResultView, UploadResult> uploadResultConverter = new UploadResultViewToUploadResult(
-			modelViewToModelResource);
 	private Function<String, List<ModelView>> searchResultConverter = new StringToSearchResult();
 	private Function<String, List<GeneratorResource>> searchGeneratorResultConverter = new StringToGeneratorList();
 
@@ -140,38 +129,14 @@ public class RestModelRepository extends Observable implements IModelRepository 
 				modelId.getVersion());
 	}
 
-	private String getUrlForCheckin(String handleId) {
-		return "secure/" + String.format(CHECKIN_FORMAT, handleId);
-	}
-
 	@Override
 	public UploadResult upload(String name, byte[] model) {
-		Objects.requireNonNull(model, "Model should not be null.");
-		Objects.requireNonNull(name, "Name should not be null.");
-		try {
-			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-			builder.addBinaryBody(FILE_PARAMETER_NAME, model, ContentType.APPLICATION_OCTET_STREAM, name);
-			HttpEntity fileToUpload = builder.build();
-
-			UploadResultView uploadResult = httpClient.executePost("secure", fileToUpload, uploadResponseConverter);
-
-			return uploadResultConverter.apply(uploadResult);
-		} catch (RepositoryException e) {
-			throw e;
-		} catch (Exception e) {
-			throw new RuntimeException("Error getting model info for resource", e);
-		}
+		throw new UnsupportedOperationException("Not implemented upload(..).");
 	}
 
 	@Override
 	public void commit(String handleId) {
-		Objects.requireNonNull(handleId, "handleId should not be null.");
-		try {
-			httpClient.executePut(getUrlForCheckin(handleId));
-		} catch (Exception e) {
-			throw new CheckInModelException("Error in committing file with upload id " + handleId + " to repository.",
-					e);
-		}
+		throw new UnsupportedOperationException("Not implemented commit(..)");
 	}
 
 	@Override

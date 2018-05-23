@@ -44,15 +44,19 @@ class JavaClassFieldGetterTemplate implements ITemplate<Property> {
 		«ELSEIF property.type instanceof ObjectPropertyType»
 				«var ObjectPropertyType object = property.type as ObjectPropertyType»
 				«IF object.type instanceof Entity» 
-					public «(object.type as Entity).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+					public «namespaceOfDatatype»«(object.type as Entity).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
 						return this.«ValueMapper.normalize(property.name)»;
 					}
 				«ELSEIF object.type instanceof Enum»
-					public «(object.type as Enum).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
+					public «namespaceOfDatatype»«(object.type as Enum).name.toFirstUpper» «getterPrefix»«ValueMapper.normalize(property.name.toFirstUpper)»() {
 						return this.«ValueMapper.normalize(property.name)»;
 					}
 				«ENDIF»
 		«ENDIF»
 		'''
+	}
+	
+	protected def getNamespaceOfDatatype() {
+		''''''
 	}
 }

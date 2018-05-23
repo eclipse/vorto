@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.coap;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -446,5 +447,10 @@ public class CoAPGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "coap";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Californium for CoAP","Generates a Eclipse Californium based CoAP client and CoAP server.","Vorto Community");
 	}
 }

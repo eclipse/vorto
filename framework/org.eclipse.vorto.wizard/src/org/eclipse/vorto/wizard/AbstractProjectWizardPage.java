@@ -145,13 +145,15 @@ public abstract class AbstractProjectWizardPage extends AbstractWizardPage imple
 	}	
 	
 	protected boolean validateProject() {
-		boolean result = true;
 		String projectName = getProjectName();
-		result &= validateStrExist(projectName,
-				"Project name must be specified");
-		result &= validateExistingSameProjectName(projectName);
-		result &= checkProjectName(projectName);
-		return result;
+		if (!validateStrExist(projectName,
+				"Project name must be specified") 
+				|| !validateExistingSameProjectName(projectName)
+				|| !checkProjectName(projectName)) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	public void updateWorkspaceLocationField(String directory) {

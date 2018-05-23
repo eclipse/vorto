@@ -25,4 +25,5 @@ public interface ICommentService {
 		
     public void createComment(Comment comment) throws Exception;
     public List<Comment> getCommentsforModelId(ModelId modelId);
+	public void saveComment(Comment comment);
 }

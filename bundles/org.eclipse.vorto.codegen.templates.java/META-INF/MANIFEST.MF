@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Codegen Java Templates (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.templates.java;singleton:=true
-Bundle-Version: 0.10.0.M2
+Bundle-Version: 0.10.0.M3
 Bundle-Vendor: Eclipse.org/Vorto
 Require-Bundle: org.eclipse.vorto.codegen,
  org.eclipse.vorto.core,

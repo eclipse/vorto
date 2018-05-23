@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.webui;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -78,35 +79,36 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class WebUIGenerator implements IVortoCodeGenerator {
 
 	@Override
-	public IGenerationResult generate(InformationModel model, InvocationContext context, IVortoCodeGenProgressMonitor monitor) {
+	public IGenerationResult generate(InformationModel model, InvocationContext context,
+			IVortoCodeGenProgressMonitor monitor) {
 		GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
-		
+
 		/**
 		 * config templates
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LocalConfigurationTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new WebSecurityConfigTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new WebSocketConfigTemplate()));
-		
+
 		/**
 		 * model templates
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingTemplate()));
-		
+
 		/**
 		 * web controller templates
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IdentityControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingMessageControllerTemplate()));
-		
+
 		/**
 		 * Root Application templates
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingApplicationTemplate()));
-		
+
 		/**
 		 * Web static javascript templates
 		 */
@@ -114,12 +116,12 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new BrowserControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DetailsControllerTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LoginControllerTemplate()));
-		
+
 		/**
 		 * Web static css templates
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new StyleTemplace()));
-		
+
 		/**
 		 * Web static html partial templates
 		 */
@@ -128,7 +130,7 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LocatorTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LoginTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DetailsTemplate()));
-		
+
 		/**
 		 * Swagger stuff
 		 */
@@ -137,7 +139,7 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ApiControllerTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ApiTemplate()));
 		}
-		
+
 		/**
 		 * History stuff
 		 */
@@ -145,23 +147,25 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CrudRepositoryTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HistoryDataControllerTemplate()));
 		}
-				
+
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ApplicationConfigTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AngularGageTemplate()));
-		
+
 		/**
 		 * IoT Cloud Platform Integration stuff
 		 */
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new QueryTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DataServiceTemplate()));
-		
+
 		if (context.getConfigurationProperties().getOrDefault("boschcloud", "false").equalsIgnoreCase("true")) {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingsQueryTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingClientBuilderTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingBuilderTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.FeatureTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(
+					new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.ThingTemplate()));
+			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(
+					new org.eclipse.vorto.codegen.webui.templates.service.bosch.model.FeatureTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingSearchResultTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingTypeAwareTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new FeatureImplTemplate()));
@@ -170,23 +174,23 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AsyncInvocationTemplate()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DefaultThingClient()));
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new ThingsInvocationTemplate()));
-			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new BoschThingsDataServiceTemplate()));
+			generator
+					.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new BoschThingsDataServiceTemplate()));
 		} else {
 			generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new SampleDataServiceTemplate()));
 		}
-		
+
 		generator.generate(model, context, output);
-		
-		
+
 		ChainedCodeGeneratorTask<FunctionblockProperty> fbPropertyGenerators = new ChainedCodeGeneratorTask<FunctionblockProperty>();
 		for (FunctionblockProperty property : model.getProperties()) {
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new FeatureTemplate()));
 			fbPropertyGenerators.addTask(new GeneratorTaskFromFileTemplate<>(new LocationControllerTemplate()));
-			
+
 			fbPropertyGenerators.generate(property, context, output);
-			
+
 			FunctionBlock fb = property.getType().getFunctionblock();
-			
+
 			for (Entity entity : Utils.getReferencedEntities(fb)) {
 				generateForEntity(model, entity, output);
 			}
@@ -194,21 +198,31 @@ public class WebUIGenerator implements IVortoCodeGenerator {
 				generateForEnum(model, en, output);
 			}
 		}
-		
+
 		return output;
 	}
-	
+
 	private void generateForEntity(InformationModel infomodel, Entity entity, IGeneratedWriter outputter) {
 		new JavaClassGeneratorTask(infomodel).generate(entity, null, outputter);
 	}
 
 	private void generateForEnum(InformationModel infomodel, Enum en, IGeneratedWriter outputter) {
-		new JavaEnumGeneratorTask(infomodel).generate(en,null, outputter);
-				
+		new JavaEnumGeneratorTask(infomodel).generate(en, null, outputter);
+
 	}
 
 	@Override
 	public String getServiceKey() {
 		return "webui";
+	}
+
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Web-based Device Dashboard",
+				"Generates a web-based dashboard that integrates with IoT Cloud backends and visualizes device data",
+				"Vorto Community")
+				.withBinaryConfigurationItem("persistence", "(Historical) Data Persistence")
+				.withBinaryConfigurationItem("swagger", "Swagger Documentation")
+				.withBinaryConfigurationItem("boschcloud", "Bosch IoT Suite");
 	}
 }

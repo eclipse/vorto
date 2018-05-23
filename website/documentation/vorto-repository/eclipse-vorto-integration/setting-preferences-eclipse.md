@@ -23,8 +23,6 @@ You must perform some settings in the Eclipse preferences so Eclipse is able to 
    ![Eclipse preference]({{base}}/img/documentation/vorto_repository_eclipse_preferences.png)
 3. Fill in the entry fields as follows;  
    * **URL:** `http://vorto.eclipse.org`  
-   * **User:** `<your_user_name>`  
-   * **Password** `<your_password>`  
 4. Click **OK**.
 
 

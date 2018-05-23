@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.json;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -39,5 +40,10 @@ public class JsonGenerator implements IVortoCodeGenerator {
 
 	public String getServiceKey() {
 		return "json";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("JSON","Generates JSON for information models.","Vorto Community");
 	}
 }

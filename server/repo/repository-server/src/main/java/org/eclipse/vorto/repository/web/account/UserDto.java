@@ -7,10 +7,6 @@ import org.eclipse.vorto.repository.account.impl.User;
 public class UserDto {
 	private String username;
 
-	private String email;
-
-	private boolean hasWatchOnRepository;
-
 	private String role;
 
 	private Timestamp dateCreated;
@@ -18,19 +14,16 @@ public class UserDto {
 	private Timestamp lastUpdated;
 
 	public static UserDto fromUser(User user) {
-		return new UserDto(user.getUsername(), user.getEmail(), user.getHasWatchOnRepository(),
-				user.getRole().toString(), user.getDateCreated(), user.getLastUpdated());
+		return new UserDto(user.getUsername(), user.getRole().toString(), user.getDateCreated(), user.getLastUpdated());
 	}
 
 	public UserDto() {
 		super();
 	}
 
-	private UserDto(String username, String email, boolean hasWatchOnRepository, String role, Timestamp dateCreated,
+	private UserDto(String username, String role, Timestamp dateCreated,
 			Timestamp lastUpdated) {
 		this.username = username;
-		this.email = email;
-		this.hasWatchOnRepository = hasWatchOnRepository;
 		this.role = role;
 		this.dateCreated = dateCreated;
 		this.lastUpdated = lastUpdated;
@@ -38,14 +31,6 @@ public class UserDto {
 
 	public String getUsername() {
 		return username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public boolean isHasWatchOnRepository() {
-		return hasWatchOnRepository;
 	}
 
 	public String getRole() {
@@ -62,14 +47,6 @@ public class UserDto {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setHasWatchOnRepository(boolean hasWatchOnRepository) {
-		this.hasWatchOnRepository = hasWatchOnRepository;
 	}
 
 	public void setRole(String role) {

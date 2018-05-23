@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.aws
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask
 import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
@@ -37,23 +38,23 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class AWSGenerator implements IVortoCodeGenerator {
 
 	override generate(InformationModel infomodel, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		var output = new GenerationResultZip(infomodel,getServiceKey());
+		IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+		var output = new GenerationResultZip(infomodel, getServiceKey());
 		var chainedGenerators = new ChainedCodeGeneratorTask<InformationModel>();
-				
+
 		// Adds Generators for Speech to Command using Alexa Skill Service.
 		// That way it is possible to update a thing shadow by various speech command variations defined as mapping rules
 		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaIndentSchemaTemplate()));
 		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaSkillLambdaTemplate()));
 		chainedGenerators.addTask(new GeneratorTaskFromFileTemplate(new AlexaUtterancesTemplate()));
-		
-		chainedGenerators.generate(infomodel,context,output);
-		
-		generateCustomSlotTypes(infomodel,context,output);
-	
+
+		chainedGenerators.generate(infomodel, context, output);
+
+		generateCustomSlotTypes(infomodel, context, output);
+
 		return output
 	}
-	
+
 	/**
 	 * Generates Alexa Custom Slot Types for every Infomodel Enumeration
 	 */
@@ -62,12 +63,20 @@ class AWSGenerator implements IVortoCodeGenerator {
 			var enums = Utils.getReferencedEnums(fbModel.type.functionblock)
 			for (Enum enumeration : enums) {
 				var _template = new GeneratorTaskFromFileTemplate(new AlexaSlotTypeTemplate())
-				_template.generate(enumeration,context,output)
+				_template.generate(enumeration, context, output)
 			}
 		}
 	}
-	
+
 	override getServiceKey() {
 		return "aws";
 	}
-}
+
+	override getInfo() {
+		return GeneratorInfo.basicInfo("AWS IoT",
+			"Generates an Alexa skillset that updates and reads device data to/from the AWS IoT Thing Shadow Service.",
+			"Vorto Community")
+			.withChoiceConfigurationItem("cloud","Choose Digital Twin backend for Alexa","bosch","aws");
+		}
+	}
+	

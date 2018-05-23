@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Python MQTT Generator
 Bundle-SymbolicName: org.eclipse.vorto.codegen.mqtt.python;singleton:=true
-Bundle-Version: 0.10.0.M2
+Bundle-Version: 0.10.0.M3
 Require-Bundle: org.eclipse.vorto.core,
  com.google.guava,
  org.eclipse.xtext.xbase.lib,
@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.vorto.codegen
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.mqtt.python

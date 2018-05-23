@@ -76,15 +76,23 @@ Operation :
 ;
 
 ReturnType :
-	ReturnObjectType | ReturnPrimitiveType
+	ReturnDictonaryType | ReturnObjectType | ReturnPrimitiveType
+;
+
+ReturnDictonaryType :
+	 (multiplicity ?= 'multiple')? returnType = DictionaryPropertyType ('<' constraintRule = ConstraintRule '>')?
 ;
 
 ReturnObjectType :
-	 (multiplicity ?= 'multiple')? returnType = [datatype::Type | QualifiedName]
+	 (multiplicity ?= 'multiple')? returnType = [datatype::Type | QualifiedName] ('<' constraintRule = ConstraintRule '>')?
 ;
 
 ReturnPrimitiveType :
 	 (multiplicity ?= 'multiple')? returnType = PrimitiveType ('<' constraintRule = ConstraintRule '>')?
+;
+
+DictonaryParam:
+	(multiplicity ?= 'multiple')? name = ID 'as' type = DictionaryPropertyType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
 ;
 
 PrimitiveParam:
@@ -96,7 +104,7 @@ RefParam:
 ;
 
 Param:
-    PrimitiveParam | RefParam
+    DictonaryParam | PrimitiveParam | RefParam
 ;
  
 Event:

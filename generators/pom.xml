@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.eclipse.vorto</groupId>
     <artifactId>org.eclipse.vorto.parent</artifactId>
-    <version>0.10.0.M2</version>
+    <version>0.10.0.M3</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -23,6 +23,7 @@
 		<module>org.eclipse.vorto.codegen.markdown</module>
 		<module>org.eclipse.vorto.codegen.ios</module>
 		<module>org.eclipse.vorto.codegen.latex</module>
+		<module>org.eclipse.vorto.codegen.bosch</module>
 		<module>org.eclipse.vorto.codegen.bosch.things</module>
 		<module>org.eclipse.vorto.codegen.coap</module>
 		<module>org.eclipse.vorto.codegen.aws</module>

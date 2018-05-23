@@ -65,35 +65,38 @@ public class MappingSpecificationBuilder {
 		try {
 			Infomodel infomodel = this.repositoryClient.getContent(ModelId.fromPrettyFormat(this.modelId), Infomodel.class, this.targetPlatformKey).get();
 			
+			if (infomodel == null) {
+				throw new MappingSpecificationProblem("Didn't find any information model [" + this.modelId + "] for platform [" + this.targetPlatformKey + "]");
+			}
+			
 			DefaultMappingSpecification specification = new DefaultMappingSpecification();
 			specification.setInfomodel(infomodel);
-			
-			
 			for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
-				ModelId fbModelId = (ModelId)fbProperty.getType();
+				ModelId fbModelId = (ModelId) fbProperty.getType();
 				ModelId mappingId = fbProperty.getMappingReference();
-				
+
 				FunctionblockModel fbm;
 				if (mappingId != null) {
 					fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class, mappingId).get();
 				} else {
-					fbm = this.repositoryClient.getContent(fbModelId, FunctionblockModel.class, this.targetPlatformKey).get();
+					fbm = this.repositoryClient
+							.getContent(fbModelId, FunctionblockModel.class, this.targetPlatformKey).get();
 				}
-				
-				if (fbm.getStereotype(STEREOTYPE_FUNCTIONS).isPresent()) {			
+
+				if (fbm.getStereotype(STEREOTYPE_FUNCTIONS).isPresent()) {
 					Stereotype functionsStereotype = fbm.getStereotype(STEREOTYPE_FUNCTIONS).get();
 					JavascriptFunctions functions = new JavascriptFunctions(fbProperty.getName().toLowerCase());
 					for (String functionName : functionsStereotype.getAttributes().keySet()) {
 						if (!"_namespace".equalsIgnoreCase(functionName)) {
-							functions.addFunction(functionName,functionsStereotype.getAttributes().get(functionName));
+							functions.addFunction(functionName,
+									functionsStereotype.getAttributes().get(functionName));
 						}
 					}
 					this.library.addFunctions(functions);
 				}
-				
+
 				specification.getFbs().put(fbProperty.getName(), fbm);
 			}
-			
 			specification.setLibrary(this.library);
 			return specification;
 		} catch (Exception e) {

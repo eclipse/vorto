@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.lwm2m;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -57,6 +58,11 @@ public class LWM2MGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "lwm2m";
+	}
+	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Eclipse Leshan for LWM2M","Generates a LWM2M Java Client based on Eclipse Leshan.","Vorto Community");
 	}
 
 }

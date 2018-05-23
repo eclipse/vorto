@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>org.eclipse.vorto.parent</artifactId>
-		<version>0.10.0.M2</version>
+		<version>0.10.0.M3</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
@@ -24,5 +24,6 @@
 		<module>org.eclipse.vorto.feature.repository</module>
 		<module>org.eclipse.vorto.feature.codegen.mqtt</module>
 		<module>org.eclipse.vorto.feature.generators</module>
+		<module>org.eclipse.vorto.feature.generators.thirdparty</module>
 	</modules>
 </project>

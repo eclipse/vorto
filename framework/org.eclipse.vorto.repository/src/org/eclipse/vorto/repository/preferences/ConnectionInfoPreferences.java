@@ -21,8 +21,6 @@ import org.eclipse.vorto.repository.ConnectionInfo;
 public class ConnectionInfoPreferences implements ConnectionInfo, MutableConnectionInfo {
 	
     public static final String P_REMOTE_REPO_URL = "org.eclipse.vorto.preferences.repo.url";
-    public static final String P_USER_REPO = "org.eclipse.vorto.preferences.repo.user";
-    public static final String P_PASS_REPO = "org.eclipse.vorto.preferences.repo.pass";
 
 	private IPreferenceStore preferences;
 	
@@ -36,30 +34,9 @@ public class ConnectionInfoPreferences implements ConnectionInfo, MutableConnect
 	}
 
 	@Override
-	public String getUserName() {
-		return this.preferences.getString(P_USER_REPO);
-	}
-
-	@Override
-	public String getPassword() {
-		return this.preferences.getString(P_PASS_REPO);
-	}
-
-	@Override
 	public void setUrl(String url) {
 		this.preferences.putValue(P_REMOTE_REPO_URL, url);
 		
 	}
-
-	@Override
-	public void setUser(String user) {
-		this.preferences.putValue(P_USER_REPO, user);
-	}
-
-	@Override
-	public void setPassword(String password) {
-		this.preferences.putValue(P_PASS_REPO, password);
-	}
-	
 	
 }

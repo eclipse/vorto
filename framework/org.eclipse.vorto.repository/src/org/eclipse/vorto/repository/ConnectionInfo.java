@@ -21,16 +21,4 @@ public interface ConnectionInfo {
 	 * @return
 	 */
 	String getUrl();
-	
-	/**
-	 * username to access the repository
-	 * @return
-	 */
-	String getUserName();
-	
-	/**
-	 * password to access the repository
-	 * @return
-	 */
-	String getPassword();
 }

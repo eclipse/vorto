@@ -23,6 +23,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
+import org.eclipse.vorto.service.mapping.spec.SpecWithConfigMapping;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCustomFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
@@ -30,8 +31,22 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
 import org.junit.Test;
 
-public class JsonMappingTest {
+public class JsonMappingTest extends AbstractMappingTest {
 
+	@Test
+	public void testDittoConfigMapping() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
+				.buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+
+		System.out.println(mappedDittoOutput.toJson());
+
+	}
+	
 	@Test
 	public void testDittoMapping() throws Exception {
 
@@ -261,7 +276,7 @@ public class JsonMappingTest {
 	@Test(expected = MappingSpecificationProblem.class)
 	public void testBuildMappingSpecificationForInvalidModelId() {
 		MappingSpecificationBuilder.create().infomodelId("devices.PhilipsLivingBloo:1.0.0").targetPlatformKey("button")
-				.build();
+			.remoteClient(this.getModelRepository()).build();
 	}
 
 	@Test
@@ -269,7 +284,9 @@ public class JsonMappingTest {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 				.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
-				.targetPlatformKey("devices_aws_button_AWSIoTButton_1_0_0").build();
+				.targetPlatformKey("devices_aws_button_AWSIoTButton_1_0_0")
+				.remoteClient(this.getModelRepository())
+				.build();
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
 				.buildDittoMapper();
 
@@ -297,7 +314,9 @@ public class JsonMappingTest {
 	public void testCreateDynamicMappingSpec() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("com.bosch.BoschGLM100C:1.0.0").build();
+				.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+				.remoteClient(this.getModelRepository())
+				.build();
 
 		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get()
 				.addStereotype(Stereotype.createWithXpath("/@dist"));

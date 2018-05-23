@@ -40,6 +40,7 @@ public class DittoMapper extends AbstractDataMapper<DittoData> {
 		for (FunctionblockData fbData : input.getFunctionblockData()) {
 			FeatureBuilder featureBuilder = Feature.newBuilder(fbData.getId());
 			featureBuilder.withStatus(fbData.getStatus());
+			featureBuilder.withConfiguration(fbData.getConfiguration());
 			output.withFeature(featureBuilder.build());
 		}
 

@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.javabean;
 
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -121,6 +122,9 @@ public class JavabeanGenerator implements IVortoCodeGenerator {
 		return KEY;
 	}
 
-	
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Javabean","Generates Java Object Model and interfaces for information models.","Vorto Community");
+	}
 
 }

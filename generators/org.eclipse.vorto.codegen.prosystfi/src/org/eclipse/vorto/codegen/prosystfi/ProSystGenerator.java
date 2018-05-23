@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.vorto.codegen.api.ChainedCodeGeneratorTask;
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
+import org.eclipse.vorto.codegen.api.GeneratorInfo;
 import org.eclipse.vorto.codegen.api.GeneratorTaskFromFileTemplate;
 import org.eclipse.vorto.codegen.api.IGeneratedWriter;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
@@ -63,7 +64,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 			Set<String> imports = new HashSet<>();
 			FunctionBlock fb = fbp.getType().getFunctionblock();
 			for (Entity entity : Utils.getReferencedEntities(fb)) {
-				if (! visited.contains(entity)) {
+				if (!visited.contains(entity)) {
 					generateForEntity(infomodel, ctx, entity, zipOutputter);
 					visited.add(entity);
 				}
@@ -71,7 +72,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 				exports.add(entity.getNamespace());
 			}
 			for (Enum en : Utils.getReferencedEnums(fb)) {
-				if (! visited.contains(en)) {
+				if (!visited.contains(en)) {
 					generateForEnum(infomodel, ctx, en, zipOutputter);
 					visited.add(en);
 				}
@@ -79,12 +80,13 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 				exports.add(en.getNamespace());
 			}
 			exports.add(infomodel.getNamespace());
-			generateForFunctionBlock(infomodel, ctx, fbp.getType(), zipOutputter, imports.toArray(new String[imports.size()]));
+			generateForFunctionBlock(infomodel, ctx, fbp.getType(), zipOutputter,
+					imports.toArray(new String[imports.size()]));
 		}
 		generateEclipseProject(infomodel, ctx, zipOutputter, exports);
 		return zipOutputter;
 	}
-	
+
 	private void generateEclipseProject(InformationModel infomodel, InvocationContext ctx, IGeneratedWriter outputter,
 			Set<String> exports) {
 		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<>();
@@ -98,18 +100,17 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 	private void generateForFunctionBlock(InformationModel infomodel, InvocationContext ctx, FunctionblockModel fbm,
 			IGeneratedWriter outputter, String[] imports) {
 		ChainedCodeGeneratorTask<FunctionblockModel> generator = new ChainedCodeGeneratorTask<FunctionblockModel>();
-		generator.addTask(
-				new FunctionalItemGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, fbm.getNamespace()));
-		generator.addTask(new FunctionalItemImplGeneratorTask(JAVA_FILE_EXTENSION, SOURCE,
-				fbm.getNamespace(), imports));
+		generator.addTask(new FunctionalItemGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, fbm.getNamespace()));
+		generator
+				.addTask(new FunctionalItemImplGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, fbm.getNamespace(), imports));
 		generator.generate(fbm, ctx, outputter);
 	}
 
 	private void generateForEntity(InformationModel infomodel, InvocationContext ctx, Entity entity,
 			IGeneratedWriter outputter) {
 		ChainedCodeGeneratorTask<Entity> generator = new ChainedCodeGeneratorTask<Entity>();
-		generator.addTask(new JavaClassGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, entity.getNamespace(),
-				GETTER_PREFIX, SETTER_PREFIX));
+		generator.addTask(new JavaClassGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, entity.getNamespace(), GETTER_PREFIX,
+				SETTER_PREFIX));
 		generator.generate(entity, ctx, outputter);
 	}
 
@@ -123,5 +124,11 @@ public class ProSystGenerator implements IVortoCodeGenerator {
 	@Override
 	public String getServiceKey() {
 		return "prosyst";
+	}
+
+	@Override
+	public GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("ProSyst Functional Items for mBS Gateway",
+				"Generates ProSyst Functional Items for the ProSyst mBS Gateway.", "ProSyst").production();
 	}
 }

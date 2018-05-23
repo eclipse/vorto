@@ -27,10 +27,8 @@ class InfomodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 	version «context.modelId.version»
 	displayname "«context.modelId.name»"
 	description "«context.modelDescription»"
-	category demo	
 	infomodel «context.modelId.name» {
-
-	}	
+	}
 		'''
 	}
 

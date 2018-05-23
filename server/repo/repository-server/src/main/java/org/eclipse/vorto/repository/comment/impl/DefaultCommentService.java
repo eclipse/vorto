@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +44,8 @@ public class DefaultCommentService implements ICommentService{
 		
 		final ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
 		
-		if (modelRepository.getById(id) != null){	
+		if (modelRepository.getById(id) != null){
+			comment.setAuthor(UserContext.user(comment.getAuthor()).getHashedUsername());
 			comment.setModelId(id.getPrettyFormat());
 			comment.setDate(new Date());
 			commentRepository.save(comment);
@@ -55,4 +57,28 @@ public class DefaultCommentService implements ICommentService{
 	public List<Comment> getCommentsforModelId(ModelId modelId){
 		return commentRepository.findByModelId(modelId.getPrettyFormat());		
 	}
+
+	@Override
+	public void saveComment(Comment comment) {
+		this.commentRepository.save(comment);
+		
+	}
+
+	public IModelRepository getModelRepository() {
+		return modelRepository;
+	}
+
+	public void setModelRepository(IModelRepository modelRepository) {
+		this.modelRepository = modelRepository;
+	}
+
+	public CommentRepository getCommentRepository() {
+		return commentRepository;
+	}
+
+	public void setCommentRepository(CommentRepository commentRepository) {
+		this.commentRepository = commentRepository;
+	}
+	
+	
 }

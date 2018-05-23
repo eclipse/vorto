@@ -6,6 +6,7 @@ import java.io.StringWriter
 import org.eclipse.emf.common.util.EList
 import org.eclipse.vorto.codegen.api.Generated
 import org.eclipse.vorto.codegen.api.GenerationResultZip
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGeneratedWriter
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
@@ -24,20 +25,21 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 
 	private enum VortoPropertyType {
-		STATUS, CONFIGURATION	
+		STATUS,
+		CONFIGURATION
 	}
-	
+
 	override generate(InformationModel model, InvocationContext invocationContext,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		var zipOutput = new GenerationResultZip(model,getServiceKey());
-		new JSONGeneratorTask().generate(model,invocationContext,zipOutput);
+		IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+		var zipOutput = new GenerationResultZip(model, getServiceKey());
+		new JSONGeneratorTask().generate(model, invocationContext, zipOutput);
 		return zipOutput;
 	}
-	
+
 	public static class JSONGeneratorTask implements ICodeGeneratorTask<InformationModel> {
-		
+
 		override generate(InformationModel model, InvocationContext invocationContext, IGeneratedWriter writer) {
-			
+
 			writer.write(new Generated(model.getName() + ".json", null, getContent(model)));
 		}
 
@@ -52,7 +54,7 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 				// Generate the ThingTemplate
 				generateThingTemplate(g, model)
 				// Get JSON
-				g.writeEndObject() //End of JSON object
+				g.writeEndObject() // End of JSON object
 				g.flush()
 				json = writer.toString()
 				// Clean up
@@ -99,142 +101,138 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 			g.writeArrayFieldStart("implementedShapes")
 			for (functionBlock : model.properties) {
 				var fbModel = functionBlock.type
-				g.writeStartObject //Current implementedShape
-				  g.writeStringField("name", fbModel.displayname)
-				  g.writeStringField("type", "ThingShape")
-				  g.writeStringField("description", getDescription(fbModel))
-				  g.writeStringField("tags", "Applications:Vorto_CodeGen")
-				
-				  /**************** Enumerate Properties ****************/
-				  g.writeArrayFieldStart("propertyDefinitions")
-				    /* 
-				     * Vorto has two entities that map to ThingWorx properties, statuses and configurations.
-				     * The difference between the two is that a status is reported by a Thing, while a configuration
-				     * can be written and sent down to a thing. We're going to map statuses and configurations
-				     * to properties. Statuses are read only and configurations are writable.
-				     */
-				    //Map statuses to properties 
-				    if (fbModel.functionblock.status != null) {
-					  enumerateProperties(fbModel, g, VortoPropertyType.STATUS) //Statuses are read only
-				    }
-				    //Map configurations to properties
-				    if (fbModel.functionblock.configuration != null) {
-					  enumerateProperties(fbModel, g, VortoPropertyType.CONFIGURATION) //Configurations are writeable
-				    }
-				  g.writeEndArray // End of propertyDefinitions
-				
-				  /**************** Enumerate Services ****************/
-				  g.writeArrayFieldStart("serviceDefinitions")
-					  enumerateServices(fbModel, g)
-				  g.writeEndArray // End of serviceDefinitions
-				
-				  /**************** Enumerate Event Definitions ****************/
-				  g.writeArrayFieldStart("eventDefinitions")
-					//TODO - Event definitions left for post-PoC coding effort
-				  g.writeEndArray // End of eventDefinitions
-				
-				  /**************** Enumerate Alerts ****************/
-				  g.writeObjectFieldStart("alertConfigurations")
-				    g.writeArrayFieldStart("alertDefinitions")
-					  //TODO - Alert definitions left for post-PoC coding effort
-				    g.writeEndArray // End of alertDefinitions
-				  g.writeEndObject // End of alertConfigurations
+				g.writeStartObject // Current implementedShape
+				g.writeStringField("name", fbModel.displayname)
+				g.writeStringField("type", "ThingShape")
+				g.writeStringField("description", getDescription(fbModel))
+				g.writeStringField("tags", "Applications:Vorto_CodeGen")
+
+				/**************** Enumerate Properties ****************/
+				g.writeArrayFieldStart("propertyDefinitions")
+				/* 
+				 * Vorto has two entities that map to ThingWorx properties, statuses and configurations.
+				 * The difference between the two is that a status is reported by a Thing, while a configuration
+				 * can be written and sent down to a thing. We're going to map statuses and configurations
+				 * to properties. Statuses are read only and configurations are writable.
+				 */
+				// Map statuses to properties 
+				if (fbModel.functionblock.status != null) {
+					enumerateProperties(fbModel, g, VortoPropertyType.STATUS) // Statuses are read only
+				}
+				// Map configurations to properties
+				if (fbModel.functionblock.configuration != null) {
+					enumerateProperties(fbModel, g, VortoPropertyType.CONFIGURATION) // Configurations are writeable
+				}
+				g.writeEndArray // End of propertyDefinitions
+				/**************** Enumerate Services ****************/
+				g.writeArrayFieldStart("serviceDefinitions")
+				enumerateServices(fbModel, g)
+				g.writeEndArray // End of serviceDefinitions
+				/**************** Enumerate Event Definitions ****************/
+				g.writeArrayFieldStart("eventDefinitions")
+				// TODO - Event definitions left for post-PoC coding effort
+				g.writeEndArray // End of eventDefinitions
+				/**************** Enumerate Alerts ****************/
+				g.writeObjectFieldStart("alertConfigurations")
+				g.writeArrayFieldStart("alertDefinitions")
+				// TODO - Alert definitions left for post-PoC coding effort
+				g.writeEndArray // End of alertDefinitions
+				g.writeEndObject // End of alertConfigurations
 				g.writeEndObject // End of current implementedShape
-			  }
-			g.writeEndArray //End of implementedShapes array
+			}
+			g.writeEndArray // End of implementedShapes array
 		}
-		
+
 		protected def enumerateProperties(FunctionblockModel fbModel, JsonGenerator g, VortoPropertyType propType) {
 			var readOnly = false
 			var EList<Property> properties = null
-			
-			if (propType == VortoPropertyType.STATUS){
+
+			if (propType == VortoPropertyType.STATUS) {
 				readOnly = true
 				properties = fbModel.functionblock.status.properties
-			}
-			else if (propType == VortoPropertyType.CONFIGURATION) {
+			} else if (propType == VortoPropertyType.CONFIGURATION) {
 				properties = fbModel.functionblock.configuration.properties
 				readOnly = false
 			}
-			
+
 			for (currentStatusProperty : properties) {
 				/* 
-				* We are only handling simple data types for now. Complex Vorto data types don't 
-				* map directly to ThingWorx, although ThingWorx has a model that can handle them.
-				* We'll handle complex data types in future versions.
-				*/
+				 * We are only handling simple data types for now. Complex Vorto data types don't 
+				 * map directly to ThingWorx, although ThingWorx has a model that can handle them.
+				 * We'll handle complex data types in future versions.
+				 */
 				if (currentStatusProperty.type instanceof PrimitivePropertyType) {
 					var currentType = getPrimitivePropertyType(currentStatusProperty)
-					g.writeStartObject //Start of current property
-					  g.writeStringField("name", currentStatusProperty.name)
-					  g.writeStringField("baseType", getThingWorxDataType(currentType))
-					  g.writeStringField("description", getDescription(currentStatusProperty))
-					  g.writeBooleanField("isLocalOnly", false)
-					  g.writeObjectFieldStart("aspects")
-					    g.writeNumberField("cacheTime", 0.0)
-					    g.writeStringField("dataChangeType", "VALUE")
-					    g.writeBooleanField("isLogged", false)
-					    g.writeBooleanField("isPersistent", true)
-					    g.writeBooleanField("isReadOnly", readOnly)
-					  g.writeEndObject // End of aspects
+					g.writeStartObject // Start of current property
+					g.writeStringField("name", currentStatusProperty.name)
+					g.writeStringField("baseType", getThingWorxDataType(currentType))
+					g.writeStringField("description", getDescription(currentStatusProperty))
+					g.writeBooleanField("isLocalOnly", false)
+					g.writeObjectFieldStart("aspects")
+					g.writeNumberField("cacheTime", 0.0)
+					g.writeStringField("dataChangeType", "VALUE")
+					g.writeBooleanField("isLogged", false)
+					g.writeBooleanField("isPersistent", true)
+					g.writeBooleanField("isReadOnly", readOnly)
+					g.writeEndObject // End of aspects
 					g.writeEndObject // End of current propertyDefinition
 				}
 			}
 		}
-		
+
 		protected def enumerateServices(FunctionblockModel fbModel, JsonGenerator g) {
 			var services = fbModel.functionblock.operations
-			
+
 			for (currentService : services) {
-				g.writeStartObject //Start of current service
-				  g.writeStringField("name", currentService.name)
-				  g.writeStringField("description", getDescription(currentService))
-				  g.writeObjectFieldStart("resultType") //Start of result block
-				    g.writeStringField("name", "result") //Result is a convention for ThingWorx
-				    g.writeStringField("baseType", getResultBaseType(currentService))
-				    g.writeStringField("description", currentService.description)
-				  g.writeEndObject //End of ResultType
-				  g.writeArrayFieldStart("parameterDefinitions") //Start of parameter definitions
-				  for (currentParam : currentService.params) {
-					//For this version, we are not supporting complex property types
+				g.writeStartObject // Start of current service
+				g.writeStringField("name", currentService.name)
+				g.writeStringField("description", getDescription(currentService))
+				g.writeObjectFieldStart("resultType") // Start of result block
+				g.writeStringField("name", "result") // Result is a convention for ThingWorx
+				g.writeStringField("baseType", getResultBaseType(currentService))
+				g.writeStringField("description", currentService.description)
+				g.writeEndObject // End of ResultType
+				g.writeArrayFieldStart("parameterDefinitions") // Start of parameter definitions
+				for (currentParam : currentService.params) {
+					// For this version, we are not supporting complex property types
 					if (currentParam instanceof PrimitiveParam) {
-					  g.writeStartObject //Start of current parameter
-					    g.writeStringField("name", currentParam.name)
+						g.writeStartObject // Start of current parameter
+						g.writeStringField("name", currentParam.name)
 						var paramType = (currentParam as PrimitiveParam).type.literal
 						g.writeStringField("baseType", getThingWorxDataType(paramType))
 						g.writeStringField("description", "")
-					  g.writeEndObject // End of current parameterDefinition
+						g.writeEndObject // End of current parameterDefinition
 					}
-				  }
-				  g.writeEndArray //End of parameterDefinitions
-				g.writeEndObject //End of current service
+				}
+				g.writeEndArray // End of parameterDefinitions
+				g.writeEndObject // End of current service
 			}
 		}
-		
-		protected def String getDescription(Property property){
-			if (property.description != null){
+
+		protected def String getDescription(Property property) {
+			if (property.description != null) {
 				return property.description
 			} else {
 				return ""
-			}	
+			}
 		}
-		
-		protected def String getDescription(Operation operation){
-			if (operation.description != null){
+
+		protected def String getDescription(Operation operation) {
+			if (operation.description != null) {
 				return operation.description
 			} else {
 				return ""
-			}	
+			}
 		}
-		
-		protected def String getDescription(FunctionblockModel fbModel){
-			if (fbModel.description != null){
+
+		protected def String getDescription(FunctionblockModel fbModel) {
+			if (fbModel.description != null) {
 				return fbModel.description
 			} else {
 				return ""
-			}	
+			}
 		}
-		
+
 		protected def String getPrimitivePropertyType(Property property) {
 			if (property.type instanceof PrimitivePropertyType) {
 				return (property.type as PrimitivePropertyType).getType.toString
@@ -243,20 +241,20 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 			}
 		}
 
-		protected def String getResultBaseType(Operation operation){
-			if (operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType){
-				if (operation.returnType.multiplicity == false){
+		protected def String getResultBaseType(Operation operation) {
+			if (operation.returnType != null && operation.returnType instanceof ReturnPrimitiveType) {
+				if (operation.returnType.multiplicity == false) {
 					var ReturnType primitiveType = operation.returnType
 					var typeName = (primitiveType as ReturnPrimitiveType).returnType.literal
 					return getThingWorxDataType(typeName)
 				} else {
-					return "COMPLEX_TYPE"	
+					return "COMPLEX_TYPE"
 				}
 			} else {
 				return "NOTHING"
 			}
 		}
-		
+
 		def String getThingWorxDataType(String vortoType) {
 			var String dataType = ""
 
@@ -280,17 +278,18 @@ class ThingWorxCodeGenerator implements IVortoCodeGenerator {
 			}
 			return dataType
 		}
-		
+
 	}
-		
+
 	override getServiceKey() {
 		return "thingworx"
 	}
+
+	override GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("PTC ThingWorx",
+			"Generates code for the PTC Thingworx IoT Platform for a given information model.",
+			"ThingWorx, a PTC Business");
+		}
+
+	}
 	
-}
-
-
-
-
-
-

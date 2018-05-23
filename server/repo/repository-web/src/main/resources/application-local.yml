@@ -1,6 +1,7 @@
 server:
   port: 8080
   contextPath: /infomodelrepository
+  admin: erlemantos;aedelmann;vlvanchin
 
 github:
   oauth2:
@@ -40,13 +41,3 @@ webEditor:
     default: http://localhost:9080/editor/#/project
     github: http://localhost:9080/editor/github/login
     eidp: http://localhost:9080/editor/login/eidp
-
-mail:
-  smtp:
-    auth: false
-    host: localhost
-    port: 25
-  from: vorto-dev@eclipse.org
-  login:
-    username: 
-    password: 

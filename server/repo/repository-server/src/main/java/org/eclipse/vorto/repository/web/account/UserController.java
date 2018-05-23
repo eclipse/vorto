@@ -15,24 +15,17 @@
 package org.eclipse.vorto.repository.web.account;
 
 import java.security.Principal;
-import java.sql.Timestamp;
-
-import javax.validation.Valid;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.UserAccount;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,9 +51,6 @@ public class UserController {
 	    
     @Autowired
 	private IUserAccountService accountService;
-    
-    @Autowired(required=false)
-    private PasswordEncoder passwordEncoder;
 		
 	@ApiOperation(value = "Returns a specified User")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "Not found"), 
@@ -77,113 +67,24 @@ public class UserController {
 	
 	@ApiOperation(value = "Creates a new User")
 	@RequestMapping(method = RequestMethod.POST,
-				value = "/users",
+				value = "/user/acceptTermsAndCondition",
 	    		consumes = "application/json")
-	public ResponseEntity<Boolean> registerUserAccount(@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody @Valid UserAccount account) {
+	public ResponseEntity<Boolean> acceptTermsAndCondition(Principal user) {
 		
-		if (userRepository.findByEmail(account.getEmail()) != null &&
-				userRepository.findByUsername(account.getUsername()) != null ) {           
-				return new ResponseEntity<Boolean>(false, HttpStatus.CREATED);
-			}
+		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 		
-		LOGGER.debug("Register new user account with information: {}", account);
-		account.setPassword(passwordEncoder.encode(account.getPassword()));
-		accountService.create(account); 	
+		if (userRepository.findByUsername(oauth2User.getName()) != null ) {           
+			return new ResponseEntity<Boolean>(false, HttpStatus.CREATED);
+		}
+		
+		LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
+		accountService.create(oauth2User.getName()); 
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 	}
 	
-	@ApiOperation(value = "Update an existing User")
-	@RequestMapping(method = RequestMethod.PUT,
-					value = "/users/{username}")
-	public ResponseEntity<UserDto> updateUser(	Principal currentlyLoggedInUser,
-											@ApiParam(value = " Username", required = true) @PathVariable String username, 
-											@ApiParam(value = "User Data Transfer Object", required = true) @RequestBody UserDto userDto) {
-		if (!isUpdateAllowed(currentlyLoggedInUser, username, userDto)) {
-			return new ResponseEntity<UserDto>(HttpStatus.UNAUTHORIZED);
-		}
-		
-		User user = userRepository.findByUsername(username);
-		
-		if (user == null) {
-			throw new UsernameNotFoundException("User does not exists");
-		}
-		
-		user.setUsername(userDto.getUsername());
-		user.setEmail(userDto.getEmail());
-		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-		
-		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
-			user.setHasWatchOnRepository(userDto.isHasWatchOnRepository());
-		}
-		
-		userRepository.save(user);
-		
-		User updatedUser = userRepository.findByUsername(userDto.getUsername());
-		
-		return new ResponseEntity<UserDto>(UserDto.fromUser(updatedUser), HttpStatus.OK);
-	}
-	
-	private boolean isUpdateAllowed(Principal currentlyLoggedInUser, String username, UserDto userDto) {
-		if(username == null || currentlyLoggedInUser == null || userDto == null) {
-			return false;
-		}
-		
-		if (UserUtils.isAdmin(currentlyLoggedInUser)) {
-			/*
-			 * As an admin, your restriction is you cannot name someone else an admin and 
-			 * you cannot rename yourself to someone else
-			 */
-			if ("admin".equals(username)) {
-				return "admin".equals(userDto.getUsername());
-			} else {
-				return !"admin".equals(userDto.getUsername());
-			}
-		} else {
-			return UserUtils.sameUser(currentlyLoggedInUser, username) && 
-					username.equals(userDto.getUsername()) && 
-					!"admin".equals(userDto.getUsername());
-		}
-	}
-	
-	/* checking uniqueness of specific values
-	 */        
-	@ApiOperation(value = "Compares an Email-Address with all already existing Email-Addresses")
-	@RequestMapping(method = RequestMethod.POST,
-    				value = "/users/unique/email")
-	public ResponseEntity<Boolean> checkEmailAdressAlreadyExists(@ApiParam(value = "Email-Address", required = true)  @RequestBody String email) {		
-
-    	boolean emailExists = false;
-    	if (userRepository.findByEmail(email) == null){
-    		 emailExists = false;
-		} else {
-			 emailExists = true;
-		}
-    	
-		return new ResponseEntity<Boolean>(emailExists, HttpStatus.OK);
-	}
-    
-	@ApiOperation(value = "Compares a username with all already existing usernames")
-    @RequestMapping(method = RequestMethod.POST,
-					value = "/users/unique/username",
-					consumes = "application/json")
-	public ResponseEntity<Boolean> checkUsernameAlreadyExists(@ApiParam(value = "Username", required = true)  @RequestBody String username) {		
-    	
-    	boolean userExists = false;
-		
-    	if (userRepository.findByUsername(username) == null){
-			userExists = false;
-		} else {
-			
-			userExists = true;
-		}
-    	
-    	LOGGER.debug("username exists: "+userExists);
-		return new ResponseEntity<Boolean>(userExists, HttpStatus.OK);	
-	}
-	
 	@ApiOperation(value = "Deletes the user's user account")
-	@RequestMapping(value = "/users/{username}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/users/{username:.+}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
 	public ResponseEntity<Void> deleteAccount(@PathVariable("username") final String username) {	
 		accountService.delete(username);

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>generators</artifactId>
-		<version>0.10.0.M2</version>
+		<version>0.10.0.M3</version>
 	</parent>
 	
 	<artifactId>org.eclipse.vorto.codegen.service.gateway</artifactId>
@@ -80,7 +80,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.bosch.things</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.bosch</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		

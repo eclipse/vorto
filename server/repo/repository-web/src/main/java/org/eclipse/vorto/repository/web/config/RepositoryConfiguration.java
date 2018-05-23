@@ -14,7 +14,10 @@
  */
 package org.eclipse.vorto.repository.web.config;
 
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.sso.boschid.EidpUtils;
+import org.eclipse.vorto.repository.upgrade.IUpgradeService;
+import org.eclipse.vorto.repository.upgrade.impl.DefaultUpgradeService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,25 +28,25 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 public class RepositoryConfiguration {
 
 	@Value("${http.proxyHost:#{null}}")
-	private String proxyHost;
-	
+	String proxyHost;
+
 	@Value("${http.proxyPort:8080}")
-	private int    proxyPort;
-	
+	protected int proxyPort;
+
 	@Value("${http.proxyUser:#{null}}")
 	private String proxyUsername;
-	
+
 	@Value("${http.proxyPassword:#{null}}")
 	private String proxyPassword;
-	
+
 	@Value("${repo.configFile}")
 	private String repositoryConfigFile = null;
-	
+
 	@Bean
 	public org.modeshape.jcr.RepositoryConfiguration repoConfiguration() throws Exception {
 		return org.modeshape.jcr.RepositoryConfiguration.read(new ClassPathResource(repositoryConfigFile).getURL());
 	}
-	
+
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
 		if (proxyHost != null) {
@@ -51,5 +54,14 @@ public class RepositoryConfiguration {
 		} else {
 			return EidpUtils.accessTokenProvider();
 		}
+	}
+	
+	@Bean
+	public IUpgradeService upgradeService(IModelRepository modelRepository) {
+		DefaultUpgradeService upgradeService = new DefaultUpgradeService();
+		/*
+		 * ADD UPGRADE TASKS HERE
+		 */
+		return upgradeService;
 	}
 }

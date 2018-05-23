@@ -14,6 +14,7 @@
  *******************************************************************************/
 package org.eclipse.vorto.codegen.markdown
 
+import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.ICodeGeneratorTask
 import org.eclipse.vorto.codegen.api.IGenerationResult
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor
@@ -40,6 +41,11 @@ class MarkdownGenerator implements IVortoCodeGenerator {
 	
 	override getServiceKey() {
 		return "markdown"
+	}
+	
+	
+	override GeneratorInfo getInfo() {
+		return GeneratorInfo.basicInfo("Markdown Documentation","Generates a full documentation of information models in the markdown format which can then be converted to other output formats.","Vorto Community");
 	}
 	
 }

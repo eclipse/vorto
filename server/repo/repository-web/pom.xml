@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repo</artifactId>
-		<version>0.10.0.M2</version>
+		<version>0.10.0.M3</version>
 	</parent>
 	<artifactId>repository-web</artifactId>
 	<packaging>jar</packaging>

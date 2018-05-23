@@ -27,25 +27,20 @@ class FbmodelTemplateFileContent implements ITemplate<IModelProjectContext> {
 	version «context.modelId.version»
 	displayname "«context.modelId.name»"
 	description "«context.modelDescription»"
-	category demo	
 	functionblock «context.modelId.name» {
 
-		configuration{ 
-			//Please enter functionblock configuration details.
+		configuration {
 		}
 
-		status{ 
-			//Please enter functionblock status details.
+		status {
 		}
 
-		fault{
-			//Please enter functionblock fault configuration.
+		fault {
 		}
 
-		operations{
-			//Please enter functionblock operations.
+		operations {
 		}
-	}	
+	}
 		'''
 	}
 	

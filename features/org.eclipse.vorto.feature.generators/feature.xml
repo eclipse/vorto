@@ -2,11 +2,11 @@
 <feature
       id="org.eclipse.vorto.feature.generators"
       label="Vorto Generators (Incubation)"
-      version="0.10.0.M2"
+      version="0.10.0.M3"
       provider-name="Eclipse.org/Vorto">
 
    <description url="http://www.example.com/description">
-      This feature defines the bundles for the Vorto Generators
+      This feature contains Vorto Code Generators.
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -22,77 +22,7 @@ Description here.
    </license>
 
    <plugin
-         id="org.eclipse.vorto.codegen.aws"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.bosch.things"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.codegen.ditto"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.coap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.ios"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.javabean"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.kura"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.latex"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.lwm2m"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.markdown"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.mqtt"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -106,13 +36,6 @@ Description here.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.vorto.codegen.protobuf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.codegen.templates.java"
          download-size="0"
          install-size="0"
@@ -120,28 +43,7 @@ Description here.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.vorto.codegen.thingworx"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.codegen.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.webdevice"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.webui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -162,34 +64,21 @@ Description here.
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.vorto.codegen.artik"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.ble"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.vorto.codegen.ble.alpwise"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.vorto.codegen.hono"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	<plugin
-         id="org.eclipse.vorto.codegen.json"
+
+   <plugin
+         id="org.eclipse.vorto.codegen.bosch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.vorto.codegen.bosch.things"
          download-size="0"
          install-size="0"
          version="0.0.0"

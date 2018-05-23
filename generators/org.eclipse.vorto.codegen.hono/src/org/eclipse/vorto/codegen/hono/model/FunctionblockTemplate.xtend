@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -16,8 +16,11 @@ package org.eclipse.vorto.codegen.hono.model
 
 import org.eclipse.vorto.codegen.api.IFileTemplate
 import org.eclipse.vorto.codegen.api.InvocationContext
-import org.eclipse.vorto.codegen.hono.TypeMapper
 import org.eclipse.vorto.codegen.hono.Utils
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldGetterTemplate
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldSetterTemplate
+import org.eclipse.vorto.codegen.templates.java.JavaClassFieldTemplate
+import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 
@@ -25,8 +28,34 @@ class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 
 	private InformationModel informationModelContext;
 	
+	private JavaClassFieldTemplate propertyTemplate;
+	private JavaClassFieldSetterTemplate propertySetterTemplate;
+	private JavaClassFieldGetterTemplate propertyGetterTemplate;
+	
 	new(InformationModel context) {
 		this.informationModelContext = context;
+		
+		this.propertyTemplate = new JavaClassFieldTemplate() {
+			protected override addFieldAnnotations(Property property) {
+			'''
+			@com.google.gson.annotations.SerializedName("«property.name»")
+			'''
+			}
+			
+			protected override getNamespaceOfDatatype() {
+				'''«Utils.getJavaPackage(informationModelContext)».model.datatypes.'''
+			}
+		};
+		this.propertySetterTemplate = new JavaClassFieldSetterTemplate("set") {
+			protected override getNamespaceOfDatatype() {
+				'''«Utils.getJavaPackage(informationModelContext)».model.datatypes.'''
+			}
+		};
+		this.propertyGetterTemplate = new JavaClassFieldGetterTemplate("get") {
+			protected override getNamespaceOfDatatype() {
+				'''«Utils.getJavaPackage(informationModelContext)».model.datatypes.'''
+			}
+		};
 	}
 
     override getFileName(FunctionblockModel model) {
@@ -42,30 +71,18 @@ class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 		'''
 		package «Utils.getJavaPackage(informationModelContext)».model;
 		
-		import com.google.gson.annotations.SerializedName;
-		
 		public class «model.getName» {
-		    «FOR statusProperty : model.functionblock.status.properties»
-		    @SerializedName("«statusProperty.name»")
-		    private «TypeMapper.mapSimpleDatatype(statusProperty.type)» «TypeMapper.checkKeyword(statusProperty.name)»;
-		    «ENDFOR»
-		    
-		    «FOR statusProperty : model.functionblock.status.properties»
-		    /**
-		     * Getter for «statusProperty.name».
-		     */
-		    public «TypeMapper.mapSimpleDatatype(statusProperty.type)» get«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»() {
-		        return «TypeMapper.checkKeyword(statusProperty.name)»;
-		    }
-		    
-		    /**
-		     * Setter for «statusProperty.name».
-		     */
-		    public void set«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»(«TypeMapper.mapSimpleDatatype(statusProperty.type)» «TypeMapper.checkKeyword(statusProperty.name)») {
-		        this.«TypeMapper.checkKeyword(statusProperty.name)» = «TypeMapper.checkKeyword(statusProperty.name)»;
-		    }
-		    
-		    «ENDFOR»
+		    «var fb = model.functionblock»	
+		    «IF fb.status != null»
+		    	«FOR property : model.functionblock.status.properties»
+		    		«propertyTemplate.getContent(property,context)»
+		    	«ENDFOR»
+		    	
+		    	«FOR property : model.functionblock.status.properties»
+		    		«propertySetterTemplate.getContent(property,context)»
+		    		«propertyGetterTemplate.getContent(property,context)»
+		    	«ENDFOR»
+		    «ENDIF»
 		
 		}
 		'''

@@ -9,30 +9,18 @@ import org.springframework.security.core.userdetails.User;
 public class VortoUser extends User {
 
 	private static final long serialVersionUID = -5732782740718902153L;
-	
-	private String email;
-	
 	private org.eclipse.vorto.repository.account.impl.User user;
 
-	public VortoUser(String username, String password, boolean enabled, boolean accountNonExpired,
+	public VortoUser(String username, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+		super(username, null, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 	}
 	
 	public VortoUser(org.eclipse.vorto.repository.account.impl.User user) {
-		this(user.getUsername(), user.getPassword(), true, true, true, true,
-        		  AuthorityUtils.createAuthorityList("ROLE_"+user.getRole().toString()));
-		this.email = user.getEmail();
+		this(user.getUsername(), true, true, true, true,
+        		  AuthorityUtils.createAuthorityList("ROLE_"+ user.getRole().toString()));
 		this.user = user;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public org.eclipse.vorto.repository.account.impl.User getUser() {

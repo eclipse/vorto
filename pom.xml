@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>org.eclipse.vorto.parent</artifactId>
-	<version>0.10.0.M2</version>
+	<version>0.10.0.M3</version>
 	<packaging>pom</packaging>
 
 	<name>Eclipse Vorto Toolset</name>

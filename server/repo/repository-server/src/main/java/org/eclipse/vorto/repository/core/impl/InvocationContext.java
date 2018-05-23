@@ -14,19 +14,21 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import org.eclipse.vorto.repository.core.IUserContext;
+
 public final class InvocationContext {
 
-	private String username;
+	private IUserContext userContext;
 	
-	public static InvocationContext create(String username) {
-		return new InvocationContext(username);
+	public static InvocationContext create(IUserContext userContext) {
+		return new InvocationContext(userContext);
 	}
 	
-	private InvocationContext(String username) {
-		this.username = username;
+	private InvocationContext(IUserContext userContext) {
+		this.userContext = userContext;
 	}
-	
-	public String getUsername() {
-		return this.username;
+
+	public IUserContext getUserContext() {
+		return userContext;
 	}
 }

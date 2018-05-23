@@ -44,7 +44,7 @@ class InformationModelFormatter extends AbstractDeclarativeFormatter {
 		c.setAutoLinewrap(120)
 		
 		//Functionblocks
-		c.setLinewrap(1).before(dsl.functionblockPropertyAccess.nameAssignment_0)
+		c.setLinewrap(1).before(dsl.functionblockPropertyAccess.nameAssignment_1)
 		
 		//Block Elements
 		findKeywordPairs("{","}").forEach[

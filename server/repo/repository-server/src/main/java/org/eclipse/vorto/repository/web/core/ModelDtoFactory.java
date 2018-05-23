@@ -74,6 +74,8 @@ import org.eclipse.vorto.repository.api.content.Operation;
 import org.eclipse.vorto.repository.api.content.Param;
 import org.eclipse.vorto.repository.api.content.ReturnType;
 import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.repository.comment.Comment;
+import org.eclipse.vorto.repository.core.IUserContext;
 
 /**
  * Converts the EMF Model to POJO's
@@ -81,9 +83,13 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
  */
 public class ModelDtoFactory {
 
-	public static ModelInfo createDto(ModelInfo resource) {
+	public static ModelInfo createDto(ModelInfo resource, IUserContext userContext) {
 		ModelInfo dto = new ModelInfo(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
-		dto.setAuthor(resource.getAuthor());
+		
+		if (userContext.getHashedUsername().equals(resource.getAuthor())) {
+			dto.setAuthor(userContext.getUsername());
+		}
+		
 		dto.setCreationDate(resource.getCreationDate());
 		dto.setDescription(resource.getDescription());
 		dto.setDisplayName(resource.getDisplayName());
@@ -92,6 +98,13 @@ public class ModelDtoFactory {
 		dto.setReferences(resource.getReferences().stream().map(r -> createDto(r)).collect(Collectors.toList()));
 		dto.setPlatformMappings(resource.getPlatformMappings());
 		return dto;
+	}
+	
+	public static Comment createDto(Comment comment, IUserContext userContext) {
+		if (userContext.getHashedUsername().equals(comment.getAuthor())) {
+			comment.setAuthor(userContext.getUsername());
+		}
+		return comment;
 	}
 
 	public static ModelId createDto(ModelId modelId) {

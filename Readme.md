@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
-[![Quality Gate](https://sonarqube.com/api/badges/gate?key=org.eclipse.vorto%3Aserver%3Adevelopment)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aserver%3Adevelopment ) 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/org.eclipse.vorto.parent)
 
 # Overview
@@ -14,33 +13,67 @@ Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md)
 
 # Getting started with Vorto 
 
-## 1. Create Account and Install Vorto Toolset
+## 1. Install Vorto Toolset
 
-1. Log-in to [Vorto Repository](http://vorto.eclipse.org) with your Github account and complete the sign-up process.
-2. Download the [Vorto Eclipse Toolset](https://marketplace.eclipse.org/content/vorto-toolset)
+2. Download the [Vorto Eclipse Toolset Plugins](https://marketplace.eclipse.org/content/vorto-toolset) and install them into your [Eclipse for DSL Developers](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygen3a)
 3. Restart Eclipse
-4. Go to Eclipse Settings --> Vorto Repository and configure your Vorto username and password
 
 ## 2. Describe a device with Vorto
 
-Switch to the Vorto perspective and start describing the functionality of a device.
+Switch to the Vorto perspective in Eclipse, create a new Model Project and begin to describe your device. In this example, we describe a GrovePi device which has a temperature sensor:
 
-## 3. Publish the Information Model
+1. Create a Temperature Sensor function block:
 
-Use the Vorto Eclipse Toolset to share the model with the [Vorto Repository](http://vorto.eclipse.org), by right-clicking on the Information Model in the Vorto perspective.
+		namespace com.mycompany
+		version 1.0.0
+		displayname "Temperature Sensor"
+		description "Function block model for TemperatureSensor"
+		functionblock TemperatureSensor {
+			
+			// status properties define read-only properties
+			status {
+				mandatory value as float
+				mandatory unit as string
+				optional minValue as float
+				optional maxValue as float
+			}
+		}
+		
+2. Create a GrovePi Device Information Model using the temperature sensor:
 
-## 4. Generate Source Code for Eclipse Hono
+		namespace com.ci.simonsGrovePi
+		version 1.0.0
+		displayname "GrovePi Device"
+		
+		using com.mycompany.TemperatureSensor ; 1.0.0
 
-Integrate the device by sending a Vorto message to Eclipse Hono via MQTT.
+		infomodel GrovePiDevice {
 
-1. Open the [Vorto Repository](http://vorto.eclipse.org)
-2. Select your Information Model
-3. Choose **Eclipse Hono Generator** and confirm with **Generate**.
-4. Download the generated Device client stub and **import** it into your IDE
-5. Send data to hono.eclipse.org sandbox for your preconfigured tenant and registered device ID.
-	> Please take a look at the Eclipse Hono Web Site for the sandbox configuration parameters
+			functionblocks {
+				mandatory temperature as TemperatureSensor
+			}
+		}
+
+## 3. Generate Java Code that integrates with Eclipse Hono via MQTT
+
+Now, let's write some code that sends the temperature data for the GrovePI device to Eclipse Hono via MQTT: 
+
+1. Right-Click on the GrovePiDevice Information Model -> **Generate Code** -> Eclipse Hono Generator
+2. Choose **Java** and confirm with **Generate**. This generates a Maven Java Project and switches to the Java Perspective automatically.
+3. Open the generated project and configure it by specifying the Eclipse Hono Sandbox endpoint configuration
+
+	> Please take a look at the [Eclipse Hono Sandbox](https://www.eclipse.org/hono/sandbox/) configuration for more details.
+	
+4. Run as a Java Application and verify the incoming data in Hono:
+
+	> Please take a look at the [Eclipse Hono Developer Guide](https://www.eclipse.org/hono/dev-guide/java_client_consumer/) for more info about how to create a Hono AMQP Message Consumer.
+
+**Hint:** The JSON data, sent by the device is already compliant to the Eclipse Ditto protocol. Therefore, you can directly update a Ditto-based thing with the JSON via Web Sockets.
+
+> Please take a look at the [Eclipse Ditto Sandbox](https://ditto.eclipse.org/) for more information
 
 # Developer Guide
+
 
 ## Generator SDK
 

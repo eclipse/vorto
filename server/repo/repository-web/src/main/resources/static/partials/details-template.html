@@ -40,7 +40,7 @@
 										<div class="placeHolder">
 											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
 											<img ng-if="model.hasImage" ng-src="rest/model/image/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}" width="200" height="200"/>
-											<div class="upload" ng-show="model.type === 'InformationModel' && authenticated">
+											<div class="upload" ng-show="model.type === 'InformationModel' && authority == 'ROLE_ADMIN'">
 												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
 											</div>
 										</div>
@@ -81,7 +81,8 @@
 								  <dt>Created On: </label></dt>
 								  <dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
 								  <dt>Created By:</dt>
-								  <dd class="ng-binding">{{model.author}}</dd>
+								  <dd class="ng-binding" ng-show="model.author === user">You</dd>
+								  <dd class="ng-binding" ng-show="model.author != user">Other user</dd>
 								  <dt>References: </label></dt>
 								  <dd><ul>
 									  <li ng-repeat="reference in model.references" class="ng-scope"><a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></li>
@@ -112,9 +113,33 @@
 						  </div>
 						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
 							<div class="row">
-								<label>Available Generators: </label>
+								<label>Stable Generators: </label>
 							</div>
 							<div class="row" ng-repeat="row in platformGeneratorMatrix">
+								<!--genbox-->
+								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
+										<a ng-click="openGeneratorConfig(generator)">
+		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
+		                					<span class="tiny-box-icon">
+												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
+											</span>
+		               						<div class="tiny-box-name">
+												<span>{{generator.name}}</span>
+											</div>
+		               						<div class="tiny-box-action">
+												<span>
+													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
+												</span>
+											</div>
+		               					</div>
+	               						</a>
+								</div>
+							   <!-- end genbox -->            
+							</div>
+							<div class="row">
+								<label>Ext. Contributed Generators: </label>
+							</div>
+							<div class="row" ng-repeat="row in platformDemoGeneratorMatrix">
 								<!--genbox-->
 								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
 										<a ng-click="openGeneratorConfig(generator)">
@@ -170,12 +195,8 @@
 				                				                
 				                <div class="direct-chat-msg" ng-repeat="comment in comments">
 		                          <div class='direct-chat-info clearfix'>
-		                            <span class='direct-chat-name pull-left' ng-show="comment.firstname == null || comment.lastname == null">
-		                            	{{comment.author}}
-		                            </span>
-		                            <span class='direct-chat-name pull-left' ng-show="comment.firstname != '' && comment.lastname != ''">
-		                            	{{comment.firstname}} {{comment.lastname}}
-		                            </span>
+		                            <span class='direct-chat-name pull-left' ng-show="comment.author === user">You</span>
+		                            <span class='direct-chat-name pull-left' ng-show="comment.author != user">Other user</span>
 		                            <span class='direct-chat-timestamp pull-right'> <i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}}</span>
 		                          </div><!-- /.direct-chat-info -->
 		                          <div class="direct-chat-text">

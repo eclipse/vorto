@@ -37,16 +37,20 @@ class JavaClassFieldTemplate implements ITemplate<Property> {
 			«var ObjectPropertyType object = property.type as ObjectPropertyType»
 			«IF object.type instanceof Entity»
 				«addFieldAnnotations(property)»
-				private «(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
+				private «namespaceOfDatatype»«(object.type as Entity).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
 			«ELSEIF object.type instanceof Enum»
 				«addFieldAnnotations(property)»
-				private «(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
+				private «namespaceOfDatatype»«(object.type as Enum).name.toFirstUpper» «ValueMapper.normalize(property.name)»;
 			«ENDIF»
 		«ENDIF»
 		'''
 	}
 	
 	protected def addFieldAnnotations(Property property) {
+		''''''
+	}
+	
+	protected def getNamespaceOfDatatype() {
 		''''''
 	}
 }
