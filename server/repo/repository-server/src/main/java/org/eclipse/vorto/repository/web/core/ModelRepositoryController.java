@@ -41,15 +41,18 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -191,6 +194,27 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			response.flushBuffer();
 		} catch (IOException e) {
 			throw new RuntimeException("Error copying file.", e);
+		}
+	}
+	
+	@ApiOperation(value = "Adds an image for a vorto model",hidden=true)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@RequestMapping(value = "/image", method = RequestMethod.POST)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
+									@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @RequestParam String namespace,
+									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @RequestParam String name,
+									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @RequestParam String version) {
+		if (file.getSize() > maxModelImageSize) {
+			throw new UploadTooLargeException("model image", maxModelImageSize);
+		}
+		
+		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
+		
+		try {
+			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
 	}
 		
