@@ -41,7 +41,7 @@ Switch to the Vorto perspective in Eclipse, create a new Model Project and begin
 		
 2. Create a GrovePi Device Information Model using the temperature sensor:
 
-		namespace com.ci.simonsGrovePi
+		namespace com.mycompany
 		version 1.0.0
 		displayname "GrovePi Device"
 		
