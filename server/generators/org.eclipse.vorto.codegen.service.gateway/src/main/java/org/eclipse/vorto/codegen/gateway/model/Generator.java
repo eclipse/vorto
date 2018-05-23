@@ -49,7 +49,12 @@ public class Generator {
 		
 		try {
 			IVortoCodeGenerator instance = generatorClass.newInstance(); 
-			return new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance), instance, createConfigUI(instance));
+			Generator generator =  new Generator(GatewayUtils.generatorInfoFromFile(configFile, instance), instance, createConfigUI(instance));
+			generator.info.setDescription(instance.getInfo().getDescription());
+			generator.info.setCreator(instance.getInfo().getOrganisation());
+			generator.info.setName(instance.getInfo().getName());
+			generator.info.setTags(instance.getInfo().getTags().toArray(new String[instance.getInfo().getTags().size()]));
+			return generator;
 		} catch (Exception e) {
 			throw new GeneratorCreationException("Error in instantiating Generator", e);
 		}
