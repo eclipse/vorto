@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -47,18 +47,6 @@ public class HomeController {
 	@Value("${eidp.oauth2.enabled}")
 	private boolean eidpEnabled;
 	
-	@Value("${webEditor.enabled}")
-	private boolean webEditorEnabled;
-	
-	@Value("${webEditor.loginUrl.github}")
-	private String githubLoginUrl;
-	
-	@Value("${webEditor.loginUrl.eidp}")
-	private String eidpLoginUrl;
-	
-	@Value("${webEditor.loginUrl.default}")
-	private String defaultLoginUrl;
-	
 	@Autowired
 	private IUserAccountService accountService;
 	
@@ -92,22 +80,7 @@ public class HomeController {
 		
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
-		context.put("webEditor", getWebEditorContext());
 		
 		return context;
-	}
-	
-	public Map<String, Object> getWebEditorContext() {
-		Map<String, Object> webEditorContext = new LinkedHashMap<>();
-		
-		Map<String, Object> loginContext = new LinkedHashMap<>();
-		loginContext.put("default", defaultLoginUrl);
-		loginContext.put("github", githubLoginUrl);
-		loginContext.put("eidp", eidpLoginUrl);
-		
-		webEditorContext.put("enabled", webEditorEnabled);
-		webEditorContext.put("loginUrl", loginContext);
-		
-		return webEditorContext;
 	}
 }

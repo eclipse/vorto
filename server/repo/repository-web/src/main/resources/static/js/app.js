@@ -68,15 +68,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     
     $rootScope.context = {
       githubEnabled: false,
-      eidpEnabled: false,
-      webEditor: {
-        enabled: false,
-        loginUrl: {
-          default: "",
-          github: "",
-          eidp: ""
-        }
-      }
+      eidpEnabled: false
     };
     
     $rootScope.getContext = function() {
@@ -105,12 +97,5 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.getContext();
             $location.path("/login");
         });
-    };
-    
-    $rootScope.webEditorLink = function() {
-        if ($rootScope.userInfo != null && $rootScope.userInfo.loginType != null) {
-            return $rootScope.context.webEditor.loginUrl[$rootScope.userInfo.loginType];    		
-        }
-        return $rootScope.context.webEditor.loginUrl["default"];
     };
 });

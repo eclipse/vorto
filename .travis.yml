@@ -32,8 +32,6 @@ after_success:
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
     docker build -f server/repo/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./server/repo/repository-server;
     docker build -f server/generators/org.eclipse.vorto.codegen.service.gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./server/generators/org.eclipse.vorto.codegen.service.gateway;
-    docker build -f server/devtool/webeditor/Dockerfile -t eclipsevorto/vorto-webeditor:latest ./server/devtool/webeditor;
     docker push eclipsevorto/vorto-repo;
     docker push eclipsevorto/vorto-generator-gateway;
-    docker push eclipsevorto/vorto-webeditor;
     fi

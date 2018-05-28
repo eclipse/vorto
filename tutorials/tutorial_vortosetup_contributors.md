@@ -77,35 +77,7 @@
 
  ![Repo](images/vortosetup_contributors/local_repo.png)
 
-## Step4: Start the WebEditor locally<a name="startwebeditor"></a>
-
-1. Open command prompt from the webeditor folder in the file system  _\vorto\server\devtool\webeditor_
-2. Run the command _mvn clean install_.**webeditor.jar** gets created under _\vorto\server\devtool\webeditor\target_
-3. Log in to your github account and choose _Profile > Settings > Choose OAuth applications_ and _Register a new application_
-4. Key in details in the registration form and _Register application_
-
- ![Editor](images/vortosetup_contributors/editor_details.png)
-
-5. _Client ID_ and _Client Secret_ are generated for the registered application
-6. From eclipse, choose _webeditor >  src/main/java > org.eclipse.vorto.server.devtool > DevToolServer.java > Right-click > Run As > Run configurations_
-7. Choose Arguments tab and key in the following details:
-
-        -DHOME=c:\users\<USERID>
-        -Dhttp.proxyUser=<PROXY_USERID>
-        -Dhttp.proxyPassword=<PROXY_PASSWORD>
-        -Dhttp.proxyHost=<PROXY>
-        -Dhttp.proxyPort=<PORT>
-        -Dhttps.proxyHost=<PROXY>
-        -Dhttps.proxyPort=<PORT>
-        -Dgithub_clientid=<CLIENT_ID>
-        -Dgithub_secret=<CLIENT_SECRET>
-
-8. _Save > Apply > Run As > Java application >_ The webeditor will be started
-9. Launch the Vorto WebEdtitor from localhost: [http://localhost:9080/editor/]
-
-![EditorWeb](images/vortosetup_contributors/webeditor_webpage.png)
-
-## Step5: Start the Vorto Generators locally<a name="generators"></a>
+## Step4: Start the Vorto Generators locally<a name="generators"></a>
 
 1. Open _eclipse > server> generators>org.eclipse.vorto.codegen.service.gateway>Gateway.java_
 2. _Right-Click > Run As > Java Application_
