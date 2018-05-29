@@ -204,15 +204,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testSearchAllModelsInDraft() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
-		assertEquals(4, modelRepository.search("draft").size());
-	}
-
-	@Test
 	public void testSearchModelWithCriteria1() {
 		checkinModel("Color.type");
 		checkinModel("Colorlight.fbmodel");
@@ -415,17 +406,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		
 		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
 		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());
-	}
-	
-	@Test
-	public void testStateSearch() {
-		IUserContext erle = UserContext.user("erle");
-		IUserContext admin = UserContext.user("admin");
-		checkinModel("Color.type", erle);
-		checkinModel("Colorlight.fbmodel", erle);
-		checkinModel("Switcher.fbmodel", admin);
-		
-		assertEquals(3, modelRepository.search("state:IN_DRAFT").size());
 	}
 
 }
