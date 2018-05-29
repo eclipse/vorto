@@ -22,4 +22,5 @@
 - vorto:namespace (string)
 - vorto:name (string)
 - vorto:author (string)
+- vorto:state (string)
 - vorto:references (reference) multiple < 'vorto:meta'

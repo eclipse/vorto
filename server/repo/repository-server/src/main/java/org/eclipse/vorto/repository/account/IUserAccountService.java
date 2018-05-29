@@ -40,4 +40,10 @@ public interface IUserAccountService {
 	 */
 	boolean exists(String userId);
 	
+	/**
+	 * 
+	 * @return
+	 */
+	String getAnonymousUserId();
+	
 }

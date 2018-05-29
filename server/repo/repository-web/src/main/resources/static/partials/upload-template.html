@@ -32,7 +32,7 @@
 
 <div class="row">
  <div class="center-results">
-	<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Check-in</button>
+	<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Checkin</button>
  </div>
 </div>
 
@@ -51,7 +51,7 @@
 				<div class="row errorbox-spacing">
 					<div ng-show="showResultBox" ng-class="uploadResult.isSuccess? 'alert alert-success' : 'alert alert-danger'">
 				  		{{resultMessage}}</p>
-				  		<small ng-show="showResultBox && uploadResult.isSuccess">Note: The models you check-in here can be viewed / downloaded by other users of Vorto</small>
+				  		<small ng-show="showResultBox && uploadResult.isSuccess">Note: Checked in models will be in <i>Draft</i> state and can only be viewed and edited by you.</small>
 				  	</p>	
 					</div>
 				</div>

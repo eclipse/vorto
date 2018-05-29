@@ -75,17 +75,11 @@ public interface IModelRepository {
 	ModelInfo checkin(String handleId, IUserContext userContext);
 		
 	/**
-	 * Adds a model image for the given model id
-	 * @param modelId
-	 * @param image
-	 */
-	void addModelImage(ModelId modelId, byte[] image);
-	
-	/**
 	 * Removes a model image for the given model id
 	 * @param modelId
 	 */
 	void removeModelImage(ModelId modelId);
+	
 	
 	/**
 	 * 

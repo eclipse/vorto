@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,20 +40,23 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
+import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -84,14 +88,28 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
 	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) throws UnsupportedEncodingException {
+		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
-		logger.info("searchByExpression: [" + expression + "] Rows returned: " + modelResources.size());
-		return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource,
-				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()))).collect(Collectors.toList());
+		return modelResources.stream().filter(model -> isReleasedOrDeprecated(model) || isCreatedByLoggedOnUser(model,userContext) || isAdmin(SecurityContextHolder.getContext().getAuthentication())).map(resource -> ModelDtoFactory.createDto(resource, userContext)).collect(Collectors.toList());
 	}
 	
+	private boolean isAdmin(Authentication authentication) {
+		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+		return authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+	}
+	
+	private boolean isCreatedByLoggedOnUser(ModelInfo model, IUserContext userContext) {
+		return model.getAuthor().equals(userContext.getHashedUsername());
+	}
+
+	private boolean isReleasedOrDeprecated(ModelInfo model) {
+		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState()) ||
+			   SimpleWorkflowModel.STATE_DEPRECATED.getName().equals(model.getState());
+	}
+
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found"), @ApiResponse(code = 403, message = "Not Authorized to view model")})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public ModelInfo getModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 											@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
@@ -105,12 +123,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		ModelInfo resource =  modelRepository.getById(modelId);
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
-		}
+		} 
 		return ModelDtoFactory.createDto(resource, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 	
 	@ApiOperation(value = "Returns the model content")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public AbstractModel getModelContent(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
@@ -124,6 +143,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}/mapping/{targetplatformKey}", method = RequestMethod.GET)
 	public AbstractModel getModelContentForTargetPlatform(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
@@ -149,6 +169,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId.fromPrettyFormat(modelId),'model:get')")
 	@RequestMapping(value = "/content/{modelId:.+}/mapping/{mappingId:.+}", method = RequestMethod.GET)
 	public AbstractModel getModelContentByModelAndMappingId(@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId, 
 			@ApiParam(value = "The mapping Model ID (prettyFormat)", required = true) final @PathVariable String mappingId) {
@@ -196,30 +217,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-	
-	@ApiOperation(value = "Adds an image for a vorto model",hidden=true)
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@RequestMapping(value = "/image", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
-									@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @RequestParam String namespace,
-									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @RequestParam String name,
-									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @RequestParam String version) {
-		if (file.getSize() > maxModelImageSize) {
-			throw new UploadTooLargeException("model image", maxModelImageSize);
-		}
-		
-		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
-		
-		try {
-			modelRepository.addModelImage(new ModelId(name, namespace, version), file.getBytes());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
 		
 	@ApiOperation(value = "Downloads the model content in a specific output format")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/file/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
 	public void downloadModelById(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
 									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
@@ -315,6 +316,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Getting all mapping resources")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/mapping/zip/{namespace}/{name}/{version:.+}/{targetPlatform}", method = RequestMethod.GET)
 	public void getMappingResources( 	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
 										@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name, 

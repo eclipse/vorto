@@ -29,6 +29,7 @@ import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class ShareModelController {
 	private IUserRepository userRepository;
 	
 	private UploadModelResult uploadModelResult;
+	
+	@Autowired
+	private IWorkflowService workflowService;
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
@@ -128,6 +132,7 @@ public class ShareModelController {
 		LOGGER.info("Check in Model " + handleId);
 		try {
 			ModelInfo result = modelRepository.checkin(handleId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
+			result = workflowService.start(result.getId());
 			return new ResponseEntity<ModelId>(result.getId(),HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
@@ -141,7 +146,8 @@ public class ShareModelController {
 		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
-				modelRepository.checkin(handle.getHandleId(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
+				ModelInfo checkedInModel = modelRepository.checkin(handle.getHandleId(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
+				workflowService.start(checkedInModel.getId());
 			}
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (Exception e) {

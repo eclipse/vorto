@@ -1544,7 +1544,7 @@ footer ul.quicklinks a {
     color: #fff;
 }
 
-.label {
+.state {
     display: inline;
     padding: .2em .6em .3em;
     font-size: 75%;
@@ -1557,6 +1557,18 @@ footer ul.quicklinks a {
     border-radius: .25em;
 }
 
-.label-success {
+.state-Released {
     background-color: #5cb85c;
+}
+
+.state-Draft {
+    background-color: orange;
+}
+
+.state-InReview {
+    background-color: blue;
+}
+
+.state-Deprecated {
+    background-color: red;
 }

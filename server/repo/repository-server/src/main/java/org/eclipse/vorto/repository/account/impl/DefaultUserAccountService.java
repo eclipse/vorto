@@ -21,7 +21,6 @@ import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -95,5 +94,10 @@ public class DefaultUserAccountService implements IUserAccountService {
 	@Override
 	public boolean exists(String userId) {
 		return userRepository.findByUsername(userId) != null;
+	}
+
+	@Override
+	public String getAnonymousUserId() {
+		return USER_ANONYMOUS;
 	}
 }

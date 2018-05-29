@@ -1,4 +1,6 @@
-
+<div class="row">
+	<div ng-if="error" class="alert alert-danger">{{error}}</div>
+</div>
 <link href="css/comment.css" rel="stylesheet"> 
 
 
@@ -44,7 +46,6 @@
 												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
 											</div>
 										</div>
-										<input style="display:none" type="file" onchange="angular.element(this).scope().uploadImage()" name="imageFile" id="imageFile" accept="png | jpg">
 								   </div>
 							   <div class="row">
 							  <div class="adv">
@@ -65,6 +66,8 @@
 
 							   <div class="infomodel">
 								<dl class="dl-horizontal">
+								  <dt>State:</dt>
+								  <dd class="ng-binding"><span class="state state-{{model.state}}">{{ model.state }}</span></dd>
 								  <dt>Name:</dt>
 								  <dd class="ng-binding">{{model.id.name}}</dd>
 								  <dt>Description: </dt>
@@ -228,12 +231,48 @@
 						  	</ul>
 						</div>
 						
-						<button class="btn btn-primary" ng-click="remove()" ng-disabled="model.referencedBy.length > 0" >Remove Model</button>
+						<button class="btn btn-primary" ng-click="remove()" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released'" >Remove Model</button>
 						<br/>
+						<br/>
+						<h4 class="reviews text-capitalize">Workflow Actions</h4>
+						
+						<p>
+							<button ng-repeat="action in workflowActions"  class="btn btn-primary" ng-click="openWorkflowActionDialog(action)">{{action}}</button>
+						</p>
+						<br/>
+						<br/>
+						<div ng-show="authority == 'ROLE_ADMIN'">
+							<h4 class="reviews text-capitalize">Claim Model</h4>
 							
+							<p>
+								<button class="btn btn-primary" ng-click="openWorkflowActionDialog('claim')">Claim</button>
+							</p>
+						</div>
 					</div>
 					
 					
 					
 				</div>
 			</div>
+			
+<script type="text/ng-template" id="workflowActionDialog.html">
+	<div class="modal-header">
+  		<h3 class="modal-title" id="modal-title-workflowAction">Workflow Action</h3>
+	</div>
+  	<div class="modal-body" id="modal-body-workflowAction">
+      <div class="row" ng-show="actionModel != null && actionModel.description != ''">
+      	<div class="alert alert-info">
+      		<p><i class="fa fa-info"></i> {{actionModel.description}}</p>
+      	</div>
+      </div>
+      <div class="row">
+      	<div class="col-md-12">
+        	Are you sure you want to {{action}} the model <i>{{model.id.prettyFormat}}</i> ?
+      	</div>
+      </div>
+	</div>
+	<div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
+	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
+  	</div>
+</script>

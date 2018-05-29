@@ -46,4 +46,9 @@ public class UserContext implements IUserContext {
 	    }
 	    return hexString.toString();
 	}
+
+	@Override
+	public boolean isAnonymous() {
+		return this.username.equalsIgnoreCase("anonymous");
+	}
 }

@@ -97,6 +97,7 @@ public class ModelDtoFactory {
 		dto.setReferencedBy(resource.getReferencedBy().stream().map(r -> createDto(r)).collect(Collectors.toList()));
 		dto.setReferences(resource.getReferences().stream().map(r -> createDto(r)).collect(Collectors.toList()));
 		dto.setPlatformMappings(resource.getPlatformMappings());
+		dto.setState(resource.getState());
 		return dto;
 	}
 	

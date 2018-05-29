@@ -24,10 +24,11 @@ import java.util.Map;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelInfo extends AbstractModel {
-
+	
 	protected String author;
 	protected Date creationDate;
 	protected boolean hasImage = false;
+	protected String state;
 		
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 	
@@ -78,6 +79,14 @@ public class ModelInfo extends AbstractModel {
 
 	public void setHasImage(boolean hasImage) {
 		this.hasImage = hasImage;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	@Override

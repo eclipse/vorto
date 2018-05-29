@@ -15,7 +15,7 @@
 package org.eclipse.vorto.repository.web.config;
 
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.web.security.IsModelAuthorEvaluator;
+import org.eclipse.vorto.repository.web.security.HasPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
@@ -42,7 +42,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = 
           new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new IsModelAuthorEvaluator(repository));
+        expressionHandler.setPermissionEvaluator(new HasPermissionEvaluator(repository));
         return expressionHandler;
     }
 }

@@ -278,6 +278,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.model = null;
     $scope.platformGeneratorMatrix = null;
     $scope.platformDemoGeneratorMatrix = null;
+    $scope.workflowActions = [];
     $scope.chosenFile = false;
 
     $scope.uploadImage = function () {
@@ -332,10 +333,12 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
             $scope.content = result;
+        }).error(function(data, status, headers, config) {
+            $scope.error = data.message;
         });
     };
 
-    $scope.getPlatformGenerators = function () {
+     $scope.getPlatformGenerators = function () {
         $http.get('./rest/generation-router/platform')
         .success(function(result){
         	var productionGenerators = $scope.filterByTag(result,"production");
@@ -471,6 +474,67 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     		}
   		}
       });
+    };
+    
+    $scope.getWorkflowActions = function() {
+    	$http.get('./rest/workflows/actions/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+	        .success(function(result){
+	            $scope.workflowActions = result;
+	        });
+    };
+    
+   $scope.getWorkflowActions();
+   
+   $scope.openWorkflowActionDialog = function(action) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope, model) {
+        	$scope.action = action;
+        	$scope.actionModel = null;
+        	$scope.model = model;
+			 $scope.takeWorkflowAction = function() {
+		    	$http.put('./rest/workflows/actions/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.action)
+			        .success(function(result){
+			            modalInstance.close();
+			        });
+		    };
+		    
+		    $scope.getModel = function() {
+		    	if ($scope.action != 'claim') {
+			    	$http.get('./rest/workflows/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+				        .success(function(result){
+				        	for(var i = 0; i < result.actions.length;i++) {
+				        		if (result.actions[i].name === $scope.action) {
+				        			$scope.actionModel = result.actions[i];
+				        			return;
+				        		}
+				        	}
+		        	});
+	        	}
+		    };
+		    
+		    $scope.getModel();
+		    
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "workflowActionDialog.html",
+        size: "lg",
+        resolve: {
+    		action: function () {
+      			return action;
+    		},
+    		model: function() {
+    			return $scope.model;
+    		}
+  		}
+      });
+      
+      modalInstance.result.then(
+				function() {
+				    $window.location.reload();
+				});
     };
 
 }]);

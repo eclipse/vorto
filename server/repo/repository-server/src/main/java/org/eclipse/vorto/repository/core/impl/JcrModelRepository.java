@@ -129,6 +129,9 @@ public class JcrModelRepository implements IModelRepository {
 		resource.setDescription(node.getProperty("vorto:description").getString());
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
+		if (node.hasProperty("vorto:state")) {
+			resource.setState(node.getProperty("vorto:state").getString());
+		} 
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
@@ -462,7 +465,8 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
 					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
 			fileNode.setProperty("vorto:author", model.getAuthor());
-
+			fileNode.setProperty("vorto:state", model.getState());
+			
 			session.save();
 
 			return model;

@@ -19,19 +19,21 @@ import java.io.Serializable;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
 
-public class IsModelAuthorEvaluator implements PermissionEvaluator {
+public class HasPermissionEvaluator implements PermissionEvaluator {
 
 	private IModelRepository repository;
 
-	public IsModelAuthorEvaluator(IModelRepository repository) {
+	public HasPermissionEvaluator(IModelRepository repository) {
 		this.repository = repository;
 	}
 
-	public IsModelAuthorEvaluator() {
+	public HasPermissionEvaluator() {
 	}
 
 	@Override
@@ -41,7 +43,14 @@ public class IsModelAuthorEvaluator implements PermissionEvaluator {
 		if (targetDomainObject instanceof ModelId) {
 			ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
 			if (modelInfo != null) {
-				return modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getHashedUsername());
+				if ("model:delete".equalsIgnoreCase((String)permission)) {
+					return modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getHashedUsername());
+				} else if ("model:get".equalsIgnoreCase((String)permission)) {
+					IUserContext user = UserContext.user(authentication.getName());
+					return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName()) || 
+						   modelInfo.getAuthor().equals(user.getHashedUsername());
+				}
+				
 			}
 		} else if (targetDomainObject instanceof String) {
 			return callerId.equalsIgnoreCase((String)targetDomainObject);

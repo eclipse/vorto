@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.web;
 
 import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -25,6 +26,12 @@ public abstract class AbstractRepositoryController {
 	@ResponseStatus(value=HttpStatus.NOT_FOUND, reason = "Model not found.")  // 404
     @ExceptionHandler(ModelNotFoundException.class)
     public void NotFound(final ModelNotFoundException ex){
+		// do logging
+    }
+	
+	@ResponseStatus(value=HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model")  // 403
+    @ExceptionHandler(NotAuthorizedException.class)
+    public void unAuthorized(final NotAuthorizedException ex){
 		// do logging
     }
 	

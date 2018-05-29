@@ -120,4 +120,8 @@ public class User {
 		return "User [id=" + id + ", username=" + username + ", role=" + role + ", dateCreated=" + dateCreated
 				+ ", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp + ", lastUpdated=" + lastUpdated + "]";
 	}
+
+	public boolean isAdmin() {
+		return this.role == Role.ADMIN;
+	}
 }

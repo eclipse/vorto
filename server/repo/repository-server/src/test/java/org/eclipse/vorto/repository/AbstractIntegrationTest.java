@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
@@ -51,23 +52,22 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-	protected void checkinModel(String modelName) {
-		checkinModel(modelName, UserContext.user(getCallerId()));
+	protected ModelInfo checkinModel(String modelName) {
+		return checkinModel(modelName, UserContext.user(getCallerId()));
 	}
 	
 	protected String getCallerId() {
 		return "alex";
 	}
 	
-	protected void checkinModel(String modelName, IUserContext userContext) {
+	protected ModelInfo checkinModel(String modelName, IUserContext userContext) {
 		try {
 			UploadModelResult uploadResult = modelRepository.upload(
 					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream()),
 					modelName, userContext);
 			Assert.isTrue(uploadResult.isValid(), uploadResult.getErrorMessage());
 			
-			modelRepository.checkin(uploadResult.getHandleId(), userContext);
-			modelRepository.search("*");
+			return modelRepository.checkin(uploadResult.getHandleId(), userContext);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {

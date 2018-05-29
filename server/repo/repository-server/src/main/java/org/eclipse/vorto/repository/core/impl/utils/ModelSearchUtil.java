@@ -62,9 +62,11 @@ public class ModelSearchUtil {
 	public static final String SEARCH_FILTER_KEY_VERSION = "version:";
 	
 	public static final String SEARCH_FILTER_KEY_AUTHOR = "author:";
+	
+	public static final String SEARCH_FILTER_KEY_STATE = "state:";
 
 	public static final String[] SEARCH_FILTER_KEY_LIST = { SEARCH_FILTER_KEY_NAME, SEARCH_FILTER_KEY_NAMESPACE,
-			SEARCH_FILTER_KEY_VERSION, SEARCH_FILTER_KEY_AUTHOR};
+			SEARCH_FILTER_KEY_VERSION, SEARCH_FILTER_KEY_AUTHOR, SEARCH_FILTER_KEY_STATE};
 
 	public final String VORTO_DISPLAYNAME = "vorto:displayname";
 
@@ -73,6 +75,8 @@ public class ModelSearchUtil {
 	public final String VORTO_VERSION = "vorto:version";
 	
 	public final String VORTO_AUTHOR = "vorto:author";
+	
+	public final String VORTO_STATE = "vorto:state";
 
 	public final String VORTO_TYPE = "vorto:type";
 
@@ -105,6 +109,7 @@ public class ModelSearchUtil {
 		map.put(SEARCH_FILTER_KEY_NAMESPACE, VORTO_NAMESPACE);
 		map.put(SEARCH_FILTER_KEY_VERSION, VORTO_VERSION);
 		map.put(SEARCH_FILTER_KEY_AUTHOR, VORTO_AUTHOR);
+		map.put(SEARCH_FILTER_KEY_STATE, VORTO_STATE);
 	}
 
 	/**

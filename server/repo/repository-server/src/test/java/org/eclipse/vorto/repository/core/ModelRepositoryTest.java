@@ -125,8 +125,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 		when(userRepository.findAll()).thenReturn(recipients);
 
-//		verify(notificationService);
-
 		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
 
 		Thread.sleep(1000);
@@ -203,6 +201,15 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		checkinModel("Switcher.fbmodel");
 		checkinModel("HueLightStrips.infomodel");
 		assertEquals(4, modelRepository.search("*").size());
+	}
+	
+	@Test
+	public void testSearchAllModelsInDraft() {
+		checkinModel("Color.type");
+		checkinModel("Colorlight.fbmodel");
+		checkinModel("Switcher.fbmodel");
+		checkinModel("HueLightStrips.infomodel");
+		assertEquals(4, modelRepository.search("draft").size());
 	}
 
 	@Test
@@ -409,4 +416,16 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
 		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());
 	}
+	
+	@Test
+	public void testStateSearch() {
+		IUserContext erle = UserContext.user("erle");
+		IUserContext admin = UserContext.user("admin");
+		checkinModel("Color.type", erle);
+		checkinModel("Colorlight.fbmodel", erle);
+		checkinModel("Switcher.fbmodel", admin);
+		
+		assertEquals(3, modelRepository.search("state:IN_DRAFT").size());
+	}
+
 }
