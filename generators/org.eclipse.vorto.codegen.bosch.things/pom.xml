@@ -7,10 +7,10 @@
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>org.eclipse.vorto.codegen.bosch</artifactId>
+	<artifactId>org.eclipse.vorto.codegen.bosch.things</artifactId>
 	<packaging>eclipse-plugin</packaging>
 
-	<name>Bosch IoT Suite Generator</name>
+	<name>Bosch IoT Suite Things Generator</name>
 
 	<build>
 		<plugins>
