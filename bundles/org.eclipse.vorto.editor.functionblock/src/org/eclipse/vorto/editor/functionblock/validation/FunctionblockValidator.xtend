@@ -505,4 +505,5 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 			validateOverriddenOperations(parentFb.operations, baseFb.operations)
 		}
 	}
+
 }
