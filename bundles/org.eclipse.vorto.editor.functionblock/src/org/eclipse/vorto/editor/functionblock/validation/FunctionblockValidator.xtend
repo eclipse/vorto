@@ -23,6 +23,7 @@ import org.eclipse.emf.ecore.EStructuralFeature
 import org.eclipse.vorto.core.api.model.datatype.Constraint
 import org.eclipse.vorto.core.api.model.datatype.Entity
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
+import org.eclipse.vorto.core.api.model.datatype.Property
 import org.eclipse.vorto.core.api.model.datatype.Type
 import org.eclipse.vorto.core.api.model.functionblock.Configuration
 import org.eclipse.vorto.core.api.model.functionblock.Event
@@ -42,6 +43,18 @@ import org.eclipse.vorto.editor.datatype.validation.DatatypeSystemMessage
 import org.eclipse.vorto.editor.datatype.validation.PropertyConstraintMappingValidation
 import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils
 import org.eclipse.xtext.validation.Check
+import org.eclipse.emf.common.util.EList
+import org.eclipse.vorto.core.api.model.datatype.PropertyType
+import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType
+import org.eclipse.vorto.core.api.model.datatype.DatatypePackage
+import org.eclipse.vorto.core.api.model.functionblock.Param
+import org.eclipse.emf.ecore.util.EcoreUtil
+import java.util.ArrayList
+import org.eclipse.vorto.core.api.model.datatype.ConstraintIntervalType
+import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute
+import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute
 
 /**
  * Custom validation rules. 
@@ -227,7 +240,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	
 	@Check
 	def checkCircularRefInSuperType(FunctionblockModel functionblock) {
-		if (functionblock.superType != null) {
+		if (functionblock.superType !== null) {
 			try {
 				if (ValidatorUtils.hasCircularReference(functionblock, functionblock.superType, FbValidatorUtils.modelToChildrenSupplierFunction)) {
 					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, functionblock, FunctionblockPackage.Literals.FUNCTIONBLOCK_MODEL__SUPER_TYPE);
@@ -241,7 +254,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	@Check
 	def checkRefParamIsImported(RefParam refParam) {
 		val topParent = ValidatorUtils.getParentOfType(refParam, FunctionblockModel) as FunctionblockModel
-		if (topParent != null && !ValidatorUtils.isTypeInReferences(refParam.type, topParent.references)) {
+		if (topParent !== null && !ValidatorUtils.isTypeInReferences(refParam.type, topParent.references)) {
 			error(SystemMessage.ERROR_REF_PARAM_NOT_IMPORTED, refParam, FunctionblockPackage.Literals.REF_PARAM__TYPE);
 		}
 	}
@@ -249,7 +262,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	@Check
 	def checkReturnTypeIsImported(ReturnObjectType returnType) {
 		val topParent = ValidatorUtils.getParentOfType(returnType, FunctionblockModel) as FunctionblockModel
-		if (topParent != null && !ValidatorUtils.isTypeInReferences(returnType.returnType, topParent.references)) {
+		if (topParent !== null && !ValidatorUtils.isTypeInReferences(returnType.returnType, topParent.references)) {
 			error(SystemMessage.ERROR_OBJECT_RETURN_TYPE_NOT_IMPORTED, returnType, FunctionblockPackage.Literals.RETURN_OBJECT_TYPE__RETURN_TYPE);
 		}
 	}
@@ -260,6 +273,237 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	
 	def getHelper(){
 		this.helper
+	}
+
+	def String getPropertyName(PropertyType propertyType) {
+		if (propertyType instanceof PrimitivePropertyType) {
+			return propertyType.type.literal
+		} else if (propertyType instanceof DictionaryPropertyType) {
+			return "dict" + getPropertyName(propertyType.keyType) + getPropertyName(propertyType.valueType)
+		} else if (propertyType instanceof ObjectPropertyType) {
+			return propertyType.getType().name
+		}
+	}
+
+	def validateOvewrittenPropertyAttr(Property baseProperty, Property extProperty) {
+		for (propAttr : extProperty.propertyAttributes) {
+			for (basePropAttr : baseProperty.propertyAttributes) {
+				if (propAttr instanceof BooleanPropertyAttribute && basePropAttr instanceof BooleanPropertyAttribute) {
+					if ((propAttr as BooleanPropertyAttribute).getType().equals(
+						(basePropAttr as BooleanPropertyAttribute).getType())) {
+						error(SystemMessage.ERROR_OVERWRITTEN_PROPERTY_ATTRIBUTE_TYPE, extProperty,
+							DatatypePackage.Literals.PROPERTY__PROPERTY_ATTRIBUTES)
+					}
+				} else if (propAttr instanceof EnumLiteralPropertyAttribute &&
+					basePropAttr instanceof EnumLiteralPropertyAttribute) {
+					if ((propAttr as EnumLiteralPropertyAttribute).getType().getName().equals(
+						(basePropAttr as EnumLiteralPropertyAttribute).getType().getName())) {
+						error(SystemMessage.ERROR_OVERWRITTEN_PROPERTY_ATTRIBUTE_TYPE, extProperty,
+							DatatypePackage.Literals.PROPERTY__PROPERTY_ATTRIBUTES)
+					}
+				}
+			}
+		}
+	}
+
+	def ArrayList<String> validateOverriddenConstraints(Property baseProperty, Property extProperty) {
+		var validatedConstraints = new ArrayList<String>()
+		if (baseProperty.constraintRule === null) {
+			return validatedConstraints
+		}
+		var constraintsMap = baseProperty.constraintRule.constraints.toMap[type].mapValues[it]
+		for (costraint : extProperty.constraintRule.constraints) {
+			var constraintId = baseProperty.name + costraint.type.getName
+			if (!validatedConstraints.contains(constraintId)) {
+				validatedConstraints.add(constraintId)
+				var baseConstraint = constraintsMap.get(costraint.type)
+				if (baseConstraint !== null) {
+					if (costraint.type == ConstraintIntervalType.MIN) {
+						if (Double.parseDouble(costraint.constraintValues) <
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_MIN_TOO_SMALL, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.MAX) {
+						if (Double.parseDouble(costraint.constraintValues) >
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_MAX_TOO_BIG, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.STRLEN) {
+						if (Double.parseDouble(costraint.constraintValues) >
+							Double.parseDouble(baseConstraint.constraintValues)) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_STRLEN, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else if (costraint.type == ConstraintIntervalType.NULLABLE) {
+						if (costraint.constraintValues.equals("true") &&
+							baseConstraint.constraintValues.equals("false")) {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_NULLABLE, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						} else {
+							error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED, costraint,
+								DatatypePackage.Literals.CONSTRAINT__TYPE)
+						}
+					} else {
+						error(SystemMessage.ERROR_OVERWRITTEN_CONSTRAINT_ALREADY_DEFINED, costraint,
+							DatatypePackage.Literals.CONSTRAINT__TYPE)
+					}
+				}
+			}
+		}
+		return validatedConstraints
+	}
+
+	def ArrayList<String> validateOverriddenProperties(EList<Property> properties, EList<Property> extProperties,
+		ArrayList<String> validatedConstraints) {
+		var propertiesMap = properties.toMap[name].mapValues[it]
+
+		var equalHelper = new EcoreUtil.EqualityHelper()
+		for (property : extProperties) {
+			var baseProperty = propertiesMap.get(property.name)
+			if (baseProperty !== null) {
+				if (!equalHelper.equals(property.presence, baseProperty.presence)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, property,
+						DatatypePackage.Literals.PROPERTY__PRESENCE)
+				}
+				if (property.multiplicity != baseProperty.multiplicity) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_MULTIPLICITY, property,
+						DatatypePackage.Literals.PROPERTY__MULTIPLICITY)
+				}
+				if (!equalHelper.equals(property.type, baseProperty.type)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_TYPE, property, DatatypePackage.Literals.PROPERTY__TYPE)
+				}
+				validateOvewrittenPropertyAttr(baseProperty, property)
+				validatedConstraints.addAll(validateOverriddenConstraints(baseProperty, property))
+			}
+		}
+		return validatedConstraints
+	}
+
+	def equalsParamList(List<Param> list1, List<Param> list2) {
+		var size = list1.size();
+		if (size != list2.size()) {
+			return false;
+		}
+		var equalHelper = new EcoreUtil.EqualityHelper();
+		for (var i = 0; i < size; i++) {
+			if (!equalHelper.equals(list1.get(i), list2.get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	def validateOverriddenOperations(EList<Operation> operations, EList<Operation> extOperations) {
+		var operationsMap = operations.toMap[name].mapValues[it]
+		var equalHelper = new EcoreUtil.EqualityHelper()
+
+		for (operation : extOperations) {
+			var baseOperation = operationsMap.get(operation.name)
+			if (baseOperation !== null) {
+				if (!equalHelper.equals(operation.presence, baseOperation.presence)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, operation,
+						FunctionblockPackage.Literals.OPERATION__PRESENCE)
+				}
+				if (operation.breakable != baseOperation.breakable) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_BREAKABLE, operation,
+						FunctionblockPackage.Literals.OPERATION__BREAKABLE)
+				}
+				if (!equalHelper.equals(operation.presence, baseOperation.presence)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_PRESENCE, operation,
+						FunctionblockPackage.Literals.OPERATION__PRESENCE)
+				}
+				if (!equalsParamList(operation.params, baseOperation.params)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_PARMS, operation,
+						FunctionblockPackage.Literals.OPERATION__PARAMS)
+				}
+				if (!equalHelper.equals(operation.returnType, baseOperation.returnType)) {
+					error(SystemMessage.ERROR_INCOMPATIBLE_RETURN_TYPE, operation,
+						FunctionblockPackage.Literals.OPERATION__RETURN_TYPE)
+				}
+			}
+		}
+	}
+
+	def validateOverriddenEvents(EList<Event> events, EList<Event> extEvents) {
+		var validatedConstraints = new ArrayList<String>()
+		var eventsMap = events.toMap[name].mapValues[it]
+		for (event : extEvents) {
+			var baseEvent = eventsMap.get(event.name)
+			if (baseEvent !== null) {
+				validatedConstraints = validateOverriddenProperties(baseEvent.properties, event.properties,
+					validatedConstraints)
+			}
+		}
+	}
+
+	def getParentFunctionBlocks(FunctionblockModel baseFunctionblockModel) {
+		var functionBlocks = new ArrayList<FunctionBlock>()
+		var lastFunctionblockModel = baseFunctionblockModel
+		while (lastFunctionblockModel.superType !== null) {
+			if (lastFunctionblockModel === lastFunctionblockModel.superType) {
+				return functionBlocks
+			}
+			lastFunctionblockModel = lastFunctionblockModel.superType
+			functionBlocks.add(lastFunctionblockModel.functionblock)
+		}
+		return functionBlocks
+	}
+
+	@Check
+	def checkConfigurationOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
+		var baseFb = baseFunctionblockModel.functionblock;
+		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
+		for (parentFb : parentFunctionBlocks) {
+			if (parentFb.configuration !== null && baseFb.configuration !== null) {
+				validateOverriddenProperties(parentFb.configuration.properties, baseFb.configuration.properties,
+					validatedConstraints)
+			}
+		}
+	}
+
+	@Check
+	def checkStatusOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
+		var baseFb = baseFunctionblockModel.functionblock;
+		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
+		for (parentFb : parentFunctionBlocks) {
+			if (parentFb.status !== null && baseFb.status !== null) {
+				validateOverriddenProperties(parentFb.status.properties, baseFb.status.properties, validatedConstraints)
+			}
+		}
+	}
+
+	@Check
+	def checkFaultOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var validatedConstraints = new ArrayList<String>()
+		var baseFb = baseFunctionblockModel.functionblock;
+		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
+		for (parentFb : parentFunctionBlocks) {
+			if (parentFb.fault !== null && baseFb.fault !== null) {
+				validateOverriddenProperties(parentFb.fault.properties, baseFb.fault.properties, validatedConstraints)
+			}
+		}
+	}
+
+	@Check
+	def checkEventsOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var baseFb = baseFunctionblockModel.functionblock;
+		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
+		for (parentFb : parentFunctionBlocks) {
+			validateOverriddenEvents(parentFb.events, baseFb.events)
+		}
+	}
+
+	@Check
+	def checkOperationsOverriddenProperties(FunctionblockModel baseFunctionblockModel) {
+		var baseFb = baseFunctionblockModel.functionblock;
+		var parentFunctionBlocks = getParentFunctionBlocks(baseFunctionblockModel)
+		for (parentFb : parentFunctionBlocks) {
+			validateOverriddenOperations(parentFb.operations, baseFb.operations)
+		}
 	}
 
 }
