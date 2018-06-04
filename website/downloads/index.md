@@ -1,4 +1,0 @@
----
-layout: downloads
-title: Downloads
----
