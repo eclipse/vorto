@@ -1,6 +1,7 @@
 ---
 title: "Downloads"
 date: 2018-05-09T10:58:37+08:00
+menu: "main"
 weight: 40
 ---
 

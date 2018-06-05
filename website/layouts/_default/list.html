@@ -1,5 +1,10 @@
 {{ partial "head" . }}
 
+{{ if (eq (trim .Site.Params.provider " " | lower) "github") | and (isset .Site.Params "repo_url") }}
+  {{ $repo_id := replace .Site.Params.repo_url "https://github.com/" ""}}
+  {{ .Scratch.Set "repo_id" $repo_id }}
+{{ end }}
+
 <div class="backdrop">
 	<div class="backdrop-paper"></div>
 </div>
@@ -19,7 +24,7 @@
 
 	<article class="article">
 		<div class="wrapper">
-			<h1>Pages in {{ .Title | singularize }}</h1>
+			<h1>Pages in {{ .Title }}</h1>
 
 			{{ range .Data.Pages }}
 			<a href="{{ .Permalink }}" title="{{ .Title }}">
@@ -27,12 +32,12 @@
 			</a>
 
 			<br>
-			{{ printf "%s" .Summary | markdownify }}
+			{{ printf "%s" .Summary | markdownify }} <br><a href="{{ .Permalink }}">[...]</a>
 
 			<hr>
 			{{ end }}
 
-			{{ partial "copyright.html" . }}
+      {{ partial "copyright.html" . }}
 		</div>
 	</article>
 
