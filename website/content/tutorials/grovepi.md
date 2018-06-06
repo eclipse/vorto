@@ -1,6 +1,6 @@
 ---
-date: 2016-03-09T20:08:11+01:00
-title: Connecting a GrovePi to Hono
+date: 2018-03-09T20:08:11+01:00
+title: Connecting a GrovePi to Eclipse Hono
 weight: 32
 ---
 
@@ -8,7 +8,7 @@ This tutorial explains how to generate a simple Python application for you Grove
 
 <!--more-->
 
-### Prerequisites
+## Prerequisites
 
 *   [Python 3.x](https://www.python.org/)
     
@@ -164,5 +164,6 @@ and
 
 - Follow [Consuming Messages from Java for Hono] (https://www.eclipse.org/hono/dev-guide/java_client_consumer/) to receive the device data in Eclipse Hono.
 
+## What's next? 
 
--------------
+- [Connect an ESP8266 to Eclipse Hono]({{< ref "tutorials/arduino.md" >}})

@@ -1,7 +1,7 @@
 ---
 date: 2016-03-09T20:08:11+01:00
-title: Connecting a ESP8266 (Arduino) to Hono
-weight: 35
+title: Connecting an ESP8266 to Eclipse Hono
+weight: 31
 ---
 
 This tutorial explains how to generate an Arduino sketch for a given Information Model and send the device data to Eclipse Hono via MQTT.
@@ -119,4 +119,6 @@ openssl x509 -noout -fingerprint -sha1 -inform pem -in [certificate-file.crt]
 
 * Follow [Consuming Messages from Java for Hono] (https://www.eclipse.org/hono/dev-guide/java_client_consumer/) to receive the device data from Eclipse Hono.
 
--------------
+## What's next? 
+
+- [Connect a GrovePi to Eclipse Hono]({{< ref "tutorials/grovepi.md" >}})

@@ -6,7 +6,7 @@
 
 [Vorto](http://www.eclipse.org/vorto) provides an **Eclipse Toolset** that lets you describe the device functionality and characteristics as **Information Models**. These models are managed in a [Vorto Repository](http://vorto.eclipse.org). [Code generators](http://vorto.eclipse.org/#/generators) convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to an IoT Backend. In order to process these messages in the IoT backend, Vorto offers a set of **technical components**, for example parsers and validators. For devices sending arbitrary, non-Vorto, messages to an IoT backend, the **Vorto Mapping Engine** helps you to execute device message transformations to IoT Platform specific meta-models, e.g. Eclipse Ditto or AWS IoT Shadow.  
 
-Learn more about how to use Vorto in our [tutorial section](tutorials/Readme.md). 
+Learn more about how to use Vorto in the [tutorial section](https://www.eclipse.org/vorto/tutorials/). 
  
  <img src="./tutorials/images/vorto_overview.png" width="90%"/>
 
@@ -85,14 +85,14 @@ Here is a list of currently supported [Vorto Generators](http://vorto.eclipse.or
 
 Access models and generate code via the [Repository Client API](server/repo/repository-java-client/Readme.md)
 
-## Data Mapping API
+## Payload Mapping API
 
-Learn more about, how to map arbitrary device data, such as JSON or BLE GATT, to Vorto compliant Eclipse Ditto payload. [Data Mapping API](server/repo/repository-mapping/Readme.md)  
+Learn more about, how to map arbitrary device payload, such as JSON or BLE GATT, to standardized data, that is described Vorto Information Models. [Payload Mapping Documentation](https://www.eclipse.org/vorto/documentation/mappingengine)  
 
 # Documentation
 
-- Read our [tutorials](tutorials/Readme.md)
-- Read our [Vorto Documentation](http://www.eclipse.org/vorto/documentation/overview/introduction.html)
+- Read our [tutorials](https://www.eclipse.org/vorto/tutorials/)
+- Read our [Vorto Documentation](https://www.eclipse.org/vorto/documentation)
 
 # Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

@@ -30,6 +30,10 @@ div.honologo {
   margin-right: auto;
 }
 
+.palette-primary-blue .footer, .palette-primary-blue .header {
+	background: #3a5a82
+}
+
 div.home {
   display: block;
   max-width: 80%;

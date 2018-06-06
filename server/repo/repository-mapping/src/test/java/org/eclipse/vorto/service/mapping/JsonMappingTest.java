@@ -138,6 +138,22 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 	}
+	
+	@Test(expected = MappingException.class)
+	public void testMappingWithMalicousScriptUsingJavaImports() throws Exception {
+
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+
+			@Override
+			protected String getMaliciousFunctionBody() {
+				return "load('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js')";
+			}
+		}).buildDittoMapper();
+
+		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+
+		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+	}
 
 	@Test
 	public void testMapWithSimpleCondition() throws Exception {
