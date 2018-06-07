@@ -66,7 +66,7 @@ Let's take this example and reduce the complexity in the example by merely creat
 		using com.ipso.smartobjects.Voltage;0.0.1
 	
 		functionblockmapping PayloadVoltageMapping {
-			targetplatform aws-ipso
+			targetplatform aws_ipso
 	
 			from Voltage.status.sensor_value to source with {xpath: "number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"}
 			from Voltage.status.sensor_units to source with {xpath: "string:substring(batteryVoltage,string:length(batteryVoltage)-2)"}
@@ -86,7 +86,7 @@ You may have spotted, that we are using a set of different xpath functions to de
 		using devices.aws.button.mapping.BatteryVoltagePayloadMapping;1.0.0
 		
 		infomodelmapping AWSIoTButtonPayloadMapping {
-			targetplatform aws-ipso
+			targetplatform aws_ipso
 			from AWSIoTButton.functionblocks.batteryVoltage to reference BatteryVoltagePayloadMapping
 		}
 
@@ -118,7 +118,7 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 
 		IMappingSpecification spec = MappingSpecificationBuilder.create()
 		.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
-		.targetPlatformKey("aws-ipso")
+		.targetPlatformKey("aws_ipso")
 		.build();
 
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(spec).buildDittoMapper();

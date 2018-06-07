@@ -10,7 +10,7 @@ The payload mapping feature in Eclipse Vorto can be used to transform arbitrary 
 
 ## Motivation
 
-IoT Devices may not always send their data to the cloud in the structure and protocol that is required by the IoT platform that the devices are integrating with, e.g. AWS IoT, Azure IoT or Eclipse IoT. The Eclipse Vorto Mapping feature is a light-weight Java library that is able to process formally defined Vorto Mapping Specifications to transform arbitrary device payload (Binary, JSON, XML, etc) to standardized data structures complying to Vorto Function Blocks. 
+IoT Devices may not always send their data to the cloud in the structure and protocol that is required by the IoT platform that the devices are integrating with, e.g. AWS IoT, Azure IoT or Eclipse IoT. The Eclipse Vorto Mapping feature is a light-weight Java library that is able to process Vorto Mapping Specifications to transform arbitrary device payload (Binary, JSON, XML, etc) to standardized data structures complying to Vorto Function Blocks. 
 
 An example standardized target data structure could look like this:
 
@@ -34,13 +34,24 @@ However, the device might send the data in binary hex format, like that:
 
 ## Vorto Payload Mapping Engine
 
+The Vorto Payload Mapping Engine is a very easy and light-weight component to convert device payload in different formats to a normalized and standardized Vorto Function Block representation which can then be converted further to specific IoT platform data structures. 
+
 ![Vorto Mapping Engine Overview](/images/documentation/payloadmapping.png)
 
-To get started, please take a look at the [Payload Mapping Tutorial]({{< ref "tutorials/payloadmapping.md" >}})
+It supports Eclipse Ditto as the target platform mapping out-of-the-box. A Data Mapping API is available to implement the integration with other IoT platforms.
+
+[Get started]({{< relref "tutorials/payloadmapping.md" >}}) of using the Vorto Payload Mapping Engine in a concrete example. 
+
 
 ### Built-in Mapping Converter functions
 
-The Vorto Mapping Engine offers a set of built-in converter functions, that you can use in your mapping rules. Please refer to the [Converter Functions](https://github.com/eclipse/vorto/blob/0.10.0.M3/server/repo/repository-mapping/docs/built_in_converters.md) documentation.
+If you need to do value conversions from the device payload to the function block property value, the Vorto Mapping Engine offers a set of available built-in converter functions to choose from.
+
+Here is an example that converts a string value to a float: 
+
+	from Accelerometer.status.x_value to source with {xpath:"number:toFloat(/stringproperty)"}
+
+Please refer to the complete [Converter Functions documentation](https://github.com/eclipse/vorto/blob/0.10.0.M3/server/repo/repository-mapping/docs/built_in_converters.md) for more information.
 
 #### Example
 
@@ -55,16 +66,17 @@ In the following example, a [Cayenne Low Power Payload (LPP)](https://github.com
 		using com.ipso.smartobjects.Accelerometer;0.0.1
 		
 		functionblockmapping AccelerometerPayloadMapping {
-			targetplatform lora-cayenne
+			targetplatform lora_cayenne
 			from Accelerometer to functions with {convertValue:"function convertValue(value) { return value / 1000;}"}
 			from Accelerometer.status.x_value to source with {xpath:"accelerometer:convertValue( endian:swapShort(conversion:byteArrayToShort(binaryString:parseHexBinary(/payloadHex),17,0,0,2)))"}
 		} 
 
 ### Create a custom Javascript Converter function
 
+The Vorto Mapping engine uses [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html) as a Javascript engine to execute custom converter functions.
+
 #### Security
 
-The Vorto Payload Mapping engine uses [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html) as a Javascript engine to execute custom converter functions.
 For security reasons, the following restrictions apply when processing these converters:
 
 * access to Java packages and classes is not possible
@@ -86,7 +98,7 @@ In the following example, a custom (Javascript) converter is defined in a Functi
 		using com.ipso.smartobjects.Push_button;0.0.1
 		
 		functionblockmapping ButtonPayloadMapping {
-			targetplatform aws-ipso
+			targetplatform aws_ipso
 
 			// Definition of Converter functions which can be used from within the function block mapping
 			from Push_button to functions with 
@@ -95,6 +107,23 @@ In the following example, a custom (Javascript) converter is defined in a Functi
 			// Usage of the converter function in the mapping rule expression
 			from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
 		}
+
+
+### Mapping Conditions
+
+If you want to specify a condition, when mapping rules should be applied, you can do this easily with mapping conditions.
+
+Here is an example of using conditions to map to either temperature or illuminance based on the device payload header:
+
+Function Block Temperature Mapping
+
+	...
+	from Temperature.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval("/header/type", this) == 'T'"}
+
+Function Block Illuminance Mapping
+
+	...
+	from Illuminance.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval("/header/type", this) == 'I'"}
 
 ### Useful Links
 
