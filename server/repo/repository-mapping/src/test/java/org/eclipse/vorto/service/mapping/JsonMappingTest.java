@@ -300,7 +300,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 				.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
-				.targetPlatformKey("devices_aws_button_AWSIoTButton_1_0_0")
+				.targetPlatformKey("aws_ipso")
 				.remoteClient(this.getModelRepository())
 				.build();
 		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
