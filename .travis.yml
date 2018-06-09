@@ -21,7 +21,7 @@ before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSiz
 install: true
 script:
   - mvn clean install -f pom.xml
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -f server/pom.xml
+
 cache:
   directories:
     - '$HOME/.m2/repository'
@@ -30,8 +30,8 @@ cache:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f server/repo/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./server/repo/repository-server;
-    docker build -f server/generators/org.eclipse.vorto.codegen.service.gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./server/generators/org.eclipse.vorto.codegen.service.gateway;
+    docker build -f repository/repository-web/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-web;
+    docker build -f repository/generator-gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./repository/generator-gateway;
     docker push eclipsevorto/vorto-repo;
     docker push eclipsevorto/vorto-generator-gateway;
     fi
