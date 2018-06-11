@@ -18,7 +18,7 @@ Information Model DSL import function block model DSL.
         'infomodel' id '{'
         'displayname' string
         ('description' string)?
-        'category' category
+        ('category' category)?
         'functionblocks' '{'
             (functionblockProperty)*
         '}'
@@ -62,22 +62,10 @@ Information Model DSL import function block model DSL.
     <td>Philips Hue</td>
   </tr>
   <tr>
-    <td>description</td>
+    <td>namespace</td>
     <td>Y</td>
-    <td>Short description</td>
-    <td>Light Strip</td>
-  </tr>
-  <tr>
-    <td>vendor</td>
-    <td>Y</td>
-    <td>Vendor Identifier </td>
-    <td>www.philips.com</td>
-  </tr>
-  <tr>
-    <td>category</td>
-    <td>Y</td>
-    <td>Device Category</td>
-    <td>Light</td>
+    <td>Namespace Identifier </td>
+    <td>com.bosch</td>
   </tr>
   <tr>
     <td>version</td>
@@ -86,10 +74,22 @@ Information Model DSL import function block model DSL.
     <td>2.0.0</td>
   </tr>
   <tr>
-    <td>functionblocks</td>
+    <td>description</td>
+    <td>Y</td>
+    <td>Short description</td>
+    <td>Light Strip</td>
+  </tr>
+  <tr>
+    <td>category</td>
     <td>N</td>
-    <td>Composition of Function blocks</td>
-    <td>ColorLight, Switch</td>
+    <td>Custom tag to categorize the model</td>
+    <td>Light, Smarthome, PayloadMapping</td>
+  </tr>
+  <tr>
+    <td>functionblocks</td>
+    <td>Y</td>
+    <td>References the Function Blocks that define the capabilities of the device</td>
+    <td>Gyrometer, Distance</td>
   </tr>
   </tbody>
 </table>

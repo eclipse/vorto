@@ -15,7 +15,7 @@ The following code represents the Function Block Model DSL syntax. Function bloc
         'version' version
         'displayname' displayname
         ('description' description)?
-        'category' category
+        ('category' category)?
         (modelReference)*
         'functionblock' id ('extends' functionblockmodel)? '{'
             functionblock
@@ -104,22 +104,24 @@ Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-dsl-s
 
 	namespace com.mycompany.fb
 	version 1.0.0
+	description "A lamp makes the environment bright"  
     functionblock Lamp {  
-      displayname "Lamp"  
-      description "A lamp makes the environment bright"  
-      category demo  
+        
       configuration{  
         mandatory blinking as boolean "if the lamp is currently blinking or not"  
         mandatory on as boolean "if the lamp is currently switched on"  
       }  
+
       status {
         mandatory powerConsumption as int
           "the amount of power the lamp is consuming" 
       }
+
       fault{  
       	mandatory bulbDefect as boolean
         	"true if the light bulb of the lamp is defect"  
       }  
+
       operations{  
         blink(blinkType as int <MIN 0, MAX 5> "The type of blink") "sets the blinking type for the lamp"  
         getPowerConsumption() returns int <MIN 0, MAX 5> "gets the amount of power being consumed by the lamp"  
@@ -137,8 +139,8 @@ Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-dsl-s
 
 A `functionblock` element describes the properties and behavior of a function block. A `functionblock` element contains
 
-- General metadata parameters (`displayname, description, vendor, category, version`).
-- Property elements (`configuration, status, fault`).
+- General metadata parameters (`displayname, description, namespace, category, version`).
+- Property elements (`configuration, status, fault, events`).
 - An `operations` element.
 
 **Syntax**
@@ -155,66 +157,99 @@ The following table describes the parameters and elements of a `functionblock`. 
     <th>Parameter/Element</th>
     <th>Mandatory</th>
     <th>Description</th>
-    <th>Type</th>
     <th>Examples</th>
   </tr>
   </thead>
   <tbody>
   <tr>
-    <td border="2">displayname</td>
-    <td border="2"></td>
-    <td border="2">A descriptive and user friendly name of the function block.</td>
-    <td border="2">String enclosed in quotation marks</td>
-    <td border="2">displayname "Vending Machine"</td>
+    <td>Name</td>
+    <td>Y</td>
+    <td>The name of the Function Block</td>
+    <td>DistanceSensor</td>
+  </tr>
+  <tr>
+    <td>namespace</td>
+    <td>Y</td>
+    <td>Namespace Identifier </td>
+    <td>com.bosch</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>Y</td>
+    <td>Model Version</td>
+    <td>2.0.0</td>
   </tr>
   <tr>
     <td>description</td>
+    <td>Y</td>
+    <td>Short description of the Function Block</td>
     <td></td>
-    <td>Extra information about the function block.</td>
-    <td>String enclosed in quotation marks</td>
-    <td>description "A vending machine withdraws food or drinks"</td>
   </tr>
   <tr>
     <td>category</td>
-	<td>Y</td>
-    <td>The category should be used to logically group function blocks that semantically belong to the same domain.</td>
-    <td>top level category (mandatory) and a sub category (optional), separated by aslash (/)</td>
-    <td>IAP/smarthome</br>indego</td>
+    <td>N</td>
+    <td>Custom tag to categorize the Function Block</td>
+    <td>Smarthome, Manufacturing</td>
+  </tr>
+  <tr>
+    <td>extends [Other Function Block]</td>
+    <td>N</td>
+    <td>Extends another Function Block by specializing it with extended properties</td>
+    <td>Oven extends Managable</td>
   </tr>
   <tr>
     <td>configuration</td>
-	<td>Y</td>
-    <td>Contains one or many configuration properties for the function block.</td>
-    <td>complex type containing properties (see grammar for Property)</td>
-    <td>...</br>configuration {</br>&nbsp;&nbsp;// properties</br>}</td>
+	<td>N</td>
+    <td>Defines read- and writable properties to configure a device</td>
+    <td>
+		configuration {
+			mandatory on as boolean
+		}
+	</td>
   </tr>
   <tr>
     <td>status</td>
-    <td></td>
-    <td>Contains one or many status properties for the function block.</td>
-    <td>complex type (see grammar for Property)</td>
-    <td>...</br>status {</br>&nbsp;&nbsp;// properties</br>}</td>
+    <td>N</td>
+    <td>Defines readable properties that define the current status of the device</td>
+    <td>
+		status {
+			mandatory powerConsumption as float
+		}
+	</td>
   </tr>
   <tr>
     <td>fault</td>
-    <td></td>
-    <td>Contains one or many fault properties for the function block.</td>
-    <td>complex type (see grammar for Property)</td>
-    <td>...</br>fault {</br>&nbsp;&nbsp;// properties</br>}</td>
+    <td>N</td>
+    <td>Defines readable properties that define the fault states of device</td>
+    <td>
+		fault {
+			mandatory code as int
+		}
+	</td>
+  </tr>
+   <tr>
+    <td>events</td>
+    <td>N</td>
+    <td>Defines readable properties that describe events that a device can publish</td>
+    <td>
+		events {
+			TemperatureTooHigh {
+				mandatory temperatureValue as float
+				mandatory temperatureThreshold as float
+			}
+		}
+	</td>
   </tr>
   <tr>
     <td>operations</td>
     <td></td>
-    <td>Contains one or many operations for the function block.</td>
-    <td>complex type (see grammar for Operation)</td>
-    <td>...</br>operations {</br>&nbsp;&nbsp;// operations</br>}</td>
-  </tr>
-  <tr>
-    <td>events</td>
-    <td></td>
-    <td>Contains one or many events for the function block.</td>
-    <td>complex type (see grammar for Event)</td>
-    <td>...</br>events {</br>&nbsp;&nbsp;// events go here</br>}</td>
+    <td>Defines operations that can be invoked on the device from e.g. external applications</td>
+    <td>
+		operations {
+			setColor(r as int <MIN 0,MAX 255>,g as int <MIN 0,MAX 255>,b as int <MIN 0,MAX 255>)
+			getUpdateStatus() returns string
+		}
+	</td>
   </tr>
   </tbody>
 </table>
@@ -262,97 +297,9 @@ The following table describes the parameters and elements of a `functionblock`. 
         }
     }
 
-### Property
+### Function Block Property
 
-**Syntax**
-
-Refer to property in [Function Block DSL Syntax](#function-block-dsl-syntax).
-
-**Usage**
-
-The following table describes the property elements. Mandatory property elements are marked with `Y` in the column **Mandatory**
-
-<table class="table table-bordered">
-<thead>
-  <tr>
-    <th>Property element</th>
-    <th>Mandatory</th>
-    <th>Description</th>
-    <th>Type</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>optional&nbsp;|&nbsp;mandatory</td>
-	<td>Y</td>
-    <td>Declares if the property is optional or mandatory.</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>multiple</td>
-    <td></td>
-    <td>Defines if the property can have more than one value.</td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>&lt;property_name&gt;</td>
-	<td>Y</td>
-    <td>A descriptive name of the property.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>as &lt;type&gt;</td>
-	<td>Y</td>
-    <td>The data type of the property.</td>
-    <td>Supported types:</br>
-	  <ul>
-		<li>boolean</li>
-		<li>dateTime</li>
-		<li>float</li>
-		<li>int</li>
-		<li>string</li>
-		<li>long</li>
-		<li>short</li>
-		<li>double</li>
-		<li>base64Binary</li>
-		<li>byte</li>
-    <li>Dictionary (with optional key and value types)</li>
-    <li>Another Entity</li>
-    <li>Another Enum</li>
-	  </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>with { [propertyAttribute] }</td>
-    <td>N</td>
-    <td>Additional property attributes</td>
-    <td>Supported property attributes:</br>
-    <ul>
-    <li>measurementUnit : an Enum literal</li>
-    <li>readable: [true or false]</li>
-    <li>writable: [true or false]</li>
-    <li>eventable: [true or false]</li>
-    </ul>
-    </td>
-  </tr>
-  <tr>
-    <td>&lt;constraints&gt;</td>
-    <td></td>
-    <td>Key value pair(s) enclosed by &lt;&gt;, following the pattern:</br>&lt;CONSTRAINT_KEYWORD value&gt;</td>
-    <td>&lt;STRLEN value>, defining the length of a string</br>
-	    &lt;MIN value&gt;, defining the maximum of a numeric property</br>
-		&lt;MAX value&gt;, defining the minimum of a numeric property</br>
-		&lt;REGEX value&gt;, defining the regular expression pattern of the property</br>
-		&lt;REGEX value&gt;, defining the regular expression pattern of the string property. Value format expected should be of XML schema pattern format, e.g: [A-Z], [0-9], ([a-z][A-Z])+</td>
-  </tr>
-  <tr>
-    <td>&lt;description&gt;</td>
-    <td></td>
-    <td>Extra information about the property.</td>
-    <td>String enclosed in quotation marks</td>
-  </tr>
-  </tbody>
-</table>
+Here are some example of Function Block properties which can be used for status-, configuration-, fault- or event properties:
 
 **Examples**
 
@@ -363,18 +310,18 @@ The following table describes the property elements. Mandatory property elements
       "the id of the vending machine"
 
     mandatory engineTemperature as float 
-      with { measurementUnit: Temperature.Celsius, readable: true, writable: true }
+      with { measurementUnit: Unit.Celsius, readable: true, writable: true }
 
     mandatory positiveNum as int <MIN 0 , MAX 1111>
       "Positive numbers that is within [0 , 1111]"
 
-    mandatory lookupTable as Dictionary[string, Color] "Lookup table conversion for color"
+    mandatory lookupTable as dictionary[string, Color] "Lookup table conversion for color"
 
-    mandatory lookupRGBTable as Dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
+    mandatory lookupRGBTable as dictionary[Color, RGB] "Lookup table conversion for color from description to RGB"
 
-    mandatory temperatureLabelConversion as Dictionary[int, string] "map of temperature to description"
+    mandatory temperatureLabelConversion as dictionary[int, string] "map of temperature to description"
 
-    mandatory noKeyAndValueTypeMap as Dictionary "example of a map with no key and value types"
+    mandatory noKeyAndValueTypeMap as dictionary "example of a map with no key and value types"
 
     mandatory biggerThanInt as long <MAX 999999999999999999>
       "Value for constraint is validated according to the property type,

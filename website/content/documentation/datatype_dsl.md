@@ -120,57 +120,80 @@ Refer to entity in [Datatype DSL Syntax](#data-type-model-dsl-reference).
     <th>Entity element</th>
     <th>Mandatory</th>
     <th>Description</th>
-    <th>Type</th>
+    <th>Example</th>
   </tr>
   </thead>
   <tbody>
-  <tr>
-    <td>&lt;entity_name&gt;</td>
+   <tr>
+    <td>Name</td>
     <td>Y</td>
-    <td>A descriptive name of the entity.</td>
-    <td>String (identifier, without spaces)</td>
+    <td>The name of the entity</td>
+    <td>RGBColor</td>
+  </tr>
+  <tr>
+    <td>namespace</td>
+    <td>Y</td>
+    <td>Namespace Identifier </td>
+    <td>com.bosch</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>Y</td>
+    <td>Model Version</td>
+    <td>2.0.0</td>
+  </tr>
+  <tr>
+    <td>description</td>
+    <td>Y</td>
+    <td>Short description of the entity</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>category</td>
+    <td>N</td>
+    <td>Custom tag to categorize the entity</td>
+    <td>Light, Smarthome, PayloadMapping</td>
   </tr>
   <tr>
     <td>extends &lt;other_entity_name&gt;</td>
-    <td></td>
-    <td>The entity extends the property &lt;other_entity_name&gt;.</td>
-    <td></td>
+    <td>N</td>
+    <td>Expresses inheritance of entities </td>
+    <td>ColorLight extends Light</td>
   </tr>
   <tr>
     <td>&lt;optional&nbsp;|&nbsp;mandatory&gt;</td>
-    <td></td>
+    <td>Y</td>
     <td>Declares if the property is optional or mandatory.</td>
-    <td></td>
+    <td>mandatory unit as string</td>
   </tr>
   <tr>
     <td>multiple</td>
-    <td></td>
-    <td>Defines if the property can have more than one value.</td>
-    <td></td>
+    <td>N</td>
+    <td>Defines if the property is an array/list type</td>
+    <td>mandatory multiple prop as string</td>
   </tr>
   <tr>
     <td>&lt;property_name&gt;</td>
     <td>Y</td>
     <td>The name of the property.</td>
-    <td>String (identifier, without spaces)</td>
+    <td>mandatory myprop as string</td>
   </tr>
   <tr>
     <td>as &lt;type&gt;</td>
     <td>Y</td>
-    <td>The data type of the property.</td>
+    <td>The type of the property.</td>
     <td>Supported types:
     <ul>
       <li>Primitive Types </li>
-      <li>Another Entity</li>
+      <li>Another Entity | Enum</li>
       <li>Dictionary</li>
     </ul>
   </td>
-  </tr>
   <tr>
-    <td>&lt;description&gt;</td>
-    <td></td>
-    <td>Extra information about the entity.</td>
-    <td>String enclosed in quotation marks</td>
+    <td>Constraints</td>
+    <td>N</td>
+    <td>Further sets constraint of a property. Supported constraints are MIN,MAX,STRLEN,REGEX, DEFAULT</td>
+    <td>mandatory prop as int &lt;MIN 0, MAX 50&gt; </td>
   </tr>
   </tbody>
 </table>
@@ -261,6 +284,7 @@ The following constraints are supported
 - `MAX` 
 - `STRLEN`
 - `REGEX`
+- `DEFAULT`
 
 **Example**
 
@@ -282,33 +306,45 @@ Refer to entity in [Datatype DSL Syntax](#data-type-model-dsl-reference).
     <th>Entity element</th>
     <th>Mandatory</th>
     <th>Description</th>
-    <th>Type</th>
+    <th>Example</th>
   </tr>
   </thead>
   <tbody>
   <tr>
-    <td>&lt;enum_name&gt;</td>
+    <td>Name</td>
     <td>Y</td>
-    <td>A descriptive name of the enum.</td>
-    <td>String (identifier, without spaces)</td>
+    <td>The name of the enum</td>
+    <td>TemperatureUnit</td>
   </tr>
   <tr>
-    <td>{</td>
+    <td>namespace</td>
     <td>Y</td>
-    <td>Delimiter of the literal list (comma separated literals).</td>
+    <td>Namespace Identifier </td>
+    <td>com.bosch</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>Y</td>
+    <td>Model Version</td>
+    <td>2.0.0</td>
+  </tr>
+  <tr>
+    <td>description</td>
+    <td>Y</td>
+    <td>Short description of the enum</td>
     <td></td>
+  </tr>
+  <tr>
+    <td>category</td>
+    <td>N</td>
+    <td>Custom tag to categorize the enum</td>
+    <td>Light, Smarthome, PayloadMapping</td>
   </tr>
   <tr>
     <td>&lt;literal&gt;</td>
     <td>Y</td>
-    <td>A descriptive name of an enum value.</td>
-    <td>String (identifier, without spaces)</td>
-  </tr>
-  <tr>
-    <td>}</td>
-    <td>Y</td>
-    <td>The name of the property.</td>
-    <td></td>
+    <td>Defines the actual enum literal value</td>
+    <td>Fahrenheit</td>
   </tr>
   </tbody>
 </table>

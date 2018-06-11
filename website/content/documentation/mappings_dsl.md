@@ -92,28 +92,46 @@ This section describes the DSL grammer for a Vorto Mapping.
   </thead>
   <tbody>
 	<tr>
-		<td>model</td>
-		<td>Y</td>
-		<td>Information Model Name   </td>
-		<td>PhilipsHue</td>
-	</tr>
-	<tr>
-		<td>target</td>
+    <td>Name</td>
+    <td>Y</td>
+    <td>The name of the Mapping</td>
+    <td>DistanceIpsoMapping</td>
+  	</tr>
+  <tr>
+    <td>namespace</td>
+    <td>Y</td>
+    <td>Namespace Identifier </td>
+    <td>com.bosch.mapping.ipso</td>
+  </tr>
+  <tr>
+    <td>version</td>
+    <td>Y</td>
+    <td>Model Version</td>
+    <td>2.0.0</td>
+  </tr>
+  <tr>
+    <td>description</td>
+    <td>Y</td>
+    <td>Short description of the mapping</td>
+    <td></td>
+  </tr>
+  <tr>
+		<td>targetplatform</td>
 		<td>Y</td>
 		<td>Target platform mapping is used for</td>
-		<td>smarthome</td>
+		<td>lwm2m</td>
 	</tr>
 	<tr>
 		<td>from</td>
 		<td>Y</td>
-		<td>Information model element</td>
-		<td>ColorLight.operation.setR</td>
+		<td>Function Block model element</td>
+		<td>ColorLight.configuration.on</td>
 	</tr>
 	<tr>
 		<td>to</td>
 		<td>Y</td>
-		<td>Target plaform platform element</td>
-		<td>channelType</td>
+		<td>Maps Function Block property to a stereotype or other reference mapping</td>
+		<td>from ColorLight.configuration.on to OBJECT with {ID:4523}</td>
 	</tr>
   </tbody>
 </table>
