@@ -31,7 +31,7 @@ public class IsAdminCondition implements IWorkflowCondition {
 	@Override
 	public boolean passesCondition(ModelInfo model, IUserContext user) {
 		User foundUser = userRepository.findByUsername(user.getUsername());
-		return foundUser.isAdmin();
+		return foundUser != null ? foundUser.isAdmin() : false;
 	}
 
 }

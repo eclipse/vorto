@@ -118,12 +118,12 @@ Here is an example of using conditions to map to either temperature or illuminan
 Function Block Temperature Mapping
 
 	...
-	from Temperature.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval("/header/type", this) == 'T'"}
+	from Temperature.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'T'"}
 
 Function Block Illuminance Mapping
 
 	...
-	from Illuminance.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval("/header/type", this) == 'I'"}
+	from Illuminance.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'I'"}
 
 ### Useful Links
 
