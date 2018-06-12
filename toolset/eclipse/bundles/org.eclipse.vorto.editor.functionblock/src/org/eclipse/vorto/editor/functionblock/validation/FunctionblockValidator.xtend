@@ -162,7 +162,7 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 
 	@Check
 	def checkNamespacePattern(FunctionblockModel functionblock) {
-		if (!functionblock.namespace.matches("([a-z0-9]*\\.)*[a-z0-9]*")) {
+		if (!functionblock.namespace.matches("([a-z0-9_]*\\.)*[a-z0-9_]*")) {
 			error(SystemMessage.ERROR_NAMESPACE_PATTERN, functionblock,
 				ModelPackage.Literals.MODEL__VERSION)
 		}
