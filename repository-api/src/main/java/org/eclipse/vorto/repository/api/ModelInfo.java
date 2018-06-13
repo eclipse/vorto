@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class ModelInfo extends AbstractModel {
 	
+	protected String extendedType;
 	protected String author;
 	protected Date creationDate;
 	protected boolean hasImage = false;
@@ -36,6 +37,17 @@ public class ModelInfo extends AbstractModel {
 	
 	public ModelInfo(ModelId modelId,ModelType modelType) {
 		super(modelId,modelType);
+	}
+	
+	public ModelInfo(ModelId modelId, String type) {
+		setId(modelId);
+		if (ModelType.containsType(type)) {
+			setType(ModelType.valueOf(type));
+			this.extendedType = null;
+		} else {
+			setType(ModelType.Extended);
+			this.extendedType = type;
+		}
 	}
 	
 	public ModelInfo() {
@@ -88,10 +100,18 @@ public class ModelInfo extends AbstractModel {
 	public void setState(String state) {
 		this.state = state;
 	}
+	
+	public String getExtendedType() {
+		return extendedType;
+	}
+
+	public void setExtendedType(String extendedType) {
+		this.extendedType = extendedType;
+	}
 
 	@Override
 	public String toString() {
-		return "ModelResource [id=" + id + ", modelType=" + type + "]";
+		return "ModelInfo [ id =" + id + ", type=" + type + "extendedType=" + extendedType + "]";
 	}
 
 	@Override

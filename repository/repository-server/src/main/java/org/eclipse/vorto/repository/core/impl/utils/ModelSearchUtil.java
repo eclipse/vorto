@@ -288,7 +288,6 @@ public class ModelSearchUtil {
 		try {
 			QueryManager queryManager = session.getWorkspace().getQueryManager();
 			String jcrStatementQuery = this.getJCRStatementQuery(queryExpression);
-
 			if (jcrStatementQuery.equals(queryExpression)) {
 				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
 			} else {
