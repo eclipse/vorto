@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -73,6 +74,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class JcrModelRepository implements IModelRepository {
 
+	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping | *.ttl";
 	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
 	@Autowired
 	private Session session;
@@ -104,7 +106,6 @@ public class JcrModelRepository implements IModelRepository {
 			logger.debug("Searching repository with expression " + query.getStatement());
 			QueryResult result = query.execute();
 			RowIterator rowIterator = result.getRows();
-
 			while (rowIterator.hasNext()) {
 				Row row = rowIterator.nextRow();
 				Node currentNode = row.getNode();
@@ -112,7 +113,7 @@ public class JcrModelRepository implements IModelRepository {
 					try {
 						modelResources.add(createMinimalModelInfo(currentNode));
 					} catch (Exception ex) {
-						// model is corrupt ,ignoring....
+						logger.debug("Error while converting node to a ModelInfo", ex);
 					}
 				}
 			}
@@ -124,8 +125,9 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	private ModelInfo createMinimalModelInfo(Node node) throws RepositoryException {
+		
 		ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(node.getParent().getPath()),
-				ModelType.valueOf(node.getProperty("vorto:type").getString()));
+				node.getProperty("vorto:type").getString());
 		resource.setDescription(node.getProperty("vorto:description").getString());
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
@@ -250,8 +252,8 @@ public class JcrModelRepository implements IModelRepository {
 
 		try {
 			Node folderNode = createNodeForModelId(resource.getId());
-			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
-					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
+					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			if (fileNode == null) {
 				fileNode = folderNode.addNode(resource.getId().getName() + resource.getType().getExtension(),
 						"nt:file");
@@ -300,6 +302,41 @@ public class JcrModelRepository implements IModelRepository {
 
 		return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
 	}
+	
+	public void save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
+		Objects.requireNonNull(content);
+		Objects.requireNonNull(modelId);
+		
+		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
+		
+		try {
+			Node folderNode = createNodeForModelId(modelId);
+			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
+			if (!nodeIt.hasNext()) {
+				Node fileNode = folderNode.addNode(fileName, "nt:file");
+				fileNode.addMixin("vorto:meta");
+				fileNode.addMixin("mix:referenceable");
+				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+				Binary binary = session.getValueFactory()
+						.createBinary(new ByteArrayInputStream(content));
+				contentNode.setProperty("jcr:data", binary);
+			} else {
+				Node fileNode = nodeIt.nextNode();
+				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				Node contentNode = fileNode.getNode("jcr:content");
+				Binary binary = session.getValueFactory()
+						.createBinary(new ByteArrayInputStream(content));
+				contentNode.setProperty("jcr:data", binary);
+			}
+
+			session.save();
+			logger.info("Checkin successful");
+		} catch (Exception e) {
+			logger.error("Error checking in model", e);
+			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
+		}
+	}
 
 	@Override
 	public ModelInfo getById(ModelId modelId) {
@@ -308,7 +345,7 @@ public class JcrModelRepository implements IModelRepository {
 
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
-			Node modelFileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode();
+			Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
 			ModelInfo modelResource = createModelResource(modelFileNode);
 			if (modelResource.getType() == ModelType.InformationModel) {
@@ -462,8 +499,8 @@ public class JcrModelRepository implements IModelRepository {
 	public ModelInfo updateMeta(ModelInfo model) {
 		try {
 			Node folderNode = createNodeForModelId(model.getId());
-			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
-					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
+					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
 			
@@ -474,12 +511,27 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		}
 	}
+	
+	public ModelId updateState(ModelId modelId, String state) {
+		try {
+			Node folderNode = createNodeForModelId(modelId);
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
+					? folderNode.getNodes(FILE_NODES).nextNode() : null;
+			fileNode.setProperty("vorto:state", state);
+			
+			session.save();
+
+			return modelId;
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		}
+	}
 
 	public void saveModel(ModelEMFResource resource) {
 		try {
 			Node folderNode = createNodeForModelId(resource.getId());
-			Node fileNode = folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").hasNext()
-					? folderNode.getNodes("*.type | *.fbmodel | *.infomodel | *.mapping").nextNode() : null;
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
+					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			Node contentNode = fileNode.getNode("jcr:content");
 			Binary binary = session.getValueFactory()
 					.createBinary(new ByteArrayInputStream(resource.toDSL()));

@@ -28,7 +28,7 @@ public interface IWorkflowService {
 	 * @param model
 	 * @return
 	 */
-	ModelInfo start(ModelId model);
+	ModelId start(ModelId model);
 
 	/**
 	 * Transitions the given models to the next possible state

@@ -89,14 +89,10 @@ public class DefaultWorkflowService implements IWorkflowService {
 		this.modelRepository = modelRepository;
 	}
 	
-	
-
 	@Override
-	public ModelInfo start(ModelId modelId) {
+	public ModelId start(ModelId modelId) {
 		IState nextState = SIMPLE_WORKFLOW.getInitialAction().getTo();
-		ModelInfo modelInfo = modelRepository.getById(modelId);
-		modelInfo.setState(nextState.getName());
-		return modelRepository.updateMeta(modelInfo);
+		return modelRepository.updateState(modelId, nextState.getName());
 	}
 
 	@Override

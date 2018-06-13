@@ -22,12 +22,15 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
+import org.eclipse.vorto.repository.api.upload.StagingResult;
 import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
+import org.eclipse.vorto.repository.importer.CommittedModel;
+import org.eclipse.vorto.repository.importer.ModelImporterService;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.slf4j.Logger;
@@ -45,8 +48,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.collect.Lists;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -63,7 +64,12 @@ public class ShareModelController {
     
     private final String ERROR_MSG_FORMAT = "Models cannot be checked in because there {0,choice,1#is|1<are} {0} {0,choice,1#model|1<models} with {0,choice,1#error|1<errors}.";
 	private final String SUCCESS_MSG_FORMAT = "{0,choice,1#The uploaded model is|1<All uploaded models are} valid and ready to check in.";
+	private final String STAGING_VALID = "Uploaded model %s is valid to check in.";
+	private final String STAGING_FAIL = "Uploaded model %s has errors. Cannot check in.";
     
+	@Autowired
+	private ModelImporterService importerService;
+	
 	@Autowired
 	private IModelRepository modelRepository;
 	
@@ -75,8 +81,6 @@ public class ShareModelController {
 	
 	@Autowired
 	private IUserRepository userRepository;
-	
-	private UploadModelResult uploadModelResult;
 	
 	@Autowired
 	private IWorkflowService workflowService;
@@ -90,17 +94,26 @@ public class ShareModelController {
 		
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
-			uploadModelResult = modelRepository.upload(file.getBytes(), file.getOriginalFilename(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
-			List<UploadModelResult> uploadModelResults = Lists.newArrayList();
-			uploadModelResults.add(uploadModelResult);
-			String message = "Uploaded model " + file.getOriginalFilename() + (uploadModelResult.isValid() ? " is valid to check in." : " has errors. Cannot check in.") ;
-			return validResponse(new UploadModelResponse(message,uploadModelResult.isValid(), uploadModelResults));
+			List<StagingResult> stagingResults = importerService.stageFile(file.getOriginalFilename(), file.getBytes(), getUserContext());
+			return stagingResults.stream()
+				.filter(result -> result.isValid())
+				.findFirst()
+				.map(result -> 
+					validResponse(UploadModelResponse.newInstance(String.format(STAGING_VALID, file.getOriginalFilename()), 
+						true, stagingResults)))
+				.orElse(
+					validResponse(UploadModelResponse.newInstance(String.format(STAGING_FAIL, file.getOriginalFilename()), 
+						false, stagingResults)));
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
 			UploadModelResponse errorResponse = new UploadModelResponse("Error during upload. Try again. " + e.getMessage(),
 					false, null);
 			return new ResponseEntity<UploadModelResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	private UserContext getUserContext() {
+		return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 	@ApiOperation(value = "Upload and validate multiple vorto models")
@@ -131,9 +144,11 @@ public class ShareModelController {
 	public ResponseEntity<ModelId> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
-			ModelInfo result = modelRepository.checkin(handleId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
-			result = workflowService.start(result.getId());
-			return new ResponseEntity<ModelId>(result.getId(),HttpStatus.OK);
+			CommittedModel model = importerService.commitStagedFile(handleId, getUserContext());
+			
+			workflowService.start(model.getModelId());
+			
+			return new ResponseEntity<ModelId>(model.getModelId(), HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

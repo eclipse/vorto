@@ -32,7 +32,7 @@
 
 <div class="row">
  <div class="center-results">
-	<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Checkin</button>
+	<button ng-show="showResultBox"  ng-click="checkin(uploadResult.result)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Checkin</button>
  </div>
 </div>
 
@@ -56,13 +56,13 @@
 					</div>
 				</div>
 
-				<div ng-repeat="result in uploadResult.obj">
+				<div ng-repeat="result in uploadResult.result">
 					<div class="accordion-div">
 
 			        <div ng-click="stateArr[$index].active = !stateArr[$index].active" ng-class="{'modelresult-heading-collapsed': stateArr[$index].active, 'modelresult-heading-expanded': !stateArr[$index].active}">
 			          <div class="header">
 			          	<i ng-class="stateArr[$index].active ? 'fa fa-plus-square' : 'fa fa-minus-square'" aria-hidden="true"></i>
-			          	{{result.modelResource.id.name}}
+			          	{{result.stagingDetails.modelResource.id.name}}
 			          	<i ng-class="result.valid === true ? 'fa fa-check fa-lg valid' : 'fa fa-close fa-lg invalid'" aria-hidden="true"></i>
 			          </div>
 			        </div>
@@ -71,15 +71,15 @@
 			          <div class="modelresults-content">
 		<div class="fileUploadDetails">
 					<table id="uploadResults">
-						<tr><td><label>Namespace:</label></td><td class="tdspacing">{{result.modelResource.id.namespace}}</td></tr>
-				        <tr><td><label>Name:</label></td><td class="tdspacing">  {{result.modelResource.id.name}} </td></tr>
-				        <tr><td><label>Version:</label></td><td class="tdspacing">   {{result.modelResource.id.version}} </td></tr>
-				        <tr><td><label>Model Type:</label> </td><td class="tdspacing"> {{result.modelResource.type}}</td></tr>
-				        <tr><td><label>Description:</label> </td><td class="tdspacing">  {{result.modelResource.description}}</td></tr>
+						<tr><td><label>Namespace:</label></td><td class="tdspacing">{{result.stagingDetails.modelResource.id.namespace}}</td></tr>
+				        <tr><td><label>Name:</label></td><td class="tdspacing">  {{result.stagingDetails.modelResource.id.name}} </td></tr>
+				        <tr><td><label>Version:</label></td><td class="tdspacing">   {{result.stagingDetails.modelResource.id.version}} </td></tr>
+				        <tr><td><label>Model Type:</label> </td><td class="tdspacing"> {{result.stagingDetails.modelResource.type}}</td></tr>
+				        <tr><td><label>Description:</label> </td><td class="tdspacing">  {{result.stagingDetails.modelResource.description}}</td></tr>
 				        <tr><td><label>References: </label></td>
 				        <td>
 		<table>
-								<tr ng-repeat="reference in result.modelResource.references">
+								<tr ng-repeat="reference in result.stagingDetails.modelResource.references">
 									<td><i ng-class="isMissing(reference,result.unresolvedReferences) === true ? 'fa fa-close fa-lg invalid' : 'fa fa-check fa-lg valid'" aria-hidden="true"></i></td>
 									<td class="tdspacing-half">{{reference.namespace}}.{{reference.name}}.{{reference.version}}</td>
 								</tr>
