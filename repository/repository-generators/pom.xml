@@ -8,7 +8,7 @@
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>repository-generator-gateway</artifactId>
+	<artifactId>repository-generators</artifactId>
 	<packaging>jar</packaging>
 	
 	<name>Repository Generator Gateway</name>
