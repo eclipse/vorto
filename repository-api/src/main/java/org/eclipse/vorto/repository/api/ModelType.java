@@ -48,4 +48,13 @@ public enum ModelType {
 			return ModelType.Extended;
 		}
 	}
+	
+	public static boolean containsType(String type) {
+		for (ModelType mType : ModelType.values()) {
+	        if (mType.name().equals(type)) {
+	            return true;
+	        }
+	    }
+		return false;
+	}
 }

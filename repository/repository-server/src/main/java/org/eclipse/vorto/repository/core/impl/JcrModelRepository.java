@@ -193,7 +193,14 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = (Node) folderNode.getNodes(modelId.getName() + "*").next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-
+			
+			if (fileNode.hasProperty("vorto:type")) {
+				String modelType = fileNode.getProperty("vorto:type").getString();
+				if (!ModelType.containsType(modelType)) {
+					return new DefaultModelContent(null, contentType, IOUtils.toByteArray(is));
+				}
+			}
+			
 			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
 
 			if (contentType == ContentType.XMI) {
@@ -201,6 +208,7 @@ public class JcrModelRepository implements IModelRepository {
 			} else {
 				return new DefaultModelContent(resource.getModel(), contentType, resource.toDSL());
 			}
+
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {

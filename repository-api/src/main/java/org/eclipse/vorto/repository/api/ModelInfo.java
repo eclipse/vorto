@@ -41,23 +41,13 @@ public class ModelInfo extends AbstractModel {
 	
 	public ModelInfo(ModelId modelId, String type) {
 		setId(modelId);
-		System.out.println("-erle- : type = " + type);
-		if (modelTypeContainsType(type)) {
+		if (ModelType.containsType(type)) {
 			setType(ModelType.valueOf(type));
 			this.extendedType = null;
 		} else {
 			setType(ModelType.Extended);
 			this.extendedType = type;
 		}
-	}
-	
-	private boolean modelTypeContainsType(String type) {
-		for (ModelType mType : ModelType.values()) {
-	        if (mType.name().equals(type)) {
-	            return true;
-	        }
-	    }
-		return false;
 	}
 	
 	public ModelInfo() {

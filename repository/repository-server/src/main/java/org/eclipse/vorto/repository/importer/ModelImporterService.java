@@ -18,8 +18,6 @@ public class ModelImporterService {
 	 * This needs to be improved to handle .zip files
 	 */
 	public List<StagingResult> stageFile(String filename, byte[] content, UserContext userContext) {
-		modelImporters.forEach(importer -> System.out.println("-erle- : " + importer.getId()));
-		
 		return modelImporters.stream()
 			.filter(importer -> importer.canHandle(content, filename))
 			.map(importer -> importer.stageModel(content, filename, userContext))
