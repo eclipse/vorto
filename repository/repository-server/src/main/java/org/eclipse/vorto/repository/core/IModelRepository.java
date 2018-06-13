@@ -73,6 +73,16 @@ public interface IModelRepository {
 	 * @return model that was been checked in
 	 */
 	ModelInfo checkin(String handleId, IUserContext userContext);
+	
+	/**
+	 * Saves the model to the repo
+	 * 
+	 * @param modelId the id of the model
+	 * @param content the content
+	 * @param fileName the filename of the model
+	 * @param userContext the user
+	 */
+	void save(ModelId modelId, byte[] content, String fileName, IUserContext userContext);
 		
 	/**
 	 * Removes a model image for the given model id
@@ -108,6 +118,15 @@ public interface IModelRepository {
      * @return
      */
 	ModelInfo updateMeta(ModelInfo model);
+	
+	/**
+     * Updates the state of the model
+     * 
+     * @param modelId the model Id
+     * @param state the state of the model
+     * @return
+     */
+    ModelId updateState(ModelId modelId, String state);
 
 		
 	public enum ContentType {

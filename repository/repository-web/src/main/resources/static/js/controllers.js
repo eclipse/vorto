@@ -140,10 +140,10 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             $scope.uploadResult = result;
             $scope.showCheckin = true;
 
-            if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0) {
-                angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {
+            if($scope.uploadResult.result != null && $scope.uploadResult.result.length > 0) {
+                angular.forEach($scope.uploadResult.result, function (resultObject, idx) {
                     var item =  (idx == 0) ? {active: false} : {active: true} ;
-                    var modelType = resultObject.modelResource.type;
+                    var modelType = resultObject.stagingDetails.modelResource.type;
                     switch (modelType) {
                     case "Functionblock":
                         fbcount++;
@@ -201,7 +201,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     $scope.checkin = function (uploadResults) {
         $rootScope.error = "";
         if(uploadResults.length == 1) {
-            checkinSingle(uploadResults[0].handleId);
+            checkinSingle(uploadResults[0].stagingId);
         } else {
             checkInMultipleModels(uploadResults);
         }

@@ -98,6 +98,7 @@ public class ModelDtoFactory {
 		dto.setReferences(resource.getReferences().stream().map(r -> createDto(r)).collect(Collectors.toList()));
 		dto.setPlatformMappings(resource.getPlatformMappings());
 		dto.setState(resource.getState());
+		dto.setExtendedType(resource.getExtendedType());
 		return dto;
 	}
 	

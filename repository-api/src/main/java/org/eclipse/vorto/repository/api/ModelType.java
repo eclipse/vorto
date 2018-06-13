@@ -21,7 +21,8 @@ public enum ModelType {
 	Functionblock(".fbmodel"),
 	InformationModel(".infomodel"),
 	Datatype(".type"),
-	Mapping(".mapping");
+	Mapping(".mapping"),
+	Extended("");
 	
 	private String extension;
 	
@@ -44,7 +45,16 @@ public enum ModelType {
 		} else if (type.equals(ModelType.Mapping.getExtension())) {
 			return ModelType.Mapping;
 		} else {
-			throw new IllegalArgumentException(fileName);
+			return ModelType.Extended;
 		}
+	}
+	
+	public static boolean containsType(String type) {
+		for (ModelType mType : ModelType.values()) {
+	        if (mType.name().equals(type)) {
+	            return true;
+	        }
+	    }
+		return false;
 	}
 }
