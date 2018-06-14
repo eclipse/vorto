@@ -1,5 +1,5 @@
 /** 
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,6 +17,8 @@ package
 org.eclipse.vorto.editor.datatype.ui
 
 import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.eclipse.vorto.editor.datatype.ide.syntaxcoloring.PropertyNameSemanticHighlightingCalculator
 
 /** 
  * Use this class to register components to be used within the IDE.
@@ -24,5 +26,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin
 class DatatypeUiModule extends org.eclipse.vorto.editor.datatype.ui.AbstractDatatypeUiModule {
 	new(AbstractUIPlugin plugin) {
 		super(plugin)
+	}
+	def Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator () {
+		PropertyNameSemanticHighlightingCalculator
 	}
 }

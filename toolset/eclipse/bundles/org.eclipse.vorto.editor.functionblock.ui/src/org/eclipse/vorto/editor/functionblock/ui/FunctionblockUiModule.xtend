@@ -17,6 +17,8 @@ package
 org.eclipse.vorto.editor.functionblock.ui
 
 import org.eclipse.ui.plugin.AbstractUIPlugin
+import org.eclipse.xtext.ide.editor.syntaxcoloring.ISemanticHighlightingCalculator
+import org.eclipse.vorto.editor.datatype.ide.syntaxcoloring.PropertyNameSemanticHighlightingCalculator
 
 /** 
  * Use this class to register components to be used within the IDE.
@@ -24,5 +26,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin
 class FunctionblockUiModule extends org.eclipse.vorto.editor.functionblock.ui.AbstractFunctionblockUiModule {
 	new(AbstractUIPlugin plugin) {
 		super(plugin)
+	}
+	def Class<? extends ISemanticHighlightingCalculator> bindISemanticHighlightingCalculator () {
+		PropertyNameSemanticHighlightingCalculator
 	}
 }

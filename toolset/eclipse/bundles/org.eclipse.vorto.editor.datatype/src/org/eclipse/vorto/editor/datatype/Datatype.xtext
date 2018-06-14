@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2014-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -63,7 +63,7 @@ EnumLiteral:
 ;
 
 Property:
-	(extension ?= 'extension')? (presence = Presence)? (multiplicity ?= 'multiple')? name = ID 'as' type = PropertyType
+	(extension ?= 'extension')? (presence = Presence)? (multiplicity ?= 'multiple')? name = ValidID 'as' type = PropertyType
 	('with' '{' propertyAttributes+=PropertyAttribute (',' propertyAttributes+=PropertyAttribute)* '}')?
 	('<' constraintRule = ConstraintRule '>')?
 	(description=STRING)?
@@ -140,6 +140,10 @@ BOOLEAN:
 ;
 
 CATEGORY: ID ('/' ID)*;
+
+ValidID: ID | KEYWORD;
+
+KEYWORD: 'status'|'events'|'operations'|'configuration'|'fault';
 
 terminal SIGNEDINT :
 	'-'INT
