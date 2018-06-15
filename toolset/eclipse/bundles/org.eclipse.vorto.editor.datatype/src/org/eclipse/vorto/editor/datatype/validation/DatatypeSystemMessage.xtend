@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2014-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -17,7 +17,6 @@
  package org.eclipse.vorto.editor.datatype.validation
 
 class DatatypeSystemMessage {
-	public static final String ERROR_OBJ_PROPERTY_CIRCULAR_REF = 'Object property type has circular reference'
 	public static final String ERROR_SUPERTYPE_CIRCULAR_REF = 'Super type has circular reference'
 	
 	public static final String ERROR_PROPERTY_TYPE_NOT_IMPORTED = "This property type has not been imported"

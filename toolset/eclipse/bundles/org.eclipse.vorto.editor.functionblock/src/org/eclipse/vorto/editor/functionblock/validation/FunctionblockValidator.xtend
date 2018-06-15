@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -130,24 +130,6 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 			var method = ops.get(i)
 			if (!set.add(method.name)) {
 				error(SystemMessage.ERROR_DUPLICATED_METHOD_NAME, method, FunctionblockPackage.Literals.OPERATION__NAME)
-			}
-		}
-	}
-
-	@Check
-	def checkOpNameAgainstEntityName(FunctionblockModel model) {
-		
-		var listEE= getAllTypeFromReferencedFile(model);
-		
-		listEE.addAll(model.entities)
-		listEE.addAll(model.enums)
-		
-		var set = getNonDuplicateLowerCasedNameSet(listEE)
-		var ops = model.functionblock.operations
-		
-		for(op : ops){
-			if(set.contains(op.name.toLowerCase)){
-				error(SystemMessage.ERROR_OPERATION_SAME_NAME_AS_TYPE, op,FunctionblockPackage.Literals.OPERATION__NAME)
 			}
 		}
 	}

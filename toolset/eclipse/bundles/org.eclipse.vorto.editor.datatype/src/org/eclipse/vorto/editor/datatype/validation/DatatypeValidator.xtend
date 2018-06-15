@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -39,22 +39,6 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 
 	public val propertyValidator = new PropertyConstraintMappingValidation
 
-	@Check
-	def checkCircularRefInObjectPropertyType(ObjectPropertyType ref) {
-		if (ref.type != null) {
-			try {
-				val parent = ValidatorUtils.getParentOfType(ref, Model) as Model;
-				if (parent != null) {
-					if (ValidatorUtils.hasCircularReference(parent as Model, ref.type, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
-						error(DatatypeSystemMessage.ERROR_OBJ_PROPERTY_CIRCULAR_REF, ref, DatatypePackage.Literals.OBJECT_PROPERTY_TYPE__TYPE);
-					}
-				}	
-			} catch(Exception e) {
-				e.printStackTrace
-			}
-		}
-	}
-	
 	@Check
 	def checkCircularRefInSuperType(Entity entity) {
 		if (entity.superType != null) {
