@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.workflow;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
@@ -24,13 +25,20 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
+import org.junit.Before;
 import org.junit.Test;
 
 public class WorkflowTest extends AbstractIntegrationTest {
 
+	private IWorkflowService workflow = null;
+	
+	@Before
+	public void setUp() {
+		workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	}
+	
 	@Test
-	public void testGetModelByState() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testGetModelByState() throws Exception {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
@@ -38,7 +46,6 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testSearchByTypeAndState() throws Exception {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
 		ModelInfo model = checkinModel("Color.type");
 		workflow.start(model.getId());
 		model = checkinModel("Colorlight.fbmodel");
@@ -47,8 +54,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testGetPossibleActionsForDraftState() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testGetPossibleActionsForDraftState() throws Exception  {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		assertEquals(1,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
@@ -56,8 +62,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testStartReviewProcessForModel() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testStartReviewProcessForModel() throws Exception  {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());
@@ -71,16 +76,14 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	}
 	
 	@Test (expected = WorkflowException.class)
-	public void testTransitionWorkflowInvalidAction() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testTransitionWorkflowInvalidAction() throws Exception {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_APPROVE.getName());
 	}
 	
 	@Test
-	public void testApproveModelByAdminInReviewState() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testApproveModelByAdminInReviewState() throws Exception {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		
@@ -99,8 +102,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	}
 	
 	@Test (expected = WorkflowException.class)
-	public void testApproveModelByUserInReviewState() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testApproveModelByUserInReviewState() throws Exception  {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		
@@ -111,8 +113,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testRejectModelInReviewState() {
-		IWorkflowService workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+	public void testRejectModelInReviewState() throws Exception  {
 		ModelInfo model = checkinModel("Color.type");	
 		workflow.start(model.getId());
 		
@@ -129,4 +130,61 @@ public class WorkflowTest extends AbstractIntegrationTest {
 		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 		assertEquals(1,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
 	}
+	
+	@Test
+	public void testStartReleaseModelWithReleasedDependencies() throws Exception  {
+		
+		ModelInfo typeModel = checkinModel("Color.type");	
+		workflow.start(typeModel.getId());
+		
+		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		workflow.start(fbModel.getId());
+		
+		setReleaseState(typeModel);
+		
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		fbModel = workflow.doAction(fbModel.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),fbModel.getState());
+	}
+	
+	@Test
+	public void testStartReleaseModelWithNonReleasedDependencies() throws Exception  {
+		ModelInfo typeModel = checkinModel("Color.type");	
+		workflow.start(typeModel.getId());
+		
+		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		workflow.start(fbModel.getId());
+		
+		try {
+			when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+			workflow.doAction(fbModel.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
+			fail();
+		} catch(InvalidInputException ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+	
+	
+	@Test
+	public void testStartReleaseModelWithReviewedDependencies() throws Exception  {
+		ModelInfo typeModel = checkinModel("Color.type");	
+		workflow.start(typeModel.getId());
+		
+		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		workflow.start(fbModel.getId());
+		
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		workflow.doAction(typeModel.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
+		
+		assertEquals("InReview",workflow.doAction(fbModel.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName()).getState());	
+		
+	}
+	
+	private ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
+		when(userRepository.findByUsername(UserContext.user("admin").getUsername())).thenReturn(User.create("admin",Role.ADMIN));
+		return workflow.doAction(model.getId(),UserContext.user("admin"), SimpleWorkflowModel.ACTION_APPROVE.getName());
+	}
+	
 }

@@ -492,10 +492,19 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         	$scope.action = action;
         	$scope.actionModel = null;
         	$scope.model = model;
+        	$scope.errorMessage = "";
+        	$scope.hasError = false;
+        	
 			 $scope.takeWorkflowAction = function() {
 		    	$http.put('./rest/workflows/actions/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.action)
 			        .success(function(result){
-			            modalInstance.close();
+			        	if (result.hasErrors) {
+			        		$scope.hasErrors = true;
+			        		$scope.errorMessage = result.errorMessage;
+			        	} else {
+			        		modalInstance.close();
+			        	}
+			           
 			        });
 		    };
 		    

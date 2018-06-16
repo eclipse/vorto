@@ -24,11 +24,13 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,21 +44,28 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	public DefaultWorkflowService(@Autowired IModelRepository modelRepository, @Autowired IUserRepository userRepository) {
 		this.modelRepository = modelRepository;
-		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository);
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository,modelRepository);
 	}
 
 	@Override
-	public ModelInfo doAction(ModelId model,IUserContext user, String actionName) {
+	public ModelInfo doAction(ModelId model,IUserContext user, String actionName) throws WorkflowException {
 		ModelInfo modelInfo = modelRepository.getById(model);
 		final Optional<IState> state = SIMPLE_WORKFLOW.getState(modelInfo.getState());
 		final Optional<IAction> action = state.get().getAction(actionName);
-		if (action.isPresent() && passesConditions(action.get().getConditions(),modelInfo,user)) {
+		if (action.isPresent() && isValidInput(modelInfo,action.get()) && passesConditions(action.get().getConditions(),modelInfo,user)) {
 			final IState newState = action.get().getTo();
 			modelInfo.setState(newState.getName());
 			return modelRepository.updateMeta(modelInfo);
 		} else {
-			throw new WorkflowException("The given action is invalid.");
+			throw new WorkflowException(modelInfo,"The given action is invalid.");
 		}
+	}
+
+	private boolean isValidInput(ModelInfo modelInfo, IAction action) throws InvalidInputException {
+		for (IWorkflowValidator validator : action.getValidators()) {
+			validator.validate(modelInfo, action);
+		}
+		return true;
 	}
 
 	@Override

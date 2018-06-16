@@ -27,16 +27,19 @@ public interface IWorkflowService {
 	 * Starts the workflow for the given model
 	 * @param model
 	 * @return
+	 * @throws InvalidInputException
 	 */
-	ModelId start(ModelId model);
+	ModelId start(ModelId model) throws WorkflowException;
 
 	/**
 	 * Transitions the given models to the next possible state
 	 * @param model
 	 * @param user
 	 * @param action
+	 * 
+	 * @throws WorkflowException
 	 */
-	ModelInfo doAction(ModelId model, IUserContext user, String action);
+	ModelInfo doAction(ModelId model, IUserContext user, String action) throws WorkflowException;
 	
 	/**
 	 * Retrieves possible actions for the given model

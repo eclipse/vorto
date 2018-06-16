@@ -6,8 +6,10 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.workflow.dto.WorkflowResponse;
 import org.eclipse.vorto.repository.web.workflow.dto.WorkflowState;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -54,13 +56,18 @@ public class WorkflowController {
     @RequestMapping(method = RequestMethod.PUT,
     				value = "/actions/{namespace}/{name}/{version:.+}/{actionName}",
     				produces = "application/json")
-    public ModelInfo executeAction(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+    public WorkflowResponse executeAction(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
 									    		@ApiParam(value = "name", required = true) @PathVariable String name,
 									    		@ApiParam(value = "version", required = true) @PathVariable String version,
 									    		@ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
     	
     	final ModelId modelId = new ModelId(name, namespace, version);
-    	return workflowService.doAction(modelId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()), actionName);
+    	try {
+			ModelInfo model = workflowService.doAction(modelId, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()), actionName);
+			return WorkflowResponse.create(model);
+    	} catch (WorkflowException e) {
+			return WorkflowResponse.withErrors(e);
+		}
 	
     }
     

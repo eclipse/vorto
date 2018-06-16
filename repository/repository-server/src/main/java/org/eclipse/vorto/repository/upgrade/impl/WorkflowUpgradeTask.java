@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,11 @@ public class WorkflowUpgradeTask extends AbstractUpgradeTask implements IUpgrade
 		for(ModelInfo modelInfo : modelInfos) {
 			if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
 				logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
-				workflowService.start(modelInfo.getId());
+				try {
+					workflowService.start(modelInfo.getId());
+				} catch (WorkflowException e) {
+					throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
+				}
 			}
 		}
 	}

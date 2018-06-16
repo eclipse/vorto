@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;
 
 public class DefaultAction implements IAction {
 
@@ -29,6 +30,7 @@ public class DefaultAction implements IAction {
 	private String description;
 	private IState to;
 	private List<IWorkflowCondition> conditions = new ArrayList<IWorkflowCondition>();
+	private List<IWorkflowValidator> validators = new ArrayList<IWorkflowValidator>();
 	
 	public DefaultAction(String name, String description) {
 		this.name = name;
@@ -45,6 +47,10 @@ public class DefaultAction implements IAction {
 	
 	public void setConditions(IWorkflowCondition...conditions) {
 		this.conditions = Arrays.asList(conditions);
+	}
+	
+	public void setValidators(IWorkflowValidator... validators) {
+		this.validators = Arrays.asList(validators);
 	}
 
 	@Override
@@ -72,6 +78,9 @@ public class DefaultAction implements IAction {
 		return Collections.unmodifiableList(conditions);
 	}
 	
-	
+	@Override
+	public List<IWorkflowValidator> getValidators() {
+		return Collections.unmodifiableList(validators);
+	}
 
 }

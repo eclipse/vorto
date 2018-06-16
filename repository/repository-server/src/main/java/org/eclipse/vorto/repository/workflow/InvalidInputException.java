@@ -16,21 +16,20 @@ package org.eclipse.vorto.repository.workflow;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
 
-public class WorkflowException extends Exception {
+public class InvalidInputException extends WorkflowException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private ModelInfo model;
-
-	public WorkflowException(ModelInfo model, String msg) {
-		super(msg);
-		this.model = model;
+	private ModelInfo input;
+	
+	public InvalidInputException(String message, ModelInfo input) {
+		super(input,message);
 	}
 	
-	public ModelInfo getModel() {
-		return model;
+	public ModelInfo getInput() {
+		return input;
 	}
 }

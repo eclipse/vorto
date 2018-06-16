@@ -12,25 +12,18 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.workflow;
+package org.eclipse.vorto.repository.workflow.model;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.workflow.InvalidInputException;
 
-public class WorkflowException extends Exception {
+public interface IWorkflowValidator {
 
 	/**
-	 * 
+	 * validates the given model for the currently executed action
+	 * @param model
+	 * @param currentAction
+	 * @throws InvalidInputException
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private ModelInfo model;
-
-	public WorkflowException(ModelInfo model, String msg) {
-		super(msg);
-		this.model = model;
-	}
-	
-	public ModelInfo getModel() {
-		return model;
-	}
+	void validate(ModelInfo model, IAction currentAction) throws InvalidInputException;
 }

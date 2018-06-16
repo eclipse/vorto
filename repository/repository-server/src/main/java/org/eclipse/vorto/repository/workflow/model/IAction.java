@@ -18,7 +18,20 @@ import java.util.List;
 
 public interface IAction extends IWorkflowElement {
 
+	/**
+	 * @return the state the the action is pointing to
+	 */
 	IState getTo();
 	
+	/**
+	 * 
+	 * @return all conditions for the action
+	 */
 	List<IWorkflowCondition> getConditions();
+	
+	/**
+	 * 
+	 * @return all validators for the action
+	 */
+	List<IWorkflowValidator> getValidators();
 }

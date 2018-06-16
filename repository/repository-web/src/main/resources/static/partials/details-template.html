@@ -17,9 +17,9 @@
 							<h4 class="reviews text-capitalize"><i class="fa fa-info-circle"></i> Model</h4>
 						</a>
 					</li>					
-					<li>
+					<li ng-hide="model.state === 'Released' || model.state ==='Deprecated'">
 						<a href="" role="tab" data-target="#discussion" data-toggle="tab" style="height:70px;">
-							<h4 class="reviews text-capitalize"><i class="fa fa-comment"></i> Discussion  <span class="badge">{{comments.length}}</span> </h4>
+							<h4 class="reviews text-capitalize"><i class="fa fa-comment"></i> Review Discussion  <span class="badge">{{comments.length}}</span> </h4>
 						</a>
 					</li>
 					<li ng-show="authority == 'ROLE_ADMIN' || model.author === user">
@@ -260,6 +260,7 @@
   		<h3 class="modal-title" id="modal-title-workflowAction">Workflow Action</h3>
 	</div>
   	<div class="modal-body" id="modal-body-workflowAction">
+  	  <div ng-if="hasErrors" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
       <div class="row" ng-show="actionModel != null && actionModel.description != ''">
       	<div class="alert alert-info">
       		<p><i class="fa fa-info"></i> {{actionModel.description}}</p>
