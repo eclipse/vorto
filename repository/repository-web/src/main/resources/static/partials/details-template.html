@@ -22,21 +22,37 @@
 							<h4 class="reviews text-capitalize"><i class="fa fa-comment"></i> Review Discussion  <span class="badge">{{comments.length}}</span> </h4>
 						</a>
 					</li>
-					<li ng-show="authority == 'ROLE_ADMIN' || model.author === user">
-						<a href="" role="tab" data-target="#admin" data-toggle="tab" style="height:70px;">
-							<h4 class="reviews text-capitalize"><i class="fa fa-cogs"></i> Administration  </h4>
-						</a>
-					</li>
 				</ul> 
 				
 				<div class="tab-content">
 					<div class="tab-pane active" id="model">
 
 						<div class="row">
+							<div class="col-sm-12">
+								<div ng-repeat="action in workflowActions">
+									<button class="btn btn-primary pull-right" ng-click="openWorkflowActionDialog(action)">
+										<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
+										<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
+										<span ng-if="action ==='Approve'" class="fa fa-thumbs-up" aria-hidden="true"></span>
+										<span ng-if="action ==='Reject'" class="fa fa-thumbs-down" aria-hidden="true"></span>
+										&nbsp;{{action}}
+									</button>
+									<div class="pull-right">&nbsp;&nbsp;</div>
+								</div>
+								<div ng-show="authority == 'ROLE_ADMIN' || model.author === user">
+									<button class="btn btn-default btn-primary pull-right" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" role="button" ng-click="openDeleteDialog(model)"><span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
+									<div class="pull-right">&nbsp;&nbsp;</div>
+								</div>
+								<div ng-show="authority == 'ROLE_ADMIN' && model.author === 'anonymousUser'">
+									<a  class="btn btn-default btn-primary pull-right" ng-click="openWorkflowActionDialog('Claim')"	 role="button">Claim</a>
+								</div>
+							</div>
+						</div>
+						<div class="row">
 								
 							  <h3 class="modelHeader ng-binding">{{model.displayName}} {{model.type}}</h3>
-
-							  <div class="col-sm-12 modelDetails">
+							  
+							  <div class="col-sm-12 modelDetails">							  	
 								 <div class="col-sm-3 modelImg">
 								   <div class="row">
 										<div class="placeHolder">
@@ -215,43 +231,6 @@
 				
 					</div>
 					
-					
-					<div class="tab-pane" id="admin">
-						<h4 class="reviews text-capitalize"> Remove Model "{{model.displayName}}"</h4>
-					
-						<div class="alert alert-warning" role="alert" style="width:50%; margin-top:30px; margin-bottom:30px;" ng-show="model.referencedBy.length > 0">
-						  	<p> <i class="fa fa-bell"></i> You can't delete this Model, it is <b>Used By</b>: </p>
-						   		
-					   		<ul style="margin-top:30px;" class="list-inline" >
-							  <li ng-repeat="usage in model.referencedBy" class="ng-scope">
-							  	<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">
-							  		{{usage.namespace}}.{{usage.name}}:{{usage.version}}
-							  	</a>
-							  </li>
-						  	</ul>
-						</div>
-						
-						<button class="btn btn-primary" ng-click="remove()" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released'" >Remove Model</button>
-						<br/>
-						<br/>
-						<h4 class="reviews text-capitalize">Workflow Actions</h4>
-						
-						<p>
-							<button ng-repeat="action in workflowActions"  class="btn btn-primary" ng-click="openWorkflowActionDialog(action)">{{action}}</button>
-						</p>
-						<br/>
-						<br/>
-						<div ng-show="authority == 'ROLE_ADMIN'">
-							<h4 class="reviews text-capitalize">Claim Model</h4>
-							
-							<p>
-								<button class="btn btn-primary" ng-click="openWorkflowActionDialog('claim')">Claim</button>
-							</p>
-						</div>
-					</div>
-					
-					
-					
 				</div>
 			</div>
 			
@@ -274,6 +253,34 @@
 	</div>
 	<div class="modal-footer">
       <button class="btn btn-primary" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
+	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
+  	</div>
+</script>
+
+<script type="text/ng-template" id="deleteActionDialog.html">
+	<div class="modal-header">
+  		<h3 class="modal-title" id="modal-title-workflowAction">Delete Model</h3>
+	</div>
+  	<div class="modal-body" id="modal-body-deleteAction">
+      <div class="alert alert-warning" role="alert" ng-show="model.referencedBy.length > 0">
+		<p> <i class="fa fa-bell"></i> You can't delete this Model, it is <b>Used By</b>: </p>
+						   		
+			<ul style="margin-top:30px;">
+				<li ng-repeat="usage in model.referencedBy" class="ng-scope">
+					<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">
+						{{usage.namespace}}.{{usage.name}}:{{usage.version}}
+					</a>
+				</li>
+			</ul>
+	 </div>
+      <div class="row">
+      	<div class="col-md-12">
+        	Are you sure you want to delete the model <i>{{model.id.prettyFormat}}</i> ?
+      	</div>
+      </div>
+	</div>
+	<div class="modal-footer">
+      <button class="btn btn-primary" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released' || model.state == 'Deprecated'"  type="button" ng-click="delete()">Delete</button>
 	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
   	</div>
 </script>

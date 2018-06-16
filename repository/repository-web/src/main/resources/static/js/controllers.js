@@ -381,15 +381,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getContent($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getPlatformGenerators();
 
-    $scope.remove = function(){
-        $http.delete('./rest/admin/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
-        .success(function(result){
-            $location.path('/');
-        }).error(function(data, status, headers, config) {
-            $location.path('/');
-        });
-    }
-
     /*
 	 * Start - Handling Comments
 	 */
@@ -509,7 +500,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		    };
 		    
 		    $scope.getModel = function() {
-		    	if ($scope.action != 'claim') {
+		    	if ($scope.action != 'Claim') {
 			    	$http.get('./rest/workflows/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
 				        .success(function(result){
 				        	for(var i = 0; i < result.actions.length;i++) {
@@ -545,6 +536,40 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				    $window.location.reload();
 				});
     };
+    
+    $scope.openDeleteDialog = function(model) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope, model) {
+        	$scope.model = model;
+        	
+        	$scope.delete = function() {
+	        	$http.delete('./rest/admin/'+model.id.namespace+'/'+model.id.name+'/'+model.id.version)
+		        	.success(function(result){
+		            	modalInstance.close();
+		        	});
+	        };
+	        	
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "deleteActionDialog.html",
+        size: "lg",
+        resolve: {
+    		model: function() {
+    			return $scope.model;
+    		}
+  		}
+      });
+      
+      modalInstance.result.then(
+			function() {
+			 $location.path('/');
+			 $window.location.reload();
+	   });
+    };
+    
 
 }]);
 
