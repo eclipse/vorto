@@ -65,7 +65,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 			UploadModelResult uploadResult = modelRepository.upload(
 					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream()),
 					modelName, userContext);
-			Assert.isTrue(uploadResult.isValid(), uploadResult.getErrorMessage());
+			Assert.isTrue(uploadResult.getReport().isValid(), uploadResult.getReport().getErrorMessage());
 			
 			return modelRepository.checkin(uploadResult.getHandleId(), userContext);
 		} catch (Exception ex) {

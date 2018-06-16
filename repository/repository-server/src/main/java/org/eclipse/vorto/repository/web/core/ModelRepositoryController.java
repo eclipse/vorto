@@ -34,17 +34,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
+import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
-import org.eclipse.vorto.server.commons.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,6 +60,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,6 +90,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IModelRepository modelRepository;
+	
+	@Autowired
+	private IUserRepository userRepository;
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -372,4 +383,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
+	
+    @ApiOperation(value = "Saves a model to the repository.")
+    @RequestMapping(method = RequestMethod.PUT,
+    				value = "/{namespace}/{name}/{version:.+}",
+    				produces = "application/json")
+    public ValidationReport saveModel(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+									    @ApiParam(value = "name", required = true) @PathVariable String name,
+									    @ApiParam(value = "version", required = true) @PathVariable String version, @RequestBody ModelContent content) {
+    	try {
+    		ModelId modelId = new ModelId(name,namespace,version);
+    		
+    		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
+    		ModelInfo modelInfo = ModelParserFactory.getParser("model"+ModelType.valueOf(content.getType()).getExtension()).parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
+    		
+    		if (!modelId.equals(modelInfo.getId())) {
+    			return ValidationReport.invalid(modelInfo, "You may not change the model ID (name, namespace, version). For this please create a new model.");
+    		}
+    		ModelValidationHelper validationHelper = new ModelValidationHelper(modelRepository, userRepository);
+    		ValidationReport validationReport =  validationHelper.validate(modelInfo, userContext);
+    		if (validationReport.isValid()) {
+    			this.modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(), modelInfo.getId().getName()+modelInfo.getType().getExtension(), userContext);
+    		} 
+    		return validationReport;
+    	} catch(ValidationException validationException) {
+    		return ValidationReport.invalid(null, validationException.getMessage());
+    	}
+    	
+    }
 }

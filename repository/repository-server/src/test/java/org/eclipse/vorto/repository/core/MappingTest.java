@@ -26,10 +26,10 @@ public class MappingTest extends AbstractIntegrationTest {
 	public void tesUploadMapping() throws IOException {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
-		assertEquals(true, uploadResult.isValid());
-		assertNull(uploadResult.getErrorMessage());
+		assertEquals(true, uploadResult.getReport().isValid());
+		assertNull(uploadResult.getReport().getErrorMessage());
 		assertNotNull(uploadResult.getHandleId());
-		ModelInfo resource = uploadResult.getModelResource();
+		ModelInfo resource = uploadResult.getReport().getModel();
 		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());
 		assertEquals("Color", resource.getId().getName());
 		assertEquals("1.0.0", resource.getId().getVersion());
@@ -45,7 +45,7 @@ public class MappingTest extends AbstractIntegrationTest {
 	public void testCheckinValidMapping() throws Exception {
 		UploadModelResult uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
-		assertEquals(true, uploadResult.isValid());
+		assertEquals(true, uploadResult.getReport().isValid());
 		assertEquals(0, modelRepository.search("*").size());
 
 		User user = new User();
@@ -64,7 +64,7 @@ public class MappingTest extends AbstractIntegrationTest {
 		uploadResult = modelRepository.upload(
 				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.mapping").getInputStream()),
 				"sample.mapping", UserContext.user("admin"));
-		assertEquals(true, uploadResult.isValid());
+		assertEquals(true, uploadResult.getReport().isValid());
 		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user("alex"));
 		assertEquals(1, modelRepository.search("-Mapping").size());
 	}

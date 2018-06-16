@@ -1,5 +1,6 @@
 <div class="row">
 	<div ng-if="error" class="alert alert-danger">{{error}}</div>
+	<div ng-if="success" class="alert alert-success">{{success}}</div>
 </div>
 <link href="css/comment.css" rel="stylesheet"> 
 
@@ -45,6 +46,11 @@
 								</div>
 								<div ng-show="authority == 'ROLE_ADMIN' && model.author === 'anonymousUser'">
 									<a  class="btn btn-default btn-primary pull-right" ng-click="openWorkflowActionDialog('Claim')"	 role="button">Claim</a>
+									<div class="pull-right">&nbsp;&nbsp;</div>
+								</div>
+								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
+									<a  class="btn btn-default btn-primary pull-right" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</a>
+									<div class="pull-right">&nbsp;&nbsp;</div>
 								</div>
 							</div>
 						</div>
@@ -119,12 +125,11 @@
 							      </dd>
 							   </div>
 							</dl>
-							<div class="modelFilePreview">
-							  <h4>Model Preview</h4>
-							  <pre><code style="font-size: 12px;">{{content}}</code>
-							</pre>
+							<div>
+							  <div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
 							</div>
 						  </div>
+		
 						  
 						  </div>
 						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">

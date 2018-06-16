@@ -184,7 +184,7 @@ public class ShareModelController {
 	private UploadModelResponse createModelResponse(List<UploadModelResult> uploadModelResults) {
 		if(uploadModelResults.size() ==0)
 			return new UploadModelResponse("No valid models found. Nothing to checkin",false,null);
-		long noOfInvalidModels = uploadModelResults.stream().filter(result -> !result.isValid()).count();
+		long noOfInvalidModels = uploadModelResults.stream().filter(result -> !result.getReport().isValid()).count();
 		
 		return (noOfInvalidModels) > 0 ? new UploadModelResponse(resolveMessage(ERROR_MSG_FORMAT, noOfInvalidModels),false,uploadModelResults) : new UploadModelResponse(resolveMessage(SUCCESS_MSG_FORMAT, uploadModelResults.size()),true,uploadModelResults); 
 	}

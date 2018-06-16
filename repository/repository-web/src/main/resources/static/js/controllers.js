@@ -213,13 +213,13 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         $scope.loadMessage = "Checking in... Please wait!";
         $scope.showResultBox = false;
         angular.forEach(uploadResults, function (uploadResult, idx) {
-            if(uploadResult.valid) {
+            if(uploadResult.report.valid) {
                 var handle = {
                     handleId : uploadResult.handleId,
                     id : {
-                        name : uploadResult.modelResource.id.name,
-                        namespace : uploadResult.modelResource.id.namespace,
-                        version : uploadResult.modelResource.id.version
+                        name : uploadResult.report.model.id.name,
+                        namespace : uploadResult.report.model.id.namespace,
+                        version : uploadResult.report.model.id.version
                     }
                 }
                 validUploadHandles.push(handle);
@@ -251,7 +251,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     checkinSingle = function (handleId) {
         $http.put('./rest/secure/'+handleId)
         .success(function(result){
-            // $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
+            // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
             $scope.resultMessage = "Checkin was successful!";
             $scope.showCheckin = false;
@@ -280,6 +280,45 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.platformDemoGeneratorMatrix = null;
     $scope.workflowActions = [];
     $scope.chosenFile = false;
+    $scope.editMode = false;
+    
+    $scope.modelEditor = null;
+    
+    $scope.modelEditorLoaded = function(_editor) {
+    	$scope.modelEditor = _editor;
+    	$scope.modelEditorSession = _editor.getSession();
+    	_editor.getSession().setMode("ace/mode/vorto");
+    	_editor.getSession().setTabSize(2);
+  		_editor.getSession().setUseWrapMode(true);
+	};
+	
+		
+	$scope.modelEditorChanged = function (e) {
+		$scope.newModelCode = $scope.modelEditorSession.getDocument().getValue();
+	};
+	
+	$scope.saveModel = function() {
+		var newContent = {
+			contentDsl : $scope.newModelCode,
+			type : $scope.model.type
+			
+		};
+		
+		$http.put('./rest/model/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version, newContent)
+	        .success(function(result) {
+	           if (result.valid) {
+	           	$scope.success = "Changes saved successfully";
+	           	$timeout(function() {
+        			$window.location.reload();
+        		},1000);
+	             //$window.location.reload();
+	           	 //$location.path("/details/"+result.model.id.namespace+"/"+result.model.id.name+"/"+result.model.id.version); 
+	           } else {
+	           	 $scope.error = result.errorMessage;
+	           }
+	        }).error(function(data, status, headers, config) {  
+	        });
+	};
 
     $scope.uploadImage = function () {
         var fd = new FormData();
@@ -332,7 +371,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getContent = function (namespace,name,version) {
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
-            $scope.content = result;
+            $scope.modelEditorSession.getDocument().setValue(result);
         }).error(function(data, status, headers, config) {
             $scope.error = data.message;
         });

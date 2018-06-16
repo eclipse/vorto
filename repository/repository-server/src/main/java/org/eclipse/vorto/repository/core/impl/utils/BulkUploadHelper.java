@@ -33,6 +33,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
+import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
@@ -101,7 +102,7 @@ public class BulkUploadHelper {
 			/*
 			 * Return result if one is invalid, else, go for further processing
 			 */
-			if (uploadedModelResults.stream().anyMatch(result -> !result.isValid())) {
+			if (uploadedModelResults.stream().anyMatch(result -> !result.getReport().isValid())) {
 				return new ArrayList<>(uploadedModelResults);
 			} else {
 				/*
@@ -124,7 +125,7 @@ public class BulkUploadHelper {
 		try {
 			final String handleId = UUID.randomUUID().toString() + modelInfo.getType().getExtension();
 			String key = uploadStorage.store(handleId, ((ModelEMFResource) modelInfo).toDSL(), TTL_TEMP_STORAGE_INSECONDS).getKey();
-			return Optional.of(UploadModelResult.valid(key, modelInfo));
+			return Optional.of(new UploadModelResult(key,ValidationReport.valid(modelInfo)));
 		} catch (IOException e) {
 			LOGGER.error("Exception thrown when getting DSL of " + modelInfo.toString(), e);
 			return Optional.empty();
@@ -138,7 +139,7 @@ public class BulkUploadHelper {
 			} catch (ValidationException validationException) {
 				return UploadModelResultFactory.create(validationException);
 			}
-			return UploadModelResult.valid(modelInfo);
+			return new UploadModelResult(null, ValidationReport.valid(modelInfo));
 		};
 	}
 	

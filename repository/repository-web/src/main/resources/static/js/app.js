@@ -1,5 +1,5 @@
 var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives",
-    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls"]);
+    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace"]);
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
