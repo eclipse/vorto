@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
+import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 
@@ -47,18 +48,18 @@ public class UploadModelResultFactory {
 			errorMessage.append(validationExceptions[i].getMessage());
 		}
 		
-		return new UploadModelResult(null, validationExceptions[0].getModelResource(), false,
-				errorMessage.toString(), missingReferences);
+		return new UploadModelResult(null, ValidationReport.invalid(validationExceptions[0].getModelResource(),
+				errorMessage.toString(), missingReferences));
 	}
 	
 	public static UploadModelResult invalid(CouldNotResolveReferenceException validationException) {
-		return new UploadModelResult(null, validationException.getModelResource(), false,
-				validationException.getMessage(), validationException.getMissingReferences());
+		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
+				validationException.getMessage(), validationException.getMissingReferences()));
 	}
 
 	public static UploadModelResult invalid(ValidationException validationException) {
-		return new UploadModelResult(null, validationException.getModelResource(), false,
-				validationException.getMessage());
+		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
+				validationException.getMessage()));
 	}
 	
 }

@@ -1,0 +1,56 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Creating Model</center></h3>
+</div>
+<div class="modal-body">
+	<form name="createModelForm" novalidate>
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+	<label>What type of model would you like to create ?</label>
+    <div class="form-group">
+        <div class="radio">
+            <label>
+                <input type="radio" name="modelType" value="InformationModel" ng-model="modelType">
+                Information Model
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="modelType" value="Functionblock" ng-model="modelType">
+                Function Block
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="modelType" value="Datatype" ng-model="modelType">
+                Datatype
+            </label>
+        </div>
+         <div class="radio">
+            <label>
+                <input type="radio" name="modelType" value="Mapping" ng-model="modelType">
+                Mapping
+            </label>
+        </div>
+    </div>
+    <div class="form-group">
+    	<label>Name</label>
+        <input type="text" class="form-control" name="modelName" ng-model="modelName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
+        <div ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name</div>
+    </div>
+    <div class="form-group">
+    	<label>Namespace</label>
+        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/(?:^\w+|\w+\.\w+)+$/" required>
+		<div ng-show="createModelForm.modelNamespace.$error.pattern">Please enter a valid model namespace. Example: com.mycompay</div>
+    </div>
+    <div class="form-group">
+    	<label>Version</label>
+        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
+		<div ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version.</div>
+    </div>
+  </div>
+</form>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-disabled="createModelForm.$invalid" ng-click="create()">Create</button>
+	    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>

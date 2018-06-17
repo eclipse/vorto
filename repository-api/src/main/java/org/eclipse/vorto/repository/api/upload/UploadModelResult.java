@@ -14,83 +14,37 @@
  */
 package org.eclipse.vorto.repository.api.upload;
 
-import java.util.Collection;
-
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
-
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class UploadModelResult {
 	private String handleId = null;
-	private ModelInfo modelResource = null;
-	private boolean valid = false;
-	private String errorMessage = null;
-	private Collection<ModelId> unresolvedReferences;
+	private ValidationReport report;
 
-	public UploadModelResult(String handleId, ModelInfo modelResource, boolean valid, String errorMessage) {
+	public UploadModelResult(String handleId,ValidationReport report) {
 		super();
 		this.handleId = handleId;
-		this.modelResource = modelResource;
-		this.valid = valid;
-		this.errorMessage = errorMessage;
+		this.report = report;
 	}
 	
-	public UploadModelResult() {
+	protected UploadModelResult() {
 		
-	}
-
-	public UploadModelResult(String handleId, ModelInfo modelResource, boolean valid, String errorMessage,
-			Collection<ModelId> missingReferences) {
-		this(handleId, modelResource, valid, errorMessage);
-		this.unresolvedReferences = missingReferences;
-	}
-
-	public static UploadModelResult invalid(ModelInfo modelResource, String msg) {
-		return new UploadModelResult(null, modelResource, false, msg);
-	}
-
-	public static UploadModelResult valid(String uploadHandle, ModelInfo modelResource) {
-		return new UploadModelResult(uploadHandle, modelResource, true, null);
-	}
-	
-
-	public static UploadModelResult valid(ModelInfo modelResource) {
-		return new UploadModelResult(null, modelResource, true, null);
-	}
-
-	public ModelInfo getModelResource() {
-		return modelResource;
-	}
-
-	public boolean isValid() {
-		return valid;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
 	}
 
 	public String getHandleId() {
 		return handleId;
 	}
 
-	public Collection<ModelId> getUnresolvedReferences() {
-		return unresolvedReferences;
-	}
-
-	@Override
-	public String toString() {
-		return "UploadModelResult [handleId=" + handleId + ", modelResource=" + modelResource + ", valid=" + valid
-				+ ", errorMessage=" + errorMessage + ", unresolvedReferences=" + unresolvedReferences + "]";
+	public ValidationReport getReport() {
+		return report;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((modelResource == null) ? 0 : modelResource.hashCode());
+		result = prime * result + ((handleId == null) ? 0 : handleId.hashCode());
+		result = prime * result + ((report == null) ? 0 : report.hashCode());
 		return result;
 	}
 
@@ -103,13 +57,22 @@ public class UploadModelResult {
 		if (getClass() != obj.getClass())
 			return false;
 		UploadModelResult other = (UploadModelResult) obj;
-		if (modelResource == null) {
-			if (other.modelResource != null)
+		if (handleId == null) {
+			if (other.handleId != null)
 				return false;
-		} else if (!modelResource.equals(other.modelResource))
+		} else if (!handleId.equals(other.handleId))
+			return false;
+		if (report == null) {
+			if (other.report != null)
+				return false;
+		} else if (!report.equals(other.report))
 			return false;
 		return true;
 	}
+	
+	
+	
+
 	
 	
 }

@@ -68,8 +68,8 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		String fileName = "sample_models/invalid-models.zip";
 		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
-		assertFalse(result.get(0).isValid());
-		assertFalse(result.get(1).isValid()); 
+		assertFalse(result.get(0).getReport().isValid());
+		assertFalse(result.get(1).getReport().isValid()); 
 	}
 	
 	@Test
@@ -77,7 +77,7 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		String fileName = "sample_models/modelsWithSameId.zip";
 		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
-		assertFalse(result.get(1).isValid()); 	
+		assertFalse(result.get(1).getReport().isValid()); 	
 	}
 	
 	@Test
@@ -85,22 +85,22 @@ public class BulkUploadTest extends AbstractIntegrationTest  {
 		String fileName = "sample_models/modelsWithWrongGrammar.zip";
 		List<UploadModelResult> result = bulkUploadHelper.uploadMultiple(loadContentForFile(fileName),fileName, "admin");
 		assertEquals(2,result.size());
-		assertFalse(result.get(0).isValid());
-		assertFalse(result.get(1).isValid()); 
-		assertEquals("org.eclipse.vorto.examples",result.get(0).getModelResource().getId().getNamespace());
-		assertEquals("Accelerometer",result.get(0).getModelResource().getId().getName());
-		assertEquals("0.0.1",result.get(0).getModelResource().getId().getVersion());
+		assertFalse(result.get(0).getReport().isValid());
+		assertFalse(result.get(1).getReport().isValid()); 
+		assertEquals("org.eclipse.vorto.examples",result.get(0).getReport().getModel().getId().getNamespace());
+		assertEquals("Accelerometer",result.get(0).getReport().getModel().getId().getName());
+		assertEquals("0.0.1",result.get(0).getReport().getModel().getId().getVersion());
 	}
 	
 	private void verifyOneModelAreMissing(List<UploadModelResult> uploadResults) {
-		assertEquals(false, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertEquals((uploadResults.size() - 1), uploadResults.stream().filter(result -> result.getErrorMessage() == null).count());
-		assertEquals(1, uploadResults.stream().filter(result -> result.getErrorMessage() !=null).count());
+		assertEquals(false, uploadResults.stream().allMatch(result -> result.getReport().isValid()));
+		assertEquals((uploadResults.size() - 1), uploadResults.stream().filter(result -> result.getReport().getErrorMessage() == null).count());
+		assertEquals(1, uploadResults.stream().filter(result -> result.getReport().getErrorMessage() !=null).count());
 	}
 
 	private void verifyAllModelsAreValid(List<UploadModelResult> uploadResults) {
-		assertEquals(true, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertTrue(uploadResults.stream().allMatch(result -> result.getErrorMessage() == null));
+		assertEquals(true, uploadResults.stream().allMatch(result -> result.getReport().isValid()));
+		assertTrue(uploadResults.stream().allMatch(result -> result.getReport().getErrorMessage() == null));
 		assertTrue(uploadResults.stream().allMatch(result -> result.getHandleId() != null));
 	}
 	

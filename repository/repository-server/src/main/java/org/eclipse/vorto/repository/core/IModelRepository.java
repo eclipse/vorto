@@ -81,8 +81,9 @@ public interface IModelRepository {
 	 * @param content the content
 	 * @param fileName the filename of the model
 	 * @param userContext the user
+	 * @return model info containing model meta data of the saved model
 	 */
-	void save(ModelId modelId, byte[] content, String fileName, IUserContext userContext);
+	ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext);
 		
 	/**
 	 * Removes a model image for the given model id

@@ -11,6 +11,8 @@
 									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="80"
 										ng-model="queryFilter"
 										st-search="" autofocus class="queryFilter input-sm" />
+									<a ng-show="authenticated && userInfo.isRegistered === 'true'" class="btn btn-default btn-primary pull-right" ng-click="openCreateModelDialog()" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create new Model</a>
+									
 								</div>
 							</th>
 						</tr>

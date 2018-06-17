@@ -74,7 +74,7 @@ public class WorkflowController {
     @ApiOperation(value = "Claims the ownership of a specific model")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @RequestMapping(method = RequestMethod.PUT,
-    				value = "/actions/{namespace}/{name}/{version:.+}/claim",
+    				value = "/actions/{namespace}/{name}/{version:.+}/Claim",
     				produces = "application/json")
     public ModelInfo claimModel(@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
 								@ApiParam(value = "name", required = true) @PathVariable String name,

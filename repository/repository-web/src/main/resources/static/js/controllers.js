@@ -1,7 +1,7 @@
 var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
-repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', 
-	function ($scope,$rootScope,$http,$location) {
+repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', '$uibModal',
+	function ($scope,$rootScope,$http,$location,$uibModal) {
 
     $scope.models = [];
     $scope.modelType = 'all';
@@ -62,6 +62,42 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
 
     $scope.go = function(model){
         $location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+    };
+    
+    $scope.openCreateModelDialog = function(action) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope) {
+        	$scope.errorMessage = null;
+        	$scope.modelType = "InformationModel";
+        	$scope.modelName = "";
+        	$scope.modelNamespace = "";
+        	$scope.modelVersion = "1.0.0";
+        	
+			$scope.create = function() {
+		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+			        .success(function(result){
+			        	if (result.status === 409) {
+			        		$scope.errorMessage = "Model with this name and namespace already exists.";
+			        	} else {
+			        		modalInstance.close(result.entity);
+			        	}
+			        });
+		    };
+		 	    
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "partials/createmodel-template.html",
+        size: "lg",
+        resolve: {}
+      });
+      
+      modalInstance.result.then(
+				function(model) {
+					$location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+				});
     };
 } ]);
 
@@ -213,13 +249,13 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         $scope.loadMessage = "Checking in... Please wait!";
         $scope.showResultBox = false;
         angular.forEach(uploadResults, function (uploadResult, idx) {
-            if(uploadResult.valid) {
+            if(uploadResult.report.valid) {
                 var handle = {
                     handleId : uploadResult.handleId,
                     id : {
-                        name : uploadResult.modelResource.id.name,
-                        namespace : uploadResult.modelResource.id.namespace,
-                        version : uploadResult.modelResource.id.version
+                        name : uploadResult.report.model.id.name,
+                        namespace : uploadResult.report.model.id.namespace,
+                        version : uploadResult.report.model.id.version
                     }
                 }
                 validUploadHandles.push(handle);
@@ -251,7 +287,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     checkinSingle = function (handleId) {
         $http.put('./rest/secure/'+handleId)
         .success(function(result){
-            // $location.path("/details/"+$scope.uploadResult.modelResource.id.namespace+"/"+$scope.uploadResult.modelResource.id.name+"/"+$scope.uploadResult.modelResource.id.version);
+            // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
             $scope.resultMessage = "Checkin was successful!";
             $scope.showCheckin = false;
@@ -280,6 +316,45 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.platformDemoGeneratorMatrix = null;
     $scope.workflowActions = [];
     $scope.chosenFile = false;
+    $scope.editMode = false;
+    
+    $scope.modelEditor = null;
+    
+    $scope.modelEditorLoaded = function(_editor) {
+    	$scope.modelEditor = _editor;
+    	$scope.modelEditorSession = _editor.getSession();
+    	_editor.getSession().setMode("ace/mode/vorto");
+    	_editor.getSession().setTabSize(2);
+  		_editor.getSession().setUseWrapMode(true);
+	};
+	
+		
+	$scope.modelEditorChanged = function (e) {
+		$scope.newModelCode = $scope.modelEditorSession.getDocument().getValue();
+	};
+	
+	$scope.saveModel = function() {
+		var newContent = {
+			contentDsl : $scope.newModelCode,
+			type : $scope.model.type
+			
+		};
+		
+		$http.put('./rest/model/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version, newContent)
+	        .success(function(result) {
+	           if (result.valid) {
+	           	$scope.success = "Changes saved successfully";
+	           	$timeout(function() {
+        			$window.location.reload();
+        		},1000);
+	             //$window.location.reload();
+	           	 //$location.path("/details/"+result.model.id.namespace+"/"+result.model.id.name+"/"+result.model.id.version); 
+	           } else {
+	           	 $scope.error = result.errorMessage;
+	           }
+	        }).error(function(data, status, headers, config) {  
+	        });
+	};
 
     $scope.uploadImage = function () {
         var fd = new FormData();
@@ -332,7 +407,10 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getContent = function (namespace,name,version) {
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
-            $scope.content = result;
+            $scope.modelEditorSession.getDocument().setValue(result);
+            if ($scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
+  				$scope.modelEditor.setReadOnly(true);
+  			}
         }).error(function(data, status, headers, config) {
             $scope.error = data.message;
         });
@@ -380,15 +458,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.getDetails($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getContent($routeParams.namespace,$routeParams.name,$routeParams.version);
     $scope.getPlatformGenerators();
-
-    $scope.remove = function(){
-        $http.delete('./rest/admin/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version )
-        .success(function(result){
-            $location.path('/');
-        }).error(function(data, status, headers, config) {
-            $location.path('/');
-        });
-    }
 
     /*
 	 * Start - Handling Comments
@@ -509,7 +578,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		    };
 		    
 		    $scope.getModel = function() {
-		    	if ($scope.action != 'claim') {
+		    	if ($scope.action != 'Claim') {
 			    	$http.get('./rest/workflows/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
 				        .success(function(result){
 				        	for(var i = 0; i < result.actions.length;i++) {
@@ -545,6 +614,76 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				    $window.location.reload();
 				});
     };
+    
+    $scope.openDeleteDialog = function(model) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope, model) {
+        	$scope.model = model;
+        	
+        	$scope.delete = function() {
+	        	$http.delete('./rest/admin/'+model.id.namespace+'/'+model.id.name+'/'+model.id.version)
+		        	.success(function(result){
+		            	modalInstance.close();
+		        	});
+	        };
+	        	
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "deleteActionDialog.html",
+        size: "lg",
+        resolve: {
+    		model: function() {
+    			return $scope.model;
+    		}
+  		}
+      });
+      
+      modalInstance.result.then(
+			function() {
+			 $location.path('/');
+			 $window.location.reload();
+	   });
+    };
+    
+    $scope.openCreateModelDialog = function(action) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope) {
+        	$scope.errorMessage = null;
+        	$scope.modelType = "InformationModel";
+        	$scope.modelName = "";
+        	$scope.modelNamespace = "";
+        	$scope.modelVersion = "1.0.0";
+        	
+			$scope.create = function() {
+		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+			        .success(function(result){
+			        	if (result.status === 409) {
+			        		$scope.errorMessage = "Model with this name and namespace already exists.";
+			        	} else {
+			        		modalInstance.close(result.entity);
+			        	}
+			        });
+		    };
+		 	    
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "partials/createmodel-template.html",
+        size: "lg",
+        resolve: {}
+      });
+      
+      modalInstance.result.then(
+				function(model) {
+					$location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+				});
+    };
+    
 
 }]);
 

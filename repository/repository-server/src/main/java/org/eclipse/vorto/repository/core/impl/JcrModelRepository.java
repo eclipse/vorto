@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -48,6 +47,7 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
+import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IModelContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -57,10 +57,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
-import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
-import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
-import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
-import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
+import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,8 +85,8 @@ public class JcrModelRepository implements IModelRepository {
 	@Autowired
 	private ITemporaryStorage uploadStorage;
 
-	private List<IModelValidator> validators = new LinkedList<IModelValidator>();
-
+	private ModelValidationHelper validationHelper;
+	
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
 	@Override
@@ -221,22 +218,8 @@ public class JcrModelRepository implements IModelRepository {
 
 		try {
 			ModelInfo resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
-
-			List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
-			for (IModelValidator validator : validators) {
-				try {
-					validator.validate(resource, InvocationContext.create(userContext));
-				} catch (ValidationException validationException) {
-					validationExceptions.add(validationException);
-				}
-			}
-
-			if (validationExceptions.size() <= 0) {
-				return UploadModelResult.valid(createUploadHandle(content, resource.getType()), resource);
-			} else {
-				return UploadModelResultFactory
-						.create(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
-			}
+			ValidationReport validationReport = this.validationHelper.validate(resource, userContext);
+			return new UploadModelResult(createUploadHandle(content, resource.getType()), validationReport);
 		} catch (ValidationException e) {
 			return UploadModelResultFactory.invalid(e);
 		}
@@ -311,7 +294,7 @@ public class JcrModelRepository implements IModelRepository {
 		return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
 	}
 	
-	public void save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
+	public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
 		
@@ -339,7 +322,9 @@ public class JcrModelRepository implements IModelRepository {
 			}
 
 			session.save();
-			logger.info("Checkin successful");
+			logger.info("Model was saved successful");
+			return ModelParserFactory.getParser(fileName)
+					.parse(new ByteArrayInputStream(content));
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
@@ -372,9 +357,7 @@ public class JcrModelRepository implements IModelRepository {
 
 	@PostConstruct
 	public void createValidators() {
-		this.validators.add(new DuplicateModelValidation(this, userRepository));
-		this.validators.add(new ModelReferencesValidation(this));
-		this.validators.add(new TypeImportValidation());
+		this.validationHelper = new ModelValidationHelper(this, userRepository);
 	}
 
 	public void setSession(Session session) {
