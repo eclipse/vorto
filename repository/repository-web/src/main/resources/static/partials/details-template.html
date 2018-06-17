@@ -49,7 +49,11 @@
 									<div class="pull-right">&nbsp;&nbsp;</div>
 								</div>
 								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
-									<a  class="btn btn-default btn-primary pull-right" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</a>
+									<a  class="btn btn-default btn-primary pull-right" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</a>
+									<div class="pull-right">&nbsp;&nbsp;</div>
+								</div>
+								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
+									<a  class="btn btn-default btn-primary pull-right" ng-click="openCreateModelDialog()" role="button"><span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 									<div class="pull-right">&nbsp;&nbsp;</div>
 								</div>
 							</div>
@@ -59,7 +63,7 @@
 							  <h3 class="modelHeader ng-binding">{{model.displayName}} {{model.type}}</h3>
 							  
 							  <div class="col-sm-12 modelDetails">							  	
-								 <div class="col-sm-3 modelImg">
+								 <div ng-if="model.type === 'InformationModel'" class="col-sm-3 modelImg">
 								   <div class="row">
 										<div class="placeHolder">
 											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
@@ -84,7 +88,7 @@
 							  </div>
 							  </div>
 							  </div>
-							  <div class="col-sm-6 modelDet">
+							  <div class="col-sm-{{model.type === 'InformationModel'?6:9}} modelDet">
 
 							   <div class="infomodel">
 								<dl class="dl-horizontal">
@@ -126,6 +130,8 @@
 							   </div>
 							</dl>
 							<div>
+							  <br>
+							  <label class="ng-binding">Model Editor</label>
 							  <div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
 							</div>
 						  </div>

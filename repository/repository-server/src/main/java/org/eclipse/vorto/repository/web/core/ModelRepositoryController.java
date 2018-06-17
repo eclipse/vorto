@@ -30,11 +30,13 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
@@ -50,6 +52,9 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
+import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,6 +98,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IUserRepository userRepository;
+	
+	@Autowired
+	private IWorkflowService workflowService;
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -410,5 +418,25 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     		return ValidationReport.invalid(null, validationException.getMessage());
     	}
     	
+    }
+    
+    @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
+    @RequestMapping(method = RequestMethod.POST,value = "/{namespace:.+}/{name}/{version:.+}/{modelType}",
+    				produces = "application/json")
+    public Response createModel(@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+		    @ApiParam(value = "name", required = true) @PathVariable String name,
+		    @ApiParam(value = "version", required = true) @PathVariable String version, @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType) throws WorkflowException {
+    	
+    	final ModelId modelId = new ModelId(name,namespace,version);
+    	if (this.modelRepository.getById(modelId) != null) {
+    		return Response.status(Status.CONFLICT).build();
+    	} else {
+    		ModelTemplate template = new ModelTemplate();
+    		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
+			ModelInfo savedModel = this.modelRepository.save(modelId, template.createModelTemplate(modelId,modelType).getBytes(), modelId.getName()+modelType.getExtension(), userContext);
+			this.workflowService.start(modelId);
+			return Response.ok(savedModel).build();
+			
+    	}
     }
 }

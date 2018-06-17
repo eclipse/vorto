@@ -294,7 +294,7 @@ public class JcrModelRepository implements IModelRepository {
 		return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
 	}
 	
-	public void save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
+	public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
 		
@@ -322,7 +322,9 @@ public class JcrModelRepository implements IModelRepository {
 			}
 
 			session.save();
-			logger.info("Checkin successful");
+			logger.info("Model was saved successful");
+			return ModelParserFactory.getParser(fileName)
+					.parse(new ByteArrayInputStream(content));
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);

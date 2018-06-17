@@ -1,7 +1,7 @@
 var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
-repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', 
-	function ($scope,$rootScope,$http,$location) {
+repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '$http', '$location', '$uibModal',
+	function ($scope,$rootScope,$http,$location,$uibModal) {
 
     $scope.models = [];
     $scope.modelType = 'all';
@@ -62,6 +62,42 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
 
     $scope.go = function(model){
         $location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+    };
+    
+    $scope.openCreateModelDialog = function(action) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope) {
+        	$scope.errorMessage = null;
+        	$scope.modelType = "InformationModel";
+        	$scope.modelName = "";
+        	$scope.modelNamespace = "";
+        	$scope.modelVersion = "1.0.0";
+        	
+			$scope.create = function() {
+		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+			        .success(function(result){
+			        	if (result.status === 409) {
+			        		$scope.errorMessage = "Model with this name and namespace already exists.";
+			        	} else {
+			        		modalInstance.close(result.entity);
+			        	}
+			        });
+		    };
+		 	    
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "partials/createmodel-template.html",
+        size: "lg",
+        resolve: {}
+      });
+      
+      modalInstance.result.then(
+				function(model) {
+					$location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+				});
     };
 } ]);
 
@@ -372,6 +408,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
             $scope.modelEditorSession.getDocument().setValue(result);
+            if ($scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
+  				$scope.modelEditor.setReadOnly(true);
+  			}
         }).error(function(data, status, headers, config) {
             $scope.error = data.message;
         });
@@ -607,6 +646,42 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			 $location.path('/');
 			 $window.location.reload();
 	   });
+    };
+    
+    $scope.openCreateModelDialog = function(action) {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope) {
+        	$scope.errorMessage = null;
+        	$scope.modelType = "InformationModel";
+        	$scope.modelName = "";
+        	$scope.modelNamespace = "";
+        	$scope.modelVersion = "1.0.0";
+        	
+			$scope.create = function() {
+		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+			        .success(function(result){
+			        	if (result.status === 409) {
+			        		$scope.errorMessage = "Model with this name and namespace already exists.";
+			        	} else {
+			        		modalInstance.close(result.entity);
+			        	}
+			        });
+		    };
+		 	    
+		    $scope.cancel = function() {
+				modalInstance.dismiss();
+			};
+        },
+        templateUrl: "partials/createmodel-template.html",
+        size: "lg",
+        resolve: {}
+      });
+      
+      modalInstance.result.then(
+				function(model) {
+					$location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+				});
     };
     
 
