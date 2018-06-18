@@ -644,7 +644,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
       modalInstance.result.then(
 			function() {
 			 $location.path('/');
-			 $window.location.reload();
 	   });
     };
     
