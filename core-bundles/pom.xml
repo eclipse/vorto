@@ -16,7 +16,8 @@
 	<modules>	
 		<module>generators</module>
 		<module>targetplatform</module>
-		<module>editors</module>
+		<module>language</module>
+		<module>meta-model</module>
 	</modules>
 
 	<properties>

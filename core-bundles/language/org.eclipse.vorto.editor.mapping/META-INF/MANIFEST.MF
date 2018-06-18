@@ -5,20 +5,26 @@ Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.10.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.mapping; singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
+Require-Bundle:  org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
  org.eclipse.xtext.generator;resolution:=optional,
+ org.apache.commons.logging;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
  org.eclipse.emf.mwe2.launch;resolution:=optional,
- org.eclipse.vorto.core,
- org.eclipse.xtext,
  org.eclipse.xtext.util,
- org.eclipse.xtext.xbase.lib;bundle-version="2.13.0",
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
  org.antlr.runtime,
-  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.common.types,
  org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
- org.apache.commons.logging,
+ org.eclipse.vorto.core,
+ org.eclipse.xtext.xbase.lib,
  org.eclipse.vorto.editor,
- org.eclipse.xtend.lib;bundle-version="2.13.0"
+ org.eclipse.xtend.lib,
+ org.eclipse.vorto.editor.functionblock,
+ org.eclipse.vorto.editor.datatype,
+ org.eclipse.vorto.editor.infomodel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.services,

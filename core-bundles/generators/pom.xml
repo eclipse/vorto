@@ -15,6 +15,7 @@
   <packaging>pom</packaging>
 
   <modules>
+  		<module>org.eclipse.vorto.codegen</module>
 		<module>org.eclipse.vorto.codegen.templates.java</module>
 		<module>org.eclipse.vorto.codegen.thingworx</module>
 		<module>org.eclipse.vorto.codegen.javabean</module>

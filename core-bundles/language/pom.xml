@@ -9,20 +9,17 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>bundles</artifactId>
+	<artifactId>language</artifactId>
 
-	<name>Eclipse Vorto Bundles</name>
+	<name>Eclipse Vorto Language</name>
 
 	<packaging>pom</packaging>
 
 	<modules>
-
 	<module>org.eclipse.vorto.editor.datatype</module>
 	<module>org.eclipse.vorto.editor.functionblock</module>
 	<module>org.eclipse.vorto.editor.infomodel</module>
 	<module>org.eclipse.vorto.editor.mapping</module>
-	<module>org.eclipse.vorto.codegen</module>
-	<module>org.eclipse.vorto.core</module>
 	<module>org.eclipse.vorto.editor</module>
 	</modules>
 
