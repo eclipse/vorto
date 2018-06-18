@@ -1,9 +1,0 @@
-namespace com.mycompany.mydevice.type
-version 1.0.0
-displayname "EntityC"
-description "..."
-category demo
-entity EntityC
-{
-	optional intParam as int
-}

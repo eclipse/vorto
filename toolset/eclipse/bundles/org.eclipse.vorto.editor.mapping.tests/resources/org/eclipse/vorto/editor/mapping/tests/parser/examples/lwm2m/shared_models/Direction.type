@@ -1,9 +1,0 @@
-namespace com.mycompany.iot.type
-version 1.0.0
-displayname "Direction"
-description "Enum model for Direction"
-category demo
-
-enum Direction {
-	East, West, South, North
-}
