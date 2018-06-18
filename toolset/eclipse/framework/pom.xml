@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>org.eclipse.vorto.parent</artifactId>
+		<artifactId>eclipse</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
