@@ -89,9 +89,8 @@
 	</repositories>
 
 	<modules>
-		<module>toolset</module>
-		<module>repository-api</module>
-		<module>repository-java-client</module>
+		<module>core-bundles</module>
+		<module>client</module>
 		<module>mapping-engine</module>
 		<module>repository</module>
 		<module>utilities</module>

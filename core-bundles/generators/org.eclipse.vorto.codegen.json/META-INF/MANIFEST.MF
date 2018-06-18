@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto JSON Generator (Incubation)
+Bundle-Description: Vorto JSON Generator lets you generate JSON from an 
+ information model.
+Bundle-DocURL: http://www.eclipse.org/vorto
+Bundle-License: http://www.eclipse.org/legal/epl-v10.html
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-SymbolicName: org.eclipse.vorto.codegen.json;singleton:=true
+Bundle-Version: 0.10.0.qualifier
+Require-Bundle: org.eclipse.vorto.core,
+ com.google.guava,
+ org.eclipse.vorto.codegen,
+ org.apache.commons.lang3,
+ org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.codegen.json
+Bundle-ClassPath: .,
+ lib/jackson-core-2.7.7.jar,
+ lib/jackson-annotations-2.7.0.jar,
+ lib/jackson-databind-2.7.7.jar
+

@@ -1,9 +1,0 @@
-namespace com.mycompany.mydevice.type
-version 1.0.0
-displayname "EnumA"
-description "..."
-category demo
-enum EnumA {
-	Option1,
-	Option2
-}

@@ -17,6 +17,7 @@
 
 
 	<modules>
+		<module>repository-api</module>
 		<module>repository-generators</module>
 		<module>repository-server</module>
 		<module>repository-web</module>
