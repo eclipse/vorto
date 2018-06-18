@@ -109,7 +109,7 @@ public class VortoService {
 	}
 	
 	private String urlForModel(String namespace, String name, String version) {
-		return String.format("%s/rest/model/file/%s/%s/%s?output=DSL&includeDependencies=true", 
+		return String.format("%s/rest/model/file/%s/%s/%s?includeDependencies=true", 
 				env.getVortoRepoUrl(), namespace, name, version);
 	}
 	

@@ -34,7 +34,6 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
-import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -75,7 +74,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertTrue(uploadResult.getReport().isValid());
 		
 		modelRepository.checkin(uploadResult.getHandleId(), admin);
-		IModelContent content = modelRepository.getModelContent(uploadResult.getReport().getModel().getId(), ContentType.DSL);
+		IModelContent content = modelRepository.getModelContent(uploadResult.getReport().getModel().getId());
 		assertTrue(new String(content.getContent(),"utf-8").contains("mandatory b as int"));
 	}
 	
@@ -153,22 +152,12 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testGetDSLContentForModel() throws Exception {
 		checkinModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
-		byte[] content = modelRepository.getModelContent(
-				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.DSL).getContent();
-		String actualContent = new String(content, "UTF-8");
+		IModelContent fileContent = modelRepository.getModelContent(
+				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		String actualContent = new String(fileContent.getContent(), "UTF-8");
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
 		assertEquals(expectedContent, actualContent);
-	}
-
-	@Test
-	public void testGetXMIContentForModel() throws Exception {
-		checkinModel("Color.type");
-		assertEquals(1, modelRepository.search("*").size());
-		byte[] content = modelRepository.getModelContent(
-				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), ContentType.XMI).getContent();
-		String actualContent = new String(content, "UTF-8");
-		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.xmi").getInputStream());
-		assertEquals(expectedContent, actualContent);
+		assertEquals("Color.type",fileContent.getFileName());
 	}
 
 	@Test

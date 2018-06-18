@@ -49,7 +49,7 @@
 									<div class="pull-right">&nbsp;&nbsp;</div>
 								</div>
 								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
-									<a  class="btn btn-default btn-primary pull-right" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</a>
+									<a  class="btn btn-default btn-primary pull-right" ng-disabled="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</a>
 									<div class="pull-right">&nbsp;&nbsp;</div>
 								</div>
 								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
@@ -131,7 +131,8 @@
 							</dl>
 							<div>
 							  <br>
-							  <label class="ng-binding">Model Editor</label>
+							  <label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
+							  <label ng-show="model.state != 'Draft'" class="ng-binding">Model</label>
 							  <div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
 							</div>
 						  </div>

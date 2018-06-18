@@ -45,11 +45,10 @@ public interface IModelRepository {
 	/**
 	 * Returns the actual model content for the given model id
 	 * @param modelId
-	 * @param content type
 	 * @throws ModelNotFoundException
 	 * @return
 	 */
-	IModelContent getModelContent(ModelId modelId, ContentType contentType);
+	IModelContent getModelContent(ModelId modelId);
 	
 	/**
 	 * Uploads model content and validates it. If the model is valid, the returned upload handle is used
@@ -128,10 +127,5 @@ public interface IModelRepository {
      * @return
      */
     ModelId updateState(ModelId modelId, String state);
-
-		
-	public enum ContentType {
-		XMI,DSL
-	}
 
 }

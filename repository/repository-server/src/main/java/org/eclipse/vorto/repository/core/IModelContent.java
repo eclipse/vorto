@@ -15,7 +15,6 @@
 package org.eclipse.vorto.repository.core;
 
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 
 public interface IModelContent {
 
@@ -27,10 +26,9 @@ public interface IModelContent {
 	Model getModel();
 	
 	/**
-	 * format of the model content
 	 * @return
 	 */
-	ContentType getType();
+	String getFileName();
 	
 	/**
 	 * actual model content value

@@ -26,7 +26,6 @@ import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 import org.eclipse.vorto.repository.core.IModelContent;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractResolver implements IModelIdResolver {
@@ -45,7 +44,7 @@ public abstract class AbstractResolver implements IModelIdResolver {
 	}
 	
 	private boolean matchesServiceKey(ModelInfo resource, String targetPlatformKey) {
-		IModelContent content = this.repository.getModelContent(resource.getId(), ContentType.DSL);
+		IModelContent content = this.repository.getModelContent(resource.getId());
 		return ((MappingModel)content.getModel()).getTargetPlatform().equals(targetPlatformKey);
 	}
 	

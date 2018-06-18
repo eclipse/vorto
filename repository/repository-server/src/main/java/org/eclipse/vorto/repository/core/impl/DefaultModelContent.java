@@ -16,17 +16,16 @@ package org.eclipse.vorto.repository.core.impl;
 
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.repository.core.IModelContent;
-import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 
 public class DefaultModelContent implements IModelContent {
 
 	private Model model;
-	private ContentType type;
+	private String fileName;
 	private byte[] content;
 	
-	public DefaultModelContent(Model model, ContentType type, byte[] content) {
+	public DefaultModelContent(Model model, String fileName, byte[] content) {
 		this.model = model;
-		this.type = type;
+		this.fileName = fileName;
 		this.content = content;
 	}
 	
@@ -36,8 +35,8 @@ public class DefaultModelContent implements IModelContent {
 	}
 
 	@Override
-	public ContentType getType() {
-		return type;
+	public String getFileName() {
+		return fileName;
 	}
 
 	@Override

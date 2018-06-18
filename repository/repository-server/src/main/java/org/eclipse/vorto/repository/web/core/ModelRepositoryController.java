@@ -44,7 +44,6 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IModelRepository.ContentType;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -80,25 +79,24 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/find", description="Find information models")
+@Api(value = "/find", description = "Find information models")
 @RestController
 @RequestMapping(value = "/rest/model")
 public class ModelRepositoryController extends AbstractRepositoryController {
 
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
-	private static final String XMI = ".xmi";
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
 	private static final String CONTENT_DISPOSITION = "content-disposition";
 
 	@Value("${server.config.maxModelImageSize}")
 	private long maxModelImageSize;
-	
+
 	@Autowired
 	private IModelRepository modelRepository;
-	
+
 	@Autowired
 	private IUserRepository userRepository;
-	
+
 	@Autowired
 	private IWorkflowService workflowService;
 
@@ -106,129 +104,160 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
-	public List<ModelInfo> searchByExpression(@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression) throws UnsupportedEncodingException {
+	public List<ModelInfo> searchByExpression(
+			@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression)
+			throws UnsupportedEncodingException {
 		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
-		return modelResources.stream().filter(model -> isReleasedOrDeprecated(model) || isUser(SecurityContextHolder.getContext().getAuthentication()) || isAdmin(SecurityContextHolder.getContext().getAuthentication())).map(resource -> ModelDtoFactory.createDto(resource, userContext)).collect(Collectors.toList());
+		return modelResources.stream()
+				.filter(model -> isReleasedOrDeprecated(model)
+						|| isUser(SecurityContextHolder.getContext().getAuthentication())
+						|| isAdmin(SecurityContextHolder.getContext().getAuthentication()))
+				.map(resource -> ModelDtoFactory.createDto(resource, userContext)).collect(Collectors.toList());
 	}
-	
+
 	private boolean isAdmin(Authentication authentication) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		return authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
-	
+
 	private boolean isUser(Authentication authentication) {
 		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 		return authorities.contains(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
 	private boolean isReleasedOrDeprecated(ModelInfo model) {
-		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState()) ||
-			   SimpleWorkflowModel.STATE_DEPRECATED.getName().equals(model.getState());
+		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState())
+				|| SimpleWorkflowModel.STATE_DEPRECATED.getName().equals(model.getState());
 	}
 
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found"), @ApiResponse(code = 403, message = "Not Authorized to view model")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found"),
+			@ApiResponse(code = 403, message = "Not Authorized to view model") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public ModelInfo getModelResource(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
-											@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
-											@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
+	public ModelInfo getModelResource(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
 
 		final ModelId modelId = new ModelId(name, namespace, version);
 		logger.info("getModelResource: [" + modelId.toString() + "]");
-		ModelInfo resource =  modelRepository.getById(modelId);
+		ModelInfo resource = modelRepository.getById(modelId);
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
-		} 
-		return ModelDtoFactory.createDto(resource, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
+		}
+		return ModelDtoFactory.createDto(resource,
+				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
-	
+
 	@ApiOperation(value = "Returns the model content")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public AbstractModel getModelContent(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+	public AbstractModel getModelContent(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
-		
-		byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
-		
-		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
-		return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(),Optional.empty());
+
+		byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version));
+
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+		return ModelDtoFactory.createResource(
+				workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(), Optional.empty());
 	}
-	
+
 	@ApiOperation(value = "Returns the model content including target platform specific attributes")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/content/{namespace}/{name}/{version:.+}/mapping/{targetplatformKey}", method = RequestMethod.GET)
-	public AbstractModel getModelContentForTargetPlatform(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
+	public AbstractModel getModelContentForTargetPlatform(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
 			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
-		
-		List<ModelInfo> mappingResource = modelRepository.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
+
+		List<ModelInfo> mappingResource = modelRepository
+				.getMappingModelsForTargetPlatform(new ModelId(name, namespace, version), targetplatformKey);
 		if (!mappingResource.isEmpty()) {
-			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId(), ContentType.DSL);
-			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
+			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId());
+			IModelWorkspace workspace = IModelWorkspace.newReader()
+					.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
 
-			MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
-			
-			byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version), ContentType.DSL);
-			
-		    workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+			MappingModel mappingModel = (MappingModel) workspace.get().stream().filter(p -> p instanceof MappingModel)
+					.findFirst().get();
 
-			return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(),Optional.of(mappingModel));
+			byte[] modelContent = createZipWithAllDependencies(new ModelId(name, namespace, version));
+
+			workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
+					.read();
+
+			return ModelDtoFactory.createResource(
+					workspace.get().stream().filter(p -> p.getName().equals(name)).findFirst().get(),
+					Optional.of(mappingModel));
 		} else {
-			return getModelContent(namespace,name,version);
+			return getModelContent(namespace, name, version);
 		}
 	}
-	
+
 	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId.fromPrettyFormat(modelId),'model:get')")
 	@RequestMapping(value = "/content/{modelId:.+}/mapping/{mappingId:.+}", method = RequestMethod.GET)
-	public AbstractModel getModelContentByModelAndMappingId(@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId, 
+	public AbstractModel getModelContentByModelAndMappingId(
+			@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId,
 			@ApiParam(value = "The mapping Model ID (prettyFormat)", required = true) final @PathVariable String mappingId) {
-		
+
 		ModelInfo vortoModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(modelId));
 		ModelInfo mappingModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(mappingId));
-		
+
 		if (vortoModelInfo == null) {
 			throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
-		} else if (mappingModelInfo == null)  {
+		} else if (mappingModelInfo == null) {
 			throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
 
 		}
-		
-		byte[] mappingContentZip = createZipWithAllDependencies(mappingModelInfo.getId(), ContentType.DSL);
-		IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
-		MappingModel mappingModel = (MappingModel)workspace.get().stream().filter(p -> p instanceof MappingModel).findFirst().get();
 
-		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId(), ContentType.DSL);
-	    workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+		byte[] mappingContentZip = createZipWithAllDependencies(mappingModelInfo.getId());
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
+		MappingModel mappingModel = (MappingModel) workspace.get().stream().filter(p -> p instanceof MappingModel)
+				.findFirst().get();
 
-		return ModelDtoFactory.createResource(workspace.get().stream().filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),Optional.of(mappingModel));
+		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId());
+		workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
+				.read();
+
+		return ModelDtoFactory.createResource(workspace.get().stream()
+				.filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),
+				Optional.of(mappingModel));
 
 	}
-	
+
 	@ApiOperation(value = "Returns the image of a vorto model")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
 	@RequestMapping(value = "/image/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void getModelImage(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
-								@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
-								@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
-								@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
+	public void getModelImage(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
+			@ApiParam(value = "Response", required = true) final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
-		
+
 		final ModelId modelId = new ModelId(name, namespace, version);
 		byte[] modelImage = modelRepository.getModelImage(modelId);
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getName()+".png");
+		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getName() + ".png");
 		response.setContentType(APPLICATION_OCTET_STREAM);
 		try {
 			IOUtils.copy(new ByteArrayInputStream(modelImage), response.getOutputStream());
@@ -237,17 +266,19 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-		
+
 	@ApiOperation(value = "Downloads the model content in a specific output format")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
+	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')") //FIXME: Commented because otherwise Code Generator Gateway gets 401
 	@RequestMapping(value = "/file/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
-	public void downloadModelById(	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace, 
-									@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
-									@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version, 
-									@ApiParam(value = "Choose output file format, e.g. DSL", required = true) final @RequestParam(value="output",required=false) ContentType outputType, 
-									@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value="includeDependencies",required=false) boolean includeDependencies, 
-									final HttpServletResponse response) {
+	public void downloadModelById(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
+			@ApiParam(value = "Choose output file extension, e.g. fbmodel", required = false) final @RequestParam(value = "extension", required = false) String fileExtension,
+			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
+			final HttpServletResponse response) {
 
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
@@ -257,10 +288,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 		logger.info("downloadModelById: [" + modelId.toString() + "]");
 
-		final ContentType contentType = outputType;
-
 		if (includeDependencies) {
-			byte[] zipContent = createZipWithAllDependencies(modelId, contentType);
+			byte[] zipContent = createZipWithAllDependencies(modelId);
 			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelId.getNamespace() + "_"
 					+ modelId.getName() + "_" + modelId.getVersion() + ".zip");
 			response.setContentType(APPLICATION_OCTET_STREAM);
@@ -271,32 +300,32 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 				throw new RuntimeException("Error copying file.", e);
 			}
 		} else {
-			createSingleModelContent(modelId,contentType, response);
+			createSingleModelContent(modelId, response);
 		}
 	}
-			
-	private byte[] createZipWithAllDependencies(ModelId modelId, ContentType contentType) {
+
+	private byte[] createZipWithAllDependencies(ModelId modelId) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
-		
+
 		try {
-			addModelToZip(zos, modelId, contentType);
+			addModelToZip(zos, modelId);
 
 			zos.close();
 			baos.close();
-			
+
 			return baos.toByteArray();
-			
-		} catch(Exception ex) {
+
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
 	}
-	
-	private void createSingleModelContent(ModelId modelId, ContentType contentType, HttpServletResponse response) {
-		byte[] modelContent = modelRepository.getModelContent(modelId, contentType).getContent();
+
+	private void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
+		byte[] modelContent = modelRepository.getModelContent(modelId).getContent();
 		if (modelContent != null && modelContent.length > 0) {
 			final ModelInfo modelResource = modelRepository.getById(modelId);
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource, contentType));
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource));
 			response.setContentType(APPLICATION_OCTET_STREAM);
 			try {
 				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
@@ -308,80 +337,76 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("File not found.");
 		}
 	}
-	
-	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId, ContentType contentType) throws Exception {
-		byte[] modelContent = modelRepository.getModelContent(modelId,contentType).getContent();
+
+	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
+		byte[] modelContent = modelRepository.getModelContent(modelId).getContent();
 		ModelInfo modelResource = modelRepository.getById(modelId);
-		
+
 		try {
-			ZipEntry zipEntry = new ZipEntry(getFileName(modelResource, contentType));
+			ZipEntry zipEntry = new ZipEntry(getFileName(modelResource));
 			zipOutputStream.putNextEntry(zipEntry);
 			zipOutputStream.write(modelContent);
 			zipOutputStream.closeEntry();
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// entry possible exists already, so skipping TODO: ugly hack!!
 		}
-		
+
 		for (ModelId reference : modelResource.getReferences()) {
-			addModelToZip(zipOutputStream,reference,contentType);
+			addModelToZip(zipOutputStream, reference);
 		}
 	}
 
-	private String getFileName(ModelInfo modelResource, ContentType contentType) {
-		if (contentType == ContentType.XMI) {
-			return modelResource.getId().getName() + XMI;
-		} else {
-			return modelResource.getId().getName() + modelResource.getType().getExtension();
-		}
+	private String getFileName(ModelInfo modelResource) {
+		return modelResource.getId().getName() + modelResource.getType().getExtension();
 	}
 
 	@ApiOperation(value = "Getting all mapping resources")
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
+	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')") //FIXME: Commented because otherwise Generator Gateway gets 401
 	@RequestMapping(value = "/mapping/zip/{namespace}/{name}/{version:.+}/{targetPlatform}", method = RequestMethod.GET)
-	public void getMappingResources( 	@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
-										@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name, 
-										@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
-										@ApiParam(value = "The name of target platform, e.g. lwm2m", required = true) final @PathVariable String targetPlatform, final HttpServletResponse response) {
+	public void getMappingResources(
+			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
+			@ApiParam(value = "The name of target platform, e.g. lwm2m", required = true) final @PathVariable String targetPlatform,
+			final HttpServletResponse response) {
 		Objects.requireNonNull(namespace, "namespace must not be null");
 		Objects.requireNonNull(name, "name must not be null");
 		Objects.requireNonNull(version, "version must not be null");
 
-		
 		final ModelId modelId = new ModelId(name, namespace, version);
-		
+
 		List<ModelInfo> mappingResources = modelRepository.getMappingModelsForTargetPlatform(modelId, targetPlatform);
-		
+
 		final String fileName = modelId.getNamespace() + "_" + modelId.getName() + "_" + modelId.getVersion() + ".zip";
-		
+
 		sendAsZipFile(response, fileName, mappingResources);
 	}
 
-	@RequestMapping(value ={ "/mine" }, method = RequestMethod.GET)
+	@RequestMapping(value = { "/mine" }, method = RequestMethod.GET)
 	public void getUserModels(Principal user, final HttpServletResponse response) {
-		List<ModelInfo> userModels = this.modelRepository.search("author:" + UserContext.user(user.getName()).getHashedUsername());
-		
+		List<ModelInfo> userModels = this.modelRepository
+				.search("author:" + UserContext.user(user.getName()).getHashedUsername());
+
 		logger.info("Exporting information models for " + user.getName() + " results: " + userModels.size());
-		
+
 		sendAsZipFile(response, user.getName() + "-models.zip", userModels);
 	}
-	
+
 	private void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
 
-		final ContentType contentType = ContentType.DSL;
-		
 		try {
-		for (ModelInfo modelInfo : modelInfos) {
-			addModelToZip(zos, modelInfo.getId(), contentType);
-		}
+			for (ModelInfo modelInfo : modelInfos) {
+				addModelToZip(zos, modelInfo.getId());
+			}
 
-		zos.close();
-		baos.close();
-		} catch(Exception ex) {
+			zos.close();
+			baos.close();
+		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
-		
+
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
 		response.setContentType(APPLICATION_OCTET_STREAM);
 		try {
@@ -391,52 +416,60 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			throw new RuntimeException("Error copying file.", e);
 		}
 	}
-	
-    @ApiOperation(value = "Saves a model to the repository.")
-    @RequestMapping(method = RequestMethod.PUT,
-    				value = "/{namespace}/{name}/{version:.+}",
-    				produces = "application/json")
-    public ValidationReport saveModel(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-									    @ApiParam(value = "name", required = true) @PathVariable String name,
-									    @ApiParam(value = "version", required = true) @PathVariable String version, @RequestBody ModelContent content) {
-    	try {
-    		ModelId modelId = new ModelId(name,namespace,version);
-    		
-    		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-    		ModelInfo modelInfo = ModelParserFactory.getParser("model"+ModelType.valueOf(content.getType()).getExtension()).parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
-    		
-    		if (!modelId.equals(modelInfo.getId())) {
-    			return ValidationReport.invalid(modelInfo, "You may not change the model ID (name, namespace, version). For this please create a new model.");
-    		}
-    		ModelValidationHelper validationHelper = new ModelValidationHelper(modelRepository, userRepository);
-    		ValidationReport validationReport =  validationHelper.validate(modelInfo, userContext);
-    		if (validationReport.isValid()) {
-    			this.modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(), modelInfo.getId().getName()+modelInfo.getType().getExtension(), userContext);
-    		} 
-    		return validationReport;
-    	} catch(ValidationException validationException) {
-    		return ValidationReport.invalid(null, validationException.getMessage());
-    	}
-    	
-    }
-    
-    @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
-    @RequestMapping(method = RequestMethod.POST,value = "/{namespace:.+}/{name}/{version:.+}/{modelType}",
-    				produces = "application/json")
-    public Response createModel(@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-		    @ApiParam(value = "name", required = true) @PathVariable String name,
-		    @ApiParam(value = "version", required = true) @PathVariable String version, @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType) throws WorkflowException {
-    	
-    	final ModelId modelId = new ModelId(name,namespace,version);
-    	if (this.modelRepository.getById(modelId) != null) {
-    		return Response.status(Status.CONFLICT).build();
-    	} else {
-    		ModelTemplate template = new ModelTemplate();
-    		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-			ModelInfo savedModel = this.modelRepository.save(modelId, template.createModelTemplate(modelId,modelType).getBytes(), modelId.getName()+modelType.getExtension(), userContext);
+
+	@ApiOperation(value = "Saves a model to the repository.")
+	@RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{name}/{version:.+}", produces = "application/json")
+	public ValidationReport saveModel(@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+			@ApiParam(value = "name", required = true) @PathVariable String name,
+			@ApiParam(value = "version", required = true) @PathVariable String version,
+			@RequestBody ModelContent content) {
+		try {
+			ModelId modelId = new ModelId(name, namespace, version);
+
+			IUserContext userContext = UserContext
+					.user(SecurityContextHolder.getContext().getAuthentication().getName());
+			ModelInfo modelInfo = ModelParserFactory
+					.getParser("model" + ModelType.valueOf(content.getType()).getExtension())
+					.parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
+
+			if (!modelId.equals(modelInfo.getId())) {
+				return ValidationReport.invalid(modelInfo,
+						"You may not change the model ID (name, namespace, version). For this please create a new model.");
+			}
+			ModelValidationHelper validationHelper = new ModelValidationHelper(modelRepository, userRepository);
+			ValidationReport validationReport = validationHelper.validate(modelInfo, userContext);
+			if (validationReport.isValid()) {
+				this.modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
+						modelInfo.getId().getName() + modelInfo.getType().getExtension(), userContext);
+			}
+			return validationReport;
+		} catch (ValidationException validationException) {
+			return ValidationReport.invalid(null, validationException.getMessage());
+		}
+
+	}
+
+	@ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
+	@RequestMapping(method = RequestMethod.POST, value = "/{namespace:.+}/{name}/{version:.+}/{modelType}", produces = "application/json")
+	public Response createModel(@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
+			@ApiParam(value = "name", required = true) @PathVariable String name,
+			@ApiParam(value = "version", required = true) @PathVariable String version,
+			@ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType)
+			throws WorkflowException {
+
+		final ModelId modelId = new ModelId(name, namespace, version);
+		if (this.modelRepository.getById(modelId) != null) {
+			return Response.status(Status.CONFLICT).build();
+		} else {
+			ModelTemplate template = new ModelTemplate();
+			IUserContext userContext = UserContext
+					.user(SecurityContextHolder.getContext().getAuthentication().getName());
+			ModelInfo savedModel = this.modelRepository.save(modelId,
+					template.createModelTemplate(modelId, modelType).getBytes(),
+					modelId.getName() + modelType.getExtension(), userContext);
 			this.workflowService.start(modelId);
 			return Response.ok(savedModel).build();
-			
-    	}
-    }
+
+		}
+	}
 }

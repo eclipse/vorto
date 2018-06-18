@@ -36,6 +36,10 @@ public class ModelIdHelper {
 		return path.toString();
 	}
 	
+	public String getFileName(final String path) {
+		return path.substring(path.lastIndexOf("/")+1);
+	}
+	
 	/**
 	 * Example path: /org/eclipse/vorto/color/1.0.0/
 	 * @param path

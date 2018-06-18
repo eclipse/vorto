@@ -408,7 +408,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
         .success(function(result) {
             $scope.modelEditorSession.getDocument().setValue(result);
-            if ($scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
+            if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
   				$scope.modelEditor.setReadOnly(true);
   			}
         }).error(function(data, status, headers, config) {
