@@ -4,12 +4,13 @@ Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen;singleton:=true
 Bundle-Version: 0.10.0.qualifier
 Bundle-Vendor: Eclipse.org/Vorto
-Require-Bundle: org.eclipse.vorto.core,
- com.google.guava,
+Require-Bundle: com.google.guava,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.apache.commons.io
+ org.apache.commons.io,
+ org.eclipse.vorto.core,
+ org.eclipse.vorto.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.codegen.api,org.eclipse.vorto.codege

@@ -1,0 +1,23 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+        <groupId>org.eclipse.vorto</groupId>
+        <artifactId>eclipse-hono</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
+    </parent>
+    
+	<artifactId>org.eclipse.vorto.codegen.hono.java</artifactId>
+	<packaging>eclipse-plugin</packaging>
+	
+    <name>Eclipse Hono Java Generator</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.xtend</groupId>
+                <artifactId>xtend-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+	
+</project>
