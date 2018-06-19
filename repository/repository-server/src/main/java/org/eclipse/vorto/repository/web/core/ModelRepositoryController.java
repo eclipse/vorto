@@ -80,7 +80,7 @@ import io.swagger.annotations.ApiResponses;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @Api(value = "/find", description = "Find information models")
-@RestController
+@RestController("modelRepositoryController")
 @RequestMapping(value = "/rest/model")
 public class ModelRepositoryController extends AbstractRepositoryController {
 
@@ -90,6 +90,9 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 	@Value("${server.config.maxModelImageSize}")
 	private long maxModelImageSize;
+	
+	@Value("${server.config.authenticatedSearchMode:#{false}}")
+	private boolean authenticatedSearchMode = false;
 
 	@Autowired
 	private IModelRepository modelRepository;
@@ -104,6 +107,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
 	@ApiOperation(value = "Find a model by a free-text search expression")
 	@RequestMapping(value = "/query={expression:.*}", method = RequestMethod.GET)
+	@PreAuthorize("!@modelRepositoryController.isAuthenticatedSearchMode() || isAuthenticated()")
 	public List<ModelInfo> searchByExpression(
 			@ApiParam(value = "a free-text search expression", required = true) @PathVariable String expression)
 			throws UnsupportedEncodingException {
@@ -471,5 +475,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			return Response.ok(savedModel).build();
 
 		}
+	}
+	
+	public boolean isAuthenticatedSearchMode() {
+		return authenticatedSearchMode;
+	}
+
+	public void setAuthenticatedSearchMode(boolean authenticatedSearchMode) {
+		this.authenticatedSearchMode = authenticatedSearchMode;
 	}
 }
