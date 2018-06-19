@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.web.config;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.web.security.HasPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
@@ -26,6 +27,9 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+	
+	@Autowired
+	private ApplicationContext context;
 	
 	@Autowired
 	private IModelRepository repository;
@@ -43,6 +47,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
         DefaultMethodSecurityExpressionHandler expressionHandler = 
           new DefaultMethodSecurityExpressionHandler();
         expressionHandler.setPermissionEvaluator(new HasPermissionEvaluator(repository));
+        expressionHandler.setApplicationContext(context);
         return expressionHandler;
     }
 }
