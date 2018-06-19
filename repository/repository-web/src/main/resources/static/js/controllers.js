@@ -167,6 +167,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
         var fd = new FormData();
         fd.append('file', fileToUpload);
+        fd.append('key', 'Vorto');
         $http.post(url,fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
@@ -175,11 +176,10 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             $scope.stateArr = [];
             $scope.uploadResult = result;
             $scope.showCheckin = true;
-
-            if($scope.uploadResult.result != null && $scope.uploadResult.result.length > 0) {
-                angular.forEach($scope.uploadResult.result, function (resultObject, idx) {
+            if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0 && $scope.uploadResult.obj.isSuccess) {
+                angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {
                     var item =  (idx == 0) ? {active: false} : {active: true} ;
-                    var modelType = resultObject.stagingDetails.modelResource.type;
+                    var modelType = resultObject.report.model.type;
                     switch (modelType) {
                     case "Functionblock":
                         fbcount++;
@@ -195,7 +195,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
                         break;
                     }
                     $scope.stateArr.push(item);
-                    $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
+                    $scope.showCheckin = (resultObject.report.valid && $scope.showCheckin);
                 });
             } else {
                 $scope.showCheckin = false;
@@ -237,7 +237,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     $scope.checkin = function (uploadResults) {
         $rootScope.error = "";
         if(uploadResults.length == 1) {
-            checkinSingle(uploadResults[0].stagingId);
+            checkinSingle(uploadResults[0].handleId);
         } else {
             checkInMultipleModels(uploadResults);
         }
@@ -262,7 +262,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/secure/checkInMultiple', validUploadHandles)
+        $http.put('./rest/secure/checkInMultiple?key=Vorto', validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
@@ -285,7 +285,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     };
 
     checkinSingle = function (handleId) {
-        $http.put('./rest/secure/'+handleId)
+        $http.put('./rest/secure/'+handleId+'?key=Vorto')
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;

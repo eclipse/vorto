@@ -9,7 +9,7 @@ import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
-import org.eclipse.vorto.repository.core.IModelContent;
+import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +17,7 @@ public class DefaultResolver extends AbstractResolver {
 
 	@Override
 	protected ModelId doResolve(ModelInfo mappingModelResource, ResolveQuery query) {
-		IModelContent content = this.repository.getModelContent(mappingModelResource.getId());
+		ModelFileContent content = this.repository.getModelContent(mappingModelResource.getId());
 		MappingModel mappingModel = (MappingModel)content.getModel();
 		Optional<MappingRule> objectRule = mappingModel.getRules().stream().filter(rule -> rule.getTarget() instanceof StereoTypeTarget && ((StereoTypeTarget)rule.getTarget()).getName().equals(query.getStereoType())).findFirst();							
 		

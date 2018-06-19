@@ -14,18 +14,53 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.upload.StagingResult;
+import java.util.List;
+import java.util.Set;
+
+import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.upload.UploadModelResult;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 
 public interface IModelImporter {
-	String getId();
 	
-	ModelId getModelId(byte[] file, String filename);
+	/**
+	 * 
+	 * @return
+	 */
+	String getKey();
 	
-	boolean canHandle(byte[] file, String filename);
-	StagingResult stageModel(byte[] file, String filename, UserContext user);
+	/**
+	 * 
+	 * @return
+	 */
+	String getShortDescription();
 	
-	boolean canHandle(String stagingId);
-	CommittedModel commitModel(String stagingId, UserContext userContext);
+	/**
+	 * 
+	 * @return
+	 */
+	Set<String> getSupportedFileExtensions();
+	
+	/**
+	 * Uploads model content and validates it. If the model is valid, the returned upload handle is used
+	 * to import the model into the repository via {@link IModelImporter#doImport(String,UserContext)}}
+	 * 
+	 * @param fileUpload
+	 * @param callerId
+	 * @return result about information of the uploaded content and the upload handle. 
+	 */
+	UploadModelResult upload(FileUpload fileUpload, IUserContext userContext);
+	
+	/**
+	 * @pre {@link UploadModelResult#isValid() == true}}
+	 * 
+	 * @post model was stored in persistence layer.
+	 * 
+	 * Checks in a new model into the repository
+	 * @param uploadHandle
+	 * @param callerId
+	 * @return model that was been checked in
+	 */
+	List<ModelInfo> doImport(String uploadHandleId, IUserContext userContext) throws ModelImporterException;
 }

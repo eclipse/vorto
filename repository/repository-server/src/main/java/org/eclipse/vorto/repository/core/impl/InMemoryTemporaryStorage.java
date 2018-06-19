@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.repository.importer.FileUpload;
 
 public class InMemoryTemporaryStorage implements ITemporaryStorage {
 
@@ -28,7 +29,7 @@ public class InMemoryTemporaryStorage implements ITemporaryStorage {
 	private static Logger logger = Logger.getLogger(InMemoryTemporaryStorage.class);
 	 
 	@Override
-	public StorageItem store(String key, Object value, long timeToLiveSeconds) {
+	public StorageItem store(String key, FileUpload value, long timeToLiveSeconds) {
         StorageItem newItem = new StorageItem(key, value, new Date(), timeToLiveSeconds);
         storage.put(key,newItem);
         logger.info("Added "+newItem + " in temporary storage");

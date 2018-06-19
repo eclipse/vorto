@@ -50,7 +50,6 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;

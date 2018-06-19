@@ -16,17 +16,19 @@ package org.eclipse.vorto.repository.core.impl;
 
 import java.util.Date;
 
+import org.eclipse.vorto.repository.importer.FileUpload;
+
 public class StorageItem {
 	
 	private long timeToLive = -1;
 
     private String key = null;
 
-    private Object value = null;
+    private FileUpload value = null;
 
     private Date creationDate = null;
     
-    public StorageItem(String key, Object value, Date creationDate, long timeToLive) {
+    public StorageItem(String key, FileUpload value, Date creationDate, long timeToLive) {
         this.key = key;
         this.value = value;
         this.creationDate = creationDate;
@@ -44,7 +46,7 @@ public class StorageItem {
     }
 
 
-    public Object getValue() {
+    public FileUpload getValue() {
         return value;
     }
 

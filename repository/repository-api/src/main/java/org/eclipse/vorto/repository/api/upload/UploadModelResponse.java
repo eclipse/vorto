@@ -25,7 +25,6 @@ public class UploadModelResponse {
 	private String message = null;
 	private Boolean isSuccess = null;
 	private List<UploadModelResult> obj = new ArrayList<UploadModelResult>();
-	private List<StagingResult> result = new ArrayList<StagingResult>();
 
 	/*
 	 * Dummy constructor needed by ResponseEntity for JSON parsing of http response 
@@ -40,11 +39,11 @@ public class UploadModelResponse {
 		this.obj = obj;
 	}
 	
-	public static UploadModelResponse newInstance(String message, Boolean isSuccess, List<StagingResult> result) {
+	public static UploadModelResponse newInstance(String message, Boolean isSuccess, List<UploadModelResult> result) {
 		UploadModelResponse response = new UploadModelResponse();
 		response.message = message;
 		response.isSuccess = isSuccess;
-		response.result = result;
+		response.obj = result;
 		return response;
 	}
 
@@ -82,14 +81,6 @@ public class UploadModelResponse {
 
 	public void setObj(List<UploadModelResult> obj) {
 		this.obj = obj;
-	}
-	
-	public List<StagingResult> getResult() {
-		return result;
-	}
-
-	public void setResult(List<StagingResult> result) {
-		this.result = result;
 	}
 
 	@Override

@@ -78,14 +78,6 @@ public class ModelEMFResource extends ModelInfo {
 		return references;
 	}
 	
-	public byte[] toXMI() throws IOException {
-		Resource resource = model.eResource().getResourceSet().createResource(URI.createURI(model.getName()+".xmi"));
-		resource.getContents().add(model);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		resource.save(baos, null);
-		return baos.toByteArray();
-	}
-	
 	public byte[] toDSL() throws IOException {
 		Resource resource = model.eResource().getResourceSet().createResource(URI.createURI(model.getName()+this.type.getExtension()));
 		resource.getContents().add(model);

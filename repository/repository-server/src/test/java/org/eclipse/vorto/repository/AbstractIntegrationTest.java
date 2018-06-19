@@ -11,6 +11,8 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
+import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.junit.Before;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,6 +33,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	@Mock
 	protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
 	
+	protected VortoModelImporter importer = null;
+	
 	public void beforeEach() throws Exception {
 		super.beforeEach();
 		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
@@ -39,11 +43,14 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		Mockito.when(userRepository.findByUsername("admin")).thenReturn(User.create("admin", Role.ADMIN));
 		
 		modelRepository = new JcrModelRepository();
-		modelRepository.setUploadStorage(new InMemoryTemporaryStorage());
 		modelRepository.setSession(jcrSession());
 		modelRepository.setUserRepository(userRepository);
-		modelRepository.createValidators();
 		modelRepository.setModelSearchUtil(modelSearchUtil);
+		
+		this.importer = new VortoModelImporter();
+		this.importer.setModelRepository(modelRepository);
+		this.importer.setUploadStorage(new InMemoryTemporaryStorage());
+		this.importer.setUserRepository(userRepository);
 
 	}
 
@@ -62,12 +69,11 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	
 	protected ModelInfo checkinModel(String modelName, IUserContext userContext) {
 		try {
-			UploadModelResult uploadResult = modelRepository.upload(
-					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream()),
-					modelName, userContext);
+			UploadModelResult uploadResult = this.importer.upload(FileUpload.create(modelName,
+					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream())), userContext);
 			Assert.isTrue(uploadResult.getReport().isValid(), uploadResult.getReport().getErrorMessage());
 			
-			return modelRepository.checkin(uploadResult.getHandleId(), userContext);
+			return this.importer.doImport(uploadResult.getHandleId(), userContext).get(0);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		} finally {
