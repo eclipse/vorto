@@ -25,10 +25,10 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testBackupFilesNoImages() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");	
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");	
 		byte[] backedUpContent = repositoryManager.backup();
 		assertNotNull(backedUpContent);
 	}

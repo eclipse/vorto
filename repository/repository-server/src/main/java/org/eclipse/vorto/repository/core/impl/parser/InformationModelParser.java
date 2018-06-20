@@ -14,8 +14,6 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
-import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
-import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 
 import com.google.inject.Injector;
@@ -27,8 +25,6 @@ public class InformationModelParser extends AbstractModelParser {
 
 	public InformationModelParser(String fileName) {
 		super(fileName);
-		FunctionblockPackage.eINSTANCE.eClass();
-		InformationModelPackage.eINSTANCE.eClass();
 	}
 
 	@Override

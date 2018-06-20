@@ -28,8 +28,8 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testResolveForExistingObjectId() {
-		checkinModel("lwm2m/ColorLight.fbmodel");
-		checkinModel("lwm2m/ColorLight_lwm2m.mapping");
+		importModel("lwm2m/ColorLight.fbmodel");
+		importModel("lwm2m/ColorLight_lwm2m.mapping");
 		
 		DefaultResolver lwm2mResolver = new DefaultResolver();
 		lwm2mResolver.setRepository(this.modelRepository);
@@ -40,8 +40,8 @@ public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testResolveResourceId() {
-		checkinModel("lwm2m/ColorLight.fbmodel");
-		checkinModel("lwm2m/ColorLight_lwm2m.mapping");
+		importModel("lwm2m/ColorLight.fbmodel");
+		importModel("lwm2m/ColorLight_lwm2m.mapping");
 		
 		DefaultResolver lwm2mResolver = new DefaultResolver();
 		lwm2mResolver.setRepository(this.modelRepository);

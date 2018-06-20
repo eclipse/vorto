@@ -17,23 +17,13 @@ package org.eclipse.vorto.repository.core;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.when;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -48,100 +38,11 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(0, modelRepository.search("").size());
 	}
 	
-	@Test
-	public void testUploadSameModelTwiceByAuthor() throws Exception {
-		IUserContext alex = UserContext.user("alex");
-		checkinModel("Color.type", alex);
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", alex);
-		assertTrue(uploadResult.getReport().isValid());
-	}
 	
-	@Test
-	public void testUploadSameModelTwiceByDifferent() throws Exception {
-		checkinModel("Color.type", UserContext.user("alex"));
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", UserContext.user("stefan"));
-		assertFalse(uploadResult.getReport().isValid());
-	}
-	
-	@Test
-	public void testUploadSameModelByAdmin() throws Exception {
-		IUserContext admin = UserContext.user("admin");
-		checkinModel("Color.type", UserContext.user("alex"));
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream()), "Color.type", admin);
-		assertTrue(uploadResult.getReport().isValid());
-		
-		modelRepository.checkin(uploadResult.getHandleId(), admin);
-		IModelContent content = modelRepository.getModelContent(uploadResult.getReport().getModel().getId());
-		assertTrue(new String(content.getContent(),"utf-8").contains("mandatory b as int"));
-	}
-	
-	
-	@Test
-	public void testOverwriteInvalidModelByAdmin() throws Exception {
-		checkinModel("Color.type", UserContext.user("alex"));
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color3.type").getInputStream()), "Color.type", UserContext.user("admin"));
-		assertFalse(uploadResult.getReport().isValid());
-	}
-	
-	@Test
-	public void tesUploadValidModel() throws IOException {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
-		assertEquals(true, uploadResult.getReport().isValid());
-		assertNull(uploadResult.getReport().getErrorMessage());
-		assertNotNull(uploadResult.getHandleId());
-		ModelInfo resource = uploadResult.getReport().getModel();
-		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());
-		assertEquals("Color", resource.getId().getName());
-		assertEquals("1.0.0", resource.getId().getVersion());
-		assertEquals(ModelType.Datatype, resource.getType());
-		assertEquals(0, resource.getReferences().size());
-		assertEquals("Color", resource.getDisplayName());
-		assertNull(resource.getDescription());
-		assertEquals(0, modelRepository.search("*").size());
-	}
-
-	@Test
-	public void testCheckinValidModel() throws Exception {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream()), "Color.type", UserContext.user("admin"));
-		assertEquals(true, uploadResult.getReport().isValid());
-		assertEquals(0, modelRepository.search("*").size());
-
-		User user1 = new User();
-		user1.setUsername("alex");
-
-		User user2 = new User();
-		user2.setUsername("andi");
-
-		Collection<User> recipients = new ArrayList<User>();
-		recipients.add(user1);
-		recipients.add(user2);
-
-		when(userRepository.findAll()).thenReturn(recipients);
-
-		modelRepository.checkin(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
-
-		Thread.sleep(1000);
-		assertEquals(1, modelRepository.search("*").size());
-	}
-
-	@Test
-	public void testCheckinInvalidModel() throws Exception {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Colorlight.fbmodel").getInputStream()),
-				"Colorlight.fbmodel", UserContext.user("admin"));
-		assertEquals(false, uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
-	}
 
 	@Test
 	public void testGetModelById() throws Exception {
-		checkinModel("Color.type");
+		importModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
@@ -150,9 +51,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetDSLContentForModel() throws Exception {
-		checkinModel("Color.type");
+		importModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
-		IModelContent fileContent = modelRepository.getModelContent(
+		ModelFileContent fileContent = modelRepository.getModelContent(
 				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		String actualContent = new String(fileContent.getContent(), "UTF-8");
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
@@ -162,8 +63,8 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetReferencesFromModel() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
 		assertEquals(2, modelRepository.search("*").size());
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.fb.ColorLight", "1.0.0"));
@@ -173,8 +74,8 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetReferencedBy() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
 		assertEquals(2, modelRepository.search("*").size());
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
@@ -185,29 +86,29 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testSearchAllModels() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(4, modelRepository.search("*").size());
 	}
 	
 	@Test
 	public void testSearchModelWithCriteria1() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(2, modelRepository.search("color").size());
 	}
 	
 
 	@Test
 	public void testGetModelWithNoImage() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(false,
 				this.modelRepository.getById(new ModelId("HueLightStrips", "com.mycompany", "1.0.0")).isHasImage());
 	}
@@ -215,10 +116,10 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	@Test
 	public void testGetModelWithImage() throws Exception {
 		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		this.modelRepository.addModelImage(modelId,
 				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
 		assertEquals(true, this.modelRepository.getById(modelId).isHasImage());
@@ -228,10 +129,10 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testRemoveModelImage() throws Exception {
 		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
 		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		this.modelRepository.addModelImage(modelId, modelContent);
 		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
 		
@@ -243,10 +144,10 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testGetModelImage() throws Exception {
 		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
 		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		this.modelRepository.addModelImage(modelId, modelContent);
 		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
 	}
@@ -254,10 +155,10 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	@Test
 	public void testOverrideImage() throws Exception {
 		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
 		this.modelRepository.addModelImage(modelId, modelContent);
 		this.modelRepository.addModelImage(modelId, modelContent);
@@ -265,31 +166,31 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testSearchModelWithFilters1() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(1, modelRepository.search("name:Color").size());
 		assertEquals(3, modelRepository.search("name:Color name:Switcher name:HueLightStrips").size());
 	}
 
 	@Test
 	public void testSearchModelWithFilters2() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(1, modelRepository.search("name:Color version:1.0.0   ").size());
 		assertEquals(0, modelRepository.search("name:Color version:1.0.1").size());
 	}
 
 	@Test
 	public void testSearchModelWithFilters3() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("ColorLightIM.infomodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("ColorLightIM.infomodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(1, modelRepository.search("namespace:org.eclipse.vorto.examples.fb").size());
 		assertEquals(1, modelRepository.search("namespace:com.mycompany.fb").size());
 		assertEquals(2, modelRepository.search("namespace:com.mycompany   version:1.0.0").size());
@@ -298,11 +199,11 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testSearchModelWithFilters4() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
-		checkinModel("Switcher.fbmodel");
-		checkinModel("ColorLightIM.infomodel");
-		checkinModel("HueLightStrips.infomodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
+		importModel("Switcher.fbmodel");
+		importModel("ColorLightIM.infomodel");
+		importModel("HueLightStrips.infomodel");
 		assertEquals(0, modelRepository.search("name:Switcher InformationModel").size());
 		assertEquals(1, modelRepository.search("name:Switcher Functionblock").size());
 		assertEquals(2, modelRepository.search("Functionblock").size());
@@ -311,52 +212,20 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	@Test
 	public void testSearchModelsByCreator() {
 		IUserContext alex = UserContext.user("alex");
-		checkinModel("Color.type", alex);
-		checkinModel("Colorlight.fbmodel", alex);
-		checkinModel("Switcher.fbmodel", UserContext.user("admin"));
-		checkinModel("ColorLightIM.infomodel", UserContext.user("admin"));
-		checkinModel("HueLightStrips.infomodel", UserContext.user("admin"));
+		importModel("Color.type", alex);
+		importModel("Colorlight.fbmodel", alex);
+		importModel("Switcher.fbmodel", UserContext.user("admin"));
+		importModel("ColorLightIM.infomodel", UserContext.user("admin"));
+		importModel("HueLightStrips.infomodel", UserContext.user("admin"));
 		
 		assertEquals(2, modelRepository.search("author:" + alex.getHashedUsername()).size());
 	}
 	
-	@Test
-	public void testUploadCorruptModelMissingVersion() throws Exception {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_missingVersion.type").getInputStream()),
-				"sample_models/Corrupt-model_missingVersion.type", UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
-	}
 	
-	@Test
-	public void testUploadCorruptModelVersion() throws Exception {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_namespace.type").getInputStream()),
-				"sample_models/Corrupt-model_namespace.type", UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
-	}
-	
-	@Test (expected = FileNotFoundException.class)
-	public void testUploadInvalidFileName() throws Exception {
-		modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.typ").getInputStream()),
-				"sample_models/Bogus.type", UserContext.user("admin"));
-	}
-	
-	@Test
-	public void testUploadModelThatCompliesToOlderVersionOfMetaModel() throws Exception {
-		UploadModelResult uploadResult = modelRepository.upload(
-				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel").getInputStream()),
-				"sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel", UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
-	}
 	
 	@Test
 	public void testDeleteUnUsedType() {
-		checkinModel("Color.type");
+		importModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
 		this.modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(0, modelRepository.search("*").size());
@@ -364,18 +233,18 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testDeleteAndCheckinSameModel() {
-		checkinModel("Color.type");
+		importModel("Color.type");
 		assertEquals(1, modelRepository.search("*").size());
 		this.modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(0, modelRepository.search("*").size());
-		checkinModel("Color.type");
+		importModel("Color.type");
 		assertEquals(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"),modelRepository.search("*").get(0).getId());
 	}
 
 	@Test
 	public void testDeleteUsedType() {
-		checkinModel("Color.type");
-		checkinModel("Colorlight.fbmodel");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel");
 		assertEquals(2, modelRepository.search("*").size());
 		try {
 			this.modelRepository.removeModel(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
@@ -389,9 +258,9 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testAuthorSearch() {
 		IUserContext erle = UserContext.user("erle");
 		IUserContext admin = UserContext.user("admin");
-		checkinModel("Color.type", erle);
-		checkinModel("Colorlight.fbmodel", erle);
-		checkinModel("Switcher.fbmodel", admin);
+		importModel("Color.type", erle);
+		importModel("Colorlight.fbmodel", erle);
+		importModel("Switcher.fbmodel", admin);
 		
 		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
 		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());

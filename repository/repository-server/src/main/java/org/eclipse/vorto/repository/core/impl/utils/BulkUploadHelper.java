@@ -47,6 +47,7 @@ import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesVali
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,7 +125,7 @@ public class BulkUploadHelper {
 	private Optional<UploadModelResult> convertToUploadModelResultWithUploadHandle(ModelInfo modelInfo) {
 		try {
 			final String handleId = UUID.randomUUID().toString() + modelInfo.getType().getExtension();
-			String key = uploadStorage.store(handleId, ((ModelEMFResource) modelInfo).toDSL(), TTL_TEMP_STORAGE_INSECONDS).getKey();
+			String key = uploadStorage.store(handleId, FileUpload.create(modelInfo.getId().getName()+modelInfo.getType().getExtension(),((ModelEMFResource) modelInfo).toDSL()), TTL_TEMP_STORAGE_INSECONDS).getKey();
 			return Optional.of(new UploadModelResult(key,ValidationReport.valid(modelInfo)));
 		} catch (IOException e) {
 			LOGGER.error("Exception thrown when getting DSL of " + modelInfo.toString(), e);

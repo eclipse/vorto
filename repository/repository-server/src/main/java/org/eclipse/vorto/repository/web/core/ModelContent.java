@@ -1,4 +1,4 @@
-package org.eclipse.vorto.repository.web.core.dto;
+package org.eclipse.vorto.repository.web.core;
 
 public class ModelContent {
 

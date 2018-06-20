@@ -12,25 +12,26 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.core;
+package org.eclipse.vorto.repository.web.importer;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ModelHandle;
-import org.eclipse.vorto.repository.api.upload.StagingResult;
 import org.eclipse.vorto.repository.api.upload.UploadModelResponse;
 import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
-import org.eclipse.vorto.repository.importer.CommittedModel;
-import org.eclipse.vorto.repository.importer.ModelImporterService;
+import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.IModelImportService;
+import org.eclipse.vorto.repository.importer.IModelImporter;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.slf4j.Logger;
@@ -55,20 +56,20 @@ import io.swagger.annotations.ApiParam;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/share", description="Upload information models")
+@Api(value="/import", description="Import of Information Models and other model types")
 @RestController
-@RequestMapping(value = "/rest/secure")
-public class ShareModelController {
+@RequestMapping(value = "/rest/models/import")
+public class ModelImportController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     
-    private final String ERROR_MSG_FORMAT = "Models cannot be checked in because there {0,choice,1#is|1<are} {0} {0,choice,1#model|1<models} with {0,choice,1#error|1<errors}.";
-	private final String SUCCESS_MSG_FORMAT = "{0,choice,1#The uploaded model is|1<All uploaded models are} valid and ready to check in.";
-	private final String STAGING_VALID = "Uploaded model %s is valid to check in.";
-	private final String STAGING_FAIL = "Uploaded model %s has errors. Cannot check in.";
+    private final String ERROR_MSG_FORMAT = "Models cannot be imported because there {0,choice,1#is|1<are} {0} {0,choice,1#model|1<models} with {0,choice,1#error|1<errors}.";
+	private final String SUCCESS_MSG_FORMAT = "{0,choice,1#The uploaded model is|1<All uploaded models are} valid and ready to import.";
+	private final String UPLOAD_VALID = "Uploaded model %s is valid and ready for import.";
+	private final String UPLOAD_FAIL = "Uploaded model %s has errors. Cannot import.";
     
 	@Autowired
-	private ModelImporterService importerService;
+	private IModelImportService importerService;
 	
 	@Autowired
 	private IModelRepository modelRepository;
@@ -87,23 +88,20 @@ public class ShareModelController {
 	
 	@ApiOperation(value = "Upload and validate a single vorto model")
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<UploadModelResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<UploadModelResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file,@RequestParam("key") String key) {
 		if (file.getSize() > maxModelSize) {
 			throw new UploadTooLargeException("model", maxModelSize);
 		}
 		
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
-			List<StagingResult> stagingResults = importerService.stageFile(file.getOriginalFilename(), file.getBytes(), getUserContext());
-			return stagingResults.stream()
-				.filter(result -> result.isValid())
-				.findFirst()
-				.map(result -> 
-					validResponse(UploadModelResponse.newInstance(String.format(STAGING_VALID, file.getOriginalFilename()), 
-						true, stagingResults)))
-				.orElse(
-					validResponse(UploadModelResponse.newInstance(String.format(STAGING_FAIL, file.getOriginalFilename()), 
-						false, stagingResults)));
+			IModelImporter importer = importerService.getImporterByKey(key).get();
+			UploadModelResult result = importer.upload(FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
+			if (result.getReport().isValid()) {
+				return validResponse(UploadModelResponse.newInstance(String.format(UPLOAD_VALID,file.getOriginalFilename()), result.getReport().isValid(), Arrays.asList(result)));
+			} else {
+				return validResponse(UploadModelResponse.newInstance(String.format(UPLOAD_FAIL,file.getOriginalFilename()), result.getReport().isValid(), Arrays.asList(result)));
+			}
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
 			UploadModelResponse errorResponse = new UploadModelResponse("Error during upload. Try again. " + e.getMessage(),
@@ -141,14 +139,18 @@ public class ShareModelController {
 
 	@ApiOperation(value = "Checkin an uploaded vorto model into the repository")
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<ModelId> checkin(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId) {
+	public ResponseEntity<List<ModelInfo>> doImport(@ApiParam(value = "The file name of uploaded vorto model", required = true) final @PathVariable String handleId, @RequestParam("key") String key) {
 		LOGGER.info("Check in Model " + handleId);
 		try {
-			CommittedModel model = importerService.commitStagedFile(handleId, getUserContext());
 			
-			workflowService.start(model.getModelId());
+			IModelImporter importer = importerService.getImporterByKey(key).get();
 			
-			return new ResponseEntity<ModelId>(model.getModelId(), HttpStatus.OK);
+			List<ModelInfo> importedModels = importer.doImport(handleId, getUserContext());
+			for (ModelInfo modelInfo : importedModels) {
+				workflowService.start(modelInfo.getId());
+			}
+			
+			return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error checkin model. " + handleId, e);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -157,18 +159,33 @@ public class ShareModelController {
 	
 	@ApiOperation(value = "Checkin multiple uploaded vorto models into the  repository")
 	@RequestMapping(value = "/checkInMultiple", method = RequestMethod.PUT)
-	public ResponseEntity<Void> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles) {
+	public ResponseEntity<Void> checkInMultiple(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles, @RequestParam("key") String key) {
 		LOGGER.info("Bulk check in models.");
 		try {
 			for (ModelHandle handle : modelHandles) {
-				ModelInfo checkedInModel = modelRepository.checkin(handle.getHandleId(), UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
-				workflowService.start(checkedInModel.getId());
+				IModelImporter importer = importerService.getImporterByKey(key).get();
+				
+				List<ModelInfo> importedModels = importer.doImport(handle.getHandleId(), getUserContext());
+				for (ModelInfo modelInfo : importedModels) {
+					workflowService.start(modelInfo.getId());
+				}
 			}
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error bulk checkin models.", e);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@ApiOperation(value = "Returns a list of supported importers")
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	public List<ImporterInfo> getImporters() {
+		List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
+		this.importerService.getImporters().stream().forEach(importer -> {
+			importers.add(new ImporterInfo(importer.getKey(),importer.getSupportedFileExtensions(),importer.getShortDescription()));
+		});
+		
+		return importers;
 	}
 
 	private ResponseEntity<UploadModelResponse> validResponse(UploadModelResponse successModelResponse) {

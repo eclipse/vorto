@@ -1,4 +1,4 @@
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.importer;
 
 import static org.junit.Assert.assertEquals;
 

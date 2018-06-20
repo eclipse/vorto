@@ -29,7 +29,7 @@ public class UpgradeTaskTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUpgradeFileContent() {
-		checkinModel("Color.type", UserContext.user("alex")); 
+		importModel("Color.type", UserContext.user("alex")); 
 		ModelEMFResource resource = (ModelEMFResource)modelRepository.getEMFResource(modelRepository.search("*").get(0).getId());
 		assertNull(resource.getModel().getCategory());
 		DefaultUpgradeService service = new DefaultUpgradeService();

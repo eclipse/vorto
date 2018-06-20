@@ -27,11 +27,11 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 		IUserContext alex = UserContext.user("alex");
 		IUserContext admin = UserContext.user("admin");
 		
-		checkinModel("Color.type", alex);
-		checkinModel("Colorlight.fbmodel", alex);
-		checkinModel("Switcher.fbmodel", admin);
-		checkinModel("ColorLightIM.infomodel", admin);
-		checkinModel("HueLightStrips.infomodel", admin);
+		importModel("Color.type", alex);
+		importModel("Colorlight.fbmodel", alex);
+		importModel("Switcher.fbmodel", admin);
+		importModel("ColorLightIM.infomodel", admin);
+		importModel("HueLightStrips.infomodel", admin);
 		
 		when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
 

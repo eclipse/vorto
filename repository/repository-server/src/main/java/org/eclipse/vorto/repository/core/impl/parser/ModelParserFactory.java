@@ -14,12 +14,24 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
+import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.core.api.model.model.ModelType;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelParserFactory {
+	
+	static {
+		DatatypePackage.eINSTANCE.eClass();
+		FunctionblockPackage.eINSTANCE.eClass();
+		InformationModelPackage.eINSTANCE.eClass();
+		MappingPackage.eINSTANCE.eClass();
+	}
+	
 
 	public static IModelParser getParser(String fileName) {
 		if (fileName.endsWith(ModelType.Datatype.getExtension())) {

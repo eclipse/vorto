@@ -16,23 +16,17 @@ package org.eclipse.vorto.repository.core;
 
 import org.eclipse.vorto.core.api.model.model.Model;
 
-public interface IModelContent {
+public class ModelFileContent extends FileContent {
 
-	/**
-	 * EMF Model object
-	 * 
-	 * @return
-	 */
-	Model getModel();
+	private Model model;
 	
-	/**
-	 * @return
-	 */
-	String getFileName();
+	public ModelFileContent(Model model, String fileName, byte[] content) {
+		super(fileName, content);
+		this.model = model;
+	}
 	
-	/**
-	 * actual model content value
-	 * @return
-	 */
-	byte[] getContent();
+	public Model getModel() {
+		return model;
+	}
+
 }

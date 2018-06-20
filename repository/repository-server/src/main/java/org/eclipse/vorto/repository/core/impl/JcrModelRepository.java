@@ -18,12 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
+import java.util.Optional;
+import java.util.Set;
 
-import javax.annotation.PostConstruct;
 import javax.jcr.Binary;
 import javax.jcr.Item;
 import javax.jcr.Node;
@@ -46,19 +47,16 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
-import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
-import org.eclipse.vorto.repository.core.IModelContent;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
-import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
-import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -71,8 +69,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class JcrModelRepository implements IModelRepository {
 
-	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping | *.ttl";
-	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
+	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
+	
 	@Autowired
 	private Session session;
 
@@ -81,11 +79,6 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
-
-	@Autowired
-	private ITemporaryStorage uploadStorage;
-
-	private ModelValidationHelper validationHelper;
 	
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
@@ -183,90 +176,23 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public IModelContent getModelContent(ModelId modelId) {
+	public ModelFileContent getModelContent(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
-			Node fileNode = (Node) folderNode.getNodes(modelId.getName() + "*").next();
+			Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-			
-			ModelInfo model = getById(modelId);
-			
+						
 			final String fileContent = IOUtils.toString(is);
-			if (model.getType() == ModelType.Extended) {
-				return new DefaultModelContent(null, fileNode.getName(), fileContent.getBytes());
-			} else {
-				ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(modelIdHelper.getFileName(fileNode.getName())).parse(IOUtils.toInputStream(fileContent));
-				return new DefaultModelContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
-			}
+			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(IOUtils.toInputStream(fileContent));
+			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());	
 			
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
-	}
-
-	@Override
-	public UploadModelResult upload(byte[] content, String fileName, IUserContext userContext) {
-
-		try {
-			ModelInfo resource = ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
-			ValidationReport validationReport = this.validationHelper.validate(resource, userContext);
-			return new UploadModelResult(createUploadHandle(content, resource.getType()), validationReport);
-		} catch (ValidationException e) {
-			return UploadModelResultFactory.invalid(e);
-		}
-	}
-
-	private String createUploadHandle(byte[] content, ModelType type) {
-		final String handleId = UUID.randomUUID().toString() + type.getExtension();
-		return this.uploadStorage.store(handleId, content, TTL_TEMP_STORAGE_INSECONDS).getKey();
-	}
-
-	@Override
-	public ModelInfo checkin(String handleId, IUserContext userContext) {
-		StorageItem uploadedItem = this.uploadStorage.get(handleId);
-
-		if (uploadedItem == null) {
-			throw new IllegalArgumentException("No model found for handleId '" + handleId + "'");
-		}
-
-		final ModelInfo resource = ModelParserFactory.getParser(handleId)
-				.parse(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
-
-		try {
-			Node folderNode = createNodeForModelId(resource.getId());
-			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
-					? folderNode.getNodes(FILE_NODES).nextNode() : null;
-			if (fileNode == null) {
-				fileNode = folderNode.addNode(resource.getId().getName() + resource.getType().getExtension(),
-						"nt:file");
-				fileNode.addMixin("vorto:meta");
-				fileNode.addMixin("mix:referenceable");
-				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
-				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-				Binary binary = session.getValueFactory()
-						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
-				contentNode.setProperty("jcr:data", binary);
-			} else {
-				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
-				Node contentNode = fileNode.getNode("jcr:content");
-				Binary binary = session.getValueFactory()
-						.createBinary(new ByteArrayInputStream((byte[]) uploadedItem.getValue()));
-				contentNode.setProperty("jcr:data", binary);
-			}
-
-			session.save();
-			logger.info("Checkin successful");
-			this.uploadStorage.remove(handleId);
-		} catch (Exception e) {
-			logger.error("Error checking in model", e);
-			throw new FatalModelRepositoryException("Problem checking in uploaded model" + resource.getId(), e);
-		}
-
-		return resource;
 	}
 
 	private Node createNodeForModelId(ModelId id) throws RepositoryException {
@@ -296,6 +222,7 @@ public class JcrModelRepository implements IModelRepository {
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 		
 		try {
+			
 			Node folderNode = createNodeForModelId(modelId);
 			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
 			if (!nodeIt.hasNext()) {
@@ -348,11 +275,6 @@ public class JcrModelRepository implements IModelRepository {
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		}
-	}
-
-	@PostConstruct
-	public void createValidators() {
-		this.validationHelper = new ModelValidationHelper(this, userRepository);
 	}
 
 	public void setSession(Session session) {
@@ -543,13 +465,74 @@ public class JcrModelRepository implements IModelRepository {
 	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
-	
-	public ITemporaryStorage getUploadStorage() {
-		return uploadStorage;
+
+	@Override
+	public void addFileContent(ModelId modelId, FileContent fileContent) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			Node contentNode = null;
+			
+			if (folderNode.hasNode(fileContent.getFileName())) {
+				Node imageNode = (Node) folderNode.getNode(fileContent.getFileName());
+				contentNode = (Node) imageNode.getPrimaryItem();
+			} else {
+				Node imageNode = folderNode.addNode(fileContent.getFileName(), "nt:file");
+				contentNode = imageNode.addNode("jcr:content", "nt:resource");
+			}
+
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
+			contentNode.setProperty("jcr:data", binary);
+			session.save();
+			
+		} catch (PathNotFoundException e) {
+			throw new ModelNotFoundException("Could not find model with the given model id", e);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
 	}
 
-	public void setUploadStorage(ITemporaryStorage uploadStorage) {
-		this.uploadStorage = uploadStorage;
+	@Override
+	public Optional<FileContent> getFileContent(ModelId modelId, String fileName) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			if (!folderNode.hasNode(fileName)) {
+				return Optional.empty();
+			}
+			
+			Node fileNode = (Node) folderNode.getNode(fileName);
+			Node fileItem = (Node) fileNode.getPrimaryItem();
+			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
+						
+			final String fileContent = IOUtils.toString(is);
+			return Optional.of(new FileContent(fileName, fileContent.getBytes()));
+			
+		} catch (PathNotFoundException e) {
+			throw new ModelNotFoundException("Could not find model with the given model id", e);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
 	}
 
+	@Override
+	public Set<String> getFileNames(ModelId modelId) {
+		Set<String> fileNames = new HashSet<>();
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			NodeIterator iter = folderNode.getNodes();
+			while(iter.hasNext()) {
+				Node node = iter.nextNode();
+				fileNames.add(node.getName());
+			}
+		} catch (PathNotFoundException e) {
+			throw new ModelNotFoundException("Could not find model with the given model id", e);
+		} catch (Exception e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
+		return fileNames;
+	}
 }

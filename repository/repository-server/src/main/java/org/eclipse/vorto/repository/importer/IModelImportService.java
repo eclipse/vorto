@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -14,22 +14,12 @@
  */
 package org.eclipse.vorto.repository.importer;
 
-public class ModelImporterException extends RuntimeException {
+import java.util.List;
+import java.util.Optional;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7641141207722584032L;
+public interface IModelImportService {
 
-	public ModelImporterException() {
-	}
-
-	public ModelImporterException(String message) {
-		super(message);
-	}
+	List<IModelImporter> getImporters();
 	
-	public ModelImporterException(String message, Throwable t) {
-		super(message,t);
-	}
-
+	Optional<IModelImporter> getImporterByKey(String key);
 }

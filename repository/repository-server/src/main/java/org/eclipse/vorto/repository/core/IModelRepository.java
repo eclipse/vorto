@@ -15,11 +15,12 @@
 package org.eclipse.vorto.repository.core;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 
 /**
  * 
@@ -48,41 +49,18 @@ public interface IModelRepository {
 	 * @throws ModelNotFoundException
 	 * @return
 	 */
-	IModelContent getModelContent(ModelId modelId);
+	ModelFileContent getModelContent(ModelId modelId);
 	
 	/**
-	 * Uploads model content and validates it. If the model is valid, the returned upload handle is used
-	 * to checkin the model into the repository via {@link IModelRepository#checkin(String)}}
-	 * 
-	 * @param content to validate
-	 * @param fileName
-	 * @param callerId
-	 * @return result about information of the uploaded content and the upload handle. 
-	 */
-	UploadModelResult upload(byte[] content, String fileName, IUserContext userContext);
-	
-	/**
-	 * @pre {@link UploadModelResult#isValid() == true}}
-	 * 
-	 * @post model was stored in persistence layer. Notifications were sent out to watchers. 
-	 * 
-	 * Checks in a new model into the repository
-	 * @param uploadHandle
-	 * @param callerId
-	 * @return model that was been checked in
-	 */
-	ModelInfo checkin(String handleId, IUserContext userContext);
-	
-	/**
-	 * Saves the model to the repo
+	 * Saves the model to the repo. If it does not exist, the model is created.
 	 * 
 	 * @param modelId the id of the model
 	 * @param content the content
 	 * @param fileName the filename of the model
-	 * @param userContext the user
+	 * @param user user who has modified the model
 	 * @return model info containing model meta data of the saved model
 	 */
-	ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext);
+	ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user);
 		
 	/**
 	 * Removes a model image for the given model id
@@ -90,9 +68,8 @@ public interface IModelRepository {
 	 */
 	void removeModelImage(ModelId modelId);
 	
-	
 	/**
-	 * 
+	 * Gets the model image for the given model id
 	 * @param modelId
 	 * @return
 	 */
@@ -128,4 +105,26 @@ public interface IModelRepository {
      */
     ModelId updateState(ModelId modelId, String state);
 
+    /**
+     * adds the given file content to the model
+     * @param id
+     * @param fileContent
+     */
+	void addFileContent(ModelId id, FileContent fileContent);
+	
+	/**
+	 * Gets all available file names for the given model ID.
+	 * To load its content, please use IModelRepository#getFileContent(modelId, fileName)
+	 * @param id
+	 * @return
+	 */
+	Set<String> getFileNames(ModelId id);
+
+	/**
+	 * gets file content for the given model id and file name
+	 * @param modelId
+	 * @param fileName
+	 * @return
+	 */
+	Optional<FileContent> getFileContent(ModelId modelId, String fileName);
 }

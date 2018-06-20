@@ -26,7 +26,6 @@ public class DatatypeModelParser extends AbstractModelParser {
 	
 	public DatatypeModelParser(String fileName) {
 		super(fileName);
-		DatatypePackage.eINSTANCE.eClass();
 	}		
 
 	@Override

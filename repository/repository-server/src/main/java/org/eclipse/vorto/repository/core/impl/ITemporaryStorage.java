@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.core.impl;
 
+import org.eclipse.vorto.repository.importer.FileUpload;
+
 public interface ITemporaryStorage {
 
 	/**
@@ -22,7 +24,7 @@ public interface ITemporaryStorage {
 	 * @param modelType
 	 * @return
 	 */
-	StorageItem store(String key, Object value, long timeToLiveSeconds);
+	StorageItem store(String key, FileUpload value, long timeToLiveSeconds);
 	
 	/**
 	 * retrieves a stored item
