@@ -115,13 +115,7 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.mqtt</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.prosystfi</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.bosch.gateway</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
@@ -157,13 +151,13 @@
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.arduino</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.hono.arduino</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen.mqtt.python</artifactId>
+			<artifactId>org.eclipse.vorto.codegen.hono.python</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
