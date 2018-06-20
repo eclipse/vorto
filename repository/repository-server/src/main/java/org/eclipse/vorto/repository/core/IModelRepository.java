@@ -127,4 +127,32 @@ public interface IModelRepository {
 	 * @return
 	 */
 	Optional<FileContent> getFileContent(ModelId modelId, String fileName);
+	
+	/**
+	 * Attaches the given file to the model
+	 * 
+	 * @param modelid The modelId where to attach the file
+	 * @param fileName the filename
+	 * @param content the content of the file
+	 * @param userContext the user context
+	 * @return
+	 */
+	boolean attachFile(ModelId modelid, String fileName, byte[] content, IUserContext userContext);
+	
+	/**
+	 * Gets the list of attachments for the model
+	 * 
+	 * @param modelId
+	 * @return
+	 */
+	List<String> getAttachments(ModelId modelId);
+	
+	/**
+	 * Gets the content of the attachment
+	 * 
+	 * @param modelid The model id where the file was attached
+	 * @param fileName the filename of the attachment
+	 * @return
+	 */
+	Optional<byte[]> getAttachmentContent(ModelId modelid, String fileName);
 }

@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -534,5 +535,83 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 		return fileNames;
+	}
+	
+	public boolean attachFile(ModelId modelId, String fileName, byte[] content, IUserContext userContext) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			Node attachmentFolderNode = null;
+			if (!modelFolderNode.hasNode("attachments")) {
+				attachmentFolderNode = modelFolderNode.addNode("attachments", "nt:folder");
+			} else {
+				attachmentFolderNode = modelFolderNode.getNode("attachments");
+			}
+			
+			Node contentNode = null;
+			if (attachmentFolderNode.hasNode(fileName)) {
+				Node attachmentNode = (Node) attachmentFolderNode.getNode(fileName);
+				contentNode = (Node) attachmentNode.getPrimaryItem();
+			} else {
+				Node attachmentNode = attachmentFolderNode.addNode(fileName, "nt:file");
+				contentNode = attachmentNode.addNode("jcr:content", "nt:resource");
+			}
+			
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+			contentNode.setProperty("jcr:data", binary);
+			session.save();
+			
+			return true;
+		} catch(PathNotFoundException e) {
+			return false;
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
+	}
+	
+	public List<String> getAttachments(ModelId modelId) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			if (modelFolderNode.hasNode("attachments")) {
+				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+				List<String> fileNames = new ArrayList<String>();
+				NodeIterator nodeIt = attachmentFolderNode.getNodes(); 
+				while(nodeIt.hasNext()) {
+					Node fileNode = (Node) nodeIt.next();
+					fileNames.add(fileNode.getName());
+				}
+				return fileNames;
+			}
+			
+			return Collections.emptyList();
+		} catch(PathNotFoundException e) {
+			return Collections.emptyList();
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
+	}
+	
+	public Optional<byte[]> getAttachmentContent(ModelId modelId, String fileName) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			if (modelFolderNode.hasNode("attachments")) {
+				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+				if (attachmentFolderNode.hasNode(fileName)) {
+					Node attachment = (Node) attachmentFolderNode.getNode(fileName).getPrimaryItem();
+					return Optional.of(IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream()));
+				}
+			}
+			
+			return Optional.empty();
+		} catch(PathNotFoundException e) {
+			return Optional.empty();
+		} catch (IOException | RepositoryException e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
 	}
 }
