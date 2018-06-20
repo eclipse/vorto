@@ -7,16 +7,28 @@
 				<div class="panel panel-primary">
 					<div class="panel-body">
 						<form name="fileUploadForm" class="fileUploadForm form-inline">
-							 <div class="form-group">
+							<p>
 							<div class="form-group">
-								<label class="control-label input-label" >Upload:</label>
-								<input type="file" ng-model="modelFile" name="file" id="file" accept=".type,.fbmodel,.infomodel,.mapping,.zip" class="form-control" style="width:500px;">
-								<button ng-click="uploadModel()" class="btn btn-primary">Upload</button>
-							</div>
-		</form>
+								<p>Choose model type for import: </p>
+						        <div class="radio" ng-repeat="importer in importers">
+						            <label>
+						                <input type="radio" name="importer" value="{{importer.key}}" ng-model="selectedImporter.key">
+						                {{importer.key}}
+						            </label>
+						            &nbsp;
+						        </div>
+						    </div>
+						    </p>	
+						    </br>
 							<div class="form-group">
-							 <p class="upload-spacing">Supported extensions: *.type, *.fbmodel, *.infomodel, *.mapping, *.zip</p>
-							</div>
+								<div class="form-group">
+									<label class="control-label input-label" >Upload:</label>
+									<input type="file" ng-model="modelFile" name="file" id="file" accept="{{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',')}}" class="form-control" style="width:500px;">
+									<p class="upload-spacing"><small>Supported extensions: {{getSelectedImporterInfo(selectedImporter.key).extensionTypes.join(',')}}</small></p>
+									<button ng-click="uploadModel()" class="btn btn-primary">Upload</button>
+								</div>
+						</form>
+							
 
 					</div>
 				</div>
@@ -51,7 +63,7 @@
 				</div>
 				<div class="row errorbox-spacing">
 					<div ng-show="showResultBox" ng-class="uploadResult.isSuccess? 'alert alert-success' : 'alert alert-danger'">
-				  		{{resultMessage}}</p>
+				  		<b>{{resultMessage}}</b></p>
 				  		<small ng-show="showResultBox && uploadResult.isSuccess">Note: Imported models will be in <i>Draft</i> state and can only be viewed and edited by you.</small>
 				  	</p>	
 					</div>

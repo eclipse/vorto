@@ -144,6 +144,8 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
 repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$http','$location', 
 	function ($scope, $rootScope, $http, $location) {
 
+	$scope.selectedImporter = {key: 'Vorto'};
+
     $scope.uploadModel = function () {
         $scope.uploadResult = {};
         $scope.resultMessage = "";
@@ -154,11 +156,10 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         if(fileToUpload != undefined) {
             var filename = document.getElementById('file').files[0].name;
             var extn = filename.split(".").pop();
-            var modelFiles = ['type', 'fbmodel', 'infomodel', 'mapping'];
-            if(modelFiles.indexOf(extn) !== -1)
-                upload('./rest/models/import/', fileToUpload);
+            if(filename.endsWith(".zip"))
+               upload('./rest/models/import/multiple', fileToUpload);
             else
-                upload('./rest/models/import/multiple', fileToUpload);
+             	upload('./rest/models/import/', fileToUpload);
         } else {
             $rootScope.error = "Choose model file(s) and click Upload.";
         }
@@ -171,7 +172,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
         var fd = new FormData();
         fd.append('file', fileToUpload);
-        fd.append('key', 'Vorto');
+        fd.append('key', $scope.selectedImporter.key);
         $http.post(url,fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
@@ -267,7 +268,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/models/import/checkInMultiple?key=Vorto', validUploadHandles)
+        $http.put('./rest/models/import/checkInMultiple?key='+$scope.selectedImporter.key, validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
@@ -290,7 +291,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     };
 
     checkinSingle = function (handleId) {
-        $http.put('./rest/models/import/'+handleId+'?key=Vorto')
+        $http.put('./rest/models/import/'+handleId+'?key='+$scope.selectedImporter.key)
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
@@ -320,6 +321,13 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     
     $scope.getImporters();
     
+    
+    $scope.getSelectedImporterInfo = function(selectedImporter) {
+    	console.log($scope.importers);
+		for(var i=0; i<$scope.importers.length; i++) {
+       	 if ($scope.importers[i].key == selectedImporter) return $scope.importers[i];
+    	}
+	};
 
 }]);
 

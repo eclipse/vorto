@@ -116,7 +116,7 @@ public class ModelImportController {
 
 	@ApiOperation(value = "Upload and validate multiple vorto models")
 	@RequestMapping(value = "multiple", method = RequestMethod.POST)
-	public ResponseEntity<UploadModelResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file) {
+	public ResponseEntity<UploadModelResponse> uploadMultipleModels(@ApiParam(value = "The vorto model files to upload", required = true) @RequestParam("file") MultipartFile file,@RequestParam("key") String key) {
 		if (file.getSize() > maxModelSize) {
 			throw new UploadTooLargeException("model", maxModelSize);
 		}
@@ -178,7 +178,7 @@ public class ModelImportController {
 	}
 	
 	@ApiOperation(value = "Returns a list of supported importers")
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public List<ImporterInfo> getImporters() {
 		List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
 		this.importerService.getImporters().stream().forEach(importer -> {

@@ -18,7 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +49,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 
 	@Override
 	public Set<String> getSupportedFileExtensions() {
-		return new HashSet<>(Arrays.asList(".infomodel",".fbmodel",".type",".mapping"));
+		return new LinkedHashSet<>(Arrays.asList(".infomodel",".fbmodel",".type",".mapping",".zip"));
 	}
 
 	@Override

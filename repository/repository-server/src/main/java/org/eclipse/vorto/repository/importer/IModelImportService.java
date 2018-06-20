@@ -18,8 +18,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IModelImportService {
-
+	/**
+	 * 
+	 * @return a list of all registered model importers
+	 */
 	List<IModelImporter> getImporters();
 	
+	/**
+	 * Gets an importer by its key
+	 * @param key
+	 * @return
+	 */
 	Optional<IModelImporter> getImporterByKey(String key);
 }

@@ -1,13 +1,13 @@
 package org.eclipse.vorto.repository.web.importer;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ImporterInfo {
 	
 	private String key; 
 
-	private Set<String> extensionTypes = new HashSet<>();
+	private Set<String> extensionTypes = new LinkedHashSet<>();
 	
 	private String shortDescription;
 	
