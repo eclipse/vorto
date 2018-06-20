@@ -1,5 +1,7 @@
 package org.eclipse.vorto.repository.importer;
 
+import java.io.File;
+
 public class FileUpload {
 
 	private String fileName;
@@ -9,11 +11,15 @@ public class FileUpload {
 	private FileUpload() {		
 	}
 	
-	public static FileUpload create(String fileName, byte[] content) {
+	public static FileUpload create(String filePath, byte[] content) {
 		FileUpload fileUpload = new FileUpload();
-		fileUpload.fileName = fileName;
+		fileUpload.fileName = extractFileName(filePath);
 		fileUpload.content = content;
 		return fileUpload;
+	}
+
+	private static String extractFileName(String filePath) {
+		return filePath.substring(filePath.lastIndexOf('/')+1);
 	}
 
 	public String getFileName() {

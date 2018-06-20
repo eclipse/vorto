@@ -27,9 +27,9 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
 
 	@Test
 	public void testResolveInfoModelByDeviceInfoProfileSerialNo() {
-		checkinModel("bluetooth/ColorLight.fbmodel");
-		checkinModel("bluetooth/ColorLightIM.infomodel");
-		checkinModel("bluetooth/ColorLight_bluetooth.mapping");
+		importModel("bluetooth/ColorLight.fbmodel");
+		importModel("bluetooth/ColorLightIM.infomodel");
+		importModel("bluetooth/ColorLight_bluetooth.mapping");
 		
 		DefaultResolver resolver = new DefaultResolver();
 		resolver.setRepository(this.modelRepository);

@@ -39,23 +39,23 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testGetModelByState() throws Exception {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 	}
 	
 	@Test
 	public void testSearchByTypeAndState() throws Exception {
-		ModelInfo model = checkinModel("Color.type");
+		ModelInfo model = importModel("Color.type");
 		workflow.start(model.getId());
-		model = checkinModel("Colorlight.fbmodel");
+		model = importModel("Colorlight.fbmodel");
 		workflow.start(model.getId());
 		assertEquals(0, modelRepository.search("Functionblock state:Released").size());
 	}
 	
 	@Test
 	public void testGetPossibleActionsForDraftState() throws Exception  {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		assertEquals(1,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
 		assertEquals(SimpleWorkflowModel.ACTION_RELEASE.getName(),workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).get(0));
@@ -63,7 +63,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testStartReviewProcessForModel() throws Exception  {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());
 		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
@@ -77,14 +77,14 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test (expected = WorkflowException.class)
 	public void testTransitionWorkflowInvalidAction() throws Exception {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_APPROVE.getName());
 	}
 	
 	@Test
 	public void testApproveModelByAdminInReviewState() throws Exception {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		
 		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
@@ -103,7 +103,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test (expected = WorkflowException.class)
 	public void testApproveModelByUserInReviewState() throws Exception  {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		
 		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
@@ -114,7 +114,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testRejectModelInReviewState() throws Exception  {
-		ModelInfo model = checkinModel("Color.type");	
+		ModelInfo model = importModel("Color.type");	
 		workflow.start(model.getId());
 		
 		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
@@ -134,10 +134,10 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	@Test
 	public void testStartReleaseModelWithReleasedDependencies() throws Exception  {
 		
-		ModelInfo typeModel = checkinModel("Color.type");	
+		ModelInfo typeModel = importModel("Color.type");	
 		workflow.start(typeModel.getId());
 		
-		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		ModelInfo fbModel = importModel("Colorlight.fbmodel");	
 		workflow.start(fbModel.getId());
 		
 		setReleaseState(typeModel);
@@ -149,10 +149,10 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testStartReleaseModelWithNonReleasedDependencies() throws Exception  {
-		ModelInfo typeModel = checkinModel("Color.type");	
+		ModelInfo typeModel = importModel("Color.type");	
 		workflow.start(typeModel.getId());
 		
-		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		ModelInfo fbModel = importModel("Colorlight.fbmodel");	
 		workflow.start(fbModel.getId());
 		
 		try {
@@ -167,10 +167,10 @@ public class WorkflowTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testStartReleaseModelWithReviewedDependencies() throws Exception  {
-		ModelInfo typeModel = checkinModel("Color.type");	
+		ModelInfo typeModel = importModel("Color.type");	
 		workflow.start(typeModel.getId());
 		
-		ModelInfo fbModel = checkinModel("Colorlight.fbmodel");	
+		ModelInfo fbModel = importModel("Colorlight.fbmodel");	
 		workflow.start(fbModel.getId());
 		
 		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));

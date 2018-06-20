@@ -72,8 +72,8 @@ public class MappingTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetMappingsOfEntityForTargetPlatform() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("sample.mapping");
+		importModel("Color.type");
+		importModel("sample.mapping");
 		Thread.sleep(2000);
 		assertEquals(1, modelRepository.getMappingModelsForTargetPlatform(
 				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios").size());
@@ -81,8 +81,8 @@ public class MappingTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUsedByMappingOfEntity() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("sample.mapping");
+		importModel("Color.type");
+		importModel("sample.mapping");
 		Thread.sleep(2000);
 		assertEquals(1, modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
 				.getReferencedBy().size());
@@ -95,8 +95,8 @@ public class MappingTest extends AbstractIntegrationTest {
 	
 	@Test
 	public void testGetPlatformMappingsOfEntity() throws Exception {
-		checkinModel("Color.type");
-		checkinModel("sample.mapping");
+		importModel("Color.type");
+		importModel("sample.mapping");
 		Thread.sleep(2000);
 		ModelInfo colorInfo = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(1,colorInfo.getPlatformMappings().size());

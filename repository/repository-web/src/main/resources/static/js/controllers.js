@@ -137,7 +137,7 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
     
 } ]);
 
-repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$http','$location', 
+repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$http','$location', 
 	function ($scope, $rootScope, $http, $location) {
 
     $scope.uploadModel = function () {
@@ -152,9 +152,9 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             var extn = filename.split(".").pop();
             var modelFiles = ['type', 'fbmodel', 'infomodel', 'mapping'];
             if(modelFiles.indexOf(extn) !== -1)
-                upload('./rest/secure/', fileToUpload);
+                upload('./rest/models/import/', fileToUpload);
             else
-                upload('./rest/secure/multiple', fileToUpload);
+                upload('./rest/models/import/multiple', fileToUpload);
         } else {
             $rootScope.error = "Choose model file(s) and click Upload.";
         }
@@ -176,7 +176,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             $scope.stateArr = [];
             $scope.uploadResult = result;
             $scope.showCheckin = true;
-            if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0 && $scope.uploadResult.obj.isSuccess) {
+            if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0 && $scope.uploadResult.isSuccess) {
                 angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {
                     var item =  (idx == 0) ? {active: false} : {active: true} ;
                     var modelType = resultObject.report.model.type;
@@ -233,6 +233,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
         return false;
     };
 
+	
 
     $scope.checkin = function (uploadResults) {
         $rootScope.error = "";
@@ -246,7 +247,7 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     checkInMultipleModels = function(uploadResults) {
         var validUploadHandles = [];
         $scope.isLoading = true;
-        $scope.loadMessage = "Checking in... Please wait!";
+        $scope.loadMessage = "Importing... Please wait!";
         $scope.showResultBox = false;
         angular.forEach(uploadResults, function (uploadResult, idx) {
             if(uploadResult.report.valid) {
@@ -262,11 +263,11 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/secure/checkInMultiple?key=Vorto', validUploadHandles)
+        $http.put('./rest/models/import/checkInMultiple?key=Vorto', validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
-            $scope.resultMessage = "Checkin was successful!";
+            $scope.resultMessage = "Import was successful!";
             $scope.showCheckin = false;
         }).error(function(data, status, headers, config) {
             $scope.isLoading = false;
@@ -285,11 +286,11 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
     };
 
     checkinSingle = function (handleId) {
-        $http.put('./rest/secure/'+handleId+'?key=Vorto')
+        $http.put('./rest/models/import/'+handleId+'?key=Vorto')
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
-            $scope.resultMessage = "Checkin was successful!";
+            $scope.resultMessage = "Import was successful!";
             $scope.showCheckin = false;
         }).error(function(data, status, headers, config) {
             if(status == 403){
@@ -305,6 +306,16 @@ repositoryControllers.controller('UploadController', ['$scope', '$rootScope', '$
             }
         });;
     };
+    
+     $scope.getImporters = function () {
+        $http.get('./rest/models/import')
+        .success(function(result){
+            $scope.importers = result;
+        });
+    };
+    
+    $scope.getImporters();
+    
 
 }]);
 

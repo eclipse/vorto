@@ -185,7 +185,7 @@ public class JcrModelRepository implements IModelRepository {
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 						
 			final String fileContent = IOUtils.toString(is);
-			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(modelIdHelper.getFileName(fileNode.getName())).parse(IOUtils.toInputStream(fileContent));
+			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(IOUtils.toInputStream(fileContent));
 			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());	
 			
 		} catch (PathNotFoundException e) {
@@ -222,6 +222,7 @@ public class JcrModelRepository implements IModelRepository {
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 		
 		try {
+			
 			Node folderNode = createNodeForModelId(modelId);
 			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
 			if (!nodeIt.hasNext()) {

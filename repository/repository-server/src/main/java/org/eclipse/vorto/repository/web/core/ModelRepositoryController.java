@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -43,6 +44,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.upload.ValidationReport;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
@@ -279,7 +281,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 			@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
 			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
 			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version,
-			@ApiParam(value = "Choose output file extension, e.g. fbmodel", required = false) final @RequestParam(value = "extension", required = false) String fileExtension,
+			@ApiParam(value = "fileName", required = false) final @RequestParam(value = "fileName", required = false) String fileName,
 			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
 			final HttpServletResponse response) {
 
@@ -303,10 +305,17 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 				throw new RuntimeException("Error copying file.", e);
 			}
 		} else {
-			createSingleModelContent(modelId, response);
+			createSingleModelContent(modelId, response, fileName);
 		}
 	}
-
+	@ApiOperation(value = "Lists all files that are attached to the model")
+	@RequestMapping(value = "/files/{namespace}/{name}/{version:.+}", method = RequestMethod.GET)
+	public Set<String> getFileNamesOfModel(@ApiParam(value = "The namespace of vorto model, e.g. com.mycompany", required = true) final @PathVariable String namespace,
+			@ApiParam(value = "The name of vorto model, e.g. NewInfomodel", required = true) final @PathVariable String name,
+			@ApiParam(value = "The version of vorto model, e.g. 1.0.0", required = true) final @PathVariable String version) {
+		return this.modelRepository.getFileNames(new ModelId(name, namespace, version));
+	}
+	
 	private byte[] createZipWithAllDependencies(ModelId modelId) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);
@@ -324,8 +333,14 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 		}
 	}
 
-	private void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
-		byte[] modelContent = modelRepository.getModelContent(modelId).getContent();
+	private void createSingleModelContent(ModelId modelId, HttpServletResponse response, String fileName) {
+		FileContent fileContent = null;
+		if (fileName == null) {
+			fileContent = modelRepository.getModelContent(modelId);
+		} else {
+			fileContent = modelRepository.getFileContent(modelId, fileName).get();
+		}
+		final byte[] modelContent = fileContent.getContent();
 		if (modelContent != null && modelContent.length > 0) {
 			final ModelInfo modelResource = modelRepository.getById(modelId);
 			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource));

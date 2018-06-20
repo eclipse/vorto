@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.importer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,7 +29,7 @@ import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-public class BulkUploadTest extends AbstractIntegrationTest  {
+public class ModelBulkImportTest extends AbstractIntegrationTest  {
 
 	private BulkUploadHelper bulkUploadHelper;
 	

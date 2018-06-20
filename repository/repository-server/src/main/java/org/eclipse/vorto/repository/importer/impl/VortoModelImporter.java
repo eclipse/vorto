@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.upload.ValidationReport;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -55,7 +56,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 	protected ValidationReport validate(FileUpload fileUpload, IUserContext user) {
 		ModelValidationHelper validationHelper = new ModelValidationHelper(getModelRepository(), getUserRepository());
 		try {
-		final ModelInfo modelInfo = ModelParserFactory.getParser(fileUpload.getFileExtension()).parse(new ByteArrayInputStream(fileUpload.getContent()));
+		final ModelInfo modelInfo = ModelParserFactory.getParser(fileUpload.getFileName()).parse(new ByteArrayInputStream(fileUpload.getContent()));
 		return validationHelper.validate(modelInfo, user);
 		} catch(ValidationException ex) {
 			return ValidationReport.invalid(null, ex.getMessage());
@@ -69,5 +70,9 @@ public class VortoModelImporter extends AbstractModelImporter {
 		final ModelEMFResource modelInfo = (ModelEMFResource)ModelParserFactory.getParser(fileUpload.getFileExtension()).parse(new ByteArrayInputStream(fileUpload.getContent()));
 		result.add(modelInfo);
 		return Collections.unmodifiableList(result);
+	}
+
+	@Override
+	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
 	}
 }

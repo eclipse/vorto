@@ -22,6 +22,7 @@ public class ModelFileContent extends FileContent {
 	
 	public ModelFileContent(Model model, String fileName, byte[] content) {
 		super(fileName, content);
+		this.model = model;
 	}
 	
 	public Model getModel() {

@@ -7,6 +7,7 @@
 				<div class="panel panel-primary">
 					<div class="panel-body">
 						<form name="fileUploadForm" class="fileUploadForm form-inline">
+							 <div class="form-group">
 							<div class="form-group">
 								<label class="control-label input-label" >Upload:</label>
 								<input type="file" ng-model="modelFile" name="file" id="file" accept=".type,.fbmodel,.infomodel,.mapping,.zip" class="form-control" style="width:500px;">
@@ -79,7 +80,7 @@
 				        <tr><td><label>References: </label></td>
 				        <td>
 		<table>
-								<tr ng-repeat="reference in result.report.references">
+								<tr ng-repeat="reference in result.report.model.references">
 									<td><i ng-class="isMissing(reference,result.report.unresolvedReferences) === true ? 'fa fa-close fa-lg invalid' : 'fa fa-check fa-lg valid'" aria-hidden="true"></i></td>
 									<td class="tdspacing-half">{{reference.namespace}}.{{reference.name}}.{{reference.version}}</td>
 								</tr>

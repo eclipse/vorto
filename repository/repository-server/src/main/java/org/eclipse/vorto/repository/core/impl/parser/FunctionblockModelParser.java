@@ -27,8 +27,6 @@ public class FunctionblockModelParser extends AbstractModelParser {
 
 	public FunctionblockModelParser(String fileName) {
 		super(fileName);
-		DatatypePackage.eINSTANCE.eClass();
-		FunctionblockPackage.eINSTANCE.eClass();
 	}
 
 	@Override

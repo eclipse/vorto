@@ -96,8 +96,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 			dm.getSorted().stream().forEach(resource -> {
 				try {
 					ModelInfo importedModel = this.modelRepository.save(resource.getId(), ((ModelEMFResource)resource).toDSL(), createFileName(resource), user);
-					this.modelRepository.addFileContent(resource.getId(),new FileContent(uploadedItem.getValue().getFileName(),uploadedItem.getValue().getContent()));
 					importedModels.add(importedModel);
+					
+					postProcessImportedModel(importedModel, new FileContent(uploadedItem.getValue().getFileName(),uploadedItem.getValue().getContent()));
 				} catch (Exception e) {
 					throw new ModelImporterException("Problem importing model",e);
 				}
@@ -112,6 +113,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	private String createFileName(ModelInfo resource) {
 		return resource.getId().getName() + resource.getType().getExtension();
 	}
+	
+	protected abstract void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent);
 
 	/**
 	 * validates the given fileUpload content

@@ -7,9 +7,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         templateUrl : "partials/search-template.html",
         controller : "SearchController",
         reloadOnSearch: false
-    }).when("/upload", {
-        templateUrl : "partials/upload-template.html",
-        controller : "UploadController"
+    }).when("/import", {
+        templateUrl : "partials/import-template.html",
+        controller : "ImportController"
     }).when("/details/:namespace/:name/:version", {
         templateUrl : "partials/details-template.html",
         controller : "DetailsController"

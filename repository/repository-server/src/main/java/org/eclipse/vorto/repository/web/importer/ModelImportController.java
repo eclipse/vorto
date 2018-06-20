@@ -56,17 +56,17 @@ import io.swagger.annotations.ApiParam;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/share", description="Import of Information Models and other model types")
+@Api(value="/import", description="Import of Information Models and other model types")
 @RestController
-@RequestMapping(value = "/rest/secure")
+@RequestMapping(value = "/rest/models/import")
 public class ModelImportController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     
-    private final String ERROR_MSG_FORMAT = "Models cannot be checked in because there {0,choice,1#is|1<are} {0} {0,choice,1#model|1<models} with {0,choice,1#error|1<errors}.";
-	private final String SUCCESS_MSG_FORMAT = "{0,choice,1#The uploaded model is|1<All uploaded models are} valid and ready to check in.";
-	private final String UPLOAD_VALID = "Uploaded model %s is valid to check in.";
-	private final String UPLOAD_FAIL = "Uploaded model %s has errors. Cannot check in.";
+    private final String ERROR_MSG_FORMAT = "Models cannot be imported because there {0,choice,1#is|1<are} {0} {0,choice,1#model|1<models} with {0,choice,1#error|1<errors}.";
+	private final String SUCCESS_MSG_FORMAT = "{0,choice,1#The uploaded model is|1<All uploaded models are} valid and ready to import.";
+	private final String UPLOAD_VALID = "Uploaded model %s is valid and ready for import.";
+	private final String UPLOAD_FAIL = "Uploaded model %s has errors. Cannot import.";
     
 	@Autowired
 	private IModelImportService importerService;

@@ -59,15 +59,15 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		MockitoAnnotations.initMocks(this);
 	}
 	
-	protected ModelInfo checkinModel(String modelName) {
-		return checkinModel(modelName, UserContext.user(getCallerId()));
+	protected ModelInfo importModel(String modelName) {
+		return importModel(modelName, UserContext.user(getCallerId()));
 	}
 	
 	protected String getCallerId() {
 		return "alex";
 	}
 	
-	protected ModelInfo checkinModel(String modelName, IUserContext userContext) {
+	protected ModelInfo importModel(String modelName, IUserContext userContext) {
 		try {
 			UploadModelResult uploadResult = this.importer.upload(FileUpload.create(modelName,
 					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream())), userContext);
