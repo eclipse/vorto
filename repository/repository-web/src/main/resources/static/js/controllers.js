@@ -82,6 +82,10 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
 			        	} else {
 			        		modalInstance.close(result.entity);
 			        	}
+			        }).error(function(data, status, header, config) {
+			        	if (status === 409) {
+			        		$scope.errorMessage = "Model with this name and namespace already exists.";
+			        	}
 			        });
 		    };
 		 	    
@@ -671,10 +675,10 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.create = function() {
 		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
 			        .success(function(result){
-			        	if (result.status === 409) {
+			        	modalInstance.close(result.entity);
+			        }).error(function(data, status, header, config) {
+			        	if (status === 409) {
 			        		$scope.errorMessage = "Model with this name and namespace already exists.";
-			        	} else {
-			        		modalInstance.close(result.entity);
 			        	}
 			        });
 		    };
