@@ -145,7 +145,7 @@ public interface IModelRepository {
 	 * @param modelId
 	 * @return
 	 */
-	List<String> getAttachments(ModelId modelId);
+	List<String> getAttachmentFilenames(ModelId modelId);
 	
 	/**
 	 * Gets the content of the attachment
@@ -154,5 +154,5 @@ public interface IModelRepository {
 	 * @param fileName the filename of the attachment
 	 * @return
 	 */
-	Optional<byte[]> getAttachmentContent(ModelId modelid, String fileName);
+	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName);
 }

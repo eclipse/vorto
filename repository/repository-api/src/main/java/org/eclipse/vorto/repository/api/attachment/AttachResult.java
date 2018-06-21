@@ -4,25 +4,21 @@ import org.eclipse.vorto.repository.api.ModelId;
 
 public class AttachResult {
 	private boolean success;
-	private ModelId modelId;
-	private String filename;
-	private String urlLink;
+	private Attachment attachment;
 	private String errorMessage;
 
 	public static AttachResult success(ModelId modelId, String filename) {
-		return new AttachResult(true, modelId, filename, Attachment.getLink(modelId, filename), null);
+		return new AttachResult(true, Attachment.newInstance(modelId, filename), null);
 	}
 
 	public static AttachResult fail(ModelId modelId, String filename, String errorMessage) {
-		return new AttachResult(false, modelId, filename, null, errorMessage);
+		return new AttachResult(false, null, errorMessage);
 
 	}
 
-	public AttachResult(boolean success, ModelId modelId, String filename, String urlLink, String errorMessage) {
+	public AttachResult(boolean success, Attachment attachment, String errorMessage) {
 		this.success = success;
-		this.modelId = modelId;
-		this.filename = filename;
-		this.urlLink = urlLink;
+		this.attachment = attachment;
 		this.errorMessage = errorMessage;
 	}
 
@@ -34,28 +30,12 @@ public class AttachResult {
 		this.success = success;
 	}
 
-	public ModelId getModelId() {
-		return modelId;
+	public Attachment getAttachment() {
+		return attachment;
 	}
 
-	public void setModelId(ModelId modelId) {
-		this.modelId = modelId;
-	}
-
-	public String getFilename() {
-		return filename;
-	}
-
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
-
-	public String getUrlLink() {
-		return urlLink;
-	}
-
-	public void setUrlLink(String urlLink) {
-		this.urlLink = urlLink;
+	public void setAttachment(Attachment attachment) {
+		this.attachment = attachment;
 	}
 
 	public String getErrorMessage() {

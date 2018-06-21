@@ -77,7 +77,7 @@ public class AttachmentController {
 		
 		try {
 			
-			return modelRepository.getAttachments(modelId).stream()
+			return modelRepository.getAttachmentFilenames(modelId).stream()
 				.map(filename -> Attachment.newInstance(modelId, filename))
 				.collect(Collectors.toList());
 			
@@ -98,14 +98,14 @@ public class AttachmentController {
 		
 		ModelId modelId = new ModelId(name, namespace, version);
 		
-		Optional<byte[]> content = modelRepository.getAttachmentContent(modelId, filename);
+		Optional<FileContent> content = modelRepository.getAttachmentContent(modelId, filename);
 		
 		try {
 			if (content.isPresent()) {
 				response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + filename);
 				response.setContentType(APPLICATION_OCTET_STREAM);
 				
-				IOUtils.copy(new ByteArrayInputStream(content.get()), response.getOutputStream());
+				IOUtils.copy(new ByteArrayInputStream(content.get().getContent()), response.getOutputStream());
 				response.flushBuffer();
 			} else {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND);

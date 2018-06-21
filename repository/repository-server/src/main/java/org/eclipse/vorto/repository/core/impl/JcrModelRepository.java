@@ -570,7 +570,7 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 	
-	public List<String> getAttachments(ModelId modelId) {
+	public List<String> getAttachmentFilenames(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -594,7 +594,7 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 	
-	public Optional<byte[]> getAttachmentContent(ModelId modelId, String fileName) {
+	public Optional<FileContent> getAttachmentContent(ModelId modelId, String fileName) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -603,7 +603,7 @@ public class JcrModelRepository implements IModelRepository {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
 				if (attachmentFolderNode.hasNode(fileName)) {
 					Node attachment = (Node) attachmentFolderNode.getNode(fileName).getPrimaryItem();
-					return Optional.of(IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream()));
+					return Optional.of(new FileContent(fileName, IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream())));
 				}
 			}
 			

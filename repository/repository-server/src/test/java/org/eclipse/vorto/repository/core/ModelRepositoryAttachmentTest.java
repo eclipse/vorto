@@ -30,7 +30,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			
 			assertTrue(result);
 			
-			List<String> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			List<String> attachments = modelRepository.getAttachmentFilenames(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 			
 			assertEquals(1, attachments.size());
 			
@@ -54,7 +54,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			
 			assertTrue(result);
 			
-			List<String> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			List<String> attachments = modelRepository.getAttachmentFilenames(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 			
 			assertEquals(2, attachments.size());
 			
@@ -72,17 +72,17 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		testAttachFile();
 		
 		try {
-			Optional<byte[]> colorXmi = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "Color.xmi");
+			Optional<FileContent> colorXmi = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "Color.xmi");
 			
 			assertFalse(colorXmi.isPresent());
 			
-			Optional<byte[]> backup1 = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "backup1.xml");
+			Optional<FileContent> backup1 = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "backup1.xml");
 			
 			assertTrue(backup1.isPresent());
 			
 			byte[] backup1Array = IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream());
 			
-			assertTrue(Arrays.equals(backup1Array, backup1.get()));
+			assertTrue(Arrays.equals(backup1Array, backup1.get().getContent()));
 			
 		} catch (IOException | FatalModelRepositoryException e) {
 			e.printStackTrace();
@@ -101,11 +101,11 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			
 			assertFalse(result);
 			
-			List<String> attachments = modelRepository.getAttachments(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"));
+			List<String> attachments = modelRepository.getAttachmentFilenames(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"));
 			
 			assertEquals(0, attachments.size());
 			
-			Optional<byte[]> backup1 = modelRepository.getAttachmentContent(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"), "backup1.xml");
+			Optional<FileContent> backup1 = modelRepository.getAttachmentContent(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"), "backup1.xml");
 			
 			assertFalse(backup1.isPresent());
 			
