@@ -135,24 +135,6 @@ class FunctionblockValidator extends AbstractFunctionblockValidator {
 	}
 
 	@Check
-	def checkOpNameAgainstEntityName(FunctionblockModel model) {
-		
-		var listEE= getAllTypeFromReferencedFile(model);
-		
-		listEE.addAll(model.entities)
-		listEE.addAll(model.enums)
-		
-		var set = getNonDuplicateLowerCasedNameSet(listEE)
-		var ops = model.functionblock.operations
-		
-		for(op : ops){
-			if(set.contains(op.name.toLowerCase)){
-				error(SystemMessage.ERROR_OPERATION_SAME_NAME_AS_TYPE, op,FunctionblockPackage.Literals.OPERATION__NAME)
-			}
-		}
-	}
-
-	@Check
 	def checkVersionPattern(FunctionblockModel functionblock) {
 		if (!functionblock.version.matches("\\d+\\.\\d+\\.\\d+(\\-.+)?")) {
 			error(SystemMessage.ERROR_VERSION_PATTERN, functionblock,
