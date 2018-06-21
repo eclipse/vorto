@@ -50,6 +50,9 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
 					return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName()) || 
 						   modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName()) ||
 						   modelInfo.getAuthor().equals(user.getHashedUsername());
+				} else if ("model:owner".equalsIgnoreCase((String)permission)) {
+					IUserContext user = UserContext.user(authentication.getName());
+					return modelInfo.getAuthor().equals(user.getHashedUsername());
 				}
 				
 			}
