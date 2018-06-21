@@ -29,10 +29,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
+@Api(value = "/attach", description = "Attach files to models")
 @RequestMapping(value = "/rest/model")
 public class AttachmentController {
 	
@@ -45,7 +47,7 @@ public class AttachmentController {
 	@Autowired
 	private IModelRepository modelRepository;
 	
-	@ApiOperation(value = "Upload a file attachment for a model")
+	@ApiOperation(value = "Attach a file to a model")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{name}/{version}/attachment", produces = "application/json")
 	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:owner'))")
 	public AttachResult attach(
@@ -66,7 +68,7 @@ public class AttachmentController {
 		}
 	}
 	
-	@ApiOperation(value = "Get a list of attachments for a model")
+	@ApiOperation(value = "Get a list of files attached to a model")
 	@RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}/{version}/attachment", produces = "application/json")
 	public List<Attachment> getAttachments(
 			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
@@ -87,7 +89,7 @@ public class AttachmentController {
 		}
 	}
 	
-	@ApiOperation(value = "Download an attached file to a model")
+	@ApiOperation(value = "Download a file attached to a model")
 	@RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}/{version}/attachment/{filename:.+}")
 	public void getAttachment(
 			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
