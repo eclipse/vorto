@@ -137,7 +137,7 @@ public interface IModelRepository {
 	 * @param userContext the user context
 	 * @return
 	 */
-	boolean attachFile(ModelId modelid, String fileName, byte[] content, IUserContext userContext);
+	boolean attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext);
 	
 	/**
 	 * Gets the list of attachments for the model

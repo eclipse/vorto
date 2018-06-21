@@ -26,7 +26,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		
 		try {
 			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
-					"backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()), erle);
+					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
 			
 			assertTrue(result);
 			
@@ -50,7 +50,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		
 		try {
 			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
-					"color.xmi", IOUtils.toByteArray(new ClassPathResource("sample_models/color.xmi").getInputStream()), erle);
+					new FileContent("Color.xmi", IOUtils.toByteArray(new ClassPathResource("sample_models/Color.xmi").getInputStream())), erle);
 			
 			assertTrue(result);
 			
@@ -72,7 +72,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		testAttachFile();
 		
 		try {
-			Optional<byte[]> colorXmi = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "color.xmi");
+			Optional<byte[]> colorXmi = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "Color.xmi");
 			
 			assertFalse(colorXmi.isPresent());
 			
@@ -97,7 +97,7 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		
 		try {
 			boolean result = modelRepository.attachFile(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"), 
-					"backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()), erle);
+					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
 			
 			assertFalse(result);
 			

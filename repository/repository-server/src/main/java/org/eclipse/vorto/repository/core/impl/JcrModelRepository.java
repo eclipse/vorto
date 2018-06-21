@@ -537,7 +537,7 @@ public class JcrModelRepository implements IModelRepository {
 		return fileNames;
 	}
 	
-	public boolean attachFile(ModelId modelId, String fileName, byte[] content, IUserContext userContext) {
+	public boolean attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -550,15 +550,15 @@ public class JcrModelRepository implements IModelRepository {
 			}
 			
 			Node contentNode = null;
-			if (attachmentFolderNode.hasNode(fileName)) {
-				Node attachmentNode = (Node) attachmentFolderNode.getNode(fileName);
+			if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
+				Node attachmentNode = (Node) attachmentFolderNode.getNode(fileContent.getFileName());
 				contentNode = (Node) attachmentNode.getPrimaryItem();
 			} else {
-				Node attachmentNode = attachmentFolderNode.addNode(fileName, "nt:file");
+				Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), "nt:file");
 				contentNode = attachmentNode.addNode("jcr:content", "nt:resource");
 			}
 			
-			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
 			

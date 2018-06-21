@@ -14,6 +14,7 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.attachment.AttachResult;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class AttachmentController {
 		ModelId modelId = new ModelId(name, namespace, version);
 		
 		try {
-			modelRepository.attachFile(modelId, file.getOriginalFilename(), file.getBytes(), getUserContext());
+			modelRepository.attachFile(modelId, new FileContent(file.getOriginalFilename(), file.getBytes()), getUserContext());
 			
 			return AttachResult.success(modelId, file.getOriginalFilename());
 		} catch (IOException | FatalModelRepositoryException e) {
