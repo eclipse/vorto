@@ -19,6 +19,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,6 +46,7 @@ public class AttachmentController {
 	
 	@ApiOperation(value = "Upload a file attachment for a model")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{name}/{version}/attachment", produces = "application/json")
+	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:owner'))")
 	public AttachResult attach(
 			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
 			@ApiParam(value = "name", required = true) @PathVariable String name, 
