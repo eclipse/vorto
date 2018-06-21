@@ -1,4 +1,5 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
         <groupId>org.eclipse.vorto</groupId>
@@ -14,13 +15,5 @@
 		<module>org.eclipse.vorto.codegen.bosch</module>
 		<module>org.eclipse.vorto.codegen.bosch.gateway</module>
 	</modules>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.eclipse.xtend</groupId>
-                <artifactId>xtend-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 	
 </project>

@@ -340,6 +340,10 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.workflowActions = [];
     $scope.chosenFile = false;
     $scope.editMode = false;
+    $scope.isLoading = false;
+    $scope.showReferences = false;
+    $scope.showUsages = false;
+    $scope.showMappings = false;
     
     $scope.modelEditor = null;
     
@@ -347,7 +351,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     	$scope.modelEditor = _editor;
     	$scope.modelEditorSession = _editor.getSession();
     	_editor.getSession().setMode("ace/mode/vorto");
+    	_editor.setTheme("ace/theme/chrome");
     	_editor.getSession().setTabSize(2);
+    	_editor.setShowPrintMargin(false);
   		_editor.getSession().setUseWrapMode(true);
 	};
 	
@@ -357,6 +363,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	};
 	
 	$scope.saveModel = function() {
+		$scope.isLoading = true;
+		$scope.error = false;
 		var newContent = {
 			contentDsl : $scope.newModelCode,
 			type : $scope.model.type
@@ -365,17 +373,18 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		
 		$http.put('./rest/model/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version, newContent)
 	        .success(function(result) {
+	           $scope.isLoading = false;
 	           if (result.valid) {
-	           	$scope.success = "Changes saved successfully";
+	           	$scope.success = "Changes saved successfully. Reloading page ...";
 	           	$timeout(function() {
         			$window.location.reload();
         		},1000);
-	             //$window.location.reload();
-	           	 //$location.path("/details/"+result.model.id.namespace+"/"+result.model.id.name+"/"+result.model.id.version); 
 	           } else {
 	           	 $scope.error = result.errorMessage;
 	           }
 	        }).error(function(data, status, headers, config) {  
+	        	$scope.isLoading = false;
+	        	$scope.error = data;
 	        });
 	};
 
@@ -424,6 +433,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $http.get('./rest/model/'+namespace+'/'+name+'/'+version)
         .success(function(result){
             $scope.model = result;
+            if ($scope.model.references.length < 2) $scope.showReferences = true;
+            if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
         });
     };
 
