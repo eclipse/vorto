@@ -143,7 +143,10 @@ CATEGORY: ID ('/' ID)*;
 
 ValidID: ID | KEYWORD;
 
-KEYWORD: 'status'|'events'|'operations'|'configuration'|'fault';
+KEYWORD:
+	'breakable' | 'category' | 'configuration' | 'dateTime' | 'description' | 'dictionary' | 'displayname' | 'events' |
+	'extension' | 'fault' | 'functionblock' | 'functionblocks' | 'infomodel' | 'namespace' | 'operations' | 'status' |
+	'version';
 
 terminal SIGNEDINT :
 	'-'INT
