@@ -128,7 +128,7 @@
 							    <a ng-if="isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
 							    <a ng-if="!isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span></i>&nbsp;Save</a>
 							  	<div class="pull-right">&nbsp;&nbsp;</div>
-							  	<a href="" ng-show="authority == 'ROLE_ADMIN' || model.author == user" ng-disabled="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="openSearchDialog()" class="pull-right"><span class="fa fa-search" aria-hidden="true"></span></i>&nbsp;Lookup Model References...</a>
+							  	<a href="" ng-show="authority == 'ROLE_ADMIN' || model.author == user" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="openSearchDialog()" class="pull-right"><span class="fa fa-search" aria-hidden="true"></span></i>&nbsp;Lookup Model References...</a>
 							  </div>
 							  <div class="row">
 								<div ng-if="error" class="alert alert-danger">{{error}}</div>
