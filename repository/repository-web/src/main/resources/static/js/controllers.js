@@ -7,6 +7,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
     $scope.modelType = 'all';
     $scope.queryFilter = "";
     $scope.fileToUpload = null;
+    $scope.isLoading = false;
     
     $scope.clearInput = function() {
         $scope.queryFilter = "";
@@ -19,6 +20,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
     };
 
     $scope.search = function() {
+    	$scope.isLoading = true;
         var filter = null;
         if ($scope.modelType === 'all') {
             filter = $scope.queryFilter;
@@ -34,8 +36,10 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
             function(data, status, headers, config) {
             	$rootScope.modelsSaved = {'filter': filter, 'models': data};
             	$scope.models = data;
+            	$scope.isLoading = false;
             }).error(function(data, status, headers, config) {
                 $scope.models = [];
+                $scope.isLoading = false;
             });
     };
 
@@ -75,14 +79,17 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         	$scope.modelVersion = "1.0.0";
         	
 			$scope.create = function() {
+				$scope.isLoading = true;
 		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
 			        .success(function(result){
+			        	$scope.isLoading = false;
 			        	if (result.status === 409) {
 			        		$scope.errorMessage = "Model with this name and namespace already exists.";
 			        	} else {
-			        		modalInstance.close(result.entity);
+			        		modalInstance.close(result);
 			        	}
 			        }).error(function(data, status, header, config) {
+			        	$scope.isLoading = false;
 			        	if (status === 409) {
 			        		$scope.errorMessage = "Model with this name and namespace already exists.";
 			        	}
@@ -95,7 +102,11 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         },
         templateUrl: "partials/createmodel-template.html",
         size: "lg",
-        resolve: {}
+        resolve: {
+        	model: function() {
+    			return $scope.model;
+    		}
+    	}
       });
       
       modalInstance.result.then(
@@ -692,10 +703,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         	$scope.modelVersion = "1.0.0";
         	
 			$scope.create = function() {
+				$scope.isLoading = true;
 		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
 			        .success(function(result){
-			        	modalInstance.close(result.entity);
+			        	$scope.isLoading = false;
+			        	modalInstance.close(result);
 			        }).error(function(data, status, header, config) {
+			        	$scope.isLoading = false;
 			        	if (status === 409) {
 			        		$scope.errorMessage = "Model with this name and namespace already exists.";
 			        	}
@@ -708,7 +722,11 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         },
         templateUrl: "partials/createmodel-template.html",
         size: "lg",
-        resolve: {}
+        resolve: {
+        	model: function() {
+    			return $scope.model;
+    		}
+    	}
       });
       
       modalInstance.result.then(

@@ -50,7 +50,9 @@
 </form>
 <div class="modal-footer">
 	<div class="align-right">
-	    <button class="btn btn-primary" type="button" ng-disabled="createModelForm.$invalid" ng-click="create()">Create</button>
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create()">Create</button>
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>Create</button>
+	    
 	    <button class="btn" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </div>

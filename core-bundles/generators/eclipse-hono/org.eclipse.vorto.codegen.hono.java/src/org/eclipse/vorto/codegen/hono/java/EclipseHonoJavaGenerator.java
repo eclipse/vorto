@@ -103,7 +103,7 @@ public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public String getServiceKey() {
-		return "hono-python";
+		return "hono-java";
 	}
 
 	@Override
