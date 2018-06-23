@@ -127,6 +127,8 @@
 							  	<label ng-show="model.state != 'Draft'" class="ng-binding">Model</label>
 							    <a ng-if="isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
 							    <a ng-if="!isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span></i>&nbsp;Save</a>
+							  	<div class="pull-right">&nbsp;&nbsp;</div>
+							  	<a href="" ng-show="authority == 'ROLE_ADMIN' || model.author == user" ng-disabled="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="openSearchDialog()" class="pull-right"><span class="fa fa-search" aria-hidden="true"></span></i>&nbsp;Lookup Model References...</a>
 							  </div>
 							  <div class="row">
 								<div ng-if="error" class="alert alert-danger">{{error}}</div>
@@ -247,7 +249,7 @@
 				</div>
 			</div>
 <div class="jumbotron text-center" ng-show="isLoading">
-	<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading details. Please wait...</h3>
+	<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading model details. Please wait...</h3>
 </div>
 
 <script type="text/ng-template" id="workflowActionDialog.html">
@@ -298,5 +300,77 @@
 	<div class="modal-footer">
       <button class="btn btn-primary" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released' || model.state == 'Deprecated'"  type="button" ng-click="delete()">Delete</button>
 	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
+  	</div>
+</script>
+<script type="text/ng-template" id="searchDialog.html">
+	<div class="modal-header">
+  		<h3 class="modal-title" id="modal-title-searchAction">Search Models</h3>
+	</div>
+  	<div class="modal-body" id="modal-body-search">
+  		<p>
+  			Find the model to include as a reference.
+  		</p>
+  		<table st-table="displayedSearchResult" st-safe-src="searchResult" class="table table-striped">
+					<thead>
+						<tr>
+							<th colspan="8">
+								<div class="form-group search-box-spacing" >
+									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="60"
+										ng-model="searchFilter"
+										st-search="" autofocus class="queryFilter input-sm" />									
+								</div>
+							</th>
+						</tr>
+						<tr>
+							<th>
+							<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary></th>
+						</tr>
+						<tr>
+							<th>
+                				<select style="font-size:12px" st-search="type">
+                    				<option value="">All Types</option>
+                    				<option value="InformationModel">Information Model</option>
+                    				<option value="Functionblock">Functionblock</option>
+                    				<option value="Datatype">Datatype</option>
+                    				<option value="Mapping">Mapping</option>
+                				</select>
+            				</th>
+            				<th>
+                				<select style="font-size:12px" st-search="state">
+                    				<option value="">All States</option>
+                    				<option value="Draft">Draft</option>
+                    				<option value="InReview">In Review</option>
+                    				<option value="Released">Released</option>
+                    				<option value="Deprecated">Deprecated</option>
+                				</select>
+            				</th>
+							<th id="onName">Model ID</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="current in displayedSearchResult track by $index">
+							<td>
+								<img ng-if="current.type === 'InformationModel'" src="images/im.png" />
+								<img ng-if="current.type === 'Functionblock'" src="images/fb.png" />
+								<img ng-if="current.type === 'Datatype'" src="images/dt.png" />
+								<i ng-if="current.type === 'Mapping'" class="fa fa-exchange" aria-hidden="true"></i>
+							</td>
+							<td><span class="state state-{{current.state}}">{{ current.state }}</span></td>
+							<td>{{ current.id.namespace }}.{{ current.id.name }}:{{ current.id.version }}</td>
+							<td><a href="" ng-click="copyToClipboard(current.id)" class="btn btn-sm">Copy to clipboard</a></td>						
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="6" class="text-center">
+								<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="displayedSearchResult.length"></div>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+	</div>
+	<div class="modal-footer">
+	  <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
   	</div>
 </script>

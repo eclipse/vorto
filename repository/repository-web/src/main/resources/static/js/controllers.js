@@ -735,6 +735,63 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				});
     };
     
+    $scope.openSearchDialog = function() {
+      var modalInstance = $uibModal.open({
+        animation: true,
+        controller: function($scope, model) {
+        	$scope.currentModel = model;
+        	$scope.searchResult = [];
+    		$scope.searchModelType = 'all';
+        	$scope.searchFilter = "";
+        	
+			 $scope.searchReferences = function() {
+    			$scope.isLoading = true;
+        		var filter = null;
+		        if ($scope.searchModelType === 'all') {
+		            filter = $scope.searchFilter;
+		        } else {
+		            filter = $scope.searchFilter + " "+$scope.searchModelType;
+		        }
+		        $http.get('./rest/model/query=' + filter).success(
+		            function(data, status, headers, config) {
+		            	$scope.searchResult = data;
+		            	$scope.isLoading = false;
+		            }).error(function(data, status, headers, config) {
+		                $scope.searchResult = [];
+		                $scope.isLoading = false;
+		            });
+    		};
+    		
+    		$scope.copyToClipboard = function(modelId) {
+    			   var $temp_input = $("<input>");
+                   $("body").append($temp_input);
+                   $temp_input.val(modelId.namespace+"."+modelId.name+";"+modelId.version).select();
+                   document.execCommand("copy");
+                   $temp_input.remove();
+                   modalInstance.dismiss();
+    		};
+
+    		$scope.searchReferences();
+    		
+    		$scope.cancel = function() {
+    		   modalInstance.dismiss();
+    		};
+    		
+    		$scope.displayedSearchResult = [].concat($scope.searchResult);
+    		$scope.itemsByPage 		= 6;
+		   
+        },
+        templateUrl: "searchDialog.html",
+        size: "lg",
+        resolve: {
+    		model: function() {
+    			return $scope.model;
+    		}
+  		}
+      });
+     
+    };
+    
 
 }]);
 
