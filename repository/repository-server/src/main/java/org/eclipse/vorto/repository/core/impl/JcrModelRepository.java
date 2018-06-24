@@ -139,7 +139,8 @@ public class JcrModelRepository implements IModelRepository {
 
 	private ModelInfo createModelResource(Node node) throws RepositoryException {
 		ModelInfo resource = createMinimalModelInfo(node);
-
+		resource.setFileName(node.getName());
+		
 		if (node.hasProperty("vorto:references")) {
 			Value[] referenceValues = null;
 			try {

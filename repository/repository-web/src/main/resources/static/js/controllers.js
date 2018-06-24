@@ -334,7 +334,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     
     
     $scope.getSelectedImporterInfo = function(selectedImporter) {
-    	console.log($scope.importers);
 		for(var i=0; i<$scope.importers.length; i++) {
        	 if ($scope.importers[i].key == selectedImporter) return $scope.importers[i];
     	}
@@ -447,7 +446,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
 
     $scope.getContent = function (namespace,name,version) {
-        $http.get('./rest/models/'+$rootScope.modelId(namespace,name,version)+'/files/dsl')
+        $http.get('./rest/models/'+$rootScope.modelId(namespace,name,version)+'/download/dsl')
         .success(function(result) {
             $scope.modelEditorSession.getDocument().setValue(result);
             if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {

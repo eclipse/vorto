@@ -42,6 +42,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,8 +110,8 @@ public class VortoService {
 	}
 	
 	private String urlForModel(String namespace, String name, String version) {
-		return String.format("%s/rest/model/file/%s/%s/%s?includeDependencies=true", 
-				env.getVortoRepoUrl(), namespace, name, version);
+		return String.format("%s/rest/models/%s/download/dsl?includeDependencies=true", 
+				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat());
 	}
 	
 	private Optional<InformationModel> toInformationModel(Model model) {
@@ -137,8 +138,8 @@ public class VortoService {
 	}
 	
 	private String urlForMapping(String targetPlatform, String namespace, String name, String version) {
-		return String.format("%s/rest/model/mapping/zip/%s/%s/%s/%s", 
-				env.getVortoRepoUrl(), namespace, name, version, targetPlatform);
+		return String.format("%s/rest/models/%s/download/mappings/%s", 
+				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat(), targetPlatform);
 	}
 	
 	private Optional<byte[]> downloadUrl(String url) {
@@ -156,16 +157,14 @@ public class VortoService {
 	
 	public void register(Generator generator) {
 		String serviceUrl = getServiceUrl(generator);
-		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/generation-router/register/%s/%s]", 
-				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey(), 
-				generator.getInfo().getClassifier().name()));
-		restTemplate.put(env.getVortoRepoUrl() + "/rest/generation-router/register/{serviceKey}/{classifier}", getEntity(serviceUrl), 
-				generator.getInstance().getServiceKey(), generator.getInfo().getClassifier().name());
+		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/generators/%s]", 
+				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey()));
+		restTemplate.put(env.getVortoRepoUrl() + "/rest/generators/{serviceKey}", getEntity(serviceUrl),generator.getInstance().getServiceKey());
 	}
 	
 	public void deregister(Generator generator) {
 		LOGGER.info("Deregistering Generator[" + generator.getInstance().getServiceKey() + "]");
-		restTemplate.put(env.getVortoRepoUrl() + "/rest/generation-router/deregister/{serviceKey}", String.class, generator.getInstance().getServiceKey());
+		restTemplate.delete(env.getVortoRepoUrl() + "/rest/generators/{serviceKey}", String.class, generator.getInstance().getServiceKey());
 	}
 	
 	private HttpEntity<String> getEntity(String serviceUrl) {

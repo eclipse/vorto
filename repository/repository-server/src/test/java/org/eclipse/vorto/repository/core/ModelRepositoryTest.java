@@ -20,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.util.Optional;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
@@ -37,8 +40,6 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	public void testQueryWithEmptyExpression() {
 		assertEquals(0, modelRepository.search("").size());
 	}
-	
-	
 
 	@Test
 	public void testGetModelById() throws Exception {
@@ -46,21 +47,33 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(1, modelRepository.search("*").size());
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		assertEquals("Color.type",result.getFileName());
 		assertNotNull(result);
 	}
 
 	@Test
-	public void testGetDSLContentForModel() throws Exception {
+	public void testGetDSLContentForModelId() throws Exception {
 		importModel("Color.type");
-		assertEquals(1, modelRepository.search("*").size());
 		ModelFileContent fileContent = modelRepository.getModelContent(
 				ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		String actualContent = new String(fileContent.getContent(), "UTF-8");
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
 		assertEquals(expectedContent, actualContent);
+		assertNotNull(fileContent.getModel());
 		assertEquals("Color.type",fileContent.getFileName());
 	}
 
+	@Test
+	public void testGetDSLContentForModel() throws Exception {
+		importModel("Color.type");
+		ModelInfo model = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		
+		Optional<FileContent> fileContent = modelRepository.getFileContent(model.getId(), model.getFileName());
+		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
+		assertEquals(expectedContent, new String(fileContent.get().getContent(),"utf-8"));
+		assertEquals("Color.type",fileContent.get().getFileName());
+	}
+	
 	@Test
 	public void testGetReferencesFromModel() throws Exception {
 		importModel("Color.type");

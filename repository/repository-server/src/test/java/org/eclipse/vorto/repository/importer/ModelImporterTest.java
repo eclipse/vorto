@@ -26,6 +26,14 @@ import org.springframework.core.io.ClassPathResource;
 public class ModelImporterTest extends AbstractIntegrationTest {
 
 	@Test
+	public void testImportFileWithNonMatchingFileName() {
+		IUserContext alex = UserContext.user("alex");
+		importModel("Color2.type", alex);
+		ModelInfo modelInfo = modelRepository.search("").get(0);
+		assertEquals("Color.type",modelRepository.getById(modelInfo.getId()).getFileName());
+	}
+	
+	@Test
 	public void testUploadSameModelTwiceByAuthor() throws Exception {
 		IUserContext alex = UserContext.user("alex");
 		importModel("Color.type", alex);

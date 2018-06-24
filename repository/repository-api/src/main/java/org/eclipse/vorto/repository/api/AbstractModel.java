@@ -25,6 +25,7 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
 	protected ModelType type;
 	protected String displayName;
 	protected String description;
+	protected String fileName;
 	
 	protected List<ModelId> references = new ArrayList<>();
 	
@@ -76,5 +77,15 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
 	public void setReferences(List<ModelId> references) {
 		this.references = references;
 	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+	
+	
 	
 }

@@ -15,6 +15,7 @@ import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -137,13 +138,12 @@ public class ModelController extends AbstractRepositoryController {
 
 
 	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-		byte[] modelContent = modelRepository.getModelContent(modelId).getContent();
-		ModelInfo modelResource = modelRepository.getById(modelId);
-
+		final ModelInfo modelResource = modelRepository.getById(modelId);
+		final FileContent modelFile = modelRepository.getFileContent(modelId,modelResource.getFileName()).get();
 		try {
-			ZipEntry zipEntry = new ZipEntry(getFileName(modelResource));
+			ZipEntry zipEntry = new ZipEntry(modelFile.getFileName());
 			zipOutputStream.putNextEntry(zipEntry);
-			zipOutputStream.write(modelContent);
+			zipOutputStream.write(modelFile.getContent());
 			zipOutputStream.closeEntry();
 		} catch (Exception ex) {
 			// entry possible exists already, so skipping TODO: ugly hack!!
@@ -187,9 +187,5 @@ public class ModelController extends AbstractRepositoryController {
 				.filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),
 				Optional.of(mappingModel));
 
-	}
-
-	private String getFileName(ModelInfo modelResource) {
-		return modelResource.getId().getName() + modelResource.getType().getExtension();
 	}
 }
