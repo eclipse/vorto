@@ -8,8 +8,8 @@ import org.eclipse.vorto.core.api.model.mapping.MappingRule;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 import org.eclipse.vorto.repository.core.ModelFileContent;
+import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 import org.springframework.stereotype.Service;
 
 @Service

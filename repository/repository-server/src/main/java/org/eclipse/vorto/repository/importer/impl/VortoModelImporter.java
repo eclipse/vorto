@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
@@ -32,6 +31,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.springframework.stereotype.Component;
 
 @Component

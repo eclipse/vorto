@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
-import org.eclipse.vorto.core.api.model.datatype.DatatypePackage;
 import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
 
 import com.google.inject.Injector;

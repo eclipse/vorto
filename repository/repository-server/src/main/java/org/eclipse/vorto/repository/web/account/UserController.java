@@ -18,6 +18,7 @@ import java.security.Principal;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,18 +31,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="User Controller", description="REST API to manage user accounts")
 @RestController
-@RequestMapping(value = "/rest")
+@RequestMapping(value = "/rest/users")
 public class UserController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
@@ -52,11 +48,9 @@ public class UserController {
     @Autowired
 	private IUserAccountService accountService;
 		
-	@ApiOperation(value = "Returns a specified User")
-	@ApiResponses(value = { @ApiResponse(code = 404, message = "Not found"), 
-							@ApiResponse(code = 200, message = "OK")})
+    
 	@RequestMapping(method = RequestMethod.GET,
-					value = "/users/{username:.+}")
+					value = "/{username:.+}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
 	public ResponseEntity<UserDto> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
@@ -65,11 +59,9 @@ public class UserController {
 		return new ResponseEntity<UserDto>(UserDto.fromUser(userRepository.findByUsername(username)), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "Creates a new User")
 	@RequestMapping(method = RequestMethod.POST,
-				value = "/user/acceptTermsAndCondition",
 	    		consumes = "application/json")
-	public ResponseEntity<Boolean> acceptTermsAndCondition(Principal user) {
+	public ResponseEntity<Boolean> createUser(Principal user) {
 		
 		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 		
@@ -83,8 +75,7 @@ public class UserController {
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 	}
 	
-	@ApiOperation(value = "Deletes the user's user account")
-	@RequestMapping(value = "/users/{username:.+}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{username:.+}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
 	public ResponseEntity<Void> deleteAccount(@PathVariable("username") final String username) {	
 		accountService.delete(username);

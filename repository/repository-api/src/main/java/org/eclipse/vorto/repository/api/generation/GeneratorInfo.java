@@ -25,10 +25,7 @@ public class GeneratorInfo {
 	private String documentationUrl;
 	private String image32x32;
 	private String image144x144;
-	private ServiceClassifier classifier;
 	private String[] tags;
-	@Deprecated
-	private GeneratorRating rating;
 	private int amountOfDownloads;
 	private String infoUrl;
 	private String configTemplate = null;
@@ -90,27 +87,10 @@ public class GeneratorInfo {
 		this.image144x144 = image144x144;
 	}
 
-	public GeneratorRating getRating() {
-		return rating;
-	}
-
-	public void setRating(GeneratorRating rating) {
-		this.rating = rating;
-	}
-
-	public ServiceClassifier getClassifier() {
-		return classifier;
-	}
-
-	public void setClassifier(ServiceClassifier classifier) {
-		this.classifier = classifier;
-	}
-
 	public void performRating(int invocationCount) {
-		this.rating = GeneratorRating.performRating(invocationCount);
 		this.amountOfDownloads = invocationCount;
 	}
-
+	
 	public String getInfoUrl() {
 		return infoUrl;
 	}
@@ -154,7 +134,7 @@ public class GeneratorInfo {
 	@Override
 	public String toString() {
 		return "GeneratorInfo [key=" + key + ", name=" + name + ", description=" + description + ", creator=" + creator
-				+ ", documentationUrl=" + documentationUrl + ", classifier=" + classifier + ", tags=" + Arrays.toString(tags) + ", rating=" + rating
+				+ ", documentationUrl=" + documentationUrl + ", tags=" + Arrays.toString(tags) + ", rating="
 				+ ", infoUrl=" + infoUrl + "]";
 	}
 }

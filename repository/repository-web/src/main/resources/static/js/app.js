@@ -79,6 +79,10 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         });
     };
     
+    $rootScope.modelId = function(namespace,name,version) {
+    	return namespace+"."+name+":"+version;
+    };
+    
     $rootScope.getContext();
 
     $rootScope.logout = function() {

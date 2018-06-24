@@ -21,8 +21,7 @@ public enum ModelType {
 	Functionblock(".fbmodel"),
 	InformationModel(".infomodel"),
 	Datatype(".type"),
-	Mapping(".mapping"),
-	Extended("");
+	Mapping(".mapping");
 	
 	private String extension;
 	
@@ -45,7 +44,7 @@ public enum ModelType {
 		} else if (type.equals(ModelType.Mapping.getExtension())) {
 			return ModelType.Mapping;
 		} else {
-			return ModelType.Extended;
+			throw new UnsupportedOperationException();
 		}
 	}
 	

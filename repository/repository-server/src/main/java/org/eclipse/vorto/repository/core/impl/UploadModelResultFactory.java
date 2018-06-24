@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
-import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.importer.ValidationReport;
 
 public class UploadModelResultFactory {
 

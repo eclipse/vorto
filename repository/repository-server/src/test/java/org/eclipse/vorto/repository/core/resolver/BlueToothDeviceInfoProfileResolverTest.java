@@ -19,8 +19,8 @@ import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.resolver.BluetoothQuery;
 import org.eclipse.vorto.repository.core.impl.resolver.DefaultResolver;
+import org.eclipse.vorto.repository.web.core.dto.BluetoothQuery;
 import org.junit.Test;
  
 public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationTest {

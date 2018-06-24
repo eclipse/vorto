@@ -6,7 +6,6 @@ Use the Client API to
 - search for models by full-text search 
 - read model content
 - generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#/generators)
-- resolve a model by platform-specific identifiers, e.g. lwm2m object identifiers
 
 ### Maven dependency
 
@@ -14,7 +13,7 @@ Use the Client API to
 <dependency>
    <groupId>org.eclipse.vorto</groupId>
    <artifactId>repository-java-client</artifactId>
-   <version>0.10.0.M3</version>
+   <version>0.10.0.M4</version>
 </dependency>
 
 ```
@@ -66,37 +65,19 @@ List<ModelProperty> properties = mapping.newPropertyQuery(temperatureSensorConte
 
 ```
 
-### Fetch Vorto Model by platform-specific attribute
-
-The following code snippet illustrates how to get the Vorto functionblock model for a [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml) object ID:
-
-```
-IModelResolver modelResolver = builder.buildModelResolverClient();
-			
-// where "3303" is the object id for the OMA LWM2M/IPSO TemperatureSensor
-ModelInfo temperatureSensorInfo = modelResolver.resolve(new LWM2MQuery("3303")).get();
-FunctionBlockModel temperatureSensorContent = modelRepo.getContent(temperatureSensorInfo, FunctionblockModel.class).get();
-
-```
-
 ## Code Generation
 
 ### Generate code for a specific IoT platform
 
-The following snippet shows how to generate a Eclipse Kura application for a Bosch GLM information model, that reads data via Bluetooth and sends 
-the data to the Bosch IoT Suite cloud platform.  
+The following snippet shows how to generate a Eclipse Hono Java Client for a Bosch GLM 100C information model. 
+The generated bundle contains source code that sends GLM specific sensor data to Eclipse Hono in a Eclipse Vorto compliant format.
 
 ```
 IModelGeneration modelGen = builder.buildModelGenerationClient();
 
 ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
 Map<String,String> invocationConfig = new HashMap<String,String>();
-invocationConfig.put("bluetooth","true");
-invocationConfig.put("boschcloud", "true");
+invocationConfig.put("language","java");
 
-GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "kura", invocationConfig).get();
+GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "eclipsehono", invocationConfig).get();
 ```
-
-### Example of Validating JSON data against Generated JSON Schema for Eclipse Ditto
-
-[Click here for Sample Code](sample)

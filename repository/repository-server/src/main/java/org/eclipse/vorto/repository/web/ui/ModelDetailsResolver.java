@@ -16,9 +16,9 @@ package org.eclipse.vorto.repository.web.ui;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
 import org.eclipse.vorto.repository.core.impl.resolver.UnknownModelIdResolverException;
+import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;

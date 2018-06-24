@@ -22,7 +22,6 @@ import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
-import org.eclipse.vorto.repository.api.generation.ServiceClassifier;
 
 /**
  * This service is a facade service to communicate to all registered Vorto Generators
@@ -39,7 +38,7 @@ public interface IGeneratorService {
 	 * @param classifier
 	 * throws GeneratorAlreadyExistsException thrown, if a generator with the same serviceKey already exists
 	 */
-	void registerGenerator(String serviceKey, String baseUrl, ServiceClassifier classifier);
+	void registerGenerator(String serviceKey, String baseUrl);
 	
 	/**
 	 * unregisters a generator with the specific serviceKey. 
@@ -52,7 +51,7 @@ public interface IGeneratorService {
 	 * Gets a list of currently registered code generator services
 	 * @return a list of service keys of generators
 	 */
-	Set<String> getRegisteredGeneratorServiceKeys(ServiceClassifier classifier);
+	Set<String> getRegisteredGeneratorServiceKeys();
 	
 	/**
 	 * Gets more information about the generator, such as description, rating, creator etc.

@@ -15,7 +15,7 @@
 package org.eclipse.vorto.repository.core;
 
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
+import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 
 public interface IModelIdResolver {
 	

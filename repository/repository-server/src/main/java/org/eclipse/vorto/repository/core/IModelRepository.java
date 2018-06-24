@@ -69,6 +69,13 @@ public interface IModelRepository {
 	void removeModelImage(ModelId modelId);
 	
 	/**
+	 * adds an image to the given model ID
+	 * @param modelId
+	 * @param imageContent
+	 */
+    void addModelImage(ModelId modelId, byte[] imageContent);
+	
+	/**
 	 * Gets the model image for the given model id
 	 * @param modelId
 	 * @return

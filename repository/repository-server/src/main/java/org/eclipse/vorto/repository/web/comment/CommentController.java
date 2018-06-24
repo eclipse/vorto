@@ -25,6 +25,8 @@ import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,47 +35,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="Comment Controller", description="REST API to manage Comments")
 @RestController
-@RequestMapping(value="/rest")
+@RequestMapping(value="/rest/comments")
 public class CommentController {
 
     @Autowired
     private ICommentService commentService;
     
-    @ApiOperation(value = "Returns comments for a specific Model Resource")
-    @ApiResponses(value = { @ApiResponse(code = 404, message = "Not found"), 
-            				@ApiResponse(code = 200, message = "OK")})
     @RequestMapping(method = RequestMethod.GET,
-    				value = "/comments/model/{namespace}/{name}/{version:.+}",
+    				value = "/{modelId:.+}",
     				produces = "application/json")
-    public List<Comment> getCommentsforModelId(	@ApiParam(value = "namespace", required = true) @PathVariable String namespace,
-									    		@ApiParam(value = "name", required = true) @PathVariable String name,
-									    		@ApiParam(value = "version", required = true) @PathVariable String version) {
-    	final ModelId modelId = new ModelId(name, namespace, version);
-    	return commentService.getCommentsforModelId(modelId).stream()
+    public List<Comment> getCommentsforModelId(	@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
+    	final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+    	return commentService.getCommentsforModelId(modelID).stream()
     						 .map(comment -> ModelDtoFactory.createDto(comment, UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName())))
     						 .collect(Collectors.toList());
     }
     
-    @ApiOperation(value = "Returns comments for a specific Model Resource")
-    @ApiResponses(value = { @ApiResponse(code = 404, message = "Not found"), 
-            				@ApiResponse(code = 200, message = "OK")})
     @RequestMapping(method = RequestMethod.POST,
-    				value = "/comments",
     				consumes = "application/json")
     @PreAuthorize("isAuthenticated()")
-    public void addCommentforModelResource(@RequestBody @Valid Comment comment) throws Exception {
+    public ResponseEntity<Void> addCommentToModel(@RequestBody @Valid Comment comment) throws Exception {
        	commentService.createComment(comment);
+       	return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

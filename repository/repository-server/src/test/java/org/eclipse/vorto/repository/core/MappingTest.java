@@ -15,9 +15,9 @@ import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 

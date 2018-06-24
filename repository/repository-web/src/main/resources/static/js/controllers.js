@@ -32,7 +32,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         	$scope.models = $rootScope.modelsSaved.models;
         	return;
         }
-        $http.get('./rest/model/query=' + filter).success(
+        $http.get('./api/v1/search/models?expression=' + filter).success(
             function(data, status, headers, config) {
             	$rootScope.modelsSaved = {'filter': filter, 'models': data};
             	$scope.models = data;
@@ -80,7 +80,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         	
 			$scope.create = function() {
 				$scope.isLoading = true;
-		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+		    	$http.post('./rest/models/'+$rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion)+'/'+$scope.modelType,null)
 			        .success(function(result){
 			        	$scope.isLoading = false;
 			        	if (result.status === 409) {
@@ -120,7 +120,7 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
 	function ($scope, $rootScope, $http, $location) {
     
     $scope.removeImages = function() {
-    	$http.delete('./rest/admin/content/images')
+    	$http.delete('./rest/backups/images')
         .success(function(result){
             $location.path('/');
         }).error(function(data, status, headers, config) {
@@ -138,7 +138,7 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
             var filename = document.getElementById('file').files[0].name;
             var fd = new FormData();
             fd.append('file', fileToUpload);
-            $http.post('./rest/admin/content',fd, {
+            $http.post('./rest/backups',fd, {
                 transformRequest: angular.identity,
                 headers: {'Content-Type': undefined}
             })
@@ -168,9 +168,9 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             var filename = document.getElementById('file').files[0].name;
             var extn = filename.split(".").pop();
             if(filename.endsWith(".zip"))
-               upload('./rest/models/import/multiple', fileToUpload);
+               upload('./rest/importers/bulk', fileToUpload);
             else
-             	upload('./rest/models/import/', fileToUpload);
+             	upload('./rest/importers/', fileToUpload);
         } else {
             $rootScope.error = "Choose model file(s) and click Upload.";
         }
@@ -279,7 +279,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/models/import/checkInMultiple?key='+$scope.selectedImporter.key, validUploadHandles)
+        $http.put('./rest/importers/bulk?key='+$scope.selectedImporter.key, validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
@@ -302,7 +302,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     };
 
     checkinSingle = function (handleId) {
-        $http.put('./rest/models/import/'+handleId+'?key='+$scope.selectedImporter.key)
+        $http.put('./rest/importers/'+handleId+'?key='+$scope.selectedImporter.key)
         .success(function(result){
             // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
@@ -324,7 +324,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     };
     
      $scope.getImporters = function () {
-        $http.get('./rest/models/import')
+        $http.get('./rest/importers')
         .success(function(result){
             $scope.importers = result;
         });
@@ -382,7 +382,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			
 		};
 		
-		$http.put('./rest/model/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version, newContent)
+		$http.put('./rest/models/'+$scope.model.id.prettyFormat, newContent)
 	        .success(function(result) {
 	           $scope.isLoading = false;
 	           if (result.valid) {
@@ -402,10 +402,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.uploadImage = function () {
         var fd = new FormData();
         fd.append('file', document.getElementById('imageFile').files[0]);
-        fd.append('namespace',$scope.model.id.namespace);
-        fd.append('name',$scope.model.id.name);
-        fd.append('version',$scope.model.id.version);
-        $http.post('./rest/model/image/',fd, {
+        $http.post('./rest/models/'+$scope.model.id.prettyFormat+'/images/',fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         })
@@ -441,7 +438,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
 
     $scope.getDetails = function (namespace,name,version) {
-        $http.get('./rest/model/'+namespace+'/'+name+'/'+version)
+        $http.get('./api/v1/models/'+$rootScope.modelId(namespace,name,version))
         .success(function(result){
             $scope.model = result;
             if ($scope.model.references.length < 2) $scope.showReferences = true;
@@ -450,7 +447,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
 
     $scope.getContent = function (namespace,name,version) {
-        $http.get('./rest/model/file/'+namespace+'/'+name+'/'+version)
+        $http.get('./rest/models/'+$rootScope.modelId(namespace,name,version)+'/files/dsl')
         .success(function(result) {
             $scope.modelEditorSession.getDocument().setValue(result);
             if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated'|| $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
@@ -462,7 +459,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
 
      $scope.getPlatformGenerators = function () {
-        $http.get('./rest/generation-router/platform')
+        $http.get('./api/v1/generators')
         .success(function(result){
         	var productionGenerators = $scope.filterByTag(result,"production");
         	var demoGenerators = $scope.filterByTag(result,"demo");
@@ -512,7 +509,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
     $scope.getCommentsForModelId = function(){
 
-        $http.get('./rest/comments/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+        $http.get('./rest/comments/'+$rootScope.modelId($routeParams.namespace,$routeParams.name,$routeParams.version))
         .success(function(result){
             $scope.comments = result;
             $scope.comments.reverse();
@@ -591,7 +588,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     };
     
     $scope.getWorkflowActions = function() {
-    	$http.get('./rest/workflows/actions/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+    	$http.get('./rest/workflows/'+$rootScope.modelId($routeParams.namespace,$routeParams.name,$routeParams.version+'/actions'))
 	        .success(function(result){
 	            $scope.workflowActions = result;
 	        });
@@ -610,7 +607,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         	$scope.hasError = false;
         	
 			 $scope.takeWorkflowAction = function() {
-		    	$http.put('./rest/workflows/actions/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.action)
+		    	$http.put('./rest/workflows/'+$scope.model.id.prettyFormat+'/actions/'+$scope.action)
 			        .success(function(result){
 			        	if (result.hasErrors) {
 			        		$scope.hasErrors = true;
@@ -624,7 +621,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		    
 		    $scope.getModel = function() {
 		    	if ($scope.action != 'Claim') {
-			    	$http.get('./rest/workflows/model/'+$routeParams.namespace+'/'+$routeParams.name+'/'+$routeParams.version)
+			    	$http.get('./rest/workflows/'+$rootScope.modelId($routeParams.namespace,$routeParams.name,$routeParams.version))
 				        .success(function(result){
 				        	for(var i = 0; i < result.actions.length;i++) {
 				        		if (result.actions[i].name === $scope.action) {
@@ -667,7 +664,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         	$scope.model = model;
         	
         	$scope.delete = function() {
-	        	$http.delete('./rest/admin/'+model.id.namespace+'/'+model.id.name+'/'+model.id.version)
+	        	$http.delete('./rest/models/'+model.id.prettyFormat)
 		        	.success(function(result){
 		            	modalInstance.close();
 		        	});
@@ -704,7 +701,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         	
 			$scope.create = function() {
 				$scope.isLoading = true;
-		    	$http.post('./rest/model/'+$scope.modelNamespace+'/'+$scope.modelName+'/'+$scope.modelVersion+'/'+$scope.modelType,null)
+		    	$http.post('./rest/models/'+$rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion)+'/'+$scope.modelType,null)
 			        .success(function(result){
 			        	$scope.isLoading = false;
 			        	modalInstance.close(result);
@@ -752,7 +749,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		        } else {
 		            filter = $scope.searchFilter + " "+$scope.searchModelType;
 		        }
-		        $http.get('./rest/model/query=' + filter).success(
+		        $http.get('./api/v1/search/models?expression=' + filter).success(
 		            function(data, status, headers, config) {
 		            	$scope.searchResult = data;
 		            	$scope.isLoading = false;
@@ -817,7 +814,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	};
 	
 	$scope.loadConfiguration = function() {
-		$http.get('./rest/generation-router/info/'+$scope.generator.key)
+		$http.get('./api/v1/generators/'+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				
@@ -846,7 +843,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 			}
 			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
-     	window.location.assign('./rest/generation-router/'+$scope.model.id.namespace+'/'+$scope.model.id.name+'/'+$scope.model.id.version+'/'+$scope.generator.key+requestParams);
+     	window.location.assign('./api/v1/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 
@@ -862,14 +859,14 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
     $scope.mostUsedGenerators = [];
 
     $scope.listGenerators = function() {
-        $http.get('./rest/generation-router/platform').success(
+        $http.get('./api/v1/generators').success(
             function(data, status, headers, config) {
                 $scope.generators = data;
             });
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/generation-router/topused/3').success(
+        $http.get('./rest/generators/rankings/3').success(
             function(data, status, headers, config) {
                 $scope.mostUsedGenerators = data;
             });
@@ -934,7 +931,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
     $scope.acceptTermsAndConditions = function() {
     	isAcceptingTermsAndCondition = true;
     	
-        $http.post('./rest/user/acceptTermsAndCondition', {
+        $http.post('./rest/users', {
             headers: {'Content-Type': "application/json"}
         })
         .success( function(data, status, headers, config) {
@@ -953,7 +950,7 @@ repositoryControllers.controller('SwaggerController', [ '$location', '$scope','$
     $scope.isLoading = true;
     $scope.url = $scope.swaggerUrl = 'v2/api-docs';
     $scope.defaultErrorHandler = function(data, status) {
-        alert('Error Loading Swagger API!');
+        alert('Error Loading API Documentation!');
     };
     
 }]);

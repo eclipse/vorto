@@ -11,12 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.attachment.AttachResult;
-import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.attachment.dto.AttachResult;
+import org.eclipse.vorto.repository.web.attachment.dto.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
 @RestController
-@Api(value = "/attach", description = "Attach files to models")
-@RequestMapping(value = "/rest/model")
+@RequestMapping(value = "/rest/attachments")
 public class AttachmentController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
@@ -47,40 +44,34 @@ public class AttachmentController {
 	@Autowired
 	private IModelRepository modelRepository;
 	
-	@ApiOperation(value = "Attach a file to a model")
-	@RequestMapping(method = RequestMethod.PUT, value = "/{namespace}/{name}/{version}/attachment", produces = "application/json")
-	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:owner'))")
+	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
+	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(org.eclipse.vorto.repository.api.ModelId.fromPrettyFormat(#modelId),'model:owner'))")
 	public AttachResult attach(
-			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
-			@ApiParam(value = "name", required = true) @PathVariable String name, 
-			@ApiParam(value = "version", required = true) @PathVariable String version, 
+			@ApiParam(value = "modelId", required = true) @PathVariable String modelId, 
 			@ApiParam(value = "The attachment file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		
-		ModelId modelId = new ModelId(name, namespace, version);
+		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
 		try {
-			modelRepository.attachFile(modelId, new FileContent(file.getOriginalFilename(), file.getBytes()), getUserContext());
+			modelRepository.attachFile(modelID, new FileContent(file.getOriginalFilename(), file.getBytes()), getUserContext());
 			
-			return AttachResult.success(modelId, file.getOriginalFilename());
+			return AttachResult.success(modelID, file.getOriginalFilename());
 		} catch (IOException | FatalModelRepositoryException e) {
 			LOGGER.error("Error while uploading []:", e);
-			return AttachResult.fail(modelId, file.getOriginalFilename(), e.getMessage());
+			return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
 		}
 	}
 	
-	@ApiOperation(value = "Get a list of files attached to a model")
-	@RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}/{version}/attachment", produces = "application/json")
+	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}", produces = "application/json")
 	public List<Attachment> getAttachments(
-			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
-			@ApiParam(value = "name", required = true) @PathVariable String name, 
-			@ApiParam(value = "version", required = true) @PathVariable String version) {
+			@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
 		
-		ModelId modelId = new ModelId(name, namespace, version);
+		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
 		try {
 			
-			return modelRepository.getAttachmentFilenames(modelId).stream()
-				.map(filename -> Attachment.newInstance(modelId, filename))
+			return modelRepository.getAttachmentFilenames(modelID).stream()
+				.map(filename -> Attachment.newInstance(modelID, filename))
 				.collect(Collectors.toList());
 			
 		} catch (FatalModelRepositoryException e) {
@@ -89,18 +80,15 @@ public class AttachmentController {
 		}
 	}
 	
-	@ApiOperation(value = "Download a file attached to a model")
-	@RequestMapping(method = RequestMethod.GET, value = "/{namespace}/{name}/{version}/attachment/{filename:.+}")
+	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
 	public void getAttachment(
-			@ApiParam(value = "namespace", required = true) @PathVariable String namespace, 
-			@ApiParam(value = "name", required = true) @PathVariable String name, 
-			@ApiParam(value = "version", required = true) @PathVariable String version,
+			@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@ApiParam(value = "filename", required = true) @PathVariable String filename,
 			final HttpServletResponse response) {
 		
-		ModelId modelId = new ModelId(name, namespace, version);
+		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
-		Optional<FileContent> content = modelRepository.getAttachmentContent(modelId, filename);
+		Optional<FileContent> content = modelRepository.getAttachmentContent(modelID, filename);
 		
 		try {
 			if (content.isPresent()) {

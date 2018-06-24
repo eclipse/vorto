@@ -16,9 +16,9 @@ package org.eclipse.vorto.repository.web.core;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.api.resolver.ResolveQuery;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
 import org.eclipse.vorto.repository.core.impl.resolver.UnknownModelIdResolverException;
+import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/resolver")
+@RequestMapping(value = "/rest/models/resolvers")
 @Api(value="/resolve", description="Resolve information models by mapped platform attributes")
 public class ModelResolveController {
 

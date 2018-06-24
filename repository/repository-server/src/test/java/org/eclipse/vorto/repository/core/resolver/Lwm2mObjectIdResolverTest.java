@@ -20,8 +20,8 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.resolver.LWM2MQuery;
 import org.eclipse.vorto.repository.core.impl.resolver.DefaultResolver;
+import org.eclipse.vorto.repository.web.core.dto.LWM2MQuery;
 import org.junit.Test;
  
 public class Lwm2mObjectIdResolverTest extends AbstractIntegrationTest {

@@ -26,12 +26,12 @@ public class SwaggerConfiguration {
 
 	@SuppressWarnings("unchecked")
 	private Predicate<String> paths() {
-		return or(	PathSelectors.regex("/rest/secure.*"),
-					PathSelectors.regex("/rest/model.*"),
-					PathSelectors.regex("/rest/resolver.*"),
-					PathSelectors.regex("/rest/generation-router.*"));
+		return or(PathSelectors.regex("/api/v1/models.*"),
+					PathSelectors.regex("/api/v1/search.*"),
+				  PathSelectors.regex("/api/v1/generators.*"));
 	}
 
+	@SuppressWarnings("deprecation")
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Vorto",
 				"Vorto provides tools and services that allow to create and manage technology agnostic, abstract device descriptions, so called information models. <br/>"

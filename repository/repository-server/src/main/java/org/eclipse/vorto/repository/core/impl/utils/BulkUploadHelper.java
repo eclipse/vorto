@@ -32,8 +32,6 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.upload.UploadModelResult;
-import org.eclipse.vorto.repository.api.upload.ValidationReport;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
@@ -48,6 +46,8 @@ import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidatio
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

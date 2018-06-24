@@ -30,7 +30,6 @@ import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
-import org.eclipse.vorto.repository.api.generation.ServiceClassifier;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.modeshape.common.collection.Collections;
@@ -64,13 +63,13 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	}
 	
 	@Override
-	public void registerGenerator(String serviceKey, String baseUrl, ServiceClassifier classifier) {
+	public void registerGenerator(String serviceKey, String baseUrl) {
 		Generator generator = this.getGenerator(serviceKey);
 		if (generator == null) {
-			this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, classifier.name()));
+			this.registeredGeneratorsRepository.save(new Generator(serviceKey, baseUrl, "platform"));
 		} else {
 			generator.setBaseUrl(baseUrl);
-			generator.setClassifier(classifier.name());
+			generator.setClassifier("platform");
 			this.registeredGeneratorsRepository.save(generator);
 		}
 	}
@@ -84,9 +83,9 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	}
 
 	@Override
-	public Set<String> getRegisteredGeneratorServiceKeys(ServiceClassifier classifier) {
+	public Set<String> getRegisteredGeneratorServiceKeys() {
 		Set<String> serviceKeys = new HashSet<>();
-		for (Generator generator : this.registeredGeneratorsRepository.findByClassifier(classifier.name())) {
+		for (Generator generator : this.registeredGeneratorsRepository.findByClassifier("platform")) {
 			serviceKeys.add(generator.getKey());
 		}
 		return Collections.unmodifiableSet(serviceKeys);
@@ -162,7 +161,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	public Collection<GeneratorInfo> getMostlyUsedGenerators(int top) {
 		List<Generator> topResult = new ArrayList<Generator>();
 
-		for (Generator entity : this.registeredGeneratorsRepository.findByClassifier(ServiceClassifier.platform.name())) {
+		for (Generator entity : this.registeredGeneratorsRepository.findByClassifier("platform")) {
 			topResult.add(entity);
 		}
 		
