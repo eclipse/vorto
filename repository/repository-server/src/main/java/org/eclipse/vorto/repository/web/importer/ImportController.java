@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -157,7 +158,7 @@ public class ImportController {
 	}
 	
 	@ApiOperation(value = "Import of multiple uploaded models into the  repository")
-	@RequestMapping(value = "/bulk", method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> doImport(@ApiParam(value = "The file name of uploaded vorto model", required=true) final @RequestBody ModelHandle[] modelHandles, @RequestParam("key") String key) {
 		LOGGER.info("Bulk check in models.");
 		try {
@@ -177,7 +178,7 @@ public class ImportController {
 	}
 	
 	@ApiOperation(value = "Returns a list of supported importers")
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public List<ImporterInfo> getImporters() {
 		List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
 		this.importerService.getImporters().stream().forEach(importer -> {

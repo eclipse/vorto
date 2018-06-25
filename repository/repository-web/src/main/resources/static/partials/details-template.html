@@ -123,7 +123,7 @@
 							   </div>
 							   <dt>Model Download: </dt>
 							   <dd>
-							   		<a ng-href="rest/models/{{model.id.prettyFormat}}/download/dsl" class="pull-center"><i class="fa fa-fw fa-download"></i>{{model.fileName}}</a>
+							   		<a ng-repeat="file in modelFileNames" ng-href="rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{file}}</a>
 							   </dd>
 							</dl>
 							<div>

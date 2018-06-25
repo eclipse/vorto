@@ -70,7 +70,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	}
 	
 	private String createUploadHandle(FileUpload fileUpload) {
-		final String handleId = UUID.randomUUID().toString() + fileUpload.getFileExtension();
+		final String handleId = UUID.randomUUID().toString();
 		return this.uploadStorage.store(handleId, fileUpload, TTL_TEMP_STORAGE_INSECONDS).getKey();
 	}
 

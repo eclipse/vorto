@@ -279,7 +279,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             }
         });
 
-        $http.put('./rest/importers/bulk?key='+$scope.selectedImporter.key, validUploadHandles)
+        $http.put('./rest/importers?key='+$scope.selectedImporter.key, validUploadHandles)
         .success(function(result) {
             $scope.isLoading = false;
             $scope.showResultBox = true;
@@ -334,6 +334,9 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     
     
     $scope.getSelectedImporterInfo = function(selectedImporter) {
+    	if ($scope.importers === undefined) {
+    		return;
+    	}
 		for(var i=0; i<$scope.importers.length; i++) {
        	 if ($scope.importers[i].key == selectedImporter) return $scope.importers[i];
     	}
@@ -354,6 +357,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     $scope.showReferences = false;
     $scope.showUsages = false;
     $scope.showMappings = false;
+    $scope.modelFileNames = [];
     
     $scope.modelEditor = null;
     
@@ -365,6 +369,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     	_editor.getSession().setTabSize(2);
     	_editor.setShowPrintMargin(false);
   		_editor.getSession().setUseWrapMode(true);
+	};
+	
+	$scope.getFileNames = function(model) {
+		$http.get('./rest/models/'+model.id.prettyFormat+'/files')
+        .success(function(result){
+            $scope.modelFileNames = result;
+        });
 	};
 	
 		
@@ -440,6 +451,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $http.get('./api/v1/models/'+$rootScope.modelId(namespace,name,version))
         .success(function(result){
             $scope.model = result;
+            $scope.getFileNames(result);
             if ($scope.model.references.length < 2) $scope.showReferences = true;
             if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
         });
