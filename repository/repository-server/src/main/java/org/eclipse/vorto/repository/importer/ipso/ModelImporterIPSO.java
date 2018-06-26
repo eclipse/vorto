@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.importer.ipso;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +44,7 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 	private static final String VERSION = "1.1.0";
 	
 	private static final FunctionblockTemplate FB_TEMPLATE = new FunctionblockTemplate();
+	private static final MappingTemplate MAPPING_TEMPLATE = new MappingTemplate();
 	
 	@Override
 	public String getKey() {
@@ -48,7 +63,9 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 
 	@Override
 	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
-		getModelRepository().addFileContent(importedModel.getId(), originalFileContent);
+		if (importedModel.getType() == ModelType.Functionblock) {
+			getModelRepository().addFileContent(importedModel.getId(), originalFileContent);
+		}
 	}
 
 	
@@ -82,7 +99,9 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 			final LWM2M lwm2mModel = parse(fileUpload);
 			final LWM2M.Object obj = lwm2mModel.getObject().get(0);
 			ModelEMFResource fbModel = (ModelEMFResource)ModelParserFactory.getParser("model.fbmodel").parse(IOUtils.toInputStream(FB_TEMPLATE.create(obj, createModelInfo(obj))));
-			return Arrays.asList(fbModel);
+			ModelEMFResource mappingModel = (ModelEMFResource)ModelParserFactory.getParser("model.mapping").parse(IOUtils.toInputStream(MAPPING_TEMPLATE.create(obj, createModelInfo(obj))));
+
+			return Arrays.asList(fbModel,mappingModel);
 		} catch(Exception ex) {
 			throw new ModelImporterException("Problem importing lwm2m",ex);
 		}
