@@ -30,6 +30,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         if ($rootScope.modelsSaved && $rootScope.modelsSaved.filter === filter) {
         	// models are already fetched
         	$scope.models = $rootScope.modelsSaved.models;
+        	$scope.isLoading = false;
         	return;
         }
         $http.get('./api/v1/search/models?expression=' + filter).success(
@@ -156,6 +157,8 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 	function ($scope, $rootScope, $http, $location) {
 
 	$scope.selectedImporter = {key: 'Vorto'};
+	
+	$scope.isLoading = false;
 
     $scope.uploadModel = function () {
         $scope.uploadResult = {};
@@ -252,6 +255,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 	
 
     $scope.checkin = function (uploadResults) {
+    	$scope.isLoading = true;
         $rootScope.error = "";
         if(uploadResults.length == 1) {
             checkinSingle(uploadResults[0].handleId);
@@ -285,6 +289,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.showResultBox = true;
             $scope.resultMessage = "Import was successful!";
             $scope.showCheckin = false;
+            $scope.isLoading = false;
         }).error(function(data, status, headers, config) {
             $scope.isLoading = false;
             if(status == 403){
@@ -298,16 +303,17 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             }else{
                 $scope.error = "Failed Request with response status "+status;
             }
+            $scope.isLoading = false;
         });
     };
 
     checkinSingle = function (handleId) {
         $http.put('./rest/importers/'+handleId+'?key='+$scope.selectedImporter.key)
         .success(function(result){
-            // $location.path("/details/"+$scope.uploadResult.report.model.id.namespace+"/"+$scope.uploadResult.report.model.id.name+"/"+$scope.uploadResult.report.model.id.version);
             $scope.showResultBox = true;
             $scope.resultMessage = "Import was successful!";
             $scope.showCheckin = false;
+            $scope.isLoading = false;
         }).error(function(data, status, headers, config) {
             if(status == 403){
                 $scope.error = "Operation is Forbidden";
@@ -320,6 +326,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             }else{
                 $scope.error = "Failed Request with response status "+status;
             }
+            $scope.isLoading = false;
         });;
     };
     

@@ -23,14 +23,14 @@ class MappingTemplate {
 		namespace «modelInfo.id.namespace»
 		version «modelInfo.id.version»
 		displayname "«modelInfo.displayName»"
-		description "Mapping Model for «modelInfo.displayName»"
+		description "LWM2M Mapping Model for «modelInfo.displayName»"
 		
 		using «modelInfo.id.namespace».«modelInfo.id.name»;«modelInfo.id.version»
 		
-		functionblockmapping «modelInfo.id.name»_mapping {
+		functionblockmapping «modelInfo.id.name»_lwm2m {
 			targetplatform lwm2m
 			
-			from «modelInfo.id.name» to Object with {Name: "«source.name»", ObjectID: "«source.objectID»", ObjectURL: "«source.objectURN»", MultipleInstances: "«source.multipleInstances»", Mandatory: "«source.mandatory»", Description2: "«source.description2»"}
+			from «modelInfo.id.name» to Object with {Name: "«source.name»", ObjectID: "«source.objectID»", ObjectURL: "«source.objectURN»", MultipleInstances: "«source.multipleInstances»", Mandatory: "«source.mandatory»", Description2: "«source.description2.replace("\"","'")»"}
 			
 			«FOR item : source.getResources.item»
 				«IF item.operations == "RW" || item.operations == "W"»

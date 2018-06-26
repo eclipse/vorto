@@ -31,7 +31,7 @@ class FunctionblockTemplate {
 				
 				«FOR item : source.getResources.item»
 					«IF item.operations == "RW" || item.operations == "W"»
-						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» «constraints(item.rangeEnumeration)» with {readable : «IF item.operations == "RW"»true«ELSE»false«ENDIF», writable: true} "«item.description»"
+						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : «IF item.operations == "RW"»true«ELSE»false«ENDIF», writable: true} «constraints(item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
 					«ENDIF»
 				«ENDFOR»
 			}
@@ -39,7 +39,7 @@ class FunctionblockTemplate {
 			status {
 				«FOR item : source.getResources.item»
 					«IF item.operations == "R"»
-						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» «constraints(item.rangeEnumeration)» with {readable : true, writable: false } "«item.description»"
+						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : true, writable: false } «constraints(item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
 					«ENDIF»
 				«ENDFOR»
 			}
@@ -47,7 +47,7 @@ class FunctionblockTemplate {
 			operations {
 				«FOR item : source.getResources.item»
 					«IF item.operations == "E"»
-						«parseName(item.name).toFirstLower»() "«item.description»"
+						«parseName(item.name).toFirstLower»() "«item.description.replace("\"","'")»"
 					«ENDIF»
 				«ENDFOR»
 			}
