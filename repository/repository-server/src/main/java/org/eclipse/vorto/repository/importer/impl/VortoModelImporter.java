@@ -44,7 +44,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 
 	@Override
 	public String getShortDescription() {
-		return "";
+		return "Imports Vorto Informtion Models, defined with the Vorto DSL.";
 	}
 
 	@Override

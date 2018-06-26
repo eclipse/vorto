@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class ModelImporterIPSO extends AbstractModelImporter {
 
 	private static final String NAMESPACE = "com.ipso.smartobjects";
-	private static final String VERSION = "1.0.0";
+	private static final String VERSION = "1.1.0";
 	
 	private static final FunctionblockTemplate FB_TEMPLATE = new FunctionblockTemplate();
 	
@@ -38,7 +38,7 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 
 	@Override
 	public String getShortDescription() {
-		return "";
+		return "Imports IPSO descriptions and converts them to Vorto Function Blocks";
 	}
 
 	@Override
