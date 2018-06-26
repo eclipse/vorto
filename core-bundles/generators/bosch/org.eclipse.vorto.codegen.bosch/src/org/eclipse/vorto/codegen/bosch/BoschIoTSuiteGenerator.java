@@ -89,10 +89,10 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 	public GeneratorInfo getInfo() {
 		return GeneratorInfo
 				.basicInfo("Bosch IoT Suite",
-						"Generates device code (Java, Arduino, Python) that connects via the Bosch IoT Gateway or directly to Bosch IoT Hub and Bosch IoT Things.",
+						"Generates device code that either runs on the Bosch IoT Gateway SW or connects directly to the Bosch IoT Hub.",
 						"Eclipse Vorto Team")
 				.production().withChoiceConfigurationItem("language", "Device Platform", "Arduino", "Python", "Java")
-				.withBinaryConfigurationItem("gateway", "Bosch IoT Gateway");
+				.withBinaryConfigurationItem("gateway", "Bosch IoT Gateway Software");
 	}
 
 }
