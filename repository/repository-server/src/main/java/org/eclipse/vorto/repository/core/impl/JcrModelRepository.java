@@ -528,7 +528,9 @@ public class JcrModelRepository implements IModelRepository {
 			NodeIterator iter = folderNode.getNodes();
 			while(iter.hasNext()) {
 				Node node = iter.nextNode();
-				fileNames.add(node.getName());
+				if (!node.isNodeType("nt:folder")) { // folders should be filtered out
+					fileNames.add(node.getName());
+				}
 			}
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
