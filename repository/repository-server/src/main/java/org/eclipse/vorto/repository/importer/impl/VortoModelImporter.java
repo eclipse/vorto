@@ -14,24 +14,31 @@
  */
 package org.eclipse.vorto.repository.importer.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
+import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -49,27 +56,73 @@ public class VortoModelImporter extends AbstractModelImporter {
 
 	@Override
 	public Set<String> getSupportedFileExtensions() {
-		return new LinkedHashSet<>(Arrays.asList(".infomodel",".fbmodel",".type",".mapping",".zip"));
+		return new LinkedHashSet<>(Arrays.asList(".infomodel", ".fbmodel", ".type", ".mapping", ".zip"));
 	}
 
 	@Override
-	protected ValidationReport validate(FileUpload fileUpload, IUserContext user) {
-		ModelValidationHelper validationHelper = new ModelValidationHelper(getModelRepository(), getUserRepository());
-		try {
-		final ModelInfo modelInfo = ModelParserFactory.getParser(fileUpload.getFileName()).parse(new ByteArrayInputStream(fileUpload.getContent()));
-		return validationHelper.validate(modelInfo, user);
-		} catch(ValidationException ex) {
-			return ValidationReport.invalid(null, ex.getMessage());
+	protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
+		if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
+			BulkUploadHelper bulkUploadService = new BulkUploadHelper(getModelRepository(), getUploadStorage(),
+					getUserRepository());
+			return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(), user);
+		} else {
+			ModelValidationHelper validationHelper = new ModelValidationHelper(getModelRepository(),
+					getUserRepository());
+			try {
+				final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(),fileUpload.getContent());
+				return Arrays.asList(validationHelper.validate(modelInfo, user));
+			} catch (ValidationException ex) {
+				return Arrays.asList(ValidationReport.invalid(null, ex.getMessage()));
+			}
 		}
-		
 	}
 
 	@Override
 	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {
-		List<ModelEMFResource> result = new ArrayList<ModelEMFResource>(1);
-		final ModelEMFResource modelInfo = (ModelEMFResource)ModelParserFactory.getParser(fileUpload.getFileExtension()).parse(new ByteArrayInputStream(fileUpload.getContent()));
-		result.add(modelInfo);
+		List<ModelEMFResource> result = new ArrayList<ModelEMFResource>();
+		
+		if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
+			
+			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
+			ZipEntry entry = null;
+			
+			try {
+				while ((entry = zis.getNextEntry()) != null) {
+					if (!entry.isDirectory()) {
+						result.add(parseDSL(entry.getName(), copyStream(zis,entry)));
+					}
+				}
+			} catch (IOException e) {
+				throw new BulkUploadException("IOException while getting next entry from zip file", e);
+			}
+		} else {
+			final ModelEMFResource modelInfo = (ModelEMFResource) ModelParserFactory
+					.getParser(fileUpload.getFileExtension()).parse(new ByteArrayInputStream(fileUpload.getContent()));
+			result.add(modelInfo);
+		}
+		
 		return Collections.unmodifiableList(result);
+	}
+	
+	private static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {			
+			int size;
+			byte[] buffer = new byte[2048];
+
+			BufferedOutputStream bos = new BufferedOutputStream(out);
+			
+			while ((size = in.read(buffer, 0, buffer.length)) != -1) {
+				bos.write(buffer, 0, size);
+			}
+			
+			bos.flush();
+			bos.close();
+		} catch (IOException e) {
+			throw new BulkUploadException("IOException while copying stream to ZipEntry", e); 
+		}
+		
+		return out.toByteArray();
 	}
 
 	@Override

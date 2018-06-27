@@ -15,8 +15,11 @@
 package org.eclipse.vorto.repository.importer.ipso
 
 import org.eclipse.vorto.repository.api.ModelInfo
+import org.slf4j.LoggerFactory
 
 class FunctionblockTemplate {
+	
+	private static var logger = LoggerFactory.getLogger(typeof(FunctionblockTemplate));
 	
 	def create(LWM2M.Object source, ModelInfo modelInfo) {
 		'''
@@ -60,12 +63,15 @@ class FunctionblockTemplate {
 	}
 	
 	def constraints(String rangeEnumeration) {
+		logger.debug("Processing range enumeration "+rangeEnumeration);
 		if (!rangeEnumeration.nullOrEmpty) {
 			var minMax = rangeEnumeration.split("-");
-			return "<MIN "+minMax.get(0) + ", MAX "+minMax.get(1)+">";
-		} else {
-			return "";
+			if (minMax.length == 2) {
+				return "<MIN "+minMax.get(0) + ", MAX "+minMax.get(1)+">";
+			} 
 		}
+		
+		return "";
 	}
 	
 	def parseType(String dataType) {

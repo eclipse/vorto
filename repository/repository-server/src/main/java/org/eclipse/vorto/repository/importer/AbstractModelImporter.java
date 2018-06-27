@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.importer;
 
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
+import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -61,11 +63,11 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
 	@Override
 	public UploadModelResult upload(FileUpload fileUpload, IUserContext user) {
-		ValidationReport report = this.validate(fileUpload, user);
-		if (report.isValid()) {
-			return new UploadModelResult(createUploadHandle(fileUpload), report);
+		List<ValidationReport> reports = this.validate(fileUpload, user);
+		if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
+			return new UploadModelResult(createUploadHandle(fileUpload), reports);
 		} else {
-			return new UploadModelResult(null,report);
+			return new UploadModelResult(null,reports);
 		}
 	}
 	
@@ -108,6 +110,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		return importedModels;
 	}
 	
+	protected ModelEMFResource parseDSL(String fileName, byte[] content) {
+		return (ModelEMFResource)ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+	}
+	
 	private String createFileName(ModelInfo resource) {
 		return resource.getId().getName() + resource.getType().getExtension();
 	}
@@ -121,7 +127,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	 * @param user
 	 * @return
 	 */
-	protected abstract ValidationReport validate(FileUpload fileUpload, IUserContext user);
+	protected abstract List<ValidationReport> validate(FileUpload fileUpload, IUserContext user);
 	
 	/**
 	 * converts the given file upload content to Vorto DSL content
