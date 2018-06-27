@@ -65,9 +65,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	public AbstractModelImporter(String modelTypeFileExtension, String...additionalExtensions) {
 		if (handleZipUploads()) {
 			supportedFileExtensions.add(EXTENSION_ZIP);
-			supportedFileExtensions.add(modelTypeFileExtension);
-			supportedFileExtensions.addAll(Arrays.asList(additionalExtensions));
 		}
+		supportedFileExtensions.add(modelTypeFileExtension);
+		supportedFileExtensions.addAll(Arrays.asList(additionalExtensions));
 	}
 
 	@Override
