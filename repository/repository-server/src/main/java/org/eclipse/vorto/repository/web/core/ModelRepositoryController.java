@@ -128,7 +128,6 @@ public class ModelRepositoryController {
 		}
 	}
 	
-	
 	@ApiOperation(value = "Lists all files that are attached to the model")
 	@RequestMapping(value = "/{modelId:.+}/files", method = RequestMethod.GET)
 	public Set<String> getFileNamesOfModel(
@@ -136,8 +135,6 @@ public class ModelRepositoryController {
 		return this.modelRepository.getFileNames(ModelId.fromPrettyFormat(modelId));
 	}
 	
-	
-
 	@ApiOperation(value = "Saves a model to the repository.")
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
@@ -202,9 +199,8 @@ public class ModelRepositoryController {
 	// ##################### Downloads ################################
 	
 	@ApiOperation(value = "Downloads the model dsl content")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
-			@ApiResponse(code = 404, message = "Model not found") })
-	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')") //FIXME: Commented because otherwise Code Generator Gateway gets 401
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found") })
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/dsl", method = RequestMethod.GET)
 	public void downloadModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -319,7 +315,7 @@ public class ModelRepositoryController {
 	@ApiOperation(value = "Downloads the model content for the given file")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')") //FIXME: Commented because otherwise Code Generator Gateway gets 401
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/{fileName}", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -360,7 +356,7 @@ public class ModelRepositoryController {
 	}
 	
 	@ApiOperation(value = "Getting all mapping resources for the given model")
-	//@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')") //FIXME: Commented because otherwise Generator Gateway gets 401
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}", method = RequestMethod.GET)
 	public void downloadMappingsForPlatform(
 			@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
