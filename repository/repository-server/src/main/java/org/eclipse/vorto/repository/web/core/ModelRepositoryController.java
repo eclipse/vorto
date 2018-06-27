@@ -260,8 +260,7 @@ public class ModelRepositoryController {
 		}
 		final byte[] modelContent = fileContent.getContent();
 		if (modelContent != null && modelContent.length > 0) {
-			final ModelInfo modelResource = modelRepository.getById(modelId);
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + getFileName(modelResource));
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
 			response.setContentType(APPLICATION_OCTET_STREAM);
 			try {
 				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
@@ -291,12 +290,7 @@ public class ModelRepositoryController {
 			addModelToZip(zipOutputStream, reference);
 		}
 	}
-
-	private String getFileName(ModelInfo modelResource) {
-		return modelResource.getId().getName() + modelResource.getType().getExtension();
-	}
-
-
+	
 	private void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zos = new ZipOutputStream(baos);

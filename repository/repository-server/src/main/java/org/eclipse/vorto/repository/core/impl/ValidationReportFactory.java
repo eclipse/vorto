@@ -21,13 +21,12 @@ import java.util.Objects;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
-import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 
-public class UploadModelResultFactory {
+public class ValidationReportFactory {
 
 	
-	public static UploadModelResult create(ValidationException... validationExceptions) {
+	public static ValidationReport create(ValidationException... validationExceptions) {
 		Objects.requireNonNull(validationExceptions);
 		if (validationExceptions.length <= 0) {
 			throw new IllegalArgumentException("There ought to be more than 1 validation exception for this function.");
@@ -48,18 +47,18 @@ public class UploadModelResultFactory {
 			errorMessage.append(validationExceptions[i].getMessage());
 		}
 		
-		return new UploadModelResult(null, ValidationReport.invalid(validationExceptions[0].getModelResource(),
-				errorMessage.toString(), missingReferences));
+		return ValidationReport.invalid(validationExceptions[0].getModelResource(),
+				errorMessage.toString(), missingReferences);
 	}
 	
-	public static UploadModelResult invalid(CouldNotResolveReferenceException validationException) {
-		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
-				validationException.getMessage(), validationException.getMissingReferences()));
-	}
-
-	public static UploadModelResult invalid(ValidationException validationException) {
-		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
-				validationException.getMessage()));
-	}
+//	public static UploadModelResult invalid(CouldNotResolveReferenceException validationException) {
+//		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
+//				validationException.getMessage(), validationException.getMissingReferences()));
+//	}
+//
+//	public static UploadModelResult invalid(ValidationException validationException) {
+//		return new UploadModelResult(null, ValidationReport.invalid(validationException.getModelResource(),
+//				validationException.getMessage()));
+//	}
 	
 }

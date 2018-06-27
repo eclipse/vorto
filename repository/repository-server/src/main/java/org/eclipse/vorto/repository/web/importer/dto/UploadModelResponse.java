@@ -14,9 +14,6 @@
  */
 package org.eclipse.vorto.repository.web.importer.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 
 /**
@@ -25,28 +22,15 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 public class UploadModelResponse {
 
 	private String message = null;
-	private Boolean isSuccess = null;
-	private List<UploadModelResult> obj = new ArrayList<UploadModelResult>();
+	private UploadModelResult result = null;
 
-	/*
-	 * Dummy constructor needed by ResponseEntity for JSON parsing of http response 
-	 */
 	public UploadModelResponse() {
 		
 	}
 		
-	public UploadModelResponse(String message, Boolean isSuccess, List<UploadModelResult> obj) {
+	public UploadModelResponse(String message, UploadModelResult result) {
 		this.message = message;
-		this.isSuccess = isSuccess;
-		this.obj = obj;
-	}
-	
-	public static UploadModelResponse newInstance(String message, Boolean isSuccess, List<UploadModelResult> result) {
-		UploadModelResponse response = new UploadModelResponse();
-		response.message = message;
-		response.isSuccess = isSuccess;
-		response.obj = result;
-		return response;
+		this.result = result;
 	}
 
 	/**
@@ -60,40 +44,17 @@ public class UploadModelResponse {
 		this.message = message;
 	}
 
-	/**
-	 * Boolean flag to denote server status about request. true if the request
-	 * is successful or false otherwise.
-	 **/
-	public Boolean getIsSuccess() {
-		return isSuccess;
+	public UploadModelResult getResult() {
+		return result;
 	}
 
-	public void setIsSuccess(Boolean isSuccess) {
-		this.isSuccess = isSuccess;
-	}
-
-	/**
-	 * Generic object which may optionally used for providing additional details
-	 * about request. Typically used for UI and returned as Map(key, value)
-	 * format.
-	 **/
-	public List<UploadModelResult> getObj() {
-		return obj;
-	}
-
-	public void setObj(List<UploadModelResult> obj) {
-		this.obj = obj;
+	public void setResult(UploadModelResult result) {
+		this.result = result;
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("class ServerResponse {\n");
-
-		sb.append("  message: ").append(message).append("\n");
-		sb.append("  isSuccess: ").append(isSuccess).append("\n");
-		sb.append("  obj: ").append(obj).append("\n");
-		sb.append("}\n");
-		return sb.toString();
+		return "UploadModelResponse [message=" + message + ", result=" + result + "]";
 	}
+	
 }

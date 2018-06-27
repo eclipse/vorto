@@ -8,7 +8,7 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
-import org.eclipse.vorto.repository.core.impl.UploadModelResultFactory;
+import org.eclipse.vorto.repository.core.impl.ValidationReportFactory;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
@@ -39,8 +39,8 @@ public class ModelValidationHelper {
 		if (validationExceptions.size() <= 0) {
 			return ValidationReport.valid(model);
 		} else {
-			return UploadModelResultFactory
-					.create(validationExceptions.toArray(new ValidationException[validationExceptions.size()])).getReport();
+			return ValidationReportFactory
+					.create(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
 		}
 	}
 	

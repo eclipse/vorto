@@ -39,7 +39,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 		importModel("Color.type", alex);
 		UploadModelResult uploadResult =  this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())), alex);
-		assertTrue(uploadResult.getReport().isValid());
+		assertTrue(uploadResult.isValid());
 	}
 	
 	@Test
@@ -47,7 +47,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 		importModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())), UserContext.user("stefan"));
-		assertFalse(uploadResult.getReport().isValid());
+		assertFalse(uploadResult.isValid());
 	}
 	
 	@Test
@@ -56,10 +56,10 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 		importModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())), admin);
-		assertTrue(uploadResult.getReport().isValid());
+		assertTrue(uploadResult.isValid());
 		
 		this.importer.doImport(uploadResult.getHandleId(), admin);
-		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReport().getModel().getId());
+		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReports().get(0).getModel().getId());
 		assertTrue(new String(content.getContent(),"utf-8").contains("mandatory b as int"));
 	}
 	
@@ -68,25 +68,25 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 		importModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color3.type").getInputStream())), UserContext.user("admin"));
-		assertFalse(uploadResult.getReport().isValid());
+		assertFalse(uploadResult.isValid());
 	}
 	
 	@Test
 	public void testUploadFileMissingReference() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("ColorLightIM.infomodel",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/ColorLightIM.infomodel").getInputStream())), UserContext.user("admin"));
-		assertFalse(uploadResult.getReport().isValid());
-		assertEquals(1,uploadResult.getReport().getUnresolvedReferences().size());
+		assertFalse(uploadResult.isValid());
+		assertEquals(1,uploadResult.getReports().get(0).getUnresolvedReferences().size());
 	}
 	
 	@Test
 	public void tesUploadValidModel() throws IOException {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())), UserContext.user("admin"));
-		assertEquals(true, uploadResult.getReport().isValid());
-		assertNull(uploadResult.getReport().getErrorMessage());
+		assertEquals(true, uploadResult.isValid());
+		assertNull(uploadResult.getReports().get(0).getErrorMessage());
 		assertNotNull(uploadResult.getHandleId());
-		ModelInfo resource = uploadResult.getReport().getModel();
+		ModelInfo resource = uploadResult.getReports().get(0).getModel();
 		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());
 		assertEquals("Color", resource.getId().getName());
 		assertEquals("1.0.0", resource.getId().getVersion());
@@ -101,7 +101,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	public void testCheckinValidModel() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())), UserContext.user("admin"));
-		assertEquals(true, uploadResult.getReport().isValid());
+		assertEquals(true, uploadResult.isValid());
 		assertEquals(0, modelRepository.search("*").size());
 
 		User user1 = new User();
@@ -126,24 +126,24 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	public void testCheckinInvalidModel() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Colorlight.fbmodel",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Colorlight.fbmodel").getInputStream())), UserContext.user("admin"));
-		assertEquals(false, uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
+		assertEquals(false, uploadResult.isValid());
+		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
 	}
 	
 	@Test
 	public void testUploadCorruptModelMissingVersion() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("sample_models/Corrupt-model_missingVersion.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_missingVersion.type").getInputStream())), UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
+		assertEquals(false,uploadResult.isValid());
+		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
 	}
 	
 	@Test
 	public void testUploadCorruptModelVersion() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("sample_models/Corrupt-model_namespace.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_namespace.type").getInputStream())), UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
+		assertEquals(false,uploadResult.isValid());
+		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
 	}
 	
 	@Test (expected = FileNotFoundException.class)
@@ -156,8 +156,8 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	public void testUploadModelThatCompliesToOlderVersionOfMetaModel() throws Exception {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Corrupt-model_olderVersionOfMetaModel.fbmodel",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel").getInputStream())), UserContext.user("admin"));
-		assertEquals(false,uploadResult.getReport().isValid());
-		assertNotNull(uploadResult.getReport().getErrorMessage());
+		assertEquals(false,uploadResult.isValid());
+		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
 	}
 
 }

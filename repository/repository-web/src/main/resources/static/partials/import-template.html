@@ -46,7 +46,7 @@
 
 <div class="row">
  <div class="center-results">
-	<button ng-show="showResultBox"  ng-click="checkin(uploadResult.obj)" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Import</button> 	
+	<button ng-show="showResultBox"  ng-click="checkin()" ng-disabled="!showCheckin" class="btn btn-primary pull-right">Import</button> 	
  </div>
 </div>
 
@@ -63,21 +63,21 @@
 					</div>
 				</div>
 				<div class="row errorbox-spacing">
-					<div ng-show="showResultBox" ng-class="uploadResult.isSuccess? 'alert alert-success' : 'alert alert-danger'">
+					<div ng-show="showResultBox" ng-class="uploadResult.result.valid? 'alert alert-success' : 'alert alert-danger'">
 				  		<b>{{resultMessage}}</b></p>
-				  		<small ng-show="showResultBox && uploadResult.isSuccess">Note: Imported models will be in <i>Draft</i> state and can only be viewed and edited by you.</small>
+				  		<small ng-show="showResultBox && uploadResult.result.valid">Note: Imported models will be in <i>Draft</i> state and can only be viewed and edited by you.</small>
 				  	</p>	
 					</div>
 				</div>
 
-				<div ng-repeat="result in uploadResult.obj">
+				<div ng-repeat="report in uploadResult.result.reports">
 					<div class="accordion-div">
 
 			        <div ng-click="stateArr[$index].active = !stateArr[$index].active" ng-class="{'modelresult-heading-collapsed': stateArr[$index].active, 'modelresult-heading-expanded': !stateArr[$index].active}">
 			          <div class="header">
 			          	<i ng-class="stateArr[$index].active ? 'fa fa-plus-square' : 'fa fa-minus-square'" aria-hidden="true"></i>
-			          	{{result.report.model.id.name}}
-			          	<i ng-class="result.report.valid === true ? 'fa fa-check fa-lg valid' : 'fa fa-close fa-lg invalid'" aria-hidden="true"></i>
+			          	{{report.model.id.name}}
+			          	<i ng-class="report.valid === true ? 'fa fa-check fa-lg valid' : 'fa fa-close fa-lg invalid'" aria-hidden="true"></i>
 			          </div>
 			        </div>
 
@@ -85,23 +85,23 @@
 			          <div class="modelresults-content">
 		<div class="fileUploadDetails">
 					<table id="uploadResults">
-						<tr><td><label>Namespace:</label></td><td class="tdspacing">{{result.report.model.id.namespace}}</td></tr>
-				        <tr><td><label>Name:</label></td><td class="tdspacing">  {{result.report.model.id.name}} </td></tr>
-				        <tr><td><label>Version:</label></td><td class="tdspacing">   {{result.report.model.id.version}} </td></tr>
-				        <tr><td><label>Model Type:</label> </td><td class="tdspacing"> {{result.report.model.type}}</td></tr>
-				        <tr><td><label>Description:</label> </td><td class="tdspacing">  {{result.report.model.description}}</td></tr>
+						<tr><td><label>Namespace:</label></td><td class="tdspacing">{{report.model.id.namespace}}</td></tr>
+				        <tr><td><label>Name:</label></td><td class="tdspacing">  {{report.model.id.name}} </td></tr>
+				        <tr><td><label>Version:</label></td><td class="tdspacing">   {{report.model.id.version}} </td></tr>
+				        <tr><td><label>Model Type:</label> </td><td class="tdspacing"> {{report.model.type}}</td></tr>
+				        <tr><td><label>Description:</label> </td><td class="tdspacing">  {{report.model.description}}</td></tr>
 				        <tr><td><label>References: </label></td>
 				        <td>
 		<table>
-								<tr ng-repeat="reference in result.report.model.references">
-									<td><i ng-class="isMissing(reference,result.report.unresolvedReferences) === true ? 'fa fa-close fa-lg invalid' : 'fa fa-check fa-lg valid'" aria-hidden="true"></i></td>
+								<tr ng-repeat="reference in report.model.references">
+									<td><i ng-class="isMissing(reference,report.unresolvedReferences) === true ? 'fa fa-close fa-lg invalid' : 'fa fa-check fa-lg valid'" aria-hidden="true"></i></td>
 									<td class="tdspacing-half">{{reference.namespace}}.{{reference.name}}.{{reference.version}}</td>
 								</tr>
 							</table>
 						</td>
 						</tr>
-				        <tr ng-show="result.valid === false"><td colspan="2">
-						<label class="error"><i class="fa fa-fw fa-close"></i> Error - {{result.report.errorMessage}}</label> </td></tr>
+				        <tr ng-show="report.valid === false"><td colspan="2">
+						<label class="error"><i class="fa fa-fw fa-close"></i> Error - {{report.errorMessage}}</label> </td></tr>
 	</table>
 </div>
 	</div>

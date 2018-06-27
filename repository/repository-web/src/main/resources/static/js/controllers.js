@@ -170,10 +170,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         if(fileToUpload != undefined) {
             var filename = document.getElementById('file').files[0].name;
             var extn = filename.split(".").pop();
-            if(filename.endsWith(".zip"))
-               upload('./rest/importers/bulk', fileToUpload);
-            else
-             	upload('./rest/importers/', fileToUpload);
+           	upload('./rest/importers/', fileToUpload);
         } else {
             $rootScope.error = "Choose model file(s) and click Upload.";
         }
@@ -181,7 +178,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
     upload = function(url, fileToUpload) {
         $scope.isLoading = true;
-        $scope.loadMessage = "Uploading... Please wait!";
+        $scope.loadMessage = "Validating models... Please wait!";
         $scope.modelStats = {};
         var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
         var fd = new FormData();
@@ -195,10 +192,10 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.stateArr = [];
             $scope.uploadResult = result;
             $scope.showCheckin = true;
-            if($scope.uploadResult.obj != null && $scope.uploadResult.obj.length > 0 && $scope.uploadResult.isSuccess) {
-                angular.forEach($scope.uploadResult.obj, function (resultObject, idx) {
+            if($scope.uploadResult.result.reports.length > 0 && $scope.uploadResult.result.valid) {
+                angular.forEach($scope.uploadResult.result.reports, function (resultObject, idx) {
                     var item =  (idx == 0) ? {active: false} : {active: true} ;
-                    var modelType = resultObject.report.model.type;
+                    var modelType = resultObject.model.type;
                     switch (modelType) {
                     case "Functionblock":
                         fbcount++;
@@ -214,7 +211,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
                         break;
                     }
                     $scope.stateArr.push(item);
-                    $scope.showCheckin = (resultObject.report.valid && $scope.showCheckin);
+                    $scope.showCheckin = (resultObject.valid && $scope.showCheckin);
                 });
             } else {
                 $scope.showCheckin = false;
@@ -254,57 +251,12 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
 	
 
-    $scope.checkin = function (uploadResults) {
+    $scope.checkin = function () {
     	$scope.isLoading = true;
+    	$scope.showCheckin = false;
+    	$scope.loadMessage = "Importing models... Please wait!";
         $rootScope.error = "";
-        if(uploadResults.length == 1) {
-            checkinSingle(uploadResults[0].handleId);
-        } else {
-            checkInMultipleModels(uploadResults);
-        }
-    };
-
-    checkInMultipleModels = function(uploadResults) {
-        var validUploadHandles = [];
-        $scope.isLoading = true;
-        $scope.loadMessage = "Importing... Please wait!";
-        $scope.showResultBox = false;
-        angular.forEach(uploadResults, function (uploadResult, idx) {
-            if(uploadResult.report.valid) {
-                var handle = {
-                    handleId : uploadResult.handleId,
-                    id : {
-                        name : uploadResult.report.model.id.name,
-                        namespace : uploadResult.report.model.id.namespace,
-                        version : uploadResult.report.model.id.version
-                    }
-                }
-                validUploadHandles.push(handle);
-            }
-        });
-
-        $http.put('./rest/importers?key='+$scope.selectedImporter.key, validUploadHandles)
-        .success(function(result) {
-            $scope.isLoading = false;
-            $scope.showResultBox = true;
-            $scope.resultMessage = "Import was successful!";
-            $scope.showCheckin = false;
-            $scope.isLoading = false;
-        }).error(function(data, status, headers, config) {
-            $scope.isLoading = false;
-            if(status == 403){
-                $scope.error = "Operation is Forbidden";
-            }else if(status == 401){
-                $scope.error = "Unauthorized Operation";
-            }else if(status == 400){
-                $scope.error = "Bad Request. Server Down";
-            }else if(status == 500){
-                $scope.error = "Internal Server Error";
-            }else{
-                $scope.error = "Failed Request with response status "+status;
-            }
-            $scope.isLoading = false;
-        });
+        checkinSingle($scope.uploadResult.result.handleId);
     };
 
     checkinSingle = function (handleId) {

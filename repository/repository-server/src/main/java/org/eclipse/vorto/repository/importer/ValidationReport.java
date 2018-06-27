@@ -20,6 +20,8 @@ import java.util.Collections;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 
 public class ValidationReport {
 
@@ -42,6 +44,17 @@ public class ValidationReport {
 	
 	public static ValidationReport invalid(ModelInfo model, String msg, Collection<ModelId> missingReferences) {
 		return new ValidationReport(model, false, msg,missingReferences);
+	}
+	
+	public static ValidationReport invalid(ModelInfo model, ValidationException exception) {
+		if (exception instanceof CouldNotResolveReferenceException) {
+			CouldNotResolveReferenceException ex = (CouldNotResolveReferenceException)exception;
+			return new ValidationReport(model, false, exception.getMessage(),ex.getMissingReferences());
+
+		} else {
+			return new ValidationReport(model, false, exception.getMessage(),Collections.emptyList());
+
+		}
 	}
 
 	public static ValidationReport valid(ModelInfo model) {

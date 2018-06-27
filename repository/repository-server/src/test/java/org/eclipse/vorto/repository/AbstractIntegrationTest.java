@@ -70,9 +70,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	protected ModelInfo importModel(String modelName, IUserContext userContext) {
 		try {
 			UploadModelResult uploadResult = this.importer.upload(FileUpload.create(modelName,
-					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream())), userContext);
-			Assert.isTrue(uploadResult.getReport().isValid(), uploadResult.getReport().getErrorMessage());
-			
+					IOUtils.toByteArray(new ClassPathResource("sample_models/" + modelName).getInputStream())), userContext);			
 			return this.importer.doImport(uploadResult.getHandleId(), userContext).get(0);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
