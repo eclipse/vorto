@@ -16,7 +16,10 @@ public class UserUtils {
 		UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(oldAuth.getPrincipal(),
 				oldAuth.getCredentials(), AuthorityUtils.createAuthorityList("ROLE_" + user.getRole().toString()));
 		newAuth.setDetails(oldAuth.getDetails());
-
-		SecurityContextHolder.getContext().setAuthentication(new OAuth2Authentication(oauth2Auth.getOAuth2Request(), newAuth));
+		
+		OAuth2Authentication newOAuthAuth = new OAuth2Authentication(oauth2Auth.getOAuth2Request(), newAuth);
+		newOAuthAuth.setDetails(oauth2Auth.getDetails());
+		
+		SecurityContextHolder.getContext().setAuthentication(newOAuthAuth);
 	}
 }

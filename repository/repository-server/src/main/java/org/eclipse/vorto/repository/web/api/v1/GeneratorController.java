@@ -42,6 +42,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -174,7 +177,16 @@ public class GeneratorController extends AbstractRepositoryController {
 		request.getParameterMap().entrySet().stream().forEach(x -> {
 			requestParams.put(x.getKey(), x.getValue()[0]);
 		});
+		
+		requestParams.put("Authorization", "Bearer " + getUserToken());
+		
 		return requestParams;
+	}
+
+	private String getUserToken() {
+		OAuth2Authentication auth = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
+		return details.getTokenValue();
 	}
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
