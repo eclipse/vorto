@@ -21,9 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -41,8 +39,17 @@ import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Imports (a bulk of) Vorto DSL Files to the Vorto Repository
+ *
+ */
 @Component
 public class VortoModelImporter extends AbstractModelImporter {
+
+	public VortoModelImporter() {
+		super(".infomodel", ".fbmodel", ".type", ".mapping", ".zip");
+		
+	}
 
 	@Override
 	public String getKey() {
@@ -53,15 +60,14 @@ public class VortoModelImporter extends AbstractModelImporter {
 	public String getShortDescription() {
 		return "Imports Vorto Informtion Models, defined with the Vorto DSL.";
 	}
-
-	@Override
-	public Set<String> getSupportedFileExtensions() {
-		return new LinkedHashSet<>(Arrays.asList(".infomodel", ".fbmodel", ".type", ".mapping", ".zip"));
+	
+	protected boolean handleZipUploads() {
+		return false;
 	}
 
 	@Override
 	protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
-		if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
+		if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
 			BulkUploadHelper bulkUploadService = new BulkUploadHelper(getModelRepository(), getUploadStorage(),
 					getUserRepository());
 			return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(), user);
@@ -81,7 +87,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {
 		List<ModelEMFResource> result = new ArrayList<ModelEMFResource>();
 		
-		if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
+		if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
 			
 			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
 			ZipEntry entry = null;

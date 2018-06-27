@@ -14,17 +14,11 @@
  */
 package org.eclipse.vorto.repository.importer.ipso;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -41,14 +35,21 @@ import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ModelImporterException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
-import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.springframework.stereotype.Component;
 
+/**
+ * Imports (a bulk of) LwM2M XML definitions to the Vorto Repository by converting them to Vorto Function Blocks and Mapping files
+ *
+ */
 @Component
 public class ModelImporterIPSO extends AbstractModelImporter {
 
+	public ModelImporterIPSO() {
+		super(".xml");
+	}
+
 	private static final String NAMESPACE = "com.ipso.smartobjects";
-	private static final String VERSION = "1.1.0";
+	private static final String VERSION = "1.1.0"; // set globally because object definitions do not contain the version information
 
 	private static final FunctionblockTemplate FB_TEMPLATE = new FunctionblockTemplate();
 	private static final MappingTemplate MAPPING_TEMPLATE = new MappingTemplate();
@@ -64,11 +65,6 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 	}
 
 	@Override
-	public Set<String> getSupportedFileExtensions() {
-		return new HashSet<>(Arrays.asList(".xml", ".zip"));
-	}
-
-	@Override
 	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
 		if (importedModel.getType() == ModelType.Functionblock) {
 			getModelRepository().addFileContent(importedModel.getId(), originalFileContent);
@@ -77,57 +73,19 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 
 	@Override
 	protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
-		List<ValidationReport> result = new ArrayList<ValidationReport>();
-
 		try {
-			if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
-
-				ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
-				ZipEntry entry = null;
-
-				try {
-					while ((entry = zis.getNextEntry()) != null) {
-						if (!entry.isDirectory() && !entry.getName().substring(entry.getName().lastIndexOf("/")+1).startsWith(".")) {
-							LWM2M lwm2mModel = parse(FileUpload.create(entry.getName(), copyStream(zis, entry)));
-							LWM2M.Object obj = lwm2mModel.getObject().get(0);
-							result.add(ValidationReport.valid(createModelInfo(obj)));
-						}
-					}
-				} catch (IOException e) {
-					throw new BulkUploadException("Problem while reading ipso zip file", e);
-				}
-			} else {
-				LWM2M lwm2mModel = parse(fileUpload);
-				LWM2M.Object obj = lwm2mModel.getObject().get(0);
-				result.add(ValidationReport.valid(createModelInfo(obj)));
+			LWM2M lwm2mModel = parse(fileUpload);
+			if (lwm2mModel.getObject().isEmpty()) {
+				return Arrays.asList(ValidationReport.invalid(null, "File "+fileUpload.getFileName() + " does not contain any object definitions."));
 			}
-
-			return result;
+			LWM2M.Object obj = lwm2mModel.getObject().get(0);
+			return Arrays.asList(ValidationReport.valid(createModelInfo(obj)));
 		} catch (Exception ex) {
 			return Arrays.asList(ValidationReport.invalid(null, ex.getMessage()));
 		}
 	}
 
-	private static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try {
-			int size;
-			byte[] buffer = new byte[2048];
-
-			BufferedOutputStream bos = new BufferedOutputStream(out);
-
-			while ((size = in.read(buffer, 0, buffer.length)) != -1) {
-				bos.write(buffer, 0, size);
-			}
-
-			bos.flush();
-			bos.close();
-		} catch (IOException e) {
-			throw new BulkUploadException("IOException while copying stream to ZipEntry", e);
-		}
-
-		return out.toByteArray();
-	}
+	
 
 	private ModelInfo createModelInfo(LWM2M.Object obj) {
 		ModelInfo modelInfo = new ModelInfo();
@@ -143,39 +101,17 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 	}
 
 	@Override
-	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {
-		List<ModelEMFResource> result = new ArrayList<ModelEMFResource>();
+	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {	
+		List<ModelEMFResource> vortoModels = new ArrayList<ModelEMFResource>(2);
 		
 		try {
-			if (fileUpload.getFileExtension().equalsIgnoreCase(".zip")) {
-
-				ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
-				ZipEntry entry = null;
-
-				try {
-					while ((entry = zis.getNextEntry()) != null) {
-						if (!entry.isDirectory() && !entry.getName().substring(entry.getName().lastIndexOf("/")+1).startsWith(".")) {
-							LWM2M lwm2mModel = parse(FileUpload.create(entry.getName(), copyStream(zis, entry)));
-							LWM2M.Object obj = lwm2mModel.getObject().get(0);
-							result.add((ModelEMFResource) ModelParserFactory.getParser("model.fbmodel")
-									.parse(IOUtils.toInputStream(FB_TEMPLATE.create(obj, createModelInfo(obj)))));
-							result.add((ModelEMFResource) ModelParserFactory.getParser("model.mapping")
-									.parse(IOUtils.toInputStream(MAPPING_TEMPLATE.create(obj, createModelInfo(obj)))));
-						}
-					}
-				} catch (IOException e) {
-					throw new BulkUploadException("Problem while reading ipso zip file", e);
-				}
-			} else {
-				
-				final LWM2M lwm2mModel = parse(fileUpload);
-				final LWM2M.Object obj = lwm2mModel.getObject().get(0);
-				result.add((ModelEMFResource) ModelParserFactory.getParser("model.fbmodel")
-						.parse(IOUtils.toInputStream(FB_TEMPLATE.create(obj, createModelInfo(obj)))));
-				result.add((ModelEMFResource) ModelParserFactory.getParser("model.mapping")
-						.parse(IOUtils.toInputStream(MAPPING_TEMPLATE.create(obj, createModelInfo(obj)))));
-			}
-			return result;
+			LWM2M lwm2mModel = parse(fileUpload);
+			LWM2M.Object obj = lwm2mModel.getObject().get(0);
+			vortoModels.add((ModelEMFResource) ModelParserFactory.getParser("model.fbmodel")
+					.parse(IOUtils.toInputStream(FB_TEMPLATE.create(obj, createModelInfo(obj)))));
+			vortoModels.add((ModelEMFResource) ModelParserFactory.getParser("model.mapping")
+					.parse(IOUtils.toInputStream(MAPPING_TEMPLATE.create(obj, createModelInfo(obj)))));
+			return Collections.unmodifiableList(vortoModels);
 		} catch (Exception ex) {
 			throw new ModelImporterException("Problem importing ipso files", ex);
 		}
@@ -183,7 +119,6 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 
 	private LWM2M parse(FileUpload fileUpload) throws Exception {
 		JAXBContext jc = JAXBContext.newInstance(LWM2M.class);
-
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
 		return (LWM2M) unmarshaller.unmarshal(new ByteArrayInputStream(fileUpload.getContent()));
 	}

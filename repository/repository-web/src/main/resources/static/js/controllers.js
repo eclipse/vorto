@@ -178,7 +178,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
     upload = function(url, fileToUpload) {
         $scope.isLoading = true;
-        $scope.loadMessage = "Uploading... Please wait!";
+        $scope.loadMessage = "Validating models... Please wait!";
         $scope.modelStats = {};
         var infocount = 0, fbcount  = 0, typecount = 0, mappingcount = 0;
         var fd = new FormData();
@@ -253,6 +253,8 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 
     $scope.checkin = function () {
     	$scope.isLoading = true;
+    	$scope.showCheckin = false;
+    	$scope.loadMessage = "Importing models... Please wait!";
         $rootScope.error = "";
         checkinSingle($scope.uploadResult.result.handleId);
     };
