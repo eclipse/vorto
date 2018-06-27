@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.account;
 
+import org.eclipse.vorto.repository.account.impl.User;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
@@ -22,8 +24,22 @@ public interface IUserAccountService {
 	/**
 	 * creates a new account in the Vorto Repository
 	 * @param account
+	 * @return createdUser
 	 */
-	void create(String username);
+	User create(String username);
+	
+	/**
+	 * 
+	 * @param username
+	 * @return
+	 */
+	User getUser(String username);
+	
+	/**
+	 * 
+	 * @param user
+	 */
+	void saveUser(User user);
 	
 	/**
 	 * @post Information Models that had been created by the user are made anonymous

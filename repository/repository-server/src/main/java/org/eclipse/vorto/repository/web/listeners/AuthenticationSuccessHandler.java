@@ -21,7 +21,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,6 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
 		Optional<User> _user = Optional.ofNullable(userRepository.findByUsername(auth.getName()));
 		
 		String targetUrl = _user.map(user -> {
-			UserUtils.refreshSpringSecurityUser(user);
 			return "/#/";
 		}).orElse("/#/signup");
 

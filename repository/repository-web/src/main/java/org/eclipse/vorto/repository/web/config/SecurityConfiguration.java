@@ -22,12 +22,12 @@ import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
-import org.eclipse.vorto.repository.sso.boschid.JwtTokenUserInfoServices;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -35,11 +35,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -62,17 +60,12 @@ import org.springframework.web.filter.CompositeFilter;
 @EnableOAuth2Client
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
-	@Autowired
-	private UserDetailsService userDetailsService;
 
 	@Autowired
 	private AuthenticationEntryPoint authenticationEntryPoint;
 	
 	@Autowired
 	private AuthenticationSuccessHandler successHandler;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private OAuth2ClientContext oauth2ClientContext;
@@ -88,6 +81,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
+	
+	@Autowired
+	private AuthoritiesExtractor authoritiesExtractor;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -131,11 +127,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		repository.setHeaderName("X-XSRF-TOKEN");
 		return repository;
 	}
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
-	}
 	
 	@Bean
 	public FilterRegistrationBean oauth2ClientFilterRegistration(
@@ -162,8 +153,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId());
-		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
+//		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId());
+		return newSsoFilter("/eidp/login", interceptedUserInfoTokenServices, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
 	}
 	
@@ -173,8 +164,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(defaultFilterProcessesUrl);
 		filter.setAuthenticationSuccessHandler(successHandler);
-		
 		tokenService.setRestTemplate(restTemplate);
+		tokenService.setAuthoritiesExtractor(authoritiesExtractor);
 		filter.setRestTemplate(restTemplate);
 		filter.setTokenServices(tokenService);
 		

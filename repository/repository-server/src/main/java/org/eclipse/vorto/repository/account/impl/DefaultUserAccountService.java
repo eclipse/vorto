@@ -19,7 +19,6 @@ import java.util.Arrays;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +41,7 @@ public class DefaultUserAccountService implements IUserAccountService {
 	@Autowired
 	private IModelRepository modelRepository;
 
-	public void create(String username) {
+	public User create(String username) {
 
 		User user = new User();
 
@@ -53,9 +52,11 @@ public class DefaultUserAccountService implements IUserAccountService {
 		user.setRole(toRole(username));
 
 		user = userRepository.save(user);
-		if (user != null) {
-			UserUtils.refreshSpringSecurityUser(user);
-		}
+//		if (user != null) {
+//			UserUtils.refreshSpringSecurityUser(user);
+//		}
+		
+		return user;
 	}
 
 	private Role toRole(String username) {
@@ -99,5 +100,15 @@ public class DefaultUserAccountService implements IUserAccountService {
 	@Override
 	public String getAnonymousUserId() {
 		return USER_ANONYMOUS;
+	}
+
+	@Override
+	public User getUser(String username) {
+		return this.userRepository.findByUsername(username);
+	}
+
+	@Override
+	public void saveUser(User user) {
+		this.userRepository.save(user);
 	}
 }
