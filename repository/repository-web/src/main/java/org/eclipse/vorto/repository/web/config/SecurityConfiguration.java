@@ -22,6 +22,7 @@ import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
+import org.eclipse.vorto.repository.sso.boschid.JwtTokenUserInfoServices;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
@@ -153,8 +154,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-//		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices(null, eidp.getClientId());
-		return newSsoFilter("/eidp/login", interceptedUserInfoTokenServices, accessTokenProvider, 
+		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices("https://accounts.bosch.com/adfs/userinfo", eidp.getClientId());
+		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
 	}
 	
