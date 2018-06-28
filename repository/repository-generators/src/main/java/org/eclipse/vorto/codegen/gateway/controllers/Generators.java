@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest")
 public class Generators {
 	
+	private static final String AUTHORIZATION = "Authorization";
+	
 	@Autowired
 	private EnvironmentConfig env;
 	
@@ -66,7 +69,11 @@ public class Generators {
 	@RequestMapping(value = "/generators/{key}/generate/{namespace}/{name}/{version:.+}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<InputStreamResource> generate(final @PathVariable String key, @PathVariable String namespace,
 			@PathVariable String name, @PathVariable String version, final HttpServletRequest request) {
-		return responseFromResult(vorto.generate(key, namespace, name, version, GatewayUtils.mapFromRequest(request)));
+		return responseFromResult(vorto.generate(key, namespace, name, version, GatewayUtils.mapFromRequest(request), getAuthorization(request)));
+	}
+	
+	private Optional<String> getAuthorization(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader(AUTHORIZATION));
 	}
 	
 	private ResponseEntity<InputStreamResource> responseFromResult(IGenerationResult result) {
