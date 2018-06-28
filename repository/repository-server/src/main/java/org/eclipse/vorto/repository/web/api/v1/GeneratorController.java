@@ -178,15 +178,7 @@ public class GeneratorController extends AbstractRepositoryController {
 			requestParams.put(x.getKey(), x.getValue()[0]);
 		});
 		
-		requestParams.put("Authorization", "Bearer " + getUserToken());
-		
 		return requestParams;
-	}
-
-	private String getUserToken() {
-		OAuth2Authentication auth = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-		OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-		return details.getTokenValue();
 	}
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")

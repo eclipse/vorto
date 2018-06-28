@@ -71,14 +71,14 @@ public class VortoService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters) {
+	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters, Optional<String> headerAuth) {
 		LOGGER.info(String.format("Generating for Platform [%s] and Model [%s.%s:%s]", key, namespace, name, version));
 		
 		Generator generator = repo.get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
 		
-		InformationModel model = getModel(namespace, name, version, Optional.of(parameters)).orElseThrow(GatewayUtils.notFound(String.format("[Model %s.%s:%s]", namespace, name, version)));
+		InformationModel model = getModel(namespace, name, version, headerAuth).orElseThrow(GatewayUtils.notFound(String.format("[Model %s.%s:%s]", namespace, name, version)));
 		
-		List<MappingModel> mappings = getMappings(key, namespace, name, version, Optional.of(parameters));
+		List<MappingModel> mappings = getMappings(key, namespace, name, version, headerAuth);
 		
 		InvocationContext invocationContext = new InvocationContext(mappings, repo.newGeneratorLookup(), parameters);
 		
@@ -98,8 +98,8 @@ public class VortoService {
 		}
 	}
 	
-	public Optional<InformationModel> getModel(String namespace, String name, String version, Optional<Map<String, String>> optionalParameters) {
-		Optional<byte[]> modelResources = downloadUrl(urlForModel(namespace, name, version), optionalParameters);
+	public Optional<InformationModel> getModel(String namespace, String name, String version, Optional<String> headerAuth) {
+		Optional<byte[]> modelResources = downloadUrl(urlForModel(namespace, name, version), headerAuth);
 		
 		if (!modelResources.isPresent()) {
 			return Optional.empty();
@@ -126,8 +126,8 @@ public class VortoService {
 				model.getNamespace(), model.getName(), model.getVersion()));
 	}
 	
-	public List<MappingModel> getMappings(String generatorKey, String namespace, String name, String version, Optional<Map<String, String>> parameters) {
-		Optional<byte[]> mappingResources = downloadUrl(urlForMapping(generatorKey, namespace, name, version), parameters);
+	public List<MappingModel> getMappings(String generatorKey, String namespace, String name, String version, Optional<String> headerAuth) {
+		Optional<byte[]> mappingResources = downloadUrl(urlForMapping(generatorKey, namespace, name, version), headerAuth);
 		
 		if (mappingResources.isPresent()) {
 			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingResources.get()))).read();
@@ -143,19 +143,17 @@ public class VortoService {
 				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat(), targetPlatform);
 	}
 	
-	private Optional<byte[]> downloadUrl(String url, Optional<Map<String, String>> optionalParameters) {
+	private Optional<byte[]> downloadUrl(String url, Optional<String> headerAuth) {
 		try {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Downloading " + url);
 			}
 			
-			HttpEntity<String> entity = null;
-			
-			if (optionalParameters.isPresent()) {
+			HttpEntity<String> entity = headerAuth.map(token -> {
 				HttpHeaders headers = new HttpHeaders();
-			    optionalParameters.get().forEach((key, value) -> headers.add(key, value));
-			    entity = new HttpEntity<String>("parameters", headers);
-			}
+			    headers.add("Authorization", token);
+			    return new HttpEntity<String>("parameters", headers);
+			}).orElse(null);
 			
 			return Optional.of(restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class).getBody());
 		} catch (RestClientException e) {
