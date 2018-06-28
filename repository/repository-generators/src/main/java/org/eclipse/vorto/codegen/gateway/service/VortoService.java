@@ -49,6 +49,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -70,14 +71,14 @@ public class VortoService {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters) {
+	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters, Optional<String> headerAuth) {
 		LOGGER.info(String.format("Generating for Platform [%s] and Model [%s.%s:%s]", key, namespace, name, version));
 		
 		Generator generator = repo.get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
 		
-		InformationModel model = getModel(namespace, name, version).orElseThrow(GatewayUtils.notFound(String.format("[Model %s.%s:%s]", namespace, name, version)));
+		InformationModel model = getModel(namespace, name, version, headerAuth).orElseThrow(GatewayUtils.notFound(String.format("[Model %s.%s:%s]", namespace, name, version)));
 		
-		List<MappingModel> mappings = getMappings(key, namespace, name, version);
+		List<MappingModel> mappings = getMappings(key, namespace, name, version, headerAuth);
 		
 		InvocationContext invocationContext = new InvocationContext(mappings, repo.newGeneratorLookup(), parameters);
 		
@@ -97,8 +98,8 @@ public class VortoService {
 		}
 	}
 	
-	public Optional<InformationModel> getModel(String namespace, String name, String version) {
-		Optional<byte[]> modelResources = downloadUrl(urlForModel(namespace, name, version));
+	public Optional<InformationModel> getModel(String namespace, String name, String version, Optional<String> headerAuth) {
+		Optional<byte[]> modelResources = downloadUrl(urlForModel(namespace, name, version), headerAuth);
 		
 		if (!modelResources.isPresent()) {
 			return Optional.empty();
@@ -125,8 +126,8 @@ public class VortoService {
 				model.getNamespace(), model.getName(), model.getVersion()));
 	}
 	
-	public List<MappingModel> getMappings(String generatorKey, String namespace, String name, String version) {
-		Optional<byte[]> mappingResources = downloadUrl(urlForMapping(generatorKey, namespace, name, version));
+	public List<MappingModel> getMappings(String generatorKey, String namespace, String name, String version, Optional<String> headerAuth) {
+		Optional<byte[]> mappingResources = downloadUrl(urlForMapping(generatorKey, namespace, name, version), headerAuth);
 		
 		if (mappingResources.isPresent()) {
 			IModelWorkspace workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(mappingResources.get()))).read();
@@ -142,13 +143,19 @@ public class VortoService {
 				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat(), targetPlatform);
 	}
 	
-	private Optional<byte[]> downloadUrl(String url) {
+	private Optional<byte[]> downloadUrl(String url, Optional<String> headerAuth) {
 		try {
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Downloading " + url);
 			}
 			
-			return Optional.of(restTemplate.getForObject(url, byte[].class));
+			HttpEntity<String> entity = headerAuth.map(token -> {
+				HttpHeaders headers = new HttpHeaders();
+			    headers.add("Authorization", token);
+			    return new HttpEntity<String>("parameters", headers);
+			}).orElse(null);
+			
+			return Optional.of(restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class).getBody());
 		} catch (RestClientException e) {
 			LOGGER.error("Error downloading the URL [" + url + "]", e);
 			return Optional.empty();

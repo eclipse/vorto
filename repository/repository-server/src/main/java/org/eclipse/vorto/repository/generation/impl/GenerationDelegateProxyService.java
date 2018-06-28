@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelId;
@@ -36,8 +37,14 @@ import org.modeshape.common.collection.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -117,8 +124,26 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 		generatorEntity.increaseInvocationCount();
 		this.registeredGeneratorsRepository.save(generatorEntity);
 		
-		ResponseEntity<byte[]> entity = restTemplate.getForEntity(generatorEntity.getGenerationEndpointUrl()+attachRequestParams(requestParams), byte[].class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
-		return new GeneratedOutput(entity.getBody(), extractFileNameFromHeader(entity), entity.getHeaders().getContentLength());
+		HttpEntity<String> entity = getUserToken().map(token -> {
+			HttpHeaders headers = new HttpHeaders();
+		    headers.add("Authorization", "Bearer " + token);
+		    return new HttpEntity<String>("parameters", headers);
+		}).orElse(null);
+		
+	    ResponseEntity<byte[]> response = restTemplate.exchange(generatorEntity.getGenerationEndpointUrl() + attachRequestParams(requestParams), 
+	    		HttpMethod.GET, entity, byte[].class, modelId.getNamespace(), modelId.getName(), modelId.getVersion());
+		
+		return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response), response.getHeaders().getContentLength());
+	}
+	
+	private Optional<String> getUserToken() {
+		OAuth2Authentication auth = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.getDetails() instanceof OAuth2AuthenticationDetails) {
+			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
+			return Optional.ofNullable(details.getTokenValue());
+		}
+		
+		return Optional.empty();
 	}
 	
 	private String attachRequestParams(Map<String, String> requestParams) {

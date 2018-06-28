@@ -174,6 +174,7 @@ public class GeneratorController extends AbstractRepositoryController {
 		request.getParameterMap().entrySet().stream().forEach(x -> {
 			requestParams.put(x.getKey(), x.getValue()[0]);
 		});
+		
 		return requestParams;
 	}
 
