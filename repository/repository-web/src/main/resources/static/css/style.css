@@ -40,10 +40,18 @@ ul.nav a {
     font-weight: bold;
 }
 
-ul.nav p {
+ul.nav a {
     box-shadow: none;
     background: transparent;
     color: #fff;
+    text-shadow: none;
+    font-weight: bold;
+}
+
+.dropdown-menu>li>a{
+    box-shadow: none;
+    color: black;
+    background: transparent;
     text-shadow: none;
     font-weight: bold;
 }
@@ -247,13 +255,7 @@ ul.nav p {
 }
 
 .dropdown-menu a:hover {
-    background-color: #208020;
-    background-image: -webkit-linear-gradient(top,#208020 0%, #3AA843 50%, #6CB674 100%);
-    background-image: -o-linear-gradient(top,#208020 0%, #3AA843 50%,  #6CB674 100%);
-    background-image: -webkit-gradient(linear,left top,left bottom,from(#208020),to(#6CB674));
-    background-image: linear-gradient(to bottom, #208020 0%, #3AA843 50%,  #6CB674 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#208020', endColorstr='#6CB674', GradientType=0);
-    background-repeat: repeat-x;
+    background-color: grey;
 }
 
 .panel-heading {

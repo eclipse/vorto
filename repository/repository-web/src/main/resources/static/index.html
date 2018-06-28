@@ -77,15 +77,20 @@
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="./#/" st-reset>Search</a></li>
+					<li><a href="./#/" st-reset>Explore</a></li>
 					<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a
 						href="./#/import">Import</a></li>
 					<li ng-show="authority == 'ROLE_ADMIN'"><a href="./#/manage">Manage</a></li>
-					<li><a href="./#/generators">Generators</a></li>
-					<li><a href="http://www.eclipse.org/vorto">About Vorto</a></li>
-					<li><a href="./#/api">REST API</a></li>
+					<li><a href="./#/generators">Plugins</a></li>
+					<li class="dropdown">
+        				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Documentation<span class="caret"></span></a>
+        				<ul class="dropdown-menu subnav">
+					       <li><a href="./#/api">REST-API Documentation</a></li>
+					       <li><a target="_blank" href="https://www.eclipse.org/vorto/tutorials/">Tutorials</a></li>
+        				</ul>
+     				</li>
 				</ul>
-				<div id="navbar-right" class="navbar-right">
+				<div id="navbar-right" class="navbar-right">					
 					<ul class="nav navbar-nav">
 						<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a id="userWelcome"
 							href="./#/settings">Welcome, {{user}}</a></li>
