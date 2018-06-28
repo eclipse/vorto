@@ -72,8 +72,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
 	@Override
 	public UploadModelResult upload(FileUpload fileUpload, IUserContext user) {
+		if (!this.supportedFileExtensions.contains(fileUpload.getFileExtension())) {
+			return new UploadModelResult(null,Arrays.asList(ValidationReport.invalid(null,"File type is invalid. Must be "+this.supportedFileExtensions)));
+		}
 		List<ValidationReport> reports = new ArrayList<ValidationReport>();
-		
 		if (handleZipUploads() && fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
 
 			ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
