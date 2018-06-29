@@ -51,11 +51,7 @@ public class DefaultUserAccountService implements IUserAccountService {
 		user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
 		user.setRole(toRole(username));
 
-		user = userRepository.save(user);
-//		if (user != null) {
-//			UserUtils.refreshSpringSecurityUser(user);
-//		}
-		
+		user = userRepository.save(user);		
 		return user;
 	}
 

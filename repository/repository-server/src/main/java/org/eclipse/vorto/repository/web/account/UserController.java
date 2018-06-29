@@ -17,7 +17,9 @@ package org.eclipse.vorto.repository.web.account;
 import java.security.Principal;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +72,8 @@ public class UserController {
 		}
 		
 		LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
-		accountService.create(oauth2User.getName()); 
+		User createdUser = accountService.create(oauth2User.getName()); 
+		UserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with the updated user and its roles
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 	}

@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository.web.generation;
 
 import java.util.Collection;
 
-import org.eclipse.vorto.codegen.api.ServiceClassifier;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
