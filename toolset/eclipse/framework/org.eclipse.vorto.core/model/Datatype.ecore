@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="datatype" nsURI="http://www.eclipse.org/vorto/metamodel/Datatype"
+    nsPrefix="datatype">
+  <eClassifiers xsi:type="ecore:EClass" name="Entity" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superType" eType="#//Entity"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="properties" upperBound="-1"
+        eType="#//Property" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Property">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="presence" eType="#//Presence"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="constraintRule" eType="#//ConstraintRule"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//PropertyType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="propertyAttributes" upperBound="-1"
+        eType="#//PropertyAttribute" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="extension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrimitivePropertyType" eSuperTypes="#//PropertyType">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//PrimitiveType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ObjectPropertyType" eSuperTypes="#//PropertyType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Type"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PrimitiveType">
+    <eLiterals name="string" literal="string"/>
+    <eLiterals name="int" value="1" literal="int"/>
+    <eLiterals name="float" value="2" literal="float"/>
+    <eLiterals name="boolean" value="3" literal="boolean"/>
+    <eLiterals name="datetime" value="4" literal="dateTime"/>
+    <eLiterals name="double" value="5" literal="double"/>
+    <eLiterals name="long" value="6" literal="long"/>
+    <eLiterals name="short" value="7" literal="short"/>
+    <eLiterals name="base64Binary" value="8" literal="base64Binary"/>
+    <eLiterals name="byte" value="9" literal="byte"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Presence">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="mandatory" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Constraint">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//ConstraintIntervalType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="constraintValues" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="ConstraintIntervalType">
+    <eLiterals name="min" literal="MIN"/>
+    <eLiterals name="max" value="1" literal="MAX"/>
+    <eLiterals name="strlen" value="2" literal="STRLEN"/>
+    <eLiterals name="regex" value="3" literal="REGEX"/>
+    <eLiterals name="mimetype" value="4" literal="MIMETYPE"/>
+    <eLiterals name="scaling" value="5" literal="SCALING"/>
+    <eLiterals name="default" value="6" literal="DEFAULT"/>
+    <eLiterals name="nullable" value="7" literal="NULLABLE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Enum" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="enums" upperBound="-1"
+        eType="#//EnumLiteral" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumLiteral">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Type" eSuperTypes="Model.ecore#//Model"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PropertyAttribute" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BooleanPropertyAttribute" eSuperTypes="#//PropertyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//BooleanPropertyAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BooleanPropertyAttributeType">
+    <eLiterals name="readable" literal="READABLE"/>
+    <eLiterals name="writable" value="1" literal="WRITABLE"/>
+    <eLiterals name="eventable" value="2" literal="EVENTABLE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnumLiteralPropertyAttribute" eSuperTypes="#//PropertyAttribute">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="#//EnumLiteralPropertyAttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="value" eType="#//EnumLiteral"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="EnumLiteralPropertyAttributeType">
+    <eLiterals name="measurementUnit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConstraintRule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Constraints" upperBound="-1"
+        eType="#//Constraint" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ComplexPrimitivePropertyType" eSuperTypes="#//PropertyType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="DictionaryPropertyType" eSuperTypes="#//ComplexPrimitivePropertyType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="keyType" eType="#//PropertyType"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="valueType" eType="#//PropertyType"
+        containment="true"/>
+  </eClassifiers>
+</ecore:EPackage>

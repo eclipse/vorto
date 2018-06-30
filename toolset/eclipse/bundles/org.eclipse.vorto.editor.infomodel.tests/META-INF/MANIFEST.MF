@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Information Model Editor Tests (Incubation)
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Version: 0.10.0.qualifier
+Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.tests;singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.vorto.editor.infomodel,
+ org.eclipse.xtext.junit4,
+ org.eclipse.vorto.core,
+ org.eclipse.xtext.xbase.junit,
+ org.eclipse.xtext.xbase.lib
+Import-Package: org.apache.log4j,
+ org.eclipse.xtext.formatting,
+ org.hamcrest.core,
+ org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runner.manipulation;version="4.5.0",
+ org.junit.runner.notification;version="4.5.0",
+ org.junit.runners;version="4.5.0",
+ org.junit.runners.model;version="4.5.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: resources/,.
+Export-Package: org.eclipse.vorto.editor.infomodel.tests

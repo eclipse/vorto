@@ -1,0 +1,23 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>bundles</artifactId>
+		<version>0.10.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>org.eclipse.vorto.editor.infomodel.tests</artifactId>
+	<packaging>eclipse-test-plugin</packaging>
+
+	<name>Vorto Information Model Editor Tests</name>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.xtend</groupId>
+				<artifactId>xtend-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Information Model Editor IDE (Incubation)
+Bundle-Version: 0.10.0.qualifier
+Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.vorto.editor.infomodel,
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide,
+ org.eclipse.vorto.editor.datatype
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.vorto.editor.infomodel.ide.contentassist.a
+ ntlr.internal,org.eclipse.vorto.editor.infomodel.ide.contentassist.an
+ tlr
+Import-Package: org.eclipse.vorto.editor.infomodel.services
+Bundle-Vendor: Eclipse.org/Vorto
