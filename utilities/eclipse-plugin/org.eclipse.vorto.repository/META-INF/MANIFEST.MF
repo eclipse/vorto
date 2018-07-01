@@ -17,7 +17,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.security,
  org.apache.commons.codec,
  org.eclipse.core.net,
- org.apache.commons.io
+ org.apache.commons.io,
+ org.eclipse.vorto.core.api
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org/Vorto

@@ -12,15 +12,33 @@ Require-Bundle: org.eclipse.vorto.editor.mapping;visibility:=reexport,
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
- org.eclipse.xtext.xbase.lib,
- org.antlr.runtime,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
- org.eclipse.compare
+ org.eclipse.compare,
+ org.eclipse.xtext;visibility:=reexport,
+ org.eclipse.xtext.xbase;resolution:=optional;visibility:=reexport,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.apache.commons.logging;resolution:=optional,
+ org.eclipse.emf.codegen.ecore;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.emf.mwe2.launch;resolution:=optional,
+ org.eclipse.xtext.util,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.common,
+ org.eclipse.xtext.common.types,
+ org.objectweb.asm;bundle-version="[5.0.1,6.0.0)";resolution:=optional,
+ org.eclipse.vorto.core,
+ org.eclipse.vorto.editor,
+ org.eclipse.vorto.editor.functionblock,
+ org.eclipse.vorto.editor.datatype,
+ org.eclipse.vorto.editor.infomodel,
+ org.eclipse.xtend.lib;resolution:=optional,
+ org.eclipse.xtext.xbase.lib
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.mapping.ui.quickfix,org.eclip
- se.vorto.editor.mapping.ui.contentassist,org.eclipse.vorto.editor.map
- ping.ui.contentassist.antlr,org.eclipse.vorto.editor.mapping.ui.inter
- nal,org.eclipse.vorto.editor.mapping.ui.contentassist.antlr.internal
+Export-Package: org.eclipse.vorto.editor.mapping.ui.quickfix,
+ org.eclipse.vorto.editor.mapping.ui.contentassist,
+ org.eclipse.vorto.editor.mapping.ui.internal,
+ org.eclipse.vorto.editor.mapping.ide.contentassist.antlr.internal,
+ org.eclipse.vorto.editor.mapping.ide.contentassist.antlr
 Bundle-Activator: org.eclipse.vorto.editor.mapping.ui.internal.MappingActivator

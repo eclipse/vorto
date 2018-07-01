@@ -20,6 +20,7 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.vorto.codegen,
  org.apache.commons.codec,
  org.eclipse.vorto.codegen.ui,
+ org.eclipse.vorto.core.api,
  org.eclipse.vorto.repository
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.perspective.command; uses:="org.ecli

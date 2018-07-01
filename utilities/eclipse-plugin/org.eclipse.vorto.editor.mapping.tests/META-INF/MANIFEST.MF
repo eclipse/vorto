@@ -25,4 +25,4 @@ Import-Package: org.eclipse.vorto.editor.datatype,
  org.junit.runners;version="4.5.0",
  org.junit.runners.model;version="4.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.eclipse.vorto.editor.mapping
+Export-Package: org.eclipse.vorto.editor.mapping.tests

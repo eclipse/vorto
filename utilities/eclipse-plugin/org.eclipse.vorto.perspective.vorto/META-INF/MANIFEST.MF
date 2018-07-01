@@ -11,7 +11,6 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.vorto.core.ui,
  org.eclipse.vorto.perspective,
  org.eclipse.vorto.wizard,
- org.eclipse.vorto.wizard.vorto,
  org.eclipse.jface,
  org.eclipse.swt,
  org.eclipse.vorto.codegen.ui,
@@ -22,7 +21,9 @@ Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.core.runtime,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.functionblock,
- org.eclipse.vorto.editor.infomodel
+ org.eclipse.vorto.editor.infomodel,
+ org.eclipse.vorto.core.api,
+ org.eclipse.vorto.wizard.vorto
 Export-Package: org.eclipse.vorto.perspective.vorto.dnd.dropvalidation
  ,org.eclipse.vorto.perspective.vorto.view
 Import-Package: org.eclipse.vorto.perspective.vorto.view,
