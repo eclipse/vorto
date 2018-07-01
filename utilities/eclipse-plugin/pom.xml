@@ -14,10 +14,6 @@
 
 	<modules>
 		<module>org.eclipse.vorto.codegen.ui</module>
-		<module>org.eclipse.vorto.editor.datatype.ide</module>
-		<module>org.eclipse.vorto.editor.functionblock.ide</module>
-		<module>org.eclipse.vorto.editor.infomodel.ide</module>
-
 		<module>org.eclipse.vorto.repository</module>
 		<module>org.eclipse.vorto.core.api</module>
 		<module>org.eclipse.vorto.core.ui</module>
@@ -26,6 +22,10 @@
 		<module>org.eclipse.vorto.editor.mapping.ui</module>
 		<module>org.eclipse.vorto.editor.infomodel.ui</module>
 		<module>org.eclipse.vorto.editor.ui</module>
+
+		<module>org.eclipse.vorto.editor.datatype.ide</module>
+		<module>org.eclipse.vorto.editor.functionblock.ide</module>
+		<module>org.eclipse.vorto.editor.infomodel.ide</module>
 
 		<module>org.eclipse.vorto.perspective</module>
 		<module>org.eclipse.vorto.perspective.vorto</module>
