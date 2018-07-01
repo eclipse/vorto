@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Core API (Incubation)
+Bundle-SymbolicName: org.eclipse.vorto.core.api;singleton:=true
+Bundle-Version: 0.10.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.emf.ecore.xmi,
+ org.eclipse.xtext.generator;resolution:=optional,
+ org.eclipse.emf.mwe.utils;resolution:=optional,
+ org.eclipse.vorto.core;bundle-version="0.10.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.vorto.core.api.repository
+Import-Package: org.apache.commons.lang3,
+ org.eclipse.core.runtime
+

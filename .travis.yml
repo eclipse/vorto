@@ -20,7 +20,7 @@ before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSiz
 
 install: true
 script:
-  - mvn clean install -f pom.xml
+  - mvn clean install -f pom.xml -P eclipse-plugin
 
 cache:
   directories:

@@ -14,6 +14,14 @@
 
 	<modules>
 		<module>dsl-reader</module>
-    </modules>
-
+	</modules>
+	
+	<profiles>
+		<profile>
+			<id>eclipse-plugin</id>
+			<modules>
+				<module>eclipse-plugin</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
