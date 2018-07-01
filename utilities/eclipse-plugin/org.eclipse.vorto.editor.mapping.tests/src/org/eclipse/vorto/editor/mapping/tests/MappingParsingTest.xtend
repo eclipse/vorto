@@ -37,9 +37,14 @@ class MappingParsingTest{
 	@Test 
 	def void loadModel() {
 		val result = parseHelper.parse('''
-			Hello Xtext!
+			namespace com.mycompany.map
+			version 1.0.0
+			displayname "Default Mapping"
+			
+			functionblockmapping FunctionBlock_Property {
+				targetplatform mym2m	
+			}
 		''')
 		Assert.assertNotNull(result)
 	}
-
 }
