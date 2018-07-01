@@ -27,12 +27,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$rootScope', '
         } else {
             filter = $scope.queryFilter + " "+$scope.modelType;
         }
-        if ($rootScope.modelsSaved && $rootScope.modelsSaved.filter === filter) {
-        	// models are already fetched
-        	$scope.models = $rootScope.modelsSaved.models;
-        	$scope.isLoading = false;
-        	return;
-        }
+
         $http.get('./api/v1/search/models?expression=' + filter).success(
             function(data, status, headers, config) {
             	$rootScope.modelsSaved = {'filter': filter, 'models': data};

@@ -3,6 +3,7 @@ package org.eclipse.vorto.repository.web.api.v1;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,7 +56,14 @@ public class ModelSearchController extends AbstractRepositoryController {
 				.filter(model -> isReleasedOrDeprecated(model)
 						|| isUser(SecurityContextHolder.getContext().getAuthentication())
 						|| isAdmin(SecurityContextHolder.getContext().getAuthentication()))
-				.map(resource -> ModelDtoFactory.createDto(resource, userContext)).collect(Collectors.toList());
+				.map(resource -> ModelDtoFactory.createDto(resource, userContext)).sorted(new Comparator<ModelInfo>() {
+
+					@Override
+					public int compare(ModelInfo o1, ModelInfo o2) {
+						return o1.getCreationDate().after(o2.getCreationDate()) ? -1 : +1;
+					}
+					
+				}).collect(Collectors.toList());
 	}
 
 	private boolean isAdmin(Authentication authentication) {
