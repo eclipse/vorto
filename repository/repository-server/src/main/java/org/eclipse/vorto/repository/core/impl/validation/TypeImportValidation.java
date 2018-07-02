@@ -37,8 +37,8 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
 
 import com.google.common.collect.Lists;
@@ -49,7 +49,7 @@ public class TypeImportValidation  implements IModelValidator {
 	public void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException {
 		Collection<String> unImportedReferences = Lists.newArrayList();
 		
-		ModelEMFResource emfModel = (ModelEMFResource) modelResource;
+		ModelResource emfModel = (ModelResource) modelResource;
 		Model model = emfModel.getModel(); 
 		
 		if (model == null) return;

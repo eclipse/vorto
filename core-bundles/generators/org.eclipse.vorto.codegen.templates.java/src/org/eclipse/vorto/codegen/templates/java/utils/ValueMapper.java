@@ -14,8 +14,12 @@
  */
 package org.eclipse.vorto.codegen.templates.java.utils;
 
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 

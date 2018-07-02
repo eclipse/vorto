@@ -18,7 +18,7 @@ import org.eclipse.vorto.repository.api.ModelInfo
 
 class MappingTemplate {
 	
-	def create(LWM2M.Object source, ModelInfo modelInfo) {
+	def String create(LWM2M.Object source, ModelInfo modelInfo) {
 		'''
 		namespace «modelInfo.id.namespace»
 		version «modelInfo.id.version»

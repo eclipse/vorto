@@ -28,7 +28,7 @@ import java.util.zip.ZipInputStream;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -84,8 +84,8 @@ public class VortoModelImporter extends AbstractModelImporter {
 	}
 
 	@Override
-	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {
-		List<ModelEMFResource> result = new ArrayList<ModelEMFResource>();
+	protected List<ModelResource> convert(FileUpload fileUpload, IUserContext user) {
+		List<ModelResource> result = new ArrayList<ModelResource>();
 		
 		if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
 			
@@ -102,7 +102,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 				throw new BulkUploadException("IOException while getting next entry from zip file", e);
 			}
 		} else {
-			final ModelEMFResource modelInfo = (ModelEMFResource) ModelParserFactory
+			final ModelResource modelInfo = (ModelResource) ModelParserFactory
 					.getParser(fileUpload.getFileExtension()).parse(new ByteArrayInputStream(fileUpload.getContent()));
 			result.add(modelInfo);
 		}

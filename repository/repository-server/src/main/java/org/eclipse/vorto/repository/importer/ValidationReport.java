@@ -42,6 +42,10 @@ public class ValidationReport {
 		return new ValidationReport(model, false, msg,Collections.emptyList());
 	}
 	
+	public static ValidationReport invalid(String msg) {
+		return new ValidationReport(null, false, msg,Collections.emptyList());
+	}
+	
 	public static ValidationReport invalid(ModelInfo model, String msg, Collection<ModelId> missingReferences) {
 		return new ValidationReport(model, false, msg,missingReferences);
 	}

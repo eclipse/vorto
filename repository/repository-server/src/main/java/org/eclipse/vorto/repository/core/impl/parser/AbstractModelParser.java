@@ -26,7 +26,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.xtext.linking.impl.XtextLinkingDiagnostic;
 import org.eclipse.xtext.resource.XtextResource;
@@ -63,7 +63,7 @@ public abstract class AbstractModelParser implements IModelParser {
 			throw new ValidationException(grammarErrors.get(0).getMessage(), invalidModelResource);
 		}
 
-		return new ModelEMFResource((Model) resource.getContents().get(0));
+		return new ModelResource((Model) resource.getContents().get(0));
 	}
 
 	private ModelId parseModelIdFromFileName() {

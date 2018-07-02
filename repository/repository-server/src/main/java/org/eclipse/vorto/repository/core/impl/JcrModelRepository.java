@@ -54,6 +54,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -169,7 +170,7 @@ public class JcrModelRepository implements IModelRepository {
 			resource.getReferencedBy().add(referencedById);
 
 			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
-				ModelEMFResource emfResource = getEMFResource(referencedById);
+				ModelResource emfResource = getEMFResource(referencedById);
 				resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
 			}
 		}
@@ -187,7 +188,7 @@ public class JcrModelRepository implements IModelRepository {
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 						
 			final String fileContent = IOUtils.toString(is);
-			ModelEMFResource resource = (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(IOUtils.toInputStream(fileContent));
+			ModelResource resource = (ModelResource) ModelParserFactory.getParser(fileNode.getName()).parse(IOUtils.toInputStream(fileContent));
 			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());	
 			
 		} catch (PathNotFoundException e) {
@@ -304,14 +305,14 @@ public class JcrModelRepository implements IModelRepository {
 
 	private boolean isTargetPlatformMapping(ModelInfo model, String targetPlatform) {
 		try {
-			ModelEMFResource emfResource = getEMFResource(model.getId());
+			ModelResource emfResource = getEMFResource(model.getId());
 			return emfResource.matchesTargetPlatform(targetPlatform);
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
 
-	public ModelEMFResource getEMFResource(ModelId modelId) {
+	public ModelResource getEMFResource(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
@@ -319,7 +320,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = (Node) folderNode.getNodes().next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-			return (ModelEMFResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
+			return (ModelResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
@@ -437,7 +438,7 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	public void saveModel(ModelEMFResource resource) {
+	public void saveModel(ModelResource resource) {
 		try {
 			Node folderNode = createNodeForModelId(resource.getId());
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()

@@ -29,11 +29,12 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
@@ -148,7 +149,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 					while ((entry = zis.getNextEntry()) != null) {
 						if (!entry.isDirectory() && !entry.getName().substring(entry.getName().lastIndexOf("/")+1).startsWith(".")) {
 							final FileUpload extractedFile = FileUpload.create(entry.getName(), copyStream(zis, entry));
-							List<ModelEMFResource> resources = this.convert(extractedFile, user);
+							List<ModelResource> resources = this.convert(extractedFile, user);
 							
 							importedModels.addAll(sortAndSaveToRepository(resources,extractedFile,user));
 							
@@ -158,7 +159,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 					throw new BulkUploadException("Problem while reading zip file during validation", e);
 				}
 			} else {
-				List<ModelEMFResource> resources = this.convert(uploadedItem.getValue(), user);							
+				List<ModelResource> resources = this.convert(uploadedItem.getValue(), user);							
 				importedModels.addAll(sortAndSaveToRepository(resources,uploadedItem.getValue(),user));
 			}
 		} finally {
@@ -168,16 +169,16 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		return importedModels;
 	}
 	
-	private List<ModelInfo> sortAndSaveToRepository(List<ModelEMFResource> resources, FileUpload extractedFile, IUserContext user) {
+	private List<ModelInfo> sortAndSaveToRepository(List<ModelResource> resources, FileUpload extractedFile, IUserContext user) {
 		List<ModelInfo> savedModels = new ArrayList<ModelInfo>();
 		DependencyManager dm = new DependencyManager();
-		for (ModelInfo resource : resources) {
+		for (ModelResource resource : resources) {
 			dm.addResource(resource);
 		}
 		
 		dm.getSorted().stream().forEach(resource -> {
 			try {
-				ModelInfo importedModel = this.modelRepository.save(resource.getId(), ((ModelEMFResource)resource).toDSL(), createFileName(resource), user);
+				ModelInfo importedModel = this.modelRepository.save(resource.getId(), ((ModelResource)resource).toDSL(), createFileName(resource), user);
 				savedModels.add(importedModel);
 				postProcessImportedModel(importedModel, new FileContent(extractedFile.getFileName(),extractedFile.getContent()));
 			} catch (Exception e) {
@@ -197,8 +198,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		return Collections.unmodifiableSet(this.supportedFileExtensions);
 	}
 		
-	protected ModelEMFResource parseDSL(String fileName, byte[] content) {
-		return (ModelEMFResource)ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+	protected ModelResource parseDSL(String fileName, byte[] content) {
+		return (ModelResource)ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+	}
+	
+	protected ModelResource parseDSL(ModelType type, byte[] content) {
+		return (ModelResource)ModelParserFactory.getParser("model"+type.getExtension()).parse(new ByteArrayInputStream(content));
+
 	}
 	
 	private String createFileName(ModelInfo resource) {
@@ -222,7 +228,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	 * @param user
 	 * @return Vorto DSL content
 	 */
-	protected abstract List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user);
+	protected abstract List<ModelResource> convert(FileUpload fileUpload, IUserContext user);
 
 	public void setUploadStorage(ITemporaryStorage uploadStorage) {
 		this.uploadStorage = uploadStorage;

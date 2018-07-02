@@ -23,14 +23,12 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
-import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.ModelImporterException;
@@ -76,17 +74,15 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 		try {
 			LWM2M lwm2mModel = parse(fileUpload);
 			if (lwm2mModel.getObject().isEmpty()) {
-				return Arrays.asList(ValidationReport.invalid(null, "File "+fileUpload.getFileName() + " does not contain any object definitions."));
+				return Arrays.asList(ValidationReport.invalid("File "+fileUpload.getFileName() + " does not contain any object definitions."));
 			}
 			LWM2M.Object obj = lwm2mModel.getObject().get(0);
 			return Arrays.asList(ValidationReport.valid(createModelInfo(obj)));
 		} catch (Exception ex) {
-			return Arrays.asList(ValidationReport.invalid(null, ex.getMessage()));
+			return Arrays.asList(ValidationReport.invalid(ex.getMessage()));
 		}
 	}
-
 	
-
 	private ModelInfo createModelInfo(LWM2M.Object obj) {
 		ModelInfo modelInfo = new ModelInfo();
 		modelInfo.setDescription(obj.getDescription1());
@@ -101,16 +97,15 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 	}
 
 	@Override
-	protected List<ModelEMFResource> convert(FileUpload fileUpload, IUserContext user) {	
-		List<ModelEMFResource> vortoModels = new ArrayList<ModelEMFResource>(2);
+	protected List<ModelResource> convert(FileUpload fileUpload, IUserContext user) {	
+		List<ModelResource> vortoModels = new ArrayList<ModelResource>(2);
 		
 		try {
 			LWM2M lwm2mModel = parse(fileUpload);
 			LWM2M.Object obj = lwm2mModel.getObject().get(0);
-			vortoModels.add((ModelEMFResource) ModelParserFactory.getParser("model.fbmodel")
-					.parse(IOUtils.toInputStream(FB_TEMPLATE.create(obj, createModelInfo(obj)))));
-			vortoModels.add((ModelEMFResource) ModelParserFactory.getParser("model.mapping")
-					.parse(IOUtils.toInputStream(MAPPING_TEMPLATE.create(obj, createModelInfo(obj)))));
+			final ModelInfo modelInfo = createModelInfo(obj);
+			vortoModels.add(this.parseDSL(ModelType.Functionblock,FB_TEMPLATE.create(obj, modelInfo).getBytes()));
+			vortoModels.add(this.parseDSL(ModelType.Mapping,MAPPING_TEMPLATE.create(obj, modelInfo).getBytes()));
 			return Collections.unmodifiableList(vortoModels);
 		} catch (Exception ex) {
 			throw new ModelImporterException("Problem importing ipso files", ex);

@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.core.impl;
+package org.eclipse.vorto.repository.core;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,11 +35,11 @@ import org.eclipse.vorto.repository.api.ModelType;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelEMFResource extends ModelInfo {
+public class ModelResource extends ModelInfo implements IModelSerializable {
 
 	private Model model;
 	
-	public ModelEMFResource(Model model) {
+	public ModelResource(Model model) {
 		super(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), createModelType(model));
 		this.model = model;
 	}
@@ -100,5 +100,10 @@ public class ModelEMFResource extends ModelInfo {
 	
 	public Model getModel() {
 		return this.model;
+	}
+
+	@Override
+	public String getModelAsDSL() throws IOException {
+		return new String(this.toDSL(),"utf-8");
 	}
 }

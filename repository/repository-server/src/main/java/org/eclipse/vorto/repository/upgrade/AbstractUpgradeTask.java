@@ -18,8 +18,8 @@ import java.util.Optional;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
-import org.eclipse.vorto.repository.core.impl.ModelEMFResource;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
@@ -37,11 +37,11 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
 		return modelRepository;
 	}
 	
-	protected ModelEMFResource getModel(ModelId modelId) {
+	protected ModelResource getModel(ModelId modelId) {
 		return ((JcrModelRepository)modelRepository).getEMFResource(modelId);
 	}
 	
-	protected void saveModel(ModelEMFResource resource) {
+	protected void saveModel(ModelResource resource) {
 		((JcrModelRepository)modelRepository).saveModel(resource);
 	}
 }

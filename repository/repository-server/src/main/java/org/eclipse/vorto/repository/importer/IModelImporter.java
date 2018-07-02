@@ -21,23 +21,27 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 
+/**
+ * Importer is in charge of converting model files to Vorto Information Models and store them in the repository
+ *
+ */
 public interface IModelImporter {
 	
 	/**
 	 * 
-	 * @return
+	 * @return unique identifier of the importer, e.g. LwM2M
 	 */
 	String getKey();
 	
 	/**
 	 * 
-	 * @return
+	 * @return short description of what the importer does
 	 */
 	String getShortDescription();
 	
 	/**
 	 * 
-	 * @return
+	 * @return a list of file extensions that the importer handles
 	 */
 	Set<String> getSupportedFileExtensions();
 	
@@ -58,8 +62,8 @@ public interface IModelImporter {
 	 * 
 	 * Checks in a new model into the repository
 	 * @param uploadHandle
-	 * @param callerId
+	 * @param user user context
 	 * @return model that was been checked in
 	 */
-	List<ModelInfo> doImport(String uploadHandleId, IUserContext userContext) throws ModelImporterException;
+	List<ModelInfo> doImport(String uploadHandleId, IUserContext user) throws ModelImporterException;
 }
