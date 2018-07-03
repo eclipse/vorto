@@ -35,7 +35,7 @@ import org.eclipse.vorto.repository.api.ModelType;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public class ModelResource extends ModelInfo implements IModelSerializable {
+public class ModelResource extends ModelInfo {
 
 	private Model model;
 	
@@ -102,8 +102,4 @@ public class ModelResource extends ModelInfo implements IModelSerializable {
 		return this.model;
 	}
 
-	@Override
-	public String getModelAsDSL() throws IOException {
-		return new String(this.toDSL(),"utf-8");
-	}
 }
