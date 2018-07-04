@@ -420,8 +420,10 @@ public class JcrModelRepository implements IModelRepository {
 	public ModelInfo updateMeta(ModelInfo model) {
 		try {
 			Node folderNode = createNodeForModelId(model.getId());
+
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
+			fileNode.addMixin("mix:lastModified");
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
 			Calendar lastModifiedDate = Calendar.getInstance();
@@ -578,9 +580,6 @@ public class JcrModelRepository implements IModelRepository {
 			
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
-			Calendar lastModifiedDate = Calendar.getInstance();
-			lastModifiedDate.setTime(new Date());
-			modelFolderNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 			
 			return true;
