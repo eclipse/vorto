@@ -1,12 +1,12 @@
 <link href="css/comment.css" rel="stylesheet"> 
-
-
 		<div class="row">
 			<div class="project-selection">
 				<a href="./#/" st-backlink><i class="fa fa-fw fa-long-arrow-left"></i>Go Back</a>  
 			</div>
 		</div> 
-
+		<div class="row">
+			<h3 class="modelHeader">{{model.displayName}} <small>{{model.type}}</small></h3>
+		</div> 
 			<div class="comment-tabs">
 				<ul class="comment-tabs nav nav-tabs" role="tablist">
 					<li class="active">
@@ -46,10 +46,8 @@
 								</div>
 							</div>
 						</div>
+						</br>
 						<div class="row">
-								
-							  <h3 class="modelHeader ng-binding">{{model.displayName}} {{model.type}}</h3>
-							  
 							  <div class="col-sm-12 modelDetails">							  	
 								 <div ng-if="model.type === 'InformationModel'" class="col-sm-3 modelImg">
 								   <div class="row">
@@ -87,7 +85,9 @@
 								  <dt>References: </label></dt>
 								  <dd>
 								  	<div ng-show="model.references.length > 0">
-									  	<a href="" ng-click="showReferences = !showReferences"><div ng-if="showReferences">Hide References</div><div ng-if="!showReferences">Show References</div></a>
+									  	<a href="" ng-click="showReferences = !showReferences">
+									  	<div ng-if="showReferences"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
+									  	<div ng-if="!showReferences"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show References</div></a>
 									  	<div uib-collapse="!showReferences">
 										  	<ul>
 											  <li ng-repeat="reference in model.references" class="ng-scope"><a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></li>
@@ -95,25 +95,29 @@
 									  	</div>
 									 </div>
 									 <div ng-show="model.references.length == 0">
-									 	None
+									 	-
 									 </div>
 								  </dd>
 								  <dt>Used By: </dt>
 								  <dd>
 								  	<div ng-show="model.referencedBy.length > 0">
-								  	  <a href="" ng-click="showUsages = !showUsages"><div ng-if="showUsages">Hide Usages</div><div ng-if="!showUsages">Show Usages</div></a>
+								  	  <a href="" ng-click="showUsages = !showUsages">
+								  	  <div ng-if="showUsages"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
+									  <div ng-if="!showUsages"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Usages</div></a>
 								      <div uib-collapse="!showUsages">
 									   	   <ul>
 											  <li ng-repeat="usage in model.referencedBy" class="ng-scope"><a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a></li>
 										  </ul>
 								  	  </div>
 								  	</div>
-								  	<div ng-show="model.referencedBy.length == 0">None</div>
+								  	<div ng-show="model.referencedBy.length == 0">-</div>
 							      </dd>
 							   <div ng-hide="model.type === 'Mapping'">
 							   <dt>Mappings: </dt>
 								  <dd>
-								  	<a href="" ng-click="showMappings = !showMappings"><div ng-if="showMappings">Hide Mappings</div><div ng-if="!showMappings">Show Mappings</div></a>
+								  	<a href="" ng-click="showMappings = !showMappings">
+								  		<div ng-if="showMappings"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
+								  		<div ng-if="!showMappings"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div></a>
 								      	<div uib-collapse="!showMappings">
 									   		<ul>
 											  <li ng-repeat="(key, value) in model.platformMappings" class="ng-scope"><a ng-href="./#/details/{{value.namespace}}/{{value.name}}/{{value.version}}" class="ng-binding">{{key}}</a></li>
@@ -121,9 +125,9 @@
 									   </div>
 							      </dd>
 							   </div>
-							   <dt>Model Download: </dt>
+							   <dt>Download: </dt>
 							   <dd>
-							   		<a ng-repeat="file in modelFileNames" ng-href="rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{file}}</a>
+							   		<a ng-repeat="file in modelFileNames" ng-href="rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{file}}&nbsp;&nbsp;</a>
 							   </dd>
 							</dl>
 							<div>
@@ -313,9 +317,10 @@
   		<h3 class="modal-title" id="modal-title-searchAction">Search Models</h3>
 	</div>
   	<div class="modal-body" id="modal-body-search">
-  		<p>
-  			Find the model to include as a reference.
-  		</p>
+  		<p>Find the model that would like to add as a model reference.</p>
+  		<div class="alert alert-info">
+      		<p><i class="fa fa-info"></i>&nbsp;Just click 'Copy to clipboard' and paste it as a <i>using</i> reference in the editor.</p>
+      	</div>
   		<table st-table="displayedSearchResult" st-safe-src="searchResult" class="table table-striped">
 					<thead>
 						<tr>
@@ -354,7 +359,7 @@
 							<th>Action</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody ng-show="!isLoading">
 						<tr ng-repeat="current in displayedSearchResult track by $index">
 							<td>
 								<img ng-if="current.type === 'InformationModel'" src="images/im.png" />
@@ -375,6 +380,9 @@
 						</tr>
 					</tfoot>
 				</table>
+				<div class="jumbotron text-center" ng-show="isLoading">
+					<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading models. Please wait...</h3>
+				</div>
 	</div>
 	<div class="modal-footer">
 	  <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>

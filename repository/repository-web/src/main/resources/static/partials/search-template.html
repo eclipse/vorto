@@ -5,43 +5,55 @@
 			<div>
 				<table st-persist st-table="displayedModels" st-safe-src="models" class="table table-striped">
 					<thead>
+						<tr >
+							<td colspan="4" class="headerTable">
+								<h2 id="searchHeadline">Model Explorer</h2>
+							</td>
+							<td colspan="3" class="headerTable">
+								<a ng-show="authenticated && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
+							</td>
+						</tr>
 						<tr>
-							<th colspan="9">
+							<td colspan="4" class="headerTable">
 								<div class="form-group search-box-spacing" >
-									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="60"
+									<input style="background-color: #F9F9F9" class="search-box-query-filter form-control search-input" type="search" placeholder="Filter models" size="80"
 										ng-model="queryFilter"
 										st-search="" autofocus class="queryFilter input-sm" />
-									<a ng-show="authenticated && userInfo.isRegistered === 'true'" class="btn btn-default btn-primary pull-right" ng-click="openCreateModelDialog()" role="button"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
-									<select style="font-size:12px" st-search="type">
-	                    				<option value="">All Types</option>
-	                    				<option value="InformationModel">Information Model</option>
-	                    				<option value="Functionblock">Functionblock</option>
-	                    				<option value="Datatype">Datatype</option>
-	                    				<option value="Mapping">Mapping</option>
-                					</select>
-									<select style="font-size:12px" st-search="state">
-	                    				<option value="">All States</option>
-	                    				<option value="Draft">Draft</option>
-	                    				<option value="InReview">In Review</option>
-	                    				<option value="Released">Released</option>
-	                    				<option value="Deprecated">Deprecated</option>
-                					</select>
 								</div>
-							</th>
+							</td>					
+							<td colspan="2" class="headerTable">
+								<select id="dropdownState" st-search="state" class="form-control">
+										<option value="">All States</option>
+										<option value="Draft">Draft</option>
+										<option value="InReview">In Review</option>
+										<option value="Released">Released</option>
+										<option value="Deprecated">Deprecated</option>
+								</select>
+							</td>
+							<td colspan="1" class="headerTable">
+								<select id="dropdownType" st-search="type" class="form-control">
+										<option value="">All Types</option>
+										<option value="InformationModel">Information Model</option>
+										<option value="Functionblock">Functionblock</option>
+										<option value="Datatype">Datatype</option>
+										<option value="Mapping">Mapping</option>
+								</select>
+							</td>
 						</tr>
 						<tr>
-							<th colspan="3">
-								<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary>	
-							</th>
+							 <th colspan="3">
+                                  <total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary>    
+ 							  </th>
+
 						</tr>
 						<tr>
-							<th>Type</th>
-							<th st-sort="creationDate" style="width:120px"><a href="">Created On <i class="fa fa-sort"></i></a></th>
+							<th width="50px">Type</th>           				
 							<th id="onName" st-sort="id.name"><a href="">Name <i class="fa fa-sort"></i></a></th>
 							<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace <i class="fa fa-sort"></i></a></th>
-							<th id="onVersion"">Version</th>
-							<th>Description</th>
-							<th>State</th>
+							<th id="onVersion" st-sort="id.version" >Version</th>
+							<th >State</th>
+							<th width="7%" st-sort="creationDate"><a href="">Created On<i class="fa fa-sort"></th>	
+							<th >Description</th>	
 						</tr>
 					</thead>
 					<tbody ng-show="!isLoading">
@@ -52,12 +64,12 @@
 								<img ng-if="model.type === 'Datatype'" src="images/dt.png" />
 								<i ng-if="model.type === 'Mapping'" class="fa fa-exchange" aria-hidden="true"></i>
 							</td>
-							<td>{{ model.creationDate | date:"dd-MM-yyyy"}}</td>
 							<td>{{ model.id.name }}</td>
 							<td>{{ model.id.namespace }}</td>
 							<td>{{ model.id.version }}</td>
-							<td>{{ model.description }}</td>
 							<td><span class="state state-{{model.state}}">{{ model.state }}</span></td>
+							<td>{{ model.creationDate | date:"dd-MM-yyyy"}}</td>
+							<td>{{ model.description }}</td>
 						</tr>
 					</tbody>
 					<tfoot>

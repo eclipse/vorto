@@ -189,7 +189,7 @@ public class ModelRepositoryController {
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(org.eclipse.vorto.repository.api.ModelId.fromPrettyFormat(#modelId),'model:delete')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:delete')")
 	public void deleteModelResource(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "modelId must not be null");
 		this.modelRepository.removeModel(ModelId.fromPrettyFormat(modelId));
@@ -200,7 +200,7 @@ public class ModelRepositoryController {
 	
 	@ApiOperation(value = "Downloads the model dsl content")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/dsl", method = RequestMethod.GET)
 	public void downloadModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -315,7 +315,7 @@ public class ModelRepositoryController {
 	@ApiOperation(value = "Downloads the model content for the given file")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/{fileName}", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -356,7 +356,7 @@ public class ModelRepositoryController {
 	}
 	
 	@ApiOperation(value = "Getting all mapping resources for the given model")
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(new org.eclipse.vorto.repository.api.ModelId(#name,#namespace,#version),'model:get')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}", method = RequestMethod.GET)
 	public void downloadMappingsForPlatform(
 			@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,

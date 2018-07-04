@@ -154,6 +154,8 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
 	$scope.selectedImporter = {key: 'Vorto'};
 	
 	$scope.isLoading = false;
+	
+	$scope.importCompleted = false;
 
     $scope.uploadModel = function () {
         $scope.uploadResult = {};
@@ -261,6 +263,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.resultMessage = "Import was successful!";
             $scope.showCheckin = false;
             $scope.isLoading = false;
+            $scope.importCompleted = true;
         }).error(function(data, status, headers, config) {
             if(status == 403){
                 $scope.error = "Operation is Forbidden";
@@ -727,7 +730,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
     		$scope.copyToClipboard = function(modelId) {
     			   var $temp_input = $("<input>");
                    $("body").append($temp_input);
-                   $temp_input.val(modelId.namespace+"."+modelId.name+";"+modelId.version).select();
+                   $temp_input.val("using "+modelId.namespace+"."+modelId.name+";"+modelId.version).select();
                    document.execCommand("copy");
                    $temp_input.remove();
                    modalInstance.dismiss();

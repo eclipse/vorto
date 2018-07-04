@@ -42,6 +42,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
@@ -137,12 +139,13 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 	}
 	
 	private Optional<String> getUserToken() {
-		OAuth2Authentication auth = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-		if (auth != null && auth.getDetails() instanceof OAuth2AuthenticationDetails) {
-			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-			return Optional.ofNullable(details.getTokenValue());
-		}
-		
+		Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null && authentication instanceof OAuth2Authentication) {
+			if (authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
+				OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+				return Optional.ofNullable(details.getTokenValue());
+			}
+		}		
 		return Optional.empty();
 	}
 	

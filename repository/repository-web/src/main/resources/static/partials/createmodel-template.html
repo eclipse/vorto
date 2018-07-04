@@ -6,30 +6,26 @@
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 	<label>What type of model would you like to create ?</label>
     <div class="form-group">
-        <div class="radio">
-            <label>
-                <input type="radio" name="modelType" value="InformationModel" ng-model="modelType">
-                Information Model
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="modelType" value="Functionblock" ng-model="modelType">
-                Function Block
-            </label>
-        </div>
-        <div class="radio">
-            <label>
-                <input type="radio" name="modelType" value="Datatype" ng-model="modelType">
-                Datatype
-            </label>
-        </div>
-         <div class="radio">
-            <label>
-                <input type="radio" name="modelType" value="Mapping" ng-model="modelType">
-                Mapping
-            </label>
-        </div>
+        <table>
+           <tr>
+                <td>                    
+                    <input type="radio" name="modelType" value="InformationModel" ng-model="modelType">
+                    Information Model &nbsp;&nbsp;                       
+                </td>
+                <td>                    
+                    <input type="radio" name="modelType" value="Functionblock" ng-model="modelType">
+                    Function Block &nbsp;&nbsp;                       
+                </td>
+                <td>                   
+                    <input type="radio" name="modelType" value="Datatype" ng-model="modelType">
+                    Datatype &nbsp;&nbsp;                    
+                </td>
+                <td>                   
+                    <input type="radio" name="modelType" value="Mapping" ng-model="modelType">
+                    Mapping &nbsp;&nbsp;                   
+                </td>
+           </tr> 
+        </table>
     </div>
     <div class="form-group">
     	<label>Name</label>
