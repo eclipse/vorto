@@ -442,6 +442,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node folderNode = createNodeForModelId(modelId);
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
+			fileNode.addMixin("mix:lastModified");
 			fileNode.setProperty("vorto:state", state);
 			Calendar lastModifiedDate = Calendar.getInstance();
 			lastModifiedDate.setTime(new Date());
