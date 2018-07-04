@@ -20,7 +20,6 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modeshape.test.ModeShapeSingleUseTest;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.Assert;
 
 public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 

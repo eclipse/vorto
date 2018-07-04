@@ -18,7 +18,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -123,6 +125,9 @@ public class JcrModelRepository implements IModelRepository {
 		resource.setDescription(node.getProperty("vorto:description").getString());
 		resource.setDisplayName(node.getProperty("vorto:displayname").getString());
 		resource.setCreationDate(node.getProperty("jcr:created").getDate().getTime());
+		if (node.hasProperty("jcr:lastModified")) {
+			resource.setModificationDate(node.getProperty("jcr:lastModified").getDate().getTime());
+		}
 		if (node.hasProperty("vorto:state")) {
 			resource.setState(node.getProperty("vorto:state").getString());
 		} 
@@ -228,18 +233,23 @@ public class JcrModelRepository implements IModelRepository {
 			
 			Node folderNode = createNodeForModelId(modelId);
 			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
-			if (!nodeIt.hasNext()) {
+			if (!nodeIt.hasNext()) { // new node
 				Node fileNode = folderNode.addNode(fileName, "nt:file");
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
+				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream(content));
 				contentNode.setProperty("jcr:data", binary);
-			} else {
+			} else { // node already exists.
 				Node fileNode = nodeIt.nextNode();
+				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				Calendar lastModifiedDate = Calendar.getInstance();
+				lastModifiedDate.setTime(new Date());
+				fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 				Node contentNode = fileNode.getNode("jcr:content");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream(content));
@@ -414,7 +424,9 @@ public class JcrModelRepository implements IModelRepository {
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
-			
+			Calendar lastModifiedDate = Calendar.getInstance();
+			lastModifiedDate.setTime(new Date());
+			fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 
 			return model;
@@ -429,7 +441,9 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			fileNode.setProperty("vorto:state", state);
-			
+			Calendar lastModifiedDate = Calendar.getInstance();
+			lastModifiedDate.setTime(new Date());
+			fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 
 			return modelId;
@@ -564,6 +578,9 @@ public class JcrModelRepository implements IModelRepository {
 			
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
+			Calendar lastModifiedDate = Calendar.getInstance();
+			lastModifiedDate.setTime(new Date());
+			modelFolderNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 			
 			return true;

@@ -77,7 +77,8 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 				return Arrays.asList(ValidationReport.invalid("File "+fileUpload.getFileName() + " does not contain any object definitions."));
 			}
 			LWM2M.Object obj = lwm2mModel.getObject().get(0);
-			return Arrays.asList(ValidationReport.valid(createModelInfo(obj)));
+			ModelInfo modelInfo = createModelInfo(obj);			
+			return Arrays.asList(ValidationReport.valid(modelInfo));
 		} catch (Exception ex) {
 			return Arrays.asList(ValidationReport.invalid(ex.getMessage()));
 		}

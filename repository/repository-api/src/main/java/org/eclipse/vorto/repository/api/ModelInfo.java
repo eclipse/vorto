@@ -27,6 +27,7 @@ public class ModelInfo extends AbstractModel {
 	
 	protected String author;
 	protected Date creationDate;
+	protected Date modificationDate;
 	protected boolean hasImage = false;
 	protected String state;
 		
@@ -67,6 +68,14 @@ public class ModelInfo extends AbstractModel {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+	
+	public Date getModificationDate() {
+		return modificationDate;
+	}
+
+	public void setModificationDate(Date modificationDate) {
+		this.modificationDate = modificationDate;
 	}
 
 	public Map<String,ModelId> getPlatformMappings() {

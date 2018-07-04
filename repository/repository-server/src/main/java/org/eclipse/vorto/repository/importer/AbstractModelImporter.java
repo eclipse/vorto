@@ -28,6 +28,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
@@ -86,14 +87,18 @@ public abstract class AbstractModelImporter implements IModelImporter {
 				while ((entry = zis.getNextEntry()) != null) {
 					if (!entry.isDirectory() && !entry.getName().substring(entry.getName().lastIndexOf("/")+1).startsWith(".")) {
 						final FileUpload extractedFile = FileUpload.create(entry.getName(), copyStream(zis, entry));
-						reports.addAll(this.validate(extractedFile, user));
+						List<ValidationReport> validationResult = this.validate(extractedFile, user);
+						postValidate(validationResult,user);
+						reports.addAll(validationResult);
 					}
 				}
 			} catch (IOException e) {
 				throw new BulkUploadException("Problem while reading zip file during validation", e);
 			}
 		} else {
-			reports.addAll(this.validate(fileUpload, user));
+			List<ValidationReport> validationResult = this.validate(fileUpload, user);
+			postValidate(validationResult,user);
+			reports.addAll(validationResult);
 		}
 
 		if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
@@ -103,6 +108,31 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		}
 	}
 	
+	/**
+	 * Checks if the uploaded models already exist in the repository.
+	 * @param reports reports from the specific importer implementation
+	 * @param user currently performing the upload
+	 */
+	private void postValidate(List<ValidationReport> reports, IUserContext user) {
+		if (isAdmin(user)) {
+			return;
+		}
+		
+		reports.forEach(report -> {
+			ModelInfo m = this.modelRepository.getById(report.getModel().getId());
+			if (m != null && !m.getAuthor().equals(user.getHashedUsername())) {
+				report.setValid(false);
+				report.setErrorMessage("Model already exists");
+			}
+		});		
+	}
+
+	private boolean isAdmin(IUserContext userContext) {
+		User user = getUserRepository().findByUsername(userContext.getUsername());
+		return user != null && (user.isAdmin());
+	}
+
+
 	private static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {

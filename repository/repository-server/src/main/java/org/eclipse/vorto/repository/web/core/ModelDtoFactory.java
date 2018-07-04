@@ -99,6 +99,7 @@ public class ModelDtoFactory {
 		dto.setPlatformMappings(resource.getPlatformMappings());
 		dto.setState(resource.getState());
 		dto.setFileName(resource.getFileName());
+		dto.setModificationDate(resource.getModificationDate());
 		return dto;
 	}
 	
