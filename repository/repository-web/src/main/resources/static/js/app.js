@@ -53,6 +53,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             if (data.name !== null) {
                 $rootScope.userInfo = data;
                 $rootScope.user = data.name;
+                $rootScope.displayName = data.displayName;
                 $rootScope.authenticated = true;
                 $rootScope.authority = data.role;
                 if (data.isRegistered === "false") {
