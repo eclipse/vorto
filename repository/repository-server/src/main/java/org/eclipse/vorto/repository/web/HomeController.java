@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,6 +66,7 @@ public class HomeController {
 		oauth2User.getAuthorities().stream().findFirst().ifPresent(role -> map.put("role", role.getAuthority()));
 		
 		map.put("name", oauth2User.getName());
+		map.put("displayName", getDisplayName(oauth2User));
 		map.put("isRegistered", Boolean.toString(accountService.exists(oauth2User.getName())));
 		Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
 		map.put("loginType", userDetails.get(LOGIN_TYPE));
@@ -72,6 +74,25 @@ public class HomeController {
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
 	}
 	
+	private String getDisplayName(OAuth2Authentication oauth2User) {
+		UsernamePasswordAuthenticationToken userAuth = (UsernamePasswordAuthenticationToken) oauth2User.getUserAuthentication();
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> userDetailsMap = (Map<String, Object>) userAuth.getDetails();
+		
+		String login = (String) userDetailsMap.get("login");
+		if (login != null) {
+			return login;
+		}
+		
+		String email = (String) userDetailsMap.get("email");
+		if (email != null) {
+			return email.split("@")[0];
+		}
+		
+		return oauth2User.getName();
+	}
+
 	@RequestMapping(value ={ "/context" }, method = RequestMethod.GET)
 	public Map<String, Object> globalContext() {
 		Map<String, Object> context = new LinkedHashMap<>();
