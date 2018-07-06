@@ -77,6 +77,10 @@
 								  <dd class="ng-binding">{{model.id.version}}</dd>
 								  <dt>Description: </dt>
 								  <dd class="ng-binding">{{model.description}}</dd>
+								  <dt ng-show="model.state === 'Released'">Released Date:</dt>
+								  <dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Modification Date:</dt>
+								  <dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
+								  <dd class="ng-binding">{{model.modificationDate |	date:'yyyy-MM-dd'}}</dd>
 								  <dt>Created On: </label></dt>
 								  <dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
 								  <dt ng-show="model.state !== 'Released' && model.state !== 'Deprecated'">Modified On: </label></dt>
