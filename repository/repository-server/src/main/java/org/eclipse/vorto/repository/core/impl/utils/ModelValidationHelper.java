@@ -9,6 +9,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.core.impl.ValidationReportFactory;
+import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ModelReferencesValidation;
 import org.eclipse.vorto.repository.core.impl.validation.TypeImportValidation;
@@ -20,7 +21,7 @@ public class ModelValidationHelper {
 	private List<IModelValidator> validators = new ArrayList<IModelValidator>();
 	
 	public ModelValidationHelper(IModelRepository modelRepository, IUserRepository userRepository) {
-//		this.validators.add(new DuplicateModelValidation(modelRepository, userRepository));
+		this.validators.add(new DuplicateModelValidation(modelRepository, userRepository));
 		this.validators.add(new ModelReferencesValidation(modelRepository));
 		this.validators.add(new TypeImportValidation());
 	}

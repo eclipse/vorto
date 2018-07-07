@@ -49,11 +49,12 @@
 						<tr>
 							<th width="50px">Type</th>           				
 							<th id="onName" st-sort="id.name"><a href="">Name <i class="fa fa-sort"></i></a></th>
-							<th id="onNamespace" st-sort="id.namespace"><a href="">Namespace <i class="fa fa-sort"></i></a></th>
+							<th width="8%" id="onNamespace" st-sort="id.namespace"><a href="">Namespace <i class="fa fa-sort"></i></a></th>
 							<th id="onVersion" st-sort="id.version" >Version</th>
 							<th >State</th>
-							<th width="7%" st-sort="creationDate"><a href="">Created On<i class="fa fa-sort"></th>
-							<th >Description</th>	
+							<th width="8%" st-sort="creationDate"><a href="">Created On<i class="fa fa-sort"></th>
+							<th >Description</th>
+							<th></th>	
 						</tr>
 					</thead>
 					<tbody ng-show="!isLoading">
@@ -70,6 +71,7 @@
 							<td><span class="state state-{{model.state}}">{{ model.state }}</span></td>
 							<td>{{ model.creationDate | date:"dd-MM-yyyy"}}</td>
 							<td>{{ model.description }}</td>
+							<td><img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" width="50" height="50"/></td>
 						</tr>
 					</tbody>
 					<tfoot>

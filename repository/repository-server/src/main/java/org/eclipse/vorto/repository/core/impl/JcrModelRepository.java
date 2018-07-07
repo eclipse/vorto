@@ -18,9 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -85,7 +83,7 @@ public class JcrModelRepository implements IModelRepository {
 	private ModelSearchUtil modelSearchUtil;
 	
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
-
+	
 	@Override
 	public List<ModelInfo> search(final String expression) {
 		String queryExpression = expression;
@@ -247,9 +245,6 @@ public class JcrModelRepository implements IModelRepository {
 				Node fileNode = nodeIt.nextNode();
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
-				Calendar lastModifiedDate = Calendar.getInstance();
-				lastModifiedDate.setTime(new Date());
-				fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 				Node contentNode = fileNode.getNode("jcr:content");
 				Binary binary = session.getValueFactory()
 						.createBinary(new ByteArrayInputStream(content));
@@ -426,9 +421,6 @@ public class JcrModelRepository implements IModelRepository {
 			fileNode.addMixin("mix:lastModified");
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
-			Calendar lastModifiedDate = Calendar.getInstance();
-			lastModifiedDate.setTime(new Date());
-			fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 
 			return model;
@@ -444,9 +436,6 @@ public class JcrModelRepository implements IModelRepository {
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			fileNode.addMixin("mix:lastModified");
 			fileNode.setProperty("vorto:state", state);
-			Calendar lastModifiedDate = Calendar.getInstance();
-			lastModifiedDate.setTime(new Date());
-			fileNode.setProperty("jcr:lastModified",lastModifiedDate);
 			session.save();
 
 			return modelId;

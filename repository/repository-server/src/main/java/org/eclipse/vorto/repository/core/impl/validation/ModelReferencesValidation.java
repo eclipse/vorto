@@ -55,8 +55,14 @@ public class ModelReferencesValidation implements IModelValidator {
 			ModelInfo reference = modelRepository.getById(modelId);
 			if (reference == null) {
 				accumulator.add(modelId);
+			} else if (modelResource.getId().equals(reference.getId())) {
+				throw new ValidationException("Cyclic dependency detected for reference '"+reference.getId()+"'", modelResource);
 			} else {
-				checkReferencesRecursive(reference, accumulator);
+				if (modelResource.getType().canHandleReference(reference)) {
+					checkReferencesRecursive(reference, accumulator);
+				} else {
+					throw new ValidationException("Reference '"+reference.getId()+"' is not valid for this model type.", modelResource);
+				}
 			}
 		}
 	}

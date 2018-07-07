@@ -45,7 +45,7 @@ public class AttachmentController {
 	private IModelRepository modelRepository;
 	
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
-	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(org.eclipse.vorto.repository.api.ModelId.fromPrettyFormat(#modelId),'model:owner'))")
+	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
 	public AttachResult attach(
 			@ApiParam(value = "modelId", required = true) @PathVariable String modelId, 
 			@ApiParam(value = "The attachment file to upload", required = true) @RequestParam("file") MultipartFile file) {

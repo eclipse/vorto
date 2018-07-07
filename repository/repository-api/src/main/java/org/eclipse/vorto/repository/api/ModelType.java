@@ -24,8 +24,8 @@ public enum ModelType {
 	Mapping(".mapping");
 	
 	private String extension;
-	
-	ModelType(String extension) {
+		
+	ModelType(String extension,String...referenceTypes) {
 		this.extension = extension;
 	}
 	
@@ -55,5 +55,19 @@ public enum ModelType {
 	        }
 	    }
 		return false;
+	}
+
+	public boolean canHandleReference(ModelInfo reference) {
+		if (this == ModelType.InformationModel && reference.getType() == ModelType.Functionblock) {
+			return true;
+		} else if (this == ModelType.Functionblock && (reference.getType() == ModelType.Functionblock || reference.getType() == ModelType.Datatype)) {
+			return true;
+		} else if (this == ModelType.Datatype && reference.getType() == ModelType.Datatype) {
+			return true;
+		} else if (this == ModelType.Mapping) { // mapping allow all reference types
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

@@ -36,6 +36,7 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelFileContent;
+import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -114,7 +115,7 @@ public class ModelRepositoryController {
 	@RequestMapping(value = "/{modelId:.+}/images", method = RequestMethod.POST)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
-									@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @RequestParam String modelId) {
+									@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
 		if (file.getSize() > maxModelImageSize) {
 			throw new UploadTooLargeException("model image", maxModelImageSize);
 		}
@@ -145,7 +146,7 @@ public class ModelRepositoryController {
 
 			IUserContext userContext = UserContext
 					.user(SecurityContextHolder.getContext().getAuthentication().getName());
-			ModelInfo modelInfo = ModelParserFactory
+			ModelResource modelInfo = (ModelResource)ModelParserFactory
 					.getParser("model" + ModelType.valueOf(content.getType()).getExtension())
 					.parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
 
