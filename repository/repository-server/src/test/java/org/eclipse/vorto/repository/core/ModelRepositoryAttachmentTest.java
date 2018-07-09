@@ -114,4 +114,31 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			fail("Cannot load sample file");
 		}
 	}	
+	
+	@Test
+	public void testDeleteAttachments() {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		try {
+			ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
+			
+			boolean result = modelRepository.attachFile(modelId, 
+					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
+			
+			assertTrue(result);
+			
+			boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
+			
+			assertTrue(deleteResult);
+			
+			boolean deleteResult2 = modelRepository.deleteAttachment(modelId, "backup2.xml");
+			
+			assertFalse(deleteResult2);
+			
+		} catch (IOException | FatalModelRepositoryException e) {
+			e.printStackTrace();
+			fail("Cannot load sample file");
+		}
+	}
 }

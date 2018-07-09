@@ -162,4 +162,13 @@ public interface IModelRepository {
 	 * @return
 	 */
 	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName);
+	
+	/**
+	 * Deletes the attachment
+	 * 
+	 * @param modelid The model id where the file was attached
+	 * @param fileName the filename of the attachment
+	 * @return
+	 */
+	boolean deleteAttachment(ModelId modelId, String fileName);
 }
