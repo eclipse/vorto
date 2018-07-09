@@ -20,6 +20,8 @@ import org.eclipse.vorto.repository.web.attachment.dto.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -103,6 +105,19 @@ public class AttachmentController {
 		} catch (IOException e) {
 			LOGGER.error("Cannot get model attachment:", e);
 		}
+	}
+	
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
+	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "modelId", required = true) @PathVariable String model,
+			@ApiParam(value = "filename", required = true) @PathVariable String filename) {
+		
+		ModelId modelID = ModelId.fromPrettyFormat(model);
+		
+		if (!modelRepository.deleteAttachment(modelID, filename)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	private UserContext getUserContext() {

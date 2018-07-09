@@ -624,4 +624,25 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
+	
+	public boolean deleteAttachment(ModelId modelId, String fileName) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+			
+			if (modelFolderNode.hasNode("attachments")) {
+				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
+				if (attachmentFolderNode.hasNode(fileName)) {
+					attachmentFolderNode.getNode(fileName).remove();
+					return true;
+				}
+			}
+			
+			return false;
+		} catch(PathNotFoundException e) {
+			return false;
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		}
+	}
 }
