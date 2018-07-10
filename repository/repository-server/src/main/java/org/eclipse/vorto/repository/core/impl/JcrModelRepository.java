@@ -634,6 +634,7 @@ public class JcrModelRepository implements IModelRepository {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
 				if (attachmentFolderNode.hasNode(fileName)) {
 					attachmentFolderNode.getNode(fileName).remove();
+					session.save();
 					return true;
 				}
 			}

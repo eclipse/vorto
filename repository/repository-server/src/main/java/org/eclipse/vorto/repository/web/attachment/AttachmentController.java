@@ -108,6 +108,7 @@ public class AttachmentController {
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
+	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
 	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@ApiParam(value = "filename", required = true) @PathVariable String filename) {
 		
