@@ -146,7 +146,7 @@ public class ModelInfo extends AbstractModel {
 	}
 
 	public boolean isReleased() {
-		return this.state.equalsIgnoreCase("released") || this.state.equalsIgnoreCase("deprecated");
+		return "released".equalsIgnoreCase(this.state) || "deprecated".equalsIgnoreCase(this.state);
 	}
 
 }
