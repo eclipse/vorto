@@ -132,6 +132,11 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			
 			assertTrue(deleteResult);
 			
+			// You cannot delete it twice
+			boolean deleteResult1 = modelRepository.deleteAttachment(modelId, "backup1.xml");
+			
+			assertFalse(deleteResult1);
+			
 			boolean deleteResult2 = modelRepository.deleteAttachment(modelId, "backup2.xml");
 			
 			assertFalse(deleteResult2);

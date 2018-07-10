@@ -108,12 +108,12 @@ public class AttachmentController {
 	}
 	
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
-	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "modelId", required = true) @PathVariable String model,
+	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@ApiParam(value = "filename", required = true) @PathVariable String filename) {
 		
-		ModelId modelID = ModelId.fromPrettyFormat(model);
+		ModelId modelIdObject = ModelId.fromPrettyFormat(modelId);
 		
-		if (!modelRepository.deleteAttachment(modelID, filename)) {
+		if (!modelRepository.deleteAttachment(modelIdObject, filename)) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
