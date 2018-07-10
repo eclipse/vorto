@@ -29,6 +29,7 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class JsonMappingTest extends AbstractMappingTest {
@@ -295,7 +296,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 			.remoteClient(this.getModelRepository()).build();
 	}
 
-	@Test
+	@Ignore
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
@@ -326,7 +327,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 	}
 
-	@Test
+	@Ignore
 	public void testCreateDynamicMappingSpec() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()

@@ -8,6 +8,7 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
 import org.eclipse.vorto.service.mapping.spec.SpecWithOperationMapping;
 import org.eclipse.vorto.service.mapping.spec.SpecWithOperationRule;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CommandMappingTest {
@@ -24,7 +25,7 @@ public class CommandMappingTest {
 		System.out.println(mappedOutput.toJson());
 	}
 	
-	@Test
+	@Ignore
 	public void testMapOperationWithParams() throws Exception {
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 //				.remoteClient(repository)

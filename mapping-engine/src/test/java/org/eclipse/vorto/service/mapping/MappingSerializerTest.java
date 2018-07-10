@@ -6,8 +6,10 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.serializer.MappingSpecificationSerializer;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class MappingSerializerTest extends AbstractMappingTest {
 
 	@Test
