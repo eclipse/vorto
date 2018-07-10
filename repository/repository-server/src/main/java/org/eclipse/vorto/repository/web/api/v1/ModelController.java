@@ -78,6 +78,10 @@ public class ModelController extends AbstractRepositoryController {
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+		if (this.modelRepository.getById(modelID) == null) {
+			throw new ModelNotFoundException("Model does not exist", null);
+		}
+		
 		byte[] modelContent = createZipWithAllDependencies(modelID);
 
 		IModelWorkspace workspace = IModelWorkspace.newReader()

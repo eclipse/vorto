@@ -32,6 +32,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class DefaultModelRepository extends ImplementationBase implements IModelRepository {
 	
+	private static final String REST_SEARCH_BASE = "api/v1/search/models";
+	private static final String REST_MODEL_BASE = "api/v1/models";
+
 	public DefaultModelRepository(HttpClient httpClient, RequestContext requestContext) {
 		super(httpClient, requestContext);
 	}
@@ -47,34 +50,34 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 			}
 		}
 		
-		String url = String.format("%s/rest/model/query=%s", getRequestContext().getBaseUrl(), expression);
+		String url = String.format("%s/%s?expression=%s", getRequestContext().getBaseUrl(), REST_SEARCH_BASE, expression);
 		return requestAndTransform(url, transformToType(new TypeToken<ArrayList<ModelInfo>>() {}.getType()));
 	}
 
 	@Override
 	public CompletableFuture<ModelInfo> getById(ModelId modelId) {
-		String url = String.format("%s/rest/model/%s/%s/%s", getRequestContext().getBaseUrl(), modelId.getNamespace(), modelId.getName(), modelId.getVersion());
+		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(ModelInfo.class));
 	}
 
 	@Override
 	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
 			Class<ModelContent> resultClass) {
-		String url = String.format("%s/rest/model/content/%s/%s/%s", getRequestContext().getBaseUrl(), modelId.getNamespace(), modelId.getName(), modelId.getVersion());
+		String url = String.format("%s/%s/%s/content", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(resultClass));
 	}
 
 	@Override
 	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
 			Class<ModelContent> resultClass, String targetPlatformKey) {
-		String url = String.format("%s/rest/model/content/%s/%s/%s/mapping/%s", getRequestContext().getBaseUrl(), modelId.getNamespace(), modelId.getName(), modelId.getVersion(),targetPlatformKey);
+		String url = String.format("%s/%s/%s/content/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat(),targetPlatformKey);
 		return requestAndTransform(url, transformToClass(resultClass));
 	}
 
 	@Override
 	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
 			Class<ModelContent> resultClass, ModelId mappingModelId) {
-		String url = String.format("%s/rest/model/content/%s/mapping/%s", getRequestContext().getBaseUrl(), modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
+		String url = String.format("%s/%s/%s/content/mappings/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(resultClass));
 	}
 }
