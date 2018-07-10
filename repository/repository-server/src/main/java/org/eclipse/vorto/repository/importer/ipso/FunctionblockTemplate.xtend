@@ -75,19 +75,19 @@ class FunctionblockTemplate {
 	}
 	
 	def parseType(String dataType) {
-	    if (dataType == "string")
+	    if (dataType.equalsIgnoreCase("string"))
 	        return "string"
-	    else if (dataType == "float")
+	    else if (dataType.equalsIgnoreCase("float"))
 	        return "float"
-	   else if (dataType == "integer")
+	   else if (dataType.equalsIgnoreCase("integer"))
 	        return "int"
-	    else if (dataType == "opaque")
+	    else if (dataType.equalsIgnoreCase("opaque"))
 	        return "base64Binary"
-	    else if (dataType == "time")
+	    else if (dataType.equalsIgnoreCase("time"))
 	        return "dateTime"
-	    else if (dataType == "boolean")
+	    else if (dataType.equalsIgnoreCase("boolean"))
 	        return "boolean"
-	    else if (dataType == "objlnk")
+	    else if (dataType.equalsIgnoreCase("objlnk"))
 	        return "string"
 	    else {
 	    	return "string"

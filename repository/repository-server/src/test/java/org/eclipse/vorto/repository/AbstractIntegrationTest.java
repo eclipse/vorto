@@ -1,5 +1,7 @@
 package org.eclipse.vorto.repository;
 
+import static org.mockito.Mockito.when;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
@@ -13,6 +15,10 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
+import org.eclipse.vorto.repository.workflow.IWorkflowService;
+import org.eclipse.vorto.repository.workflow.WorkflowException;
+import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
+import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.Before;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -34,6 +40,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	
 	protected VortoModelImporter importer = null;
 	
+	protected IWorkflowService workflow = null;
+	
 	public void beforeEach() throws Exception {
 		super.beforeEach();
 		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
@@ -50,6 +58,9 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		this.importer.setModelRepository(modelRepository);
 		this.importer.setUploadStorage(new InMemoryTemporaryStorage());
 		this.importer.setUserRepository(userRepository);
+		
+		this.workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+
 
 	}
 
@@ -80,5 +91,12 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	protected ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
+		when(userRepository.findByUsername(UserContext.user("admin").getUsername())).thenReturn(User.create("admin",Role.ADMIN));
+		return workflow.doAction(model.getId(),UserContext.user("admin"), SimpleWorkflowModel.ACTION_APPROVE.getName());
 	}
 }

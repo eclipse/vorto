@@ -40,8 +40,8 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 	@Test
 	public void testUploadExistingIPSOModelBySameUser() throws Exception {
 		IUserContext alex = UserContext.user("alex");
-		importIPSO("3310.xml", alex);
-		
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		workflow.start(models.get(0).getId());
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
@@ -64,7 +64,8 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 	@Test
 	public void testUploadExistingIPSOModelByAdmin() throws Exception {
 		IUserContext alex = UserContext.user("alex");
-		importIPSO("3310.xml", alex);
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		workflow.start(models.get(0).getId());
 		
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/lwm2m/3310.xml",

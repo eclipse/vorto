@@ -33,13 +33,13 @@ import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Ignore //FIXME: The test cases should run against a test system that this test suite sets up in the beginning.
 public class ModelRepositoryClientTest {
 
-	private static final String PUBLIC_ECLIPSE_REPO_URL = "http://vorto.eclipse.org";
-//	private static final String PUBLIC_ECLIPSE_REPO_URL = "http://localhost:8080/infomodelrepository";
+	private static final String PUBLIC_ECLIPSE_REPO_URL = "http://localhost:8080/infomodelrepository";
 	
 	private IModelRepository modelRepo;
 	private IMapping mapping;
@@ -60,71 +60,61 @@ public class ModelRepositoryClientTest {
 
 	@Test
 	public void testSearchModels() throws Exception {
-		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().freeText("Incline").build()).get();
+		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().freeText("B").build()).get();
 		assertTrue(models.size() > 0);
 	}
 	
 	@Test
 	public void testSearchModelBySpecificName() throws Exception {
-		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().name("XDK").build()).get();
+		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().name("Bus").build()).get();
 		assertTrue(models.size() > 0);
 	}
 	
 	@Test
 	public void testSearchModelBySpecificType() throws Exception {
-		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(ModelType.InformationModel).name("XDK").build()).get();
+		Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(ModelType.InformationModel).name("Bus").build()).get();
 		assertTrue(models.size() > 0);
 	}
 	
 	@Test
 	public void testGetContentOfSpecificModel() throws Exception {
-		Infomodel xdkModel = modelRepo.getContent(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0"), Infomodel.class).get();
-		assertNotNull(xdkModel);
-		assertTrue(xdkModel.getFunctionblocks().size() > 0);
+		Infomodel model = modelRepo.getContent(ModelId.fromPrettyFormat("com.bosch.Watch:1.0.0"), Infomodel.class).get();
+		assertNotNull(model);
+		assertTrue(model.getFunctionblocks().size() > 0);
 	}
 	
 	@Test
 	public void testMandatoryFields() throws Exception {
-		FunctionblockModel model = modelRepo.getContent(ModelId.fromPrettyFormat("devices.fb.DistanceSensor:1.0.0"), FunctionblockModel.class).get();
+		FunctionblockModel model = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Gyrometer:1.1.0"), FunctionblockModel.class).get();
 		assertNotNull(model);
-		assertEquals("distance",model.getStatusProperties().get(0).getName());
-		assertEquals(PrimitiveType.DOUBLE,model.getStatusProperties().get(0).getType());
+		assertEquals("xValue",model.getStatusProperties().get(0).getName());
+		assertEquals(PrimitiveType.FLOAT,model.getStatusProperties().get(0).getType());
 		assertEquals(true,model.getStatusProperties().get(0).isMandatory());
 		assertEquals(false,model.getStatusProperties().get(0).isMultiple());
-		
-		assertEquals("sensor_units",model.getStatusProperties().get(1).getName());
-		assertEquals(false,model.getStatusProperties().get(1).isMandatory());
-	}
-	
-	@Test
-	public void testGetModelInfoById() throws Exception {
-		ModelInfo xdkModel = modelRepo.getById(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0")).get();
-		assertNotNull(xdkModel);
-		assertEquals(ModelId.fromPrettyFormat("com.bosch.devices.XDK:1.0.0"),xdkModel.getId());
 	}
 	
 	@Test
 	public void testGetModelForTargetPlatform() throws Exception {
-		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
+		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Gyrometer:1.1.0"),FunctionblockModel.class,"lwm2m").get();
 		assertNotNull(accelerometer);
 		assertEquals("lwm2m",accelerometer.getTargetPlatformKey());
 		assertTrue(accelerometer.getStereotype("Object").isPresent());
-		assertEquals(7,accelerometer.getStereotype("Object").get().getAttributes().size());
+		assertEquals(6,accelerometer.getStereotype("Object").get().getAttributes().size());
 	}
 	
 	@Test  //FIXME : Repository REST URL Changes might have an impact on this test case. REST Endpoints should be tested along with repository
 	public void testGetModelForNotAvailableTargetPlatform() throws Exception {
-		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"omadm").get();
+		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Gyrometer:1.1.0"),FunctionblockModel.class,"omadm").get();
 		assertNotNull(accelerometer);
 	}
 		
 	@Test
 	public void testQueryModelPropertyByMappedAttribute() throws Exception {
-		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Accelerometer:0.0.1"),FunctionblockModel.class,"lwm2m").get();
+		FunctionblockModel accelerometer = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Gyrometer:1.1.0"),FunctionblockModel.class,"lwm2m").get();
 		
 		List<ModelProperty> properties = mapping.newPropertyQuery(accelerometer).stereotype("Resource").attribute("ID", "5702").list();
 		assertEquals(1,properties.size());
-		assertEquals("x_value",properties.get(0).getName());
+		assertEquals("xValue",properties.get(0).getName());
 	}
 	
 }

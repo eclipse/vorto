@@ -34,14 +34,28 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testUploadSameModelTwiceByAuthor() throws Exception {
+	public void testUploadSameModelTwiceByAuthorWhichIsInDraftState() throws Exception {
 		IUserContext alex = UserContext.user("alex");
-		importModel("Color.type", alex);
+		ModelInfo info = importModel("Color.type", alex);
+		this.workflow.start(info.getId());
 		UploadModelResult uploadResult = this.importer.upload(
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				alex);
 		assertTrue(uploadResult.isValid());
+	}
+	
+	@Test
+	public void testUploadSameModelTwiceByAuthorAlreadyReleased() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		ModelInfo info = importModel("Color.type", alex);
+		this.workflow.start(info.getId());
+		setReleaseState(info);
+		UploadModelResult uploadResult = this.importer.upload(
+				FileUpload.create("Color.type",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
+				alex);
+		assertFalse(uploadResult.isValid());
 	}
 
 	@Test
@@ -55,18 +69,35 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testUploadSameModelByAdmin() throws Exception {
+	public void testUploadSameModelByAdminDraftState() throws Exception {
+		ModelInfo info = importModel("Color.type", UserContext.user("alex"));
+		this.workflow.start(info.getId());
 		IUserContext admin = UserContext.user("admin");
-		importModel("Color.type", UserContext.user("alex"));
+
 		UploadModelResult uploadResult = this.importer.upload(
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				admin);
-		assertTrue(uploadResult.isValid());
 
 		this.importer.doImport(uploadResult.getHandleId(), admin);
 		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReports().get(0).getModel().getId());
 		assertTrue(new String(content.getContent(), "utf-8").contains("mandatory b as int"));
+	}
+	
+	@Test
+	public void testUploadSameModelByAdminReleasedState() throws Exception {
+		ModelInfo info = importModel("Color.type", UserContext.user("alex"));
+		this.workflow.start(info.getId());
+		setReleaseState(info);
+		IUserContext admin = UserContext.user("admin");
+
+		UploadModelResult uploadResult = this.importer.upload(
+				FileUpload.create("Color.type",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
+				admin);
+		
+		assertFalse(uploadResult.isValid());
+
 	}
 
 	@Test
@@ -185,7 +216,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 								IOUtils.toByteArray(new ClassPathResource(
 										"sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel")
 												.getInputStream())),
-						UserContext.user("admin"));
+						UserContext.user("alex"));
 		assertEquals(false, uploadResult.isValid());
 		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
 	}

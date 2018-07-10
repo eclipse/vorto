@@ -23,19 +23,10 @@ import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
-import org.junit.Before;
 import org.junit.Test;
 
 public class WorkflowTest extends AbstractIntegrationTest {
-
-	private IWorkflowService workflow = null;
-	
-	@Before
-	public void setUp() {
-		workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
-	}
 	
 	@Test
 	public void testGetModelByState() throws Exception {
@@ -178,13 +169,6 @@ public class WorkflowTest extends AbstractIntegrationTest {
 		
 		assertEquals("InReview",workflow.doAction(fbModel.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName()).getState());	
 		
-	}
-	
-	private ModelInfo setReleaseState(ModelInfo model) throws WorkflowException {
-		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
-		workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());	
-		when(userRepository.findByUsername(UserContext.user("admin").getUsername())).thenReturn(User.create("admin",Role.ADMIN));
-		return workflow.doAction(model.getId(),UserContext.user("admin"), SimpleWorkflowModel.ACTION_APPROVE.getName());
 	}
 	
 }

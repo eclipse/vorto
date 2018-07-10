@@ -145,4 +145,8 @@ public class ModelInfo extends AbstractModel {
 		this.referencedBy.add(id);
 	}
 
+	public boolean isReleased() {
+		return this.state.equalsIgnoreCase("released") || this.state.equalsIgnoreCase("deprecated");
+	}
+
 }
