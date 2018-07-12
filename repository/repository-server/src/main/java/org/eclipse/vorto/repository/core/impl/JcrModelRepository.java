@@ -132,6 +132,9 @@ public class JcrModelRepository implements IModelRepository {
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
+		if (node.hasProperty("vorto:imported")) {
+			resource.setImported(node.getProperty("vorto:imported").getBoolean());
+		}
 
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
 		if (imageNodeIterator.hasNext()) {
@@ -421,6 +424,8 @@ public class JcrModelRepository implements IModelRepository {
 			fileNode.addMixin("mix:lastModified");
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
+			fileNode.setProperty("vorto:imported", model.getImported());
+			
 			session.save();
 
 			return model;

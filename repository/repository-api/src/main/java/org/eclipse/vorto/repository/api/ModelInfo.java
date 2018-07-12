@@ -30,6 +30,7 @@ public class ModelInfo extends AbstractModel {
 	protected Date modificationDate;
 	protected boolean hasImage = false;
 	protected String state;
+	protected Boolean imported = false;
 		
 	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 	
@@ -147,6 +148,14 @@ public class ModelInfo extends AbstractModel {
 
 	public boolean isReleased() {
 		return "released".equalsIgnoreCase(this.state) || "deprecated".equalsIgnoreCase(this.state);
+	}
+
+	public Boolean getImported() {
+		return imported;
+	}
+
+	public void setImported(Boolean imported) {
+		this.imported = imported;
 	}
 
 }
