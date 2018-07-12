@@ -111,6 +111,15 @@ public interface IModelRepository {
      * @return
      */
     ModelId updateState(ModelId modelId, String state);
+    
+    /**
+     * Updates the imported property of the model
+     * 
+     * @param modelId the model Id
+     * @param value the value of the imported property
+     * @return
+     */
+    ModelId updateImported(ModelId modelId, boolean value);
 
     /**
      * adds the given file content to the model

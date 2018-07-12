@@ -100,6 +100,8 @@ public class ModelDtoFactory {
 		dto.setState(resource.getState());
 		dto.setFileName(resource.getFileName());
 		dto.setModificationDate(resource.getModificationDate());
+		dto.setImported(resource.getImported());
+		
 		return dto;
 	}
 	

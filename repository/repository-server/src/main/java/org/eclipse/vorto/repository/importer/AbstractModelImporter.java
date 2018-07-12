@@ -40,7 +40,6 @@ import org.eclipse.vorto.repository.core.impl.StorageItem;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
-import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -210,6 +209,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
 			try {
 				ModelInfo importedModel = this.modelRepository.save(resource.getId(), ((ModelResource)resource).toDSL(), createFileName(resource), user);
 				savedModels.add(importedModel);
+				
+				// Add a marker that this model was imported
+				modelRepository.updateImported(importedModel.getId(), true);
+				
 				postProcessImportedModel(importedModel, new FileContent(extractedFile.getFileName(),extractedFile.getContent()));
 			} catch (Exception e) {
 				throw new ModelImporterException("Problem importing model",e);

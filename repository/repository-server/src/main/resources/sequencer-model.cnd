@@ -23,4 +23,5 @@
 - vorto:name (string)
 - vorto:author (string)
 - vorto:state (string)
+- vorto:imported (boolean)
 - vorto:references (reference) multiple < 'vorto:meta'

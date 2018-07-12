@@ -132,6 +132,9 @@ public class JcrModelRepository implements IModelRepository {
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
 		}
+		if (node.hasProperty("vorto:imported")) {
+			resource.setImported(node.getProperty("vorto:imported").getBoolean());
+		}
 
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
 		if (imageNodeIterator.hasNext()) {
@@ -413,35 +416,40 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public ModelInfo updateMeta(ModelInfo model) {
-		try {
-			Node folderNode = createNodeForModelId(model.getId());
-
-			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
-					? folderNode.getNodes(FILE_NODES).nextNode() : null;
-			fileNode.addMixin("mix:lastModified");
+		updateProperty(model.getId(), fileNode -> {
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
-			session.save();
-
-			return model;
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Problem occured removing the model", e);
-		}
+		});
+		
+		return model;
 	}
 	
 	public ModelId updateState(ModelId modelId, String state) {
+		return updateProperty(modelId, node -> node.setProperty("vorto:state", state));
+	}
+	
+	public ModelId updateImported(ModelId modelId, boolean value) {
+		return updateProperty(modelId, node -> node.setProperty("vorto:imported", value));
+	}
+	
+	private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
 		try {
 			Node folderNode = createNodeForModelId(modelId);
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
 					? folderNode.getNodes(FILE_NODES).nextNode() : null;
 			fileNode.addMixin("mix:lastModified");
-			fileNode.setProperty("vorto:state", state);
+			nodeConsumer.accept(fileNode);
 			session.save();
 
 			return modelId;
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		}
+	}
+	
+	@FunctionalInterface
+	private interface NodeConsumer {
+		void accept(Node node) throws RepositoryException;
 	}
 
 	public void saveModel(ModelResource resource) {

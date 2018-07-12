@@ -14,7 +14,7 @@
  *******************************************************************************/
 <vorto='http://www.eclipse.org/vorto/sequencer/model/1.0'>
 
-[vorto:meta] > mix:referenceable mixin
+[vorto:meta] > mix:referenceable, mix:lastModified mixin
 - vorto:description (string)
 - vorto:displayname (string)
 - vorto:type (string)
@@ -23,4 +23,5 @@
 - vorto:name (string)
 - vorto:author (string)
 - vorto:state (string)
+- vorto:imported (boolean)
 - vorto:references (reference) multiple < 'vorto:meta'
