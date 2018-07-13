@@ -29,7 +29,7 @@ public class MappingTest extends AbstractIntegrationTest {
 		UploadModelResult uploadResult = this.importer.upload(FileUpload.create("Color.type",
 				IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())), UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
-		assertNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNull(uploadResult.getReports().get(0).getMessage());
 		assertNotNull(uploadResult.getHandleId());
 		ModelInfo resource = uploadResult.getReports().get(0).getModel();
 		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());

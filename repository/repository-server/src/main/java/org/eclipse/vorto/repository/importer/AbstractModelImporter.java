@@ -40,6 +40,7 @@ import org.eclipse.vorto.repository.core.impl.StorageItem;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
+import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -104,7 +105,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
 			return new UploadModelResult(createUploadHandle(fileUpload), reports);
 		} else {
-			return new UploadModelResult(null,reports);
+			return new UploadModelResult(createUploadHandle(fileUpload),reports);
 		}
 	}
 	
@@ -113,16 +114,48 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	 * @param reports reports from the specific importer implementation
 	 * @param user currently performing the upload
 	 */
-	private void postValidate(List<ValidationReport> reports, IUserContext user) {		
-		reports.stream().filter(report -> report.isValid()).forEach(report -> {
-			ModelInfo m = this.modelRepository.getById(report.getModel().getId());
-			if (m != null && !m.getAuthor().equals(user.getHashedUsername()) && !isAdmin(user)) {
-				report.setValid(false);
-				report.setErrorMessage("Model version already exists.");
-			} else if (m != null && m.isReleased()) {
-				report.setValid(false);
-				report.setErrorMessage("This model version has already been released.");
+	private void postValidate(List<ValidationReport> reports, IUserContext user) {
+				
+		reports.forEach(report -> {
+			ModelInfo m = this.modelRepository.getById(report.getModel().getId());			
+			
+			if(m != null){
+				report.getDetailedReport().setModelExists(true);
+				if (m.getState() == SimpleWorkflowModel.STATE_RELEASED.getName()) {
+					if (isAdmin(user)) {
+						report.getDetailedReport().setCurrentUserRole(DetailedReport.USER_ROLE.ADMIN);
+						report.getDetailedReport().setMessageType(DetailedReport.REPORT_MESSAGE_TYPE.WARNING);
+						report.setValid(false);
+						report.setMessage("WARNING: Model already exists, do you want to overwrite it?");
+					} else {
+						report.getDetailedReport().setMessageType(DetailedReport.REPORT_MESSAGE_TYPE.ERROR);
+						report.getDetailedReport().setModelOwner(DetailedReport.MODEL_OWNER.OWNER);
+						report.setValid(false);
+						report.setMessage("You can't import released models!");
+					}
+				}else {
+					if (isAdmin(user)) {
+						report.getDetailedReport().setCurrentUserRole(DetailedReport.USER_ROLE.ADMIN);
+						report.getDetailedReport().setMessageType(DetailedReport.REPORT_MESSAGE_TYPE.WARNING);
+						report.setValid(false);
+						report.setMessage("WARNING: Model already exists, do you want to overwrite it?");
+					}else {
+						report.getDetailedReport().setCurrentUserRole(DetailedReport.USER_ROLE.USER);
+						if (m.getAuthor().equals(user.getHashedUsername())) {
+							report.getDetailedReport().setModelOwner(DetailedReport.MODEL_OWNER.OWNER);
+							report.getDetailedReport().setMessageType(DetailedReport.REPORT_MESSAGE_TYPE.WARNING);
+							report.setValid(false);
+							report.setMessage("WARNING: Model already exists, do you want to overwrite it?");
+						}else {
+							report.getDetailedReport().setModelOwner(DetailedReport.MODEL_OWNER.NOT_OWNER);
+							report.getDetailedReport().setMessageType(DetailedReport.REPORT_MESSAGE_TYPE.ERROR);
+							report.setValid(false);
+							report.setMessage("Model already exists. You have to be an admin!");
+						}
+					}
+				}
 			}
+			
 		});		
 	}
 
