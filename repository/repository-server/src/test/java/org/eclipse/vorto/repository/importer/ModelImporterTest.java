@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
@@ -162,8 +163,9 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 
 		when(userRepository.findAll()).thenReturn(recipients);
 
-		this.importer.doImport(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
-
+		List<ModelInfo> modelInfos = importer.doImport(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
+		modelInfos.forEach(resource -> assertEquals(true, resource.getImported()));
+		
 		Thread.sleep(1000);
 		assertEquals(1, modelRepository.search("*").size());
 	}

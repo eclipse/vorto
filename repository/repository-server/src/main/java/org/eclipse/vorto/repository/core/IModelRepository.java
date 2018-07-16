@@ -119,7 +119,7 @@ public interface IModelRepository {
      * @param value the value of the imported property
      * @return
      */
-    ModelId updateImported(ModelId modelId, boolean value);
+    ModelInfo updateImported(ModelInfo modelInfo);
 
     /**
      * adds the given file content to the model
