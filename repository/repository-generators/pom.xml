@@ -23,6 +23,10 @@
 					<groupId>org.slf4j</groupId>
 					<artifactId>log4j-over-slf4j</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -41,6 +45,14 @@
 	        <groupId>org.apache.httpcomponents</groupId>
 	        <artifactId>httpclient</artifactId>
     	</dependency>
+    	
+    	<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <scope>test</scope>
+		</dependency>
+    	
 		
 		<!-- Vorto -->
 		<dependency>
@@ -106,7 +118,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
