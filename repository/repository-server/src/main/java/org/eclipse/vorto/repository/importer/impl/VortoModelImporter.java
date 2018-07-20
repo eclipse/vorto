@@ -94,7 +94,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 			
 			try {
 				while ((entry = zis.getNextEntry()) != null) {
-					if (!entry.isDirectory()) {
+					if (!entry.isDirectory() && ModelParserFactory.hasParserFor(entry.getName())) {
 						result.add(parseDSL(entry.getName(), copyStream(zis,entry)));
 					}
 				}
