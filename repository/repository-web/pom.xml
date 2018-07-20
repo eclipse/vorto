@@ -46,6 +46,12 @@
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>1.13.13.RELEASE</version>
+		</dependency>
 
 
 		<dependency>
@@ -140,5 +146,33 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+		<id>exclude-h2</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>2.0.0.RELEASE</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<excludes>
+										<exclude>
+											<groupId>com.h2database</groupId>
+											<artifactId>h2</artifactId>
+										</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>
