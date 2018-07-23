@@ -27,7 +27,6 @@ import org.eclipse.vorto.repository.api.content.Param;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.DataInput;
 import org.eclipse.vorto.service.mapping.IDataMapper;
-import org.eclipse.vorto.service.mapping.MappingResult;
 import org.eclipse.vorto.service.mapping.MappingContext;
 import org.eclipse.vorto.service.mapping.internal.DynamicBean;
 import org.eclipse.vorto.service.mapping.internal.JxPathFactory;
