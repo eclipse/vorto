@@ -198,7 +198,7 @@ ReferenceTarget:
 ;	
 
 StereoTypeTarget:
-	 name=ID ('with {' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
+	 name=ID ('with' '{' attributes+=Attribute (',' attributes+=Attribute)* '}')?;
 
 Attribute:
 	name=ID ':' value=STRING;
