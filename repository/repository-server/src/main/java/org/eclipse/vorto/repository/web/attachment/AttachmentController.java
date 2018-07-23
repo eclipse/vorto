@@ -2,6 +2,8 @@ package org.eclipse.vorto.repository.web.attachment;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -53,11 +55,16 @@ public class AttachmentController {
 			@ApiParam(value = "The attachment file to upload", required = true) @RequestParam("file") MultipartFile file) {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
-		
-		try {
-			modelRepository.attachFile(modelID, new FileContent(file.getOriginalFilename(), file.getBytes()), getUserContext());
 			
-			return AttachResult.success(modelID, file.getOriginalFilename());
+		try {
+			String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
+			
+			if (fileName.length() > 100) {
+				return AttachResult.fail(modelID, fileName, "Name of File exceeds 100 Characters");
+			}		
+			modelRepository.attachFile(modelID, new FileContent(fileName, file.getBytes()), getUserContext());
+			
+			return AttachResult.success(modelID, fileName);
 		} catch (IOException | FatalModelRepositoryException e) {
 			LOGGER.error("Error while uploading []:", e);
 			return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
@@ -70,8 +77,7 @@ public class AttachmentController {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
-		try {
-			
+		try {			
 			return modelRepository.getAttachmentFilenames(modelID).stream()
 				.map(filename -> Attachment.newInstance(modelID, filename))
 				.collect(Collectors.toList());
@@ -90,11 +96,12 @@ public class AttachmentController {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
-		Optional<FileContent> content = modelRepository.getAttachmentContent(modelID, filename);
-		
 		try {
+			String fileName = URLDecoder.decode(filename, "UTF-8");
+			Optional<FileContent> content = modelRepository.getAttachmentContent(modelID, fileName);
+			
 			if (content.isPresent()) {
-				response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + filename);
+				response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
 				response.setContentType(APPLICATION_OCTET_STREAM);
 				
 				IOUtils.copy(new ByteArrayInputStream(content.get().getContent()), response.getOutputStream());
@@ -114,11 +121,20 @@ public class AttachmentController {
 		
 		ModelId modelIdObject = ModelId.fromPrettyFormat(modelId);
 		
-		if (!modelRepository.deleteAttachment(modelIdObject, filename)) {
+		try {
+			String fileName = URLDecoder.decode(filename, "UTF-8");
+			
+			if (!modelRepository.deleteAttachment(modelIdObject, fileName)) {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
+			
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (UnsupportedEncodingException e) {
+			LOGGER.error("Cannot decode name of attachment:", e);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<>(HttpStatus.OK);
+
 	}
 	
 	private UserContext getUserContext() {
