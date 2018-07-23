@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.vorto.core,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.codegen.hono
+Automatic-Module-Name: org.eclipse.vorto.codegen.hono

@@ -35,3 +35,4 @@ Export-Package: org.eclipse.vorto.editor.infomodel,org.eclipse.vorto.e
  g.eclipse.vorto.editor.infomodel.serializer,org.eclipse.vorto.editor.
  infomodel.parser.antlr,org.eclipse.vorto.editor.infomodel.parser.antl
  r.internal
+Automatic-Module-Name: org.eclipse.vorto.editor.infomodel

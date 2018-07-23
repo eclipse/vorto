@@ -17,3 +17,4 @@ Export-Package: org.eclipse.vorto.codegen.api,org.eclipse.vorto.codege
  n.api.mapping,org.eclipse.vorto.codegen.utils
 Bundle-ClassPath: icons/,.
 Import-Package: org.eclipse.emf.common.util
+Automatic-Module-Name: org.eclipse.vorto.codegen
