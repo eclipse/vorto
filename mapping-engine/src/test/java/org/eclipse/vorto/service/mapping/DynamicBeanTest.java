@@ -32,8 +32,8 @@ public class DynamicBeanTest {
 		DynamicBean bean = new DynamicBean();
 		bean.setProperty("data/key", 5);
 		bean.setProperty("data/name", "Alex");
-		assertEquals(5,((Map)bean.getProperty("data")).get("key"));
-		assertEquals("Alex",((Map)bean.getProperty("data")).get("name"));
+		assertEquals(5,((Map<?, ?>)bean.getProperty("data")).get("key"));
+		assertEquals("Alex",((Map<?, ?>)bean.getProperty("data")).get("name"));
 		System.out.println(bean);
 	}
 	
