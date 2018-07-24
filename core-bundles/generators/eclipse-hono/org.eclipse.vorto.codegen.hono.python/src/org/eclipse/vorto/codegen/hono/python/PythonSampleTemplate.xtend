@@ -95,7 +95,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	
 	    # Setting properties of function blocks
 	    «FOR fb : model.properties»
-	        «IF fb.type.functionblock.status != null»
+	        «IF fb.type.functionblock.status !== null»
 	        	«FOR status : fb.type.functionblock.status.properties»
 	        		«IF status.type instanceof PrimitivePropertyType»
 	        			«var primitiveType = status.type as PrimitivePropertyType»
@@ -124,7 +124,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	# Initialization of Information Model 
 	infomodel = «model.name».«model.name»()
 	«FOR fb : model.properties»
-	    «IF fb.type.functionblock.status != null»
+	    «IF fb.type.functionblock.status !== null»
 	        «FOR status : fb.type.functionblock.status.properties»
 	            «IF status.type instanceof PrimitivePropertyType»
 	            	«var primitiveType = status.type as PrimitivePropertyType»

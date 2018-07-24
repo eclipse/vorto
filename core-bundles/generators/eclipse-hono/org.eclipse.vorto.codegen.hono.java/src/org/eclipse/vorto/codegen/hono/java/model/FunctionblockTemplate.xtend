@@ -73,7 +73,7 @@ class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 		
 		public class «model.getName» {
 		    «var fb = model.functionblock»	
-		    «IF fb.status != null»
+		    «IF fb.status !== null»
 		    	«FOR property : model.functionblock.status.properties»
 		    		«propertyTemplate.getContent(property,context)»
 		    	«ENDFOR»

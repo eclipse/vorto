@@ -54,7 +54,7 @@ class JavaEntityTemplate implements ITemplate<Entity>{
 			/**
 			* «entity.description»
 			*/
-			«IF entity.superType != null»
+			«IF entity.superType !== null»
 				public class «entity.name.toFirstUpper» extends «entity.superType.name.toFirstUpper» {
 			«ELSE»
 				public class «entity.name.toFirstUpper» {

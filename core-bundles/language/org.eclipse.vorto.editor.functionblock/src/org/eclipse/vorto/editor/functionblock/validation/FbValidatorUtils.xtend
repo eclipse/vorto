@@ -25,7 +25,7 @@ class FbValidatorUtils {
 			val children = Lists.newArrayList();
 			val parent = input as FunctionblockModel;
 			
-			if (parent.superType != null) {
+			if (parent.superType !== null) {
 				children.add(parent.superType);	
 			}
 			

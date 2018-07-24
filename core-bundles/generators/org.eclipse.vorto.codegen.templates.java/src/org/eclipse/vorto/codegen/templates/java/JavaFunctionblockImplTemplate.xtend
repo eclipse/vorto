@@ -68,16 +68,16 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 			*/
 			public class «fbm.name»«implSuffix» implements «interfacePrefix»«fbm.name» {
 				«var fb = fbm.functionblock»	
-				«IF fb.status != null»
+				«IF fb.status !== null»
 					private «fbm.name»Status «fbm.name.toLowerCase»Status = null;
 				«ENDIF»
-				«IF fb.configuration != null» 
+				«IF fb.configuration !== null» 
 					private «fbm.name»Configuration «fbm.name.toLowerCase»Configuration = null;
 				«ENDIF»
-				«IF fb.fault != null»
+				«IF fb.fault !== null»
 					private «fbm.name»Fault «fbm.name.toLowerCase»Fault = null;
 				«ENDIF»
-				«IF fb.status != null»
+				«IF fb.status !== null»
 					public «fbm.name»Status get«fbm.name»Status() {
 						return this.«fbm.name.toLowerCase»Status;
 					}
@@ -86,7 +86,7 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 						this.«fbm.name.toLowerCase»Status = «fbm.name.toLowerCase»Status;
 					}
 				«ENDIF»
-				«IF fb.configuration != null»
+				«IF fb.configuration !== null»
 					public «fbm.name»Configuration get«fbm.name»Configuration() {
 						return this.«fbm.name.toLowerCase»Configuration;
 					}
@@ -95,7 +95,7 @@ class JavaFunctionblockImplTemplate implements ITemplate<FunctionblockModel>{
 						this.«fbm.name.toLowerCase»Configuration = «fbm.name.toLowerCase»Configuration;
 					}
 				«ENDIF»
-				«IF fb.fault != null»
+				«IF fb.fault !== null»
 					public «fbm.name»Fault get«fbm.name»Fault() {
 						return this.«fbm.name.toLowerCase»Fault;
 					}

@@ -100,7 +100,7 @@ public class Utils {
 	}
 
 	def static String getMinConstraint(Property property) {
-		if ((property.constraintRule?.constraints != null) && (property.constraintRule?.constraints.size > 0)) {
+		if ((property.constraintRule?.constraints !== null) && (property.constraintRule?.constraints.size > 0)) {
 			for (Constraint constraint : property.constraintRule?.constraints) {
 				if (constraint.type == ConstraintIntervalType.MIN) {
 					return constraint.constraintValues;
@@ -111,7 +111,7 @@ public class Utils {
 	}
 
 	def static String getMaxConstraint(Property property) {
-		if ((property.constraintRule?.constraints != null) && (property.constraintRule?.constraints.size > 0)) {
+		if ((property.constraintRule?.constraints !== null) && (property.constraintRule?.constraints.size > 0)) {
 			for (Constraint constraint : property.constraintRule?.constraints) {
 				if (constraint.type == ConstraintIntervalType.MAX) {
 					return constraint.constraintValues;
@@ -124,7 +124,7 @@ public class Utils {
 	def static String getMeasurementUnit(Property property) {
 		var EnumLiteral literal = getEnumLiteralPropertyAttribute(property,
 			EnumLiteralPropertyAttributeType.MEASUREMENT_UNIT);
-		if (literal != null) {
+		if (literal !== null) {
 			return literal.name;
 		}
 		return "";
@@ -143,7 +143,7 @@ public class Utils {
 	}
 
 	def static boolean getBooleanPropertyAttribute(Property property, BooleanPropertyAttributeType type) {
-		if ((property.propertyAttributes != null) && (property.propertyAttributes.size > 0)) {
+		if ((property.propertyAttributes !== null) && (property.propertyAttributes.size > 0)) {
 			for (PropertyAttribute pA : property.propertyAttributes) {
 				if (pA instanceof BooleanPropertyAttribute) {
 					var BooleanPropertyAttribute bPA = pA as BooleanPropertyAttribute;
@@ -157,7 +157,7 @@ public class Utils {
 	}
 
 	def static EnumLiteral getEnumLiteralPropertyAttribute(Property property, EnumLiteralPropertyAttributeType type) {
-		if ((property.propertyAttributes != null) && (property.propertyAttributes.size > 0)) {
+		if ((property.propertyAttributes !== null) && (property.propertyAttributes.size > 0)) {
 			for (PropertyAttribute pA : property.propertyAttributes) {
 				if (pA instanceof EnumLiteralPropertyAttribute) {
 					var EnumLiteralPropertyAttribute bPA = pA as EnumLiteralPropertyAttribute;
@@ -218,21 +218,21 @@ public class Utils {
 
 	def static EList<Type> getReferencedTypes(FunctionBlock fb) {
 		var types = new BasicEList<Type>();
-		if (fb != null) {
+		if (fb !== null) {
 			// Analyze the status properties...
-			if (fb.getStatus() != null) {
+			if (fb.getStatus() !== null) {
 				for (Property property : fb.getStatus().getProperties()) {
 					types.addAll(getReferencedTypes(property));
 				}
 			}
 			// Analyze the configuration properties...
-			if (fb.getConfiguration() != null) {
+			if (fb.getConfiguration() !== null) {
 				for (Property property : fb.getConfiguration().getProperties()) {
 					types.addAll(getReferencedTypes(property));
 				}
 			}
 			// Analyze the fault properties...
-			if (fb.getFault() != null) {
+			if (fb.getFault() !== null) {
 				for (Property property : fb.getFault().getProperties()) {
 					types.addAll(getReferencedTypes(property));
 				}

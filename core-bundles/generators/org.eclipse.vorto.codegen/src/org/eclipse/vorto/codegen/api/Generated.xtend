@@ -48,6 +48,6 @@ class Generated {
 	}
 	
 	def boolean isDirectory() {
-		return fileName == null;
+		return fileName === null;
 	}
 }

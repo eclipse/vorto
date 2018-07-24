@@ -260,7 +260,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        snprintf(msg, MQTT_MAX_SIZE - 1, "hello world #%ld", value);
 		        
 		        «FOR fb : model.properties»
-		        	«IF fb.type.functionblock.status != null»
+		        	«IF fb.type.functionblock.status !== null»
 		        		«FOR status : fb.type.functionblock.status.properties»
 		        			«IF isNumericType(status.type)»
 		        			infoModel.«fb.name».set«status.name»(value);

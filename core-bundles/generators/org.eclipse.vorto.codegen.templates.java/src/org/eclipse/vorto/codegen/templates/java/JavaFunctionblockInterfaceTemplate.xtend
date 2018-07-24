@@ -69,15 +69,15 @@ class JavaFunctionblockInterfaceTemplate implements ITemplate<FunctionblockModel
 		public interface «interfacePrefix»«fbm.name.toFirstUpper» {
 			
 			«var fb = fbm.functionblock»	
-			«IF fb.status != null»
+			«IF fb.status !== null»
 				public «fbm.name»Status get«fbm.name»Status();
 			«ENDIF»
 			
-			«IF fb.configuration != null» 
+			«IF fb.configuration !== null» 
 				public «fbm.name»Configuration get«fbm.name»Configuration();
 			«ENDIF»
 			
-			«IF fb.fault != null»
+			«IF fb.fault !== null»
 				public «fbm.name»Fault get«fbm.name»Fault();
 			«ENDIF»
 			
