@@ -1,4 +1,4 @@
-package org.eclipse.vorto.repository.web.attachment;
+package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,8 +17,8 @@ import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.web.attachment.dto.AttachResult;
-import org.eclipse.vorto.repository.web.attachment.dto.Attachment;
+import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
+import org.eclipse.vorto.repository.web.api.v1.dto.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+@Api(value="/attachments", description="Attach files to models")
 @RestController
-@RequestMapping(value = "/rest/attachments")
+@RequestMapping(value = "/api/v1/attachments")
 public class AttachmentController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
@@ -48,11 +51,12 @@ public class AttachmentController {
 	@Autowired
 	private IModelRepository modelRepository;
 	
+	@ApiOperation(value = "Upload a file to be attached to a model")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
 	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
 	public AttachResult attach(
-			@ApiParam(value = "modelId", required = true) @PathVariable String modelId, 
-			@ApiParam(value = "The attachment file to upload", required = true) @RequestParam("file") MultipartFile file) {
+			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId, 
+			@ApiParam(value = "The file to be uploaded as attachmment", required = true) @RequestParam("file") MultipartFile file) {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 			
@@ -71,9 +75,10 @@ public class AttachmentController {
 		}
 	}
 	
+	@ApiOperation(value = "Get the list of file attachments for a model")
 	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}", produces = "application/json")
 	public List<Attachment> getAttachments(
-			@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
+			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId) {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
@@ -88,10 +93,11 @@ public class AttachmentController {
 		}
 	}
 	
+	@ApiOperation(value = "Get a specific file attachment for a model")
 	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
 	public void getAttachment(
-			@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
-			@ApiParam(value = "filename", required = true) @PathVariable String filename,
+			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId,
+			@ApiParam(value = "The name of the attached file that you want to retrieve", required = true) @PathVariable String filename,
 			final HttpServletResponse response) {
 		
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
@@ -114,10 +120,11 @@ public class AttachmentController {
 		}
 	}
 	
+	@ApiOperation(value = "Delete a file attachment for a model")
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
 	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
-	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
-			@ApiParam(value = "filename", required = true) @PathVariable String filename) {
+	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId,
+			@ApiParam(value = "The name of the attached file that you want to delete", required = true) @PathVariable String filename) {
 		
 		ModelId modelIdObject = ModelId.fromPrettyFormat(modelId);
 		

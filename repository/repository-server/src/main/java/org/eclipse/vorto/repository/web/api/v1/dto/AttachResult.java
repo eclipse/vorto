@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.attachment.dto;
+package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import org.eclipse.vorto.repository.api.ModelId;
 
