@@ -1,7 +1,6 @@
 package org.eclipse.vorto.repository.importer;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -34,6 +33,7 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
 				alex);
+		
 		assertTrue(uploadResult.isValid());
 	}
 	
@@ -46,7 +46,9 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
 				alex);
-		assertTrue(uploadResult.isValid());
+		
+		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.WARNING,
+				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
 	}
 	
 	@Test
@@ -58,7 +60,10 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
 				UserContext.user("stefan"));
+		
 		assertFalse(uploadResult.isValid());
+		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.ERROR,
+				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
 	}
 	
 	@Test
@@ -71,7 +76,9 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
 				UserContext.user("admin"));
-		assertTrue(uploadResult.isValid());
+		
+		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.WARNING,
+				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
 	}
 
 	private List<ModelInfo> importIPSO(String modelName, IUserContext user) throws Exception {

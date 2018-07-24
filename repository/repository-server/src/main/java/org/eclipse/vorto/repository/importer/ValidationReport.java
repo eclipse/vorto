@@ -23,18 +23,20 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 
+
 public class ValidationReport {
 
 	private ModelInfo model = null;
 	private boolean valid = false;
-	private String errorMessage = null;
+	private String message = null;
 	private Collection<ModelId> unresolvedReferences = new ArrayList<ModelId>();
+	private DetailedReport detailedReport = new DetailedReport();
 	
-	public ValidationReport(ModelInfo model, boolean valid, String errorMessage, Collection<ModelId> missingReferences) {
+	public ValidationReport(ModelInfo model, boolean valid, String message, Collection<ModelId> missingReferences) {
 		super();
 		this.model = model;
 		this.valid = valid;
-		this.errorMessage = errorMessage;
+		this.message = message;
 		this.unresolvedReferences.addAll(missingReferences);
 	}
 	
@@ -85,12 +87,12 @@ public class ValidationReport {
 		this.valid = valid;
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public Collection<ModelId> getUnresolvedReferences() {
@@ -100,6 +102,15 @@ public class ValidationReport {
 	public void setUnresolvedReferences(Collection<ModelId> unresolvedReferences) {
 		this.unresolvedReferences = unresolvedReferences;
 	}
+
+	public DetailedReport getDetailedReport() {
+		return detailedReport;
+	}
+
+	public void setDetailedReport(DetailedReport detailedReport) {
+		this.detailedReport = detailedReport;
+	}
+	
 	
 	
 }

@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.importer.DetailedReport;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
@@ -57,6 +58,8 @@ public class ImportController {
     
 	private final String UPLOAD_VALID = "%s is valid and ready for import.";
 	private final String UPLOAD_FAIL = "%s has errors. Cannot import.";
+	private final String UPLOAD_FAIL_RELEASED_MODEL = "%s has been released already.";
+	private final String UPLOAD_FAIL_NO_RIGHTS = "%s already exists. You have to be an admin to overwrite this model.";
     
 	@Autowired
 	private IModelImportService importerService;
@@ -77,10 +80,23 @@ public class ImportController {
 		try {
 			IModelImporter importer = importerService.getImporterByKey(key).get();
 			UploadModelResult result = importer.upload(FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
+			
 			if (result.isValid()) {
 				return validResponse(new UploadModelResponse(String.format(UPLOAD_VALID,file.getOriginalFilename()), result));
 			} else {
-				return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL,file.getOriginalFilename()), result));
+				if(result.getReport().size() > 0 && result.getReport().get(0).getDetailedReport().getMessageType() == DetailedReport.REPORT_MESSAGE_TYPE.WARNING){
+					return validResponse(new UploadModelResponse(String.format(UPLOAD_VALID,file.getOriginalFilename()), result));
+				}else{
+					if (result.getReport().size() > 0 && result.getReport().get(0).getDetailedReport().getMessageType() == DetailedReport.REPORT_MESSAGE_TYPE.ERROR) {
+						if (result.getReport().get(0).getDetailedReport().isReleased()) {
+							return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL_RELEASED_MODEL,file.getOriginalFilename()), result));
+						} else {
+							return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL_NO_RIGHTS,file.getOriginalFilename()), result));
+						}
+					} else {
+						return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL,file.getOriginalFilename()), result));
+					}
+				}
 			}
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
