@@ -33,19 +33,6 @@ InformationModel:
 	'}')?
 	'}';
 
-CATEGORY:
-	ID ('/' ID)*;
-	
-QualifiedName:
-	ID ('.' ID)*
-;
-
 FunctionblockProperty:
 	(presence = Presence)? name = ID 'as' type = [fbs::FunctionblockModel|QualifiedName] (description=STRING)?
-;
-
-terminal VERSION : ('0'..'9')* '.' ('0'..'9')* '.' ('0'..'9')*('-'ID)?;
-
-ModelReference returns model::ModelReference: 
-	'using' importedNamespace=QualifiedName';'version=VERSION
 ;
