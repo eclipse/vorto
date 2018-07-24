@@ -79,7 +79,7 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 	private Map<String, ?> attributes;
 	
 	«var FunctionBlock fb = fbm.functionblock»
-	«IF fb.status != null»
+	«IF fb.status !== null»
 		«FOR property : fb.status.properties»
 			/**
 			* «property.description»
@@ -97,7 +97,7 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 			
 		«ENDFOR»
 	«ENDIF»
-	«IF fb.configuration != null»
+	«IF fb.configuration !== null»
 		«FOR property : fb.configuration.properties»
 			/**
 			* «property.description»
@@ -115,7 +115,7 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 			
 		«ENDFOR»
 	«ENDIF»
-	«IF fb.fault != null»
+	«IF fb.fault !== null»
 		«FOR property : fb.fault.properties»
 			/**
 			* «property.description»
@@ -152,7 +152,7 @@ public class «fbm.name.toFirstUpper»«FunctionalItemImplGeneratorTask.SUFFIX»
 		/**
 		* «operation.description»
 		*/
-		«IF operation.returnType == null»
+		«IF operation.returnType === null»
 			public void «operation.name»() {
 				//Add your application code here.
 			}

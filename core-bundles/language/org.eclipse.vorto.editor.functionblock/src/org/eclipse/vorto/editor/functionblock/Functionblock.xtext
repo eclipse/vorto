@@ -112,5 +112,3 @@ Event:
 		(properties += Property)*
 	'}'
 ;
-
-CATEGORY : ID ('/' ID)*;

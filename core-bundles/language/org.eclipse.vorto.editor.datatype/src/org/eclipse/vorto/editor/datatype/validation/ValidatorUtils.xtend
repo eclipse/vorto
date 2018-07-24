@@ -22,7 +22,7 @@ import org.eclipse.vorto.editor.datatype.validation.ValidatorUtils.ModelTypeBase
 public class ValidatorUtils {
 	
 	public static def EObject getParentOfType(EObject obj, Class<?> type) {
-		if (obj == null) {
+		if (obj === null) {
 			return null;
 		}
 		
@@ -50,7 +50,7 @@ public class ValidatorUtils {
 		}
 		
 		val childrenSupplier = modelTypeChildrenSupplier.apply(child.class);
-		if (childrenSupplier != null) {
+		if (childrenSupplier !== null) {
 			for(Model childrenOfChildren : childrenSupplier.apply(child)) {
 				if(hasCircularReference(parent, childrenOfChildren, modelTypeChildrenSupplier)) {
 					return true;
@@ -121,7 +121,7 @@ public class ValidatorUtils {
 			val children = Lists.newArrayList();
 			val parent = input as Entity;
 			
-			if (parent.superType != null) {
+			if (parent.superType !== null) {
 				children.add(parent.superType);	
 			}
 			

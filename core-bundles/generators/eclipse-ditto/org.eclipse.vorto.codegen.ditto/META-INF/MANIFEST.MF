@@ -12,3 +12,4 @@ Require-Bundle: org.eclipse.vorto.core,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Eclipse.org/Vorto
+Automatic-Module-Name: org.eclipse.vorto.codegen.ditto

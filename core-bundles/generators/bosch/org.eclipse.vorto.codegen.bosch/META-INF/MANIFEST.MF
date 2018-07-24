@@ -19,4 +19,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.vorto.editor.infomodel
 Bundle-Vendor: Eclipse.org/Vorto
+Automatic-Module-Name: org.eclipse.vorto.codegen.bosch
 

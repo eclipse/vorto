@@ -15,5 +15,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.vorto.codegen.api,org.eclipse.vorto.codege
  n.api.mapping,org.eclipse.vorto.codegen.utils
-Bundle-ClassPath: icons/,.
+Bundle-ClassPath: .
 Import-Package: org.eclipse.emf.common.util
+Automatic-Module-Name: org.eclipse.vorto.codegen

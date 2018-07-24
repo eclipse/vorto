@@ -41,10 +41,10 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 
 	@Check
 	def checkCircularRefInObjectPropertyType(ObjectPropertyType ref) {
-		if (ref.type != null) {
+		if (ref.type !== null) {
 			try {
 				val parent = ValidatorUtils.getParentOfType(ref, Model) as Model;
-				if (parent != null) {
+				if (parent !== null) {
 					if (ValidatorUtils.hasCircularReference(parent as Model, ref.type, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
 						error(DatatypeSystemMessage.ERROR_OBJ_PROPERTY_CIRCULAR_REF, ref, DatatypePackage.Literals.OBJECT_PROPERTY_TYPE__TYPE);
 					}
@@ -57,7 +57,7 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 	
 	@Check
 	def checkCircularRefInSuperType(Entity entity) {
-		if (entity.superType != null) {
+		if (entity.superType !== null) {
 			try {
 				if (ValidatorUtils.hasCircularReference(entity, entity.superType, ValidatorUtils.entityTypeToChildrenSupplierFunction)) {
 					error(DatatypeSystemMessage.ERROR_SUPERTYPE_CIRCULAR_REF, entity, DatatypePackage.Literals.ENTITY__SUPER_TYPE);
@@ -177,7 +177,7 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 	def checkPropertyIfInReferences(Property property) {
 		if (property.type instanceof ObjectPropertyType) {
 			var topParent = ValidatorUtils.getParentOfType(property, Model) as Model
-			if (topParent != null && !ValidatorUtils.isTypeInReferences((property.type as ObjectPropertyType).type, topParent.references)) {
+			if (topParent !== null && !ValidatorUtils.isTypeInReferences((property.type as ObjectPropertyType).type, topParent.references)) {
 				error(DatatypeSystemMessage.ERROR_PROPERTY_TYPE_NOT_IMPORTED, property, DatatypePackage.Literals.PROPERTY__TYPE)
 			}	
 		}

@@ -33,13 +33,13 @@ class PythonFbTemplate implements IFileTemplate<FunctionblockModel> {
 		
 		class «fb.name»(object):
 		    def __init__(self):
-		        «IF fb.functionblock.status != null»
+		        «IF fb.functionblock.status !== null»
 		        	«FOR prop : fb.functionblock.status.properties»
 		        	self.«prop.name» = 0.0
 		        	«ENDFOR»
 		        «ENDIF»
 		
-		    «IF fb.functionblock.status != null»
+		    «IF fb.functionblock.status !== null»
 		    	«FOR prop : fb.functionblock.status.properties»
 		    		### Status property «prop.name»
 		    		@property
@@ -53,7 +53,7 @@ class PythonFbTemplate implements IFileTemplate<FunctionblockModel> {
 		    	«ENDFOR»
 		    «ENDIF»
 		    def serialize(self, serializer):
-		        «IF fb.functionblock.status != null»
+		        «IF fb.functionblock.status !== null»
 		        	«FOR prop : fb.functionblock.status.properties»
 		        	if self.__«prop.name»[1]:
 		        	       serializer.serialize_property("«prop.name»", self.__«prop.name»[0])

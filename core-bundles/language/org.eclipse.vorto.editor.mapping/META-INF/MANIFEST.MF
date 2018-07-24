@@ -36,3 +36,4 @@ Export-Package: org.eclipse.vorto.editor.mapping,
  org.eclipse.vorto.editor.mapping.generator,
  org.eclipse.vorto.editor.mapping.formatting
 Import-Package: org.apache.log4j
+Automatic-Module-Name: org.eclipse.vorto.editor.mapping

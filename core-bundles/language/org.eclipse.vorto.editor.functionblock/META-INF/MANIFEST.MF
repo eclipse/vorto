@@ -36,3 +36,4 @@ Export-Package: org.eclipse.vorto.editor.functionblock; uses:="org.ecl
  se.vorto.editor.validation"
 Bundle-ClassPath: .
 Import-Package: org.apache.log4j
+Automatic-Module-Name: org.eclipse.vorto.editor.functionblock

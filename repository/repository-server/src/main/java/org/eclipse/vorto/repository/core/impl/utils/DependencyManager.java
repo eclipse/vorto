@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 

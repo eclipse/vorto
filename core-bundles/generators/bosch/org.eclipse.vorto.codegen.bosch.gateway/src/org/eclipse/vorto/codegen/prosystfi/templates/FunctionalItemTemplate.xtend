@@ -75,7 +75,7 @@ import com.prosyst.mbs.services.fim.FunctionalItem;
 public interface «fbm.name.toFirstUpper» extends FunctionalItem {
 	
 	«var FunctionBlock fb = fbm.functionblock»
-	«IF fb.status != null»
+	«IF fb.status !== null»
 		«FOR property : fb.status.properties»
 			/**
 			* Property definition for «property.name.toFirstUpper». 
@@ -90,7 +90,7 @@ public interface «fbm.name.toFirstUpper» extends FunctionalItem {
 			
 		«ENDFOR»
 	«ENDIF»
-	«IF fb.configuration != null»
+	«IF fb.configuration !== null»
 		«FOR property : fb.configuration.properties»
 			/**
 			* Property definition for «property.name.toFirstUpper». 
@@ -105,7 +105,7 @@ public interface «fbm.name.toFirstUpper» extends FunctionalItem {
 			
 		«ENDFOR»
 	«ENDIF»
-	«IF fb.fault != null»
+	«IF fb.fault !== null»
 		«FOR property : fb.fault.properties»
 			/**
 			* Property definition for «property.name.toFirstUpper». 
@@ -132,7 +132,7 @@ public interface «fbm.name.toFirstUpper» extends FunctionalItem {
 			@Operation
 		«ENDIF»
 		@Description("«operation.description»")
-		«IF operation.returnType == null»
+		«IF operation.returnType === null»
 			void «operation.name»();
 		«ELSE»
 			«IF operation.returnType instanceof ReturnObjectType»

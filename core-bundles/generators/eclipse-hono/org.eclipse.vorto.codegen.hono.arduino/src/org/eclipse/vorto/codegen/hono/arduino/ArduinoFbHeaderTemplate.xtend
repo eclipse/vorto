@@ -36,7 +36,7 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 		
 		#include <WString.h>
 		
-		«IF fb.functionblock.status != null»
+		«IF fb.functionblock.status !== null»
 		    «FOR dataEnum : Utils.getReferencedEnums(fb.functionblock)»
 		        #include "../datatype/enum/«dataEnum.name».h"
 		    «ENDFOR»
@@ -51,7 +51,7 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 		        public:
 		            «fb.name»();
 		            
-		            «IF fb.functionblock.status != null»
+		            «IF fb.functionblock.status !== null»
 		                «FOR status : fb.functionblock.status.properties»
 		                    void set«status.name»(«type(status.type)» value);
 		                    «type(status.type)» get«status.name»();
@@ -59,7 +59,7 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 		            «ENDIF»
 		            String serialize(String ditto_namespace, String hono_deviceId, String fbName);
 		        private:
-		            «IF fb.functionblock.status != null»
+		            «IF fb.functionblock.status !== null»
 		                «FOR status : fb.functionblock.status.properties»
 		                    «type(status.type)» «status.name»;
 		                «ENDFOR»

@@ -42,7 +42,7 @@ class InformationModelValidator extends AbstractInformationModelValidator {
 	@Check
 	def checkFunctionBlockIsImported(FunctionblockProperty property) {
 		val topParent = ValidatorUtils.getParentOfType(property, InformationModel) as InformationModel
-		if (topParent != null && !ValidatorUtils.isTypeInReferences(property.type, topParent.references)) {
+		if (topParent !== null && !ValidatorUtils.isTypeInReferences(property.type, topParent.references)) {
 			error(SystemMessage.ERROR_FUNCTIONBLOCK_NOT_IMPORTED, property, InformationModelPackage.Literals.FUNCTIONBLOCK_PROPERTY__TYPE)
 		}
 	}

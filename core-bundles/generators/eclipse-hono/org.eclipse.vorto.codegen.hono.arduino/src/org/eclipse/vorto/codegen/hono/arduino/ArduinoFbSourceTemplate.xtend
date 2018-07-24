@@ -38,7 +38,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		
 		«fb.name»::«fb.name»(){}
 		
-		«IF fb.functionblock.status != null»
+		«IF fb.functionblock.status !== null»
 			«FOR status : fb.functionblock.status.properties»
 			void «fb.name»::set«status.name»(«type(status.type)» value) {
 				«status.name» = value;			
@@ -55,7 +55,7 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 		    		result += "\"headers\":{\"response-required\": false},";
 		    		result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": { \"status\": {";
 		    «var counter = 0»
-		        «IF fb.functionblock.status != null»
+		        «IF fb.functionblock.status !== null»
 		        «FOR status : fb.functionblock.status.properties»
 		            «var c = counter++»
 		            «IF isNumericType(status.type)»

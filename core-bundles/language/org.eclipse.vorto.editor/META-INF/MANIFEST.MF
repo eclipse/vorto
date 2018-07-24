@@ -11,3 +11,4 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.xtext
 Export-Package: org.eclipse.vorto.editor.scope
 Import-Package: org.eclipse.core.runtime
+Automatic-Module-Name: org.eclipse.vorto.editor

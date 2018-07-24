@@ -15,4 +15,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.eclipse.vorto.codegen.templates.java,
  org.eclipse.vorto.codegen.templates.java.utils
+Automatic-Module-Name: org.eclipse.vorto.codegen.templates.java
 
