@@ -428,8 +428,9 @@ public class JcrModelRepository implements IModelRepository {
 		return updateProperty(modelId, node -> node.setProperty("vorto:state", state));
 	}
 	
-	public ModelId updateImported(ModelId modelId, boolean value) {
-		return updateProperty(modelId, node -> node.setProperty("vorto:imported", value));
+	public ModelInfo updateImported(ModelInfo model) {
+		updateProperty(model.getId(), node -> node.setProperty("vorto:imported", model.getImported()));
+		return model;
 	}
 	
 	private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {

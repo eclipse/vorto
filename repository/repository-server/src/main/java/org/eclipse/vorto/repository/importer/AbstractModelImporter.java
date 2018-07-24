@@ -208,10 +208,12 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		dm.getSorted().stream().forEach(resource -> {
 			try {
 				ModelInfo importedModel = this.modelRepository.save(resource.getId(), ((ModelResource)resource).toDSL(), createFileName(resource), user);
-				savedModels.add(importedModel);
 				
 				// Add a marker that this model was imported
-				modelRepository.updateImported(importedModel.getId(), true);
+				importedModel.setImported(true);
+				modelRepository.updateImported(importedModel);
+				
+				savedModels.add(importedModel);
 				
 				postProcessImportedModel(importedModel, new FileContent(extractedFile.getFileName(),extractedFile.getContent()));
 			} catch (Exception e) {
