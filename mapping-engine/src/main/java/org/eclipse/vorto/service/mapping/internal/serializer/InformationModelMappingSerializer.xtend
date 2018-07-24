@@ -37,7 +37,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		using «specification.infoModel.id.prettyFormat.replace(":",";")»
 		«var imports = new HashSet »
 		«FOR fbProperty : specification.infoModel.functionblocks»
-			«var done = imports.add("using " + specification.infoModel.id.namespace+".mapping"+"."+fbProperty.name.toFirstUpper+"PayloadMapping;1.0.0")»
+			«imports.add("using " + specification.infoModel.id.namespace+".mapping"+"."+fbProperty.name.toFirstUpper+"PayloadMapping;1.0.0")»
 		«ENDFOR»
 		«FOR using : imports»
 		«using»
