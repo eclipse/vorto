@@ -43,7 +43,8 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				alex);
-		assertTrue(uploadResult.isValid());
+		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.WARNING,
+				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
 	}
 	
 	@Test
@@ -129,7 +130,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())),
 				UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
-		assertNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNull(uploadResult.getReports().get(0).getMessage());
 		assertNotNull(uploadResult.getHandleId());
 		ModelInfo resource = uploadResult.getReports().get(0).getModel();
 		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());
@@ -178,7 +179,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 								new ClassPathResource("sample_models/Colorlight.fbmodel").getInputStream())),
 				UserContext.user("admin"));
 		assertEquals(false, uploadResult.isValid());
-		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNotNull(uploadResult.getReports().get(0).getMessage());
 	}
 
 	@Test
@@ -188,7 +189,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 						new ClassPathResource("sample_models/Corrupt-model_missingVersion.type").getInputStream())),
 				UserContext.user("admin"));
 		assertEquals(false, uploadResult.isValid());
-		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNotNull(uploadResult.getReports().get(0).getMessage());
 	}
 
 	@Test
@@ -199,7 +200,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 								new ClassPathResource("sample_models/Corrupt-model_namespace.type").getInputStream())),
 				UserContext.user("admin"));
 		assertEquals(false, uploadResult.isValid());
-		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNotNull(uploadResult.getReports().get(0).getMessage());
 	}
 
 	@Test(expected = FileNotFoundException.class)
@@ -220,7 +221,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 												.getInputStream())),
 						UserContext.user("alex"));
 		assertEquals(false, uploadResult.isValid());
-		assertNotNull(uploadResult.getReports().get(0).getErrorMessage());
+		assertNotNull(uploadResult.getReports().get(0).getMessage());
 	}
 
 }
