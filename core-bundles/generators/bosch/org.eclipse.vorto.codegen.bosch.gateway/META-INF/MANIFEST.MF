@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Vorto ProSyst FI Generator (Incubation)
+Bundle-Name: Vorto Bosch IoT Gateway Software Generator (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen.bosch.gateway;singleton:=true
 Bundle-Version: 0.10.0.qualifier
 Require-Bundle: org.eclipse.vorto.core,
@@ -17,7 +17,7 @@ Import-Package: org.eclipse.core.resources,
  org.eclipse.vorto.codegen.templates.java,
  org.eclipse.vorto.codegen.templates.java.utils,
  org.eclipse.vorto.editor.infomodel
-Bundle-Vendor: ProSyst
+Bundle-Vendor: Bosch
 Export-Package: org.eclipse.vorto.codegen.prosystfi
 Automatic-Module-Name: org.eclipse.vorto.codegen.bosch.gateway
 

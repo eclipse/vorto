@@ -59,7 +59,7 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 
 	@Override
 	public String getShortDescription() {
-		return "Imports IPSO descriptions and converts them to Vorto Function Blocks";
+		return "Imports LwM2M / IPSO descriptions";
 	}
 
 	@Override
