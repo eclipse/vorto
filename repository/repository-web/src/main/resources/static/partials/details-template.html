@@ -1,302 +1,382 @@
-<link href="css/comment.css" rel="stylesheet"> 
-		<div class="row">
+<link href="css/comment.css" rel="stylesheet">
+<section class="content">
+	<ol class="breadcrumb">
+		<li>
+			<a href="./#/">Explore</a>
+		</li>
+		<li class="active">Model Details</li>
+	</ol>
+	<!--div class="row">
 			<div class="project-selection">
-				<a href="./#/" st-backlink><i class="fa fa-fw fa-long-arrow-left"></i>Go Back</a>  
+				<a href="./#/" st-backlink><i class="fa fa-fw fa-long-arrow-left"></i>Go Back</a>
 			</div>
-		</div> 
-		<div class="row">
-			<h3 class="modelHeader">{{model.displayName}} <small>{{model.type}}</small></h3>
-		</div> 
+	</div-->
+	<h2>
+		{{model.displayName}}
+		<small>{{model.type}}</small>
+	</h2>
+	<div class="row">
+		<div class="col-sm-12">
+			<div ng-repeat="action in workflowActions">
+				<button class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog(action)">
+					<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
+					<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
+					<span ng-if="action ==='Approve'" class="fa fa-thumbs-up" aria-hidden="true"></span>
+					<span ng-if="action ==='Reject'" class="fa fa-thumbs-down" aria-hidden="true"></span>
+					&nbsp;{{action}}
+				</button>
+				<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+
+			<div ng-show="authority == 'ROLE_ADMIN' || model.author === user">
+				<button class="btn btn-primary pull-left" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" role="button"
+				    ng-click="openDeleteDialog(model)">
+					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
+				<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+
+			<div ng-show="authority == 'ROLE_ADMIN' && model.author === 'anonymousUser'">
+				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
+				<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+
+			<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
+				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
+					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
+				<div class="pull-right">&nbsp;&nbsp;</div>
+			</div>
+		</div>
+	</div>
+	<br />
+	<div class="row">
+		<div class="col-md-9">
 			<div class="comment-tabs">
 				<ul class="comment-tabs nav nav-tabs" role="tablist">
 					<li class="active">
-						<a href="" role="tab" data-target="#model" data-toggle="tab" style="height:70px;">
-							<h4 class="reviews text-capitalize"><i class="fa fa-info-circle"></i> Model</h4>
-						</a>
-					</li>					
-					<li ng-hide="model.state === 'Released' || model.state ==='Deprecated'">
-						<a href="" role="tab" data-target="#discussion" data-toggle="tab" style="height:70px;">
-							<h4 class="reviews text-capitalize"><i class="fa fa-comment"></i> Review Discussion  <span class="badge">{{comments.length}}</span> </h4>
+						<a href="" role="tab" data-target="#model" data-toggle="tab">
+							<i class="fa fa-info-circle"></i> Model
 						</a>
 					</li>
-				</ul> 
-				
+					<li ng-hide="model.state === 'Released' || model.state ==='Deprecated'">
+						<a href="" role="tab" data-target="#discussion" data-toggle="tab">
+							<i class="fa fa-comment"></i> Review Discussions
+							<span class="badge">{{comments.length}}</span>
+						</a>
+					</li>
+				</ul>
 				<div class="tab-content">
 					<div class="tab-pane active" id="model">
 						<div class="row">
-							<div class="col-sm-12">
-								<div ng-repeat="action in workflowActions">
-									<button class="btn btn-primary" style="float:left;margin-left:5px" ng-click="openWorkflowActionDialog(action)">
-										<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
-										<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
-										<span ng-if="action ==='Approve'" class="fa fa-thumbs-up" aria-hidden="true"></span>
-										<span ng-if="action ==='Reject'" class="fa fa-thumbs-down" aria-hidden="true"></span>
-										&nbsp;{{action}}
-									</button>
+							<br />
+							<div class="col-sm-12 modelDetails">
+								<div ng-if="model.type === 'InformationModel'" class="col-sm-4 modelImg">
+									<div class="col-md-3 col-xs-4 modelImg">
+										<div class="row">
+											<div class="placeHolder">
+												<div class="noimg" ng-show="!model.hasImage">No Image Yet
+												</div>
+												<img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
+												<div class="upload" ng-show="model.type === 'InformationModel'">
+													<a href="" ng-click="chooseImageFile()">
+														<i class="fa fa-upload"></i> Click to change image</a>
+												</div>
+											</div>
+											<input style="display: none" type="file" onchange="angular.element(this).scope().uploadImage()" name="imageFile" id="imageFile"
+											    accept="png | jpg">
+										</div>
+									</div>
 								</div>
-								<div ng-show="authority == 'ROLE_ADMIN' || model.author === user">
-									<button class="btn btn-primary" style="float:left; margin-left:5px" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" role="button" ng-click="openDeleteDialog(model)"><span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
+								<div class="col-md-9 col-xs-8 modelDet">
+									<div class="infomodel">
+										<dl class="dl-horizontal">
+											<dt>State:</dt>
+											<dd class="ng-binding">
+												<span class="state state-{{model.state}}">{{ model.state }}</span>
+											</dd>
+											<dt>Name:</dt>
+											<dd class="ng-binding">{{model.id.name}}</dd>
+											<dt>Description:</dt>
+											<dd class="ng-binding">{{model.description == "" ? "&nbsp;" : model.description}}</dd>
+											<dt>Display Name:</dt>
+											<dd class="ng-binding">{{model.displayName == "" ? "&nbsp;" : model.displayName}}</dd>
+											<dt>Namespace:</dt>
+											<dd class="ng-binding">{{model.id.namespace}}</dd>
+											<dt>
+												Version:
+											</dt>
+											<dd class="ng-binding">{{model.id.version}}</dd>
+											<dt ng-show="model.state === 'Released'">Released Date:</dt>
+											<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Modification Date:</dt>
+											<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
+											<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
+											<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
+											<dt>
+												Created On:
+											</dt>
+											<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
+											<dt>Created By:</dt>
+											<dd class="ng-binding" ng-show="model.author === user">You</dd>
+											<dd class="ng-binding" ng-hide="model.author === user">Other user</dd>
+											<dt>References:</dt>
+											<dd>
+												<div ng-show="model.references.length > 0">
+													<a href="" ng-click="showReferences = !showReferences">
+														<div ng-if="showReferences">
+															<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
+														<div ng-if="!showReferences">
+															<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show References</div>
+													</a>
+													<div uib-collapse="!showReferences">
+														<ul>
+															<li ng-repeat="reference in model.references" class="ng-scope">
+																<a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a>
+															</li>
+														</ul>
+													</div>
+												</div>
+												<div ng-show="model.references.length == 0">-</div>
+											</dd>
+											<dt>Used By: </dt>
+											<dd>
+												<div ng-show="model.referencedBy.length > 0">
+													<a href="" ng-click="showUsages = !showUsages">
+														<div ng-if="showUsages">
+															<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
+														<div ng-if="!showUsages">
+															<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Usages</div>
+													</a>
+													<div uib-collapse="!showUsages">
+														<ul>
+															<li ng-repeat="usage in model.referencedBy" class="ng-scope">
+																<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a>
+															</li>
+														</ul>
+													</div>
+												</div>
+												<div ng-show="model.referencedBy.length == 0">-</div>
+											</dd>
+											<div ng-hide="model.type === 'Mapping'">
+												<dt>Mappings: </dt>
+												<dd>
+													<div ng-show="(model.platformMappings | json) != '{}'">
+														<a href="" ng-click="showMappings = !showMappings">
+															<div ng-if="showMappings">
+																<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
+															<div ng-if="!showMappings">
+																<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div>
+														</a>
+														<div uib-collapse="!showMappings">
+															<ul>
+																<li ng-repeat="(key, value) in model.platformMappings" class="ng-scope">
+																	<a ng-href="./#/details/{{value.namespace}}/{{value.name}}/{{value.version}}" class="ng-binding">{{key}}</a>
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div ng-show="(model.platformMappings | json) == '{}'">-</div>
+												</dd>
+											</div>
+											<dt>Downloads:</dt>
+											<dd>
+												<a ng-repeat="file in modelFileNames" ng-href="./rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center">
+													<i class="fa fa-fw fa-download"></i>{{file}}</a>
+											</dd>
+											<dt ng-show="authority == 'ROLE_ADMIN'">
+												<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
+											</dt>
+											<dt ng-show="authority != 'ROLE_ADMIN'">
+												Attachments:
+											</dt>
+											<dd>
+												<div ng-repeat="attachment in attachments">
+													<a ng-href="./rest/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
+														{{attachment.filename}}
+													</a>
+													<button class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+														<i class="fa fa-close"></i>
+													</button>
+												</div>
+											</dd>
+										</dl>
+									</div>
 								</div>
-								<div ng-show="authority == 'ROLE_ADMIN' && model.author === 'anonymousUser'">
-									<a  class="btn btn-primary btn-default" ng-click="openWorkflowActionDialog('Claim')"  role="button">Claim</a>
-								</div>
-								<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
-									<a  class="btn btn-default btn-primary pull-right" ng-click="openCreateModelDialog()" role="button"><span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
-									<div class="pull-right">&nbsp;&nbsp;</div>
-								</div>
-							</div>
-						</div>
-						</br>
-						<div class="row">
-							  <div class="col-sm-12 modelDetails">							  	
-								 <div ng-if="model.type === 'InformationModel'" class="col-sm-3 modelImg">
-								   <div class="row">
-										<div class="placeHolder">
-											<div class="noimg" ng-show="!model.hasImage">No Image Yet</div>
-											<img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" width="200" height="200"/>
-											<div class="upload" ng-show="model.type === 'InformationModel' && authority == 'ROLE_ADMIN'">
-												<a href="" ng-click="chooseImageFile()"><i class="fa fa-upload"></i> Click to change image</a>
+								<div class="row">
+									<div class="col-sm-12 modelDetails">
+										<br>
+										<div class="row">
+											<div class="col-sm-4">
+												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
+												<label ng-show="model.state != 'Draft'" class="ng-binding">Model</label>
+											</div>
+											<div ng-hide="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
+											    class="col-sm-8">
+												<a ng-if="isLoading" ng-show="(authority == 'ROLE_ADMIN' || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
+												    ng-click="saveModel()" role="button">
+													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
+												<a ng-if="!isLoading" ng-show="(authority == 'ROLE_ADMIN' || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
+												    ng-click="saveModel()" role="button">
+													<span class="fa fa-save" aria-hidden="true"></span>
+													</i>&nbsp;Save</a>
+												<a class="pull-right">&nbsp;&nbsp;&nbsp;</a>
+												<a ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
+												    ng-click="openSearchDialog()" role="button">
+													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
+											</div>
+											<div ng-show="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
+											    class="col-sm-1 col-sm-offset-7" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
+												<a class="btn btn-sm btn-primary pull-right" ng-disabled="true" role="button">
+													<span class="fa fa-save" aria-hidden="true"></span>
+													</i>&nbsp;Save</a>
 											</div>
 										</div>
-										<input style="display:none" type="file" onchange="angular.element(this).scope().uploadImage()" name="imageFile" id="imageFile" accept="png | jpg">
-				
-								   </div>
-							   
-							  </div>
-							  <div class="col-sm-{{model.type === 'InformationModel'?6:9}} modelDet">
-
-							   <div class="infomodel">
-								<dl class="dl-horizontal">
-								  <dt>State:</dt>
-								  <dd class="ng-binding"><span class="state state-{{model.state}}">{{ model.state }}</span></dd>
-								  <dt>Model:</dt>
-								  <dd class="ng-binding">{{model.id.name}}</dd>
-								  <dt>Namespace:</dt>
-								  <dd class="ng-binding"> {{model.id.namespace}}</dd>
-								  <dt>Version: </label></dt>
-								  <dd class="ng-binding">{{model.id.version}}</dd>
-								  <dt>Description: </dt>
-								  <dd class="ng-binding">{{model.description}}</dd>
-								  <dt>Created On: </label></dt>
-								  <dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
-								  <dt ng-show="model.state !== 'Released' && model.state !== 'Deprecated'">Modified On: </label></dt>
-								  <dt ng-show="model.state === 'Released'">Released On: </label></dt>
-								  <dt ng-show="model.state === 'Deprecated'">Deprecated On: </label></dt>
-								  <dd class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
-								  <dt>Created By:</dt>
-								  <dd class="ng-binding" ng-show="model.author === user">You</dd>
-								  <dd class="ng-binding" ng-show="model.author != user">Other user</dd>
-								  <dt>References: </label></dt>
-								  <dd>
-								  	<div ng-show="model.references.length > 0">
-									  	<a href="" ng-click="showReferences = !showReferences">
-									  	<div ng-if="showReferences"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
-									  	<div ng-if="!showReferences"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show References</div></a>
-									  	<div uib-collapse="!showReferences">
-										  	<ul>
-											  <li ng-repeat="reference in model.references" class="ng-scope"><a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a></li>
-										  	</ul>
-									  	</div>
-									 </div>
-									 <div ng-show="model.references.length == 0">
-									 	-
-									 </div>
-								  </dd>
-								  <dt>Used By: </dt>
-								  <dd>
-								  	<div ng-show="model.referencedBy.length > 0">
-								  	  <a href="" ng-click="showUsages = !showUsages">
-								  	  <div ng-if="showUsages"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
-									  <div ng-if="!showUsages"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Usages</div></a>
-								      <div uib-collapse="!showUsages">
-									   	   <ul>
-											  <li ng-repeat="usage in model.referencedBy" class="ng-scope"><a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a></li>
-										  </ul>
-								  	  </div>
-								  	</div>
-								  	<div ng-show="model.referencedBy.length == 0">-</div>
-							      </dd>
-							   <div ng-hide="model.type === 'Mapping'">
-							   <dt>Mappings: </dt>
-								  <dd>
-								  	<a href="" ng-click="showMappings = !showMappings">
-								  		<div ng-if="showMappings"><span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
-								  		<div ng-if="!showMappings"><span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div></a>
-								      	<div uib-collapse="!showMappings">
-									   		<ul>
-											  <li ng-repeat="(key, value) in model.platformMappings" class="ng-scope"><a ng-href="./#/details/{{value.namespace}}/{{value.name}}/{{value.version}}" class="ng-binding">{{key}}</a></li>
-										   </ul>
-									   </div>
-							      </dd>
-							   </div>
-							   <dt>Download: </dt>
-							   <dd>
-							   		<a ng-repeat="file in modelFileNames" ng-href="rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center"><i class="fa fa-fw fa-download"></i>{{file}}&nbsp;&nbsp;</a>
-							   </dd>
-							</dl>
-							<div>
-							  <br>
-							  <div class="row">
-							  	<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
-							  	<label ng-show="model.state != 'Draft'" class="ng-binding">Model</label>
-							    <a ng-if="isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-							    <a ng-if="!isLoading" ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="saveModel()" role="button"><span class="fa fa-save" aria-hidden="true"></span></i>&nbsp;Save</a>
-							  	<div class="pull-right">&nbsp;&nbsp;</div>
-							  	<a href="" ng-show="authority == 'ROLE_ADMIN' || model.author == user" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'" ng-click="openSearchDialog()" class="pull-right"><span class="fa fa-search" aria-hidden="true"></span></i>&nbsp;Lookup Model References...</a>
-							  </div>
-							  <div class="row">
-								<div ng-if="error" class="alert alert-danger">{{error}}</div>
-								<div ng-if="success" class="alert alert-success">{{success}}</div>
-							  </div>
-							  <div class="row">
-							  	<div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
-							  </div>	
-							</div>
-						  </div>
-		
-						  
-						  </div>
-						  <div class="col-lg-3 col-xs-12 text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
-							<div class="row">
-								<label>Stable Generators: </label>
-							</div>
-							<div class="row" ng-repeat="row in platformGeneratorMatrix">
-								<!--genbox-->
-								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
-										<a ng-click="openGeneratorConfig(generator)">
-		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
-		                					<span class="tiny-box-icon">
-												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
-											</span>
-		               						<div class="tiny-box-name">
-												<span>{{generator.name}}</span>
-											</div>
-		               						<div class="tiny-box-action">
-												<span>
-													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
-												</span>
-											</div>
-		               					</div>
-	               						</a>
+										<div class="row">
+											<div ng-if="error" class="alert alert-danger">{{error}}</div>
+											<div ng-if="success" class="alert alert-success">{{success}}</div>
+										</div>
+										<div class="row">
+											<div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
+										</div>
+									</div>
 								</div>
-							   <!-- end genbox -->            
 							</div>
-							<div class="row">
-								<label>Ext. Contributed Generators: </label>
-							</div>
-							<div class="row" ng-repeat="row in platformDemoGeneratorMatrix">
-								<!--genbox-->
-								<div class="col-lg-6 col-md-2 col-xs-12" ng-repeat="generator in row">							
-										<a ng-click="openGeneratorConfig(generator)">
-		            					<div class="tiny-box" id="tinyBox:{{generator.key}}">
-		                					<span class="tiny-box-icon">
-												<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}"/>
-											</span>
-		               						<div class="tiny-box-name">
-												<span>{{generator.name}}</span>
-											</div>
-		               						<div class="tiny-box-action">
-												<span>
-													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
-												</span>
-											</div>
-		               					</div>
-	               						</a>
-								</div>
-							   <!-- end genbox -->            
-							</div>
-						 </div>
-						  </div>
 						</div>
 					</div>
-				
-					<div class="tab-pane" id="discussion">				
-						
+
+					<div class="tab-pane" id="discussion">
 						<div class="row ">
-					      <!-- Left col -->
-					        <section class="col-lg-7 col-md-offset-2 connectedSortable">
-							
-							<!-- Chat box -->
-				              <div class="box">
-				                <div class="box-body chat" id="chat-box">
-				                <h3 ng-show="!authenticated" style="text-align:center;"> 
-				                Please <a href="#/login">Sign In</a> to write a comment!
-				                </h3>
-				                <div class="box-footer">
-				                  <div class="input-group group">				                    
-				                    <textarea class="form-control comment" 
-				                    		  style="height:100px;"
-				                    		  placeholder="Type comment ..." 
-				                    		  ng-model="commentContent" 
-				                    		  ng-disabled="!authenticated">
-				                    </textarea>
-				                  </div>
-				                  <div class="input-group-btn">
-				                     <button class=" btn btn-primary createCommentBtn" ng-click="createComment(commentContent)" ng-disabled="!authenticated">Send </button>
-				                  </div>
-				                </div>
-				               
-				                 <!-- chat item -->				               
-				                				                
-				                <div class="direct-chat-msg" ng-repeat="comment in comments">
-		                          <div class='direct-chat-info clearfix'>
-		                            <span class='direct-chat-name pull-left' ng-show="comment.author === user">You</span>
-		                            <span class='direct-chat-name pull-left' ng-show="comment.author != user">Other user</span>
-		                            <span class='direct-chat-timestamp pull-right'> <i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}}</span>
-		                          </div><!-- /.direct-chat-info -->
-		                          <div class="direct-chat-text">
-		                             
-		                             	<pre class="chat">{{comment.content}}</pre>
-		                          
-		                          </div><!-- /.direct-chat-text -->
-		                        </div><!-- /.direct-chat-msg -->
-				                
-				                </div><!-- /.chat -->
-				                
-				              </div><!-- /.box (chat box) -->
-					
+							<!-- Left col -->
+							<section class="col-md-12 connectedSortable">
+								<!-- Chat box -->
+								<div class="chatbox">
+									<div class="box-body chat" id="chat-box">
+										<h3 ng-show="!authenticated" style="text-align: center;">
+											Please
+											<a href="#/login">Sign In</a> to write a comment!
+										</h3>
+										<div class="box-footer">
+											<div class="input-group group">
+												<textarea class="form-control comment" style="height: 100px;" placeholder="Type comment ..." ng-model="commentContent" ng-disabled="!authenticated">
+												</textarea>
+											</div>
+											<div class="input-group-btn">
+												<button class=" btn btn-primary createCommentBtn" ng-click="createComment(commentContent)" ng-disabled="!authenticated">Send</button>
+											</div>
+										</div>
+										<!-- chat item -->
+										<div class="direct-chat-msg" ng-repeat="comment in comments">
+											<div class='direct-chat-info clearfix'>
+												<span class='direct-chat-name pull-left' ng-show="comment.firstname == null || comment.lastname == null">
+													{{comment.author}} </span>
+												<span class='direct-chat-name pull-left' ng-show="comment.firstname != '' && comment.lastname != ''">
+													{{comment.firstname}} {{comment.lastname}} </span>
+												<span class='direct-chat-timestamp pull-right'>
+													<i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}}
+												</span>
+											</div>
+											<!-- /.direct-chat-info -->
+											<div class="direct-chat-text">
+												<pre class="chat">{{comment.content}}</pre>
+
+											</div>
+											<!-- /.direct-chat-text -->
+										</div>
+										<!-- /.direct-chat-msg -->
+
+									</div>
+									<!-- /.chat -->
+
+								</div>
+								<!-- /.box (chat box) -->
+
 							</section>
 						</div>
-				
+
 					</div>
-					
+
 				</div>
 			</div>
+		</div>
+		<div class="col-md-3 col-xs-6">
+			<div class="text-center modelGen" ng-hide="model.type === 'Datatype' || model.type === 'Mapping'">
+				<div class="row text-center">
+					<label>Code-Generators</label>
+				</div>
+				<div class="generator-list">
+					<div class="row" ng-repeat="row in platformGeneratorMatrix">
+						<!--genbox -->
+						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
+							<a ng-click="openGeneratorConfig(generator)">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
+									<span class="tiny-box-icon">
+										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
+									</span>
+									<div class="tiny-box-name">
+										<span>{{generator.name}}</span>
+									</div>
+									<!-- div class="tiny-box-action">
+												<span>
+													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
+												</span>
+											</div-->
+								</div>
+							</a>
+						</div>
+						<!-- end genbox  -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	</div>
+</section>
 <div class="jumbotron text-center" ng-show="isLoading">
-	<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading model details. Please wait...</h3>
+	<h3>
+		<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading model details. Please wait...</h3>
 </div>
 
+<!-- Workflow Action dialog-->
 <script type="text/ng-template" id="workflowActionDialog.html">
 	<div class="modal-header">
-  		<h3 class="modal-title" id="modal-title-workflowAction">Workflow Action</h3>
+		<button type="button" class="close" ng-click="cancel()">&times;</button>
+		<h3 class="modal-title" id="modal-title-workflowAction">Workflow Action</h3>
 	</div>
-  	<div class="modal-body" id="modal-body-workflowAction">
-  	  <div ng-if="hasErrors" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-      <div class="row" ng-show="actionModel != null && actionModel.description != ''">
-      	<div class="alert alert-info">
-      		<p><i class="fa fa-info"></i> {{actionModel.description}}</p>
-      	</div>
-      </div>
-      <div class="row">
-      	<div class="col-md-12">
-        	Are you sure you want to {{action}} the model <i>{{model.id.prettyFormat}}</i> ?
-      	</div>
-      </div>
+	<div class="modal-body" id="modal-body-workflowAction">
+		<div ng-if="hasErrors" class="alert alert-danger">
+			<i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+		<div class="row" ng-show="actionModel != null && actionModel.description != ''">
+			<div class="alert alert-info">
+				<p>
+					<i class="fa fa-info"></i> {{actionModel.description}}</p>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Are you sure you want to {{action}} the model
+				<i>{{model.id.prettyFormat}}</i> ?
+			</div>
+		</div>
 	</div>
 	<div class="modal-footer">
-      <button class="btn btn-primary" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
-	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
-  	</div>
+		<button class="btn btn-primary" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
+		<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
 </script>
 
+<!-- delete Model dialog-->
 <script type="text/ng-template" id="deleteActionDialog.html">
 	<div class="modal-header">
-  		<h3 class="modal-title" id="modal-title-workflowAction">Delete Model</h3>
+		<button type="button" class="close" ng-click="cancel()">&times;</button>
+		<h3 class="modal-title" id="modal-title-workflowAction">Delete Model</h3>
 	</div>
-  	<div class="modal-body" id="modal-body-deleteAction">
-      <div class="alert alert-warning" role="alert" ng-show="model.referencedBy.length > 0">
-		<p> <i class="fa fa-bell"></i> You can't delete this Model, it is <b>Used By</b>: </p>
-						   		
+	<div class="modal-body" id="modal-body-deleteAction">
+		<div class="alert alert-warning" role="alert" ng-show="model.referencedBy.length > 0">
+			<p>
+				<i class="fa fa-bell"></i> You can't delete this Model, it is
+				<b>Used By</b>: </p>
+
 			<ul style="margin-top:30px;">
 				<li ng-repeat="usage in model.referencedBy" class="ng-scope">
 					<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">
@@ -304,91 +384,185 @@
 					</a>
 				</li>
 			</ul>
-	 </div>
-      <div class="row">
-      	<div class="col-md-12">
-        	Are you sure you want to delete the model <i>{{model.id.prettyFormat}}</i> ?
-      	</div>
-      </div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Are you sure you want to delete the model
+				<i>{{model.id.prettyFormat}}</i> ?
+			</div>
+		</div>
 	</div>
 	<div class="modal-footer">
-      <button class="btn btn-primary" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released' || model.state == 'Deprecated'"  type="button" ng-click="delete()">Delete</button>
-	  <button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
-  	</div>
+		<button class="btn btn-primary" ng-disabled="model.referencedBy.length > 0 || model.state == 'Released' || model.state == 'Deprecated'"
+		    type="button" ng-click="delete()">Delete</button>
+		<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
 </script>
+
+<!-- search Model References dialog-->
 <script type="text/ng-template" id="searchDialog.html">
 	<div class="modal-header">
-  		<h3 class="modal-title" id="modal-title-searchAction">Search Models</h3>
+		<button type="button" class="close" ng-click="cancel()">&times;</button>
+		<h3 class="modal-title" id="modal-title-searchAction">Search Models</h3>
 	</div>
-  	<div class="modal-body" id="modal-body-search">
-  		<p>Find the model that would like to add as a model reference.</p>
-  		<div class="alert alert-info">
-      		<p><i class="fa fa-info"></i>&nbsp;Just click 'Copy to clipboard' and paste it as a <i>using</i> reference in the editor.</p>
-      	</div>
-  		<table st-table="displayedSearchResult" st-safe-src="searchResult" class="table table-striped">
-					<thead>
-						<tr>
-							<th colspan="8">
-								<div class="form-group search-box-spacing" >
-									<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="60"
-										ng-model="searchFilter"
-										st-search="" autofocus class="queryFilter input-sm" />									
-								</div>
-							</th>
-						</tr>
-						<tr>
-							<th>
-							<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary></th>
-						</tr>
-						<tr>
-							<th>
-                				<select style="font-size:12px" st-search="type">
-                    				<option value="">All Types</option>
-                    				<option value="InformationModel">Information Model</option>
-                    				<option value="Functionblock">Functionblock</option>
-                    				<option value="Datatype">Datatype</option>
-                    				<option value="Mapping">Mapping</option>
-                				</select>
-            				</th>
-            				<th>
-                				<select style="font-size:12px" st-search="state">
-                    				<option value="">All States</option>
-                    				<option value="Draft">Draft</option>
-                    				<option value="InReview">In Review</option>
-                    				<option value="Released">Released</option>
-                    				<option value="Deprecated">Deprecated</option>
-                				</select>
-            				</th>
-							<th id="onName">Model ID</th>
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody ng-show="!isLoading">
-						<tr ng-repeat="current in displayedSearchResult track by $index">
-							<td>
-								<img ng-if="current.type === 'InformationModel'" src="images/im.png" />
-								<img ng-if="current.type === 'Functionblock'" src="images/fb.png" />
-								<img ng-if="current.type === 'Datatype'" src="images/dt.png" />
-								<i ng-if="current.type === 'Mapping'" class="fa fa-exchange" aria-hidden="true"></i>
-							</td>
-							<td><span class="state state-{{current.state}}">{{ current.state }}</span></td>
-							<td>{{ current.id.namespace }}.{{ current.id.name }}:{{ current.id.version }}</td>
-							<td><a href="" ng-click="copyToClipboard(current.id)" class="btn btn-sm">Copy to clipboard</a></td>						
-						</tr>
-					</tbody>
-					<tfoot>
-						<tr>
-							<td colspan="6" class="text-center">
-								<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="displayedSearchResult.length"></div>
-							</td>
-						</tr>
-					</tfoot>
-				</table>
-				<div class="jumbotron text-center" ng-show="isLoading">
-					<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading models. Please wait...</h3>
-				</div>
+	<div class="modal-body" id="modal-body-search">
+		<p>Find the model that would like to add a model reference.</p>
+		<div class="alert alert-info">
+			<p>
+				<i class="fa fa-info"></i>&nbsp;Just click 'Copy to clipboard' and paste it as a
+				<i>using</i> reference in the editor.</p>
+		</div>
+		<table st-table="displayedSearchResult" st-safe-src="searchResult" class="table table-striped">
+			<thead>
+				<tr>
+					<th colspan="4">
+						<div class="form-group search-box-spacing">
+							<input class="search-box-query-filter" type="search" placeholder="Filter Models" size="60" ng-model="searchFilter" st-search=""
+							    autofocus class="queryFilter input-sm" />
+						</div>
+						<select style="font-size:12px" st-search="type">
+							<option value="">All Types</option>
+							<option value="InformationModel">Information Model</option>
+							<option value="Functionblock">Functionblock</option>
+							<option value="Datatype">Datatype</option>
+							<option value="Mapping">Mapping</option>
+						</select>
+						<select style="font-size:12px" st-search="state">
+							<option value="">All States</option>
+							<option value="Draft">Draft</option>
+							<option value="InReview">In Review</option>
+							<option value="Released">Released</option>
+							<option value="Deprecated">Deprecated</option>
+						</select>
+					</th>
+				</tr>
+				<tr>
+					<th colspan="4">
+						<total-summary st-items-by-page="{{itemsByPage}}" class="pull-left" class="pagination-info itemCountnumber"></total-summary>
+					</th>
+				</tr>
+				<tr>
+					<th>Type</th>
+					<th>State</th>
+					<th id="onName">Model ID</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody ng-show="!isLoading">
+				<tr ng-repeat="current in displayedSearchResult track by $index">
+					<td>
+						<img ng-if="current.type === 'InformationModel'" src="images/im.png" />
+						<img ng-if="current.type === 'Functionblock'" src="images/fb.png" />
+						<img ng-if="current.type === 'Datatype'" src="images/dt.png" />
+						<i ng-if="current.type === 'Mapping'" class="fa fa-exchange" aria-hidden="true"></i>
+					</td>
+					<td>
+						<span class="state state-{{current.state}}">{{ current.state }}</span>
+					</td>
+					<td>{{ current.id.namespace }}.{{ current.id.name }}:{{ current.id.version }}</td>
+					<td>
+						<a href="" ng-click="copyToClipboard(current.id)" class="btn btn-default">Copy to clipboard</a>
+					</td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="6" class="text-center">
+						<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="displayedSearchResult.length"></div>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		<div class="jumbotron text-center" ng-show="isLoading">
+			<h3>
+				<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading models. Please wait...</h3>
+		</div>
 	</div>
 	<div class="modal-footer">
-	  <button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
-  	</div>
+		<button class="btn btn-primary" type="button" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
+<!-- delete attachment dialog-->
+<script type="text/ng-template" id="deleteAttachmentDialog.html">
+	<div class="modal-header">
+		<button ng-disabled="isDeleting" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">Deleting File Attachment</h4>
+	</div>
+	<div ng-hide="successfullyDeleted || failedToDelete" class="modal-body">Are you sure you want to delete the attachment
+		<i>{{fileToDelete}}</i> ?</div>
+	<div ng-show="successfullyDeleted" class="modal-body">
+		<span class="glyphicon glyphicon-ok valid"></span> Attachment is successfully deleted!</div>
+	<div ng-show="failedToDelete" class="modal-body">
+		<span class="glyphicon glyphicon-remove invalid"></span>
+		Failed to delete attachement!
+	</div>
+	<div class="modal-footer">
+		<a ng-show="!isDeleting" ng-click="deleteAttachment()" ng-disabled="successfullyDeleted || failedToDelete" class="btn btn-danger uploadImportButton"
+		    role="button">
+			<span class="glyphicon glyphicon-trash"></span> Delete</a>
+		<a ng-show="isDeleting" ng-disabled="isDeleting" class="btn btn-danger uploadImportButton" role="button">
+			<i class='fa fa-refresh fa-spin'></i> Delete</a>
+		<button ng-hide="successfullyDeleted" type="button" ng-disable="isDeleting" class="btn btn-default" ng-click="cancel()">Cancel</button>
+		<button ng-show="successfullyDeleted" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
+<!-- upload attachement modal dialog -->
+<script type="text/ng-template" id="uploadAttachment.html">
+	<div class="modal-header">
+		<button ng-disabled="isUploading" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">Upload Model Attachments</h4>
+	</div>
+	<div ng-hide="successfullyUploaded || failedToUpload" class="modal-body">
+		<form class="form-inline" method="PUT" enctype="multipart/form-data">
+			<h4>This file will be attached to the model</h4>
+			<div>
+				<table class="uploadTable">
+					<tr>
+						<td class="uploadImportButtonSpacing">
+							<label for="file-upload" class="btn-primary btn uploadImportButton" id="browseBtn">
+								<i class="fa fa-folder-open"></i> Browse
+							</label>
+							<input type="file" ng-model="modelFile" name="file" id="file-upload" onchange="angular.element(this).scope().isFileSizeValid()">
+						</td>
+						<td> {{selectedFile.name}} </td>
+					</tr>
+				</table>	
+			</div>
+			</br>
+			<div ng-class="fileSizeValid ? 'alert alert-success' : 'alert alert-danger'">
+				<small ng-show="fileSizeValid">Max file size 64KBytes.</small>
+				<small ng-hide="fileSizeValid">File size exceeds 64KBytes!</small>
+			</div>
+			<div ng-hide="fileNameValid" class="alert alert-danger">
+				<small >Name of file exceeds 100 characters!</small>
+			</div>
+	</div>
+	<div ng-show="successfullyUploaded" class="modal-body">
+		<span class="glyphicon glyphicon-ok valid"></span>
+		Attachment is successfully uploaded!
+	</div>
+	<div ng-show="failedToUpload" class="modal-body">
+		<span class="glyphicon glyphicon-remove invalid"></span>
+		Failed to upload attachement!
+		<div ng-show="errorMessage" class="alert alert-danger">
+			<small >{{errorMessage}}</small>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<a ng-show="!isUploading" ng-click="uploadAttachment()" ng-disabled="!fileSizeValid  || !fileNameValid || !selectedFile || successfullyUploaded || failedToUpload"
+		    class="btn btn-primary uploadImportButton" role="button">
+			<span class="glyphicon glyphicon-upload"></span> Upload</a>
+		<a ng-show="isUploading" ng-disabled="isUploading" class="btn btn-primary uploadImportButton" role="button">
+			<i class='fa fa-refresh fa-spin'></i> Upload</a>
+		<button ng-hide="successfullyUploaded" ng-disable="isUploading" type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+		<button ng-show="successfullyUploaded" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+	</div>
+</script>
+
+<!--tooltip for edit function-->
+<script type="text/ng-template" id="userEditWarningTooltip">
+	<span class="glyphicon glyphicon-exclamation-sign"></span>
+	<span> An imported model cannot be modified!</span>
 </script>

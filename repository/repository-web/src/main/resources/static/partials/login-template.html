@@ -1,18 +1,17 @@
-<div class="login-box">
-	<div class="page-header">
-		<h2>Sign in to Vorto</h2>
-	</div>
-		
-	<div ng-show="context.eidpEnabled">
-		<a href="eidp/login" class="btn btn-block btn-flat" style="text-align: left">
-			<img src="images/bosch-social.png" alt="Bosch"/>&nbsp;Sign in using Bosch eIDP
-		</a>
-	</div>
-	
-	<div ng-show="context.githubEnabled">
-		<a href="github/login" class="btn btn-block btn-flat" style="text-align: left">
-			<img src="images/github-social.png" alt="Github"/>&nbsp;Sign in using Github
-		</a>
-	</div>
-	<hr>
-</div>
+<section class="content">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3 text-center">
+      <h2>Sign in</h2>
+      <br />
+      <div class="social-auth-links text-center">
+        <p></p>
+
+        <div ng-show="context.githubEnabled">
+          <a href="github/login" class="btn btn-primary btn-block"> <img src="images/github-social.png" alt="Github" />
+            Sign in using Github
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>    
+</section>

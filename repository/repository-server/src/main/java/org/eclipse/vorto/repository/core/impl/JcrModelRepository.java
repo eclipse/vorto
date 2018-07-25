@@ -15,7 +15,6 @@
 package org.eclipse.vorto.repository.core.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

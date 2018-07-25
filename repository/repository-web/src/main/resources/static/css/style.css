@@ -35,18 +35,11 @@ ul.nav {
 ul.nav a {
     box-shadow: none;
     background: transparent;
-    color: #fff;
+    color: #555;
     text-shadow: none;
     font-weight: bold;
 }
 
-ul.nav a {
-    box-shadow: none;
-    background: transparent;
-    color: #fff;
-    text-shadow: none;
-    font-weight: bold;
-}
 
 .dropdown-menu>li>a{
     box-shadow: none;
@@ -1573,4 +1566,135 @@ footer ul.quicklinks a {
 
 .state-Deprecated {
     background-color: red;
+}
+
+input[type=file]::-webkit-file-upload-button {
+    color: #fff;
+    border-color: #2d5e8d;
+    background-color: #005691;
+    border-bottom: 3px solid #008ECF;
+    padding: 6px 25px 6px;
+    font-size: 16px;
+    line-height: 24px;
+    border-radius: 0px;
+    border: 0px solid #008ecf;
+    font-family: "Bosch Sans Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#searchHeadline {
+    display: inline;
+}
+
+#dropdownState {
+    background-color: #F9F9F9; 
+    width: 150px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+
+#dropdownType {
+    background-color: #F9F9F9; 
+    width: 200px;
+    margin-right: 15px;
+}
+
+#chooseOwnModel {
+    padding-top: 6px;
+    color: #005691;
+    border: none;
+    border-radius: 15px;
+    border: 2px solid transparent;
+    width: 180px;
+}
+#chooseOwnModel.active {
+    box-shadow: none;
+    background-color: #008ECF;
+    color: white;
+}
+#chooseOwnModel.active:hover {
+    border: 2px solid transparent;
+    background-color: rgb(99, 195, 233);
+}
+#chooseOwnModel:hover {
+    border: 2px solid  #008ECF;
+    text-decoration: none;
+}
+
+.headerTable {
+    border-top: none !important;
+}
+
+#modal-body-search {
+    overflow-x:auto;
+}
+
+#file-upload {
+    display: none;
+}
+
+.uploadTable {  
+    background-color: #F9F9F9;
+    width: 100%;
+    border-collapse: collapse;
+    -moz-box-shadow:    inset 0 0 1px #8f8f8f;
+   -webkit-box-shadow: inset 0 0 1px #8f8f8f;
+    box-shadow:         inset 0 0 1px #8f8f8f; 
+}
+
+.button-box {
+    margin-top: 20px;
+}
+
+.model-overview {
+    display: table-cell;
+    vertical-align: bottom;
+    float: none;
+    padding-top: 30px;
+ }
+
+.linkButton {
+    text-align: right;
+ }
+
+.validReference {
+    color: green;
+  }
+  
+.invalidReference {
+    color: red;
+  }
+
+.uploadImportButton {
+    width: 170px;
+}
+
+.uploadImportButtonSpacing{
+    width: 180px;
+}
+
+.delete-button {
+	border:none;
+	background-color:white;
+	cursor: pointer;
+    border-radius: 50%;
+    color:rgb(184, 184, 184);
+}
+
+.delete-button:hover {
+    color: #285e8e;
+}
+
+.tooltip .tooltip-inner {
+    color: black;
+    background-color: orange;
+    border-radius:5px;
+}
+.tooltip.top .tooltip-arrow {
+    border-top-color: orange;
+}
+
+#all {
+	min-height: calc(100vh - 82px);
+	padding-top: 70px;
+	padding-bottom: 70px;
 }

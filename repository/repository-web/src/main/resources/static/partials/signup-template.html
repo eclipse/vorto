@@ -1,17 +1,20 @@
+<section class="content">
+
 <div class="signup-box panel panel-default">
 	<div class="page-header">
     	<h2>Terms and Conditions</h2>
   	</div>
-  	<div class="panel-body">
-  		<div class="col-md-12">
+  	<div class="panel-footer">
+  		<div class="row">
+			<div class="col-md-12">
 				<div class="checkbox">
 				  	<label>
 				    	<input type="checkbox" ng-model="acceptTerms"> I confirm, that I have read and agree to the <a target="_blank" href="https://www.eclipse.org/legal/termsofuse.php">terms and conditions</a> for the Eclipse Foundation Web Site and Related Services
 					</label>
 				</div>
 			</div>
-  	</div>
-  	<div class="panel-footer">
+		</div>
+		
 		<div class="row">
 			<div class="col-md-4">
 				<button class="btn btn-primary btn-block" type="submit" ng-disabled="!acceptTerms" ng-click="acceptTermsAndConditions()">
@@ -22,3 +25,5 @@
 		</div>
   	</div>
 </div>
+
+</section>

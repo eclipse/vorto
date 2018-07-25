@@ -92,20 +92,18 @@ public class ModelBulkImportTest extends AbstractIntegrationTest  {
 		assertEquals(2,result.size());
 		assertFalse(result.get(0).isValid());
 		assertFalse(result.get(1).isValid()); 
-//		assertEquals("org.eclipse.vorto.examples",result.get(0).getModel().getId().getNamespace());
-//		assertEquals("Accelerometer",result.get(0).getModel().getId().getName());
-//		assertEquals("0.0.1",result.get(0).getModel().getId().getVersion());
+
 	}
 	
 	private void verifyOneModelAreMissing(List<ValidationReport> uploadResults) {
 		assertEquals(false, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertEquals((uploadResults.size() - 1), uploadResults.stream().filter(result -> result.getErrorMessage() == null).count());
-		assertEquals(1, uploadResults.stream().filter(result -> result.getErrorMessage() !=null).count());
+		assertEquals((uploadResults.size() - 1), uploadResults.stream().filter(result -> result.getMessage() == null).count());
+		assertEquals(1, uploadResults.stream().filter(result -> result.getMessage() !=null).count());
 	}
 
 	private void verifyAllModelsAreValid(List<ValidationReport> uploadResults) {
 		assertEquals(true, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertTrue(uploadResults.stream().allMatch(result -> result.getErrorMessage() == null));
+		assertTrue(uploadResults.stream().allMatch(result -> result.getMessage() == null));
 	}
 	
 	private byte[] loadContentForFile(String fileName) throws IOException {

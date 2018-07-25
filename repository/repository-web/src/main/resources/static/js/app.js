@@ -17,7 +17,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         templateUrl : "partials/generators-template.html",
         controller : "GeneratorController"
     }).when("/api", {
-        templateUrl : "partials/rest-api-template.html",
+        templateUrl : "partials/swagger-template.html",
         controller : "SwaggerController"
     }).when("/login", {
         templateUrl : "partials/login-template.html",

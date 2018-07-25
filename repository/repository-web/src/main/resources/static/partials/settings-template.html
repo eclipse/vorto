@@ -1,47 +1,48 @@
-<div id="settings">
-	<h3 class="modelHeader ng-binding">User Settings</h3>
-	<hr>
-	<br />
-	<div class="row">
-		<div class="col-xs-8">
-			<a class="btn btn-primary" ng-href="rest/models/mine/download" role="button"><i class="fa fa-fw fa-download"></i>Export your information models</a>
-		</div>
-	</div>
-	<br />
-	<div class="row">
-		<div class="col-xs-8">
-			<button class="btn btn-danger" type="submit"
-				ng-click="openRemoveAccount()">
-				<i class="glyphicon glyphicon-remove-sign"></i> Delete Account
-			</button>
-		</div>
-	</div>
-</div>
+<section class="content">
 
-<script type="text/ng-template" id="deleteAccount.html">
+  <div id="settings">
+    <h2 class="modelHeader ng-binding">Account Settings</h2><h4>CIAM Subject ID: {{user}}</h4>
+
+    <br />
+    <hr>
+    
+    <br />
+    <div class="row">
+  		<div class="col-xs-8">
+  			<a class="btn btn-primary" ng-href="rest/models/mine/download" role="button"><i class="fa fa-fw fa-download"></i>Export your Information Models</a>
+  		</div>
+    </div>
+  
+    <br />
+    <div class="row">
+      <div class="col-md-12">
+        <button class="btn btn-danger" type="submit" ng-click="openRemoveAccount()">Delete Account</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/ng-template" id="deleteAccount.html">
 	<div class="modal-header">
+			<button type="button" class="close" ng-click="cancel()">&times;</button>
   		<h3 class="modal-title" id="modal-title-deleteAccount">Delete Account</h3>
 	</div>
-  	<div class="modal-body" id="modal-body-deleteAccount">
+  <div class="modal-body" id="modal-body-deleteAccount">
       <div class="row">
       	<div class="col-md-12">
         	Are you sure you want to delete your account?
       	</div>
-      </div>
-	  <hr>
-	  <div class="row">
-		<div class="col-md-12">
-          <div class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: 
-	          <ol>
-	          	<li>Your user profile will be permanently removed from the database.</li>
-	          	<li>Your models will be anonymized in the model repository and remain available for other users.</li>
-	          <ol>
-          </div>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+        		<div class="alert alert-warning" role="alert">Note: If you delete your account, the following steps will be taken: <ol> <li>Your user profile will be permanently removed from the database.</li> <li>Your models will be anonymized in the model repository and remain publicly available for other users.</li> <ol> </div>
       	</div>
-      </div>
+    	</div>
 	</div>
 	<div class="modal-footer">
       <button class="btn btn-primary" type="button" ng-click="deleteAccount()">Delete account</button>
-			<button class="btn btn" type="button" ng-click="cancel()">Cancel</button>
-  	</div>
-</script>
+	  <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+  </div>
+	</script>
+
+</section>
