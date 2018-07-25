@@ -34,5 +34,5 @@ InformationModel:
 	'}';
 
 FunctionblockProperty:
-	(presence = Presence)? name = ID 'as' type = [fbs::FunctionblockModel|QualifiedName] (description=STRING)?
+	(presence = Presence)? (multiplicity ?= 'multiple')? name = ID 'as' type = [fbs::FunctionblockModel|QualifiedName] (description=STRING)?
 ;

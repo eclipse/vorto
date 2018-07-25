@@ -27,8 +27,8 @@ Information Model DSL import function block model DSL.
     category:id;
 
     functionblockProperty: 
-    	(presence)? id 'as' [fbs::functionblockModel|qualifiedName]
-        (string)?;
+    	('mandatory' | 'optional')? ('multiple')? id 'as' [fbs::functionblockModel|qualifiedName]
+        (description)?;
 
     string:
         '"' ( '\\' ('b'|'t'|'n'|'f'|'r'|'u'|'"'|"'"|'\\') | !('\\'|'"') )* '"' |

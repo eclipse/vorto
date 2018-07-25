@@ -12,5 +12,6 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="ecore:EClass Functionblock.ecore#//FunctionblockModel"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="presence" eType="ecore:EClass Datatype.ecore#//Presence"
         containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
   </eClassifiers>
 </ecore:EPackage>
