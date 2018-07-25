@@ -53,7 +53,7 @@ public class ModelSearchController extends AbstractRepositoryController {
 		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
 		return modelResources.stream()
-				.filter(model -> isReleasedOrDeprecated(model)
+				.filter(model -> isReleased(model)
 						|| isUser(SecurityContextHolder.getContext().getAuthentication())
 						|| isAdmin(SecurityContextHolder.getContext().getAuthentication()))
 				.map(resource -> ModelDtoFactory.createDto(resource, userContext)).sorted(new Comparator<ModelInfo>() {
@@ -76,9 +76,8 @@ public class ModelSearchController extends AbstractRepositoryController {
 		return authorities.contains(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
-	private boolean isReleasedOrDeprecated(ModelInfo model) {
-		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState())
-				|| SimpleWorkflowModel.STATE_DEPRECATED.getName().equals(model.getState());
+	private boolean isReleased(ModelInfo model) {
+		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState());
 	}
 	
 	public boolean isAuthenticatedSearchMode() {

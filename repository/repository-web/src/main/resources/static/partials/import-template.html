@@ -11,7 +11,6 @@
 							<input type="radio" name="importer" value="{{importer.key}}" ng-model="selectedImporter.key"> {{importer.key}}
 						</label>
 						&nbsp;
-						<label ng-show="$index === importers.length-1"><input type="radio" disabled="disabled" name="importer" value="">ProSyst (Coming soon)</label>
 					</div>
 					<br><small>{{getSelectedImporterInfo(selectedImporter.key).shortDescription}}</small>
 				</div>
