@@ -1457,27 +1457,32 @@ legend.results-border {
     border-bottom:none;
 }
 
+
 .tiny-box {
-  box-shadow: 1px 1px 1px 2px rgba(0, 0, 0, 0.1);
-  padding: 0px 5px;
-  color: #333;
-  margin: 5px auto;
-  min-height: 114px;
-  background: #eee;
-  height: 154px;
-  width: 154px;
-  text-align: center; }
+ 	padding: 0 5px;
+    color: #333;
+    margin: 2px auto;
+    min-height: 84px;
+    background: #fff;
+    height: 110px;
+    width: 110px;
+    text-align: center;
+    box-shadow: 1px 1px 1px 1px rgba(0,0,0,.1);
+    font-size: 12px;
+    border: 1px solid rgba(0,0,0,.1);
+}
 
 .tiny-box-icon {
-  height: 80px;
-  width: 90px;
+  height: 40px;
+  width: 40px;
   text-align: center;
   font-size: 45px;
-  line-height: 70px;
+  line-height: 55px;
   background-color: transparent !important; }
 
 .tiny-box:hover, .tiny-box.selected {
-  border: 4px solid #c2e1f5;
+  border: 1px solid #c2e1f5;
+  box-shadow: 1px 1px 1px 1px #c2e1f5;
   cursor: pointer; }
 
 .tiny-box-name, .tiny-box-action {
@@ -1509,10 +1514,9 @@ legend.results-border {
     position: relative;
     border-radius: 0;
     background: rgba(255,255,255,.65);
-    border-top: 3px solid #d2d6de;
     margin-bottom: 20px;
     width: 100%;
-    box-shadow: 0 1px 1px rgba(0,0,0,.1);
+    box-shadow: 1px 1px 1px 1px rgba(0,0,0,.1);
 }
 
 .box-body {
@@ -1521,6 +1525,12 @@ legend.results-border {
     padding: 10px 20px;
 }
 
+.box-header {
+    color: #444;
+    display: block;
+    padding: 10px 20px;
+    position: relative;
+}
 .box.box-primary {
     border-top-color: #008ecf;
 }
