@@ -189,7 +189,7 @@
 											</dt>
 											<dd>
 												<div ng-repeat="attachment in attachments">
-													<a ng-href="./rest/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
+													<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 														{{attachment.filename}}
 													</a>
 													<button class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">

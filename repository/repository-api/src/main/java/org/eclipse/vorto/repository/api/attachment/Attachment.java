@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.attachment.dto;
+package org.eclipse.vorto.repository.api.attachment;
 
 import org.eclipse.vorto.repository.api.ModelId;
 
@@ -27,15 +27,11 @@ public class Attachment {
 	}
 	
 	public static String getLink(ModelId modelId, String filename) {
-		StringBuffer link = new StringBuffer("/rest/model");
+		StringBuffer link = new StringBuffer("/api/v1/attachments");
 
 		link.append("/");
-		link.append(modelId.getNamespace());
-		link.append("/");
-		link.append(modelId.getName());
-		link.append("/");
-		link.append(modelId.getVersion());
-		link.append("/attachment/");
+		link.append(modelId.getPrettyFormat());
+		link.append("/files/");
 		link.append(filename);
 
 		return link.toString();
@@ -71,4 +67,8 @@ public class Attachment {
 		this.downloadLink = downloadLink;
 	}
 
+	@Override
+	public String toString() {
+		return "Attachment [modelId=" + modelId + ", filename=" + filename + ", downloadLink=" + downloadLink + "]";
+	}
 }

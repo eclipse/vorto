@@ -15,8 +15,10 @@
 package org.eclipse.vorto.repository.api;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.content.EntityModel;
 import org.eclipse.vorto.repository.api.content.EnumModel;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -69,6 +71,22 @@ public interface IModelRepository {
 	 */
 	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass, ModelId mappingModelId);
 
+	/**
+	 * Get a list of file attachments for a model
+	 * 
+	 * @param modelId model id to get attachments for
+	 * @return attachments List of attachment
+	 */
+	CompletableFuture<List<Attachment>> getAttachments(ModelId modelId);
+	
+	/**
+	 * Get the contents of an attached file to a model
+	 * 
+	 * @param modelId the model where the file is attached
+	 * @param filename the filename of the attached file
+	 * @return content The contents of the file
+	 */
+	CompletableFuture<byte[]> getAttachment(ModelId modelId, String filename);
 	
 	/**
 	 * Creates a new model query builder as a helper for searching models via {@link IModelRepository#search(ModelQuery)} 

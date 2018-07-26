@@ -105,7 +105,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get('./rest/attachments/' + model.id.prettyFormat)
+			$http.get('./api/v1/attachments/' + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
 				})
@@ -527,7 +527,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						var payload = new FormData();
 						payload.append('file', $scope.selectedFile, encodeURIComponent($scope.selectedFile.name));
 
-						const attachment_url = './rest/attachments/' + $scope.modelId;
+						const attachment_url = './api/v1/attachments/' + $scope.modelId;
 
 						$http.put(attachment_url, payload, {
 								transformRequest: angular.identity,
@@ -575,7 +575,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.deleteAttachment = function () {
 						$scope.isDeleting = true;
-						const attachment_url = './rest/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
+						const attachment_url = './api/v1/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
 
 						$http.delete(attachment_url, {
 								transformRequest: angular.identity,

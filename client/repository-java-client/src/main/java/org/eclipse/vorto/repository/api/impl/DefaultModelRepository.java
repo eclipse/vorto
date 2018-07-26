@@ -14,19 +14,24 @@
  */
 package org.eclipse.vorto.repository.api.impl;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
 import org.eclipse.vorto.repository.api.IModel;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelQuery;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.exception.ModelQueryException;
+import org.eclipse.vorto.repository.client.RepositoryClientException;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -34,6 +39,7 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 	
 	private static final String REST_SEARCH_BASE = "api/v1/search/models";
 	private static final String REST_MODEL_BASE = "api/v1/models";
+	private static final String REST_ATTACHMENT_BASE = "api/v1/attachments";
 
 	public DefaultModelRepository(HttpClient httpClient, RequestContext requestContext) {
 		super(httpClient, requestContext);
@@ -79,5 +85,23 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 			Class<ModelContent> resultClass, ModelId mappingModelId) {
 		String url = String.format("%s/%s/%s/content/mappings/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(resultClass));
+	}
+	
+	@Override
+	public CompletableFuture<List<Attachment>> getAttachments(ModelId modelId) {
+		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(), REST_ATTACHMENT_BASE, modelId.getPrettyFormat());
+		return requestAndTransform(url, transformToType(new TypeToken<ArrayList<Attachment>>() {}.getType()));
+	}
+	
+	@Override
+	public CompletableFuture<byte[]> getAttachment(ModelId modelId, String filename) {
+		String url = String.format("%s/%s/%s/files/%s", getRequestContext().getBaseUrl(), REST_ATTACHMENT_BASE, modelId.getPrettyFormat(), filename);
+		return requestAndTransform(url, (response) -> {
+			try {
+				return IOUtils.toByteArray(response.getEntity().getContent());
+			} catch (UnsupportedOperationException | IOException e) {
+				throw new RepositoryClientException("Error while getting attachment + '" + filename + "' with url '" + url + "'", e);
+			}
+		});
 	}
 }
