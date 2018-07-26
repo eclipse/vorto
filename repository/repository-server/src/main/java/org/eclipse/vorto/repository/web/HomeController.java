@@ -46,6 +46,9 @@ public class HomeController {
 	@Value("${eidp.oauth2.enabled}")
 	private boolean eidpEnabled;
 	
+	@Value("${server.config.authenticatedSearchMode:#{false}}")
+	private boolean authenticatedSearchMode = false;
+	
 	@Autowired
 	private IUserAccountService accountService;
 	
@@ -99,6 +102,7 @@ public class HomeController {
 		
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
+		context.put("authenticatedSearchMode", authenticatedSearchMode);
 		
 		return context;
 	}
