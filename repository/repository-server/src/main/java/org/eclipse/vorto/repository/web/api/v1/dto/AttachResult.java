@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.web.api.v1.dto;
 
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 
 public class AttachResult {
 	private boolean success;

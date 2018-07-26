@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
-import org.eclipse.vorto.repository.web.api.v1.dto.Attachment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,8 +140,6 @@ public class AttachmentController {
 			LOGGER.error("Cannot decode name of attachment:", e);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
-
 	}
 	
 	private UserContext getUserContext() {

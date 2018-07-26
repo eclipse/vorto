@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.api.v1.dto;
+package org.eclipse.vorto.repository.api.attachment;
 
 import org.eclipse.vorto.repository.api.ModelId;
 
@@ -67,4 +67,8 @@ public class Attachment {
 		this.downloadLink = downloadLink;
 	}
 
+	@Override
+	public String toString() {
+		return "Attachment [modelId=" + modelId + ", filename=" + filename + ", downloadLink=" + downloadLink + "]";
+	}
 }
