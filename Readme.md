@@ -4,33 +4,28 @@
 
 # Overview
 
-[Vorto](http://www.eclipse.org/vorto) provides an **Eclipse Toolset** that lets you describe the device functionality and characteristics as **Information Models**. These models are managed in a [Vorto Repository](http://vorto.eclipse.org). [Code generators](http://vorto.eclipse.org/#/generators) convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to an IoT Backend. In order to process these messages in the IoT backend, Vorto offers a set of **technical components**, for example parsers and validators. For devices sending arbitrary, non-Vorto, messages to an IoT backend, the **Vorto Mapping Engine** helps you to execute device message transformations to IoT Platform specific meta-models, e.g. Eclipse Ditto or AWS IoT Shadow.  
+[Vorto](http://www.eclipse.org/vorto) provides a Web Editor that lets you describe the device functionality and characteristics using a simple Vorto language (Vorto DSL) and save them as **Information Models**. These models are then managed in a [Vorto Repository](http://vorto.eclipse.org). [Code generators](http://vorto.eclipse.org/#/generators) convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to an IoT Backend. In order to process these messages in the IoT backend, Vorto offers a set of **technical components**, for example parsers and validators. For devices sending arbitrary, non-Vorto, messages to an IoT backend, the **Vorto Mapping Engine** helps you to execute device message transformations to platform-specific IoT Digital Twin API's, such as Eclipse Ditto or AWS IoT Shadow.  
  
  <img src="./website/static/images/vorto_technicalview.png" width="90%"/>
 
 
 # Getting started with Vorto 
 
-1. Download the [Vorto Eclipse Toolset Plugins](https://marketplace.eclipse.org/content/vorto-toolset) and install them into your [Eclipse for DSL Developers](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygen3a)
-
-2. [Read Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
+The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
 
 # Developer Guide
 
-
-## Generator SDK
-
-With the **Generator SDK** you can easily create and plug-in a new Vorto Generator. [Read the Tutorial](tutorials/tutorial_create_generator.md)
-
-Here is a list of currently supported [Vorto Generators](http://vorto.eclipse.org/#/generators)
-
 ## Repository Java Client
 
-Search models and generate code via the [Repository Java Client](repository-java-client/Readme.md)
+Search and access Vorto models as well as generate code using the [Repository Java Client](client/repository-java-client/Readme.md)
 
-## Payload Mapping Engine
+## Repository Import API
 
-Map arbitrary device payload, such as JSON or BLE GATT, to standardized data, that is described by Vorto Information Models. [Payload Mapping Documentation](https://www.eclipse.org/vorto/documentation/mappingengine)  
+If you want to manage other existing (standardized) device descriptions with the Vorto Repository, you can extend the Repository by providing a model importer using the [Importer API](repository/repository-importer/Readme.md).
+
+## Device Payload Transformation Engine
+
+Map arbitrary device payload, expressed as JSON or binary, to standardized data, that is described by Vorto Information Models. See [Payload Mapping Documentation](https://www.eclipse.org/vorto/documentation/mappingengine) for more information. 
 
 # Documentation
 
@@ -44,8 +39,6 @@ Map arbitrary device payload, such as JSON or BLE GATT, to standardized data, th
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
 # Contribute to the Project
-
-Make sure, that you have installed [Vorto for contributors](tutorials/tutorial_vortosetup_contributors.md)
 
 When you create a Pull Request, make sure:
 
