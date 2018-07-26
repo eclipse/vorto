@@ -14,12 +14,12 @@ In this tutorial you are going to learn, how you create a Vorto Mapping Specific
 ## Prerequisite
 
 * [Payload Mapping Engine Documentation]({{< relref "documentation/mappingengine.md" >}})
-* [Eclipse IoT Vorto Toolset](https://marketplace.eclipse.org/content/vorto-toolset)
+* [Eclipse IoT Vorto Repository](http://vorto.eclipse.org/#/)
 * Maven
 
 ### 1. Create AWS IoT Button Information Model
 
-Let's start by creating an information model for the AWS IoT Button using the Vorto IoT Toolset:
+Let's start by creating an information model for the AWS IoT Button using the Vorto IoT Repository:
 
 
 	namespace devices.aws.button

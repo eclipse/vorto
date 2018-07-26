@@ -20,6 +20,7 @@
 		<module>repository-api</module>
 		<module>repository-generators</module>
 		<module>repository-server</module>
+		<module>repository-importer</module>
 		<module>repository-web</module>
 	</modules>
 

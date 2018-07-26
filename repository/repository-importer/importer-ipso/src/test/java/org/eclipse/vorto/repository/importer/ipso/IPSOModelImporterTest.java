@@ -1,6 +1,8 @@
-package org.eclipse.vorto.repository.importer;
+package org.eclipse.vorto.repository.importer.ipso;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -10,7 +12,9 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.importer.ipso.ModelImporterIPSO;
+import org.eclipse.vorto.repository.importer.DetailedReport;
+import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
