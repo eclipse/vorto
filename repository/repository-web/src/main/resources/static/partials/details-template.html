@@ -28,8 +28,8 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority == 'ROLE_ADMIN' || model.author === user">
-				<button class="btn btn-primary pull-left" ng-disabled="model.state === 'Released' || model.state === 'Deprecated'" role="button"
+			<div ng-show="authority == 'ROLE_ADMIN' || model.author === user || (model.state !== 'Released' && model.state !== 'Deprecated')">
+				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>

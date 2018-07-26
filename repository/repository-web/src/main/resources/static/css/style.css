@@ -1705,6 +1705,10 @@ input[type=file]::-webkit-file-upload-button {
 
 #all {
 	min-height: calc(100vh - 82px);
-	padding-top: 70px;
 	padding-bottom: 70px;
+}
+
+.alert.alert-sandbox {
+  margin-bottom: 0;
+  border-radius: 0;
 }
