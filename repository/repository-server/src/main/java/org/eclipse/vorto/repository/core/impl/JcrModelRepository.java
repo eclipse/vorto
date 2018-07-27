@@ -276,6 +276,10 @@ public class JcrModelRepository implements IModelRepository {
 			if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
 				modelResource.setHasImage(true);
 			}
+			
+			if (!getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED).isEmpty()) {
+				modelResource.setImported(true);
+			}
 
 			return modelResource;
 		} catch (PathNotFoundException e) {

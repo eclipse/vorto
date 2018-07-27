@@ -42,6 +42,15 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	public void testImportModel() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		assertTrue(models.get(0).getImported());
+		assertTrue(this.modelRepository.getById(models.get(0).getId()).getImported());
+
+	}
+	
+	@Test
 	public void testUploadExistingIPSOModelBySameUser() throws Exception {
 		IUserContext alex = UserContext.user("alex");
 		List<ModelInfo> models = importIPSO("3310.xml", alex);

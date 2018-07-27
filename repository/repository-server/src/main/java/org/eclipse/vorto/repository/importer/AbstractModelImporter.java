@@ -242,7 +242,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
 				ModelInfo importedModel = this.modelRepository.save(resource.getId(),
 						((ModelResource) resource).toDSL(), createFileName(resource), user);
 				savedModels.add(importedModel);
-
 				postProcessImportedModel(importedModel,
 						new FileContent(extractedFile.getFileName(), extractedFile.getContent()),user);
 			} catch (Exception e) {
@@ -278,6 +277,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
 	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent, IUserContext user) {
 		getModelRepository().attachFile(importedModel.getId(), originalFileContent,user,Attachment.TAG_IMPORTED);
+		importedModel.setImported(true);
 	}
 
 	/**

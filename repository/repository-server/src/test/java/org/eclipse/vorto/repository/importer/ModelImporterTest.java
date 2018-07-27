@@ -173,7 +173,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 		when(userRepository.findAll()).thenReturn(recipients);
 
 		List<ModelInfo> modelInfos = importer.doImport(uploadResult.getHandleId(), UserContext.user(user1.getUsername()));
-		modelInfos.forEach(resource -> assertEquals(true, resource.getImported()));
+		modelInfos.forEach(resource -> assertEquals(false, resource.getImported()));
 		
 		Thread.sleep(1000);
 		assertEquals(1, modelRepository.search("*").size());
