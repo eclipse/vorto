@@ -69,3 +69,7 @@ div.home {
   position: relative;
   top: -3px
 }
+
+.screenshot{
+  box-shadow: 5px 5px 10px rgb(180, 180, 180);
+}

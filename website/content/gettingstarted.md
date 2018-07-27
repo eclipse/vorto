@@ -8,67 +8,51 @@ To get started with Vorto easily, we are going to show you how you can use the V
 ![Material Screenshot](/images/getting-started-ar2.png)
 
 
-## Prerequisites
-* Maven
-* Java 8
-* [Eclipse for DSL Developers](https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygen3a)
-* [Eclipse Vorto Toolset Plugins](http://marketplace.eclipse.org/content/vorto-toolset)
+## Different types of Models
+### Infomation Model
 
-## Creating a Vorto Project
-1. Open Eclipse and switch to the **Vorto Perspective**.
-2. In the Vorto Model Project Browser, click the **+** button. 
-3. This opens the **New Vorto Project** Dialog:
-![Material Screenshot](/images/tutorials/getting_started/vorto_create_new_vorto_project_dialog.png)
-4. Enter a **Project Name**, for example, `MyVortoProject`.
-5. Click on **Finish** to begin describing the device.
+Information Models represent the capabilities of a particular type of device in its entirety. An Information Model is assembled from abstract and re-usable Function Blocks.
 
-![Material Screenshot](/images/tutorials/getting_started/vorto_new_vorto_project_created.png)
+### Function Block
 
-## Defining a Function Block
-> A function block provides an abstract view on a device to applications that want to employ the devices’ functionality. Thus, it is a consistent, self-contained set of (potentially re-usable) properties and capabilities.
+A Function Block provides an abstract view on a device to applications that want to employ the devices’ functionality. Thus, it is a consistent, self-contained set of (potentially re-usable) properties and capabilities.
+The properties that a Function Block may define are classified as follows:
 
-1. Right-click in the **Functionblocks** area and choose **New Functionblock** from the context menu.
-![Material Screenshot](/images/tutorials/getting_started/m2m_tc_create_function_block_designer_dialog_2.png)
-2. Enter a name as **Function Block Name**, for example, Distance
+* **Status** Properties - These _read-only_ properties indicating the current state of the device. 
+* **Configuration** Properties - _Read- and Writable_ properties required to be set in order for the device to work properly.
+* **Fault** Properties - _Read-only_ properties indicating fault states of the device.
+* **Event** Properties - _Read-only_ properties that are published by the device, e.g. on state changes
+* **Operations** - Indicate functionality that can be invoked on the device, that may lead to device state changes or merely give additional meta-data information.
+
+
+## Defining a Model
+
+1. Click the **Create new Model** Button and choose the type you want to create from the context menu.
+	<figure class="screenshot">
+	<img src="/images/tutorials/getting_started/create_function_block_designer_btn.png">
+	</figure> 
+2. Enter a name, for example, Distance as a **Function Block**.
 3. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
 4. Optionally, enter a description in the **Description** entry field.
-5. Click **Finish**. ![Material Screenshot](/images/tutorials/getting_started/m2m_tc_create_function_block_generated_source_1.png)
-6. Edit the function block by adding the distance specific properties:
-
-**Example:**
-
-```sh
-namespace org.eclipse.vorto.fb
-version 1.0.0
-displayname "Distance"
-description "Function block model for Distance"
-functionblock Distance {
-
-	status {
-		mandatory distance as float
-		mandatory sensor_unit as string
-		optional min_value as float
-		optional max_value as float
-	}
-}
-```
-## Defining an Information Model
-> Information models represent the capabilities of a particular type of device entirety. An information model contains one or more function blocks.
-
-1. Right-click in the **Information Models** area and choose **New Information Model** from the context menu.
-![Material Screenshot](/images/tutorials/getting_started/m2m_tc_create_information_model_dialog.png)
-2. Enter a name as **Information Model Name**, for example, DistanceSensor.
-3. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
-4. Optionally, enter a description in the **Description** entry field.
-5. Click **Finish**.![Material Screenshot](/images/tutorials/getting_started/m2m_tc_information_model_dsl_editor.png)
-6. Drag and drop the created and edited function block (distance) from the **Functionblocks** area onto the information model **DistanceSensor** to create the reference. ![Material Screenshot](/images/tutorials/getting_started/m2m_tc_drag_drop_function_block_to_information_model.png)
+5. Click **Create**.
+	<figure class="screenshot">
+  	<img src="/images/tutorials/getting_started/create_function_block_designer_name.png">
+	</figure>
+6. In the Model Editor add the distance specific properties and click **Save**:
+	<figure class="screenshot">
+  	<img src="/images/tutorials/getting_started/create_function_block_editor.png">
+	</figure>
 
 
 ## Generating Device Code
-- Right click on the Information Model **DistanceSensor** in the Information Model area
-- Click **Generate Code** -> **Eclipse Hono Generator**
-- Choose **Java** and click **Generate**. This will generate a Java source code bundle and switch to the Java perspective automatically. 
-- Right click on the generated Maven Project and Choose **Maven** -> **Update Project**. This downloads all the needed Maven dependencies for the project to run.
+1. Click on one of the Generators, here Eclipse Hono.
+	<figure class="screenshot">
+  	<img src="/images/tutorials/getting_started/create_function_block_generator.png">
+	</figure>
+2. Choose **Java** and click **Generate Code**. This will generate a Java source code bundle and will be downloaded automatically.
+	<figure class="screenshot">
+  	<img src="/images/tutorials/getting_started/create_function_block_generator_hono.png">
+	</figure> 
 
 ## Registering device in Eclipse Hono
 Eclipse Hono provides a sandbox infrastructure which we can use to demonstrate the device integration. Before we can send data from our generated project, we must register the device under a tenant:
