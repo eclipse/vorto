@@ -7,13 +7,13 @@ import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.attachment.Tag;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -66,7 +66,7 @@ public class AttachmentController {
 			if (fileName.length() > 100) {
 				return AttachResult.fail(modelID, fileName, "Name of File exceeds 100 Characters");
 			}		
-			modelRepository.attachFile(modelID, new FileContent(fileName, file.getBytes()), getUserContext());
+			modelRepository.attachFile(modelID, new FileContent(fileName, file.getBytes()), getUserContext(),guessTagsFromFileExtension(fileName));
 			
 			return AttachResult.success(modelID, fileName);
 		} catch (IOException | FatalModelRepositoryException e) {
@@ -74,7 +74,18 @@ public class AttachmentController {
 			return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
 		}
 	}
-	
+	//TODO: interim solution until attachment upload dialog supports Label Chooser
+	private Tag guessTagsFromFileExtension(String fileName) {
+		final String _name = fileName.toLowerCase();
+		if (_name.endsWith(".jpg") || _name.endsWith(".png")) {
+			return Attachment.TAG_IMAGE;			
+		} else if (_name.endsWith(".doc") || _name.endsWith(".pdf") || _name.endsWith(".txt")) {
+			return Attachment.TAG_DOCUMENTATION;
+		} else {
+			return null;
+		}
+	}
+
 	@ApiOperation(value = "Get the list of file attachments for a model")
 	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}", produces = "application/json")
 	public List<Attachment> getAttachments(
@@ -83,10 +94,7 @@ public class AttachmentController {
 		ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		
 		try {			
-			return modelRepository.getAttachmentFilenames(modelID).stream()
-				.map(filename -> Attachment.newInstance(modelID, filename))
-				.collect(Collectors.toList());
-			
+			return modelRepository.getAttachments(modelID);
 		} catch (FatalModelRepositoryException e) {
 			LOGGER.error("Error while getting attachments []:", e);
 			return Collections.emptyList();

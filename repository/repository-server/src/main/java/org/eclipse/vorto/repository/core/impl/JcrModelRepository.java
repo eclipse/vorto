@@ -18,13 +18,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -33,6 +33,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -47,6 +48,8 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.attachment.Tag;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
@@ -72,7 +75,7 @@ import org.springframework.stereotype.Service;
 public class JcrModelRepository implements IModelRepository {
 
 	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
-	
+
 	@Autowired
 	private Session session;
 
@@ -81,9 +84,9 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
-	
+
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
-	
+
 	@Override
 	public List<ModelInfo> search(final String expression) {
 		String queryExpression = expression;
@@ -117,7 +120,7 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	private ModelInfo createMinimalModelInfo(Node node) throws RepositoryException {
-		
+
 		ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(node.getParent().getPath()),
 				node.getProperty("vorto:type").getString());
 		resource.setDescription(node.getProperty("vorto:description").getString());
@@ -128,12 +131,9 @@ public class JcrModelRepository implements IModelRepository {
 		}
 		if (node.hasProperty("vorto:state")) {
 			resource.setState(node.getProperty("vorto:state").getString());
-		} 
+		}
 		if (node.hasProperty("vorto:author")) {
 			resource.setAuthor(node.getProperty("vorto:author").getString());
-		}
-		if (node.hasProperty("vorto:imported")) {
-			resource.setImported(node.getProperty("vorto:imported").getBoolean());
 		}
 
 		NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
@@ -147,7 +147,7 @@ public class JcrModelRepository implements IModelRepository {
 	private ModelInfo createModelResource(Node node) throws RepositoryException {
 		ModelInfo resource = createMinimalModelInfo(node);
 		resource.setFileName(node.getName());
-		
+
 		if (node.hasProperty("vorto:references")) {
 			Value[] referenceValues = null;
 			try {
@@ -192,11 +192,12 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-						
+
 			final String fileContent = IOUtils.toString(is);
-			ModelResource resource = (ModelResource) ModelParserFactory.getParser(fileNode.getName()).parse(IOUtils.toInputStream(fileContent));
-			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());	
-			
+			ModelResource resource = (ModelResource) ModelParserFactory.getParser(fileNode.getName())
+					.parse(IOUtils.toInputStream(fileContent));
+			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
+
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
@@ -223,15 +224,15 @@ public class JcrModelRepository implements IModelRepository {
 
 		return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
 	}
-	
+
 	public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext) {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
-		
+
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
-		
+
 		try {
-			
+
 			Node folderNode = createNodeForModelId(modelId);
 			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
 			if (!nodeIt.hasNext()) { // new node
@@ -241,23 +242,20 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-				Binary binary = session.getValueFactory()
-						.createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
 				contentNode.setProperty("jcr:data", binary);
 			} else { // node already exists.
 				Node fileNode = nodeIt.nextNode();
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
 				Node contentNode = fileNode.getNode("jcr:content");
-				Binary binary = session.getValueFactory()
-						.createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
 				contentNode.setProperty("jcr:data", binary);
 			}
 
 			session.save();
 			logger.info("Model was saved successful");
-			return ModelParserFactory.getParser(fileName)
-					.parse(new ByteArrayInputStream(content));
+			return ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
@@ -274,12 +272,11 @@ public class JcrModelRepository implements IModelRepository {
 			Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
 			ModelInfo modelResource = createModelResource(modelFileNode);
-			if (modelResource.getType() == ModelType.InformationModel) {
-				NodeIterator imageNodeIterator = folderNode.getNodes("img.png*");
-				if (imageNodeIterator.hasNext()) {
-					modelResource.setHasImage(true);
-				}
+
+			if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
+				modelResource.setHasImage(true);
 			}
+
 			return modelResource;
 		} catch (PathNotFoundException e) {
 			return null;
@@ -334,67 +331,50 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	public void addModelImage(ModelId modelId, byte[] imageContent) {
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			Node contentNode = null;
-			if (modelFolderNode.hasNode("img.png")) {
-				Node imageNode = (Node) modelFolderNode.getNode("img.png");
-				contentNode = (Node) imageNode.getPrimaryItem();
-			} else {
-				Node imageNode = modelFolderNode.addNode("img.png", "nt:file");
-				contentNode = imageNode.addNode("jcr:content", "nt:resource");
-			}
-
-			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(imageContent));
-			contentNode.setProperty("jcr:data", binary);
-			session.save();
-		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Problem when trying to add image to model", e);
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Something severe went wrong when accessing the repository", e);
-		}
-	}
-	
-	@Override
-	public void removeModelImage(ModelId modelId) {
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			if (modelFolderNode.hasNode("img.png")) {
-				Node imageNode = (Node) modelFolderNode.getNode("img.png");
-				imageNode.remove();
-				session.save();
-			}
-		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Problem when trying to remove image to model", e);
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Something severe went wrong when accessing the repository", e);
-		}
-	}
-
-	@Override
-	public byte[] getModelImage(ModelId modelId) {
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-
-			Node folderNode = session.getNode(modelIdHelper.getFullPath());
-			if (folderNode.hasNode("img.png")) {
-				Node imageNode = folderNode.getNode("img.png");
-				Node fileItem = (Node) imageNode.getPrimaryItem();
-				InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-				return IOUtils.toByteArray(is);
-			}
-		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Problem when trying to retrieve image for model", e);
-		} catch (RepositoryException e) {
-			throw new FatalModelRepositoryException("Something severe went wrong when accessing the repository", e);
-		} catch (IOException e) {
-			throw new FatalModelRepositoryException("Something severe went wrong when trying to read image content", e);
-		}
-		return null;
-	}
+	// @Override
+	// public void removeModelImage(ModelId modelId) {
+	// try {
+	// ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+	// Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+	// if (modelFolderNode.hasNode("img.png")) {
+	// Node imageNode = (Node) modelFolderNode.getNode("img.png");
+	// imageNode.remove();
+	// session.save();
+	// }
+	// } catch (PathNotFoundException e) {
+	// throw new ModelNotFoundException("Problem when trying to remove image to
+	// model", e);
+	// } catch (RepositoryException e) {
+	// throw new FatalModelRepositoryException("Something severe went wrong when
+	// accessing the repository", e);
+	// }
+	// }
+	//
+	// @Override
+	// public byte[] getModelImage(ModelId modelId) {
+	// try {
+	// ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+	//
+	// Node folderNode = session.getNode(modelIdHelper.getFullPath());
+	// if (folderNode.hasNode("img.png")) {
+	// Node imageNode = folderNode.getNode("img.png");
+	// Node fileItem = (Node) imageNode.getPrimaryItem();
+	// InputStream is =
+	// fileItem.getProperty("jcr:data").getBinary().getStream();
+	// return IOUtils.toByteArray(is);
+	// }
+	// } catch (PathNotFoundException e) {
+	// throw new ModelNotFoundException("Problem when trying to retrieve image
+	// for model", e);
+	// } catch (RepositoryException e) {
+	// throw new FatalModelRepositoryException("Something severe went wrong when
+	// accessing the repository", e);
+	// } catch (IOException e) {
+	// throw new FatalModelRepositoryException("Something severe went wrong when
+	// trying to read image content", e);
+	// }
+	// return null;
+	// }
 
 	@Override
 	public void removeModel(ModelId modelId) {
@@ -420,24 +400,19 @@ public class JcrModelRepository implements IModelRepository {
 			fileNode.setProperty("vorto:author", model.getAuthor());
 			fileNode.setProperty("vorto:state", model.getState());
 		});
-		
+
 		return model;
 	}
-	
+
 	public ModelId updateState(ModelId modelId, String state) {
 		return updateProperty(modelId, node -> node.setProperty("vorto:state", state));
 	}
-	
-	public ModelInfo updateImported(ModelInfo model) {
-		updateProperty(model.getId(), node -> node.setProperty("vorto:imported", model.getImported()));
-		return model;
-	}
-	
+
 	private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
 		try {
 			Node folderNode = createNodeForModelId(modelId);
-			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
-					? folderNode.getNodes(FILE_NODES).nextNode() : null;
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
+					: null;
 			fileNode.addMixin("mix:lastModified");
 			nodeConsumer.accept(fileNode);
 			session.save();
@@ -447,7 +422,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		}
 	}
-	
+
 	@FunctionalInterface
 	private interface NodeConsumer {
 		void accept(Node node) throws RepositoryException;
@@ -456,11 +431,10 @@ public class JcrModelRepository implements IModelRepository {
 	public void saveModel(ModelResource resource) {
 		try {
 			Node folderNode = createNodeForModelId(resource.getId());
-			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext()
-					? folderNode.getNodes(FILE_NODES).nextNode() : null;
+			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
+					: null;
 			Node contentNode = fileNode.getNode("jcr:content");
-			Binary binary = session.getValueFactory()
-					.createBinary(new ByteArrayInputStream(resource.toDSL()));
+			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(resource.toDSL()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
 		} catch (Exception e) {
@@ -489,9 +463,9 @@ public class JcrModelRepository implements IModelRepository {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			Node contentNode = null;
-			
+
 			if (folderNode.hasNode(fileContent.getFileName())) {
 				Node imageNode = (Node) folderNode.getNode(fileContent.getFileName());
 				contentNode = (Node) imageNode.getPrimaryItem();
@@ -503,7 +477,7 @@ public class JcrModelRepository implements IModelRepository {
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
-			
+
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
@@ -516,18 +490,18 @@ public class JcrModelRepository implements IModelRepository {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			if (!folderNode.hasNode(fileName)) {
 				return Optional.empty();
 			}
-			
+
 			Node fileNode = (Node) folderNode.getNode(fileName);
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-						
+
 			final String fileContent = IOUtils.toString(is);
 			return Optional.of(new FileContent(fileName, fileContent.getBytes()));
-			
+
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
@@ -536,109 +510,126 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public Set<String> getFileNames(ModelId modelId) {
-		Set<String> fileNames = new HashSet<>();
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-			Node folderNode = session.getNode(modelIdHelper.getFullPath());
-			NodeIterator iter = folderNode.getNodes();
-			while(iter.hasNext()) {
-				Node node = iter.nextNode();
-				if (!node.isNodeType("nt:folder")) { // folders should be filtered out
-					fileNames.add(node.getName());
-				}
-			}
-		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Could not find model with the given model id", e);
-		} catch (Exception e) {
-			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
-		}
-		return fileNames;
-	}
-	
-	public boolean attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext) {
+	public boolean attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			Node attachmentFolderNode = null;
 			if (!modelFolderNode.hasNode("attachments")) {
 				attachmentFolderNode = modelFolderNode.addNode("attachments", "nt:folder");
 			} else {
 				attachmentFolderNode = modelFolderNode.getNode("attachments");
 			}
+
+			String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId()).collect(Collectors.toList())
+					.toArray(new String[tags.length]);
 			
 			Node contentNode = null;
 			if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
 				Node attachmentNode = (Node) attachmentFolderNode.getNode(fileContent.getFileName());
+				attachmentNode.addMixin("vorto:meta");
+				attachmentNode.setProperty("vorto:tags", tagIds, PropertyType.STRING);
 				contentNode = (Node) attachmentNode.getPrimaryItem();
 			} else {
 				Node attachmentNode = attachmentFolderNode.addNode(fileContent.getFileName(), "nt:file");
+				attachmentNode.addMixin("vorto:meta");
+				attachmentNode.setProperty("vorto:tags", tagIds, PropertyType.STRING);
 				contentNode = attachmentNode.addNode("jcr:content", "nt:resource");
 			}
 			
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
-			
+
 			return true;
-		} catch(PathNotFoundException e) {
+		} catch (PathNotFoundException e) {
 			return false;
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-	
-	public List<String> getAttachmentFilenames(ModelId modelId) {
+
+	@Override
+	public List<Attachment> getAttachments(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			if (modelFolderNode.hasNode("attachments")) {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
-				List<String> fileNames = new ArrayList<String>();
-				NodeIterator nodeIt = attachmentFolderNode.getNodes(); 
-				while(nodeIt.hasNext()) {
+				List<Attachment> attachments = new ArrayList<Attachment>();
+				NodeIterator nodeIt = attachmentFolderNode.getNodes();
+				while (nodeIt.hasNext()) {
 					Node fileNode = (Node) nodeIt.next();
-					fileNames.add(fileNode.getName());
+					Attachment attachment = Attachment.newInstance(modelId, fileNode.getName());
+					if (fileNode.hasProperty("vorto:tags")) {
+						final List<Value> tags = Arrays.asList(fileNode.getProperty("vorto:tags").getValues());
+						attachment.setTags(tags.stream().map(value -> createTag(value)).collect(Collectors.toList()));
+					}
+					attachments.add(attachment);
 				}
-				return fileNames;
+				return attachments;
 			}
-			
+
 			return Collections.emptyList();
-		} catch(PathNotFoundException e) {
+		} catch (PathNotFoundException e) {
 			return Collections.emptyList();
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-	
+
+	private Tag createTag(Value tagValue) {
+		try {
+			if (tagValue.getString().equals(Attachment.TAG_DOCUMENTATION.getId())) {
+				return Attachment.TAG_DOCUMENTATION;
+			} else if (tagValue.getString().equals(Attachment.TAG_IMAGE.getId())) {
+				return Attachment.TAG_IMAGE;
+			} else if (tagValue.getString().equals(Attachment.TAG_IMPORTED.getId())) {
+				return Attachment.TAG_IMPORTED;
+			} else {
+				return null;
+			}
+		} catch (RepositoryException ex) {
+			return null;
+		}
+	}
+
+	@Override
+	public List<Attachment> getAttachmentsByTag(final ModelId modelId, final Tag tag) {
+		return getAttachments(modelId).stream().filter(attachment -> attachment.getTags().contains(tag))
+				.collect(Collectors.toList());
+	}
+
+	@Override
 	public Optional<FileContent> getAttachmentContent(ModelId modelId, String fileName) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			if (modelFolderNode.hasNode("attachments")) {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
 				if (attachmentFolderNode.hasNode(fileName)) {
 					Node attachment = (Node) attachmentFolderNode.getNode(fileName).getPrimaryItem();
-					return Optional.of(new FileContent(fileName, IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream())));
+					return Optional.of(new FileContent(fileName,
+							IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream())));
 				}
 			}
-			
+
 			return Optional.empty();
-		} catch(PathNotFoundException e) {
+		} catch (PathNotFoundException e) {
 			return Optional.empty();
 		} catch (IOException | RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-	
+
 	public boolean deleteAttachment(ModelId modelId, String fileName) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-			
+
 			if (modelFolderNode.hasNode("attachments")) {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
 				if (attachmentFolderNode.hasNode(fileName)) {
@@ -647,9 +638,9 @@ public class JcrModelRepository implements IModelRepository {
 					return true;
 				}
 			}
-			
+
 			return false;
-		} catch(PathNotFoundException e) {
+		} catch (PathNotFoundException e) {
 			return false;
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);

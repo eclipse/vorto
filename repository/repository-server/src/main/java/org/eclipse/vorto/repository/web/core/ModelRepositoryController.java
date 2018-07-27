@@ -28,6 +28,8 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.UserContext;
@@ -88,11 +90,16 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		Objects.requireNonNull(modelId, "modelId must not be null");
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-		byte[] modelImage = modelRepository.getModelImage(modelID);
+		List<Attachment> imageAttachments = modelRepository.getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+		if (imageAttachments.isEmpty()) {
+			response.setStatus(404);
+			return;
+		}
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getName() + ".png");
 		response.setContentType(APPLICATION_OCTET_STREAM);
 		try {
-			IOUtils.copy(new ByteArrayInputStream(modelImage), response.getOutputStream());
+			FileContent imageContent = modelRepository.getAttachmentContent(modelID, imageAttachments.get(0).getFilename()).get();
+			IOUtils.copy(new ByteArrayInputStream(imageContent.getContent()), response.getOutputStream());
 			response.flushBuffer();
 		} catch (IOException e) {
 			throw new RuntimeException("Error copying file.", e);
@@ -110,7 +117,10 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
 		
 		try {
-			modelRepository.addModelImage(ModelId.fromPrettyFormat(modelId), file.getBytes());
+			IUserContext user = UserContext
+					.user(SecurityContextHolder.getContext().getAuthentication().getName());
+			
+			modelRepository.attachFile(ModelId.fromPrettyFormat(modelId),new FileContent(file.getOriginalFilename(),file.getBytes()),user,Attachment.TAG_IMAGE);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

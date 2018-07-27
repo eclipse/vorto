@@ -14,14 +14,22 @@
  */
 package org.eclipse.vorto.repository.api.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.eclipse.vorto.repository.api.ModelId;
 
 public class Attachment {
 
 	private ModelId modelId;
 	private String filename;
-	private String downloadLink;
-
+	private List<Tag> tags = new ArrayList<Tag>();
+	
+	public static final Tag TAG_IMPORTED = new Tag("org.eclipse.vorto.tag.import","Imported");
+	public static final Tag TAG_DOCUMENTATION = new Tag("org.eclipse.vorto.tag.documentation","Documentation");
+	public static final Tag TAG_IMAGE = new Tag("org.eclipse.vorto.tag.image","Image");
+	
 	public static Attachment newInstance(ModelId modelId, String filename) {
 		return new Attachment(modelId, filename, getLink(modelId, filename));
 	}
@@ -40,7 +48,6 @@ public class Attachment {
 	private Attachment(ModelId modelId, String filename, String downloadLink) {
 		this.modelId = modelId;
 		this.filename = filename;
-		this.downloadLink = downloadLink;
 	}
 
 	public ModelId getModelId() {
@@ -59,16 +66,22 @@ public class Attachment {
 		this.filename = filename;
 	}
 
-	public String getDownloadLink() {
-		return downloadLink;
+	public List<Tag> getTags() {
+		return tags;
 	}
 
-	public void setDownloadLink(String downloadLink) {
-		this.downloadLink = downloadLink;
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+	
+	public Optional<Tag> getTagById(String tagId) {
+		return this.tags.stream().filter(tag -> tag.getId().equals(tagId)).findAny();
 	}
 
 	@Override
 	public String toString() {
-		return "Attachment [modelId=" + modelId + ", filename=" + filename + ", downloadLink=" + downloadLink + "]";
+		return "Attachment [modelId=" + modelId + ", filename=" + filename + ", tags=" + tags + "]";
 	}
+
+	
 }

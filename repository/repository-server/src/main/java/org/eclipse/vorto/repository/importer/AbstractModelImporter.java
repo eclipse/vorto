@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -240,11 +241,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
 			try {
 				ModelInfo importedModel = this.modelRepository.save(resource.getId(),
 						((ModelResource) resource).toDSL(), createFileName(resource), user);
-
-				// Add a marker that this model was imported
-				importedModel.setImported(true);
-				modelRepository.updateImported(importedModel);
-
 				savedModels.add(importedModel);
 
 				postProcessImportedModel(importedModel,
@@ -281,7 +277,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	}
 
 	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent, IUserContext user) {
-		getModelRepository().attachFile(importedModel.getId(), originalFileContent,user);
+		getModelRepository().attachFile(importedModel.getId(), originalFileContent,user,Attachment.TAG_IMPORTED);
 	}
 
 	/**

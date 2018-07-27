@@ -22,9 +22,7 @@ import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.backup.IModelBackupService;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +40,7 @@ public class BackupController extends AbstractRepositoryController {
 	
 	@Autowired
 	private IModelBackupService backupService;
-	
-	@Autowired
-	private IModelRepository repositoryService;
-	
+		
 	@Value("${server.config.maxBackupSize}")
 	private long maxBackupSize;
 	
@@ -78,15 +73,5 @@ public class BackupController extends AbstractRepositoryController {
 		}
 		
 		this.backupService.restore(file.getBytes());		
-	}
-	
-	@RequestMapping(value = "/images", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public void removeImages() {
-		for (ModelInfo model : repositoryService.search("*")) {
-			if (model.isHasImage()) {
-				repositoryService.removeModelImage(model.getId());
-			}
-		}
 	}
 }

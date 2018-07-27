@@ -15,9 +15,7 @@
 package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Optional;
@@ -26,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -127,55 +126,17 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testGetModelWithImage() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		
 		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
 		importModel("Color.type");
 		importModel("Colorlight.fbmodel");
 		importModel("Switcher.fbmodel");
 		importModel("HueLightStrips.infomodel");
-		this.modelRepository.addModelImage(modelId,
-				IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream()));
+		this.modelRepository.attachFile(modelId,new FileContent("sample.png",IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())),alex,Attachment.TAG_IMAGE);
 		assertEquals(true, this.modelRepository.getById(modelId).isHasImage());
 	}
 	
-	@Test
-	public void testRemoveModelImage() throws Exception {
-		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
-		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
-		importModel("Color.type");
-		importModel("Colorlight.fbmodel");
-		importModel("Switcher.fbmodel");
-		importModel("HueLightStrips.infomodel");
-		this.modelRepository.addModelImage(modelId, modelContent);
-		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
-		
-		this.modelRepository.removeModelImage(modelId);
-		assertFalse(this.modelRepository.getById(modelId).isHasImage());
-	}
-
-	@Test
-	public void testGetModelImage() throws Exception {
-		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
-		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
-		importModel("Color.type");
-		importModel("Colorlight.fbmodel");
-		importModel("Switcher.fbmodel");
-		importModel("HueLightStrips.infomodel");
-		this.modelRepository.addModelImage(modelId, modelContent);
-		assertTrue(this.modelRepository.getModelImage(modelId).length > 0);
-	}
-
-	@Test
-	public void testOverrideImage() throws Exception {
-		final ModelId modelId = new ModelId("HueLightStrips", "com.mycompany", "1.0.0");
-		importModel("Color.type");
-		importModel("Colorlight.fbmodel");
-		importModel("Switcher.fbmodel");
-		importModel("HueLightStrips.infomodel");
-		byte[] modelContent = IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream());
-		this.modelRepository.addModelImage(modelId, modelContent);
-		this.modelRepository.addModelImage(modelId, modelContent);
-	}
-
 	@Test
 	public void testSearchModelWithFilters1() {
 		importModel("Color.type");

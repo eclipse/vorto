@@ -85,7 +85,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					} else if (status == 400) {
 						$rootScope.error = "Bad Request. Server Down";
 					} else if (status == 500) {
-						$rootScope.error = "Internal Server Error";
+						$rootScope.error = data.message;
 					} else {
 						$rootScope.error = "Failed Request with response status " + status;
 					}

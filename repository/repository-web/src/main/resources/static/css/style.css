@@ -1570,6 +1570,10 @@ footer ul.quicklinks a {
     background-color: orange;
 }
 
+.label {
+    background-color: orange;
+}
+
 .state-InReview {
     background-color: blue;
 }

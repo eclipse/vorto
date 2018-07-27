@@ -16,10 +16,11 @@ package org.eclipse.vorto.repository.core;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.attachment.Tag;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 
 /**
@@ -28,7 +29,7 @@ import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
  *
  */
 public interface IModelRepository {
-
+		
 	/**
 	 * Searches model resources for the given expression
 	 * @param queryExpression
@@ -61,27 +62,7 @@ public interface IModelRepository {
 	 * @return model info containing model meta data of the saved model
 	 */
 	ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext user);
-		
-	/**
-	 * Removes a model image for the given model id
-	 * @param modelId
-	 */
-	void removeModelImage(ModelId modelId);
-	
-	/**
-	 * adds an image to the given model ID
-	 * @param modelId
-	 * @param imageContent
-	 */
-    void addModelImage(ModelId modelId, byte[] imageContent);
-	
-	/**
-	 * Gets the model image for the given model id
-	 * @param modelId
-	 * @return
-	 */
-	byte[] getModelImage(ModelId modelId);
-	
+				
 	/**
 	 * Gets the mapping model for the given modelId and the given target platform
 	 * @param modelId
@@ -113,28 +94,11 @@ public interface IModelRepository {
     ModelId updateState(ModelId modelId, String state);
     
     /**
-     * Updates the imported property of the model
-     * 
-     * @param modelId the model Id
-     * @param value the value of the imported property
-     * @return
-     */
-    ModelInfo updateImported(ModelInfo modelInfo);
-
-    /**
      * adds the given file content to the model
      * @param id
      * @param fileContent
      */
 	void addFileContent(ModelId id, FileContent fileContent);
-	
-	/**
-	 * Gets all available file names for the given model ID.
-	 * To load its content, please use IModelRepository#getFileContent(modelId, fileName)
-	 * @param id
-	 * @return
-	 */
-	Set<String> getFileNames(ModelId id);
 
 	/**
 	 * gets file content for the given model id and file name
@@ -151,17 +115,26 @@ public interface IModelRepository {
 	 * @param fileName the filename
 	 * @param content the content of the file
 	 * @param userContext the user context
-	 * @return
+	 * @param tags attachment tags 
+	 * @return status whether the file was attached or not 
 	 */
-	boolean attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext);
+	boolean attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag...Tags);
 	
 	/**
-	 * Gets the list of attachments for the model
+	 * Gets a list of attachments for the model (without its content)
 	 * 
 	 * @param modelId
+	 * @return list of attachments of the given model
+	 */
+	List<Attachment> getAttachments(ModelId modelId);
+	
+	/**
+	 * Gets a list of attachments having the given tag 
+	 * @param modelId
+	 * @param attachmentTag
 	 * @return
 	 */
-	List<String> getAttachmentFilenames(ModelId modelId);
+	List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag);
 	
 	/**
 	 * Gets the content of the attachment
