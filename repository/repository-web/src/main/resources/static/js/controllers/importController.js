@@ -1,5 +1,5 @@
-repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$http','$location', '$uibModal', 
-	function ($scope, $rootScope, $http, $location, $uibModal) {
+repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$http','$location', 
+	function ($scope, $rootScope, $http, $location) {
 
 	$scope.selectedImporter = {key: 'Vorto'};
 	
@@ -7,6 +7,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
     $scope.fileAdded = false;
     $scope.beingUploaded = false;
     $scope.beingCheckedIn = false;
+    $scope.overwriteApproval = false;
 
     $scope.uploadModel = function () {
         $scope.showResultBox = false;
@@ -32,6 +33,9 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         });  
         $scope.fileAdded = true;
         $scope.showCheckin = false;
+        $scope.overwriteApproval = false;
+        $scope.showResultBox = false;
+        $scope.fileAdded = true;
         $scope.$digest();
     };
 
@@ -48,21 +52,20 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         })
         .success(function(result){
             $scope.isLoading = false;
+            $scope.uploadResult = result;
             if(result.result.reports[0].detailedReport !== undefined && result.result.reports[0].detailedReport.messageType == "WARNING"
                 && result.result.reports[0].detailedReport.messageType !== undefined){
-                console.log("something");
-                result.result.valid = true;
-                $scope.uploadResult = result;
-                $scope.uploadResult.result.reports[0].valid = true;
-                $scope.showResultBox = false;
-                $scope.openOverwriteModelDialog();
-            }else{
+                    $scope.overwriteApproval = true;
+                    $scope.uploadResult.result.valid = true;
+                    for (report of $scope.uploadResult.result.reports) {
+                        report.valid = true;
+                      }                
+                }
                 $scope.showResultBox = true;
                 $scope.showCheckin = true;
-            }
+            
             $scope.stateArr = [];
-            $scope.uploadResult = result;
-            $scope.fileAdded = false;
+            $scope.fileAdded = true;
 
             if($scope.uploadResult.result.reports.length > 0 && $scope.uploadResult.result.valid) {
                 angular.forEach($scope.uploadResult.result.reports, function (resultObject, idx) {
@@ -111,31 +114,6 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         });
     };
 
-    $scope.openOverwriteModelDialog = function() {
-        var dialog = $uibModal.open({
-            animation: true,
-            size: "lg",
-            controller: function($scope){
-                $scope.overwriteAccepted = function() {
-                    overwriteModel();
-                    dialog.dismiss();
-                }
-                
-                $scope.dismissModal = function() {
-                    dialog.dismiss();
-                }
-            },
-            templateUrl: "overwriteModelDialog.html",
-            size:"md"
-        });
-    };
-
-    overwriteModel = function() {
-        $scope.showResultBox = true;
-        $scope.showCheckin = true;
-        $scope.fileAdded = false;
-    }
-
     $scope.isMissing = function(reference, missingReferences) {
         var index;
         for (index = 0; missingReferences != null && index < missingReferences.length; index++) {
@@ -164,6 +142,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             $scope.showResultBox = true;
             $scope.beingCheckedIn = false;
             $scope.resultMessage = "Import was successful!";
+            $scope.overwriteApproval = false;
             $scope.showCheckin = false;
             $scope.fileAdded = true;
             $scope.isLoading = false;

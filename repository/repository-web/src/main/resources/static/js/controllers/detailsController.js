@@ -56,7 +56,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 							$window.location.reload();
 						}, 1000);
 					} else {
-						$scope.error = result.errorMessage;
+						$scope.message = result.message;
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.isLoading = false;

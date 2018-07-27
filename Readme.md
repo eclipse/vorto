@@ -4,11 +4,8 @@
 
 # Overview
 
-[Vorto](http://www.eclipse.org/vorto) provides a Web Editor that lets you describe the device functionality and characteristics using a simple Vorto language (Vorto DSL) and save them as **Information Models**. These models are then managed in a [Vorto Repository](http://vorto.eclipse.org). [Code generators](http://vorto.eclipse.org/#/generators) convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to an IoT Backend. In order to process these messages in the IoT backend, Vorto offers a set of **technical components**, for example parsers and validators. For devices sending arbitrary, non-Vorto, messages to an IoT backend, the **Vorto Mapping Engine** helps you to execute device message transformations to platform-specific IoT Digital Twin API's, such as Eclipse Ditto or AWS IoT Shadow.  
+[Vorto](http://www.eclipse.org/vorto) provides a Web Editor that lets you describe the device functionality and characteristics using a simple Vorto language (Vorto DSL) and save them as **Information Models**. These models are then managed in a [Vorto Repository](http://vorto.eclipse.org). [Code generators](http://vorto.eclipse.org/#/generators) convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to an IoT Backend. In order to process these messages in the IoT backend, Vorto offers a set of **technical components**, for example parsers and validators. For devices sending arbitrary, non-Vorto, messages to an IoT backend, the **Device Payload Mapping Engine** helps to transform these messages to platform-specific IoT Digital Twin API's, such as for Eclipse Ditto or AWS IoT Shadow.  
  
- <img src="./website/static/images/vorto_technicalview.png" width="90%"/>
-
-
 # Getting started with Vorto 
 
 The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
