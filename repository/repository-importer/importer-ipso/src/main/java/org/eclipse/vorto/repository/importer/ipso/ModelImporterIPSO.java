@@ -26,7 +26,6 @@ import javax.xml.bind.Unmarshaller;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
@@ -60,13 +59,6 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 	@Override
 	public String getShortDescription() {
 		return "Imports LwM2M / IPSO descriptions";
-	}
-
-	@Override
-	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
-		if (importedModel.getType() == ModelType.Functionblock) {
-			getModelRepository().addFileContent(importedModel.getId(), originalFileContent);
-		}
 	}
 
 	@Override

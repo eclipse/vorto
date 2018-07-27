@@ -116,7 +116,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version))
 				.success(function (result) {
 					$scope.model = result;
-					$scope.getFileNames(result);
 					$scope.getAttachments(result);
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
@@ -126,7 +125,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getContent = function (namespace, name, version) {
-			$http.get('./rest/models/' + $rootScope.modelId(namespace, name, version) + '/download/dsl')
+			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version) + '/file')
 				.success(function (result) {
 					$scope.modelEditorSession.getDocument().setValue(result);
 					if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated' || $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {

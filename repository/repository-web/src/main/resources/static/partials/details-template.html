@@ -176,10 +176,10 @@
 													<div ng-show="(model.platformMappings | json) == '{}'">-</div>
 												</dd>
 											</div>
-											<dt>Downloads:</dt>
+											<dt>Model File:</dt>
 											<dd>
-												<a ng-repeat="file in modelFileNames" ng-href="./rest/models/{{model.id.prettyFormat}}/download/{{file}}" class="pull-center">
-													<i class="fa fa-fw fa-download"></i>{{file}}</a>
+												<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file" class="pull-center">
+													<i class="fa fa-fw fa-download"></i>{{model.fileName}}</a>
 											</dd>
 											<dt ng-show="authority == 'ROLE_ADMIN'">
 												<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>

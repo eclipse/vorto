@@ -248,7 +248,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 				savedModels.add(importedModel);
 
 				postProcessImportedModel(importedModel,
-						new FileContent(extractedFile.getFileName(), extractedFile.getContent()));
+						new FileContent(extractedFile.getFileName(), extractedFile.getContent()),user);
 			} catch (Exception e) {
 				throw new ModelImporterException("Problem importing model", e);
 			}
@@ -280,7 +280,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		return resource.getId().getName() + resource.getType().getExtension();
 	}
 
-	protected abstract void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent);
+	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent, IUserContext user) {
+		getModelRepository().attachFile(importedModel.getId(), originalFileContent,user);
+	}
 
 	/**
 	 * validates the given fileUpload content

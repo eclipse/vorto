@@ -15,14 +15,10 @@
 package org.eclipse.vorto.repository.web.core;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,16 +28,14 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
-import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -70,19 +64,12 @@ import io.swagger.annotations.ApiResponses;
  */
 @RestController("internal.modelRepositoryController")
 @RequestMapping(value = "/rest/models")
-public class ModelRepositoryController {
+public class ModelRepositoryController extends AbstractRepositoryController  {
 
-	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
-	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-	private static final String CONTENT_DISPOSITION = "content-disposition";
 
 	@Value("${server.config.maxModelImageSize}")
 	private long maxModelImageSize;
 	
-
-	@Autowired
-	private IModelRepository modelRepository;
-
 	@Autowired
 	private IUserRepository userRepository;
 
@@ -128,14 +115,7 @@ public class ModelRepositoryController {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	@ApiOperation(value = "Lists all files that are attached to the model")
-	@RequestMapping(value = "/{modelId:.+}/files", method = RequestMethod.GET)
-	public Set<String> getFileNamesOfModel(
-			@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
-		return this.modelRepository.getFileNames(ModelId.fromPrettyFormat(modelId));
-	}
-	
+		
 	@ApiOperation(value = "Saves a model to the repository.")
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
@@ -198,154 +178,7 @@ public class ModelRepositoryController {
 	
 	
 	// ##################### Downloads ################################
-	
-	@ApiOperation(value = "Downloads the model dsl content")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
-	@RequestMapping(value = "/{modelId:.+}/download/dsl", method = RequestMethod.GET)
-	public void downloadModelContent(
-			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
-			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
-			final HttpServletResponse response) {
 
-		Objects.requireNonNull(modelId, "modelId must not be null");
-
-		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-		logger.info("downloadModelById: [" + modelID.toString() + "]");
-
-		if (includeDependencies) {
-			byte[] zipContent = createZipWithAllDependencies(modelID);
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
-					+ modelID.getName() + "_" + modelID.getVersion() + ".zip");
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
-		} else {
-			ModelInfo model = modelRepository.getById(modelID);
-			createSingleModelContent(modelID, response,model.getFileName());
-		}
-	}
-	
-	private byte[] createZipWithAllDependencies(ModelId modelId) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
-
-		try {
-			addModelToZip(zos, modelId);
-
-			zos.close();
-			baos.close();
-
-			return baos.toByteArray();
-
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
-	private void createSingleModelContent(ModelId modelId, HttpServletResponse response, String fileName) {
-		FileContent fileContent = null;
-		if (fileName == null) {
-			fileContent = modelRepository.getModelContent(modelId);
-		} else {
-			fileContent = modelRepository.getFileContent(modelId, fileName).get();
-		}
-		final byte[] modelContent = fileContent.getContent();
-		if (modelContent != null && modelContent.length > 0) {
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
-		} else {
-			throw new RuntimeException("File not found.");
-		}
-	}
-
-	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-		ModelFileContent modelFile = modelRepository.getModelContent(modelId);
-		ModelInfo modelResource = modelRepository.getById(modelId);
-
-		try {
-			ZipEntry zipEntry = new ZipEntry(modelFile.getFileName());
-			zipOutputStream.putNextEntry(zipEntry);
-			zipOutputStream.write(modelFile.getContent());
-			zipOutputStream.closeEntry();
-		} catch (Exception ex) {
-			// entry possible exists already, so skipping TODO: ugly hack!!
-		}
-
-		for (ModelId reference : modelResource.getReferences()) {
-			addModelToZip(zipOutputStream, reference);
-		}
-	}
-	
-	private void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
-
-		try {
-			for (ModelInfo modelInfo : modelInfos) {
-				addModelToZip(zos, modelInfo.getId());
-			}
-
-			zos.close();
-			baos.close();
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
-		response.setContentType(APPLICATION_OCTET_STREAM);
-		try {
-			IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
-			response.flushBuffer();
-		} catch (IOException e) {
-			throw new RuntimeException("Error copying file.", e);
-		}
-	}
-
-	@ApiOperation(value = "Downloads the model content for the given file")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
-			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
-	@RequestMapping(value = "/{modelId:.+}/download/{fileName}", method = RequestMethod.GET)
-	public void downloadModelById(
-			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
-			@ApiParam(value = "the fileName to download", required = true) final @PathVariable String fileName,
-			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
-			final HttpServletResponse response) {
-
-		Objects.requireNonNull(modelId, "modelId must not be null");
-
-		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-		logger.info("downloadModelById: [" + modelID.toString() + "]");
-
-		if (includeDependencies) {
-			byte[] zipContent = createZipWithAllDependencies(modelID);
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
-					+ modelID.getName() + "_" + modelID.getVersion() + ".zip");
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
-		} else {
-			createSingleModelContent(modelID, response, fileName);
-		}
-	}
-	
 	@RequestMapping(value = { "/mine/download" }, method = RequestMethod.GET)
 	public void getUserModels(Principal user, final HttpServletResponse response) {
 		List<ModelInfo> userModels = this.modelRepository

@@ -2,32 +2,33 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.repository.api.AbstractModel;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -44,11 +45,8 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
-	@Autowired
-	private IModelRepository modelRepository;
-	
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
-
+	
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found"),
@@ -139,24 +137,6 @@ public class ModelController extends AbstractRepositoryController {
 			throw new RuntimeException(ex);
 		}
 	}
-
-
-	private void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-		final ModelInfo modelResource = modelRepository.getById(modelId);
-		final FileContent modelFile = modelRepository.getFileContent(modelId,modelResource.getFileName()).get();
-		try {
-			ZipEntry zipEntry = new ZipEntry(modelFile.getFileName());
-			zipOutputStream.putNextEntry(zipEntry);
-			zipOutputStream.write(modelFile.getContent());
-			zipOutputStream.closeEntry();
-		} catch (Exception ex) {
-			// entry possible exists already, so skipping TODO: ugly hack!!
-		}
-
-		for (ModelId reference : modelResource.getReferences()) {
-			addModelToZip(zipOutputStream, reference);
-		}
-	}
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
@@ -191,5 +171,37 @@ public class ModelController extends AbstractRepositoryController {
 				.filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),
 				Optional.of(mappingModel));
 
+	}
+	
+	@ApiOperation(value = "Downloads the model file")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 404, message = "Model not found") })
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
+	public void downloadModelById(
+			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,
+			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
+			final HttpServletResponse response) {
+
+		Objects.requireNonNull(modelId, "modelId must not be null");
+
+		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+		logger.info("Download of Model file : [" + modelID.toString() + "]");
+
+		if (includeDependencies) {
+			byte[] zipContent = createZipWithAllDependencies(modelID);
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
+					+ modelID.getName() + "_" + modelID.getVersion() + ".zip");
+			response.setContentType(APPLICATION_OCTET_STREAM);
+			try {
+				IOUtils.copy(new ByteArrayInputStream(zipContent), response.getOutputStream());
+				response.flushBuffer();
+			} catch (IOException e) {
+				throw new RuntimeException("Error copying file.", e);
+			}
+		} else {
+			createSingleModelContent(modelID, response);
+		}
 	}
 }

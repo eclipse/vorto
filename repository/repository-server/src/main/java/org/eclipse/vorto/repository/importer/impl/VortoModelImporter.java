@@ -132,6 +132,7 @@ public class VortoModelImporter extends AbstractModelImporter {
 	}
 
 	@Override
-	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
+	protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent, IUserContext user) {
+		// no need to process the imported file further
 	}
 }

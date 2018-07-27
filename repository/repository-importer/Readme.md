@@ -120,15 +120,6 @@ Here is a just a code snippet of the Importer. [Please go here](https://github.c
 			 * representations.
 			 */
 		}
-
-		@Override
-		protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent) {
-			/* 
-			 * The method is called after the model was saved in the model repository. 
-			 * For example, you can add the code here that adds the original file to the repository 
-			 * as well, e.g. getModelRepository().addFileContent(importedModel.getId(), originalFileContent); 
-			 */
-		}
 	}
 
 #### Step 3. Register the Importer
