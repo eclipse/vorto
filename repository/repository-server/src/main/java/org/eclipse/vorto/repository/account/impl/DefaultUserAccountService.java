@@ -67,24 +67,7 @@ public class DefaultUserAccountService implements IUserAccountService {
 	public void delete(final String userId) {
 		User userToDelete = userRepository.findByUsername(userId);
 
-		if (userToDelete != null) {
-//			List<ModelInfo> userModels = this.modelRepository.search("author:"+UserContext.user(userId).getHashedUsername());
-//			DependencyManager dm = new DependencyManager();
-//			for (Iterator<ModelInfo> iter = userModels.iterator();iter.hasNext();) {
-//				ModelInfo current = iter.next();
-//				if (current.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName()) || 
-//					current.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_IN_REVIEW.getName())) {
-//					dm.addResource(current);
-//				}
-//			}
-//			
-//			List<ModelInfo> sorted = dm.getSorted();
-//			Collections.reverse(sorted);
-//			
-//			sorted.forEach(info -> {
-//				this.modelRepository.removeModel(info.getId());
-//			});
-			
+		if (userToDelete != null) {		
 			userRepository.delete(userToDelete);
 		}
 	}

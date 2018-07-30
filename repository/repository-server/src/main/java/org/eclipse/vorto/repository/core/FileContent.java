@@ -9,6 +9,7 @@ public class FileContent {
 	public FileContent(String fileName, byte[] content) {
 		this.fileName = fileName;
 		this.content = content;
+		this.size = content.length;
 	}
 
 	public FileContent(String fileName, byte[] content, long size) {

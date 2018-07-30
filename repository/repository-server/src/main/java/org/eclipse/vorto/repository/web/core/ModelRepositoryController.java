@@ -38,12 +38,10 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
-import org.eclipse.vorto.repository.web.core.exceptions.UploadTooLargeException;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -67,10 +65,6 @@ import io.swagger.annotations.ApiResponses;
 @RestController("internal.modelRepositoryController")
 @RequestMapping(value = "/rest/models")
 public class ModelRepositoryController extends AbstractRepositoryController  {
-
-
-	@Value("${repo.config.maxModelImageSize}")
-	private long maxModelImageSize;
 	
 	@Autowired
 	private IUserRepository userRepository;
@@ -110,9 +104,6 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
 									@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
-		if (file.getSize() > maxModelImageSize) {
-			throw new UploadTooLargeException("model image", maxModelImageSize);
-		}
 		
 		logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
 		

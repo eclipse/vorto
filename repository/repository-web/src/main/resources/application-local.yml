@@ -16,7 +16,7 @@ github:
          - user:email
     resource:
       userInfoUri: https://api.github.com/user
-    
+      
 eidp:
   oauth2:
     enabled: false

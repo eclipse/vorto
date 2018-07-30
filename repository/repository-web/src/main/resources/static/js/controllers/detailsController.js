@@ -500,15 +500,14 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						uploadDialog.dismiss();
 					};
 
-					//validate if file size should be smaller than 64 kBytes
 					$scope.isFileSizeValid = function () {
 						var input = document.getElementById("file-upload");
 
 						if (input.files[0]) {
 							$scope.selectedFile = input.files[0];
 							$scope.$apply(function () {
-								$scope.fileSizeValid = input.files[0].size <= (64 * 1024);
-								$scope.fileNameValid = $scope.selectedFile.name.length < 100;
+								$scope.fileSizeValid = true;
+								$scope.fileNameValid = true;
 							});
 						}
 					};

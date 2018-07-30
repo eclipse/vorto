@@ -64,14 +64,4 @@ public class RepositoryConfiguration {
 		 */
 		return upgradeService;
 	}
-	
-//	@Autowired
-//	private IUserAccountService userService;
-	
-//	@PostConstruct
-//	public void createUser() {
-//		User user = userService.create("aedelmann");
-//		user.setRole(Role.ADMIN);
-//		userService.saveUser(user);
-//	}
 }

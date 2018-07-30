@@ -521,7 +521,6 @@ public class JcrModelRepository implements IModelRepository {
 	@Override
 	public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) throws AttachmentException {
 
-		attachmentValidator.validateFileLength(fileContent,modelId);
 		attachmentValidator.validateAttachment(fileContent,modelId);
 
 		try {
@@ -534,7 +533,7 @@ public class JcrModelRepository implements IModelRepository {
 			} else {
 				attachmentFolderNode = modelFolderNode.getNode("attachments");
 			}
-
+			
 			String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId()).collect(Collectors.toList())
 					.toArray(new String[tags.length]);
 			

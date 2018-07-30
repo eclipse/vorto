@@ -72,7 +72,7 @@ public class AttachmentValidatorTest {
     @Test (expected = AttachmentException.class)
     public void should_size_more_then_100() throws Exception {
         when(file.getFileName()).thenReturn("thisisbigfilename_thisisbigfilename_thisisbigfilename_thisisbigfilename_thisisbigfilename_thisisbigfilename_.txt");
-        attachmentValidator.validateFileLength(file,MODEL_ID);
+        attachmentValidator.validateAttachment(file,MODEL_ID);
     }
 
 

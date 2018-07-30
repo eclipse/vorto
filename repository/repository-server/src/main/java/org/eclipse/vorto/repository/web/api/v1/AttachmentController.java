@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.ByteArrayInputStream;
@@ -64,23 +78,22 @@ public class AttachmentController {
 		try {
 			String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
 
-			modelRepository.attachFile(modelID, new FileContent(fileName, file.getBytes()), getUserContext(),guessTagsFromFileExtension(fileName));
+			modelRepository.attachFile(modelID, new FileContent(fileName, file.getBytes(),file.getSize()), getUserContext(),guessTagsFromFileExtension(fileName));
 
 			return AttachResult.success(modelID, fileName);
 		} catch (IOException | FatalModelRepositoryException | AttachmentException e) {
-			LOGGER.error("Error while uploading []:", e);
 			return AttachResult.fail(modelID, file.getOriginalFilename(), e.getMessage());
 		}
 	}
 	//TODO: interim solution until attachment upload dialog supports Label Chooser
-	private Tag guessTagsFromFileExtension(String fileName) {
+	private Tag[] guessTagsFromFileExtension(String fileName) {
 		final String _name = fileName.toLowerCase();
 		if (_name.endsWith(".jpg") || _name.endsWith(".png")) {
-			return Attachment.TAG_IMAGE;			
+			return new Tag[] {Attachment.TAG_IMAGE};			
 		} else if (_name.endsWith(".doc") || _name.endsWith(".pdf") || _name.endsWith(".txt")) {
-			return Attachment.TAG_DOCUMENTATION;
+			return new Tag[] {Attachment.TAG_DOCUMENTATION};
 		} else {
-			return null;
+			return new Tag[0];
 		}
 	}
 
@@ -94,7 +107,6 @@ public class AttachmentController {
 		try {
 			return modelRepository.getAttachments(modelID);
 		} catch (FatalModelRepositoryException e) {
-			LOGGER.error("Error while getting attachments []:", e);
 			return Collections.emptyList();
 		}
 	}
@@ -143,7 +155,6 @@ public class AttachmentController {
 
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (UnsupportedEncodingException e) {
-			LOGGER.error("Cannot decode name of attachment:", e);
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
