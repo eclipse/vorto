@@ -51,6 +51,7 @@ import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.attachment.Tag;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -62,6 +63,7 @@ import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +88,9 @@ public class JcrModelRepository implements IModelRepository {
 	private ModelSearchUtil modelSearchUtil;
 
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
+
+	@Autowired
+	private AttachmentValidator attachmentValidator;
 
 	@Override
 	public List<ModelInfo> search(final String expression) {
@@ -514,7 +519,11 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public boolean attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) {
+	public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) throws AttachmentException {
+
+		attachmentValidator.validateFileLength(fileContent,modelId);
+		attachmentValidator.validateAttachment(fileContent,modelId);
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -545,10 +554,8 @@ public class JcrModelRepository implements IModelRepository {
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
-
-			return true;
 		} catch (PathNotFoundException e) {
-			return false;
+			throw new ModelNotFoundException("Model with ID "+modelId+" not found");
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}

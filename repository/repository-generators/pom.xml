@@ -99,6 +99,12 @@
 			<artifactId>org.eclipse.vorto.codegen.hono.python</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>org.eclipse.vorto.codegen.hono.java</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>

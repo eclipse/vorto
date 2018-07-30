@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +27,9 @@ import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -21,16 +37,14 @@ import org.springframework.core.io.ClassPathResource;
 public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	
 	@Test
-	public void testAttachFile() {
+	public void testAttachNewFile() {
 		IUserContext erle = UserContext.user("erle");
 		importModel("Color.type", erle);
 		
 		try {
-			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
 					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
-			
-			assertTrue(result);
-			
+						
 			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 			
 			assertEquals(1, attachments.size());
@@ -156,16 +170,14 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testAttachMultipleFiles() {
+	public void testAttachMultipleFiles() throws Exception {
 		IUserContext erle = UserContext.user("erle");
-		
-		testAttachFile();
+		ModelInfo model = importModel("Color.type", erle);
+		attachFile(model);
 		
 		try {
-			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
 					new FileContent("Color.xmi", IOUtils.toByteArray(new ClassPathResource("sample_models/Color.xmi").getInputStream())), erle);
-			
-			assertTrue(result);
 			
 			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 			
@@ -180,9 +192,10 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void testExtractAttachedFileContent() {
-		
-		testAttachFile();
+	public void testExtractAttachedFileContent() throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		ModelInfo model = importModel("Color.type", erle);
+		attachFile(model);
 		
 		try {
 			Optional<FileContent> colorXmi = modelRepository.getAttachmentContent(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), "Color.xmi");
@@ -203,25 +216,15 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		}
 	}
 	
-	@Test
-	public void testWrongModelIdIsNotExceptional() {
+	@Test(expected=ModelNotFoundException.class)
+	public void testAttachFileToNonExistingModel() {
 		IUserContext erle = UserContext.user("erle");
 		importModel("Color.type", erle);
 		
 		try {
-			boolean result = modelRepository.attachFile(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"), 
+			modelRepository.attachFile(new ModelId("NotExistModel", "org.eclipse.vorto.examples.type", "1.0.0"), 
 					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
-			
-			assertFalse(result);
-			
-			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"));
-			
-			assertEquals(0, attachments.size());
-			
-			Optional<FileContent> backup1 = modelRepository.getAttachmentContent(new ModelId("org.eclipse.vorto.examples.type", "Color", "1.0.0"), "backup1.xml");
-			
-			assertFalse(backup1.isPresent());
-			
+						
 		} catch (IOException | FatalModelRepositoryException e) {
 			e.printStackTrace();
 			fail("Cannot load sample file");
@@ -229,35 +232,35 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	}	
 	
 	@Test
-	public void testDeleteAttachments() {
+	public void testDeleteAttachments() throws Exception {
 		IUserContext erle = UserContext.user("erle");
 		importModel("Color.type", erle);
 		
-		try {
-			ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
-			
-			boolean result = modelRepository.attachFile(modelId, 
-					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
-			
-			assertTrue(result);
-			
-			boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
-			
-			assertTrue(deleteResult);
-			
-			// You cannot delete it twice
-			boolean deleteResult1 = modelRepository.deleteAttachment(modelId, "backup1.xml");
-			
-			assertFalse(deleteResult1);
-			
-			boolean deleteResult2 = modelRepository.deleteAttachment(modelId, "backup2.xml");
-			
-			assertFalse(deleteResult2);
-			
-		} catch (IOException | FatalModelRepositoryException e) {
-			e.printStackTrace();
-			fail("Cannot load sample file");
-		}
+		ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
+		
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
+		
+		
+		boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
+		assertTrue(deleteResult);
+	}
+	
+	@Test
+	public void testDeleteOfAttachmentTwice() throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
+		
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
+		
+		
+		modelRepository.deleteAttachment(modelId, "backup1.xml");
+		
+		boolean deleteResult1 = modelRepository.deleteAttachment(modelId, "backup1.xml");
+		assertFalse(deleteResult1);
 	}
 	
 	@Test
@@ -266,11 +269,9 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 		importModel("Color.type", erle);
 		
 		try {
-			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
 					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_IMAGE);
-			
-			assertTrue(result);
-			
+						
 			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
 			
 			assertEquals(1, attachments.size());
@@ -340,5 +341,11 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			e.printStackTrace();
 			fail("Cannot load sample file");
 		}
+	}
+	
+	private void attachFile(ModelInfo model) throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		modelRepository.attachFile(model.getId(), 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
 	}
 }

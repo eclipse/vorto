@@ -69,7 +69,7 @@ import io.swagger.annotations.ApiResponses;
 public class ModelRepositoryController extends AbstractRepositoryController  {
 
 
-	@Value("${server.config.maxModelImageSize}")
+	@Value("${repo.config.maxModelImageSize}")
 	private long maxModelImageSize;
 	
 	@Autowired

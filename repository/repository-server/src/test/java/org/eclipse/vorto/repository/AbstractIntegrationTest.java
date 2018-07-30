@@ -12,6 +12,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
+import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
@@ -37,6 +38,9 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	
 	@Mock
 	protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
+	
+	@Mock
+	protected AttachmentValidator attachmentValidator = Mockito.mock(AttachmentValidator.class);
 	
 	protected VortoModelImporter importer = null;
 	

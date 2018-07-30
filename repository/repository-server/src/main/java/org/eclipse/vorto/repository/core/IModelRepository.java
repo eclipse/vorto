@@ -112,13 +112,12 @@ public interface IModelRepository {
 	 * Attaches the given file to the model
 	 * 
 	 * @param modelid The modelId where to attach the file
-	 * @param fileName the filename
-	 * @param content the content of the file
+	 * @param fileContent the filename
 	 * @param userContext the user context
 	 * @param tags attachment tags 
-	 * @return status whether the file was attached or not 
+     * @throws Attachment when the attachment could not be attached to the node, e.g. because it is not valid.
 	 */
-	boolean attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag...Tags);
+	void attachFile(ModelId modelid, FileContent fileContent, IUserContext userContext, Tag...tags) throws AttachmentException;
 	
 	/**
 	 * Gets a list of attachments for the model (without its content)

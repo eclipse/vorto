@@ -41,7 +41,7 @@ public class BackupController extends AbstractRepositoryController {
 	@Autowired
 	private IModelBackupService backupService;
 		
-	@Value("${server.config.maxBackupSize}")
+	@Value("${repo.config.maxBackupSize}")
 	private long maxBackupSize;
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";

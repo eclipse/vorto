@@ -64,7 +64,7 @@ public class ImportController {
 	@Autowired
 	private IModelImportService importerService;
 	
-	@Value("${server.config.maxModelSize}")
+	@Value("${repo.config.maxModelSize}")
 	private long maxModelSize;
 	
 	@Autowired
