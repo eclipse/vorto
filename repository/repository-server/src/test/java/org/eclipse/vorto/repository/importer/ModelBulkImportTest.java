@@ -17,7 +17,6 @@ package org.eclipse.vorto.repository.importer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -105,14 +104,11 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
 
 	private void verifyOneModelAreMissing(List<ValidationReport> uploadResults) {
 		assertEquals(false, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertEquals((uploadResults.size() - 1),
-				uploadResults.stream().filter(result -> result.getMessage() == null).count());
-		assertEquals(1, uploadResults.stream().filter(result -> result.getMessage() != null).count());
+		assertEquals(uploadResults.size(), uploadResults.stream().filter(result -> result.getMessage() != null).count());
 	}
 
 	private void verifyAllModelsAreValid(List<ValidationReport> uploadResults) {
 		assertEquals(true, uploadResults.stream().allMatch(result -> result.isValid()));
-		assertTrue(uploadResults.stream().allMatch(result -> result.getMessage() == null));
 	}
 
 	private byte[] loadContentForFile(String fileName) throws IOException {
