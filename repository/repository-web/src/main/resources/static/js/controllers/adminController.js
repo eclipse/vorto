@@ -3,15 +3,6 @@ var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi'
 repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location',
     function ($scope, $rootScope, $http, $location) {
 
-        $scope.removeImages = function () {
-            $http.delete('./rest/backups/images')
-                .success(function (result) {
-                    $location.path('/');
-                }).error(function (data, status, headers, config) {
-                    $location.path('/');
-                });
-        };
-
         $scope.restore = function () {
             $scope.restoreResult = {};
             $scope.resultMessage = "";
