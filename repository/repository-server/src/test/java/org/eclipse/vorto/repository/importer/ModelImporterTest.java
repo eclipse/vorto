@@ -43,10 +43,13 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				alex);
-		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.WARNING,
-				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
+
+		assertTrue(uploadResult.hasWarnings());
+		assertTrue(uploadResult.isValid());
+		assertTrue(uploadResult.getReport().get(0).isValid());
+		assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
 	}
-	
+
 	@Test
 	public void testUploadSameModelTwiceByAuthorAlreadyReleased() throws Exception {
 		IUserContext alex = UserContext.user("alex");
@@ -57,21 +60,25 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				alex);
+
+		assertFalse(uploadResult.hasWarnings());
 		assertFalse(uploadResult.isValid());
-		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.ERROR,
-				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
+		assertFalse(uploadResult.getReport().get(0).isValid());
+		assertEquals(ValidationReport.ERROR_MODEL_ALREADY_RELEASED, uploadResult.getReport().get(0).getMessage());
 	}
 
 	@Test
-	public void testUploadSameModelTwiceByDifferent() throws Exception {
+	public void testUploadSameModelTwiceByDifferentUser() throws Exception {
 		importModel("Color.type", UserContext.user("alex"));
 		UploadModelResult uploadResult = this.importer.upload(
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				UserContext.user("stefan"));
+
+		assertFalse(uploadResult.hasWarnings());
 		assertFalse(uploadResult.isValid());
-		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.ERROR,
-				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
+		assertFalse(uploadResult.getReport().get(0).isValid());
+		assertEquals(ValidationReport.ERROR_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
 	}
 
 	@Test
@@ -87,11 +94,16 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 
 		this.importer.doImport(uploadResult.getHandleId(), admin);
 		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReports().get(0).getModel().getId());
+
+		assertTrue(uploadResult.hasWarnings());
 		assertTrue(new String(content.getContent(), "utf-8").contains("mandatory b as int"));
-		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.WARNING,
-				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
+		assertTrue(uploadResult.isValid());
+		assertTrue(uploadResult.getReport().get(0).isValid());
+		assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
+
+		;
 	}
-	
+
 	@Test
 	public void testUploadSameModelByAdminReleasedState() throws Exception {
 		ModelInfo info = importModel("Color.type", UserContext.user("alex"));
@@ -103,10 +115,11 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
 				admin);
-		
+
+		assertFalse(uploadResult.hasWarnings());
 		assertFalse(uploadResult.isValid());
-		assertEquals(DetailedReport.REPORT_MESSAGE_TYPE.ERROR,
-				uploadResult.getReport().get(0).getDetailedReport().getMessageType());
+		assertFalse(uploadResult.getReport().get(0).isValid());
+		assertEquals(ValidationReport.ERROR_MODEL_ALREADY_RELEASED, uploadResult.getReport().get(0).getMessage());
 
 	}
 
@@ -117,7 +130,12 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color3.type").getInputStream())),
 				UserContext.user("admin"));
+
+		assertFalse(uploadResult.hasWarnings());
 		assertFalse(uploadResult.isValid());
+		assertFalse(uploadResult.getReport().get(0).isValid());
+		assertNotNull(uploadResult.getReport().get(0).getMessage());
+		assertEquals(MessageSeverity.ERROR,uploadResult.getReport().get(0).getMessage().getSeverity());
 	}
 
 	@Test
@@ -138,7 +156,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color.type").getInputStream())),
 				UserContext.user("admin"));
 		assertEquals(true, uploadResult.isValid());
-		assertNull(uploadResult.getReports().get(0).getMessage());
+		assertEquals(MessageSeverity.INFO,uploadResult.getReports().get(0).getMessage().getSeverity());
 		assertNotNull(uploadResult.getHandleId());
 		ModelInfo resource = uploadResult.getReports().get(0).getModel();
 		assertEquals("org.eclipse.vorto.examples.type", resource.getId().getNamespace());
@@ -222,11 +240,10 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	@Test
 	public void testUploadModelThatCompliesToOlderVersionOfMetaModel() throws Exception {
 		UploadModelResult uploadResult = this.importer
-				.upload(FileUpload
-						.create("Corrupt-model_olderVersionOfMetaModel.fbmodel",
-								IOUtils.toByteArray(new ClassPathResource(
-										"sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel")
-												.getInputStream())),
+				.upload(FileUpload.create("Corrupt-model_olderVersionOfMetaModel.fbmodel",
+						IOUtils.toByteArray(
+								new ClassPathResource("sample_models/Corrupt-model_olderVersionOfMetaModel.fbmodel")
+										.getInputStream())),
 						UserContext.user("alex"));
 		assertEquals(false, uploadResult.isValid());
 		assertNotNull(uploadResult.getReports().get(0).getMessage());

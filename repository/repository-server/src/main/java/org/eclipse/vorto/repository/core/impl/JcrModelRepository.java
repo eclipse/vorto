@@ -521,8 +521,10 @@ public class JcrModelRepository implements IModelRepository {
 	@Override
 	public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) throws AttachmentException {
 
-		attachmentValidator.validateAttachment(fileContent,modelId);
-
+		if (Arrays.asList(tags).stream().filter(tag -> tag.equals(Attachment.TAG_IMPORTED)).collect(Collectors.toList()).isEmpty()) {
+			attachmentValidator.validateAttachment(fileContent, modelId);
+		}
+		
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -559,7 +561,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-
+	
 	@Override
 	public List<Attachment> getAttachments(ModelId modelId) {
 		try {

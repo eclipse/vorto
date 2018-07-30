@@ -449,6 +449,11 @@ ul.nav {
       font-weight: 600;
 }
 
+.fileUploadDetails label.warningModel {
+    color:#f39c12;
+      font-weight: 600;
+}
+
 .placeHolder {
     background-color: #dadada;
     height: 200px;
@@ -1378,6 +1383,11 @@ th.action
   color: red;
   float: right !important;
 }
+
+.warning {
+    color: #f1b232;
+    float: right !important;
+  }
 
 .box-headline {
   color: #1774A5;

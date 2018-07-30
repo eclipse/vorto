@@ -23,52 +23,54 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 
-
 public class ValidationReport {
-
+	
+	public static final StatusMessage ERROR_MODEL_ALREADY_RELEASED = new StatusMessage("The model with this version is already released. Please create a new version.",MessageSeverity.ERROR);
+	public static final StatusMessage WARNING_MODEL_ALREADY_EXISTS = new StatusMessage("A model with this version already exists, and will be overwritten upon import.",MessageSeverity.WARNING);
+	public static final StatusMessage ERROR_MODEL_ALREADY_EXISTS = new StatusMessage("A model with this version has already been created by another user.",MessageSeverity.ERROR);
+	
 	private ModelInfo model = null;
 	private boolean valid = false;
-	private String message = null;
+	private StatusMessage message = null;
 	private Collection<ModelId> unresolvedReferences = new ArrayList<ModelId>();
-	private DetailedReport detailedReport = new DetailedReport();
-	
-	public ValidationReport(ModelInfo model, boolean valid, String message, Collection<ModelId> missingReferences) {
+
+	public ValidationReport(ModelInfo model, boolean valid, StatusMessage message, Collection<ModelId> missingReferences) {
 		super();
 		this.model = model;
 		this.valid = valid;
 		this.message = message;
 		this.unresolvedReferences.addAll(missingReferences);
 	}
-	
+
 	public static ValidationReport invalid(ModelInfo model, String msg) {
-		return new ValidationReport(model, false, msg,Collections.emptyList());
+		return new ValidationReport(model, false, new StatusMessage(msg ,MessageSeverity.ERROR), Collections.emptyList());
 	}
-	
+
 	public static ValidationReport invalid(String msg) {
-		return new ValidationReport(null, false, msg,Collections.emptyList());
+		return new ValidationReport(null, false, new StatusMessage(msg, MessageSeverity.ERROR), Collections.emptyList());
 	}
-	
+
 	public static ValidationReport invalid(ModelInfo model, String msg, Collection<ModelId> missingReferences) {
-		return new ValidationReport(model, false, msg,missingReferences);
+		return new ValidationReport(model, false, new StatusMessage(msg, MessageSeverity.ERROR), missingReferences);
 	}
-	
+
 	public static ValidationReport invalid(ModelInfo model, ValidationException exception) {
 		if (exception instanceof CouldNotResolveReferenceException) {
-			CouldNotResolveReferenceException ex = (CouldNotResolveReferenceException)exception;
-			return new ValidationReport(model, false, exception.getMessage(),ex.getMissingReferences());
+			CouldNotResolveReferenceException ex = (CouldNotResolveReferenceException) exception;
+			return new ValidationReport(model, false, new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), ex.getMissingReferences());
 
 		} else {
-			return new ValidationReport(model, false, exception.getMessage(),Collections.emptyList());
+			return new ValidationReport(model, false,new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), Collections.emptyList());
 
 		}
 	}
 
 	public static ValidationReport valid(ModelInfo model) {
-		return new ValidationReport(model, true, null, Collections.emptyList());
+		return new ValidationReport(model, true, new StatusMessage("The model is valid.", MessageSeverity.INFO), Collections.emptyList());
 	}
-	
+
 	protected ValidationReport() {
-		
+
 	}
 
 	public ModelInfo getModel() {
@@ -87,11 +89,11 @@ public class ValidationReport {
 		this.valid = valid;
 	}
 
-	public String getMessage() {
+	public StatusMessage getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(StatusMessage message) {
 		this.message = message;
 	}
 
@@ -102,15 +104,4 @@ public class ValidationReport {
 	public void setUnresolvedReferences(Collection<ModelId> unresolvedReferences) {
 		this.unresolvedReferences = unresolvedReferences;
 	}
-
-	public DetailedReport getDetailedReport() {
-		return detailedReport;
-	}
-
-	public void setDetailedReport(DetailedReport detailedReport) {
-		this.detailedReport = detailedReport;
-	}
-	
-	
-	
 }

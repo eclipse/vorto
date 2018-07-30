@@ -57,12 +57,25 @@
 					<i class='glyphicon glyphicon-warning-sign'></i>  This model already exist and will be overwritten upon import
 			</div>
 			<div ng-show="showResultBox">
-				<div ng-show="showResultBox" ng-class="uploadResult.result.valid? 'alert alert-success' : 'alert alert-danger'">
-					{{resultMessage}}
+				<div ng-show="!uploadResult.result.valid" class="alert alert-danger">
+						<i class="fa fa-fw fa-close"></i> {{resultMessage}}
 					</p>
-					<small ng-show="showResultBox && uploadResult.result.valid">Note: Imported models will be in
-						<i>Draft</i> state and can only be viewed and edited by you.</small>
 				</div>
+				<div ng-show="uploadResult.result.valid">
+					<div ng-show="hasWarning" class="alert alert-warning">
+							<i class="fa fa-fw fa-warning"></i> {{resultMessage}}
+					</p>
+						<small>Note: Imported models will be in
+							<i>Draft</i> state and can only be viewed and edited by you.</small>
+					</div>
+					<div ng-show="!hasWarning" class="alert alert-success">
+							<i class="fa fa-fw fa-check "></i> {{resultMessage}}
+					</p>
+						<small>Note: Imported models will be in
+							<i>Draft</i> state and can only be viewed and edited by you.</small>
+					</div>
+				</div>
+
 
 				<br />
 				<div class="row">
@@ -82,7 +95,10 @@
 							<div class="header">
 								<i ng-class="stateArr[$index].active ? 'fa fa-plus-square' : 'fa fa-minus-square'" aria-hidden="true"></i>
 								{{report.model.id.name}}
-								<i ng-class="report.valid === true ? 'fa fa-check fa-lg valid' : 'fa fa-close fa-lg invalid'" aria-hidden="true"></i>
+								<i ng-show="!fileImported && report.message.severity == 'INFO'" class="fa fa-check fa-lg valid" aria-hidden="true"></i>
+								<i ng-show="!fileImported && report.message.severity == 'ERROR'" class="fa fa-close fa-lg invalid" aria-hidden="true"></i>
+								<i ng-show="!fileImported && report.message.severity == 'WARNING'" class="fa fa-warning fa-lg warning" aria-hidden="true"></i>
+								<a class="btn btn-primary pull-right" ng-show="fileImported" href="./#/details/ {{report.model.id.namespace}}/{{report.model.id.name}}/{{report.model.id.version}}" class="btn btn-primary" role="button">Open Model </a>
 							</div>
 						</div>
 
@@ -95,11 +111,6 @@
 												<label>Namespace:</label>
 											</td>
 											<td class="tdspacing">{{report.model.id.namespace}}</td>
-											<td class="linkButton" ng-show="!showCheckin && !beingCheckedIn">
-												<a href="./#/details/ {{report.model.id.namespace}}/{{report.model.id.name}}/{{report.model.id.version}}" class="btn btn-primary"
-												 role="button">
-													Go to {{report.model.id.name}} </a>
-											</td>
 										</tr>
 										<tr>
 											<td>
@@ -144,10 +155,17 @@
 												</table>
 												</td>
 										</tr>
-										<tr ng-show="report.valid === false">
+										<tr ng-show="!fileImported && report.message.severity === 'ERROR'">
 											<td colspan="2">
 												<label class="error">
-													<i class="fa fa-fw fa-close"></i> Error - {{report.message}}
+													<i class="fa fa-fw fa-close"></i> Error - {{report.message.message}}
+												</label>
+											</td>
+										</tr>
+										<tr ng-show="!fileImported && report.message.severity === 'WARNING'">
+											<td colspan="2">
+												<label class="warningModel">
+													Warning - {{report.message.message}}
 												</label>
 											</td>
 										</tr>

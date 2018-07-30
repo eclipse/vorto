@@ -6,6 +6,7 @@ public class FileContent {
 	private byte[] content;
 	private long size;
 	
+
 	public FileContent(String fileName, byte[] content) {
 		this.fileName = fileName;
 		this.content = content;
@@ -29,5 +30,7 @@ public class FileContent {
 	public long getSize() {
 		return size;
 	}
+	
+	
 
 }

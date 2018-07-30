@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.importer.DetailedReport;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
 import org.eclipse.vorto.repository.importer.IModelImporter;
@@ -54,88 +53,91 @@ import io.swagger.annotations.ApiParam;
 @RequestMapping(value = "/rest/importers")
 public class ImportController {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-    
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+
 	private final String UPLOAD_VALID = "%s is valid and ready for import.";
 	private final String UPLOAD_FAIL = "%s has errors. Cannot import.";
-	private final String UPLOAD_FAIL_RELEASED_MODEL = "%s has been released already.";
-	private final String UPLOAD_FAIL_NO_RIGHTS = "%s already exists. You have to be an admin to overwrite this model.";
-    
+	private final String UPLOAD_WARNING = "Warning! You are about to overwrite an existing model!";
+
 	@Autowired
 	private IModelImportService importerService;
 	
 	@Value("${repo.config.maxModelSize}")
 	private long maxModelSize;
-	
+
 	@Autowired
 	private IWorkflowService workflowService;
-	
+
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<UploadModelResponse> uploadModel(@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file,@RequestParam("key") String key) {
+	public ResponseEntity<UploadModelResponse> uploadModel(
+			@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file,
+			@RequestParam("key") String key) {
 		if (file.getSize() > maxModelSize) {
 			throw new UploadTooLargeException("model", maxModelSize);
 		}
-		
+
 		LOGGER.info("uploadModel: [" + file.getOriginalFilename() + "]");
 		try {
 			IModelImporter importer = importerService.getImporterByKey(key).get();
-			UploadModelResult result = importer.upload(FileUpload.create(file.getOriginalFilename(), file.getBytes()), getUserContext());
+			UploadModelResult result = importer.upload(FileUpload.create(file.getOriginalFilename(), file.getBytes()),
+					getUserContext());
 			
-			if (result.isValid()) {
-				return validResponse(new UploadModelResponse(String.format(UPLOAD_VALID,file.getOriginalFilename()), result));
+			if (!result.isValid()) {
+				return validResponse(
+						new UploadModelResponse(String.format(UPLOAD_FAIL, file.getOriginalFilename()), result));
 			} else {
-				if(result.getReport().size() > 0 && result.getReport().get(0).getDetailedReport().getMessageType() == DetailedReport.REPORT_MESSAGE_TYPE.WARNING){
-					return validResponse(new UploadModelResponse(String.format(UPLOAD_VALID,file.getOriginalFilename()), result));
-				}else{
-					if (result.getReport().size() > 0 && result.getReport().get(0).getDetailedReport().getMessageType() == DetailedReport.REPORT_MESSAGE_TYPE.ERROR) {
-						if (result.getReport().get(0).getDetailedReport().isReleased()) {
-							return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL_RELEASED_MODEL,file.getOriginalFilename()), result));
-						} else {
-							return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL_NO_RIGHTS,file.getOriginalFilename()), result));
-						}
-					} else {
-						return validResponse(new UploadModelResponse(String.format(UPLOAD_FAIL,file.getOriginalFilename()), result));
-					}
+				if (result.hasWarnings()) {
+					return validResponse(
+							new UploadModelResponse(String.format(UPLOAD_WARNING, file.getOriginalFilename()), result));
+				} else {
+					return validResponse(
+							new UploadModelResponse(String.format(UPLOAD_VALID, file.getOriginalFilename()), result));
 				}
 			}
+
 		} catch (IOException e) {
 			LOGGER.error("Error upload model." + e.getStackTrace());
-			UploadModelResponse errorResponse = new UploadModelResponse("Error during upload. Try again. " + e.getMessage(), new UploadModelResult(null, Collections.emptyList()));
+			UploadModelResponse errorResponse = new UploadModelResponse(
+					"Error during upload. Try again. " + e.getMessage(),
+					new UploadModelResult(null, Collections.emptyList()));
 			return new ResponseEntity<UploadModelResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	private UserContext getUserContext() {
 		return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 	}
 
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	public ResponseEntity<List<ModelInfo>> doImport(@ApiParam(value = "The file name of uploaded model", required = true) final @PathVariable String handleId, @RequestParam("key") String key) {
+	public ResponseEntity<List<ModelInfo>> doImport(
+			@ApiParam(value = "The file name of uploaded model", required = true) final @PathVariable String handleId,
+			@RequestParam("key") String key) {
 		LOGGER.info("Importing Model with handleID " + handleId);
 		try {
-			
+
 			IModelImporter importer = importerService.getImporterByKey(key).get();
-			
+
 			List<ModelInfo> importedModels = importer.doImport(handleId, getUserContext());
 			for (ModelInfo modelInfo : importedModels) {
 				workflowService.start(modelInfo.getId());
 			}
-			
+
 			return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);
 		} catch (Exception e) {
 			LOGGER.error("Error Importing model. " + handleId, e);
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@ApiOperation(value = "Returns a list of supported importers")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public List<ImporterInfo> getImporters() {
 		List<ImporterInfo> importers = new ArrayList<ImporterInfo>();
 		this.importerService.getImporters().stream().forEach(importer -> {
-			importers.add(new ImporterInfo(importer.getKey(),importer.getSupportedFileExtensions(),importer.getShortDescription()));
+			importers.add(new ImporterInfo(importer.getKey(), importer.getSupportedFileExtensions(),
+					importer.getShortDescription()));
 		});
-		
+
 		return importers;
 	}
 

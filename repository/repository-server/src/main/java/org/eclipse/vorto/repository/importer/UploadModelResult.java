@@ -23,19 +23,22 @@ import java.util.List;
 public class UploadModelResult {
 	private String handleId = null;
 	private boolean isValid = false;
-	
+	private boolean hasWarnings = false;
+
 	private List<ValidationReport> reports = new ArrayList<ValidationReport>();
 
-	public UploadModelResult(String handleId,List<ValidationReport> reports) {
+	public UploadModelResult(String handleId, List<ValidationReport> reports) {
 		super();
 		this.handleId = handleId;
 		this.reports.addAll(reports);
 		this.isValid = reports.stream().filter(report -> !report.isValid()).count() == 0;
-
-	}
-	
-	protected UploadModelResult() {
+		this.hasWarnings = reports.stream().filter(report -> report.getMessage().getSeverity() == MessageSeverity.WARNING)
+				.count() > 0;
 		
+	}
+
+	protected UploadModelResult() {
+
 	}
 
 	public String getHandleId() {
@@ -66,9 +69,12 @@ public class UploadModelResult {
 		this.handleId = handleId;
 	}
 
-	@Override
-	public String toString() {
-		return "UploadModelResult [handleId=" + handleId + ", isValid=" + isValid + ", reports=" + reports + "]";
+	public boolean hasWarnings() {
+		return hasWarnings;
+	}
+
+	public void setHasWarnings(boolean hasWarnings) {
+		this.hasWarnings = hasWarnings;
 	}
 
 	@Override
@@ -76,6 +82,7 @@ public class UploadModelResult {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((handleId == null) ? 0 : handleId.hashCode());
+		result = prime * result + (hasWarnings ? 1231 : 1237);
 		result = prime * result + (isValid ? 1231 : 1237);
 		result = prime * result + ((reports == null) ? 0 : reports.hashCode());
 		return result;
@@ -95,6 +102,8 @@ public class UploadModelResult {
 				return false;
 		} else if (!handleId.equals(other.handleId))
 			return false;
+		if (hasWarnings != other.hasWarnings)
+			return false;
 		if (isValid != other.isValid)
 			return false;
 		if (reports == null) {
@@ -105,6 +114,9 @@ public class UploadModelResult {
 		return true;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "UploadModelResult [handleId=" + handleId + ", isValid=" + isValid + ", hasWarnings=" + hasWarnings
+				+ ", reports=" + reports + "]";
+	}
 }

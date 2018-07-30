@@ -192,7 +192,7 @@
 													<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 														{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 													</a>
-													<button class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+													<button ng-hide="model.released" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 														<i class="fa fa-close"></i>
 													</button>
 												</div>
@@ -232,7 +232,7 @@
 											</div>
 										</div>
 										<div class="row">
-											<div ng-if="error" class="alert alert-danger">{{error}}</div>
+											<div ng-if="error" class="alert alert-danger">{{message.message}}</div>
 											<div ng-if="success" class="alert alert-success">{{success}}</div>
 										</div>
 										<div class="row">
