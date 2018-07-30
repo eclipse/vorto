@@ -47,6 +47,33 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	public void testOverwriteAttachmentWithoutTags() {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		try {
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle);
+				
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup-withImages.xml").getInputStream())), erle);
+			
+			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			
+			assertEquals(1, attachments.size());
+			
+			assertEquals("backup1.xml",attachments.get(0).getFilename());
+			assertEquals(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),attachments.get(0).getModelId());
+			assertEquals(0,attachments.get(0).getTags().size());
+			attachments.forEach(attachment -> System.out.println(attachment));
+			
+		} catch (IOException | FatalModelRepositoryException e) {
+			e.printStackTrace();
+			fail("Cannot load sample file");
+		}
+	}
+	
+	@Test
 	public void testAttachFileWithTag() {
 		IUserContext erle = UserContext.user("erle");
 		importModel("Color.type", erle);
@@ -226,6 +253,88 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 			boolean deleteResult2 = modelRepository.deleteAttachment(modelId, "backup2.xml");
 			
 			assertFalse(deleteResult2);
+			
+		} catch (IOException | FatalModelRepositoryException e) {
+			e.printStackTrace();
+			fail("Cannot load sample file");
+		}
+	}
+	
+	@Test
+	public void testAttachImageWithTag() {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		try {
+			boolean result = modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_IMAGE);
+			
+			assertTrue(result);
+			
+			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			
+			assertEquals(1, attachments.size());
+			
+			assertEquals("sample.png",attachments.get(0).getFilename());
+			assertEquals(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),attachments.get(0).getModelId());
+			assertEquals(1,attachments.get(0).getTags().size());
+			assertEquals("Image",attachments.get(0).getTags().get(0).getLabel());
+			
+		} catch (IOException | FatalModelRepositoryException e) {
+			e.printStackTrace();
+			fail("Cannot load sample file");
+		}
+	}
+	
+	@Test
+	public void testOverwriteImageWithSameTag() {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		try {
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_IMAGE);
+			
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_IMAGE);
+			
+			
+			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			
+			assertEquals(1, attachments.size());
+			
+			assertEquals("sample.png",attachments.get(0).getFilename());
+			assertEquals(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),attachments.get(0).getModelId());
+			assertEquals(1,attachments.get(0).getTags().size());
+			assertEquals("Image",attachments.get(0).getTags().get(0).getLabel());
+			
+		} catch (IOException | FatalModelRepositoryException e) {
+			e.printStackTrace();
+			fail("Cannot load sample file");
+		}
+	}
+	
+	@Test
+	public void testOverwriteImageWithDiffernentTag() {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		try {
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_IMAGE);
+			
+			modelRepository.attachFile(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"), 
+					new FileContent("sample.png", IOUtils.toByteArray(new ClassPathResource("sample_models/sample.png").getInputStream())), erle,Attachment.TAG_DOCUMENTATION);
+			
+			
+			List<Attachment> attachments = modelRepository.getAttachments(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"));
+			
+			assertEquals(1, attachments.size());
+			
+			assertEquals("sample.png",attachments.get(0).getFilename());
+			assertEquals(new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0"),attachments.get(0).getModelId());
+			assertEquals(1,attachments.get(0).getTags().size());
+			assertEquals("Documentation",attachments.get(0).getTags().get(0).getLabel());
 			
 		} catch (IOException | FatalModelRepositoryException e) {
 			e.printStackTrace();
