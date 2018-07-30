@@ -1,11 +1,17 @@
 <section class="content">
+<ol class="breadcrumb">
+		<li>
+			<a href="./#/">Home</a>
+		</li>
+		<li class="active">Import</li>
+	</ol>
 	<div ng-if="error" class="alert alert-danger">{{error}}</div>
 	<form name="fileUploadForm" class="fileUploadForm form-inline">
 		<p>
 			<div class="row">
 				<div class="col-md-6">
-					<h2>Import a Model file</h2>
-					<p>Choose model type for import:</p>
+					<h2>Model Import</h2>
+					<p>Choose model type to import:</p>
 					<div class="radio" ng-repeat="importer in importers">
 						<label>
 							<input type="radio" name="importer" value="{{importer.key}}" ng-model="selectedImporter.key"> {{importer.key}}
@@ -66,13 +72,13 @@
 							<i class="fa fa-fw fa-warning"></i> {{resultMessage}}
 					</p>
 						<small>Note: Imported models will be in
-							<i>Draft</i> state and can only be viewed and edited by you.</small>
+							<i>Draft</i> state and can only be edited by you.</small>
 					</div>
 					<div ng-show="!hasWarning" class="alert alert-success">
 							<i class="fa fa-fw fa-check "></i> {{resultMessage}}
 					</p>
 						<small>Note: Imported models will be in
-							<i>Draft</i> state and can only be viewed and edited by you.</small>
+							<i>Draft</i> state and can only be edited by you.</small>
 					</div>
 				</div>
 

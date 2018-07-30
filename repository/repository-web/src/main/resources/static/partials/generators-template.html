@@ -1,12 +1,18 @@
 <section class="content">
 <ol class="breadcrumb">
-    <li></li>
- </ol>
+		<li>
+			<a href="./#/">Home</a>
+		</li>
+		<li class="active">Plugins</li>
+	</ol>
 <h2 class="modelHeader ng-binding">Generator Plugins</h2>
 <div class="row">
 <div class="col-md-12 modelDetails">
 <div class="row">
 	<div class="col-md-9">
+		<div ng-show="generators.length === 0">
+			<i>There are no generators configured.</i>
+		</div>
 		<div ng-repeat="generator in generators">
 			<div class="box">
 			 	<div class="col-md-3"><img ng-src="data:image/png;base64,{{generator.image144x144}}" width="144" height="144"></div>
@@ -24,7 +30,7 @@
 			<!--hr class="separator"  -->
 		</div>
  	</div>
-	<div class="col-sm-3 topUsed text-center">
+	<div ng-show="generators.length > 0" class="col-sm-3 topUsed text-center">
 		<div class="row">
 			<label>Most Frequently Used: </label>
 		</div>

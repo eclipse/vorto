@@ -28,7 +28,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority == 'ROLE_ADMIN' || model.author === user || (model.state !== 'Released' && model.state !== 'Deprecated')">
+			<div ng-show="(authority == 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated')">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
@@ -76,7 +76,7 @@
 												<div class="noimg" ng-show="!model.hasImage">No Image Yet
 												</div>
 												<img ng-if="model.hasImage" ng-src="rest/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
-												<div class="upload" ng-show="model.type === 'InformationModel'">
+												<div class="upload" ng-show="authority == 'ROLE_ADMIN' && model.type === 'InformationModel'">
 													<a href="" ng-click="chooseImageFile()">
 														<i class="fa fa-upload"></i> Click to change image</a>
 												</div>
@@ -206,7 +206,7 @@
 										<div class="row">
 											<div class="col-sm-4">
 												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
-												<label ng-show="model.state != 'Draft'" class="ng-binding">Model</label>
+												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
 											</div>
 											<div ng-hide="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
 											    class="col-sm-8">
@@ -232,8 +232,9 @@
 											</div>
 										</div>
 										<div class="row">
-											<div ng-if="error" class="alert alert-danger">{{message.message}}</div>
-											<div ng-if="success" class="alert alert-success">{{success}}</div>
+											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</div>
+											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
+											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
 										</div>
 										<div class="row">
 											<div ui-ace="{ onLoad : modelEditorLoaded, onChange: modelEditorChanged }" style="height: 500px;"></div>
@@ -304,6 +305,9 @@
 					<label>Code-Generators</label>
 				</div>
 				<div class="generator-list">
+					<div ng-show="platformGeneratorMatrix.length === 0">
+						<i>There are no generators configured.</i>
+					</div>
 					<div class="row" ng-repeat="row in platformGeneratorMatrix">
 						<!--genbox -->
 						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
