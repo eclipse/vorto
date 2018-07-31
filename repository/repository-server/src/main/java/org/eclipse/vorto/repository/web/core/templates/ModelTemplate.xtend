@@ -27,7 +27,9 @@ class ModelTemplate {
 		description "«modelType.name» for «modelId.name»"
 		
 		«keyword(modelType)» «modelId.name» {
-			
+			«IF modelType == ModelType.Mapping»
+			targetplatform myplatform
+			«ENDIF»
 		}
 		'''
 	}
@@ -40,7 +42,7 @@ class ModelTemplate {
 		}  else if (type == ModelType.Datatype) {
 			return "entity"
 		}  else if (type == ModelType.Mapping) {
-			return "mapping"
+			return "functionblockmapping"
 		}
 	}
 	
