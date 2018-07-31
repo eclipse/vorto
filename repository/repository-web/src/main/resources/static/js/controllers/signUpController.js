@@ -13,7 +13,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
         })
         .success( function(data, status, headers, config) {
         	isAcceptingTermsAndCondition = false;
-        	$rootScope.getUser();
+        	$rootScope.init();
             $location.path('/');
         }).error(function(data, status, headers, config) {
         	isAcceptingTermsAndCondition = false;
