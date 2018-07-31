@@ -61,6 +61,11 @@ googleAnalytics = ""
 	name   = "Tutorials"
 	url    = "tutorials/"
 	weight = 30
+	
+[[menu.main]]
+	name   = "Developer Guide"
+	url    = "developerguide"
+	weight = 40
 
 [[menu.main]]
 	name   = "Community"
