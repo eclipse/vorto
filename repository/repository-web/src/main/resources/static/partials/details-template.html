@@ -28,19 +28,19 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="(authority == 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated')">
+			<div ng-show="(authority === 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated')">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority == 'ROLE_ADMIN' && model.author === 'anonymousUser'">
+			<div ng-show="authority === 'ROLE_ADMIN' && model.author === 'anonymousUser'">
 				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority == 'ROLE_ADMIN' || model.author == user">
+			<div ng-show="authority === 'ROLE_ADMIN' || model.author === user">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>

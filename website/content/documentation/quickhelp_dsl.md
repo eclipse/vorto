@@ -3,7 +3,7 @@ date: 2016-03-09T20:08:11+01:00
 title: Vorto DSL Help
 weight: 109
 ---
-This section gets you started with using the Vorto DSL to describe devices.
+This section gets you started with using the Vorto DSL to describe devices as well as use the Mapping DSL to map device descriptions to spec platform models, e.g. LwM2M or even IoT Digital Twin Services.
 <!--more-->
 
 ## Overview
@@ -12,7 +12,7 @@ This section gets you started with using the Vorto DSL to describe devices.
 	<img src="/images/documentation/help_dsl_elements.png">
 </figure> 
 
-### Information Models
+### 1. Information Models
 
 Information Models describe a specific device type by grouping abstract and re-usable Function Blocks.
 
@@ -35,7 +35,7 @@ Information Models describe a specific device type by grouping abstract and re-u
     
 [Complete DSL Reference]({{< ref "documentation/infomodel_dsl.md" >}}) for Information Models
 
-### Function Blocks
+### 2. Function Blocks
 
 A Function Block provides an abstract view on a device to applications that want to employ the devices’ functionality. Thus, it is a consistent, self-contained set of (potentially re-usable) properties and capabilities.
 The properties that a Function Block may define are classified as follows:
@@ -67,7 +67,7 @@ The properties that a Function Block may define are classified as follows:
 	using com.mycompany.common.Accelerometer; 1.0.0
 	using com.mycompany.common.types.EnableDisable; 1.0.0
 
-	functionblock TIAccelerometer extends Accelerometer {
+	functionblock Accelerometer extends com.mycompany.common.Accelerometer {
 
 		configuration { 
 			mandatory sensor_enable as EnableDisable "Configuration to enable and disable the sensor"
@@ -85,7 +85,7 @@ The properties that a Function Block may define are classified as follows:
 [Complete DSL Reference]({{< ref "documentation/function_block_dsl.md" >}}) for Function Blocks
 
 
-### Datatypes (Entity and Enums)
+### 3. Datatypes (Entity and Enums)
 
 Data types and Enums are reusable components that describe specific data and are typically referenced by Function Blocks. Data types can reference other data types and Enums.
 
@@ -111,3 +111,51 @@ Data types and Enums are reusable components that describe specific data and are
 	}
 
 [Complete DSL Reference]({{< ref "documentation/datatype_dsl.md" >}}) for Datatypes
+
+
+### 4. Mappings
+
+Mappings enrich Vorto Models with platform-specific meta-data, e.g. LwM2M, Bluetooth GATT etc.
+
+Mappings are defined in the following pattern: 
+
+**from** [*Vorto Model Path*] **to** [*stereotype*] or **reference** **with** {attributes[key,value]}
+
+#### Basic Example
+
+Example Mapping that maps a function block to a specific LwM2M Object:
+
+	namespace com.mycompany.mapping.lwm2m
+	version 1.0.0
+	using com.mycompany.common.Accelerometer;1.0.0
+
+	functionblockmapping AccelerometerMapping {
+		targetplatform lwm2m
+
+	 	from Accelerometer to Object with {ObjectID: "3313", ObjectURL: "urn:oma:lwm2m:ext:3313"}
+
+	}
+
+#### Example Mapping referencing another mapping
+
+The following example defines a mapping that references another mapping for re-use:
+
+	namespace com.mycompany.mapping.lwm2m
+	version 1.0.0
+	using com.mycompany.tisensortag.Accelerometer;1.0.0
+	using com.mycompany.mapping.lwm2m.EnableMapping;1.0.0
+
+	functionblockmapping AccelerometerMapping {
+		targetplatform lwm2m
+
+	 	from Accelerometer.configuration.sensor_enable to reference EnableMapping
+
+	}
+
+[Complete DSL Reference]({{< ref "documentation/mappings_dsl.md" >}}) for Mapping Models
+
+### 4.1 Device Payload Mappings
+
+Device Payload Mappings use Vorto Mappings expressing mapping rules in order to map arbitrary device data to Vorto Models.
+
+For more information about payload mappings, please read the [Payload Mapping Documentation]({{< ref "documentation/mappingengine.md" >}})

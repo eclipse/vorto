@@ -23,7 +23,7 @@ var TextHighlightRules = require("ace/mode/text_highlight_rules").TextHighlightR
 
 var ExampleHighlightRules = function() {
 
-    var keywords = "as|functionblocks|infomodel|dictionary|MAX|MIMETYPE|MIN|REGEX|SCALING|STRLEN|as|base64Binary|boolean|byte|category|configuration|dateTime|description|displayname|double|entity|enum|eventable|events|extends|false|fault|float|functionblock|int|long|mandatory|measurementUnit|multiple|namespace|operations|optional|readable|returns|short|status|string|true|using|version|with|writable|targetplatform|extension";
+    var keywords = "as|functionblocks|infomodel|dictionary|MAX|MIMETYPE|MIN|REGEX|SCALING|STRLEN|as|base64Binary|boolean|byte|category|configuration|dateTime|description|displayname|double|entity|enum|eventable|events|extends|false|fault|float|functionblock|int|long|mandatory|measurementUnit|multiple|namespace|operations|optional|readable|returns|short|status|string|true|using|version|with|writable|targetplatform|extension|to|from";
 		this.$rules = {
 			"start": [
 				{token: "comment", regex: "\\/\\/.*$"},
