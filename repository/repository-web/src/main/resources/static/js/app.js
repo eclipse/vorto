@@ -134,8 +134,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 }
             }
             return user;
-    	};
-		
+        };
+
         $http.get("./context")
             .then(getContextSucceeded, getContextFailed)
             .then(getUser)
