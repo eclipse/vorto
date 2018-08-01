@@ -17,7 +17,7 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 };
 }]);
 
-repositoryControllers.controller('LoginController', [ '$location', '$scope', '$rootScope', 
+repositoryControllers.controller("LoginController", [ "$location", "$scope", "$rootScope", 
 	function ($location, $scope, $rootScope) {
 
 }]);

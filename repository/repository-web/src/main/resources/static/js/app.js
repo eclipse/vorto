@@ -56,17 +56,16 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 	};
     
     $rootScope.logout = function() {
-    	var postLogout = function() {
+        var postLogout = function() {
             $rootScope.setUser(null);
             $rootScope.init();
             $location.path("/");
-    	};
-
+        };
         $http.post("logout", {}).success(postLogout).error(postLogout);
     };
 
     $rootScope.setUser = function(user) {
-    	if (user != null && user.name !== null) {
+        if (user != null && user.name !== null) {
             $rootScope.userInfo = user;
             $rootScope.user = user.name;
             $rootScope.displayName = user.displayName;
@@ -85,18 +84,18 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         $rootScope.$on("$locationChangeStart", function(event, next, current) {
             $rootScope.error = false;
             if ($rootScope.needAuthentication() && $rootScope.authenticated === false) {
-            	$location.path("/login");
+                $location.path("/login");
             }
         });
     };
     
     $rootScope.needAuthentication = function() {
-    	var split = $location.path().split("/");
-    	return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf("/" + split[1]) == -1);
+        var split = $location.path().split("/");
+        return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf("/" + split[1]) === -1);
     };
     
     $rootScope.init = function() {    	
-    	var getContextSucceeded = function(result) {
+        var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
             if (!$rootScope.context.authenticatedSearchMode) {
                 $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators"];

@@ -12,11 +12,11 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
             headers: {'Content-Type': "application/json"}
         })
         .success( function(data, status, headers, config) {
-        	isAcceptingTermsAndCondition = false;
-        	$rootScope.init();
+            isAcceptingTermsAndCondition = false;
+            $rootScope.init();
             $location.path('/');
         }).error(function(data, status, headers, config) {
-        	isAcceptingTermsAndCondition = false;
+            isAcceptingTermsAndCondition = false;
         });
 }
 }]);
