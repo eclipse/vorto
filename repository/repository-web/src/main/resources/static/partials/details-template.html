@@ -15,6 +15,7 @@
 		{{model.displayName}}
 		<small>{{model.type}}</small>
 	</h2>
+
 	<div class="row">
 		<div class="col-sm-12">
 			<div ng-repeat="action in workflowActions">
@@ -93,6 +94,8 @@
 											<dd class="ng-binding">
 												<span class="state state-{{model.state}}">{{ model.state }}</span>
 											</dd>
+											<dt>ID:</dt>
+											<dd class="ng-binding">{{model.id.prettyFormat}}</dd>
 											<dt>Name:</dt>
 											<dd class="ng-binding">{{model.id.name}}</dd>
 											<dt>Description:</dt>

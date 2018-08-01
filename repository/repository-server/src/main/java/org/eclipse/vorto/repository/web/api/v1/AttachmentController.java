@@ -28,15 +28,15 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.attachment.Tag;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -51,11 +51,13 @@ import org.springframework.web.multipart.MultipartFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
-@Api(value="/attachments", description="Attach files to models")
+@Api(value="/attachments")
 @RestController
 @RequestMapping(value = "/api/v1/attachments")
-public class AttachmentController {
+public class AttachmentController extends AbstractRepositoryController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
 	private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
@@ -63,9 +65,6 @@ public class AttachmentController {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
-	@Autowired
-	private IModelRepository modelRepository;
-
 	@ApiOperation(value = "Upload a file to be attached to a model")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
 	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
@@ -98,6 +97,9 @@ public class AttachmentController {
 	}
 
 	@ApiOperation(value = "Get the list of file attachments for a model")
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully retrieved list of attachments"),
+	        @ApiResponse(code = 404, message = "The resource could not be found")})
 	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}", produces = "application/json")
 	public List<Attachment> getAttachments(
 			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId) {
@@ -112,6 +114,9 @@ public class AttachmentController {
 	}
 	
 	@ApiOperation(value = "Get a specific file attachment for a model")
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully retrieved the attachment"),
+	        @ApiResponse(code = 404, message = "The resource could not be found")})
 	@RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
 	public void getAttachment(
 			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId,
@@ -131,7 +136,7 @@ public class AttachmentController {
 				IOUtils.copy(new ByteArrayInputStream(content.get().getContent()), response.getOutputStream());
 				response.flushBuffer();
 			} else {
-				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+				throw new ModelNotFoundException("Could not find model");
 			}
 		} catch (IOException e) {
 			LOGGER.error("Cannot get model attachment:", e);
@@ -139,6 +144,9 @@ public class AttachmentController {
 	}
 	
 	@ApiOperation(value = "Delete a file attachment for a model")
+	@ApiResponses(value = {
+	        @ApiResponse(code = 200, message = "Successfully deleted the attachment"),
+	        @ApiResponse(code = 404, message = "The resource could not be found")})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
 	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
 	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany.MagneticSensor:1.0.0", required = true) @PathVariable String modelId,

@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.web.config;
 
 import static com.google.common.base.Predicates.or;
@@ -47,13 +61,8 @@ public class SwaggerConfiguration {
 
 	@SuppressWarnings("deprecation")
 	private ApiInfo apiInfo() {
-		return new ApiInfo("Vorto",
-				"Vorto provides tools and services that allow to create and manage technology agnostic, abstract device descriptions, so called information models. <br/>"
-						+ "Information models describe the attributes and the capabilities of real world devices. <br/>"
-						+ "These information models can be managed and shared within the Vorto Information Model Repository. <br/>"
-						+ " Code Generators for Information Models let you integrate devices into different IoT platforms."
-						+ "<br/>",
-				"1.0.0", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
+		return new ApiInfo("Vorto","",
+				"", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
 	}
 	
 	class BasePathAwareRelativePathProvider extends AbstractPathProvider {

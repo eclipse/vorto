@@ -22,13 +22,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -43,22 +41,22 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value = "/search", description = "Finds information models")
+@Api(value = "/search")
 @RestController("modelSearchController")
 @RequestMapping(value = "/api/v1/search/models")
 public class ModelSearchController extends AbstractRepositoryController {
-
-	@Autowired
-	private IModelRepository modelRepository;
 	
 	@Value("${server.config.authenticatedSearchMode:#{false}}")
 	private boolean authenticatedSearchMode = false;
 	
 	@ApiOperation(value = "Finds models by free-text search expressions")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of search result"), @ApiResponse(code = 400, message = "Malformed search expression")})
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated()")
 	public List<ModelInfo> searchByExpression(

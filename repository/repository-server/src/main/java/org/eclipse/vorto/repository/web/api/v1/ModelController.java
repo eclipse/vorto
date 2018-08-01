@@ -54,7 +54,7 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value = "/models", description = "Access information models")
+@Api(value = "/models")
 @RestController("modelRepositoryController")
 @RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
@@ -62,7 +62,7 @@ public class ModelController extends AbstractRepositoryController {
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 	
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found"),
 			@ApiResponse(code = 403, message = "Not Authorized to view model") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
@@ -82,7 +82,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Returns the model content")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
@@ -103,7 +103,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
@@ -153,7 +153,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 	
 	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/mappings/{mappingId:.+}", method = RequestMethod.GET)
@@ -188,7 +188,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 	
 	@ApiOperation(value = "Downloads the model file")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"),
+	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)

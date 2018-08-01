@@ -59,7 +59,7 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@Api(value="/generate", description="Generate code for information models")
+@Api(value="/generate")
 @RestController
 @RequestMapping(value = "/api/v1/generators")
 public class GeneratorController extends AbstractRepositoryController {
@@ -75,7 +75,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	private IGeneratorService generatorService;
 	
 	@ApiOperation(value = "Generate code for a specified platform, and extract specified path")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Code was successfully generated."), @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model or generator not found")})
 	@RequestMapping(value = "/{serviceKey}/models/{modelId:.+}/!/**", method = RequestMethod.GET)
 	public void generateAndExtract(@ApiParam(value = "The iD of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId, 
 							@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) @PathVariable String serviceKey,
@@ -142,7 +142,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	}
 	
 	@ApiOperation(value = "Generate code for a specified platform")
-	@ApiResponses(value = { @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model not found")})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Code was successfully generated."),@ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model or generator not found")})
 	@RequestMapping(value = "/{serviceKey}/models/{modelId:.+}", method = RequestMethod.GET)
 	public void generate( 	@ApiParam(value = "the vorto model ID, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId, 
 							@ApiParam(value = "generator key, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
@@ -179,6 +179,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Returns all currently registered Code Generator")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Retrieved generators successfully")})
 	@RequestMapping(method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
 	public Collection<GeneratorInfo> getRegisteredGeneratorServices(
 			@ApiParam(value = "Prioritize results with given tag", allowableValues="any given tags", required = false) @RequestParam(value = "orderBy", required=false, defaultValue="production") String orderBy) {
