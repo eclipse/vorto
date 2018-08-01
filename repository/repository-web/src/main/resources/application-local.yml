@@ -2,6 +2,8 @@ server:
   port: 8080
   contextPath: /infomodelrepository
   admin: aedelmann
+  config:
+    authenticatedSearchMode: false
 
 github:
   oauth2:

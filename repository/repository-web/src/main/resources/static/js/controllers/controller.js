@@ -16,3 +16,9 @@ repositoryControllers.controller('RemoveAccountModalController', [ '$location', 
 		$uibModalInstance.dismiss("cancel");
 };
 }]);
+
+/*global repositoryControllers*/
+repositoryControllers.controller("LoginController", [ "$location", "$scope", "$rootScope", 
+	function ($location, $scope, $rootScope) {
+
+}]);

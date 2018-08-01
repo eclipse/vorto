@@ -21,7 +21,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         controller : "SwaggerController"
     }).when("/login", {
         templateUrl : "partials/login-template.html",
-        controller : "AuthenticateController"
+        controller : "LoginController"
     }).when("/signup", {
         templateUrl : "partials/signup-template.html",
         controller : "SignUpController"
@@ -39,68 +39,110 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
 } ]).run(function($location, $http, $rootScope) {
 
-    // register listener to watch route changes
-    $rootScope.$on("$locationChangeStart", function(event, next, current) {
-        $rootScope.error = false;
-        if ($location.path() === "/upload" && $rootScope.authenticated === false) {
-            $location.path("/login");
-        }
-    });
+	$rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
+	
+	$rootScope.authenticated = false;
 
-    $rootScope.user = [];
-    $rootScope.getUser = function() {
-        $http.get("./user").success(function(data, status, headers, config) {
-            if (data.name !== null) {
-                $rootScope.userInfo = data;
-                $rootScope.user = data.name;
-                $rootScope.displayName = data.displayName;
-                $rootScope.authenticated = true;
-                $rootScope.authority = data.role;
-                if (data.isRegistered === "false") {
-                    $location.path("/signup");
-                }
-            }
-        }).error(function(data, status, headers, config) {
-            $rootScope.authenticated = false;
-        });
-    };
-
-    $rootScope.getUser();
+    $rootScope.user = null;
     
     $rootScope.context = {
-      githubEnabled: false,
-      eidpEnabled: false
-    };
-    
-    $rootScope.getContext = function() {
-        $http.get("context").success(function(data, status, headers, config) {
-            $rootScope.context = data;
-        }).error(function(data, status, headers, config) {
-            $rootScope.context = {};
-        });
+        githubEnabled: false,
+        eidpEnabled: false,
+        authenticatedSearchMode: false,
     };
     
     $rootScope.modelId = function(namespace,name,version) {
-    	return namespace+"."+name+":"+version;
+    	return namespace + "." + name + ":" + version;
+	};
+    
+    $rootScope.logout = function() {
+        var postLogout = function() {
+            $rootScope.setUser(null);
+            $rootScope.init();
+            $location.path("/");
+        };
+        $http.post("logout", {}).success(postLogout).error(postLogout);
+    };
+
+    $rootScope.setUser = function(user) {
+        if (user != null && user.name !== null) {
+            $rootScope.userInfo = user;
+            $rootScope.user = user.name;
+            $rootScope.displayName = user.displayName;
+            $rootScope.authenticated = true;
+            $rootScope.authority = user.role;
+        } else {
+            $rootScope.userInfo = null;
+            $rootScope.user = null;
+            $rootScope.displayName = null;
+            $rootScope.authenticated = false;
+            $rootScope.authority = null;
+        }
     };
     
-    $rootScope.getContext();
-
-    $rootScope.logout = function() {
-        $http.post("logout", {}).success(function() {
-            $rootScope.authenticated = false;
-            $rootScope.userInfo = null;
-            $rootScope.user = null;
-            $rootScope.authority = null;
-            $rootScope.getContext();
-            $location.path("/login");
-        }).error(function(data) {
-            $rootScope.authenticated = false;
-            $rootScope.userInfo = null;
-            $rootScope.user = null;
-            $rootScope.authority = null;
-            $rootScope.getContext();
-            $location.path("/login");
+    $rootScope.watchLocationChanges = function() {
+        $rootScope.$on("$locationChangeStart", function(event, next, current) {
+            $rootScope.error = false;
+            if ($rootScope.needAuthentication() && $rootScope.authenticated === false) {
+                $location.path("/login");
+            }
         });
     };
+    
+    $rootScope.needAuthentication = function() {
+        var split = $location.path().split("/");
+        return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf("/" + split[1]) === -1);
+    };
+    
+    $rootScope.init = function() {    	
+        var getContextSucceeded = function(result) {
+            $rootScope.context = result.data;
+            if (!$rootScope.context.authenticatedSearchMode) {
+                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators"];
+            } else {
+                $rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
+            }
+            return result;
+        };
+
+        var getContextFailed = function(reason) {
+            return null;
+        };
+
+        var getUser = function() {
+            return $http.get("./user");
+        };
+
+        var getUserSucceeded = function(result) {
+            $rootScope.setUser(result.data);
+            return result.data;
+        };
+
+        var getUserFailed = function(reason) {
+            $rootScope.setUser(null);
+            return null;
+        };
+
+        var userResultAction = function(user) {
+            if (user != null) {
+                if (user.isRegistered === "false") {
+                    $location.path("/signup");
+                }
+            } else {
+                if ($rootScope.needAuthentication()) {
+                    $location.path("/login");
+                }
+            }
+            return user;
+        };
+
+        $http.get("./context")
+            .then(getContextSucceeded, getContextFailed)
+            .then(getUser)
+            .then(getUserSucceeded, getUserFailed)
+            .then(userResultAction)
+            .finally($rootScope.watchLocationChanges);	
+    };
+    
+    $rootScope.init();
 });
