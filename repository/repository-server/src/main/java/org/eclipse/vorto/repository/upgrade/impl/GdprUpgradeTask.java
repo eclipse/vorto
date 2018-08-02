@@ -25,6 +25,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
+import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

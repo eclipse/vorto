@@ -21,7 +21,7 @@ import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
-import org.eclipse.vorto.repository.upgrade.IUpgradeTask.UpgradeProblem;
+import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,17 +16,15 @@ package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
 
-/**
- * An UpgradeTask is executed when the repository is started up.
- *
- */
-public interface IUpgradeTask {
+import org.eclipse.vorto.repository.account.impl.User;
 
+public interface IUserUpgradeTask {
+	
 	/**
 	 * Performs the actual upgrade task 
 	 * @throws UpgradeProblem
 	 */
-	void doUpgrade() throws UpgradeProblem;
+	void doUpgrade(User user) throws UpgradeProblem;
 	
 	/**
 	 * Contains the condition to be checked if the task is to be executed or not.
@@ -34,7 +32,7 @@ public interface IUpgradeTask {
 	 * 
 	 * @return task condition
 	 */
-	Optional<IUpgradeTaskCondition> condition();
+	Optional<IUpgradeTaskCondition> condition(User user);
 	
 	/**
 	 * @return a short description of the task being performed
