@@ -31,17 +31,30 @@ public class AngularCsrfHeaderFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+		CsrfToken csrf = getCsrfToken(request);
 		if (csrf != null) {
-			Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
+			Cookie cookie = getWebCookies(request);
 			String token = csrf.getToken();
 			if (cookie == null || token != null && !token.equals(cookie.getValue())) {
-				cookie = new Cookie("XSRF-TOKEN", token);
-				cookie.setPath("/");
-				response.addCookie(cookie);
+				addNewCookieToReponse(response, token);
 			}
 		}
 		filterChain.doFilter(request, response);
+	}
+
+	private void addNewCookieToReponse(HttpServletResponse response, String token) {
+		Cookie cookie;
+		cookie = new Cookie("XSRF-TOKEN", token);
+		cookie.setPath("/");
+		response.addCookie(cookie);
+	}
+
+	private Cookie getWebCookies(HttpServletRequest request) {
+		return WebUtils.getCookie(request, "XSRF-TOKEN");
+	}
+
+	private CsrfToken getCsrfToken(HttpServletRequest request) {
+		return (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 	}
 
 }
