@@ -15,6 +15,8 @@
 package org.eclipse.vorto.repository.web.account;
 
 import java.security.Principal;
+import java.sql.Timestamp;
+import java.util.Map;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.UserUtils;
@@ -27,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,6 +77,25 @@ public class UserController {
 		LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 		User createdUser = accountService.create(oauth2User.getName()); 
 		UserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with the updated user and its roles
+		
+		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+	}
+	
+	@RequestMapping(method = RequestMethod.POST, value = "/{username:.+}/updateTask")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
+	public ResponseEntity<Boolean> updateUser(Principal user, @ApiParam(value = "Username", required = true) @PathVariable String username) {
+		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
+		
+		UsernamePasswordAuthenticationToken userAuth = (UsernamePasswordAuthenticationToken) oauth2User.getUserAuthentication();
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> userDetailsMap = (Map<String, Object>) userAuth.getDetails();
+		
+		LOGGER.info("Currently updating user: {} with email: {}", username, (String) userDetailsMap.get("email"));
+		
+		User userAccount = userRepository.findByUsername(username);
+		userAccount.setLastUpdated(new Timestamp(System.currentTimeMillis()));
+		userRepository.save(userAccount);
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 	}
