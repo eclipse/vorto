@@ -14,26 +14,26 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2ClientContext;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 public class HomeController {
@@ -48,6 +48,15 @@ public class HomeController {
 	
 	@Value("${server.config.authenticatedSearchMode:#{false}}")
 	private boolean authenticatedSearchMode = false;
+
+    @Value("${eidp.oauth2.resource.logoutEndpointUrl:#{null}}")
+    private String logoutEndpointUrl;
+
+    @Value("${eidp.oauth2.resource.logoutRedirectUrl:#{null}}")
+    private String logoutRedirectUrl;
+
+    @Autowired
+    private OAuth2ClientContext oauth2ClientContext;
 	
 	@Autowired
 	private IUserAccountService accountService;
@@ -103,8 +112,18 @@ public class HomeController {
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
 		context.put("authenticatedSearchMode", authenticatedSearchMode);
-		
+		if (eidpEnabled) { //FIXME: with githubEnabled=true , it should return the logoutUrl of the Vorto Repository
+			context.put("logOutUrl", getLogoutEndpointUrl());
+		}
 		return context;
 	}
+
+    private String getLogoutEndpointUrl() {
+        String idToken = "";
+        if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
+            idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+        }
+        return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl, idToken, logoutRedirectUrl);
+    }
 	
 }
