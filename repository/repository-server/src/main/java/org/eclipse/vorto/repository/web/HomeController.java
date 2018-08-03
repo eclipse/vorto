@@ -68,7 +68,7 @@ public class HomeController {
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
 	
-	@Value("${server.config.updateDate:#{2000-01-01 12:00:00}}")
+	@Value("${server.config.updateDate:#{'2000-01-01 12:00:00'}}")
 	private String updateDate;
 	
 	@Autowired

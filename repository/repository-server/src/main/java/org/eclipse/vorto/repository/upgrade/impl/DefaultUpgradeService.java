@@ -15,12 +15,17 @@
 package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 
+import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
+import org.eclipse.vorto.repository.upgrade.IUserUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +37,9 @@ public class DefaultUpgradeService implements IUpgradeService {
 
 	@Autowired
 	private List<IUpgradeTask> tasks;
+	
+	@Autowired(required = false)
+	private List<IUserUpgradeTask> userUpgradeTasks;
 	
 	private static final Logger logger = LoggerFactory.getLogger(DefaultUpgradeService.class);
 	
@@ -53,8 +61,36 @@ public class DefaultUpgradeService implements IUpgradeService {
 		}
 	}
 	
+	@Override
+	public void installUserUpgrade(User user, Supplier<Object> context) {
+		Objects.requireNonNull(user, "user must be non-null");
+		
+		if (userUpgradeTasks == null || userUpgradeTasks.size() <= 0) {
+			logger.info("Not performing user upgrade. No available user upgrade tasks.");
+			return;
+		}
+		
+		logger.info("Performing upgrade for " + user.getUsername() + " on " + new Date().toString());
+		userUpgradeTasks.forEach(upgradeTask -> {
+			if (!upgradeTask.condition(user, context).isPresent() || upgradeTask.condition(user, context).get().shouldExecuteTask()) {
+				logger.info("Executing task - " + upgradeTask.getShortDescription());
+				try {
+					upgradeTask.doUpgrade(user, context);
+				} catch (UpgradeProblem problem ) {
+					logger.error("Problem executing upgrade task for user " + user.getUsername(), problem);
+				}
+			} else {
+				logger.info("NOT Executing task - " + upgradeTask.getShortDescription() + 
+						" for user " + user.getUsername()  + ". Conditions not met.");
+			}
+		});
+	}
+	
 	public void addTasks(IUpgradeTask...tasks) {
 		this.tasks = Arrays.asList(tasks);
 	}
 
+	public void addUserUpgradeTask(IUserUpgradeTask ... tasks) {
+		this.userUpgradeTasks = Arrays.asList(tasks);
+	}
 }

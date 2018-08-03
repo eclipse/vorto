@@ -14,7 +14,14 @@
  */
 package org.eclipse.vorto.repository.upgrade;
 
+import java.util.function.Supplier;
+
+import org.eclipse.vorto.repository.account.impl.User;
+
 public interface IUpgradeService {
 
 	void installUpgrades();
+	
+	void installUserUpgrade(User user, Supplier<Object> upgradeContext);
+	
 }

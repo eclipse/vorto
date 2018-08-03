@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.eclipse.vorto.repository.account.impl.User;
 
@@ -24,7 +25,7 @@ public interface IUserUpgradeTask {
 	 * Performs the actual upgrade task 
 	 * @throws UpgradeProblem
 	 */
-	void doUpgrade(User user) throws UpgradeProblem;
+	void doUpgrade(User user, Supplier<Object> upgradeContext) throws UpgradeProblem;
 	
 	/**
 	 * Contains the condition to be checked if the task is to be executed or not.
@@ -32,7 +33,7 @@ public interface IUserUpgradeTask {
 	 * 
 	 * @return task condition
 	 */
-	Optional<IUpgradeTaskCondition> condition(User user);
+	Optional<IUpgradeTaskCondition> condition(User user, Supplier<Object> upgradeContext);
 	
 	/**
 	 * @return a short description of the task being performed
