@@ -24,4 +24,8 @@ public class UpgradeProblem extends RuntimeException {
 	public UpgradeProblem(String msg, Throwable t) {
 		super(msg, t);
 	}
+
+	public UpgradeProblem(String arg0) {
+		super(arg0);
+	}
 }
