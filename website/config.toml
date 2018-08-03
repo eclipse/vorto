@@ -63,24 +63,29 @@ googleAnalytics = ""
 	weight = 30
 	
 [[menu.main]]
+	name   = "User Guide"
+	url    = "userguide/"
+	weight = 40
+	
+[[menu.main]]
 	name   = "Developer Guide"
 	url    = "developerguide"
-	weight = 40
+	weight = 50
 
 [[menu.main]]
 	name   = "Community"
 	url    = "community/"
-	weight = 50
+	weight = 60
 
 [[menu.main]]
 	name   = "Release Notes"
 	url    = "release-notes/"
-	weight = 60
+	weight = 70
 	
 [[menu.main]]
 	name   = "Reference Documentation"
 	url    = "documentation/"
-	weight = 70
+	weight = 80
 
 [blackfriday]
 	smartypants	= true

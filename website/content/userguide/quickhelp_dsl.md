@@ -1,7 +1,7 @@
 ---
 date: 2016-03-09T20:08:11+01:00
 title: Vorto DSL Help
-weight: 109
+weight: 101
 ---
 This section gets you started with using the Vorto DSL to describe devices as well as use the Mapping DSL to map device descriptions to spec platform models, e.g. LwM2M or even IoT Digital Twin Services.
 <!--more-->
@@ -158,4 +158,4 @@ The following example defines a mapping that references another mapping for re-u
 
 Device Payload Mappings use Vorto Mappings expressing mapping rules in order to map arbitrary device data to Vorto Models.
 
-For more information about payload mappings, please read the [Payload Mapping Documentation]({{< ref "documentation/mappingengine.md" >}})
+For more information about payload mappings, please read the [Payload Mapping Documentation]({{< ref "userguide/mappingengine.md" >}})

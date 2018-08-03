@@ -13,7 +13,7 @@ In this tutorial you are going to learn, how you create a Vorto Mapping Specific
 
 ## Prerequisite
 
-* [Payload Mapping Engine Documentation]({{< relref "documentation/mappingengine.md" >}})
+* [Payload Mapping Engine Documentation]({{< relref "userguide/mappingengine.md" >}})
 * Maven
 
 ## 1. Create AWS IoT Button Information Model
@@ -108,7 +108,7 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 		<dependency>
 		   <groupId>org.eclipse.vorto</groupId>
 		   <artifactId>repository-mapping</artifactId>
-		   <version>0.10.0.M3</version>
+		   <version>0.10.0.M4</version>
 		</dependency>
 
 2. Code snippet that transforms a sample AWS IoT Button JSON to Eclipse Vorto/Eclipse Ditto compliant data:

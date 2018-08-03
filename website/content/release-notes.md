@@ -3,6 +3,24 @@ date: 2016-03-09T20:10:46+01:00
 title: Release Notes
 weight: 60
 ---
+
+## 0.10.0 milestone 4
+
+**Fixes and Enhancements**
+
+* Simple Web Editor to create and edit Vorto Models directly from the Vorto Repository
+* [Importer API]({{< relref "developerguide.md" >}}) that lets you import and manage other (standardized) device descriptions with the Vorto Repository
+	* LwM2M/IPSO Importer that imports [LwM2M Smart Objects](https://github.com/IPSO-Alliance/pub/tree/master/reg%20v1_1)
+* Model Attachment Management
+* Model State Management
+* Various DSL Enhancements. [More details]({{< relref "userguide/quickhelp_dsl.md" >}})
+	* _multiple_ keyword in Information Model DSL to express multiplicity of function blocks
+	* _extension_ keyword in Function Block DSL to overwrite properties from an inherited Function Block
+	* Possibility to declare Function Blocks as either _mandatory_ or _optional_ in Information Models
+* Many UI/UX Improvements
+* Many Bugfixes
+
+
 ## 0.10.0 milestone 3
 
 **Fixes and Enhancements**
