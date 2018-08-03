@@ -15,7 +15,6 @@
 		{{model.displayName}}
 		<small>{{model.type}}</small>
 	</h2>
-
 	<div class="row">
 		<div class="col-sm-12">
 			<div ng-repeat="action in workflowActions">
@@ -233,8 +232,8 @@
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 											</div>
-											<a class="btn btn-sm btn-primary pull-right" target="_blank" href="https://www.eclipse.org/vorto/documentation/quickhelp_dsl/" role="button">
-													<span class="fa fa-question" aria-hidden="true"></span></i>
+											<a target="_blank" href="https://www.eclipse.org/vorto/documentation/quickhelp_dsl/">
+												<i class="fa fa-question fa-2x"></i>
 											</a>
 										</div>
 										<div class="row">
@@ -370,7 +369,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-disabled="hasErrors" ng-click="takeWorkflowAction()">{{action}}</button>
+		<button class="btn btn-primary" ng-disabled="hasErrors" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
 		<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </script>
@@ -541,9 +540,9 @@
 				</table>	
 			</div>
 			</br>
-			<div ng-class="fileSizeValid ? 'alert alert-success' : 'alert alert-danger'">
-				<small ng-show="fileSizeValid">Max file size 5MB.</small>
-				<small ng-hide="fileSizeValid">File size exceeds 5MB!</small>
+			<div ng-class="attachmentValid ? 'alert alert-success' : 'alert alert-danger'">
+				<small ng-show="attachmentValid">Max file size 5 MB.</small>
+				<small ng-hide="attachmentValid">{{errorMessage}}</small>
 			</div>
 			<div ng-hide="fileNameValid" class="alert alert-danger">
 				<small >Name of file exceeds 100 characters!</small>

@@ -831,6 +831,15 @@ span.star.filled:before{
     overflow: hidden;
 }
 
+.box h3, .generator h4{
+   margin-bottom: -2px;
+}
+
+.box ul, .generator ul {
+     list-style-type: none;
+     margin-top: 5px;
+}
+
 .box h4{
     font-weight: bold;
     color: #325A87;

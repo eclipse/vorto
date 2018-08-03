@@ -492,6 +492,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.fileNameValid = true;
 					$scope.selectedFile = null;
 					$scope.errorMessage = "";
+					$scope.attachmentValid = true;
 
 					$scope.cancel = function () {
 						$scope.successfullyUploaded = false;
@@ -500,6 +501,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						uploadDialog.dismiss();
 					};
 
+					//validate if file size should be smaller than 64 kBytes
 					$scope.isFileSizeValid = function () {
 						var input = document.getElementById("file-upload");
 
@@ -527,26 +529,37 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 						const attachment_url = './api/v1/attachments/' + $scope.modelId;
 
-						$http.put(attachment_url, payload, {
-								transformRequest: angular.identity,
-								headers: {
-									'Content-Type': undefined
-								}
-							})
-							.success(function (data, status, headers, config) {
-								updateAttachments(model);
-								$scope.isUploading = false;
-								$scope.successfullyUploaded = data.success;
-								$scope.failedToUpload = !data.success;
-								$scope.errorMessage = data.errorMessage;
-								$timeout($scope.cancel,2000);
-							})
-							.error(function (data, status, headers, config) {
-								$scope.isUploading = false;
-								$scope.successfullyUploaded = false;
-								$scope.failedToUpload = true;
-								$timeout($scope.cancel,2000);
-							});
+                        $http.put(attachment_url, payload, {
+                            transformRequest: angular.identity,
+                            headers: {
+                                'Content-Type': undefined
+                            }
+                        })
+                        .success(function (data, status, headers, config) {
+                            updateAttachments(model);
+                            if(data.success){
+                                    $scope.successfullyUploaded = true;
+                                    $timeout($scope.cancel,2000);
+                               }else{
+                                    $scope.successfullyUploaded = false;
+                                    $scope.attachmentValid = false;
+                                    $scope.failedToUpload = false;
+                                    $scope.isUploading = false
+                                    $scope.errorMessage = data.errorMessage;
+                               }
+                        })
+                        .error(function (data, status, headers, config) {
+                                $scope.successfullyUploaded = false;
+                                $scope.attachmentValid = false;
+                                $scope.failedToUpload = false;
+                                $scope.isUploading = false;
+                                if(errResponse.data){
+                                    $scope.errorMessage = errResponse.data.message;
+                                }else{
+                                    $scope.errorMessage = "Error! while adding attachment.";
+                                }
+                        });
+
 					};
 				}
 			});
