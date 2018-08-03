@@ -370,7 +370,7 @@
 		</div>
 	</div>
 	<div class="modal-footer">
-		<button class="btn btn-primary" type="button" ng-click="takeWorkflowAction()">{{action}}</button>
+		<button class="btn btn-primary" type="button" ng-disabled="hasErrors" ng-click="takeWorkflowAction()">{{action}}</button>
 		<button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </script>
