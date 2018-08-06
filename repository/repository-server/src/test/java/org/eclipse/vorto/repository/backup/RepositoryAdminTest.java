@@ -72,11 +72,11 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 	public void testRestoreCorruptBackup() {
 		try {
 			this.repositoryManager.restore(
-					IOUtils.toByteArray(new ClassPathResource("sample_models/vortobackup_valid.xml").getInputStream()));
+					IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		} catch (Exception e1) {
 			fail("Should not have occurred because backup is valid");
 		}
-		assertEquals(5, this.modelRepository.search("*").size());
+		assertEquals(4, this.modelRepository.search("*").size());
 
 		try {
 			this.repositoryManager.restore(IOUtils
@@ -86,7 +86,7 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 			e.printStackTrace();
 		}
 
-		assertEquals(5, this.modelRepository.search("*").size());
+		assertEquals(4, this.modelRepository.search("*").size());
 	}
 
 }
