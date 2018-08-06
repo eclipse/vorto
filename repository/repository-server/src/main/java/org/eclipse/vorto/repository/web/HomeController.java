@@ -39,6 +39,7 @@ import java.util.Map;
 public class HomeController {
 	
 	private static final String LOGIN_TYPE = "loginType";
+	private static final String LOGOUT_URL = "/logout";
 
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled;
@@ -55,6 +56,9 @@ public class HomeController {
     @Value("${eidp.oauth2.resource.logoutRedirectUrl:#{null}}")
     private String logoutRedirectUrl;
 
+    @Value("#{servletContext.contextPath}")
+    private String servletContextPath;
+
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
 	
@@ -69,7 +73,7 @@ public class HomeController {
 	public ResponseEntity<Map<String, String>> getUser(Principal user, final HttpServletRequest request) {
 		
 		Map<String, String> map = new LinkedHashMap<>();
-		
+
 		if(user == null)
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
 		
@@ -106,24 +110,37 @@ public class HomeController {
 	}
 
 	@RequestMapping(value ={ "/context" }, method = RequestMethod.GET)
-	public Map<String, Object> globalContext() {
+	public Map<String, Object> globalContext(final HttpServletRequest request) {
 		Map<String, Object> context = new LinkedHashMap<>();
 		
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
 		context.put("authenticatedSearchMode", authenticatedSearchMode);
-		if (eidpEnabled) { //FIXME: with githubEnabled=true , it should return the logoutUrl of the Vorto Repository
-			context.put("logOutUrl", getLogoutEndpointUrl());
-		}
+		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
 		return context;
 	}
 
-    private String getLogoutEndpointUrl() {
-        String idToken = "";
-        if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
-            idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+    public String getBaseUrl(HttpServletRequest request) {
+        if (request.getRequestURI().equals("/")
+                || request.getRequestURI().equals("")) {
+            return request.getRequestURL().toString();
+        }else {
+            return request.getRequestURL().toString()
+                    .replace(request.getRequestURI(), "");
         }
-        return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl, idToken, logoutRedirectUrl);
+
+    }
+
+    private String getLogoutEndpointUrl(String baseUrl) {
+	    if(eidpEnabled) {
+            String idToken = "";
+            if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
+                idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+            }
+            return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl, idToken, logoutRedirectUrl);
+        }else {
+            return baseUrl + servletContextPath + LOGOUT_URL;
+        }
     }
 	
 }

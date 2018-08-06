@@ -56,12 +56,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 	};
     
     $rootScope.logout = function() {
-        var postLogout = function() {
-            $rootScope.setUser(null);
-            $rootScope.init();
-            $location.path("/");
-        };
-        $http.post("logout", {}).success(postLogout).error(postLogout);
+        window.location.href = $rootScope.context.logOutUrl;
     };
 
     $rootScope.setUser = function(user) {
@@ -141,7 +136,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             .then(getUser)
             .then(getUserSucceeded, getUserFailed)
             .then(userResultAction)
-            .finally($rootScope.watchLocationChanges);	
+            .finally($rootScope.watchLocationChanges);
     };
     
     $rootScope.init();
