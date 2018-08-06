@@ -40,16 +40,4 @@ public interface IUpgradeTask {
 	 * @return a short description of the task being performed
 	 */
 	String getShortDescription();
-	
-	public class UpgradeProblem extends RuntimeException {
-		
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public UpgradeProblem(String msg, Throwable t) {
-			super(msg, t);
-		}
-	}
 }

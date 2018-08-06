@@ -25,6 +25,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/signup", {
         templateUrl : "partials/signup-template.html",
         controller : "SignUpController"
+    }).when("/update", {
+        templateUrl : "partials/update-template.html",
+        controller : "UpdateController"
     }).when("/settings", {
         templateUrl : "partials/settings-template.html",
         controller : "SettingsController"
@@ -122,6 +125,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             if (user != null) {
                 if (user.isRegistered === "false") {
                     $location.path("/signup");
+                } else if(user.needUpdate === "true") {
+                    $location.path("/update");
                 }
             } else {
                 if ($rootScope.needAuthentication()) {

@@ -14,14 +14,18 @@
  */
 package org.eclipse.vorto.repository.upgrade;
 
-import java.util.function.Supplier;
-
-import org.eclipse.vorto.repository.account.impl.User;
-
-public interface IUpgradeService {
-
-	void installUpgrades();
+public class UpgradeProblem extends RuntimeException {
 	
-	void installUserUpgrade(User user, Supplier<Object> upgradeContext);
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public UpgradeProblem(String msg, Throwable t) {
+		super(msg, t);
+	}
+
+	public UpgradeProblem(String arg0) {
+		super(arg0);
+	}
 }
