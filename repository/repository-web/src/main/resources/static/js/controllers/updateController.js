@@ -10,8 +10,8 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
             var updateSuccess = function(data, status, headers, config) {
                 $scope.isUpdating = false;
                 $rootScope.init();
-                $location.path('/');
-        	};
+                $location.path("/");
+            };
 
             var updateError = function(data, status, headers, config) {
                 $scope.isUpdating = false;
@@ -20,6 +20,6 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
             $http.post("./rest/users/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"}  })
                 .success(updateSuccess)
                 .error(updateError);
-        }
+        };
     }
 ]);
