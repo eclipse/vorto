@@ -126,7 +126,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
                 if (user.isRegistered === "false") {
                     $location.path("/signup");
                 } else if(user.needUpdate === "true") {
-                	$location.path("/update");
+                    $location.path("/update");
                 }
             } else {
                 if ($rootScope.needAuthentication()) {
