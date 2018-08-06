@@ -8,7 +8,7 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
         $scope.doClose = function() {
             $rootScope.init();
             $location.path("/");
-        }
+        };
 
         $scope.doUpdate = function() {
             $scope.isUpdating = true;
