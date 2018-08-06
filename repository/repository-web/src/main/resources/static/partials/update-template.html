@@ -1,0 +1,30 @@
+<section class="content">
+
+<div class="signup-box panel panel-default">
+	<div class="page-header">
+    	<h2>Account Upgrade</h2>
+  	</div>
+  	<div class="panel-footer">
+  		<div class="row">
+			<div ng-show="!accountUpdated" class="col-md-12">
+				<p>For security reasons, your account needs to be upgraded.</p>
+			</div>
+			<div ng-show="accountUpdated" class="col-md-12 alert alert-success" role="alert">
+			    <p>Upgrade successful.<i class="fa fa-check-circle-o fa-2x pull-right" aria-hidden="true"></i></p>
+			</div>
+		</div>
+  		<div class="row">
+			<div class="col-md-4">
+				<button ng-show="!accountUpdated" class="btn btn-primary btn-block" type="submit" ng-click="doUpdate()">
+					<i ng-show="isUpdating" class="fa fa-spinner" aria-hidden="true"></i>
+					Upgrade
+				</button>
+				<button ng-show="accountUpdated" class="btn btn-primary btn-block" type="submit" ng-click="doClose()">
+					Close
+				</button>
+			</div>
+		</div>
+  	</div>
+</div>
+
+</section>
