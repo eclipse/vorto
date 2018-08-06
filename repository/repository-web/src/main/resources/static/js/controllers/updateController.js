@@ -3,14 +3,19 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
 	function ($location, $rootScope, $scope, $http, $routeParams) {
         $scope.acceptTerms = false;
         $scope.isUpdating = false;
+        $scope.accountUpdated = false;
+
+        $scope.doClose = function() {
+            $rootScope.init();
+            $location.path("/");
+        }
 
         $scope.doUpdate = function() {
             $scope.isUpdating = true;
 
             var updateSuccess = function(data, status, headers, config) {
                 $scope.isUpdating = false;
-                $rootScope.init();
-                $location.path("/");
+                $scope.accountUpdated = true;
             };
 
             var updateError = function(data, status, headers, config) {
