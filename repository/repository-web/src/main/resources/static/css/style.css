@@ -1745,7 +1745,7 @@ input[type=file]::-webkit-file-upload-button {
 }
 
 .detailsLoading {
-	  height: 100%;
+	  height: auto;
 	  width: 100%;
 	  top: 0;
 	  left: 0;

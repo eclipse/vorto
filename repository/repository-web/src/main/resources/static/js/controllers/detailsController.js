@@ -166,6 +166,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
+					$scope.modelIsLoading = false;
 
 				}).error(function (error, status) {					
 					if(status == 401) {
@@ -195,8 +196,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					var productionGenerators = $scope.filterByTag(result, "production");
 					var demoGenerators = $scope.filterByTag(result, "demo");
 					$scope.platformGeneratorMatrix = $scope.listToMatrix(productionGenerators, 2);
-					$scope.platformDemoGeneratorMatrix = $scope.listToMatrix(demoGenerators, 2);
-					$scope.modelIsLoading = false;
+					$scope.platformDemoGeneratorMatrix = $scope.listToMatrix(demoGenerators, 2);					
 				});
 		};
 
