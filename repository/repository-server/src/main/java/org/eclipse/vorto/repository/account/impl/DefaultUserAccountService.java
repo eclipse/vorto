@@ -16,10 +16,13 @@ package org.eclipse.vorto.repository.account.impl;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -67,9 +70,20 @@ public class DefaultUserAccountService implements IUserAccountService {
 	public void delete(final String userId) {
 		User userToDelete = userRepository.findByUsername(userId);
 
-		if (userToDelete != null) {		
+		if (userToDelete != null) {	
+			makeModelsAnonymous(UserContext.user(userToDelete.getUsername()).getHashedUsername());
+			makeModelsAnonymous(userToDelete.getUsername());
 			userRepository.delete(userToDelete);
 		}
+	}
+	
+	private void makeModelsAnonymous(String username) {
+		List<ModelInfo> userModels = this.modelRepository.search("author:" + username);
+		
+		for (ModelInfo model : userModels) {
+			model.setAuthor(USER_ANONYMOUS);
+			this.modelRepository.updateMeta(model);
+		}	
 	}
 	
 	public IUserRepository getUserRepository() {
