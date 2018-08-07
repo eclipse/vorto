@@ -59,6 +59,7 @@ public class DuplicateModelValidation implements IModelValidator {
 		assert(context != null);
 		assert(context.getUserContext() != null);
 		
-		return model.getAuthor().equalsIgnoreCase(context.getUserContext().getHashedUsername());
+		// TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+		return model.getAuthor().equalsIgnoreCase(context.getUserContext().getHashedUsername()) || model.getAuthor().equalsIgnoreCase(context.getUserContext().getUsername());
 	}
 }
