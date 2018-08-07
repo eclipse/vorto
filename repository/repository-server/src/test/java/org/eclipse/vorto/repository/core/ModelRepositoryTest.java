@@ -191,7 +191,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		importModel("ColorLightIM.infomodel", UserContext.user("admin"));
 		importModel("HueLightStrips.infomodel", UserContext.user("admin"));
 		
-		assertEquals(2, modelRepository.search("author:" + alex.getHashedUsername()).size());
+		assertEquals(2, modelRepository.search("author:" + alex.getUsername()).size());
 	}
 	
 	
@@ -235,8 +235,8 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		importModel("Colorlight.fbmodel", erle);
 		importModel("Switcher.fbmodel", admin);
 		
-		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getHashedUsername()).size());
-		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getHashedUsername()).size());
+		assertEquals(2, modelRepository.search("author:" + UserContext.user("erle").getUsername()).size());
+		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getUsername()).size());
 	}
 
 }

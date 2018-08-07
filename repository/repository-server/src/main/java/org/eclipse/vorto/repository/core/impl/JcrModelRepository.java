@@ -245,14 +245,14 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
 				fileNode.addMixin("mix:lastModified");
-				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
 				contentNode.setProperty("jcr:data", binary);
 			} else { // node already exists.
 				Node fileNode = nodeIt.nextNode();
 				fileNode.addMixin("mix:lastModified");
-				fileNode.setProperty("vorto:author", userContext.getHashedUsername());
+				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.getNode("jcr:content");
 				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
 				contentNode.setProperty("jcr:data", binary);

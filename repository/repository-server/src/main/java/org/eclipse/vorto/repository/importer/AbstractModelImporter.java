@@ -130,7 +130,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
 					report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
 					report.setValid(false);
 				} else {
-					if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername())) {
+					//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+					if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername()) || m.getAuthor().equals(user.getUsername())) {
 						report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
 						report.setValid(true);
 					} else {

@@ -44,15 +44,20 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
 			ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
 			if (modelInfo != null) {
 				if ("model:delete".equalsIgnoreCase((String)permission)) {
-					return modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getHashedUsername());
+					//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+					return modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getHashedUsername()) ||
+						   modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getUsername());
 				} else if ("model:get".equalsIgnoreCase((String)permission)) {
 					IUserContext user = UserContext.user(authentication.getName());
 					return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName()) || 
 						   modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName()) ||
-						   modelInfo.getAuthor().equals(user.getHashedUsername());
+						   //TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+						   modelInfo.getAuthor().equals(user.getHashedUsername()) || 
+								   modelInfo.getAuthor().equals(user.getUsername());
 				} else if ("model:owner".equalsIgnoreCase((String)permission)) {
 					IUserContext user = UserContext.user(authentication.getName());
-					return modelInfo.getAuthor().equals(user.getHashedUsername());
+					//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+					return modelInfo.getAuthor().equals(user.getHashedUsername()) || modelInfo.getAuthor().equals(user.getUsername());
 				}
 				
 			}

@@ -23,6 +23,7 @@ public class UserContext implements IUserContext {
 		return username;
 	}
 	
+	//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
 	public String getHashedUsername() {
 		return getHash(username);
 	}
