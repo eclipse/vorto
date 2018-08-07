@@ -7,6 +7,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.workflowActions = [];
 		$scope.chosenFile = false;
 		$scope.editMode = false;
+		$scope.modelIsLoading = false;
 		$scope.isLoading = false;
 		$scope.showReferences = false;
 		$scope.showUsages = false;
@@ -154,6 +155,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getDetails = function (namespace, name, version) {
+			$scope.modelIsLoading = true;
 			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version))
 				.success(function (result) {
 					$scope.model = result;
@@ -170,7 +172,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						$location.path('/login');
 					} else {
 						$scope.errorLoading = error.message;
-					}					
+					}
+					$scope.modelIsLoading = false;	
 				});
 		};
 
@@ -193,6 +196,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					var demoGenerators = $scope.filterByTag(result, "demo");
 					$scope.platformGeneratorMatrix = $scope.listToMatrix(productionGenerators, 2);
 					$scope.platformDemoGeneratorMatrix = $scope.listToMatrix(demoGenerators, 2);
+					$scope.modelIsLoading = false;
 				});
 		};
 

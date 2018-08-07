@@ -1743,3 +1743,19 @@ input[type=file]::-webkit-file-upload-button {
 .pull-right{
 	margin-left: 10px;
 }
+
+.detailsLoading {
+	  height: 100%;
+	  width: 100%;
+	  top: 0;
+	  left: 0;
+	  position: absolute;
+	  padding: 0;
+	  transition: opacity .5s;
+	  z-index: 2;
+}
+
+.loadingCenter {
+	padding: 180px 0;
+	text-align: center;
+}

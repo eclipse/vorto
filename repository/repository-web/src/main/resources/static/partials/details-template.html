@@ -31,7 +31,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="(authority === 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated')">
+			<div ng-show="(authority === 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
@@ -43,7 +43,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority === 'ROLE_ADMIN' || model.author === user">
+			<div ng-show="authority === 'ROLE_ADMIN' || (model.author === user && model.author)">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
@@ -72,6 +72,12 @@
 						<div class="row">
 							<br />
 							<div class="col-sm-12 modelDetails">
+								<div ng-if="modelIsLoading" class="detailsLoading jumbotron">
+									<div class="loadingCenter">
+										<h3>
+											<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading details. Please wait...</h3>
+									</div>								
+								</div>	
 								<div ng-if="model.type === 'InformationModel'" class="col-sm-4 modelImg">
 									<div class="col-md-3 col-xs-4 modelImg">
 										<div class="row">
@@ -249,7 +255,7 @@
 										</dl>
 									</div>
 								</div>
-								<div class="row">
+								<div ng-if="!modelIsLoading" class="row">
 									<div class="col-sm-12 modelDetails">
 										<br>
 										<div class="row">
