@@ -1590,7 +1590,7 @@ footer ul.quicklinks a {
 }
 
 .label {
-    background-color: orange;
+    background-color: grey;
 }
 
 .state-InReview {
@@ -1734,4 +1734,12 @@ input[type=file]::-webkit-file-upload-button {
 .alert.alert-sandbox {
   margin-bottom: 0;
   border-radius: 0;
+}
+
+.helpBtn {
+	padding: 5px;
+}
+
+.pull-right{
+	margin-left: 10px;
 }

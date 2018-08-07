@@ -23,9 +23,11 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
+import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -101,7 +103,25 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
 		assertFalse(result.get(1).isValid());
 
 	}
-
+	
+	@Test
+	public void testUploadZipContainingNonVortoFiles() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		VortoModelImporter vortoImporter = new VortoModelImporter();
+		vortoImporter.setModelRepository(modelRepository);
+		vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
+		vortoImporter.setUserRepository(userRepository);
+		
+		UploadModelResult uploadResult = vortoImporter.upload(FileUpload.create("sample_models/lwm2m/lwm2m.zip",
+				IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/lwm2m.zip").getInputStream())), alex);
+		
+		assertEquals(false, uploadResult.isValid());
+		assertEquals(1, uploadResult.getReport().size());
+		assertEquals(MessageSeverity.ERROR, uploadResult.getReport().get(0).getMessage().getSeverity());
+		assertNotNull(uploadResult.getReport().get(0).getMessage().getMessage());
+		System.out.println(uploadResult.getReport().get(0).getMessage().getMessage());
+	}
+	
 	private void verifyOneModelAreMissing(List<ValidationReport> uploadResults) {
 		assertEquals(false, uploadResults.stream().allMatch(result -> result.isValid()));
 		assertEquals(uploadResults.size(), uploadResults.stream().filter(result -> result.getMessage() != null).count());

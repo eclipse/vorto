@@ -104,7 +104,7 @@
 								<i ng-show="!fileImported && report.message.severity == 'INFO'" class="fa fa-check fa-lg valid" aria-hidden="true"></i>
 								<i ng-show="!fileImported && report.message.severity == 'ERROR'" class="fa fa-close fa-lg invalid" aria-hidden="true"></i>
 								<i ng-show="!fileImported && report.message.severity == 'WARNING'" class="fa fa-warning fa-lg warning" aria-hidden="true"></i>
-								<a class="btn btn-primary pull-right" ng-show="fileImported" href="./#/details/ {{report.model.id.namespace}}/{{report.model.id.name}}/{{report.model.id.version}}" class="btn btn-primary" role="button">Open Model </a>
+								<a class="btn btn-primary pull-right" ng-show="fileImported" href="./#/details/{{report.model.id.namespace}}/{{report.model.id.name}}/{{report.model.id.version}}" class="btn btn-primary" role="button">Open Model </a>
 							</div>
 						</div>
 

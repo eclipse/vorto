@@ -1,5 +1,8 @@
 <link href="css/comment.css" rel="stylesheet">
-<section class="content">
+<div ng-if="errorLoading" class="row">
+	<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
+</div>
+<section ng-if="!errorLoading" class="content">
 	<ol class="breadcrumb">
 		<li>
 			<a href="./#/">Explore</a>
@@ -110,18 +113,18 @@
 											<dt ng-show="model.state === 'Released'">Released Date:</dt>
 											<dt ng-show="model.state === 'Draft' || model.state === 'InReview'">Modification Date:</dt>
 											<dt ng-show="model.state === 'Deprecated'">Deprecate Date:</dt>
-											<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
+											<dd ng-hide="model.modificationDate == null" class="ng-binding">{{model.modificationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 											<dd ng-show="model.modificationDate == null" class="ng-binding">-</dd>
 											<dt>
 												Created On:
 											</dt>
-											<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm:ss'}}</dd>
+											<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
 											<dt>Created By:</dt>
 											<dd class="ng-binding" ng-show="model.author === user">You</dd>
 											<dd class="ng-binding" ng-hide="model.author === user">Other user</dd>
 											<dt>References:</dt>
 											<dd>
-												<div ng-show="model.references.length > 0">
+												<div ng-show="modelReferences.show">
 													<a href="" ng-click="showReferences = !showReferences">
 														<div ng-if="showReferences">
 															<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide References</div>
@@ -130,17 +133,30 @@
 													</a>
 													<div uib-collapse="!showReferences">
 														<ul>
-															<li ng-repeat="reference in model.references" class="ng-scope">
-																<a ng-href="./#/details/{{reference.namespace}}/{{reference.name}}/{{reference.version}}" class="ng-binding">{{reference.namespace}}.{{reference.name}}:{{reference.version}}</a>
+															<li ng-repeat="reference in modelReferences" class="ng-scope">															
+																<span ng-show="reference.type === 'InformationModel'">
+																	<img src="images/im.png" />
+																</span>
+																<span ng-show="reference.type === 'Functionblock'">
+																	<img src="images/fb.png" />
+																</span>
+																<span ng-show="reference.type === 'Datatype'">
+																	<img src="images/dt.png" />
+																</span>
+																<span ng-show="reference.type === 'Mapping'">
+																	<i class="fa fa-exchange" aria-hidden="true"></i>
+																</span>	
+																<a ng-href="./#/details/{{reference.id.namespace}}/{{reference.id.name}}/{{reference.id.version}}" class="ng-binding">{{reference.id.name}}:{{reference.id.version}}</a>
+																 (State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>)																																				
 															</li>
 														</ul>
 													</div>
 												</div>
-												<div ng-show="model.references.length == 0">-</div>
+												<div ng-hide="modelReferences.show">-</div>
 											</dd>
 											<dt>Used By: </dt>
 											<dd>
-												<div ng-show="model.referencedBy.length > 0">
+												<div ng-show="modelReferencedBy.show">
 													<a href="" ng-click="showUsages = !showUsages">
 														<div ng-if="showUsages">
 															<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Usages</div>
@@ -149,18 +165,31 @@
 													</a>
 													<div uib-collapse="!showUsages">
 														<ul>
-															<li ng-repeat="usage in model.referencedBy" class="ng-scope">
-																<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">{{usage.namespace}}.{{usage.name}}:{{usage.version}}</a>
+															<li ng-repeat="usage in modelReferencedBy" class="ng-scope">
+																<span ng-show="usage.type === 'InformationModel'">
+																	<img src="images/im.png" />
+																</span>
+																<span ng-show="usage.type === 'Functionblock'">
+																	<img src="images/fb.png" />
+																</span>
+																<span ng-show="usage.type === 'Datatype'">
+																	<img src="images/dt.png" />
+																</span>
+																<span ng-show="usage.type === 'Mapping'">
+																	<i class="fa fa-exchange" aria-hidden="true"></i>
+																</span>	
+																<a ng-href="./#/details/{{usage.id.namespace}}/{{usage.id.name}}/{{usage.id.version}}" class="ng-binding">{{usage.id.name}}:{{usage.id.version}}</a>
+																(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)																
 															</li>
 														</ul>
 													</div>
 												</div>
-												<div ng-show="model.referencedBy.length == 0">-</div>
+												<div ng-hide="modelReferencedBy.show">-</div>
 											</dd>
 											<div ng-hide="model.type === 'Mapping'">
 												<dt>Mappings: </dt>
 												<dd>
-													<div ng-show="(model.platformMappings | json) != '{}'">
+													<div ng-show="modelMappings.show">
 														<a href="" ng-click="showMappings = !showMappings">
 															<div ng-if="showMappings">
 																<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
@@ -169,13 +198,26 @@
 														</a>
 														<div uib-collapse="!showMappings">
 															<ul>
-																<li ng-repeat="(key, value) in model.platformMappings" class="ng-scope">
-																	<a ng-href="./#/details/{{value.namespace}}/{{value.name}}/{{value.version}}" class="ng-binding">{{key}}</a>
+																<li ng-repeat="key in modelMappings.keys" class="ng-scope">																			
+																		<span ng-show="modelMappings[key].type === 'InformationModel'">
+																			<img src="images/im.png" />
+																		</span>
+																		<span ng-show="modelMappings[key].type === 'Functionblock'">
+																			<img src="images/fb.png" />
+																		</span>
+																		<span ng-show="modelMappings[key].type === 'Datatype'">
+																			<img src="images/dt.png" />
+																		</span>
+																		<span ng-show="modelMappings[key].type === 'Mapping'">
+																			<i class="fa fa-exchange" aria-hidden="true"></i>
+																		</span>	
+																		<a ng-href="./#/details/{{modelMappings[key].id.namespace}}/{{modelMappings[key].id.name}}/{{modelMappings[key].id.version}}" class="ng-binding">{{key}}</a>
+																		(State: <span class="state state-{{modelMappings[key].state}}">{{ modelMappings[key].state}}</span>)																																																															
 																</li>
 															</ul>
 														</div>
 													</div>
-													<div ng-show="(model.platformMappings | json) == '{}'">-</div>
+													<div ng-hide="modelMappings.show">-</div>
 												</dd>
 											</div>
 											<dt>Model File:</dt>
@@ -194,7 +236,7 @@
 													<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 														{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 													</a>
-													<button ng-hide="model.released" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+													<button ng-hide="model.released && authority !== 'ROLE_ADMIN'" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 														<i class="fa fa-close"></i>
 													</button>
 												</div>
@@ -206,12 +248,16 @@
 									<div class="col-sm-12 modelDetails">
 										<br>
 										<div class="row">
-											<div class="col-sm-4">
+											<div class="col-sm-3">
 												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
 												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
 											</div>
 											<div ng-hide="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
-											    class="col-sm-8">
+											    class="col-sm-9">
+											    <a class= "helpBtn pull-right" target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
+													<i class="fa fa-question fa-2x"></i>
+												</a>
+												
 												<a ng-if="isLoading" ng-show="(authority == 'ROLE_ADMIN' || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
@@ -221,20 +267,20 @@
 												    ng-click="saveModel()" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
-												<a class="pull-right">&nbsp;&nbsp;&nbsp;</a>
+												
 												<a ng-show="authority == 'ROLE_ADMIN' || model.author == user" class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
+												
+
 											</div>
 											<div ng-show="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
-											    class="col-sm-1 col-sm-offset-7" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
+											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
 												<a class="btn btn-sm btn-primary pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 											</div>
-											<a target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
-												<i class="fa fa-question fa-2x"></i>
-											</a>
+
 										</div>
 										<div class="row">
 											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</div>

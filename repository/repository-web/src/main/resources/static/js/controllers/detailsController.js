@@ -111,16 +111,66 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				})
 				.error(function (error) {});
 		};
+		
+		$scope.getMappings = function () {
+			mappings = $scope.model.platformMappings;
+			$scope.modelMappings = [];
+			$scope.modelMappings.keys = [];
+			$scope.modelMappings.show = false;
+			for( var index in mappings){
+		        $http.get('./api/v1/models/' + mappings[index].prettyFormat)
+				.success(function (result) {
+					$scope.modelMappings.keys.push(index);
+					$scope.modelMappings[index] = result;
+					$scope.modelMappings.show = true;
+				});
+			}
+		};
+		
+		$scope.getReferences = function () {
+			references = $scope.model.references;
+			$scope.modelReferences = [];
+			$scope.modelReferences.show = false;
+			for( var index in references){
+		        $http.get('./api/v1/models/' + references[index].prettyFormat)
+				.success(function (result) {				
+					$scope.modelReferences[index] = result;
+					$scope.modelReferences.show = true;				
+				});
+			}
+		};
+		
+		$scope.getReferencedBy = function () {
+			referencedBy = $scope.model.referencedBy;
+			$scope.modelReferencedBy = [];
+			$scope.modelReferencedBy.show = false;
+			for( var index in referencedBy){
+		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
+				.success(function (result) {
+					$scope.modelReferencedBy[index] = result;
+					$scope.modelReferencedBy.show = true;
+				});
+			}
+		};
 
 		$scope.getDetails = function (namespace, name, version) {
 			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version))
 				.success(function (result) {
 					$scope.model = result;
+					$scope.getMappings();
+					$scope.getReferences();
+					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
 
+				}).error(function (error, status) {					
+					if(status == 401) {
+						$location.path('/login');
+					} else {
+						$scope.errorLoading = error.message;
+					}					
 				});
 		};
 

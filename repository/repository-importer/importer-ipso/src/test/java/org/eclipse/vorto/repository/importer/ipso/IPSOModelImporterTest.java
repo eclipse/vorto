@@ -1,8 +1,6 @@
 package org.eclipse.vorto.repository.importer.ipso;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
@@ -14,6 +12,7 @@ import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.importer.FileUpload;
+import org.eclipse.vorto.repository.importer.MessageSeverity;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -109,4 +108,17 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 		return this.ipsoImporter.doImport(uploadResult.getHandleId(), user);
 	}
 
+	@Test
+	public void testUploadZipContainingNonIPSOFiles() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/valid-models.zip",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/valid-models.zip").getInputStream())),alex);
+		assertEquals(false, uploadResult.isValid());
+		assertEquals(1, uploadResult.getReport().size());
+		assertEquals(MessageSeverity.ERROR, uploadResult.getReport().get(0).getMessage().getSeverity());
+		assertNotNull(uploadResult.getReport().get(0).getMessage().getMessage());
+		System.out.println(uploadResult.getReport().get(0).getMessage().getMessage());
+	}
+	
 }

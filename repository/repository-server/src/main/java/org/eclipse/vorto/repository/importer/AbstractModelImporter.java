@@ -90,21 +90,24 @@ public abstract class AbstractModelImporter implements IModelImporter {
 					if (!entry.isDirectory()
 							&& !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
 						final FileUpload extractedFile = FileUpload.create(entry.getName(), copyStream(zis, entry));
-						List<ValidationReport> validationResult = this.validate(extractedFile, user);
-						postValidate(validationResult, user);
-						reports.addAll(validationResult);
+						if (getSupportedFileExtensions().contains(extractedFile.getFileExtension())) {
+							List<ValidationReport> validationResult = this.validate(extractedFile, user);
+							postValidate(validationResult, user);
+							reports.addAll(validationResult);
+						}
 					}
 				}
 			} catch (IOException e) {
 				throw new BulkUploadException("Problem while reading zip file during validation", e);
 			}
-		} else {
+		} else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
 			List<ValidationReport> validationResult = this.validate(fileUpload, user);
 			postValidate(validationResult, user);
 			reports.addAll(validationResult);
 		}
-
-		if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
+		if (reports.size() == 0) {
+			return new UploadModelResult(null,Arrays.asList(ValidationReport.invalid("Uploaded File does not contain any "+getKey()+" files.")));
+		} else if (reports.stream().filter(report -> !report.isValid()).count() == 0) {
 			return new UploadModelResult(createUploadHandle(fileUpload), reports);
 		} else {
 			return new UploadModelResult(createUploadHandle(fileUpload), reports);
