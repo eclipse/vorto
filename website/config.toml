@@ -84,7 +84,7 @@ googleAnalytics = ""
 	
 [[menu.main]]
 	name   = "Reference Documentation"
-	url    = "documentation/"
+	url    = "appendix/"
 	weight = 80
 
 [blackfriday]

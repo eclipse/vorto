@@ -33,7 +33,7 @@ Information Models describe a specific device type by grouping abstract and re-u
 		}
 	}
     
-[Complete DSL Reference]({{< ref "documentation/infomodel_dsl.md" >}}) for Information Models
+[Complete DSL Reference]({{< ref "appendix/infomodel_dsl.md" >}}) for Information Models
 
 ### 2. Function Blocks
 
@@ -82,7 +82,7 @@ The properties that a Function Block may define are classified as follows:
 
 	}
     
-[Complete DSL Reference]({{< ref "documentation/function_block_dsl.md" >}}) for Function Blocks
+[Complete DSL Reference]({{< ref "appendix/function_block_dsl.md" >}}) for Function Blocks
 
 
 ### 3. Datatypes (Entity and Enums)
@@ -110,7 +110,7 @@ Data types and Enums are reusable components that describe specific data and are
 		mandatory blue as int <MIN 0, MAX 255>
 	}
 
-[Complete DSL Reference]({{< ref "documentation/datatype_dsl.md" >}}) for Datatypes
+[Complete DSL Reference]({{< ref "appendix/datatype_dsl.md" >}}) for Datatypes
 
 
 ### 4. Mappings
@@ -152,7 +152,7 @@ The following example defines a mapping that references another mapping for re-u
 
 	}
 
-[Complete DSL Reference]({{< ref "documentation/mappings_dsl.md" >}}) for Mapping Models
+[Complete DSL Reference]({{< ref "appendix/mappings_dsl.md" >}}) for Mapping Models
 
 ### 4.1 Device Payload Mappings
 

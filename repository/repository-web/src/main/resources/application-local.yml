@@ -4,6 +4,7 @@ server:
   admin: 
   config:
     authenticatedSearchMode: false
+    updateDate: 2018-08-07 14:28:00
 
 github:
   oauth2:

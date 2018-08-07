@@ -26,13 +26,13 @@ In this example Raspberry Pi is used but you can use any device which can run py
 - [Install raspbian on the Raspberry Pi](https://www.raspberrypi.org/learning/software-guide/).
 - [Connect the pi to wifi](https://www.raspberrypi.org/learning/software-guide/wifi/).
 - [Enable ssh connection on your pi](https://www.raspberrypi.org/documentation/remote-access/ssh/) .
-- [Install python and required modules]({{< ref "installation/grovepi.md" >}}).
+- [Install python and required modules]({{< relref "#installation-of-grovepi-required-modules" >}}).
 
         
 ### 2. Setup your development environment (on your development machine).
 
 - [Install Visual Studio Code with the Python extension](https://code.visualstudio.com/docs/languages/python).
-- [Install python and required modules]({{< ref "installation/grovepi.md" >}}).
+- [Install python and required modules]({{< relref "#installation-of-grovepi-required-modules" >}}).
         
 ### 3.  Generate application code using the Python generator.
     
@@ -163,6 +163,25 @@ and
 ![grovePi Screenshot](/images/tutorials/grovepi/output_screenhot_grovepi.png)
 
 - Follow [Consuming Messages from Java for Hono] (https://www.eclipse.org/hono/dev-guide/java_client_consumer/) to receive the device data in Eclipse Hono.
+
+
+## Installation of GrovePi required Modules
+
+* Download and install the latest version of Python 3.x from the official [Python website](https://www.python.org/)
+
+* [Install pip](https://packaging.python.org/tutorials/installing-packages/#install-pip-setuptools-and-wheel)
+
+* Install Visual C++ Build Tools(http://landinghub.visualstudio.com/visual-cpp-build-tools). This is a pre-requisite for installing netifaces.
+
+* Install the required Python modules
+	 
+	* [Eclipse paho](https://www.eclipse.org/paho/clients/python/)
+	* [netinterfaces](https://pypi.python.org/pypi/netifaces)
+
+		* open terminal or console and type the following command
+		
+				pip install paho-mqtt
+				pip install netifaces
 
 ## What's next? 
 
