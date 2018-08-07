@@ -22,7 +22,8 @@ public class IsOwnerCondition implements IWorkflowCondition {
 
 	@Override
 	public boolean passesCondition(ModelInfo model, IUserContext user) {
-		return model.getAuthor().equals(user.getHashedUsername());
+		//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+		return model.getAuthor().equals(user.getHashedUsername()) || model.getAuthor().equals(user.getUsername());
 	}
 
 }

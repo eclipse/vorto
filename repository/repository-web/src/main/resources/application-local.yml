@@ -1,9 +1,10 @@
 server:
   port: 8080
   contextPath: /infomodelrepository
-  admin: aedelmann
+  admin: erlemantos
   config:
     authenticatedSearchMode: false
+    updateDate: 2000-01-01 12:00:00
 
 github:
   oauth2:

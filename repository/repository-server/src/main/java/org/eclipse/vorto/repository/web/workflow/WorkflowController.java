@@ -65,7 +65,7 @@ public class WorkflowController {
     				produces = "application/json")
     public ModelInfo claimModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     	ModelInfo model = this.modelRepository.getById(ModelId.fromPrettyFormat(modelId));
-    	model.setAuthor(UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()).getHashedUsername());
+    	model.setAuthor(UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()).getUsername());
     	return this.modelRepository.updateMeta(model);
 	
     }

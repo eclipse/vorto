@@ -86,10 +86,6 @@ public class ModelDtoFactory {
 	public static ModelInfo createDto(ModelInfo resource, IUserContext userContext) {
 		ModelInfo dto = new ModelInfo(createDto(resource.getId()), ModelType.valueOf(resource.getType().name()));
 		
-		if (userContext.getHashedUsername().equals(resource.getAuthor())) {
-			dto.setAuthor(userContext.getUsername());
-		}
-		
 		dto.setCreationDate(resource.getCreationDate());
 		dto.setDescription(resource.getDescription());
 		dto.setDisplayName(resource.getDisplayName());
@@ -101,11 +97,13 @@ public class ModelDtoFactory {
 		dto.setFileName(resource.getFileName());
 		dto.setModificationDate(resource.getModificationDate());
 		dto.setImported(resource.getImported());
+		dto.setAuthor(resource.getAuthor());
 		
 		return dto;
 	}
 	
 	public static Comment createDto(Comment comment, IUserContext userContext) {
+		//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
 		if (userContext.getHashedUsername().equals(comment.getAuthor())) {
 			comment.setAuthor(userContext.getUsername());
 		}

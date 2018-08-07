@@ -45,7 +45,7 @@ public class DefaultCommentService implements ICommentService{
 		final ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
 		
 		if (modelRepository.getById(id) != null){
-			comment.setAuthor(UserContext.user(comment.getAuthor()).getHashedUsername());
+			comment.setAuthor(comment.getAuthor());
 			comment.setModelId(id.getPrettyFormat());
 			comment.setDate(new Date());
 			commentRepository.save(comment);

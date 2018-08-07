@@ -182,8 +182,12 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 
 	@RequestMapping(value = { "/mine/download" }, method = RequestMethod.GET)
 	public void getUserModels(Principal user, final HttpServletResponse response) {
+		//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
 		List<ModelInfo> userModels = this.modelRepository
 				.search("author:" + UserContext.user(user.getName()).getHashedUsername());
+		
+		userModels.addAll(this.modelRepository.search("author:" + UserContext.user(user.getName()).getUsername()));
+		// TODO: end
 
 		logger.info("Exporting information models for " + user.getName() + " results: " + userModels.size());
 
