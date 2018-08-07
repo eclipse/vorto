@@ -42,8 +42,9 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 		
 		when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
 
-		assertEquals(2,this.modelRepository.search("author:" + alex.getUsername()).size());
+		assertEquals(2, this.modelRepository.search("author:" + alex.getUsername()).size());
 		accountService.delete("alex");		
-		assertEquals(2,this.modelRepository.search("author:" + alex.getUsername()).size());
+		assertEquals(0, this.modelRepository.search("author:" + alex.getUsername()).size());
+		assertEquals(2, this.modelRepository.search("author:anonymous").size());
 	}
 }
