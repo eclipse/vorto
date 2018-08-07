@@ -65,6 +65,9 @@ public class HomeController {
     @Value("#{servletContext.contextPath}")
     private String servletContextPath;
 
+    @Value("${repo.attachment.allowed.fileSize}")
+    private String attachmentAllowedSize;
+
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
 	
@@ -135,6 +138,7 @@ public class HomeController {
 		context.put("eidpEnabled", eidpEnabled);
 		context.put("authenticatedSearchMode", authenticatedSearchMode);
 		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
+		context.put("attachmentAllowedSize", attachmentAllowedSize);
 		return context;
 	}
 

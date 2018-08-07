@@ -541,7 +541,7 @@
 			</div>
 			</br>
 			<div ng-class="attachmentValid ? 'alert alert-success' : 'alert alert-danger'">
-				<small ng-show="attachmentValid">Max file size 5 MB.</small>
+				<small ng-show="attachmentValid">{{attachmentNote}}</small>
 				<small ng-hide="attachmentValid">{{errorMessage}}</small>
 			</div>
 			<div ng-hide="fileNameValid" class="alert alert-danger">

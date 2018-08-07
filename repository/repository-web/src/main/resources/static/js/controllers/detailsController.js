@@ -493,6 +493,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.selectedFile = null;
 					$scope.errorMessage = "";
 					$scope.attachmentValid = true;
+                    $scope.attachmentNote = "Max file size " + $rootScope.context.attachmentAllowedSize + " MB."
 
 					$scope.cancel = function () {
 						$scope.successfullyUploaded = false;
@@ -524,11 +525,12 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.uploadAttachment = function () {
 						$scope.isUploading = true;
-						var payload = new FormData();
-						payload.append('file', $scope.selectedFile, encodeURIComponent($scope.selectedFile.name));
+                        $scope.attachmentValid = true;
+                        var payload = new FormData();
+                        payload.append('file', $scope.selectedFile, encodeURIComponent($scope.selectedFile.name));
 
-						const attachment_url = './api/v1/attachments/' + $scope.modelId;
-
+                        const attachment_url = './api/v1/attachments/' + $scope.modelId;
+                        $scope.attachmentNote = "Uploading..."
                         $http.put(attachment_url, payload, {
                             transformRequest: angular.identity,
                             headers: {
@@ -537,6 +539,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
                         })
                         .success(function (data, status, headers, config) {
                             updateAttachments(model);
+                            $scope.isUploading = false;
                             if(data.success){
                                     $scope.successfullyUploaded = true;
                                     $timeout($scope.cancel,2000);
@@ -544,7 +547,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
                                     $scope.successfullyUploaded = false;
                                     $scope.attachmentValid = false;
                                     $scope.failedToUpload = false;
-                                    $scope.isUploading = false
                                     $scope.errorMessage = data.errorMessage;
                                }
                         })
@@ -553,11 +555,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
                                 $scope.attachmentValid = false;
                                 $scope.failedToUpload = false;
                                 $scope.isUploading = false;
-                                if(errResponse.data){
-                                    $scope.errorMessage = errResponse.data.message;
-                                }else{
-                                    $scope.errorMessage = "Error! while adding attachment.";
-                                }
+                                $scope.errorMessage = "File size exceeded. Allowed max size: " + $rootScope.context.attachmentAllowedSize +" MB";
                         });
 
 					};
