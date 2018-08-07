@@ -9,11 +9,6 @@
 		</li>
 		<li class="active">Model Details</li>
 	</ol>
-	<!--div class="row">
-			<div class="project-selection">
-				<a href="./#/" st-backlink><i class="fa fa-fw fa-long-arrow-left"></i>Go Back</a>
-			</div>
-	</div-->
 	<h2>
 		{{model.displayName}}
 		<small>{{model.type}}</small>
@@ -377,11 +372,30 @@
 									<div class="tiny-box-name">
 										<span>{{generator.name}}</span>
 									</div>
-									<!-- div class="tiny-box-action">
-												<span>
-													<button class="btn btn-block btn-info btn-xs" data-toggle="modal">Generate</button>
-												</span>
-											</div-->
+								</div>
+							</a>
+						</div>
+						<!-- end genbox  -->
+					</div>
+				</div>
+
+			</div>
+			<div class="text-center modelGen" ng-hide="platformDemoGeneratorMatrix.length === 0 || model.type === 'Datatype' || model.type === 'Mapping'">
+				<div class="row text-center">
+					<label>Experimental Generators</label>
+				</div>
+				<div class="generator-list">
+					<div class="row" ng-repeat="row in platformDemoGeneratorMatrix">
+						<!--genbox -->
+						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
+							<a ng-click="openGeneratorConfig(generator)">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
+									<span class="tiny-box-icon">
+										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
+									</span>
+									<div class="tiny-box-name">
+										<span>{{generator.name}}</span>
+									</div>
 								</div>
 							</a>
 						</div>

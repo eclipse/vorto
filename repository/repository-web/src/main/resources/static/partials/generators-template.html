@@ -19,7 +19,7 @@
 			    <div href="#" class="col-md-9">
 			   	
 			    		<small class="text-muted pull-right">Downloads: {{generator.amountOfDownloads}}</small>
-			        <ul>	<li><h3>{{generator.name}} </h3></li>
+			        <ul>	<li><h3>{{generator.name}}<sup ng-show="generator.tags[0] == 'demo'"><span class="label label-success">Experimental</span></sup> </h3></li>
 			        <li><small>{{generator.creator}}</small></li>
 			        <li class="desc">{{generator.description}}</li>
 			        <!--li class="author"><i class="fa fa-fw fa-user"> </i>{{generator.creator}}</li-->
