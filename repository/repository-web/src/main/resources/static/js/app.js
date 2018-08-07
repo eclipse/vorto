@@ -25,6 +25,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/signup", {
         templateUrl : "partials/signup-template.html",
         controller : "SignUpController"
+    }).when("/update", {
+        templateUrl : "partials/update-template.html",
+        controller : "UpdateController"
     }).when("/settings", {
         templateUrl : "partials/settings-template.html",
         controller : "SettingsController"
@@ -56,12 +59,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 	};
     
     $rootScope.logout = function() {
-        var postLogout = function() {
-            $rootScope.setUser(null);
-            $rootScope.init();
-            $location.path("/");
-        };
-        $http.post("logout", {}).success(postLogout).error(postLogout);
+        window.location.href = $rootScope.context.logOutUrl;
     };
 
     $rootScope.setUser = function(user) {
@@ -127,6 +125,8 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             if (user != null) {
                 if (user.isRegistered === "false") {
                     $location.path("/signup");
+                } else if(user.needUpdate === "true") {
+                    $location.path("/update");
                 }
             } else {
                 if ($rootScope.needAuthentication()) {
@@ -141,7 +141,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             .then(getUser)
             .then(getUserSucceeded, getUserFailed)
             .then(userResultAction)
-            .finally($rootScope.watchLocationChanges);	
+            .finally($rootScope.watchLocationChanges);
     };
     
     $rootScope.init();

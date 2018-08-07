@@ -14,10 +14,17 @@
  */
 package org.eclipse.vorto.repository.web;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.impl.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -30,15 +37,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 public class HomeController {
 	
 	private static final String LOGIN_TYPE = "loginType";
+	private static final String LOGOUT_URL = "/logout";
 
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled;
@@ -55,8 +62,14 @@ public class HomeController {
     @Value("${eidp.oauth2.resource.logoutRedirectUrl:#{null}}")
     private String logoutRedirectUrl;
 
+    @Value("#{servletContext.contextPath}")
+    private String servletContextPath;
+
     @Autowired
     private OAuth2ClientContext oauth2ClientContext;
+	
+	@Value("${server.config.updateDate:#{'2000-01-01 12:00:00'}}")
+	private String updateDate;
 	
 	@Autowired
 	private IUserAccountService accountService;
@@ -66,10 +79,10 @@ public class HomeController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized"), 
 							@ApiResponse(code = 200, message = "OK")})
 	@RequestMapping(value ={ "/user", "/me" }, method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> getUser(Principal user, final HttpServletRequest request) {
+	public ResponseEntity<Map<String, String>> getUser(Principal user, final HttpServletRequest request) throws ParseException {
 		
 		Map<String, String> map = new LinkedHashMap<>();
-		
+
 		if(user == null)
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
 		
@@ -77,13 +90,22 @@ public class HomeController {
 		
 		oauth2User.getAuthorities().stream().findFirst().ifPresent(role -> map.put("role", role.getAuthority()));
 		
+		User userAccount = accountService.getUser(oauth2User.getName());
+		
+		Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);
+		
 		map.put("name", oauth2User.getName());
 		map.put("displayName", getDisplayName(oauth2User));
-		map.put("isRegistered", Boolean.toString(accountService.exists(oauth2User.getName())));
+		map.put("isRegistered", Boolean.toString(userAccount != null));
+		map.put("needUpdate", Boolean.toString(needUpdate(userAccount, updateCutoff)));
 		Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
 		map.put("loginType", userDetails.get(LOGIN_TYPE));
 		
 		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+	}
+
+	private boolean needUpdate(User user, Date updateCutoff) {
+		return user != null && user.getLastUpdated().before(updateCutoff) && new Date().after(updateCutoff);
 	}
 	
 	private String getDisplayName(OAuth2Authentication oauth2User) {
@@ -106,24 +128,37 @@ public class HomeController {
 	}
 
 	@RequestMapping(value ={ "/context" }, method = RequestMethod.GET)
-	public Map<String, Object> globalContext() {
+	public Map<String, Object> globalContext(final HttpServletRequest request) {
 		Map<String, Object> context = new LinkedHashMap<>();
 		
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
 		context.put("authenticatedSearchMode", authenticatedSearchMode);
-		if (eidpEnabled) { //FIXME: with githubEnabled=true , it should return the logoutUrl of the Vorto Repository
-			context.put("logOutUrl", getLogoutEndpointUrl());
-		}
+		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
 		return context;
 	}
 
-    private String getLogoutEndpointUrl() {
-        String idToken = "";
-        if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
-            idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+    public String getBaseUrl(HttpServletRequest request) {
+        if (request.getRequestURI().equals("/")
+                || request.getRequestURI().equals("")) {
+            return request.getRequestURL().toString();
+        }else {
+            return request.getRequestURL().toString()
+                    .replace(request.getRequestURI(), "");
         }
-        return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl, idToken, logoutRedirectUrl);
+
+    }
+
+    private String getLogoutEndpointUrl(String baseUrl) {
+	    if(eidpEnabled) {
+            String idToken = "";
+            if(SecurityContextHolder.getContext().getAuthentication() instanceof OAuth2Authentication) {
+                idToken = (String) oauth2ClientContext.getAccessToken().getAdditionalInformation().get("id_token");
+            }
+            return String.format("%s?id_token_hint=%s&post_logout_redirect_uri=%s", logoutEndpointUrl, idToken, logoutRedirectUrl);
+        }else {
+            return baseUrl + servletContextPath + LOGOUT_URL;
+        }
     }
 	
 }

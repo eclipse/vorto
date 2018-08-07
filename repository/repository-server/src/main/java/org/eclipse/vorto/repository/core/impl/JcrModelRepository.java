@@ -658,4 +658,9 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
+	
+	public Session getSession() {
+		return this.session;
+	}
+	
 }

@@ -52,6 +52,12 @@ public abstract class AbstractRepositoryController {
 		// do logging
     }
 	
+	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Wrong Input")  // 405
+    @ExceptionHandler(IllegalArgumentException.class)
+    public void WrongInput(final IllegalArgumentException ex){
+		// do logging
+    }
+	
 	@ResponseStatus(value=HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model")  // 403
     @ExceptionHandler(NotAuthorizedException.class)
     public void unAuthorized(final NotAuthorizedException ex){

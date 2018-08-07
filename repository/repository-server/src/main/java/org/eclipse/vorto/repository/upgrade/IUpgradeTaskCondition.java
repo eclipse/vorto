@@ -18,6 +18,7 @@ package org.eclipse.vorto.repository.upgrade;
  * This condition to test whether a task should be run or not 
  *
  */
+@FunctionalInterface
 public interface IUpgradeTaskCondition {
 	boolean shouldExecuteTask();
 }

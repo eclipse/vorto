@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.api;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.vorto.repository.api.content.IReferenceType;
 
 /**
@@ -23,6 +25,8 @@ public class ModelId implements IReferenceType {
 	private String name;
 	private String namespace;
 	private String version;
+	
+	private static final Pattern ID_PATTERN = Pattern.compile("([\\w\\.]+).([\\w\\.]+)*.([A-Z][\\w\\.]+):([\\w\\.]+)");
 	
 	public ModelId() {
 	}
@@ -41,6 +45,9 @@ public class ModelId implements IReferenceType {
 	}
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
+		if (!ID_PATTERN.matcher(prettyFormat).matches()) {
+			throw new IllegalArgumentException("Model ID must match pattern <namespace>.<name>:<version>");
+		}
 		final int versionIndex = prettyFormat.indexOf(":");
 		return ModelId.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
 	}
