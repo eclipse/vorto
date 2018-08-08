@@ -163,6 +163,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version))
 				.success(function (result) {
 					$scope.model = result;
+					if($scope.model.author.length === 64) {
+						$scope.model.author = 'other user';
+					}
 					$scope.getMappings();
 					$scope.getReferences();
 					$scope.getReferencedBy();
