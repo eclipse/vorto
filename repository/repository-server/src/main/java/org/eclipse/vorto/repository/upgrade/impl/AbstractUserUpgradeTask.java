@@ -26,7 +26,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
 abstract class AbstractUserUpgradeTask implements IUserUpgradeTask {
-	protected String getEmailPrefix(OAuth2Authentication oauth2User) {
+	protected Optional<String> getEmailPrefix(OAuth2Authentication oauth2User) {
 		UsernamePasswordAuthenticationToken userAuth = (UsernamePasswordAuthenticationToken) oauth2User.getUserAuthentication();
 		
 		@SuppressWarnings("unchecked")
@@ -35,10 +35,10 @@ abstract class AbstractUserUpgradeTask implements IUserUpgradeTask {
 		String email = (String) userDetailsMap.get("email");
 		
 		if (email == null) {
-			throw new UpgradeProblem("No email field in the OAuth2Authentication object");
+			return Optional.empty();
 		}
 		
-		return email.split("@")[0];
+		return Optional.of(email.split("@")[0]);
 	}
 	
 	@Override

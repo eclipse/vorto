@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.vorto.repository.account.impl.User;
@@ -39,10 +40,17 @@ public class CommentAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 	
 	@Override
 	public void doUpgrade(User user, Supplier<Object> upgradeContext) throws UpgradeProblem {
-		String emailPrefix = getEmailPrefix((OAuth2Authentication) upgradeContext.get());
+		Optional<String> emailPrefix = getEmailPrefix((OAuth2Authentication) upgradeContext.get());
 		
-		updateModelsFor(UserContext.user(emailPrefix), user);
-		updateModelsFor(UserContext.user(user.getUsername()), user);
+		try {
+			if (emailPrefix.isPresent()) {
+				updateModelsFor(UserContext.user(emailPrefix.get()), user);
+			}
+			
+			updateModelsFor(UserContext.user(user.getUsername()), user);
+		} catch(Exception e) {
+			logger.error("error while updating user " + user.getUsername(), e);
+		}
 		
 		logger.info("Finished updating comments for '{}' with emailPrefix '{}'", user.getUsername(), emailPrefix);
 	}
