@@ -25,5 +25,6 @@ public interface ICommentService {
 		
     public void createComment(Comment comment) throws Exception;
     public List<Comment> getCommentsforModelId(ModelId modelId);
+    public List<Comment> getCommentsByAuthor(String author);
 	public void saveComment(Comment comment);
 }
