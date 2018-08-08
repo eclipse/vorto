@@ -14,14 +14,12 @@
  */
 package org.eclipse.vorto.repository.upgrade.impl;
 
-import java.sql.Timestamp;
-import java.util.List;
+import java.util.Collection;
 import java.util.function.Supplier;
 
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.comment.Comment;
+import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
@@ -32,13 +30,10 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
+public class CommentAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 
 	@Autowired
-	private IModelRepository modelRepository;
-	
-	@Autowired 
-	private IUserRepository userRepository;
+	private ICommentService commentService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(ModelAuthorUnhashUpgradeTask.class);
 	
@@ -49,34 +44,24 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 		updateModelsFor(UserContext.user(emailPrefix), user);
 		updateModelsFor(UserContext.user(user.getUsername()), user);
 		
-		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
-		userRepository.save(user);
-		
-		logger.info("Updating user: {} with emailPrefix: {}", user.getUsername(), emailPrefix);
+		logger.info("Finished updating comments for '{}' with emailPrefix '{}'", user.getUsername(), emailPrefix);
 	}
-	
+
 	private void updateModelsFor(IUserContext userContext, User user) {
-		List<ModelInfo> models = modelRepository.search("author:" + userContext.getHashedUsername());
-		logger.info("Found {} models with author {} to update.", models.size(), userContext.getHashedUsername());
-		
-		for(ModelInfo model : models) {
-			logger.info("Setting the author of " + model.getId().toString() + " to " + user.getUsername());
-			model.setAuthor(user.getUsername());
-			modelRepository.updateMeta(model);
+		Collection<Comment> comments = commentService.getCommentsByAuthor(userContext.getHashedUsername());
+		for(Comment comment : comments) {
+			comment.setAuthor(user.getUsername());
+			commentService.saveComment(comment);
+			logger.info("Setting Comment '{}' to author '{}'", comment.getContent(), user.getUsername());
 		}
 	}
 
 	@Override
 	public String getShortDescription() {
-		return "Updating models whose authors are hashed username into CIAM subject IDs.";
+		return "Unhash the author of Comments";
 	}
 
-	public void setModelRepository(IModelRepository modelRepository) {
-		this.modelRepository = modelRepository;
+	public void setCommentService(ICommentService commentService) {
+		this.commentService = commentService;
 	}
-
-	public void setUserRepository(IUserRepository userRepository) {
-		this.userRepository = userRepository;
-	}
-
 }

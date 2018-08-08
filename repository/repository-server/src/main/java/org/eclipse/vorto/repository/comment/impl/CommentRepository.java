@@ -25,4 +25,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface CommentRepository extends CrudRepository <Comment, Long> {
 	
 	List <Comment> findByModelId(String modelId);
+	
+	List <Comment> findByAuthor(String author);
 }

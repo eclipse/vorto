@@ -56,11 +56,14 @@ public class DefaultCommentService implements ICommentService{
 	public List<Comment> getCommentsforModelId(ModelId modelId){
 		return commentRepository.findByModelId(modelId.getPrettyFormat());		
 	}
+	
+	public List<Comment> getCommentsByAuthor(String author) {
+		return commentRepository.findByAuthor(author);
+	}
 
 	@Override
 	public void saveComment(Comment comment) {
-		this.commentRepository.save(comment);
-		
+		this.commentRepository.save(comment);	
 	}
 
 	public IModelRepository getModelRepository() {
