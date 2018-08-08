@@ -72,6 +72,25 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
         if($scope.onlyYourModels) {
             $scope.filteredModels = $filter('filter')($scope.filteredModels, {author: $rootScope.user });        
         }
+        $scope.filteredModels.sort(function(a, b){
+            if((a.type === "InformationModel") && (b.type !== "InformationModel")) return -1;
+            if((a.type !== "InformationModel") && (b.type === "InformationModel")) return 1;
+            
+            if((a.type === "Functionblock") && (b.type !== "Functionblock")) return -1;
+            if((a.type !== "Functionblock") && (b.type === "Functionblock")) return 1;
+            
+            if((a.type === "Datatype") && (b.type !== "Datatype")) return -1;
+            if((a.type !== "Datatype") && (b.type === "Datatype")) return 1;
+            
+            if((a.type === "Mapping") && (b.type !== "Mapping")) return -1;
+            if((a.type !== "Mapping") && (b.type === "Mapping")) return 1;
+            
+            if(a.type == b.type) {
+                if(a.creationDate > b.creationDate) return -1;
+                if(a.creationDate < b.creationDate) return 1;
+            }
+            return 0;
+        });
     };
     
     $scope.openCreateModelDialog = function(action) {
