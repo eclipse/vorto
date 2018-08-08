@@ -29,6 +29,10 @@ class ModelTemplate {
 		«keyword(modelType)» «modelId.name» {
 			«IF modelType == ModelType.Mapping»
 			targetplatform myplatform
+			«ELSEIF modelType == ModelType.InformationModel»
+			functionblocks {
+				
+			}
 			«ENDIF»
 		}
 		'''

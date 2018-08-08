@@ -24,7 +24,6 @@ import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

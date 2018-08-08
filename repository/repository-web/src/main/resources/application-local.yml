@@ -1,7 +1,7 @@
 server:
   port: 8080
   contextPath: /infomodelrepository
-  admin: 
+  admin: aedelmann
   config:
     authenticatedSearchMode: false
     updateDate: 2018-08-07 14:28:00

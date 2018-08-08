@@ -56,7 +56,7 @@
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-commons</artifactId>
-			<version>1.13.13.RELEASE</version>
+			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
 		
 		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
