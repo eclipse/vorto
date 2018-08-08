@@ -560,6 +560,7 @@ h3.modelHeader {
     height: 130px;
     width: 154px;
     text-align: center;
+    display: inline-block;
 }
 
 .gen-logo {
@@ -1751,8 +1752,8 @@ input[type=file]::-webkit-file-upload-button {
 	  left: 0;
 	  position: absolute;
 	  padding: 0;
-	  transition: opacity .5s;
 	  z-index: 2;
+	  background: white;
 }
 
 .loadingCenter {

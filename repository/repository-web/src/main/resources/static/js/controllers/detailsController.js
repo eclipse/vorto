@@ -132,11 +132,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			references = $scope.model.references;
 			$scope.modelReferences = [];
 			$scope.modelReferences.show = false;
+			var tmpIdx = 0;
 			for( var index in references){
 		        $http.get('./api/v1/models/' + references[index].prettyFormat)
-				.success(function (result) {				
-					$scope.modelReferences[index] = result;
-					$scope.modelReferences.show = true;				
+				.success(function (result) {
+					$scope.modelReferences[tmpIdx] = result;
+					$scope.modelReferences.show = true;
+					tmpIdx++;
 				});
 			}
 		};
@@ -145,11 +147,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			referencedBy = $scope.model.referencedBy;
 			$scope.modelReferencedBy = [];
 			$scope.modelReferencedBy.show = false;
+			var tmpIdx = 0;
 			for( var index in referencedBy){
 		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
 				.success(function (result) {
-					$scope.modelReferencedBy[index] = result;
+					$scope.modelReferencedBy[tmpIdx] = result;
 					$scope.modelReferencedBy.show = true;
+					tmpIdx++;
 				});
 			}
 		};
