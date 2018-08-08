@@ -246,7 +246,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		/*
 		 * Start - Handling Comments
 		 */
-		$scope.comments = null;
+        $scope.comments = [];
 		$authority = $rootScope.authority;
 
 		$scope.getCommentsForModelId = function () {
@@ -286,10 +286,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 			$http.post('./rest/comments', comment)
 				.success(function (result) {
-					$scope.comments.reverse();
-					$scope.comments.push(comment);
-					$scope.comments.reverse();
-
+                    $scope.getCommentsForModelId();
 				}).error(function (data, status, headers, config) {
 					if (status == 403) {
 						$rootScope.error = "Operation is Forbidden";
@@ -305,7 +302,6 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				});
 
 			$scope.commentContent = "";
-			$scope.getCommentsForModelId();
 		}
 
 		/*
