@@ -16,6 +16,7 @@ package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
@@ -44,10 +45,18 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 	
 	@Override
 	public void doUpgrade(User user, Supplier<Object> upgradeContext) throws UpgradeProblem {
-		String emailPrefix = getEmailPrefix((OAuth2Authentication) upgradeContext.get());
+		Optional<String> emailPrefix = getEmailPrefix((OAuth2Authentication) upgradeContext.get());
 		
-		updateModelsFor(UserContext.user(emailPrefix), user);
-		updateModelsFor(UserContext.user(user.getUsername()), user);
+		try {
+			if (emailPrefix.isPresent()) {
+				updateModelsFor(UserContext.user(emailPrefix.get()), user);
+			}
+			
+			updateModelsFor(UserContext.user(user.getUsername()), user);
+		} catch(Exception e) {
+			logger.error("error while updating user " + user.getUsername(), e);
+		}
+		
 		
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		userRepository.save(user);
