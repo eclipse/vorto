@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.upgrade;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.impl.CommentAuthorUnhashUpgradeTask;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
@@ -75,6 +77,11 @@ public class CommentAuthorUnhashUpgradeTaskTest {
 		
 		commentsForEmantos.forEach(comment -> assertTrue(comment.getAuthor().equals("emantos")));
 		commentsForEmailPrefix.forEach(comment -> assertTrue(comment.getAuthor().equals("emantos")));
+		
+		ArgumentCaptor<Comment> argument = ArgumentCaptor.forClass(Comment.class);
+		Mockito.verify(commentService, Mockito.times(20)).saveComment(argument.capture());
+		
+		assertEquals("emantos", argument.getValue().getAuthor());
 	}
 	
 }
