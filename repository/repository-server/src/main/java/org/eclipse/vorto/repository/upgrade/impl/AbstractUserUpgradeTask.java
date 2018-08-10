@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
 import org.eclipse.vorto.repository.upgrade.IUserUpgradeTask;
-import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 

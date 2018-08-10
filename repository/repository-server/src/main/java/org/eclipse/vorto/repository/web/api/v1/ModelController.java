@@ -155,7 +155,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(modelId),'model:get')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/mappings/{mappingId:.+}", method = RequestMethod.GET)
 	public AbstractModel getModelContentByModelAndMappingId(
 			@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId,
