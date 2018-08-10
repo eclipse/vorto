@@ -44,6 +44,7 @@ import javax.jcr.query.RowIterator;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -56,6 +57,7 @@ import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.core.ModelResource;
@@ -340,51 +342,6 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	// @Override
-	// public void removeModelImage(ModelId modelId) {
-	// try {
-	// ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-	// Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-	// if (modelFolderNode.hasNode("img.png")) {
-	// Node imageNode = (Node) modelFolderNode.getNode("img.png");
-	// imageNode.remove();
-	// session.save();
-	// }
-	// } catch (PathNotFoundException e) {
-	// throw new ModelNotFoundException("Problem when trying to remove image to
-	// model", e);
-	// } catch (RepositoryException e) {
-	// throw new FatalModelRepositoryException("Something severe went wrong when
-	// accessing the repository", e);
-	// }
-	// }
-	//
-	// @Override
-	// public byte[] getModelImage(ModelId modelId) {
-	// try {
-	// ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-	//
-	// Node folderNode = session.getNode(modelIdHelper.getFullPath());
-	// if (folderNode.hasNode("img.png")) {
-	// Node imageNode = folderNode.getNode("img.png");
-	// Node fileItem = (Node) imageNode.getPrimaryItem();
-	// InputStream is =
-	// fileItem.getProperty("jcr:data").getBinary().getStream();
-	// return IOUtils.toByteArray(is);
-	// }
-	// } catch (PathNotFoundException e) {
-	// throw new ModelNotFoundException("Problem when trying to retrieve image
-	// for model", e);
-	// } catch (RepositoryException e) {
-	// throw new FatalModelRepositoryException("Something severe went wrong when
-	// accessing the repository", e);
-	// } catch (IOException e) {
-	// throw new FatalModelRepositoryException("Something severe went wrong when
-	// trying to read image content", e);
-	// }
-	// return null;
-	// }
-
 	@Override
 	public void removeModel(ModelId modelId) {
 		try {
@@ -661,6 +618,32 @@ public class JcrModelRepository implements IModelRepository {
 	
 	public Session getSession() {
 		return this.session;
+	}
+
+	public ModelResource createVersion(ModelId existingId, String newVersion, IUserContext user) {
+		ModelInfo existingModel = this.getById(existingId);
+		if (existingModel == null) {
+			throw new ModelNotFoundException("Model could not be found");
+			
+		} else if (existingId.getVersion() == newVersion) {
+			throw new ModelAlreadyExistsException();
+		} else {	
+			ModelId newModelId = ModelId.newVersion(existingId, newVersion);
+			if (this.getById(newModelId) != null) {
+				throw new ModelAlreadyExistsException();
+			} 
+			
+			ModelFileContent existingModelContent = this.getModelContent(existingId);
+			Model model = existingModelContent.getModel();
+			model.setVersion(newVersion);
+			ModelResource resource = new ModelResource(model);
+			try {
+				this.save(newModelId, resource.toDSL(), existingId.getName() + existingModel.getType().getExtension(), user);
+			} catch (IOException e) {
+				throw new FatalModelRepositoryException(e.getMessage(), e);
+			}
+			return resource;
+		}
 	}
 	
 }

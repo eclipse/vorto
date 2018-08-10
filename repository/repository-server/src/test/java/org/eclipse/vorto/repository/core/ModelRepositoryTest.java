@@ -25,6 +25,7 @@ import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -239,4 +240,33 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(1, modelRepository.search("author:" + UserContext.user("admin").getUsername()).size());
 	}
 
+	@Test
+	public void testCreateNewMajorVersionOfExistingModel() {
+		IUserContext alex = UserContext.user("alex");
+		importModel("Color.type");
+		ModelInfo model = importModel("Colorlight.fbmodel", alex);
+		final String newVersion = "2.0.0";
+		ModelResource resource = this.modelRepository.createVersion(model.getId(),newVersion,alex);
+		assertNotNull(resource);
+		assertEquals(ModelId.newVersion(model.getId(),newVersion),resource.getId());
+		assertNotNull(resource.getModel());
+	}
+	
+	@Test (expected = ModelAlreadyExistsException.class)
+	public void testCreateModelWithVersionConflict() {
+		IUserContext alex = UserContext.user("alex");
+		importModel("Color.type");
+		ModelInfo model = importModel("Colorlight.fbmodel", alex);
+		final String newVersion = "1.0.0";
+		this.modelRepository.createVersion(model.getId(),newVersion,alex);
+	}
+	
+	@Test (expected = ModelNotFoundException.class)
+	public void testCreateModelWithVersionNotFound() {
+		IUserContext alex = UserContext.user("alex");
+		importModel("Color.type");
+		importModel("Colorlight.fbmodel", alex);
+		final String newVersion = "1.0.0";
+		this.modelRepository.createVersion(new ModelId("Some","demo","1.0.0"),newVersion,alex);
+	}
 }

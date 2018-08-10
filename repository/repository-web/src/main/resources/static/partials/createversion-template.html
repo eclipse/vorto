@@ -1,0 +1,25 @@
+<div class="modal-header">
+	<h3 class="modal-title"><center>Creating Model Version</center></h3>
+</div>
+<div class="modal-body">
+	<form name="createModelForm" novalidate>
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+	<label>Please specify a new version:</label>
+	<div class="form-group">
+    	<label>Current Version</label>
+        <input type="text" class="form-control" name="modelVersion" ng-model="model.id.version" disabled="disabled">
+    </div>
+    <div class="form-group">
+    	<label>New Version</label>
+        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
+		<div ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
+    </div>
+  </div>
+</form>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="createVersion()">Create Version</button>
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="createVersion()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create Version</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+</div>
+</div>

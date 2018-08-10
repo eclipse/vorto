@@ -51,6 +51,11 @@ public class ModelId implements IReferenceType {
 		final int versionIndex = prettyFormat.indexOf(":");
 		return ModelId.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
 	}
+	
+
+	public static ModelId newVersion(ModelId id, String newVersion) {
+		return ModelId.fromPrettyFormat(id.getNamespace()+"."+id.getName()+":"+newVersion);
+	}
 					
 	public String getName() {
 		return name;

@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -156,7 +157,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 		if (this.modelRepository.getById(modelID) != null) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			throw new ModelAlreadyExistsException();
 		} else {
 			ModelTemplate template = new ModelTemplate();
 			IUserContext userContext = UserContext
@@ -168,6 +169,22 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 			return new ResponseEntity<>(savedModel,HttpStatus.CREATED);
 
 		}
+	}
+	
+	@ApiOperation(value = "Creates a new version for the given model in the specified version")
+	@RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
+	public ResponseEntity<ModelInfo> createVersionOfModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
+			@ApiParam(value = "modelVersion", required = true) @PathVariable String modelVersion)
+			throws WorkflowException, IOException {
+
+		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+		IUserContext userContext = UserContext
+				.user(SecurityContextHolder.getContext().getAuthentication().getName());
+		
+		ModelResource resource = this.modelRepository.createVersion(modelID, modelVersion, userContext);
+		this.workflowService.start(resource.getId());
+		return new ResponseEntity<>(resource,HttpStatus.CREATED);
+
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.DELETE)

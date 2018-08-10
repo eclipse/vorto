@@ -30,6 +30,7 @@ import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,12 @@ public abstract class AbstractRepositoryController {
 	@ResponseStatus(value=HttpStatus.NOT_FOUND, reason = "Model not found.")  // 404
     @ExceptionHandler(ModelNotFoundException.class)
     public void NotFound(final ModelNotFoundException ex){
+		// do logging
+    }
+	
+	@ResponseStatus(value=HttpStatus.CONFLICT, reason = "Model already exists.")  // 409
+    @ExceptionHandler(ModelAlreadyExistsException.class)
+    public void ModelExists(final ModelAlreadyExistsException ex){
 		// do logging
     }
 	

@@ -53,6 +53,17 @@ public interface IModelRepository {
 	ModelFileContent getModelContent(ModelId modelId);
 	
 	/**
+	 * Creates a new version of an existing model
+	 * @param modelId
+	 * @param newVersion
+	 * @param user
+	 * @return the model and content of the newly created model in the repository
+	 * @throws ModelNotFoundException if the given modelId cannot be found
+	 * @throws ModelAlreadyExistsException if the given model with the given version already exists 
+	 */
+	ModelResource createVersion(ModelId modelId, String newVersion, IUserContext user);
+	
+	/**
 	 * Saves the model to the repo. If it does not exist, the model is created.
 	 * 
 	 * @param modelId the id of the model

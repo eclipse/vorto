@@ -43,6 +43,11 @@
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
 			</div>
+			<div ng-show="authority === 'ROLE_ADMIN' || authority === 'ROLE_USER'">
+				<a class="btn btn-primary pull-right" ng-click="openCreateModelVersionDialog()" role="button">
+					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create New Version</a>
+				<div class="pull-right">&nbsp;&nbsp;</div>
+			</div>
 		</div>
 	</div>
 	<br />

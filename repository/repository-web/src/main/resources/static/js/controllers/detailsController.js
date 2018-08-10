@@ -473,6 +473,49 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$location.path("/details/" + model.id.namespace + "/" + model.id.name + "/" + model.id.version);
 				});
 		};
+		
+		$scope.openCreateModelVersionDialog = function (action) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope,model) {
+					$scope.errorMessage = null;
+					$scope.model = model;
+					$scope.modelVersion = "";
+
+					$scope.createVersion = function () {
+						$scope.isLoading = true;
+						$http.post('./rest/models/' + $scope.model.id.prettyFormat + '/versions/' + $scope.modelVersion, null)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close(result);
+							}).error(function (data, status, header, config) {
+								$scope.isLoading = false;
+								if (status === 409) {
+									$scope.errorMessage = "Model with this name and namespace already exists.";
+								} else {
+									$scope.errorMessage = status.message;
+								}
+							});
+					};
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "partials/createversion-template.html",
+				size: "lg",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+
+			modalInstance.result.then(
+				function (model) {
+					$location.path("/details/" + model.id.namespace + "/" + model.id.name + "/" + model.id.version);
+				});
+		};
 
 		$scope.openSearchDialog = function () {
 			var modalInstance = $uibModal.open({
