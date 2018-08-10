@@ -65,7 +65,7 @@ public class Utils {
 		infomodel.setCategory(fbModel.getCategory());
 		infomodel.setDescription(fbModel.getDescription());
 		infomodel.setDisplayname(fbModel.getDisplayname());
-		infomodel.setName(fbModel.getName());
+		infomodel.setName(fbModel.getName()+"IM");
 		infomodel.setNamespace(fbModel.getNamespace());
 		infomodel.setVersion(fbModel.getVersion());
 

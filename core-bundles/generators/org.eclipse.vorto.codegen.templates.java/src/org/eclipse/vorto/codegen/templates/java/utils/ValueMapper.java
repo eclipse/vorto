@@ -38,7 +38,9 @@ public class ValueMapper {
 		else if (type.compareTo(PrimitiveType.DATETIME)==0) {
 			return "java.util.Date";
 		}
-		else
+		else if (type.compareTo(PrimitiveType.BASE64_BINARY)==0) {
+			return "byte[]";
+		} else
 		{
 			return type.getLiteral();
 		}
