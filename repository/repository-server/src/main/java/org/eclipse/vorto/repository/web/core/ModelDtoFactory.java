@@ -39,6 +39,7 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
 import org.eclipse.vorto.core.api.model.mapping.ConfigurationSource;
 import org.eclipse.vorto.core.api.model.mapping.EntitySource;
+import org.eclipse.vorto.core.api.model.mapping.EnumSource;
 import org.eclipse.vorto.core.api.model.mapping.FaultSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockAttributeSource;
 import org.eclipse.vorto.core.api.model.mapping.FunctionBlockPropertySource;
@@ -445,7 +446,7 @@ public class ModelDtoFactory {
 		return rules.stream().filter(r -> r.getSources().get(0) instanceof EntitySource).collect(Collectors.toList());
 	}
 
-	public static EnumModel createResource(Enum model) {
+	public static EnumModel createResource(Enum model, Optional<MappingModel> mappingModel) {
 		EnumModel resource = new EnumModel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
 				ModelType.Datatype);
 		resource.setDescription(model.getDescription());
@@ -453,7 +454,21 @@ public class ModelDtoFactory {
 		resource.setReferences(
 				model.getReferences().stream().map(reference -> createModelId(reference)).collect(Collectors.toList()));
 		resource.setLiterals(model.getEnums().stream().map(p -> createLiteral(p)).collect(Collectors.toList()));
+		
+		if (mappingModel.isPresent()) {
+			resource.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
+			for (MappingRule rule : getEnumRule(mappingModel.get().getRules())) {
+				StereoTypeTarget target = (StereoTypeTarget)rule.getTarget();
+				resource.addStereotype(Stereotype.create(target.getName(), convertAttributesToMap(target.getAttributes())));
+			}
+		}
+		
 		return resource;
+	}
+	
+	private static List<MappingRule> getEnumRule(List<MappingRule> rules) {
+		return rules.stream().filter(r -> r.getSources().get(0) instanceof EnumSource).collect(Collectors.toList());
+
 	}
 
 	private static EnumLiteral createLiteral(org.eclipse.vorto.core.api.model.datatype.EnumLiteral literal) {
