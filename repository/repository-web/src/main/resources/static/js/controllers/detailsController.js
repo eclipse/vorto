@@ -9,6 +9,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.editMode = false;
 		$scope.modelIsLoading = false;
 		$scope.isLoading = false;
+		$scope.isLoadingGenerators = false;
 		$scope.showReferences = false;
 		$scope.showUsages = false;
 		$scope.showMappings = false;
@@ -198,8 +199,10 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getPlatformGenerators = function () {
+			$scope.isLoadingGenerators = true;
 			$http.get('./api/v1/generators')
 				.success(function (result) {
+					$scope.isLoadingGenerators = false;
 					var productionGenerators = $scope.filterByTag(result, "production");
 					var demoGenerators = $scope.filterByTag(result, "demo");
 					$scope.platformGeneratorMatrix = $scope.listToMatrix(productionGenerators, 2);

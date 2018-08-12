@@ -4,6 +4,15 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 5
+
+**Fixes**
+
+* Fixes bug when generating Eclipse Hono Java Code for a single Function Block
+* Fixes bug when requesting image attachments from Repository via REST
+* Fixes bug in Payload Mapping Library for retrieving Mapping Specifications from Repository
+* Minor Repository UI/UX Improvements
+
 ## 0.10.0 milestone 4
 
 **Fixes and Enhancements**

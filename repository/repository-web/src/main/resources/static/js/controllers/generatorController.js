@@ -3,10 +3,13 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
+    $scope.isLoading = false;
 
     $scope.listGenerators = function() {
+    	$scope.isLoading = true;
         $http.get('./api/v1/generators').success(
             function(data, status, headers, config) {
+            	$scope.isLoading = false;
                 $scope.generators = data;
             });
     };

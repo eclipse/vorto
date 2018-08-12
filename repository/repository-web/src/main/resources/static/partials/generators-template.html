@@ -9,8 +9,14 @@
 <div class="row">
 <div class="col-md-12 modelDetails">
 <div class="row">
+	<div ng-if="isLoading" class="detailsLoading jumbotron">
+		<div class="loadingCenter">
+			<h3>
+				<i class='fa fa-refresh fa-spin'></i>&nbsp; Loading Plugins. Please wait...</h3>
+		</div>								
+	</div>
 	<div class="col-md-9">
-		<div ng-show="generators.length === 0">
+		<div ng-show="!isLoading && generators.length === 0">
 			<i>There are no generators configured.</i>
 		</div>
 		<div ng-repeat="generator in generators">
