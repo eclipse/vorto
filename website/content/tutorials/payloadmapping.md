@@ -34,12 +34,12 @@ Let's take this example and create a mapping specification for it:
 3. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
 4. Click **Create**.
 	<figure class="screenshot">
-  	<img src="/images/tutorials/payload_mapping/create_mapping_payloadVoltageMapping.png">
+  	<img src="/images/tutorials/payload_mapping/create_mapping_payloadDistanceMapping.png">
 	</figure>
 5. In the Model Editor add the following mapping rules and click **Save**:
 
 	<figure class="screenshot">
-  	<img src="/images/tutorials/payload_mapping/edit_mapping.png">
+	<img src="/images/tutorials/payload_mapping/edit_mapping.png"> 	
 	</figure>
 > <a target="_blank" href="http://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial.mapping/DistancePayloadMapping/1.0.0">Source Code</a>
 
@@ -59,12 +59,12 @@ Up to now, we have merely created a specification for the payload of the distanc
 3. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
 4. Click **Create**.
 	<figure class="screenshot">
-  	<img src="/images/tutorials/payload_mapping/create_mapping_AWSIoTButtonPayloadMapping.png">
+  	<img src="/images/tutorials/payload_mapping/create_mapping_payloadDistanceSensorMapping.png">
 	</figure>
 6. In the Model Editor add add the following mapping rules and click **Save**:
 
 	<figure class="screenshot">
-  	<img src="/images/tutorials/payload_mapping/edit_mapping_BatteryVoltage.png">
+  	<img src="/images/tutorials/payload_mapping/edit_mapping_Sensor.png">
 	</figure>
 > <a target="_blank" href="http://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial.mapping/DistanceSensorPayloadMapping/1.0.0">Source Code</a>
 
