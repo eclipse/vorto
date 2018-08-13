@@ -44,8 +44,6 @@ import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import ch.qos.logback.core.status.Status;
-
 /**
  * Extend this class for Implementation of a special importer for Vorto
  *
