@@ -41,9 +41,9 @@ This tutorial explains how to generate an Arduino sketch for a given Information
 
 ### 2. Generating an arduino sketch using the Arduino Generator (Arduino project).
     
-- Go to the Information Model of the [distance sensor] (http://vorto.eclipse.org/#/details/demo.iot.device/DistanceSensor/1.0.1?s=distancesensor) in the Vorto Repository
-- On the right side, click on the Arduino generator
-- Store the ZIP file and extract the source code.
+- Open the [Distance Sensor](http://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial/DistanceSensor/1.0.0) in the Vorto Repository
+- Click **Eclipse Hono Generator** and select **Arduino** as device platform. Confirm with **Generate**.
+- Download the ZIP file and extract the source code.
 - Open the INO file in your Arduino IDE.
 
 ### 3. Registering to Eclipse Hono
@@ -59,6 +59,7 @@ curl -X POST http://hono.eclipse.org:28080/registration/vortodemo
 ```
 
 **Adding device credentials**
+
 ```sh
 PWD_HASH=$(echo -n "S3cr3t" | openssl dgst -binary -sha512 | base64 | tr -d '\n') 
 curl -X POST http://hono.eclipse.org:28080/credentials/vortodemo
@@ -67,6 +68,7 @@ curl -X POST http://hono.eclipse.org:28080/credentials/vortodemo
 ```
 
 Example JSON payload:
+
 ```sh
 {
   "device-id": "1234",
@@ -82,6 +84,7 @@ Example JSON payload:
 ```
 
 ### 4. Adjust the Arduino Project according to your needs.
+
 The following important changes have to be made:
 
 ```sh

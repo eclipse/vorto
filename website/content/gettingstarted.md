@@ -24,6 +24,7 @@ The properties that a Function Block may define are classified as follows:
 * **Event** Properties - _Read-only_ properties that are published by the device, e.g. on state changes
 * **Operations** - Indicate functionality that can be invoked on the device, that may lead to device state changes or merely give additional meta-data information.
 
+[Get more information]({{< relref "userguide/quickhelp_dsl.md" >}}) on the Vorto Meta-Model and DSL.
 
 ## Defining a Model
 
@@ -133,10 +134,6 @@ Now let's go back to our generated project and update the `src/main/java/device/
 - **Forward** the device data to [Eclipse Ditto](https://ditto.eclipse.org) in order to update the digital twin representation for the device. 
 
 	> The JSON data, sent by the device is already compliant to the Eclipse Ditto protocol. Therefore, you can directly modify the thing in Eclipse Ditto by sending the device JSON data via Websockets. Please take a look at the [Eclipse Ditto Sandbox](https://ditto.eclipse.org) for more information. 
-	
-- **Share** your Vorto Information Model in the [Vorto Repository](http://vorto.eclipse.org), that way other IoT developers can integrate your device in their IoT solutions.
-
-	> Log in to [Vorto Repository](http://vorto.eclipse.org) with your Github account and click on **Share** and follow the instructions. 
 	
 - [Connect an ESP8266 - based device to Eclipse Hono](../tutorials/#connecting-a-esp8266-arduino)
 - [Connect a GrovePi to Eclipse Hono](../tutorials/#connecting-a-grovepi)

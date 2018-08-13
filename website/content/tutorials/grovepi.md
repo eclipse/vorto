@@ -36,10 +36,10 @@ In this example Raspberry Pi is used but you can use any device which can run py
         
 ### 3.  Generate application code using the Python generator.
     
-- Go to the Information Model of your device in the Vorto Repository, e.g. [distance sensor](http://vorto.eclipse.org/#/details/demo.iot.device/DistanceSensor/1.0.1?s=distancesensor).
-- On the right side, select the **Eclipse Hono Generator** and choose **Python**
+- Open the [Distance Sensor](http://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial/DistanceSensor/1.0.0) in the Vorto Repository.
+- Click **Eclipse Hono Generator** and choose **Python**.
 - Click **Generate**
-- Store the ZIP file and extract the source code.
+- Download the ZIP file and extract the source code.
 - [Get the certificate](https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt) and copy and paste the content in a .crt file where you stored your source code
 
 ### 4. Registering to Eclipse Hono
@@ -144,8 +144,8 @@ and
 - Read the data and assign it to the functional block properties:
 
 ```sh     
-      infomodel.distance.sensor_value = ultrasonicRead(ultrasonic_ranger)
-      infomodel.distance.sensor_units = "cm"
+      infomodel.distance.sensorValue = ultrasonicRead(ultrasonic_ranger)
+      infomodel.distance.sensorUnits = "cm"
 ```       
         
 - The variable `timePeriod` is set further down in the file. In this example, the variable `timePeriod` is set to 10.
