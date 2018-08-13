@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -51,6 +52,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractModelImporter implements IModelImporter {
 
 	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
+	
+	private static Logger logger = Logger.getLogger(AbstractModelImporter.class);
 
 	@Autowired
 	private ITemporaryStorage uploadStorage;
@@ -143,7 +146,8 @@ public abstract class AbstractModelImporter implements IModelImporter {
 						}
 					}
 				} catch (Exception e) {
-					report.setMessage(new StatusMessage("Internal error while trying to import model [" + report.getModel().getId() + "]", MessageSeverity.ERROR));
+					logger.error("Error while validating the model " + report.getModel().getId(), e);
+					report.setMessage(new StatusMessage("Internal error while trying to import model [" + report.getModel().getId() + "]", MessageSeverity.WARNING));
 					report.setValid(false);
 				}
 			}
