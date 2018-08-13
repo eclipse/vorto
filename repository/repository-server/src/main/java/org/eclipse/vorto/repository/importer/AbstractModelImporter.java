@@ -44,6 +44,8 @@ import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import ch.qos.logback.core.status.Status;
+
 /**
  * Extend this class for Implementation of a special importer for Vorto
  *
@@ -91,7 +93,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 							&& !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
 						final FileUpload extractedFile = FileUpload.create(entry.getName(), copyStream(zis, entry));
 						if (getSupportedFileExtensions().contains(extractedFile.getFileExtension())) {
-							List<ValidationReport> validationResult = this.validate(extractedFile, user);
+							List<ValidationReport> validationResult = validate(extractedFile, user);
 							postValidate(validationResult, user);
 							reports.addAll(validationResult);
 						}
@@ -124,20 +126,27 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	 */
 	private void postValidate(List<ValidationReport> reports, IUserContext user) {
 		reports.forEach(report -> {
-			if (report.getModel() != null && this.modelRepository.getById(report.getModel().getId()) != null) {
-				ModelInfo m = this.modelRepository.getById(report.getModel().getId());
-				if (m.isReleased()) {
-					report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
-					report.setValid(false);
-				} else {
-					//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
-					if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername()) || m.getAuthor().equals(user.getUsername())) {
-						report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
-						report.setValid(true);
-					} else {
-						report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
-						report.setValid(false);
+			if (report.getModel() != null) {
+				try {
+					ModelInfo m = this.modelRepository.getById(report.getModel().getId());
+					if (m != null) {
+						if (m.isReleased()) {
+							report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
+							report.setValid(false);
+						} else {
+							//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+							if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername()) || m.getAuthor().equals(user.getUsername())) {
+								report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
+								report.setValid(true);
+							} else {
+								report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
+								report.setValid(false);
+							}
+						}
 					}
+				} catch (Exception e) {
+					report.setMessage(new StatusMessage("Internal error while trying to import model [" + report.getModel().getId() + "]", MessageSeverity.ERROR));
+					report.setValid(false);
 				}
 			}
 
