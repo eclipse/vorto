@@ -143,7 +143,7 @@ Let's take a look what you need to do in order to do that:
 
 		<dependency>
 		   <groupId>org.eclipse.vorto</groupId>
-		   <artifactId>repository-mapping</artifactId>
+		   <artifactId>mapping-engine</artifactId>
 		   <version>${vorto.version}</version>
 		</dependency>
 
