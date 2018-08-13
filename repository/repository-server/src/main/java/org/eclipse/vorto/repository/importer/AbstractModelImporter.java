@@ -27,6 +27,7 @@ import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -51,6 +52,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractModelImporter implements IModelImporter {
 
 	public static final long TTL_TEMP_STORAGE_INSECONDS = 60 * 5;
+	
+	private static Logger logger = Logger.getLogger(AbstractModelImporter.class);
 
 	@Autowired
 	private ITemporaryStorage uploadStorage;
@@ -91,7 +94,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 							&& !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
 						final FileUpload extractedFile = FileUpload.create(entry.getName(), copyStream(zis, entry));
 						if (getSupportedFileExtensions().contains(extractedFile.getFileExtension())) {
-							List<ValidationReport> validationResult = this.validate(extractedFile, user);
+							List<ValidationReport> validationResult = validate(extractedFile, user);
 							postValidate(validationResult, user);
 							reports.addAll(validationResult);
 						}
@@ -124,20 +127,28 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	 */
 	private void postValidate(List<ValidationReport> reports, IUserContext user) {
 		reports.forEach(report -> {
-			if (report.getModel() != null && this.modelRepository.getById(report.getModel().getId()) != null) {
-				ModelInfo m = this.modelRepository.getById(report.getModel().getId());
-				if (m.isReleased()) {
-					report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
-					report.setValid(false);
-				} else {
-					//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
-					if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername()) || m.getAuthor().equals(user.getUsername())) {
-						report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
-						report.setValid(true);
-					} else {
-						report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
-						report.setValid(false);
+			if (report.getModel() != null) {
+				try {
+					ModelInfo m = this.modelRepository.getById(report.getModel().getId());
+					if (m != null) {
+						if (m.isReleased()) {
+							report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
+							report.setValid(false);
+						} else {
+							//TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has taken place
+							if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername()) || m.getAuthor().equals(user.getUsername())) {
+								report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
+								report.setValid(true);
+							} else {
+								report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
+								report.setValid(false);
+							}
+						}
 					}
+				} catch (Exception e) {
+					logger.error("Error while validating the model " + report.getModel().getId(), e);
+					report.setMessage(new StatusMessage("Internal error while trying to import model [" + report.getModel().getId() + "]", MessageSeverity.WARNING));
+					report.setValid(false);
 				}
 			}
 
