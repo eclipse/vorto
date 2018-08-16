@@ -92,15 +92,15 @@ ReturnPrimitiveType :
 ;
 
 DictonaryParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = DictionaryPropertyType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
+	(multiplicity ?= 'multiple')? name = ValidID 'as' type = DictionaryPropertyType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
 ;
 
 PrimitiveParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = PrimitiveType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
+	(multiplicity ?= 'multiple')? name = ValidID 'as' type = PrimitiveType ('<' constraintRule = ConstraintRule '>')?  (description=STRING)?
 ;
 
 RefParam:
-	(multiplicity ?= 'multiple')? name = ID 'as' type = [datatype::Type|QualifiedName] (description=STRING)?
+	(multiplicity ?= 'multiple')? name = ValidID 'as' type = [datatype::Type|QualifiedName] (description=STRING)?
 ;
 
 Param:
