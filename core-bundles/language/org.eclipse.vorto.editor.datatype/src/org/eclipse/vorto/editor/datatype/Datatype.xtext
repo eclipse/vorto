@@ -145,8 +145,8 @@ ValidID: ID | KEYWORD;
 
 KEYWORD:
 	'breakable' | 'category' | 'configuration' | 'dateTime' | 'description' | 'dictionary' | 'displayname' | 'events' |
-	'extension' | 'fault' | 'functionblock' | 'functionblocks' | 'infomodel' | 'namespace' | 'operations' | 'status' |
-	'version';
+	'extension' | 'fault' | 'functionblock' | 'functionblocks' | 'infomodel' | 'mandatory' | 'namespace' | 'operations' |
+	'optional' | 'status' | 'version';
 
 terminal SIGNEDINT :
 	'-'INT
