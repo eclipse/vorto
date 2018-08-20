@@ -82,7 +82,7 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 
 		<dependency>
 		   <groupId>org.eclipse.vorto</groupId>
-		   <artifactId>repository-mapping</artifactId>
+		   <artifactId>mapping-engine</artifactId>
 		   <version>${vorto.version}</version>
 		</dependency>
 
