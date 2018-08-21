@@ -243,7 +243,7 @@
 														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 														</a>
-														<button ng-hide="model.released && authority !== 'ROLE_ADMIN'" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+														<button ng-hide="(model.released && authority !== 'ROLE_ADMIN') || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 															<i class="fa fa-close"></i>
 														</button>
 													</div>

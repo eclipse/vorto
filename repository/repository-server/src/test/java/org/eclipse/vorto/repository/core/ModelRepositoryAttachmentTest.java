@@ -247,6 +247,54 @@ public class ModelRepositoryAttachmentTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
+	public void testDeleteImportedAttachmentOtherAttachmentsNotExist() throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
+		
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle,Attachment.TAG_IMPORTED);
+		
+		
+		boolean deleteResult = modelRepository.deleteAttachment(modelId, "backup1.xml");
+		assertFalse(deleteResult);
+	}
+	
+	@Test
+	public void testDeleteImportedAttachmentOtherAttachmentsExist() throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		
+		ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");
+		
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle,Attachment.TAG_IMPORTED);
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup-withImages.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup-withImages.xml").getInputStream())), erle);
+		
+		boolean deleteResultTrue = modelRepository.deleteAttachment(modelId, "backup-withImages.xml");
+		assertTrue(deleteResultTrue);
+		
+		boolean deleteResultFalse = modelRepository.deleteAttachment(modelId, "backup1.xml");
+		assertFalse(deleteResultFalse);
+	}
+	
+	@Test
+	public void testDeleteModelWithImportedAttachment() throws Exception {
+		IUserContext erle = UserContext.user("erle");
+		importModel("Color.type", erle);
+		assertEquals(1, modelRepository.search("*").size());
+		
+		ModelId modelId = new ModelId("Color", "org.eclipse.vorto.examples.type", "1.0.0");		
+		modelRepository.attachFile(modelId, 
+				new FileContent("backup1.xml", IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream())), erle,Attachment.TAG_IMPORTED);
+		
+		this.modelRepository.removeModel(modelId);
+		assertEquals(0, modelRepository.search("*").size());	
+	}
+	
+	@Test
 	public void testDeleteOfAttachmentTwice() throws Exception {
 		IUserContext erle = UserContext.user("erle");
 		importModel("Color.type", erle);

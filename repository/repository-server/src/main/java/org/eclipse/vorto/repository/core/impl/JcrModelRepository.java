@@ -37,6 +37,7 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
@@ -595,6 +596,9 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	public boolean deleteAttachment(ModelId modelId, String fileName) {
+		if(getAttachments(modelId).stream().anyMatch(attachment -> (attachment.getTags().contains(Attachment.TAG_IMPORTED) && attachment.getFilename().equals(fileName)))){
+			return false;
+		}
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -602,7 +606,8 @@ public class JcrModelRepository implements IModelRepository {
 			if (modelFolderNode.hasNode("attachments")) {
 				Node attachmentFolderNode = modelFolderNode.getNode("attachments");
 				if (attachmentFolderNode.hasNode(fileName)) {
-					attachmentFolderNode.getNode(fileName).remove();
+					Node attachmentNode = attachmentFolderNode.getNode(fileName);
+					attachmentNode.remove();
 					session.save();
 					return true;
 				}
