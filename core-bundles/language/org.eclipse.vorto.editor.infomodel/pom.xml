@@ -65,6 +65,17 @@
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.vorto</groupId>
+						<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
+						<version>${project.version}</version>
+						<exclusions>
+							<exclusion>
+								<groupId>p2.eclipse-plugin</groupId>
+								<artifactId>*</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.vorto</groupId>
 						<artifactId>org.eclipse.vorto.core</artifactId>
 						<version>${project.version}</version>
 						<exclusions>

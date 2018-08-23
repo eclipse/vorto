@@ -16,22 +16,25 @@ package
  */
 org.eclipse.vorto.editor.infomodel
 
+import com.google.inject.Binder
+import com.google.inject.Provides
+import com.google.inject.Singleton
 import org.eclipse.vorto.editor.datatype.converter.DatatypeValueConverter
+import org.eclipse.vorto.editor.functionblock.validation.TypeFileAccessingHelper
+import org.eclipse.vorto.editor.functionblock.validation.TypeHelper
+import org.eclipse.vorto.editor.infomodel.formatting.InformationModelFormatter
 import org.eclipse.vorto.editor.infomodel.generator.InformationModelOutputConfigurationProvider
 import org.eclipse.vorto.editor.infomodel.scoping.InformationModelScopeProvider
 import org.eclipse.xtext.conversion.IValueConverterService
 import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IScopeProvider
-import com.google.inject.Binder
-import com.google.inject.Singleton
-import org.eclipse.vorto.editor.infomodel.formatting.InformationModelFormatter
 
 /** 
  * Use this class to register components to be used at runtime / without the
  * Equinox extension registry.
  */
-class InformationModelRuntimeModule extends org.eclipse.vorto.editor.infomodel.AbstractInformationModelRuntimeModule {
+class InformationModelRuntimeModule extends AbstractInformationModelRuntimeModule {
 	override void configure(Binder binder) {
 		super.configure(binder)
 		binder.bind(IOutputConfigurationProvider).to(InformationModelOutputConfigurationProvider).in(Singleton)
@@ -39,6 +42,10 @@ class InformationModelRuntimeModule extends org.eclipse.vorto.editor.infomodel.A
 
 	override Class<? extends IScopeProvider> bindIScopeProvider() {
 		return InformationModelScopeProvider
+	}
+	
+	@Provides def TypeHelper getTypeHelper() {
+		return new TypeFileAccessingHelper()
 	}
 
 	override Class<? extends IQualifiedNameProvider> bindIQualifiedNameProvider() {
