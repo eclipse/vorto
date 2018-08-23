@@ -22,7 +22,10 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +39,8 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 	private static final String BEARER = "Bearer";
 	private static final String AUTHORIZATION = "Authorization";
 	private UserInfoTokenServices userInfoService;
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
 	public AuthorizationTokenFilter(UserInfoTokenServices userInfoService) {
 		this.userInfoService = userInfoService;
@@ -57,7 +62,9 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 						return;
 					}
 				} catch(InvalidTokenException e) {
-					// Do nothing. This is totally expected if token is wrong.
+					LOGGER.warn("Invalid token.", e);
+					((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+					return;
 				}
 			}
 		}
