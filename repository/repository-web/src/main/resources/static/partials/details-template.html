@@ -325,24 +325,24 @@
 											</div>
 										</div>
 										<!-- chat item -->
-										<div class="direct-chat-msg" ng-repeat="comment in comments">
-											<div class='direct-chat-info clearfix'>
-												<span class='direct-chat-name pull-left' ng-show="comment.firstname == null || comment.lastname == null">
+										<div class="vorto-chat-msg" ng-repeat="comment in comments">
+											<div class='vorto-chat-info clearfix'>
+												<span class='vorto-chat-name pull-left' ng-show="comment.firstname == null || comment.lastname == null">
 													{{comment.author}} </span>
-												<span class='direct-chat-name pull-left' ng-show="comment.firstname != '' && comment.lastname != ''">
+												<span class='vorto-chat-name pull-left' ng-show="comment.firstname != '' && comment.lastname != ''">
 													{{comment.firstname}} {{comment.lastname}} </span>
-												<span class='direct-chat-timestamp pull-right'>
+												<span class='vorto-chat-timestamp pull-right'>
 													<i class="fa fa-clock-o"></i> {{comment.date | date:'hh:mm a dd-MM-yyyy'}}
 												</span>
 											</div>
-											<!-- /.direct-chat-info -->
-											<div class="direct-chat-text">
+											<!-- /.vorto-chat-info -->
+											<div class="vorto-chat-text">
 												<pre class="chat">{{comment.content}}</pre>
 
 											</div>
-											<!-- /.direct-chat-text -->
+											<!-- /.vorto-chat-text -->
 										</div>
-										<!-- /.direct-chat-msg -->
+										<!-- /.vorto-chat-msg -->
 
 									</div>
 									<!-- /.chat -->
