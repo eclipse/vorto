@@ -17,6 +17,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.modelEditor = null;
 		$scope.attachments = [];
 		$scope.encodeURIComponent = encodeURIComponent;
+		$scope.newComment = {value: ""}
 
 		$scope.modelEditorLoaded = function (_editor) {
 			$scope.modelEditor = _editor;
@@ -277,8 +278,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		}
 
 		$scope.getCommentsForModelId();
-
-		$scope.createComment = function (commentContent) {
+		$scope.createComment = function () {
 
 			$scope.date = new Date();
 
@@ -286,9 +286,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				"modelId": $routeParams.namespace + '.' + $routeParams.name + ':' + $routeParams.version,
 				"author": $scope.user,
 				"date": $scope.date,
-				"content": commentContent
-			}
-
+				"content": $scope.newComment.value
+			};
+			
 			$http.post('./rest/comments', comment)
 				.success(function (result) {
                     $scope.getCommentsForModelId();
@@ -306,7 +306,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					}
 				});
 
-			$scope.commentContent = "";
+			$scope.newComment.value = "";
 		}
 
 		/*

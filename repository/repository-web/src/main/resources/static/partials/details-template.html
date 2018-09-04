@@ -310,6 +310,7 @@
 							<section class="col-md-12 connectedSortable">
 								<!-- Chat box -->
 								<div class="chatbox">
+									<form id="reviewChat" name="reviewChat">
 									<div class="box-body chat" id="chat-box">
 										<h3 ng-show="!authenticated" style="text-align: center;">
 											Please
@@ -317,11 +318,11 @@
 										</h3>
 										<div class="box-footer">
 											<div class="input-group group">
-												<textarea class="form-control comment" style="height: 100px;" placeholder="Type comment ..." ng-model="commentContent" ng-disabled="!authenticated">
+												<textarea class="form-control comment" style="height: 100px;" placeholder="Type comment ..." ng-model="newComment.value" required ng-disabled="!authenticated">
 												</textarea>
 											</div>
 											<div class="input-group-btn">
-												<button class=" btn btn-primary createCommentBtn" ng-click="createComment(commentContent)" ng-disabled="!authenticated">Send</button>
+												<button class=" btn btn-primary createCommentBtn" ng-click="createComment()" ng-disabled="!authenticated || reviewChat.$invalid">Send</button>
 											</div>
 										</div>
 										<!-- chat item -->
@@ -346,7 +347,7 @@
 
 									</div>
 									<!-- /.chat -->
-
+									</form>
 								</div>
 								<!-- /.box (chat box) -->
 
