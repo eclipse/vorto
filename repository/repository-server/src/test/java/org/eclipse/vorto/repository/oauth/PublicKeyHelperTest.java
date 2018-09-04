@@ -15,7 +15,7 @@
 package org.eclipse.vorto.repository.oauth;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import org.eclipse.vorto.repository.sso.oauth.strategy.PublicKeyHelper;
 import org.eclipse.vorto.repository.sso.oauth.strategy.model.Key;
@@ -40,9 +40,9 @@ public class PublicKeyHelperTest {
 		
 		PublicKeyHelper helper = PublicKeyHelper.instance(restTemplate);
 		
-		assertTrue(!helper.getPublicKey(CIAM_PUBLIC_KEY_URI).isEmpty());
+		assertFalse(helper.getPublicKey(CIAM_PUBLIC_KEY_URI).isEmpty());
 		assertEquals(helper.getPublicKey(CIAM_PUBLIC_KEY_URI).size(), 2);
-		assertTrue(!helper.getPublicKey(KEYCLOAK_PUBLIC_KEY_URI).isEmpty());
+		assertFalse(helper.getPublicKey(KEYCLOAK_PUBLIC_KEY_URI).isEmpty());
 		assertEquals(helper.getPublicKey(KEYCLOAK_PUBLIC_KEY_URI).size(), 1);
 	}
 	

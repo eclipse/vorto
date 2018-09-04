@@ -72,7 +72,7 @@ public class PublicKeyHelper {
 	}
 	
 	class CommonKey {
-		BigInteger modulus = null, publicExponent = null;
+		private BigInteger modulus = null, publicExponent = null;
 		
 		public CommonKey(String n, String e) {
 			Decoder urlDecoder = Base64.getUrlDecoder();
@@ -80,8 +80,8 @@ public class PublicKeyHelper {
 	        publicExponent = new BigInteger(1, urlDecoder.decode(e));
 		}
 		
-		BigInteger getModulus() { return modulus; }
-		BigInteger getPublicExponent() { return publicExponent; }
+		public BigInteger getModulus() { return modulus; }
+		public BigInteger getPublicExponent() { return publicExponent; }
 	}
 	
 	public static PublicKey toPublicKey(String publicKey) {
