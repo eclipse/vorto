@@ -36,11 +36,11 @@ import com.google.common.base.Strings;
 
 public class AuthorizationTokenFilter extends GenericFilterBean {
 
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	
 	private static final String BEARER = "Bearer";
 	private static final String AUTHORIZATION = "Authorization";
 	private UserInfoTokenServices userInfoService;
-	
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
 	public AuthorizationTokenFilter(UserInfoTokenServices userInfoService) {
 		this.userInfoService = userInfoService;
@@ -64,6 +64,10 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 				} catch(InvalidTokenException e) {
 					LOGGER.warn("Invalid token.", e);
 					((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+					return;
+				} catch(Exception e) {
+					LOGGER.warn("Server Error.", e);
+					((HttpServletResponse) response).sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 					return;
 				}
 			}
