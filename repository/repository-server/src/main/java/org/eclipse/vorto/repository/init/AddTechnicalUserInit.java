@@ -33,10 +33,10 @@ public class AddTechnicalUserInit implements ApplicationListener<ApplicationRead
 	@Autowired
 	private IUserAccountService userAccountService;
 	
-	@Value("${oauth2.verification.eidp.technicalUsers: #{ new String[] {} }}")
+	@Value("${oauth2.verification.eidp.technicalUsers:}")
 	private String[] ciamTechnicalUsers;
 	
-	@Value("${oauth2.verification.keycloak.technicalUsers: #{ new String[] {} }}")
+	@Value("${oauth2.verification.keycloak.technicalUsers:}")
 	private String[] keycloakTechnicalUsers;
 	
 	@Override
