@@ -74,6 +74,9 @@ public class HomeController {
 	@Value("${server.config.updateDate:#{'2000-01-01 12:00:00'}}")
 	private String updateDate;
 	
+	@Value("${server.config.supportEmail:#{null}}")
+	private String supportEmail;
+	
 	@Autowired
 	private IUserAccountService accountService;
 	
@@ -139,6 +142,8 @@ public class HomeController {
 		context.put("authenticatedSearchMode", authenticatedSearchMode);
 		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
 		context.put("attachmentAllowedSize", attachmentAllowedSize);
+		context.put("supportEmail", supportEmail);
+		
 		return context;
 	}
 

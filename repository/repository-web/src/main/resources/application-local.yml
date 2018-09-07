@@ -5,6 +5,7 @@ server:
   config:
     authenticatedSearchMode: false
     updateDate: 2018-08-07 14:28:00
+    supportEmail: vorto-dev@eclipse.org
 
 github:
   oauth2:
