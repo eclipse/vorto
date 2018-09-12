@@ -40,9 +40,10 @@ class PythonDittoSerializerTemplate implements IFileTemplate<Model> {
 	        self.payload += "{\"topic\": \"" + ditto_nameSpace + "/" + hono_clientId + "/things/twin/commands/modify\","
 	        self.payload += "\"headers\": {\"response-required\": false},"
 	        self.payload += "\"path\": \"/features/"+name+"\",\"value\" : { \"properties\":{\"status\" : {"
-	        object.serialize(self)
-	        self.payload += "} }"
-	        self.payload += "} }"
+	        object.serializeStatus(self)
+	        self.payload += "}, \"configuration\" : {"
+	        object.serializeConfiguration(self)
+	        self.payload += "} } } }"
 	        returnPayload = self.payload
 	        # RESET
 	        self.payload = ""

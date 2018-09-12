@@ -50,24 +50,60 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 			«ENDFOR»
 		«ENDIF»
 		
+		«IF fb.functionblock.configuration !== null»
+			«FOR configuration : fb.functionblock.configuration.properties»
+			void «fb.name»::set«configuration.name»(«type(configuration.type)» value) {
+				«configuration.name» = value;			
+			}
+			
+			«type(configuration.type)» «fb.name»::get«configuration.name»() {
+				return «configuration.name»;
+			}
+			«ENDFOR»
+		«ENDIF»		
+		
 		String «fb.name»::serialize(String ditto_namespace, String hono_deviceId, String fbName) {
 		    String result = "{\"topic\":\""+ ditto_namespace + "/" + hono_deviceId +"/things/twin/commands/modify\",";
-		    		result += "\"headers\":{\"response-required\": false},";
-		    		result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": { \"status\": {";
+		    result += "\"headers\":{\"response-required\": false},";
+		    result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": {";
+		    «IF fb.functionblock.status !== null»
+		    //Status Properties
 		    «var counter = 0»
-		        «IF fb.functionblock.status !== null»
-		        «FOR status : fb.functionblock.status.properties»
-		            «var c = counter++»
-		            «IF isNumericType(status.type)»
-		                result += "\"«status.name»\" : " + String«convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
-		             «ELSEIF isEntity(fb.functionblock, status.type)»
-		                result += «status.name».serialize();
-		             «ELSE»
-		                result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
-		            «ENDIF»                                    
-		        «ENDFOR»
-		        «ENDIF»
-		        result += "} } } }";
+		    result += "\"status\": {";
+		    «FOR status : fb.functionblock.status.properties»
+		        «var c = counter++»
+		        «IF isNumericType(status.type)»
+		            result += "\"«status.name»\" : " + String«convertNumericValue(status)» + "«IF c < fb.functionblock.status.properties.length-1»,«ENDIF»";
+		         «ELSEIF isEntity(fb.functionblock, status.type)»
+		            result += «status.name».serialize();
+		         «ELSE»
+		            result += "\"«status.name»\" : \"" + String(«status.name») + "\"«IF c < fb.functionblock.status.properties.length-1»,«ENDIF» ";
+		        «ENDIF»                                    
+		    «ENDFOR»
+		    result += "}";
+		    «ENDIF»
+
+		    «IF fb.functionblock.configuration !== null && fb.functionblock.status !== null»
+		    result +=",";
+		    «ENDIF»
+
+		    «IF fb.functionblock.configuration !== null»
+		    //Configuration Properties
+		    «var counter = 0»
+		    result += "\"configuration\": {";
+		    «FOR configuration : fb.functionblock.configuration.properties»
+		        «var c = counter++»
+		        «IF isNumericType(configuration.type)»
+		            result += "\"«configuration.name»\" : " + String«convertNumericValue(configuration)» + "«IF c < fb.functionblock.configuration.properties.length-1»,«ENDIF»";
+		         «ELSEIF isEntity(fb.functionblock, configuration.type)»
+		            result += «configuration.name».serialize();
+		         «ELSE»
+		            result += "\"«configuration.name»\" : \"" + String(«configuration.name») + "\"«IF c < fb.functionblock.configuration.properties.length-1»,«ENDIF» ";
+		        «ENDIF»                                    
+		    «ENDFOR»
+		    result += "}";
+		    «ENDIF»
+		    result += "} } }";
 
 		    return result;
 		}

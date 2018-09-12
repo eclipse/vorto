@@ -72,27 +72,29 @@ class HonoDataService implements IFileTemplate<InformationModel> {
 		
 		«FOR fbProperty : element.properties»
 		public void publish«fbProperty.name.toFirstUpper»(String resourceId, «fbProperty.type.name» «fbProperty.name») {
-			getConnectedHonoClient(resourceId).send("telemetry/" + honoTenant + "/" + resourceId, gson.toJson(wrap(«fbProperty.name»,"«fbProperty.name»")));
+			getConnectedHonoClient(resourceId).send("telemetry/" + honoTenant + "/" + resourceId, gson.toJson(wrap(«fbProperty.name».getStatusProperties(),«fbProperty.name».getConfigurationProperties(),"«fbProperty.name»")));
 		}
 		«ENDFOR»
 		
-		private <T> Map<String, Object> wrap(T functionBlock, String featureName) {				
+		private <T> Map<String, Object> wrap(T StatusProperties, T ConfigurationProperties, String featureName) {				
 			Map<String, Object> headers = new HashMap<String, Object>();
 			headers.put("response-required", Boolean.FALSE);
 			
 			Map<String, Object> wrapper = new HashMap<String, Object>();
 			wrapper.put("topic", dittoNamespace + "/" + deviceId + "/things/twin/commands/modify");
 		    wrapper.put("path", "/features/"+featureName);
-		    wrapper.put("value", createValue(functionBlock));
+		    wrapper.put("value", createValue(StatusProperties,ConfigurationProperties));
 			wrapper.put("headers", headers);
 	
 			return wrapper; 
 		}
 		
-		private <T> Map<String, Object> createValue(T functionBlock) {
+		private <T> Map<String, Object> createValue(T StatusProperties, T ConfigurationProperties) {
 			Map<String, Object> value = new HashMap<String, Object>();
 			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put("status",functionBlock);
+			
+			properties.put("status",StatusProperties);
+			properties.put("configuration",ConfigurationProperties);
 			value.put("properties", properties);
 			return value;
 		}

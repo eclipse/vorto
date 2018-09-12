@@ -261,6 +261,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        
 		        «FOR fb : model.properties»
 		        	«IF fb.type.functionblock.status !== null»
+		        	//Status Properties
 		        		«FOR status : fb.type.functionblock.status.properties»
 		        			«IF isNumericType(status.type)»
 		        			infoModel.«fb.name».set«status.name»(value);
@@ -281,6 +282,28 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        			«ENDIF»
 		        		«ENDFOR»
 		        	«ENDIF»
+		        	«IF fb.type.functionblock.configuration !== null»
+		        	//Configuration Properties
+		        		«FOR configuration : fb.type.functionblock.configuration.properties»
+		        			«IF isNumericType(configuration.type)»
+		        			infoModel.«fb.name».set«configuration.name»(value);
+		        			«ELSEIF isAlphabetical(configuration.type)»
+		        			infoModel.«fb.name».set«configuration.name»(msg);
+		        			«ELSEIF isEnum(fb.type.functionblock, configuration.type)»
+		        			infoModel.«fb.name».set«configuration.name»(«type(configuration.type)»::«getFirstValueEnum(fb.type.functionblock, configuration.type)»);
+		        			«ELSEIF isEntity(fb.type.functionblock, configuration.type)»
+		        			«type(configuration.type)» «configuration.name»;
+		        			«FOR Entity : getEntity(fb.type.functionblock, configuration.type)»
+		        			    «IF isNumericType(Entity.type)»
+		        			        «configuration.name».set«Entity.name»(value);
+		        			    «ELSEIF isAlphabetical(Entity.type)»
+		        			        «configuration.name».set«Entity.name»(msg);
+		        			    «ENDIF»
+		        			«ENDFOR»
+		        			infoModel.«fb.name».set«configuration.name»(«configuration.name»);
+		        			«ENDIF»
+		        		«ENDFOR»
+		        	«ENDIF»		        	
 		        «ENDFOR»				
 		        
 		        «FOR fb : model.properties»

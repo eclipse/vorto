@@ -57,11 +57,23 @@ class ArduinoFbHeaderTemplate extends ArduinoTemplate<FunctionblockModel> {
 		                    «type(status.type)» get«status.name»();
 		                «ENDFOR»
 		            «ENDIF»
+		            «IF fb.functionblock.configuration !== null»
+		                «FOR configuration : fb.functionblock.configuration.properties»
+		                    void set«configuration.name»(«type(configuration.type)» value);
+		                    «type(configuration.type)» get«configuration.name»();
+		                «ENDFOR»
+		            «ENDIF»
+
 		            String serialize(String ditto_namespace, String hono_deviceId, String fbName);
 		        private:
 		            «IF fb.functionblock.status !== null»
 		                «FOR status : fb.functionblock.status.properties»
 		                    «type(status.type)» «status.name»;
+		                «ENDFOR»
+		            «ENDIF»
+		            «IF fb.functionblock.configuration !== null»
+		                «FOR configuration : fb.functionblock.configuration.properties»
+		                    «type(configuration.type)» «configuration.name»;
 		                «ENDFOR»
 		            «ENDIF»
 		    };

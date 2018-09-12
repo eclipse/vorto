@@ -38,6 +38,11 @@ class PythonFbTemplate implements IFileTemplate<FunctionblockModel> {
 		        	self.«prop.name» = 0.0
 		        	«ENDFOR»
 		        «ENDIF»
+		        «IF fb.functionblock.configuration !== null»
+		        	«FOR prop : fb.functionblock.configuration.properties»
+		        	self.«prop.name» = 0.0
+		        	«ENDFOR»
+		        «ENDIF»
 		
 		    «IF fb.functionblock.status !== null»
 		    	«FOR prop : fb.functionblock.status.properties»
@@ -52,13 +57,40 @@ class PythonFbTemplate implements IFileTemplate<FunctionblockModel> {
 		    		
 		    	«ENDFOR»
 		    «ENDIF»
-		    def serialize(self, serializer):
+		    «IF fb.functionblock.configuration !== null»
+		    	«FOR prop : fb.functionblock.configuration.properties»
+		    		### Configuration property «prop.name»
+		    		@property
+		    		def «prop.name»(self):
+		    		    return self.__«prop.name»[0]
+		    		
+		    		@«prop.name».setter
+		    		def «prop.name»(self, value):
+		    		    self.__«prop.name» = (value, True)
+		    		
+		    	«ENDFOR»
+		    «ENDIF»
+		    def serializeStatus(self, serializer):
 		        «IF fb.functionblock.status !== null»
+		        	serializer.first_prop = True
 		        	«FOR prop : fb.functionblock.status.properties»
 		        	if self.__«prop.name»[1]:
 		        	       serializer.serialize_property("«prop.name»", self.__«prop.name»[0])
 		        	       self.__«prop.name» = (self.__«prop.name»[0], False)
 		        	«ENDFOR»
+		        «ELSE»
+		        pass
+		        «ENDIF»
+		    def serializeConfiguration(self, serializer):
+		        «IF fb.functionblock.configuration !== null»
+		        	serializer.first_prop = True
+		        	«FOR prop : fb.functionblock.configuration.properties»
+		        	if self.__«prop.name»[1]:
+		        	       serializer.serialize_property("«prop.name»", self.__«prop.name»[0])
+		        	       self.__«prop.name» = (self.__«prop.name»[0], False)
+		        	«ENDFOR»
+		        «ELSE»
+		        pass
 		        «ENDIF»
 		'''
 	}

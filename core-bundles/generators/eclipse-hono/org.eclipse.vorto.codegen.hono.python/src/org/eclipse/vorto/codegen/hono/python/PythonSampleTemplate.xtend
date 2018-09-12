@@ -136,6 +136,18 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	            «ENDIF»
 	        «ENDFOR»
 	    «ENDIF»
+	    «IF fb.type.functionblock.configuration !== null»
+	        «FOR configuration : fb.type.functionblock.configuration.properties»
+	            «IF configuration.type instanceof PrimitivePropertyType»
+	            	«var primitiveType = configuration.type as PrimitivePropertyType»
+	            	«IF primitiveType.type == PrimitiveType.STRING»
+	            	infomodel.«fb.name».«configuration.name» = ""
+	            	«ELSE»
+	            	infomodel.«fb.name».«configuration.name» = 0
+	            	«ENDIF»
+	            «ENDIF»
+	        «ENDFOR»
+	    «ENDIF»
 	«ENDFOR»
 
 	# Create a serializer for the MQTT payload from the Information Model

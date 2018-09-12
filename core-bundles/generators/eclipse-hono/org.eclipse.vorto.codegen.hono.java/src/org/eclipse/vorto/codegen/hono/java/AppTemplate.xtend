@@ -97,8 +97,15 @@ class AppTemplate implements IFileTemplate<InformationModel> {
 		private static «fbProperty.type.name» read«fbProperty.name.toFirstUpper»() {
 			«fbProperty.type.name» «fbProperty.name» = new «fbProperty.type.name»();
 			«IF fbProperty.type.functionblock.status !== null»
+			//Status properties
 			«FOR statusProperty : fbProperty.type.functionblock.status.properties»
 			«fbProperty.name».set«TypeMapper.checkKeyword(statusProperty.name).toFirstUpper»(«TypeMapper.getRandomValue(statusProperty.type)»);
+			«ENDFOR»
+			«ENDIF»
+			«IF fbProperty.type.functionblock.configuration !== null»
+			//Configuration properties
+			«FOR configurationProperty : fbProperty.type.functionblock.configuration.properties»
+			«fbProperty.name».set«TypeMapper.checkKeyword(configurationProperty.name).toFirstUpper»(«TypeMapper.getRandomValue(configurationProperty.type)»);
 			«ENDFOR»
 			«ENDIF»
 			return «fbProperty.name»;

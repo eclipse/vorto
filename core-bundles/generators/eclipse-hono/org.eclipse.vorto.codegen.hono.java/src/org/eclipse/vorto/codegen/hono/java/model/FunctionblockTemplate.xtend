@@ -71,19 +71,59 @@ class FunctionblockTemplate implements IFileTemplate<FunctionblockModel> {
 		'''
 		package «Utils.getJavaPackage(informationModelContext)».model;
 		
+		import java.util.HashMap;
+		import java.util.Map;
+		
 		public class «model.getName» {
 		    «var fb = model.functionblock»	
 		    «IF fb.status !== null»
-		    	«FOR property : model.functionblock.status.properties»
-		    		«propertyTemplate.getContent(property,context)»
-		    	«ENDFOR»
+		    
+		    /** Status properties */
+		    
+		    «FOR property : model.functionblock.status.properties»
+		    	«propertyTemplate.getContent(property,context)»
+		    «ENDFOR»
+		    «ENDIF»
+		    «IF fb.configuration !== null»
+		    
+		    /** Configuration properties */
+		    
+		    «FOR property : model.functionblock.configuration.properties»
+		    	«propertyTemplate.getContent(property,context)»
+		    «ENDFOR»
+		    «ENDIF»
 		    	
+		    «IF fb.status !== null»	
 		    	«FOR property : model.functionblock.status.properties»
 		    		«propertySetterTemplate.getContent(property,context)»
 		    		«propertyGetterTemplate.getContent(property,context)»
 		    	«ENDFOR»
 		    «ENDIF»
-		
+		    «IF fb.configuration !== null»	
+		    	«FOR property : model.functionblock.configuration.properties»
+		    		«propertySetterTemplate.getContent(property,context)»
+		    		«propertyGetterTemplate.getContent(property,context)»
+		    	«ENDFOR»
+		    «ENDIF»
+		    
+		    public Map getStatusProperties() {
+		        Map<String, Object> status = new HashMap<String, Object>();
+		        «IF fb.status !== null»	
+		        	«FOR property : model.functionblock.status.properties»
+		        		status.put("«property.name»", this.«property.name»);
+		        	«ENDFOR»
+		        «ENDIF»
+		    	return status;
+		    }
+		    public Map getConfigurationProperties() {
+		        Map<String, Object> configuration = new HashMap<String, Object>();
+		        «IF fb.configuration !== null»	
+		        	«FOR property : model.functionblock.configuration.properties»
+		        		configuration.put("«property.name»", this.«property.name»);
+		        	«ENDFOR»
+		        «ENDIF»
+		        return configuration;
+		    }
 		}
 		'''
 	}
