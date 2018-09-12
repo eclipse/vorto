@@ -1,24 +1,29 @@
-# docker-compose.yml
-version: '2'
-
+version: '3'
 services:
-  vorto-repo:
-    image: eclipsevorto/vorto-repo
-    container_name: vorto-repo
+  repository:
+    build: eclipsevorto/vorto-repo
     ports:
-      - 8080:8080
-    expose:
-      - "8080"
-
-  vorto-boschthings-generator:
-    image: eclipsevorto/vorto-bosch
-    container_name: vorto-boschthings-generator
-    ports:
-      - 9014:9014
-    depends_on:
-      - vorto-repo
+      - "8080:8080"
+    volumes:
+      - "./repository-web/docker:/code/config"
     environment:
-      VORTO_SERVICE_REPOSITORYURL: http://vorto-repo:8080/infomodelrepository/rest
-      SERVER_CONTEXTPATH: /vorto-boschthings
-      SERVER_HOST: vorto-boschthings-generator
-      SERVER_PORT: "9014"
+    - USE_PROXY=0
+    networks:
+      - backend
+  generators:
+    depends_on: ["repository"]
+    build: eclipsevorto/vorto-generators
+    volumes:
+      - "./repository-web/docker:/gen/config"
+    networks:
+      - backend
+  generators-example:
+    depends_on: ["repository"]
+    build: eclipsevorto/vorto-generators-3d-party
+    volumes:
+      - "./repository-web/docker:/gen/config"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
