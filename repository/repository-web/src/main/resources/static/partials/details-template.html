@@ -544,7 +544,7 @@
 					<td>
 						<span class="state state-{{current.state}}">{{ current.state }}</span>
 					</td>
-					<td>{{ current.id.namespace }}.{{ current.id.name }}:{{ current.id.version }}</td>
+					<td>{{ current.id.prettyFormat }}</td>
 					<td>
 						<a href="" ng-click="copyToClipboard(current.id)" class="btn btn-default">Copy to clipboard</a>
 					</td>
