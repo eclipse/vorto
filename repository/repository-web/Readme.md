@@ -41,7 +41,11 @@ The current milestone images are provided on [dockerhub](https://hub.docker.com/
 
 This Docker image exposes the port 8080 and expects a bind mount of the docker folder into `/code/config/` to read the configuration.
 The configuration is provided using the `config.json` file, it contains the configuration for the repoisitory, [the generators](../repository-generators/Readme.md) and [the 3rd party generators](https://github.com/eclipse/vorto-examples).
-The proxy settings are read and then the complete file is passed to [Spring Boot](https://spring.io/projects/spring-boot) using the `SPRING_APPLICATION_JSON` env var.
+If the enviroment variable is set to `USE_PROXY=1` then the proxy settings are read. The complete config file is passed to [Spring Boot](https://spring.io/projects/spring-boot) using the `SPRING_APPLICATION_JSON` env var.
+
+### Build
+This Docker image expects the build arg `JAR_FILE` to be passed, pointing to the jar file thats supposed to be run in the container.
+If you are using the maven build pipline you can run `docker build -t repo --build-arg JAR_FILE=infomodelrepository.jar`. Don't forget to pass `--build-arg http_proxy` if you are running this build behind a proxy.
 
 ### Proxy
 If you are running this setup behind a proxy you need to fill in proxy settings with the correct values and set `USE_PROXY` in the `docker-compose.yml` to `1`.
