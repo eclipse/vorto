@@ -22,6 +22,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -104,11 +106,17 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 			throw new ModelImporterException("Problem importing ipso files", ex);
 		}
 	}
-
+	
 	private LWM2M parse(FileUpload fileUpload) throws Exception {
 		JAXBContext jc = JAXBContext.newInstance(LWM2M.class);
+		
+		XMLInputFactory inputFactory = XMLInputFactory.newFactory();
+		inputFactory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+		inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+		XMLStreamReader xmlStreamReader = inputFactory.createXMLStreamReader(new ByteArrayInputStream(fileUpload.getContent()));
+		
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		return (LWM2M) unmarshaller.unmarshal(new ByteArrayInputStream(fileUpload.getContent()));
+		return (LWM2M) unmarshaller.unmarshal(xmlStreamReader);
 	}
 
 }

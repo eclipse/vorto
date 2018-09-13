@@ -1,6 +1,9 @@
 package org.eclipse.vorto.repository.importer.ipso;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -10,10 +13,11 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.UserContext;
-import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.MessageSeverity;
+import org.eclipse.vorto.repository.importer.ModelImporterException;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
+import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
@@ -27,6 +31,12 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 		this.ipsoImporter.setModelRepository(modelRepository);
 		this.ipsoImporter.setUploadStorage(new InMemoryTemporaryStorage());
 		this.ipsoImporter.setUserRepository(userRepository);
+	}
+	
+	@Test (expected=ModelImporterException.class)
+	public void testPreventXXEAttack() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		importIPSO("3310_xxe.xml", alex);
 	}
 
 	@Test
