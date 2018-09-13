@@ -192,6 +192,8 @@
 				      <repository>eclipsevorto/vorto-generators</repository>
 					      <buildArgs>
 						    <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+						    <https_proxy>${env.https_proxy}</https_proxy>
+						    <http_proxy>${env.http_proxy}</http_proxy>
 					      </buildArgs>
 				     </configuration>
 				</plugin>
