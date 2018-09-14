@@ -49,6 +49,7 @@ public abstract class AbstractModelParser implements IModelParser {
 	public ModelInfo parse(InputStream is) {
 		XtextResourceSet resourceSet = getInjector().getInstance(XtextResourceSet.class);
 		resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+		resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
 		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + fileName));
 		try {
 			resource.load(is, resourceSet.getLoadOptions());

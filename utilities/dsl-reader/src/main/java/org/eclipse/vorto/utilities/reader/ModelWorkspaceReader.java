@@ -90,6 +90,7 @@ public class ModelWorkspaceReader {
 			Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
 			XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
 			resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+			resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
 
 			List<Resource> infoModelResources = new ArrayList<>();
 			try {

@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
@@ -48,6 +49,20 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals("Color.type",result.getFileName());
 		assertNotNull(result);
+	}
+	
+	@Test
+	public void testGetDSLEncoding() throws Exception {
+		importModel("Color_encoding.type");
+		ModelFileContent fileContent = modelRepository.getModelContent(
+				ModelId.fromReference("org.eclipse.vorto.examples.type.Farbe", "1.0.0"));
+		String actualContent = new String(fileContent.getContent(), "UTF-8");
+		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color_encoding.type").getInputStream());
+		assertEquals(expectedContent, actualContent);
+		assertNotNull(fileContent.getModel());
+		assertEquals("Überraschung",((Entity)fileContent.getModel()).getProperties().get(0).getDescription());
+		assertEquals("Farbe",fileContent.getModel().getName());
+		assertEquals("Farbe.type",fileContent.getFileName());
 	}
 
 	@Test

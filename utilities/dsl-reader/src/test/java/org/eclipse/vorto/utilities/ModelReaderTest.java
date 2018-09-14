@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -45,6 +46,16 @@ public class ModelReaderTest {
 		assertEquals("AWSIoTButton",model.getName());
 		
 		assertEquals("AWSButtonMapping",workspace.get().stream().filter(p -> p.getName().equals("AWSButtonMapping")).findAny().get().getName());
+	}
+	
+	@Test
+	public void testReadFromFile_Encoding() {
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+		.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Color_encoding.type"),ModelType.Datatype).read();
+		
+		Entity model = (Entity)workspace.get().stream().filter(p -> p instanceof Entity).findAny().get();
+		assertNotNull(model);
+		assertEquals("Überraschung",model.getProperties().get(0).getDescription());
 	}
 	
 	@Test
