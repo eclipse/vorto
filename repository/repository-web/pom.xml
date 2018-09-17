@@ -156,6 +156,18 @@
 					</archive>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<configuration>
+					<repository>eclipsevorto/vorto-repo</repository>
+					<buildArgs>
+						<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+						<https_proxy>${env.https_proxy}</https_proxy>
+						<http_proxy>${env.http_proxy}</http_proxy>
+					</buildArgs>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	
