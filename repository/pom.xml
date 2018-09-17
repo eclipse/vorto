@@ -290,6 +290,37 @@
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>1.4.4</version>
+					<executions>
+						<execution>
+							<id>tag-latest</id>
+							<phase>deploy</phase>
+						<goals>
+						  <goal>build</goal>
+						  <goal>tag</goal>
+						  <goal>push</goal>
+						</goals>
+						<configuration>
+						  <tag>latest</tag>
+						</configuration>
+					  </execution>
+					  <execution>
+						<id>tag-version</id>
+						<phase>deploy</phase>
+						<goals>
+						  <goal>build</goal>
+						  <goal>tag</goal>
+						  <goal>push</goal>
+						</goals>
+						<configuration>
+						  <tag>${project.version}</tag>
+						</configuration>
+					  </execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
