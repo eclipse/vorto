@@ -29,6 +29,8 @@
 "server": {
   "admin": "your_github_user"
 },
+"eidp_clientid": null,
+"eidp_secret": null,
 "https":{
 	"proxyHost": "your_proxy_server",
 	"proxyPort": 8080,
