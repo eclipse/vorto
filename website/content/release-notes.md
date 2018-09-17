@@ -4,6 +4,14 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 6
+
+**Fixes and Enhancements**
+
+* Support for Vorto DSL Configuration properties in Bosch IoT Suite Generators (incl. Eclipse Hono) 
+* Security Fixes, such as XXE when uploading malicious LwM2M XMLs
+* UX related Improvements  
+
 ## 0.10.0 milestone 5
 
 **Fixes**
