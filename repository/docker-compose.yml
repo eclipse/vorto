@@ -17,6 +17,13 @@ services:
       - "./repository-web/docker:/gen/config"
     networks:
       - backend
+  example-generators:
+    depends_on: ["repository"]
+    image: eclipsevorto/vorto-generators-3rd-party
+    volumes:
+      - "./repository-web/docker:/gen/config"
+    networks:
+      - backend
 networks:
   backend:
     driver: bridge
