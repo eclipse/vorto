@@ -26,7 +26,7 @@ public class ModelId implements IReferenceType {
 	private String namespace;
 	private String version;
 	
-	private static final Pattern ID_PATTERN = Pattern.compile("([\\w\\.]+).([\\w\\.]+)*.([A-Z][\\w\\.]+):([\\w\\.]+)");
+	private static final Pattern ID_PATTERN = Pattern.compile("([\\w\\.]+).([\\w\\.]+)*:([A-Z][\\w\\.]+):([\\w\\.]+)");
 	
 	public ModelId() {
 	}
@@ -46,15 +46,15 @@ public class ModelId implements IReferenceType {
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
 		if (!ID_PATTERN.matcher(prettyFormat).matches()) {
-			throw new IllegalArgumentException("Model ID must match pattern <namespace>.<name>:<version>");
+			throw new IllegalArgumentException("Model ID must match pattern <namespace>:<name>:<version>");
 		}
-		final int versionIndex = prettyFormat.indexOf(":");
-		return ModelId.fromReference(prettyFormat.substring(0,versionIndex),prettyFormat.substring(versionIndex+1));
+		final String[] tripleParts = prettyFormat.split(":");
+		return new ModelId(tripleParts[1],tripleParts[0],tripleParts[2]);
 	}
 	
 
 	public static ModelId newVersion(ModelId id, String newVersion) {
-		return ModelId.fromPrettyFormat(id.getNamespace()+"."+id.getName()+":"+newVersion);
+		return ModelId.fromPrettyFormat(id.getNamespace()+":"+id.getName()+":"+newVersion);
 	}
 					
 	public String getName() {
@@ -120,6 +120,6 @@ public class ModelId implements IReferenceType {
 	}
 
 	public String getPrettyFormat() {	
-		return namespace + "." + name + ":" +version;
+		return namespace + ":" + name + ":" +version;
 	}
 }
