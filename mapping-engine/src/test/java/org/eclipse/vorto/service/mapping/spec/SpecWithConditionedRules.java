@@ -14,7 +14,7 @@ public class SpecWithConditionedRules extends AbstractTestSpec {
 	@Override
 	protected void createFBSpec() {
 		FunctionblockModel doorState = new FunctionblockModel(
-				ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+				ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
 		ModelProperty digitalInputStateProperty = new ModelProperty();
 		digitalInputStateProperty.setMandatory(true);
 		digitalInputStateProperty.setName("sensor_value");
@@ -27,7 +27,7 @@ public class SpecWithConditionedRules extends AbstractTestSpec {
 				Arrays.asList(new ModelProperty[] { digitalInputStateProperty}));
 		
 		FunctionblockModel operationState = new FunctionblockModel(
-				ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+				ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
 		ModelProperty digitalInputStateProperty1 = new ModelProperty();
 		digitalInputStateProperty1.setMandatory(true);
 		digitalInputStateProperty1.setName("sensor_value");

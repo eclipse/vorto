@@ -15,7 +15,7 @@ public abstract class AbstractTestSpec implements IMappingSpecification {
 	
 	private static Map<String, FunctionblockModel> FBS = new HashMap<String, FunctionblockModel>(2);
 	
-	private Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices.AWSIoTButton:1.0.0"),
+	private Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices:AWSIoTButton:1.0.0"),
 			ModelType.InformationModel);
 
 	public AbstractTestSpec() {

@@ -35,25 +35,25 @@ public class ModelIdTest {
 	
 	@Test (expected=IllegalArgumentException.class)
 	public void testInvalidModelId3() {
-		String modelId = "com.bosch.test:1.0.0";
+		String modelId = "com.bosch:test:1.0.0";
 		ModelId.fromPrettyFormat(modelId);
 	}
 	
 	@Test
 	public void testValidModelId() {
-		String modelId = "com.bosch.Test:1.0.0";
+		String modelId = "com.bosch:Test:1.0.0";
 		assertEquals(new ModelId("Test", "com.bosch", "1.0.0"),ModelId.fromPrettyFormat(modelId));
 	}
 	
 	@Test
 	public void testValidModelId2() {
-		String modelId = "com.Test:1.0.0";
+		String modelId = "com:Test:1.0.0";
 		assertEquals(new ModelId("Test", "com", "1.0.0"),ModelId.fromPrettyFormat(modelId));
 	}
 	
 	@Test
 	public void testValidModelId3() {
-		String modelId = "com.bosch.si.Test:1.0.2";
+		String modelId = "com.bosch.si:Test:1.0.2";
 		assertEquals(new ModelId("Test", "com.bosch.si", "1.0.2"),ModelId.fromPrettyFormat(modelId));
 	}
 }

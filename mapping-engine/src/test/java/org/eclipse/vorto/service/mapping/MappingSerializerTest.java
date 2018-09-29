@@ -16,7 +16,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpec() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		
@@ -32,7 +32,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpec2() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		
@@ -48,7 +48,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpecContainingCustomFunctions() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		
@@ -65,7 +65,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpecContainingEmptyFunctions() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		
@@ -82,7 +82,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesFunction() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		
@@ -99,7 +99,7 @@ public class MappingSerializerTest extends AbstractMappingTest {
 	public void testCreateAndSerializeMappingSpecContainingDoubleQuotesCondition() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-											.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+											.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 											.remoteClient(this.getModelRepository())
 											.build();
 		

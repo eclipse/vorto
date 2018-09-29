@@ -14,7 +14,7 @@ public class SpecWithSameFunctionblock extends AbstractTestSpec {
 	@Override
 	protected void createFBSpec() {
 		FunctionblockModel buttonModel = new FunctionblockModel(
-				ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+				ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
 		ModelProperty digitalInputStateProperty = new ModelProperty();
 		digitalInputStateProperty.setMandatory(true);
 		digitalInputStateProperty.setName("sensor_value");
@@ -29,7 +29,7 @@ public class SpecWithSameFunctionblock extends AbstractTestSpec {
 		addFunctionblockProperty("btn1", buttonModel);
 		
 		FunctionblockModel buttonModel2 = new FunctionblockModel(
-				ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+				ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
 		ModelProperty digitalInputStateProperty2 = new ModelProperty();
 		digitalInputStateProperty2.setMandatory(true);
 		digitalInputStateProperty2.setName("sensor_value");

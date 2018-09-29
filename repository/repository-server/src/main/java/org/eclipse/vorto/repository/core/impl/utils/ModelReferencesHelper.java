@@ -42,10 +42,7 @@ public class ModelReferencesHelper {
 	}
 	
 	public void addModelReference(String prettyFormat) {
-		int versionSeperator = prettyFormat.indexOf(":");
-		String qualifiedName = prettyFormat.substring(0,versionSeperator);
-		String version = prettyFormat.substring(versionSeperator+1);
-		this.references.add(ModelId.fromReference(qualifiedName, version));
+		this.references.add(ModelId.fromPrettyFormat(prettyFormat));
 	}
 	
 	public List<ModelId> getReferences() {

@@ -87,7 +87,7 @@ public class BleGattMappingTest {
 			
 			//################# BAROMETER Function Block ####################
 			
-			FunctionblockModel barometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Barometer:1.0.0"), ModelType.Functionblock);
+			FunctionblockModel barometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:Barometer:1.0.0"), ModelType.Functionblock);
 			barometerModel.setDisplayName("Barometer");
 			barometerModel.setTargetPlatformKey("blegatt");
 			
@@ -154,7 +154,7 @@ public class BleGattMappingTest {
 			
 			//################# ACELLEROMETER Function Block ####################
 
-			FunctionblockModel accelerometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Accelerometer:1.0.0"), ModelType.Functionblock);
+			FunctionblockModel accelerometerModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:Accelerometer:1.0.0"), ModelType.Functionblock);
 			accelerometerModel.setDisplayName("Accelerometer");
 			accelerometerModel.setTargetPlatformKey("blegatt");
 			
@@ -261,17 +261,17 @@ public class BleGattMappingTest {
 		@Override
 		public Infomodel getInfoModel() {
 			
-			Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices.TiSensorTag:1.0.0"), ModelType.InformationModel);
+			Infomodel infomodel = new Infomodel(ModelId.fromPrettyFormat("devices:TiSensorTag:1.0.0"), ModelType.InformationModel);
 			infomodel.setTargetPlatformKey("blegatt");
 			
 			ModelProperty barometerProperty = new ModelProperty();
 			barometerProperty.setName("barometer");
-			barometerProperty.setType(ModelId.fromPrettyFormat("demo.fb.Barometer:1.0.0"));
+			barometerProperty.setType(ModelId.fromPrettyFormat("demo.fb:Barometer:1.0.0"));
 			infomodel.getFunctionblocks().add(barometerProperty);
 			
 			ModelProperty accelerometerProperty = new ModelProperty();
 			accelerometerProperty.setName("accelerometer");
-			accelerometerProperty.setType(ModelId.fromPrettyFormat("demo.fb.Accelerometer:1.0.0"));
+			accelerometerProperty.setType(ModelId.fromPrettyFormat("demo.fb:Accelerometer:1.0.0"));
 			infomodel.getFunctionblocks().add(accelerometerProperty);
 						
 			return infomodel;

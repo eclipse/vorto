@@ -292,7 +292,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 	@Test(expected = MappingSpecificationProblem.class)
 	public void testBuildMappingSpecificationForInvalidModelId() {
-		MappingSpecificationBuilder.create().infomodelId("devices.PhilipsLivingBloo:1.0.0").targetPlatformKey("button")
+		MappingSpecificationBuilder.create().infomodelId("devices:PhilipsLivingBloo:1.0.0").targetPlatformKey("button")
 			.remoteClient(this.getModelRepository()).build();
 	}
 
@@ -300,7 +300,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 	public void testDittoMappingFromRemoteRepository() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("devices.aws.button.AWSIoTButton:1.0.0")
+				.infomodelId("devices.aws.button:AWSIoTButton:1.0.0")
 				.targetPlatformKey("aws_ipso")
 				.remoteClient(this.getModelRepository())
 				.build();
@@ -331,7 +331,7 @@ public class JsonMappingTest extends AbstractMappingTest {
 	public void testCreateDynamicMappingSpec() throws Exception {
 
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("com.bosch.BoschGLM100C:1.0.0")
+				.infomodelId("com.bosch:BoschGLM100C:1.0.0")
 				.remoteClient(this.getModelRepository())
 				.build();
 

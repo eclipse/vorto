@@ -14,12 +14,12 @@ public class SpecWithOperationMapping extends AbstractTestSpec {
 	@Override
 	protected void createFBSpec() {
 		FunctionblockModel buttonModel = new FunctionblockModel(
-				ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"), ModelType.Functionblock);
+				ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
 		Operation operation = new Operation();
 		operation.setName("press");
 		Param param = new Param();
 		param.setName("count");
-		param.setType(ModelId.fromPrettyFormat("demo.types.Count:1.0.0"));
+		param.setType(ModelId.fromPrettyFormat("demo.types:Count:1.0.0"));
 		param.setTargetPlatformKey("iotbutton");
 		param.addStereotype(Stereotype.createOperationTarget("data/count", "type:convertInt(obj/count)"));
 		operation.setParams(Arrays.asList(param));

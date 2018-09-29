@@ -20,7 +20,7 @@ public abstract class SpecWithMaliciousFunction extends AbstractTestSpec {
 	}
 	
 	private FunctionblockModel createButtonFb() {
-		FunctionblockModel buttonModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"),
+		FunctionblockModel buttonModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"),
 				ModelType.Functionblock);
 		ModelProperty digitalInputCount = new ModelProperty();
 		digitalInputCount.setMandatory(true);

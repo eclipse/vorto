@@ -29,7 +29,7 @@ public class CommandMappingTest {
 	public void testMapOperationWithParams() throws Exception {
 		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
 //				.remoteClient(repository)
-				.infomodelId("com.bshg.CoffeeMakerCTL636ES1:1.0.0")
+				.infomodelId("com.bshg:CoffeeMakerCTL636ES1:1.0.0")
 				.targetPlatformKey("homeconnect").build();
 		IDataMapper<JsonData> mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification).buildCommandMapper();
 

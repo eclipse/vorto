@@ -21,7 +21,7 @@ public class SpecWithConfigMapping extends AbstractTestSpec {
 	}
 	
 	private FunctionblockModel createButtonFb() {
-		FunctionblockModel buttonModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.PushButton:1.0.0"),
+		FunctionblockModel buttonModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"),
 				ModelType.Functionblock);
 		ModelProperty digitalInputStateProperty = new ModelProperty();
 		digitalInputStateProperty.setMandatory(true);
@@ -47,7 +47,7 @@ public class SpecWithConfigMapping extends AbstractTestSpec {
 	}
 	
 	private FunctionblockModel createVoltageFb() {
-		FunctionblockModel voltageModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb.Voltage:1.0.0"),
+		FunctionblockModel voltageModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:Voltage:1.0.0"),
 				ModelType.Functionblock);
 		ModelProperty sensorValueProperty = new ModelProperty();
 		sensorValueProperty.setMandatory(true);
