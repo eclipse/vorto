@@ -22,9 +22,11 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
+@Ignore
 public class RepositoryAdminTest extends AbstractIntegrationTest {
 
 	private DefaultModelBackupService repositoryManager = null;

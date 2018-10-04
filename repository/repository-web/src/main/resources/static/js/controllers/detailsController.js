@@ -116,17 +116,23 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 		
 		$scope.getMappings = function () {
-			mappings = $scope.model.platformMappings;
 			$scope.modelMappings = [];
-			$scope.modelMappings.keys = [];
-			$scope.modelMappings.show = false;
-			for( var index in mappings){
-		        $http.get('./api/v1/models/' + mappings[index].prettyFormat)
-				.success(function (result) {
-					$scope.modelMappings.keys.push(index);
-					$scope.modelMappings[index] = result;
-					$scope.modelMappings.show = true;
-				});
+			for(var i = 0; i < Object.keys($scope.model.platformMappings).length;i++){
+				var key = Object.keys($scope.model.platformMappings)[i];
+				$http.get('./api/v1/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
+				    (function(key) {
+				        return function(result) {
+				        	var mapping = {
+								"id" : result.data.id,
+								"state" : result.data.state,
+								"targetPlatform" : key
+							};
+							$scope.modelMappings.push(mapping);
+					}
+				    })(key),
+				    function(data) {
+				        //
+				    }); 
 			}
 		};
 		
@@ -519,6 +525,49 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			modalInstance.result.then(
 				function (model) {
 					$location.path("/details/" + model.id.namespace + "/" + model.id.name + "/" + model.id.version);
+				});
+		};
+		
+		$scope.openPayloadMappingDialog = function () {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope,model) {
+					$scope.model = model;
+					$scope.errorMessage = null;
+					$scope.targetPlatform = "";
+	
+					$scope.create = function () {
+						$scope.isLoading = true;
+						$http.post('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close($scope.targetPlatform);
+							}).error(function (data, status, header, config) {
+								$scope.isLoading = false;
+								if (status === 409) {
+									$scope.errorMessage = "Mapping with key '"+$scope.targetPlatform+"' already exists.";
+								} else {
+									$scope.errorMessage = status.message;
+								}
+							});
+					};
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "payloadMappingDialog.html",
+				size: "lg",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+
+			modalInstance.result.then(
+				function (targetPlatform) {
+					$location.path("/payloadmapping/" + $scope.model.id.namespace + "/" + $scope.model.id.name + "/" + $scope.model.id.version + "/" + targetPlatform);
 				});
 		};
 

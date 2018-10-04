@@ -37,9 +37,9 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.ble.BleGattCharacteristic;
 import org.eclipse.vorto.service.mapping.ble.BleGattDevice;
 import org.eclipse.vorto.service.mapping.ble.BleGattDeviceBuilder;
-import org.eclipse.vorto.service.mapping.ditto.DittoData;
-import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.internal.converter.JavascriptFunctions;
+import org.eclipse.vorto.service.mapping.normalized.FunctionblockData;
+import org.eclipse.vorto.service.mapping.normalized.InfomodelData;
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 import org.junit.Test;
 
@@ -53,8 +53,8 @@ public class BleGattMappingTest {
 		
 		BleGattDevice bleGattDevice = BleGattDeviceBuilder.newBuilder()
 									.withSpecification(mapping).build();		
-		IDataMapper<DittoData> mapper = IDataMapper.newBuilder()
-									.withSpecification(mapping).buildDittoMapper();
+		IDataMapper mapper = IDataMapper.newBuilder()
+									.withSpecification(mapping).build();
 		
 		// RUNTIME
 		BleGattCharacteristic barometerValue = bleGattDevice.getCharacteristics().get("f000aa41-0451-4000-b000-000000000000");
@@ -63,19 +63,19 @@ public class BleGattMappingTest {
 		BleGattCharacteristic accelerometerValue = bleGattDevice.getCharacteristics().get("f000aa81-0451-4000-b000-000000000000");
 		accelerometerValue.setData(new Short[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* X Value = 1.0 */0x00, 0x40, /* Y Value = -1 */ 0x00, 0xC0, /* Z Value  = 0.0 */ 0x00, 0x00 });
 		
-		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
+		InfomodelData mapped = mapper.map(DataInput.newInstance().fromObject(bleGattDevice),MappingContext.empty());
 		
 		// TEST
-		Feature buttonFeature = mappedDittoOutput.getFeatures().get("accelerometer");
+		FunctionblockData buttonFeature = mapped.get("accelerometer");
 		
-		assertEquals(1.0,buttonFeature.getStatusProperties().get("x_value"));
-		assertEquals(-1.0,buttonFeature.getStatusProperties().get("y_value"));	
+		assertEquals(1.0,buttonFeature.getStatus().get("x_value"));
+		assertEquals(-1.0,buttonFeature.getStatus().get("y_value"));	
 		
-		Feature voltageFeature = mappedDittoOutput.getFeatures().get("barometer");
+		FunctionblockData voltageFeature = mapped.get("barometer");
 		
-		assertEquals(20.00,voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals(20.00,voltageFeature.getStatus().get("sensor_value"));
 		
-		System.out.println(mappedDittoOutput.toJson());
+		System.out.println(mapped);
 		
 	}
 
@@ -289,7 +289,6 @@ public class BleGattMappingTest {
 			functions.addFunction("convertSensorValue","function convertSensorValue(value) { return value*0.01; }");
 			return Optional.of(functions);
 		}
-		
 	}
 
 }

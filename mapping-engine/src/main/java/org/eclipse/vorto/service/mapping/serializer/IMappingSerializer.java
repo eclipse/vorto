@@ -14,11 +14,24 @@
  */
 package org.eclipse.vorto.service.mapping.serializer;
 
+import org.eclipse.vorto.repository.api.ModelId;
+
 /**
  * Serializer for serializing a mapping specification 
  *
  */
 public interface IMappingSerializer {
 
+	/**
+	 * serializes the given mapping to DSL representation
+	 * @return
+	 */
 	String serialize();
+	
+	/**
+	 * 
+	 * @return the Model ID
+	 */
+	ModelId getModelId();
+
 }

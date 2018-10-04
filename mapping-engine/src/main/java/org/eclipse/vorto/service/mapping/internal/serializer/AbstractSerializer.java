@@ -20,12 +20,10 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 public abstract class AbstractSerializer implements IMappingSerializer {
 
 	protected IMappingSpecification specification;
+	protected String targetPlatform;
 	
-	public AbstractSerializer(IMappingSpecification spec) {
+	public AbstractSerializer(IMappingSpecification spec, String targetPlatform) {
 		this.specification = spec;
-	}
-	
-	protected String createTargetPlatformKey() {
-		return specification.getInfoModel().getId().getPrettyFormat().replace(".", "_").replace(":", "_");
+		this.targetPlatform = targetPlatform;
 	}
 }

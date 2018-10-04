@@ -70,7 +70,4 @@ public class DefaultMappingSpecification implements IMappingSpecification {
 	public void setInfomodel(Infomodel infomodel) {
 		this.infomodel = infomodel;
 	}
-	
-	
-
 }

@@ -10,7 +10,7 @@
 		<li class="active">Model Details</li>
 	</ol>
 	<h2>
-		{{model.displayName}}
+		{{model.id.name}}
 		<small>{{model.type}}</small>
 	</h2>
 	<div class="row">
@@ -41,7 +41,12 @@
 			<div ng-show="authority === 'ROLE_ADMIN' || authority === 'ROLE_USER'">
 				<a class="btn btn-primary pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
-				<div class="pull-right">&nbsp;&nbsp;</div>
+					<div class="pull-left">&nbsp;&nbsp;</div>
+			</div>
+			
+			<div ng-show="(authority === 'ROLE_ADMIN' || authority === 'ROLE_USER') && model.type === 'InformationModel' ">
+				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
+					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping Spec.</a>
 			</div>
 
 			<div ng-show="authority === 'ROLE_ADMIN' || authority === 'ROLE_USER'">
@@ -196,35 +201,28 @@
 												<div ng-hide="model.type === 'Mapping'">
 													<dt>Mappings: </dt>
 													<dd>
-														<div ng-show="modelMappings.show">
+														<div ng-show="modelMappings">
 															<a href="" ng-click="showMappings = !showMappings">
 																<div ng-if="showMappings">
 																	<span class="glyphicon glyphicon-chevron-up"></span>&nbsp;Hide Mappings</div>
 																<div ng-if="!showMappings">
 																	<span class="glyphicon glyphicon-chevron-down"></span>&nbsp;Show Mappings</div>
 															</a>
+												
 															<div uib-collapse="!showMappings">
 																<ul>
-																	<li ng-repeat="key in modelMappings.keys" class="ng-scope">																			
-																			<span ng-show="modelMappings[key].type === 'InformationModel'">
-																				<img src="images/im.png" />
-																			</span>
-																			<span ng-show="modelMappings[key].type === 'Functionblock'">
-																				<img src="images/fb.png" />
-																			</span>
-																			<span ng-show="modelMappings[key].type === 'Datatype'">
-																				<img src="images/dt.png" />
-																			</span>
-																			<span ng-show="modelMappings[key].type === 'Mapping'">
+																	<li ng-repeat="mapping in modelMappings" class="ng-scope">																			
+																			<span>
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
 																			</span>	
-																			<a ng-href="./#/details/{{modelMappings[key].id.namespace}}/{{modelMappings[key].id.name}}/{{modelMappings[key].id.version}}" class="ng-binding">{{key}}</a>
-																			(State: <span class="state state-{{modelMappings[key].state}}">{{ modelMappings[key].state}}</span>)																																																															
+																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.namespace}}/{{mapping.id.name}}/{{mapping.id.version}}" class="ng-binding">{{mapping.targetPlatform}}</a>
+																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{mapping.targetPlatform}}" class="ng-binding">{{mapping.targetPlatform}}</a>												
+																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
 																	</li>
 																</ul>
 															</div>
 														</div>
-														<div ng-hide="modelMappings.show">-</div>
+														<div ng-show="modelMappings.length === 0">-</div>
 													</dd>
 												</div>
 												<dt>Model File:</dt>
@@ -591,6 +589,29 @@
 		<button ng-hide="successfullyDeleted" type="button" ng-disable="isDeleting" class="btn btn-default" ng-click="cancel()">Cancel</button>
 		<button ng-show="successfullyDeleted" type="button" class="btn btn-default" ng-click="cancel()">Close</button>
 	</div>
+</script>
+
+<!-- Payload Mapping Dialog -->
+<script type="text/ng-template" id="payloadMappingDialog.html">
+<div class="modal-header">
+	<h3 class="modal-title"><center>Create Payload Mapping Specification</center></h3>
+</div>
+<div class="modal-body">
+	<form id="createPayloadMappingForm" name="createPayloadMappingForm" novalidate>
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+    <div class="form-group">
+    	<label>Specify Target Platform Key:</label>
+        <input type="text" class="form-control" name="targetPlatform" ng-model="targetPlatform" ng-pattern="/^[a-zA-Z]*$/" required>
+        <div ng-show="createPayloadMappingForm.targetPlatform.$error.pattern">Please enter a valid target platform key. Example: blegatt</div>
+    </div>
+  </div>
+</form>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createPayloadMappingForm.$invalid" ng-click="create()">Create</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>
 </script>
 
 <!-- upload attachement modal dialog -->

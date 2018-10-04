@@ -75,6 +75,6 @@ public class WorkflowController {
     				value = "/{modelId:.+}",
     				produces = "application/json")
     public WorkflowState getState(@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
-    	return new WorkflowState(this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId)));
+    	return new WorkflowState(this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId)).get());
     }
 }

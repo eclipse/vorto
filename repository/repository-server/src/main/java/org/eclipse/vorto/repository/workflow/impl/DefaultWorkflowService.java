@@ -105,9 +105,9 @@ public class DefaultWorkflowService implements IWorkflowService {
 	}
 
 	@Override
-	public IState getStateModel(ModelId model) {
+	public Optional<IState> getStateModel(ModelId model) {
 		ModelInfo modelInfo = modelRepository.getById(model);
-		return SIMPLE_WORKFLOW.getState(modelInfo.getState()).get();
+		return SIMPLE_WORKFLOW.getState(modelInfo.getState());
 	}
 
 }

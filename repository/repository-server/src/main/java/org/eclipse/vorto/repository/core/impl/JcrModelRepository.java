@@ -66,6 +66,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -183,8 +184,12 @@ public class JcrModelRepository implements IModelRepository {
 			resource.getReferencedBy().add(referencedById);
 
 			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
-				ModelResource emfResource = getEMFResource(referencedById);
-				resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
+				try {
+					ModelResource emfResource = getEMFResource(referencedById);
+					resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
+				} catch(ValidationException validationEx) {
+					logger.warn("Stored Vorto Model is corrupt: "+referencedById.getPrettyFormat(),validationEx);
+				}
 			}
 		}
 
@@ -323,7 +328,7 @@ public class JcrModelRepository implements IModelRepository {
 		try {
 			ModelResource emfResource = getEMFResource(model.getId());
 			return emfResource.matchesTargetPlatform(targetPlatform);
-		} catch (Exception e) {
+		} catch (FatalModelRepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
@@ -337,7 +342,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 			return (ModelResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
@@ -452,21 +457,23 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public Optional<FileContent> getFileContent(ModelId modelId, String fileName) {
+	public Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
-			if (!folderNode.hasNode(fileName)) {
-				return Optional.empty();
+			Node fileNode;
+			if (fileName.isPresent()) {
+				fileNode = (Node) folderNode.getNode(fileName.get());
+			} else {
+				fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
 			}
 
-			Node fileNode = (Node) folderNode.getNode(fileName);
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
 			final String fileContent = IOUtils.toString(is);
-			return Optional.of(new FileContent(fileName, fileContent.getBytes()));
+			return Optional.of(new FileContent(fileNode.getName(), fileContent.getBytes()));
 
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);

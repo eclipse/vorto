@@ -1,5 +1,5 @@
 var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives",
-    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace"]);
+    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson"]);
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
@@ -10,6 +10,9 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/import", {
         templateUrl : "partials/import-template.html",
         controller : "ImportController"
+    }).when("/payloadmapping/:namespace/:name/:version/:targetPlatform", {
+        templateUrl : "partials/mapping/mappingcreator.html",
+        controller : "MappingBuilderController"
     }).when("/details/:namespace/:name/:version", {
         templateUrl : "partials/details-template.html",
         controller : "DetailsController"

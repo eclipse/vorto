@@ -53,6 +53,10 @@
 			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>mapping-engine</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.vorto.utilities</groupId>
 			<artifactId>dsl-reader</artifactId>
 			<version>${project.version}</version>

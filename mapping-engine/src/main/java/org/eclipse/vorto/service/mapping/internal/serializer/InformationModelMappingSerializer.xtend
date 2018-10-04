@@ -15,6 +15,12 @@
 package org.eclipse.vorto.service.mapping.internal.serializer
 
 import java.util.HashSet
+import java.util.List
+import java.util.Map
+import java.util.stream.Collectors
+import org.apache.commons.text.StringEscapeUtils
+import org.eclipse.vorto.repository.api.ModelId
+import org.eclipse.vorto.repository.api.content.Stereotype
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
 
 /**
@@ -22,8 +28,8 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
  */
 class InformationModelMappingSerializer extends AbstractSerializer {
 	
-	new (IMappingSpecification spec) {
-		super(spec)
+	new (IMappingSpecification spec, String targetPlatform) {
+		super(spec,targetPlatform)
 	}
 	
 	def override String serialize() {
@@ -31,24 +37,52 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
 		displayname "«specification.infoModel.id.name»PayloadMapping"
-		description "Payload Mapping for «specification.infoModel.displayName»"
+		description "«targetPlatform.toLowerCase.toFirstUpper» Payload Mapping for «specification.infoModel.displayName»"
 		category payloadmapping
 		
-		using «specification.infoModel.id.prettyFormat.replace(":",";")»
+		using «specification.infoModel.id.namespace».«specification.infoModel.id.name»;«specification.infoModel.id.version»
 		«var imports = new HashSet »
 		«FOR fbProperty : specification.infoModel.functionblocks»
-			«imports.add("using " + specification.infoModel.id.namespace+".mapping"+"."+fbProperty.name.toFirstUpper+"PayloadMapping;1.0.0")»
+			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping"+"."+fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper+";1.0.0")»
 		«ENDFOR»
 		«FOR using : imports»
 		«using»
 		«ENDFOR»
 		
-		infomodelmapping «specification.infoModel.id.name»PayloadMapping {
-			targetplatform «createTargetPlatformKey()»
+		infomodelmapping «specification.infoModel.id.name»PayloadMapping«targetPlatform.toLowerCase.toFirstUpper» {
+			targetplatform «targetPlatform»
+			«FOR stereotype : filterEmptyStereotypes(specification.infoModel.stereotypes)»
+			from «specification.infoModel.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+			«ENDFOR»
 			«FOR fbProperty : specification.infoModel.functionblocks»
-			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «fbProperty.name.toFirstUpper+"PayloadMapping"»
+			from «specification.infoModel.id.name».functionblocks.«fbProperty.name» to reference «fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper»
 			«ENDFOR»
 		}
 		'''
 	}
+	
+	private def filterEmptyStereotypes(List<Stereotype> stereotypes) {
+		return stereotypes.stream.filter[!attributes.isEmpty].collect(Collectors.toList);
+	}
+	
+	private def String createContent(Map<String,String> attributes) {
+		var content = new StringBuilder();
+		for (var iter = attributes.keySet.iterator;iter.hasNext;) {
+			var key = iter.next;
+			content.append(key).append(":").append("\""+escapeQuotes(attributes.get(key))+"\"");
+			if (iter.hasNext) {
+				content.append(",");
+			}
+		}
+		return content.toString;
+	}
+	
+	def escapeQuotes(String value) {
+		return StringEscapeUtils.escapeJava(value)
+	}
+	
+	override getModelId() {
+		return new ModelId(specification.infoModel.id.name+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping","1.0.0");
+	}
+	
 }

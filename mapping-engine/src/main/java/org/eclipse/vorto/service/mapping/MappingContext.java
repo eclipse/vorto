@@ -15,7 +15,6 @@
 package org.eclipse.vorto.service.mapping;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,8 +25,6 @@ import java.util.Set;
 public class MappingContext {
 
 	private Set<String> properties = null;
-	
-	private boolean validationEnabled = false;
 	
 	/**
 	 * Empty Mapping Context tries to map all function block properties of the information model
@@ -54,10 +51,6 @@ public class MappingContext {
 		return properties.contains(property);
 	}
 	
-	public boolean isValidationEnabled() {
-		return this.validationEnabled;
-	}
-	
 	private static class EmptyContext extends MappingContext {
 
 		protected EmptyContext() {
@@ -68,12 +61,5 @@ public class MappingContext {
 		public boolean isIncluded(String property) {
 			return true;
 		}
-	}
-
-	public static MappingContext setValidation(boolean validate) {
-		MappingContext ctx = new MappingContext(Collections.emptySet());
-		ctx.validationEnabled = validate;
-		return ctx;
-		
 	}
 }

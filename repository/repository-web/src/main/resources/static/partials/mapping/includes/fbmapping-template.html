@@ -1,0 +1,99 @@
+<uib-accordion close-others="true">
+	<br>
+	<div uib-accordion-group template-url="group-template.html" heading="Custom Converters ({{getCustomFunctionsCount(property.name)}})" class="panel-default" heading="none">
+		<div ng-show="customFunctions.length > 0 && getCustomFunctionsCount(property.name) > 0">
+		Your converters: 
+		     <ul ng-if="customFunctions.length > 0">
+		     	 </br>
+		      	 <li ng-repeat="f in customFunctions | filter:{ property:property.name }">
+		      	 	{{property.name.toLowerCase()}}:{{f.name}} <a href="" ng-show="state === 'Draft'" ng-click="editFunction(f)">Edit</a> <a href="" ng-show="state === 'Draft'" ng-click="deleteFunction(f,property)">Delete</a>
+		      	 </li>
+	      	 </ul>
+      	 </div>
+      	 </br>
+      	<p>
+      		Create custom converters, that can be referenced from mapping expressions.
+      	</p>
+		Specify the Javascript function:
+		<div class="row">
+			<div class="col-sm-12">
+				<div data-property="{{property.name}}" ui-ace="{ onLoad : functionEditorLoaded, onChange: functionEditorChanged }" style="height: 200px;"></div>
+			</div>
+		</div>
+	     <button ng-show="editMode && state === 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Save Function</button>
+	     <button ng-hide="editMode || state !== 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Add Function</button>
+	     </br>
+	</div>
+	<br>
+	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Status Properties" ng-show="properties[property.name].statusProperties.length > 0" is-open="true">
+     		<form>
+					  <div class="form-group">
+						<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
+						
+							<div ng-repeat="statusProperty in properties[property.name].statusProperties">
+								<div class="row">
+									<label ng-hide="statusProperty.mandatory" for="{{statusProperty.name}}" class="col-sm-3 control-label">{{statusProperty.name}} <small style="color:grey;font-size:10px">{{statusProperty.type}}</small></label>
+									<label ng-show="statusProperty.mandatory" for="{{statusProperty.name}}" class="col-sm-3 control-label">{{statusProperty.name}}* 	<small style="color:grey;font-size:10px">{{statusProperty.type}}</small></label>	
+								</div>
+								<div class="row">
+									<div class="col-sm-4">
+										​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" class="form-control" name="{{statusProperty.name}}Condition" id="{{statusProperty.name}}Condition" ng-model="statusProperty.stereotypes[0].attributes['condition']"></textarea>
+										<small style="color:grey;font-size:10px">Enter Mapping Condition. Example: obj.x &gt; 100. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
+									</div>
+									<div class="col-sm-8">
+										​<textarea ng-required="statusProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{statusProperty.name}}" id="{{statusProperty.name}}" ng-model="statusProperty.stereotypes[0].attributes['xpath']"></textarea>
+									    <span class="error" ng-show="{{property.name}}MappingForm.$error.required && statusProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br> </span>   
+										<small style="color:grey;font-size:10px">Enter Mapping Expression. Example: obj/x. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
+									</div>
+								</div>
+								</br>	
+							</div>					
+						</ng-form>
+					  </div>
+			</form>
+	</div>
+	<br>
+	<div uib-accordion-group template-url="group-template.html" class="panel-default" heading="Configuration Properties" ng-show="properties[property.name].configurationProperties.length > 0" is-open="true">
+     		<form>
+					  <div class="form-group">
+						<ng-form name="{{property.name}}MappingForm" class="ng-pristine ng-valid ng-valid-pattern">
+						
+							<div ng-repeat="configurationProperty in properties[property.name].configurationProperties">
+								<div class="row">
+									<label ng-hide="configurationProperty.mandatory" for="{{configurationProperty.name}}" class="col-sm-3 control-label">{{configurationProperty.name}} <small style="color:grey;font-size:10px">{{configurationProperty.type}}</small></label>
+									<label ng-show="configurationProperty.mandatory" for="{{configurationProperty.name}}" class="col-sm-3 control-label">{{configurationProperty.name}}* 	<small style="color:grey;font-size:10px">{{configurationProperty.type}}</small></label>
+								</div>
+								<div class="row">
+									<div class="col-sm-4">
+										​<textarea placeholder="matchesAll()" ng-disabled="state !== 'Draft'" class="form-control" name="{{statusProperty.name}}Condition" id="{{configurationProperty.name}}Condition" ng-model="configurationProperty.stereotypes[0].attributes['condition']"></textarea>
+										<small style="color:grey;font-size:10px">Enter Mapping Condition. Example: obj.x &gt; 100. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
+									</div>
+									<div class="col-sm-8">
+										​<textarea ng-required="configurationProperty.mandatory" ng-disabled="state !== 'Draft'" placeholder="Enter Mapping Expression" class="form-control" name="{{configurationProperty.name}}" id="{{configurationProperty.name}}" ng-model="configurationProperty.stereotypes[0].attributes['xpath']"></textarea>
+									    <span class="error" ng-show="{{property.name}}MappingForm.$error.required && configurationProperty.mandatory" style="color:red;font-size:12px">Cannot be blank<br></span>    
+										<small style="color:grey;font-size:10px">Enter Mapping Expression. Example: obj/x. <a target="_blank" href="https://github.com/eclipse/vorto/blob/development/mapping-engine/docs/built_in_converters.md">More Info</a></small>
+									</div>
+								</div>
+							</div>					
+						</ng-form>
+					  </div>
+			</form>
+	</div>
+ </uib-accordion>
+ 
+<script type="text/ng-template" id="group-template.html">
+	<div>
+	    <div>
+	      <h4>
+	      	<a href class="accordion-toggle" ng-click="toggleOpen()" uib-accordion-transclude="heading">
+	          <span uib-accordion-header ng-class="{'text-muted': isDisabled}">
+	        	{{heading}} <i class="pull-right glyphicon" ng-class="{'fa fa-minus': isOpen, 'fa fa-plus': !isOpen}"></i>
+	          </span>
+	        </a>
+	      </h4>
+	    </div>
+	    <div class="panel-collapse collapse" uib-collapse="!isOpen">
+	      <div class="panel-body" style="background-color:#f5f5f5" ng-transclude></div>
+	    </div>
+    </div>
+  </script>

@@ -18,9 +18,11 @@ import java.util.List
 import java.util.Map
 import java.util.stream.Collectors
 import org.apache.commons.text.StringEscapeUtils
+import org.eclipse.vorto.repository.api.ModelId
 import org.eclipse.vorto.repository.api.content.FunctionblockModel
 import org.eclipse.vorto.repository.api.content.Stereotype
 import org.eclipse.vorto.service.mapping.spec.IMappingSpecification
+import java.util.HashMap
 
 /**
  * Creates a Functionblock Model Payload Mapping DSL File 
@@ -30,8 +32,8 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	private String propertyName
 	private FunctionblockModel fbm;
 	
-	new (IMappingSpecification spec, String propertyName) {
-		super(spec);
+	new (IMappingSpecification spec, String targetPlaform, String propertyName) {
+		super(spec,targetPlaform);
 		this.propertyName = propertyName;
 		this.fbm = spec.getFunctionBlock(propertyName);
 	}
@@ -41,16 +43,19 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
 		displayname "«propertyName»PayloadMapping"
-		description "Payload Mapping for the «propertyName» property of the «specification.infoModel.displayName»"
+		description "«targetPlatform.toLowerCase.toFirstUpper» Payload Mapping for the «propertyName» property of the «specification.infoModel.displayName»"
 		category payloadmapping
 		
-		using «fbm.id.prettyFormat.replace(":",";")»
+		using «fbm.id.namespace».«fbm.id.name»;«fbm.id.version»
 		
-		functionblockmapping «propertyName.toFirstUpper»PayloadMapping {
-			targetplatform «createTargetPlatformKey()»
+		functionblockmapping «propertyName.toFirstUpper»PayloadMapping«targetPlatform.toLowerCase.toFirstUpper» {
+			targetplatform «targetPlatform»
 			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
 			«ENDIF»
+			«FOR stereotype : specification.getFunctionBlock(propertyName).stereotypes»
+				from «fbm.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+			«ENDFOR»
 			«FOR statusProperty : fbm.statusProperties»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»
 				from «fbm.id.name».status.«statusProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
@@ -59,6 +64,11 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«FOR configProperty : fbm.configurationProperties»
 				«FOR stereotype : filterEmptyStereotypes(configProperty.stereotypes)»
 				from «fbm.id.name».configuration.«configProperty.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				«ENDFOR»		
+			«ENDFOR»
+			«FOR operation : fbm.operations»
+				«FOR stereotype : filterEmptyStereotypes(operation.stereotypes)»
+				from «fbm.id.name».operations.«operation.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 				«ENDFOR»		
 			«ENDFOR»
 		}
@@ -84,20 +94,37 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	}
 	
 	private def filterEmptyStereotypes(List<Stereotype> stereotypes) {
-		return stereotypes.stream.filter[attributes.containsKey("xpath") && !attributes.get("xpath").equals("")].collect(Collectors.toList);
+		return stereotypes.stream.filter[!attributes.isEmpty].filter[!getNonEmptyAttributes(attributes).isEmpty].collect(Collectors.toList);
+	}
+	
+	private def getNonEmptyAttributes(Map<String,String> attributes) {
+		var newMap = new HashMap<String,String>()
+		for (String key : attributes.keySet) {
+			if (!attributes.get(key).empty) {
+				newMap.put(key,attributes.get(key))
+			}
+		}
+	    return newMap;
+		
 	}
 	
 	private def String createContent(Map<String,String> attributes) {
 		var content = new StringBuilder();
 		for (var iter = attributes.keySet.iterator;iter.hasNext;) {
 			var key = iter.next;
-			content.append(key).append(":").append("\""+escapeQuotes(attributes.get(key))+"\"");
-			if (iter.hasNext) {
-				content.append(",");
+			if ((key.equalsIgnoreCase("xpath") || key.equalsIgnoreCase("condition")) && attributes.get(key).equals("")) {
+			} else {
+				content.append(key).append(":").append("\""+escapeQuotes(attributes.get(key))+"\"");
+				if (iter.hasNext) {
+					content.append(",");
+				}
 			}
+			
 		}
 		return content.toString;
 	}
 	
-	
+	override getModelId() {
+		return new ModelId(propertyName.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping","1.0.0");
+	}
 }

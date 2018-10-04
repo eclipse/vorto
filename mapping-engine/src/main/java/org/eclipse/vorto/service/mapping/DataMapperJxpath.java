@@ -52,9 +52,8 @@ import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
  * Extend this class in order to implement a platform mapper that maps normlized vorto model 
  * to the target platform specific data model
  *
- * @param <MappingResult>
  */
-public abstract class AbstractDataMapper<Result> implements IDataMapper<Result> {
+public class DataMapperJxpath implements IDataMapper {
 
 	private IMappingSpecification specification;
 
@@ -66,7 +65,7 @@ public abstract class AbstractDataMapper<Result> implements IDataMapper<Result> 
 	private static final String ATTRIBUTE_XPATH = "xpath";
 	private static final Object ATTRIBUTE_CONDITION = "condition";
 
-	public AbstractDataMapper(IMappingSpecification mappingSpecification) {
+	public DataMapperJxpath(IMappingSpecification mappingSpecification) {
 		this.specification = mappingSpecification;
 		this.jxpathHelper = new JxPathFactory(mappingSpecification.getCustomFunctions());
 	}
@@ -89,7 +88,7 @@ public abstract class AbstractDataMapper<Result> implements IDataMapper<Result> 
 		return jexl;
 	}
 
-	public Result map(DataInput input, MappingContext mappingContext) {
+	public InfomodelData map(DataInput input, MappingContext mappingContext) {
 
 		JXPathContext context = jxpathHelper.newContext(input.getValue());
 		
@@ -106,7 +105,7 @@ public abstract class AbstractDataMapper<Result> implements IDataMapper<Result> 
 			}
 		}
 		
-		return this.doMap(normalized, mappingContext);
+		return normalized;
 	}
 	
 	private FunctionblockData mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
@@ -170,8 +169,6 @@ public abstract class AbstractDataMapper<Result> implements IDataMapper<Result> 
 		}
 	}
 	
-	protected abstract Result doMap(InfomodelData normalized, MappingContext mappingContext);
-
 	private Object mapProperty(ModelProperty property, JXPathContext input) {
 		Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE);
 		if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {

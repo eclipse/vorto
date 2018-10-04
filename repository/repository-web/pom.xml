@@ -124,6 +124,11 @@
 			<artifactId>angular-ui-ace</artifactId>
 			<version>0.2.3</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>ng-prettyjson</artifactId>
+		    <version>0.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

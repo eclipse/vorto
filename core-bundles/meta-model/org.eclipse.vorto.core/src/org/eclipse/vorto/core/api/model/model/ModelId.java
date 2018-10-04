@@ -14,11 +14,8 @@
  */
 package org.eclipse.vorto.core.api.model.model;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class ModelId implements Comparable<ModelId> {
 
-	private static final String UNDERSCORE = "_";
 	private ModelType modelType;
 	private String name;
 	private String namespace;
@@ -123,13 +120,5 @@ public class ModelId implements Comparable<ModelId> {
 		} else if (!version.equals(other.version))
 			return false;
 		return true;
-	}
-
-	public String getFileName() {
-		return namespace + UNDERSCORE + name + UNDERSCORE + delimitVersion(version) +  getModelType().getExtension();
-	}
-
-	private String delimitVersion(String version) {
-		return StringUtils.replace(version, ".", UNDERSCORE);
 	}
 }

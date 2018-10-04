@@ -8,8 +8,7 @@ Require-Bundle: org.eclipse.vorto.core,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
- org.eclipse.vorto.codegen,
- org.apache.commons.lang3
+ org.eclipse.vorto.codegen
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.resources,
