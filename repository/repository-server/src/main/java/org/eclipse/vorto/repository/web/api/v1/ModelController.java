@@ -27,10 +27,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.vorto.core.api.model.mapping.EntitySource;
+import org.eclipse.vorto.core.api.model.mapping.EnumSource;
+import org.eclipse.vorto.core.api.model.mapping.FunctionBlockSource;
+import org.eclipse.vorto.core.api.model.mapping.InfomodelSource;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.repository.api.AbstractModel;
+import org.eclipse.vorto.core.api.model.mapping.Source;
+import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.api.content.ModelContent;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -81,12 +88,12 @@ public class ModelController extends AbstractRepositoryController {
 				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 
-	@ApiOperation(value = "Returns the model content")
+	@ApiOperation(value = "Returns the complete model content")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
-	public AbstractModel getModelContent(
+	public ModelContent getModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
@@ -98,16 +105,23 @@ public class ModelController extends AbstractRepositoryController {
 
 		IModelWorkspace workspace = IModelWorkspace.newReader()
 				.addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
-		return ModelDtoFactory.createResource(
-				workspace.get().stream().filter(p -> p.getName().equals(modelID.getName())).findFirst().get(), Optional.empty());
+				
+		ModelContent result = new ModelContent();
+		result.setRoot(modelID);
+		
+		workspace.get().stream().forEach(model -> {
+			result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.empty()));
+		});
+		
+		return result;
 	}
 	
-	@ApiOperation(value = "Returns the model content including target platform specific attributes")
+	@ApiOperation(value = "Returns the complete model content including target platform specific attributes")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
-	public AbstractModel getModelContentForTargetPlatform(
+	public ModelContent getModelContentForTargetPlatform(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
 			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
 
@@ -116,22 +130,44 @@ public class ModelController extends AbstractRepositoryController {
 				.getMappingModelsForTargetPlatform(modelID, targetplatformKey);
 		if (!mappingResource.isEmpty()) {
 			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId());
-			IModelWorkspace workspace = IModelWorkspace.newReader()
+			IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
 					.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
+		
+			ModelContent result = new ModelContent();
+			result.setRoot(modelID);
+			
+			mappingWorkspace.get().stream().forEach(model -> {
+				if (!(model instanceof MappingModel)) {
+					Optional<Model> mappingModel =  mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel).filter(p -> isMappingForModel((MappingModel)p,model))
+							.findFirst();
+					if (mappingModel.isPresent()) {
+						result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.of((MappingModel)mappingModel.get())));
+					}
+				}
+			});
+			
+			return result;
 
-			MappingModel mappingModel = (MappingModel) workspace.get().stream().filter(p -> p instanceof MappingModel)
-					.findFirst().get();
-
-			byte[] modelContent = createZipWithAllDependencies(modelID);
-
-			workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
-					.read();
-
-			return ModelDtoFactory.createResource(
-					workspace.get().stream().filter(p -> p.getName().equals(modelID.getName())).findFirst().get(),
-					Optional.of(mappingModel));
 		} else {
-			return getModelContent(modelId);
+			throw new ModelNotFoundException("Content for provided target platform key does not exist", null);
+		}
+	}
+
+	private boolean isMappingForModel(MappingModel p, Model model) {
+		if (p.getRules().isEmpty() || p.getRules().get(0).getSources().isEmpty()) {
+			return false;
+		}
+		Source mappingSource = p.getRules().get(0).getSources().get(0);
+		if (mappingSource instanceof InfomodelSource) {
+			return EcoreUtil.equals(((InfomodelSource)mappingSource).getModel(),model);
+		} else if (mappingSource instanceof FunctionBlockSource) {
+			return EcoreUtil.equals(((FunctionBlockSource)mappingSource).getModel(),model);
+		} else if (mappingSource instanceof EntitySource) {
+			return EcoreUtil.equals(((EntitySource)mappingSource).getModel(),model);
+		} else if (mappingSource instanceof EnumSource) {
+			return EcoreUtil.equals(((EnumSource)mappingSource).getModel(),model);
+		} else {
+			return false;
 		}
 	}
 
@@ -157,7 +193,7 @@ public class ModelController extends AbstractRepositoryController {
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/mappings/{mappingId:.+}", method = RequestMethod.GET)
-	public AbstractModel getModelContentByModelAndMappingId(
+	public ModelContent getModelContentByModelAndMappingId(
 			@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId,
 			@ApiParam(value = "The mapping Model ID (prettyFormat)", required = true) final @PathVariable String mappingId) {
 
@@ -172,19 +208,23 @@ public class ModelController extends AbstractRepositoryController {
 		}
 
 		byte[] mappingContentZip = createZipWithAllDependencies(mappingModelInfo.getId());
-		IModelWorkspace workspace = IModelWorkspace.newReader()
+		IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
 				.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
-		MappingModel mappingModel = (MappingModel) workspace.get().stream().filter(p -> p instanceof MappingModel)
-				.findFirst().get();
 
 		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId());
-		workspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
+		final IModelWorkspace modelWorkspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
 				.read();
-
-		return ModelDtoFactory.createResource(workspace.get().stream()
-				.filter(p -> p.getName().equals(vortoModelInfo.getId().getName())).findFirst().get(),
-				Optional.of(mappingModel));
-
+		
+		ModelContent result = new ModelContent();
+		result.setRoot(vortoModelInfo.getId());
+		
+		modelWorkspace.get().stream().forEach(model -> {
+			MappingModel mappingModel = (MappingModel) mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel && isMappingForModel((MappingModel)p,model))
+					.findFirst().get();
+			result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.of(mappingModel)));
+		});
+		
+		return result;
 	}
 	
 	@ApiOperation(value = "Downloads the model file")

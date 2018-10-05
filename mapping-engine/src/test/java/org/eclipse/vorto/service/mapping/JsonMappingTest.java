@@ -1,21 +1,16 @@
 package org.eclipse.vorto.service.mapping;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.eclipse.vorto.repository.api.content.Stereotype;
-import org.eclipse.vorto.service.mapping.normalized.FunctionblockData;
-import org.eclipse.vorto.service.mapping.normalized.InfomodelData;
-import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
-import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
-import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
+import org.eclipse.vorto.service.mapping.ditto.DittoData;
+import org.eclipse.vorto.service.mapping.ditto.Feature;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
@@ -28,62 +23,59 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonMappingTest extends AbstractMappingTest {
 
 	@Test
-	public void testConfigMapping() throws Exception {
+	public void testDittoConfigMapping() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
+				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 
 	@Test
-	public void testMapping() throws Exception {
+	public void testDittoMapping() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
-		assertEquals(2322f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
+		assertEquals(2322f, voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals("mV", voltageFeature.getStatusProperties().get("sensor_units"));
 
-		System.out.println(new ObjectMapper().writeValueAsString(mappedOutput.getProperties()));
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 	
 	@Test(expected = MappingException.class)
 	public void testMappingWithMalicousScript() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
 			@Override
 			protected String getMaliciousFunctionBody() {
 				return "return quit();";
 			}
 			
-		}).build();
+		}).buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -93,14 +85,14 @@ public class JsonMappingTest extends AbstractMappingTest {
 	@Test(expected = MappingException.class)
 	public void testMappingWithMalicousScript2() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
 			@Override
 			protected String getMaliciousFunctionBody() {
 				return "return exit();";
 			}
 			
-		}).build();
+		}).buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -110,14 +102,14 @@ public class JsonMappingTest extends AbstractMappingTest {
 	@Test(expected = MappingException.class)
 	public void testMappingWithMalicousScript3() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
 			@Override
 			protected String getMaliciousFunctionBody() {
 				return "while (true) { }";
 			}
 			
-		}).build();
+		}).buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -127,14 +119,14 @@ public class JsonMappingTest extends AbstractMappingTest {
 	@Test(expected = MappingException.class)
 	public void testMappingWithMalicousScript4() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
 			@Override
 			protected String getMaliciousFunctionBody() {
 				return "for (;;) { }";
 			}
 			
-		}).build();
+		}).buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -144,13 +136,13 @@ public class JsonMappingTest extends AbstractMappingTest {
 	@Test(expected = MappingException.class)
 	public void testMappingWithMalicousScriptUsingJavaImports() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
 			@Override
 			protected String getMaliciousFunctionBody() {
 				return "load('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js')";
 			}
-		}).build();
+		}).buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
@@ -159,286 +151,215 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 	@Test
 	public void testMapWithSimpleCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCondition())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCondition())
+				.buildDittoMapper();
 
 		String json = "{\"count\" : 2 }";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertNull(mappedOutput.get("button").getStatus().get("sensor_value"));
-		assertEquals(2, mappedOutput.get("button").getStatus().get("sensor_value2"));
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+		assertEquals(2, mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
 
 		json = "{\"count\" : 0 }";
 
-		mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertEquals(0, mappedOutput.get("button").getStatus().get("sensor_value"));
-		assertNull(mappedOutput.get("button").getStatus().get("sensor_value2"));
+		mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals(0, mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
+		assertNull(mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value2"));
 	}
 
 	@Test
 	public void testMapWithCustomFunctionCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction())
+				.buildDittoMapper();
 
 		String json = "{\"data\" : \"aGFsbG8=\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertEquals("hallo", mappedOutput.get("button").getStatus().get("sensor_value"));
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals("hallo", mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
 
 	}
 
 	@Test
 	public void testMapWithJxpathCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath())
+				.buildDittoMapper();
 
 		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertEquals(100.0, mappedOutput.get("button").getStatus().get("sensor_value"));
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals(100.0, mappedDittoOutput.getFeatures().get("button").getStatusProperties().get("sensor_value"));
 
 	}
 
 	@Test
 	public void testMapUsingBase64Converter() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithBase64Converter())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithBase64Converter())
+				.buildDittoMapper();
 
 		String json = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatus()
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		assertEquals("20", new String((byte[]) mappedDittoOutput.getFeatures().get("button").getStatusProperties()
 				.get("digital_input_state")));
 
 	}
 
 	@Test
-	public void testMappingUsingListInput() throws Exception {
+	public void testDittoMappingUsingListInput() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload())
+				.buildDittoMapper();
 
 		String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals("DOUBLE", buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals("DOUBLE", buttonFeature.getStatusProperties().get("sensor_value"));
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 
 	static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 
 	@Test
-	public void testMappingTimestamp() throws Exception {
+	public void testDittoMappingTimestamp() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
+				.buildDittoMapper();
 
 		final Date timestamp = new Date();
 		String json = "{\"time\" : " + timestamp.getTime() + "}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFeature.getStatusProperties().get("sensor_value"));
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 
 	@Test
-	public void testMappingTypeConversion() throws Exception {
+	public void testDittoMappingTypeConversion() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
+				.buildDittoMapper();
 
 		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals("0.002322", buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals("0.002322", buttonFeature.getStatusProperties().get("sensor_value"));
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 
 	@Test
-	public void testMappingOnlyOneFunctionblockData() throws Exception {
+	public void testDittoMappingOnlyOneFeature() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json),
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json),
 				MappingContext.functionblockProperties("button"));
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
-		assertNull(mappedOutput.get("voltage"));
+		assertNull(mappedDittoOutput.getFeatures().get("voltage"));
 
-		System.out.println(mappedOutput);
-
-	}
-
-	@Test(expected = MappingSpecificationProblem.class)
-	public void testBuildMappingSpecificationForInvalidModelId() {
-		MappingSpecificationBuilder.create().infomodelId("devices:PhilipsLivingBloo:1.0.0").targetPlatformKey("button")
-			.remoteClient(this.getModelRepository()).build();
-	}
-
-	@Ignore
-	public void testMappingFromRemoteRepository() throws Exception {
-
-		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("devices.aws.button:AWSIoTButton:1.0.0")
-				.targetPlatformKey("aws_ipso")
-				.remoteClient(this.getModelRepository())
-				.build();
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
-				.build();
-
-		Map<String, Object> input = new HashMap<String, Object>();
-		input.put("clickType", "DOUBLE");
-		input.put("batteryVoltage", "2322mV");
-
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
-
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
-
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
-
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("batteryVoltage");
-
-		assertEquals(2322f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
-
-		System.out.println(mappedOutput);
-
-	}
-
-	@Ignore
-	public void testCreateDynamicMappingSpec() throws Exception {
-
-		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("com.bosch:BoschGLM100C:1.0.0")
-				.remoteClient(this.getModelRepository())
-				.build();
-
-		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get()
-				.addStereotype(Stereotype.createWithXpath("/@dist"));
-		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get()
-				.addStereotype(Stereotype.createWithXpath("/@incl"));
-
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
-				.build();
-
-		Map<String, Object> input = new HashMap<String, Object>();
-		input.put("dist", 5.3);
-		input.put("incl", 38.8);
-
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
-
-		FunctionblockData distance = mappedOutput.get("distancesensor");
-
-		assertEquals(5.3, distance.getStatus().get("distance"));
-
-		FunctionblockData incline = mappedOutput.get("inclinesensor");
-
-		assertEquals(38.8, incline.getStatus().get("degree"));
-
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 
 	@Test
 	public void testMapDevicePayloadWithInitialValue() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
-		assertEquals(0f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
+		assertEquals(0f, voltageFeature.getStatusProperties().get("sensor_value"));
+		assertEquals("mV", voltageFeature.getStatusProperties().get("sensor_units"));
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 	}
 
 	@Test
 	public void testMapSingleFunctionblockOfInfomodel() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+				.buildDittoMapper();
 
 		String json = "{\"clickType\" : \"DOUBLE\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFeature.getStatusProperties().get("digital_input_state"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("digital_input_count"));
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		Feature voltageFeature = mappedDittoOutput.getFeatures().get("voltage");
 
-		assertNull(voltageFunctionblockData);
+		assertNull(voltageFeature);
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 	}
 
 	@Test
 	public void testMapSingleFunctionblockOfInfomodel2() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionedRules())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionedRules())
+				.buildDittoMapper();
 		
 		final String sampleHomeConnectRESTResponse = "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(sampleHomeConnectRESTResponse), MappingContext.empty());
-		System.out.println(mappedOutput);
-		assertNull(mappedOutput.get("operationState"));
-		FunctionblockData doorStateFunctionblockData = mappedOutput.get("doorState");
-		assertEquals("Locked", (String)doorStateFunctionblockData.getStatus().get("sensor_value"));
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(sampleHomeConnectRESTResponse), MappingContext.empty());
+		System.out.println(mappedDittoOutput.toJson());
+		assertFalse(mappedDittoOutput.getFeatures().containsKey("operationState"));
+		Feature doorStateFeature = mappedDittoOutput.getFeatures().get("doorState");
+		assertEquals("Locked", (String)doorStateFeature.getStatusProperties().get("sensor_value"));
 		
 	}
 
 	@Test
-	public void testMappingWithInfoModelUsingSameFunctionblock() throws Exception {
+	public void testDittoMappingWithInfoModelUsingSameFunctionblock() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithSameFunctionblock())
-				.build();
+		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(new SpecWithSameFunctionblock())
+				.buildDittoMapper();
 
 		String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		DittoData mappedDittoOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("btn1");
+		Feature buttonFeature = mappedDittoOutput.getFeatures().get("btn1");
 
-		assertEquals(2, buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(2, buttonFeature.getStatusProperties().get("sensor_value"));
 
-		FunctionblockData button2FunctionblockData = mappedOutput.get("btn2");
+		Feature button2Feature = mappedDittoOutput.getFeatures().get("btn2");
 
-		assertEquals(10, button2FunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(10, button2Feature.getStatusProperties().get("sensor_value"));
 
-		System.out.println(mappedOutput);
+		System.out.println(mappedDittoOutput.toJson());
 
 	}
 

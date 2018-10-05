@@ -24,12 +24,12 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
-import org.eclipse.vorto.repository.api.IModel;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelQuery;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.api.content.ModelContent;
 import org.eclipse.vorto.repository.api.exception.ModelQueryException;
 import org.eclipse.vorto.repository.client.RepositoryClientException;
 
@@ -67,24 +67,21 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 	}
 
 	@Override
-	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
-			Class<ModelContent> resultClass) {
+	public CompletableFuture<ModelContent> getContent(ModelId modelId) {
 		String url = String.format("%s/%s/%s/content", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat());
-		return requestAndTransform(url, transformToClass(resultClass));
+		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 
 	@Override
-	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
-			Class<ModelContent> resultClass, String targetPlatformKey) {
+	public CompletableFuture<ModelContent> getContent(ModelId modelId,String targetPlatformKey) {
 		String url = String.format("%s/%s/%s/content/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat(),targetPlatformKey);
-		return requestAndTransform(url, transformToClass(resultClass));
+		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 
 	@Override
-	public <ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId,
-			Class<ModelContent> resultClass, ModelId mappingModelId) {
+	public CompletableFuture<ModelContent> getContent(ModelId modelId, ModelId mappingModelId) {
 		String url = String.format("%s/%s/%s/content/mappings/%s", getRequestContext().getBaseUrl(),REST_MODEL_BASE, modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
-		return requestAndTransform(url, transformToClass(resultClass));
+		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 	
 	@Override
