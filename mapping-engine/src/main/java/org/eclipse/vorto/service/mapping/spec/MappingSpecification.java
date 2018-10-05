@@ -1,4 +1,4 @@
-package org.eclipse.vorto.repository.web.core.dto.mapping;
+package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,15 +8,16 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
+import org.eclipse.vorto.repository.api.content.ModelContent;
+import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.internal.converter.JavascriptFunctions;
-import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class MappingSpecification implements IMappingSpecification {
 
-	private Infomodel infomodel;
+private Infomodel infomodel;
 	
 	private Map<String,FunctionblockModel> properties = new HashMap<String, FunctionblockModel>();
 		
@@ -25,7 +26,7 @@ public class MappingSpecification implements IMappingSpecification {
 		this.infomodel = infomodel;
 		this.properties = properties;
 	}
-	
+			
 	public MappingSpecification() {	
 	}
 	
@@ -36,8 +37,6 @@ public class MappingSpecification implements IMappingSpecification {
 	public void setProperties(Map<String,FunctionblockModel> properties) {
 		this.properties = properties;
 	}
-	
-	
 	
 	public Map<String, FunctionblockModel> getProperties() {
 		return properties;

@@ -16,10 +16,7 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
 import org.eclipse.vorto.repository.api.content.IReferenceType;
 import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelContent;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.PrimitiveType;
-import org.eclipse.vorto.service.mapping.internal.spec.DefaultMappingSpecification;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -85,15 +82,7 @@ public class JsonMappingSpecificationReader implements IMappingSpecificationRead
 	@Override
 	public IMappingSpecification read(InputStream input) {
 		try {
-			ModelContent model = gson.fromJson(IOUtils.toString(input), ModelContent.class);
-			DefaultMappingSpecification spec = new DefaultMappingSpecification();
-			spec.setInfomodel((Infomodel)model.getModels().values().stream().filter(p -> p instanceof Infomodel).findFirst().get());
-			HashMap<String, FunctionblockModel> fbs = new HashMap<>();
-			for (ModelProperty property : spec.getInfomodel().getFunctionblocks()) {
-				fbs.put(property.getName(), (FunctionblockModel)model.getModels().get((ModelId)property.getType()));
-			}
-			spec.setFbs(fbs);
-			return spec;
+			return gson.fromJson(IOUtils.toString(input), MappingSpecification.class);
 		} catch (Exception e) {
 			throw new MappingSpecReadProblem(e);
 		}

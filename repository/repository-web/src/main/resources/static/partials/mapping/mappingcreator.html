@@ -32,6 +32,7 @@
 					      <p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Saved successfully.</p>
 					    </div>
  					  </div>
+ 					 <a href="./rest/mappings/{{modelId.prettyFormat}}/{{targetPlatform}}/file" ng-disabled="isLoading" class="btn btn-primary pull-right">Download Spec</button>
  					 <button type="submit" ng-disabled="isLoading" class="btn btn-primary pull-right" ng-click="openTestDialog()">Test</button>
 					 <button type="submit" ng-disabled="isLoading || state !== 'Draft'" class="btn btn-primary pull-right" ng-click="save()">Save</button>
                   </div>

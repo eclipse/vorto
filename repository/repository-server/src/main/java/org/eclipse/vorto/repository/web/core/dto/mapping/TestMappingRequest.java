@@ -1,5 +1,7 @@
 package org.eclipse.vorto.repository.web.core.dto.mapping;
 
+import org.eclipse.vorto.service.mapping.spec.MappingSpecification;
+
 public class TestMappingRequest {
 
 	private String sourceJson;

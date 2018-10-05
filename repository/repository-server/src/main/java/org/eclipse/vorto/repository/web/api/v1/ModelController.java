@@ -188,45 +188,6 @@ public class ModelController extends AbstractRepositoryController {
 		}
 	}
 	
-	@ApiOperation(value = "Returns the model content including target platform specific attributes for the given model- and mapping modelID")
-	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
-			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
-	@RequestMapping(value = "/{modelId:.+}/content/mappings/{mappingId:.+}", method = RequestMethod.GET)
-	public ModelContent getModelContentByModelAndMappingId(
-			@ApiParam(value = "The model ID (prettyFormat)", required = true) final @PathVariable String modelId,
-			@ApiParam(value = "The mapping Model ID (prettyFormat)", required = true) final @PathVariable String mappingId) {
-
-		ModelInfo vortoModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(modelId));
-		ModelInfo mappingModelInfo = modelRepository.getById(ModelId.fromPrettyFormat(mappingId));
-
-		if (vortoModelInfo == null) {
-			throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
-		} else if (mappingModelInfo == null) {
-			throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
-
-		}
-
-		byte[] mappingContentZip = createZipWithAllDependencies(mappingModelInfo.getId());
-		IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
-				.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
-
-		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId());
-		final IModelWorkspace modelWorkspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
-				.read();
-		
-		ModelContent result = new ModelContent();
-		result.setRoot(vortoModelInfo.getId());
-		
-		modelWorkspace.get().stream().forEach(model -> {
-			MappingModel mappingModel = (MappingModel) mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel && isMappingForModel((MappingModel)p,model))
-					.findFirst().get();
-			result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.of(mappingModel)));
-		});
-		
-		return result;
-	}
-	
 	@ApiOperation(value = "Downloads the model file")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
