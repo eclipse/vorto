@@ -1,1112 +1,153 @@
 {
-  "root": {
-    "name": "SmartOvenHBG6764B6BMapping",
-    "namespace": "com.bshg.mapping.homeconnect",
-    "version": "1.0.0",
-    "prettyFormat": "com.bshg.mapping.homeconnect:SmartOvenHBG6764B6BMapping:1.0.0"
+  "infoModel" : {
+    "targetPlatformKey" : "ipso",
+    "stereotypes" : [ ],
+    "mappingReference" : null,
+    "id" : {
+      "name" : "Toggle",
+      "namespace" : "demo",
+      "version" : "1.0.0",
+      "prettyFormat" : "demo:Toggle:1.0.0"
+    },
+    "type" : "InformationModel",
+    "displayName" : "Toggle",
+    "description" : "Information Model for Toggle",
+    "fileName" : null,
+    "references" : [ {
+      "name" : "Push_button",
+      "namespace" : "com.ipso.smartobjects",
+      "version" : "1.1.0",
+      "prettyFormat" : "com.ipso.smartobjects:Push_button:1.1.0"
+    } ],
+    "functionblocks" : [ {
+      "targetPlatformKey" : "ipso",
+      "stereotypes" : [ ],
+      "mappingReference" : {
+        "name" : "ButtonPayloadMappingIpso",
+        "namespace" : "demo.mapping",
+        "version" : "1.0.0",
+        "prettyFormat" : "demo.mapping:ButtonPayloadMappingIpso:1.0.0"
+      },
+      "mandatory" : false,
+      "name" : "button",
+      "description" : null,
+      "type" : {
+        "name" : "Push_button",
+        "namespace" : "com.ipso.smartobjects",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.ipso.smartobjects:Push_button:1.1.0"
+      },
+      "constraints" : [ ],
+      "attributes" : [ ],
+      "primitive" : false,
+      "multiple" : false
+    } ]
   },
-  "models": {
-    "com.bshg:CoffeeMakerCTL636ES1:1.0.0": {
-      "targetPlatformKey": "homeconnect",
-      "stereotypes": [],
-      "mappingReference": null,
-      "id": {
-        "name": "CoffeeMakerCTL636ES1",
-        "namespace": "com.bshg",
-        "version": "1.0.0",
-        "prettyFormat": "com.bshg:CoffeeMakerCTL636ES1:1.0.0"
+  "properties" : {
+    "button" : {
+      "targetPlatformKey" : "ipso",
+      "stereotypes" : [ {
+        "name" : "functions",
+        "attributes" : {
+          "convert" : "function convert(x) {\n  return x / 2;\n}"
+        }
+      }, {
+        "name" : "Object",
+        "attributes" : {
+          "ID" : "453434"
+        }
+      }, {
+        "name" : "functions",
+        "attributes" : {
+          "convert" : "function convert(x) {\n  return x / 2;\n}"
+        }
+      } ],
+      "mappingReference" : null,
+      "id" : {
+        "name" : "Push_button",
+        "namespace" : "com.ipso.smartobjects",
+        "version" : "1.1.0",
+        "prettyFormat" : "com.ipso.smartobjects:Push_button:1.1.0"
       },
-      "type": "InformationModel",
-      "displayName": "CoffeeMakerCTL636ES1",
-      "description": "Information model for Bosch CoffeeMaker CTL636ES1",
-      "fileName": null,
-      "references": [
-        {
-          "name": "OperationState",
-          "namespace": "com.bshg.common.fbs",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.common.fbs:OperationState:1.0.0"
-        },
-        {
-          "name": "PowerState",
-          "namespace": "com.bshg.common.fbs",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.common.fbs:PowerState:1.0.0"
-        },
-        {
-          "name": "CoffeeMaker",
-          "namespace": "com.bshg.programs.fbs",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.programs.fbs:CoffeeMaker:1.0.0"
-        }
-      ],
-      "functionblocks": [
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [],
-          "mappingReference": {
-            "name": "OperationStateMapping",
-            "namespace": "com.bshg.mapping.homeconnect",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.mapping.homeconnect:OperationStateMapping:1.0.0"
-          },
-          "mandatory": false,
-          "name": "operationState",
-          "description": null,
-          "type": {
-            "name": "OperationState",
-            "namespace": "com.bshg.common.fbs",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.common.fbs:OperationState:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        },
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [],
-          "mappingReference": {
-            "name": "PowerStateMapping",
-            "namespace": "com.bshg.mapping.homeconnect",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.mapping.homeconnect:PowerStateMapping:1.0.0"
-          },
-          "mandatory": false,
-          "name": "powerState",
-          "description": null,
-          "type": {
-            "name": "PowerState",
-            "namespace": "com.bshg.common.fbs",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.common.fbs:PowerState:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        },
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [],
-          "mappingReference": {
-            "name": "CoffeeMakerMapping",
-            "namespace": "com.bshg.mapping.homeconnect",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.mapping.homeconnect:CoffeeMakerMapping:1.0.0"
-          },
-          "mandatory": false,
-          "name": "coffeeMaker",
-          "description": null,
-          "type": {
-            "name": "CoffeeMaker",
-            "namespace": "com.bshg.programs.fbs",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.programs.fbs:CoffeeMaker:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        }
-      ]
-    },
-    "com.bshg.programs.fbs:CoffeeMaker:1.0.0": {
-      "targetPlatformKey": "homeconnect",
-      "stereotypes": [
-        {
-          "name": "functions",
-          "attributes": {
-            "convertCoffee": "function convertCoffee(value) {return value.substring(value.lastIndexOf('.')+1)}"
+      "type" : "Functionblock",
+      "displayName" : "Push button",
+      "description" : "This IPSO object is used to report the state of a momentary action push button control and to count the number of times the control has been operated since the last observation.\n        ",
+      "fileName" : null,
+      "references" : [ ],
+      "configurationProperties" : [ {
+        "targetPlatformKey" : "ipso",
+        "stereotypes" : [ {
+          "name" : "source",
+          "attributes" : {
+            "xpath" : ""
           }
-        },
-        {
-          "name": "binding",
-          "attributes": {
-            "endpoint": "${api_url}/api/homeappliances/${haid}/programs/active",
-            "method": "GET",
-            "type": "http"
+        } ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "applicationType",
+        "description" : "The application type of the sensor or actuator as a string depending on the use case.",
+        "type" : "STRING",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : true
+        } ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "statusProperties" : [ {
+        "targetPlatformKey" : "ipso",
+        "stereotypes" : [ {
+          "name" : "source",
+          "attributes" : {
+            "xpath" : "/state"
           }
-        }
-      ],
-      "mappingReference": null,
-      "id": {
-        "name": "CoffeeMaker",
-        "namespace": "com.bshg.programs.fbs",
-        "version": "1.0.0",
-        "prettyFormat": "com.bshg.programs.fbs:CoffeeMaker:1.0.0"
-      },
-      "type": "Functionblock",
-      "displayName": "CoffeeMaker",
-      "description": "Function block model for BSH CoffeeMaker Home Appliance",
-      "fileName": null,
-      "references": [
-        {
-          "name": "BeverageMode",
-          "namespace": "com.bshg.coffee.types",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.coffee.types:BeverageMode:1.0.0"
-        },
-        {
-          "name": "BeanAmount",
-          "namespace": "com.bshg.coffee.types",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.coffee.types:BeanAmount:1.0.0"
-        },
-        {
-          "name": "CoffeeTemperature",
-          "namespace": "com.bshg.coffee.types",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.coffee.types:CoffeeTemperature:1.0.0"
-        }
-      ],
-      "configurationProperties": [],
-      "statusProperties": [
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "coffeemaker:convertCoffee(data/key)"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "activeProgram",
-          "description": null,
-          "type": {
-            "name": "BeverageMode",
-            "namespace": "com.bshg.coffee.types",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.coffee.types:BeverageMode:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        },
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "coffeemaker:convertCoffee(data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.BeanAmount']/value)"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "beanAmount",
-          "description": null,
-          "type": {
-            "name": "BeanAmount",
-            "namespace": "com.bshg.coffee.types",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.coffee.types:BeanAmount:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        },
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.FillQuantity']/value"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "fillQuantity",
-          "description": null,
-          "type": "INT",
-          "constraints": [],
-          "attributes": [],
-          "primitive": true,
-          "multiple": false
-        },
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.FillQuantity']/unit"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "fillQuantityUnit",
-          "description": "E.g. ml",
-          "type": "STRING",
-          "constraints": [],
-          "attributes": [],
-          "primitive": true,
-          "multiple": false
-        }
-      ],
-      "faultProperties": [],
-      "events": [
-        {
-          "name": "SelectedProgramChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "selectedProgram",
-              "description": null,
-              "type": {
-                "name": "BeverageMode",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:BeverageMode:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "ActiveProgramChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "coffeemaker:convertCoffee(data/key)"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "activeProgram",
-              "description": null,
-              "type": {
-                "name": "BeverageMode",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:BeverageMode:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "CoffeeTemperatureChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "value",
-              "description": null,
-              "type": {
-                "name": "CoffeeTemperature",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:CoffeeTemperature:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "BeanAmountChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "coffeemaker:convertCoffee(data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.BeanAmount']/value)"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "beanAmount",
-              "description": null,
-              "type": {
-                "name": "BeanAmount",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:BeanAmount:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "FillQuantityChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.FillQuantity']/value"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "fillQuantity",
-              "description": null,
-              "type": "INT",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "RemainingProgramTimeChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "remainingTime",
-              "description": null,
-              "type": "INT",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "remainingTimeUnit",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        },
-        {
-          "name": "ProgramProgressChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "progressPercentage",
-              "description": null,
-              "type": "INT",
-              "constraints": [
-                {
-                  "type": "MIN",
-                  "value": "0"
-                },
-                {
-                  "type": "MAX",
-                  "value": "100"
-                }
-              ],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "progressUnit",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        }
-      ],
-      "operations": [
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [],
-          "mappingReference": null,
-          "name": "makeCoffee",
-          "description": null,
-          "result": null,
-          "params": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "data/key",
-                    "value": "ConsumerProducts.CoffeeMaker.Program.Beverage.${value}"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": false,
-              "name": "program",
-              "description": null,
-              "type": {
-                "name": "BeverageMode",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:BeverageMode:1.0.0"
-              },
-              "constraints": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "data/options",
-                    "value": "array"
-                  }
-                },
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "data/options[1]/key",
-                    "value": "ConsumerProducts.CoffeeMaker.Option.BeanAmount"
-                  }
-                },
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "data/options[@key = 'ConsumerProducts.CoffeeMaker.Option.BeanAmount']/value",
-                    "value": "ConsumerProducts.CoffeeMaker.EnumType.BeanAmount.${value}"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": false,
-              "name": "beanAmount",
-              "description": null,
-              "type": {
-                "name": "BeanAmount",
-                "namespace": "com.bshg.coffee.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.coffee.types:BeanAmount:1.0.0"
-              },
-              "constraints": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": false,
-              "name": "quantity",
-              "description": null,
-              "type": "INT",
-              "constraints": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": false,
-              "name": "quantityUnit",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ],
-          "breakable": false
-        }
-      ]
-    },
-    "com.bshg.common.fbs:PowerState:1.0.0": {
-      "targetPlatformKey": "homeconnect",
-      "stereotypes": [
-        {
-          "name": "functions",
-          "attributes": {
-            "convertPowerState": "function convertPowerState(state) { return state.substring(state.lastIndexOf('.')+1)}"
+        } ],
+        "mappingReference" : null,
+        "mandatory" : true,
+        "name" : "digitalInputState",
+        "description" : "The current state of a digital input.",
+        "type" : "BOOLEAN",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "primitive" : true,
+        "multiple" : false
+      }, {
+        "targetPlatformKey" : "ipso",
+        "stereotypes" : [ {
+          "name" : "source",
+          "attributes" : {
+            "xpath" : "button:convert(/count)"
           }
-        },
-        {
-          "name": "binding",
-          "attributes": {
-            "endpoint": "${api_url}/api/homeappliances/${haid}/settings/BSH.Common.Setting.PowerState",
-            "method": "GET",
-            "type": "http"
-          }
-        }
-      ],
-      "mappingReference": null,
-      "id": {
-        "name": "PowerState",
-        "namespace": "com.bshg.common.fbs",
-        "version": "1.0.0",
-        "prettyFormat": "com.bshg.common.fbs:PowerState:1.0.0"
-      },
-      "type": "Functionblock",
-      "displayName": "PowerState",
-      "description": "This setting describes the current power state of the home appliance",
-      "fileName": null,
-      "references": [
-        {
-          "name": "PowerState",
-          "namespace": "com.bshg.common.types",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.common.types:PowerState:1.0.0"
-        }
-      ],
-      "configurationProperties": [],
-      "statusProperties": [
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "powerstate:convertPowerState(data/value)",
-                "condition": "data.key == 'BSH.Common.Setting.PowerState'"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "currentState",
-          "description": null,
-          "type": {
-            "name": "PowerState",
-            "namespace": "com.bshg.common.types",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.common.types:PowerState:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        }
-      ],
-      "faultProperties": [],
-      "events": [
-        {
-          "name": "PowerStateChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "value",
-              "description": null,
-              "type": {
-                "name": "PowerState",
-                "namespace": "com.bshg.common.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.common.types:PowerState:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        }
-      ],
-      "operations": []
-    },
-    "com.bshg.common.fbs:OperationState:1.0.0": {
-      "targetPlatformKey": "homeconnect",
-      "stereotypes": [
-        {
-          "name": "functions",
-          "attributes": {
-            "convertOperationState": "function convertOperationState(state) { return state.substring(state.lastIndexOf('.')+1)}"
-          }
-        },
-        {
-          "name": "binding",
-          "attributes": {
-            "endpoint": "${api_url}/api/homeappliances/${haid}/status/BSH.Common.Status.OperationState",
-            "method": "GET",
-            "type": "http"
-          }
-        }
-      ],
-      "mappingReference": null,
-      "id": {
-        "name": "OperationState",
-        "namespace": "com.bshg.common.fbs",
-        "version": "1.0.0",
-        "prettyFormat": "com.bshg.common.fbs:OperationState:1.0.0"
-      },
-      "type": "Functionblock",
-      "displayName": "OperationState",
-      "description": "This status describes the operation state of the home appliance.",
-      "fileName": null,
-      "references": [
-        {
-          "name": "OperationState",
-          "namespace": "com.bshg.common.types",
-          "version": "1.0.0",
-          "prettyFormat": "com.bshg.common.types:OperationState:1.0.0"
-        }
-      ],
-      "configurationProperties": [],
-      "statusProperties": [
-        {
-          "targetPlatformKey": "homeconnect",
-          "stereotypes": [
-            {
-              "name": "source",
-              "attributes": {
-                "xpath": "operationstate:convertOperationState(data/value)",
-                "condition": "data.key == 'BSH.Common.Status.OperationState'"
-              }
-            }
-          ],
-          "mappingReference": null,
-          "mandatory": true,
-          "name": "currentState",
-          "description": null,
-          "type": {
-            "name": "OperationState",
-            "namespace": "com.bshg.common.types",
-            "version": "1.0.0",
-            "prettyFormat": "com.bshg.common.types:OperationState:1.0.0"
-          },
-          "constraints": [],
-          "attributes": [],
-          "primitive": false,
-          "multiple": false
-        }
-      ],
-      "faultProperties": [],
-      "events": [
-        {
-          "name": "OperationStateChanged",
-          "properties": [
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "timestamp",
-              "description": null,
-              "type": "LONG",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [
-                {
-                  "name": "source",
-                  "attributes": {
-                    "xpath": "operationstate:convertOperationState(data/value)",
-                    "condition": "data.key == 'BSH.Common.Status.OperationState'"
-                  }
-                }
-              ],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "currentState",
-              "description": null,
-              "type": {
-                "name": "OperationState",
-                "namespace": "com.bshg.common.types",
-                "version": "1.0.0",
-                "prettyFormat": "com.bshg.common.types:OperationState:1.0.0"
-              },
-              "constraints": [],
-              "attributes": [],
-              "primitive": false,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "level",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            },
-            {
-              "targetPlatformKey": "homeconnect",
-              "stereotypes": [],
-              "mappingReference": null,
-              "mandatory": true,
-              "name": "handling",
-              "description": null,
-              "type": "STRING",
-              "constraints": [],
-              "attributes": [],
-              "primitive": true,
-              "multiple": false
-            }
-          ]
-        }
-      ],
-      "operations": []
+        } ],
+        "mappingReference" : null,
+        "mandatory" : false,
+        "name" : "digitalInputStateCount",
+        "description" : "The number of times the input transitions from 0 to 1.",
+        "type" : "INT",
+        "constraints" : [ ],
+        "attributes" : [ {
+          "type" : "READABLE",
+          "value" : true
+        }, {
+          "type" : "WRITABLE",
+          "value" : false
+        } ],
+        "primitive" : true,
+        "multiple" : false
+      } ],
+      "faultProperties" : [ ],
+      "events" : [ ],
+      "operations" : [ ]
     }
   }
 }

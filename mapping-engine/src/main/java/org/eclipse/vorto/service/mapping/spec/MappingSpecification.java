@@ -8,8 +8,6 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.apache.commons.jxpath.Functions;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelContent;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.internal.converter.JavascriptFunctions;
 
@@ -17,21 +15,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class MappingSpecification implements IMappingSpecification {
 
-private Infomodel infomodel;
+	private Infomodel infoModel;
 	
 	private Map<String,FunctionblockModel> properties = new HashMap<String, FunctionblockModel>();
 		
-	public MappingSpecification(Infomodel infomodel, Map<String,FunctionblockModel> properties) {
+	public MappingSpecification(Infomodel infoModel, Map<String,FunctionblockModel> properties) {
 		this();
-		this.infomodel = infomodel;
+		this.infoModel = infoModel;
 		this.properties = properties;
 	}
 			
 	public MappingSpecification() {	
 	}
 	
-	public void setInfomodel(Infomodel infomodel) {
-		this.infomodel = infomodel;
+	public void setInfoModel(Infomodel infoModel) {
+		this.infoModel = infoModel;
 	}
 	
 	public void setProperties(Map<String,FunctionblockModel> properties) {
@@ -44,7 +42,7 @@ private Infomodel infomodel;
 
 	@Override
 	public Infomodel getInfoModel() {
-		return infomodel;
+		return infoModel;
 	}
 
 	@Override

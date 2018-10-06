@@ -27,7 +27,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonMappingTest extends AbstractMappingTest {
-
+	
 	@Test
 	public void testConfigMapping() throws Exception {
 

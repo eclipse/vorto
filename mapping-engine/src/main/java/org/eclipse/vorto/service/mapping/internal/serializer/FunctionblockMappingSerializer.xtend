@@ -54,7 +54,9 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
 			«ENDIF»
 			«FOR stereotype : specification.getFunctionBlock(propertyName).stereotypes»
+				«IF !stereotype.name.equalsIgnoreCase("functions")»
 				from «fbm.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
+				«ENDIF»
 			«ENDFOR»
 			«FOR statusProperty : fbm.statusProperties»
 				«FOR stereotype : filterEmptyStereotypes(statusProperty.stereotypes)»

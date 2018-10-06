@@ -45,7 +45,6 @@ import org.eclipse.vorto.service.mapping.spec.MappingSpecification;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,8 +56,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -82,7 +79,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		} else {
 			ModelContent modelContent = this.modelController.getModelContent(modelId);
 			MappingSpecification spec = new MappingSpecification();
-			spec.setInfomodel((Infomodel)modelContent.getModels().get(modelContent.getRoot()));
+			spec.setInfoModel((Infomodel)modelContent.getModels().get(modelContent.getRoot()));
 			for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
 				spec.getProperties().put(property.getName(), (FunctionblockModel)modelContent.getModels().get(property.getType()));
 			}
@@ -97,7 +94,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		Infomodel infomodel = (Infomodel)infoModelContent.getModels().get(infoModelContent.getRoot());		
 		
 		MappingSpecification specification = new MappingSpecification();
-		specification.setInfomodel(infomodel);
+		specification.setInfoModel(infomodel);
 		for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
 			ModelId fbModelId = (ModelId) fbProperty.getType();
 			ModelId mappingId = fbProperty.getMappingReference();
@@ -125,22 +122,9 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
 				.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
 
-		byte[] modelContent = createZipWithAllDependencies(vortoModelInfo.getId());
-		final IModelWorkspace modelWorkspace = IModelWorkspace.newReader().addZip(new ZipInputStream(new ByteArrayInputStream(modelContent)))
-				.read();
+		org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm = (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)mappingWorkspace.get().stream().filter(model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel).findFirst().get();
 		
-		ModelContent result = new ModelContent();
-		result.setRoot(vortoModelInfo.getId());
-		
-		FunctionblockModel fbm = (FunctionblockModel)modelWorkspace.get().stream().filter(model -> model instanceof FunctionblockModel).findFirst().get();
-		
-		modelWorkspace.get().stream().forEach(model -> {
-			MappingModel mappingModel = (MappingModel) mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel && isMappingForModel((MappingModel)p,model))
-					.findFirst().get();
-			result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.of(mappingModel)));
-		});
-		
-		return result;
+		return ModelDtoFactory.createResource(fbm,Optional.of((MappingModel)mappingWorkspace.get().stream().filter(model -> model instanceof MappingModel).findFirst().get()));
 	}
 	
 	private byte[] createZipWithAllDependencies(ModelId modelId) {
@@ -250,9 +234,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
 				+ modelID.getName() + "_" + modelID.getVersion() + "-mappingspec.json");
 		response.setContentType(APPLICATION_OCTET_STREAM);
-		try {
+		try {	
 			MappingSpecification spec = (MappingSpecification)this.getMappingSpecification(modelId, targetPlatform);
-			IOUtils.copy(new ByteArrayInputStream(new ObjectMapper().writeValueAsBytes(spec)), response.getOutputStream());
+			ObjectMapper mapper = new ObjectMapper();	
+			IOUtils.copy(new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)), response.getOutputStream());
 			response.flushBuffer();
 		} catch (Exception e) {
 			throw new RuntimeException("Error copying file.", e);
