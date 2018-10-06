@@ -45,9 +45,9 @@ public class ModelId implements IReferenceType {
 	}
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
-		if (!ID_PATTERN.matcher(prettyFormat).matches()) {
-			throw new IllegalArgumentException("Model ID must match pattern <namespace>:<name>:<version>");
-		}
+//		if (!ID_PATTERN.matcher(prettyFormat).matches()) {
+//			throw new IllegalArgumentException("Model ID must match pattern <namespace>:<name>:<version>");
+//		}
 		final String[] tripleParts = prettyFormat.split(":");
 		return new ModelId(tripleParts[1],tripleParts[0],tripleParts[2]);
 	}
