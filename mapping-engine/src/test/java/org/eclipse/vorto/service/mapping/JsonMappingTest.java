@@ -6,16 +6,10 @@ import static org.junit.Assert.assertNull;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.service.mapping.normalized.FunctionblockData;
 import org.eclipse.vorto.service.mapping.normalized.InfomodelData;
-import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
-import org.eclipse.vorto.service.mapping.spec.MappingSpecificationBuilder;
-import org.eclipse.vorto.service.mapping.spec.MappingSpecificationProblem;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
@@ -28,13 +22,12 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithMaliciousFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonMappingTest extends AbstractMappingTest {
-
+	
 	@Test
 	public void testConfigMapping() throws Exception {
 
@@ -291,76 +284,6 @@ public class JsonMappingTest extends AbstractMappingTest {
 
 	}
 
-	@Test(expected = MappingSpecificationProblem.class)
-	public void testBuildMappingSpecificationForInvalidModelId() {
-		MappingSpecificationBuilder.create().infomodelId("devices:PhilipsLivingBloo:1.0.0").targetPlatformKey("button")
-			.remoteClient(this.getModelRepository()).build();
-	}
-
-	@Ignore
-	public void testMappingFromRemoteRepository() throws Exception {
-
-		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("devices.aws.button:AWSIoTButton:1.0.0")
-				.targetPlatformKey("aws_ipso")
-				.remoteClient(this.getModelRepository())
-				.build();
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
-				.build();
-
-		Map<String, Object> input = new HashMap<String, Object>();
-		input.put("clickType", "DOUBLE");
-		input.put("batteryVoltage", "2322mV");
-
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
-
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
-
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
-
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("batteryVoltage");
-
-		assertEquals(2322f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
-
-		System.out.println(mappedOutput);
-
-	}
-
-	@Ignore
-	public void testCreateDynamicMappingSpec() throws Exception {
-
-		IMappingSpecification mappingSpecification = MappingSpecificationBuilder.create()
-				.infomodelId("com.bosch:BoschGLM100C:1.0.0")
-				.remoteClient(this.getModelRepository())
-				.build();
-
-		mappingSpecification.getFunctionBlock("distancesensor").getStatusProperty("distance").get()
-				.addStereotype(Stereotype.createWithXpath("/@dist"));
-		mappingSpecification.getFunctionBlock("inclinesensor").getStatusProperty("degree").get()
-				.addStereotype(Stereotype.createWithXpath("/@incl"));
-
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(mappingSpecification)
-				.build();
-
-		Map<String, Object> input = new HashMap<String, Object>();
-		input.put("dist", 5.3);
-		input.put("incl", 38.8);
-
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromObject(input), MappingContext.empty());
-
-		FunctionblockData distance = mappedOutput.get("distancesensor");
-
-		assertEquals(5.3, distance.getStatus().get("distance"));
-
-		FunctionblockData incline = mappedOutput.get("inclinesensor");
-
-		assertEquals(38.8, incline.getStatus().get("degree"));
-
-		System.out.println(mappedOutput);
-
-	}
 
 	@Test
 	public void testMapDevicePayloadWithInitialValue() {

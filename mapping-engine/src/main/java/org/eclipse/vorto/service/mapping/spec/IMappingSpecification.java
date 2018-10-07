@@ -45,4 +45,8 @@ public interface IMappingSpecification {
 	 */
 	Optional<Functions> getCustomFunctions();
 	
+	static MappingSpecBuilder newBuilder() {
+		return new MappingSpecBuilder();
+	}
+	
 }

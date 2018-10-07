@@ -77,8 +77,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 			var stereotypes = $scope.properties[propertyName].stereotypes;
 	
 			var functionName = $scope.newFunctionCode.substring($scope.newFunctionCode.indexOf("function ")+"function ".length,$scope.newFunctionCode.indexOf("("))
-			
-			if (stereotypes.length === 0) {
+			if (stereotypes.length === 0 || $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "functions"}).length === 0) {
 				 var attributes = {};
 					 attributes[functionName] = $scope.newFunctionCode;
 					 $scope.properties[propertyName].stereotypes.push({name : "functions", attributes : attributes});
@@ -89,7 +88,8 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 					 };
 					 $scope.customFunctions.push(f);
 			} else {
-				$scope.properties[propertyName].stereotypes[0].attributes[functionName] = $scope.newFunctionCode;
+				var functionsStereotype = $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "functions"});
+				functionsStereotype[0].attributes[functionName] = $scope.newFunctionCode;
 				var f = {
 					 	property: propertyName,
 					 	name : functionName,
@@ -218,7 +218,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 						$scope.mappedOutput = null;
 						$scope.errorMessage = null;
 						var testRequest = {
-							specification : {"infomodel":$scope.infomodel,"properties":$scope.properties},
+							specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
 							sourceJson : $scope.sourceContent
 						};
 						$http.put('./rest/mappings/test',testRequest).success(
@@ -252,7 +252,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 		};
 	    
 	    $scope.save = function() {
-			var specification = {"infomodel":$scope.infomodel,"properties":$scope.properties};
+			var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
 							$http.put("./rest/mappings/"+$scope.modelId.prettyFormat+"/"+$scope.targetPlatform,specification).success(
 								function(data, status, headers, config) {
 									$scope.success = true;
