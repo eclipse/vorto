@@ -18,9 +18,11 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-public class JsonMappingSpecificationReader implements IMappingSpecificationReader {
+public class MappingSpecBuilder {
+	
+	private InputStream input;
 
-	protected Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+	private static Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 			.registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
 				public IReferenceType deserialize(JsonElement jsonElement, Type type,
 						JsonDeserializationContext context) throws JsonParseException {
@@ -39,13 +41,18 @@ public class JsonMappingSpecificationReader implements IMappingSpecificationRead
 					}
 				}
 			}).create();
+	
+	
+	public MappingSpecBuilder fromInputStream(InputStream input) {
+		this.input = input;
+		return this;
+	}
 
-	@Override
-	public IMappingSpecification read(InputStream input) {
+	public IMappingSpecification build() {
 		try {
-			return gson.fromJson(IOUtils.toString(input), MappingSpecification.class);
+			return gson.fromJson(IOUtils.toString(this.input), MappingSpecification.class);
 		} catch (Exception e) {
-			throw new MappingSpecReadProblem(e);
+			throw new RuntimeException(e);
 		}
 	}
 
