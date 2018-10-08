@@ -3,104 +3,63 @@
    <ol class="breadcrumb">
       <li><a href="#"></i>Explore</a></li>
       <li><a href="./#/details/{{modelId.namespace}}/{{ modelId.name }}/{{ modelId.version }}"></i>{{modelId.prettyFormat}}</a></li>
-      <li class="active">Payload Mapping</li>
+      <li class="active">Payload Mapping Specification</li>
   </ol>
   <div class="row">
-  <div class="col-md-10">
+  <div class="col-md-12">
             <div class="box">
              <div class="row">
-             <div class="col-md-2 text-center">
-            	<dt>State:</dt>
-					<dd class="ng-binding">
-					<span class="state state-{{state}}">{{ state }}</span>
-				</dd>
-				<dt>Key:</dt>
-					<dd class="ng-binding">
-					<span>{{ targetPlatform }}</span>
-				</dd>
-             </div>
-                 <div class="col-md-10">
-                      <h4>
-                  		Mapping for <a href="./#/details/{{modelId.namespace}}/{{ modelId.name }}/{{ modelId.version }}">{{modelId.prettyFormat}}</a>
- 					  </h4>
- 					  <div class="row">
- 					  	<div class="alert alert-danger alert-dismissable" ng-show="errorMessage != null">
-					    	<h4><i class="fa fa-warning"></i> Error</h4>
-					        A problem occured while saving: {{errorMessage}}<br/><br/>
-					    </div>
-					    <div class="alert alert-success" ng-show="success">
-					      <p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Saved successfully.</p>
-					    </div>
- 					  </div>
- 					 <a href="./rest/mappings/{{modelId.prettyFormat}}/{{targetPlatform}}/file" ng-disabled="isLoading" class="btn btn-primary pull-right"><span class="fa fa-download" aria-hidden="true"></span>&nbsp;Download Spec</a>
- 					 <button type="submit" ng-disabled="isLoading" class="btn btn-primary pull-right" ng-click="openTestDialog()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Test</button>
-					 <button type="submit" ng-disabled="isLoading || state !== 'Draft'" class="btn btn-primary pull-right" ng-click="save()"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</button>
-                  </div>
-                   </div>
+		           <div class="col-md-2 text-center">
+		              <dt>State: <span class="state state-{{state}}">{{ state }}</span></dt>
+		           </div>
+		           <div class="col-md-2 text-center">
+				      <dt>Key: <span>{{ targetPlatform }}</span></dt>
+		           </div>
+	               <div class="col-md-8">
+	             	 <a href="./rest/mappings/{{modelId.prettyFormat}}/{{targetPlatform}}/file" ng-disabled="isLoading" class="btn btn-sm  btn-primary pull-right"><span class="fa fa-download" aria-hidden="true"></span>&nbsp;Download Spec</a>
+					 <button type="submit" ng-disabled="isLoading || state !== 'Draft'" class="btn btn-sm btn-primary pull-right" ng-click="save()"><span class="fa fa-save" aria-hidden="true"></span>&nbsp;Save</button> 
+	               </div>
+                 </div>
             </div>
           </div>
   </div>
   <div class="row">
-  <p>
-  	Mapping Specifications let you map arbitrary device payload to Vorto Information Model compliant data.
-  </p>
-   <div class="col-md-12">
-    <div class="nav-tabs-custom">
-      <ul class="nav nav-tabs">
-        <li ng-repeat="property in infomodel.functionblocks" style="bottom: 2px;"  ng-class="{active : $index === 0}"><a href="" data-target="#{{property.name}}_tab" data-toggle="tab">{{property.name}} Mapping</a></li>  
-      </ul>
-      
-      <div class="tab-content">
-        <!-- /.tab-pane -->
-        <div ng-repeat="property in infomodel.functionblocks" class="tab-pane" ng-class="{active : $index === 0}" id="{{property.name}}_tab" >
-          <div ng-include src="'partials/mapping/includes/fbmapping-template.html'"></div>
-        </div>
-      </div>
-      <!-- /.tab-content -->
-    </div>
-      	</div>
-    <!-- /.nav-tabs -->
-  </div>
-  <div class="jumbotron text-center" ng-show="isLoading">
-	<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading Mapping Specification...</h3>
- </div>
-</section>
-
-<script type="text/ng-template" id="testDialog.html">
-	<div class="modal-header">
-		<button type="button" class="close" ng-click="dismissDialog()" aria-label="Close">
-			<span aria-hidden="true">×</span>
-		</button>
-		<h4 class="modal-title">Test Mapping Specification</h4>
-	</div>
-	<div class="modal-body">
-		<div class="row">
-			<div class="alert alert-danger alert-dismissable" ng-show="errorMessage != null">
-		    	<h4><i class="fa fa-warning"></i> Error</h4>
-		        Error evaluating rule expression: {{errorMessage}}<br/><br/>
-		    </div>
-			<div class="alert alert-warning alert-dismissable" ng-hide="testResponse.valid">
-		    	<h4><i class="fa fa-warning"></i> Invalid according to Vorto Information Model</h4>
-		        {{testResponse.validationError}}!<br/><br/>
-		    </div>
-		    <div class="alert alert-success" ng-show="testResponse.valid && mappedOutput != null">
-		      <p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Nice work! Your mapping is valid.</p>
-		    </div>
-		  	<div class="col-md-6">
-		  		Specify the device test data (as JSON format) and hit 'Run Test': </br>
-		  		<div id="testEditor" ui-ace="{ onLoad : sourceEditorLoaded, onChange: aceChanged }" style="height: 200px;"></div>
-		  	</div>
-		  	<div class="col-md-6">
-		  		Vorto  - Information Model compliant Data :
+  		<div class="alert alert-success" ng-show="success">
+			<p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Saved successfully.</p>
+		</div>
+	    <p>
+	  	  Mapping Specifications let you map arbitrary device payload to Vorto Information Model compliant data.
+	    </p>
+		<div class="col-md-8">
+				<div class="jumbotron text-center" ng-show="isLoading">
+					<h3><i class='fa fa-refresh fa-spin'></i>&nbsp; Loading Mapping Specification...</h3>
+				</div>
+			<div ng-hide="isLoading" class="nav-tabs-custom">
+				<ul class="nav nav-tabs">
+					<li ng-repeat="property in infomodel.functionblocks" style="bottom: 2px;"  ng-class="{active : $index === 0}"><a href="" data-target="#{{property.name}}_tab" data-toggle="tab">{{property.name}} Mapping</a></li>  
+				</ul>
+				<div class="tab-content">
+					<!-- /.tab-pane -->
+					<div ng-repeat="property in infomodel.functionblocks" class="tab-pane" ng-class="{active : $index === 0}" id="{{property.name}}_tab" >
+						<div ng-include src="'partials/mapping/includes/fbmapping-template.html'"></div>
+					</div>
+				</div>
+			<!-- /.tab-content -->
+			</div>
+		</div>
+	<!-- /.nav-tabs -->
+		<div class="col-md-4">
+			<div class="row">
+				Specify device test data (as JSON format) and hit 'Map':
+				<div id="testEditor" ui-ace="{ onLoad : sourceEditorLoaded, onChange: aceChanged }" style="height: 200px;"></div>
+			</div>
+			<div class="row">
+				<button type="submit" class="btn btn-primary" ng-hide="testInProgress" ng-click="executeTest()"><span class="fa fa-tachometer" aria-hidden="true"></span>&nbsp;Map</button>
+			</div>
+			<div class="row">
 		  		<pretty-json ng-show="mappedOutput != null" json="mappedOutput" style="height: 200px;"></pretty-json>
-		  		<pretty-json ng-show="mappedOutput == null" json="{}" style="height: 200px;"></pretty-json>
-		  	</div>
-  </div>
+		  		<pretty-json ng-show="mappedOutput == null" json="{}" style="height: 200px;"></pretty-json>	
+			</div>
+		</div>
 	</div>
-	<div class="modal-footer">
-		<button type="submit" class="btn btn-primary" ng-show="testInProgress" ng-disabled="testInProgress" ng-click="executeTest()"><i class='fa fa-refresh fa-spin'></i> Execute</button>
-		<button type="submit" class="btn btn-primary" ng-hide="testInProgress" ng-click="executeTest()">Execute</button>
-		<button type="button" class="btn btn-default" ng-click="close()">Close</button>	
-	</div>
-</script>
-
+</section>

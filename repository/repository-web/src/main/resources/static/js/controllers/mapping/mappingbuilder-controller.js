@@ -8,25 +8,15 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 						 };
 						 
 		$scope.targetPlatform = $routeParams.targetPlatform;
-						 
-		$scope.conditionsInfoPopover = $sce.trustAsHtml(
-			'Use built-in functions for expressions: <p> </p> '+
-			' <ul> '+
-				'<li> String functions, e.g. string:contains(x,"4711"). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html">API Documentation</a></li> '+
-				'<li> Conversion functions ,e.g. conversion:byteArrayToInt(x,0,0,0,3). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html">API Documentation</a></li> '+
-				'<li> Number functions, e.g. number:toFloat(xAsString). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html">API Documentation</a></li> '+
-				'<li> Base64 functions: base64:decodeString(value), base64:decodeByteArray(value).</li> '+
-				'<li> (x)Path function, e.g. xpath:eval("/data[@id = 55]/value",this)</li> '+
-			'</ul>');
-			
-		$scope.xpathInfoPopover = $sce.trustAsHtml(
-			'Use built-in functions for expressions: <p> </p> '+
-			' <ul> '+
-				'<li> String functions, e.g. string:trim(x). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/StringUtils.html">API Documentation</a></li> '+
-				'<li> Conversion functions ,e.g. conversion:byteArrayToInt(x,0,0,0,3). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/Conversion.html">API Documentation</a></li> '+
-				'<li> Number functions, e.g. number:toFloat(xAsString). <a target="_blank" href="https://commons.apache.org/proper/commons-lang/javadocs/api-3.6/org/apache/commons/lang3/math/NumberUtils.html">API Documentation</a></li> '+
-				'<li> Base64 functions: base64:decodeString(value), base64:decodeByteArray(value).</li> '+
-			'</ul>');
+		
+		$scope.testInProgress = false;
+		$scope.mappedOutput = null;
+		
+		$scope.testResponse = {
+			valid : true,
+			validationError : ""
+		};
+						
 		
 		$scope.isLoading = false;
 
@@ -61,6 +51,41 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
   			},3000);
   			
 		};
+		
+		$scope.sourceEditorLoaded = function(_editor) {
+			    		$scope.sourceEditorSession = _editor.getSession();
+			    		_editor.getSession().setMode("ace/mode/json");
+			    		_editor.setTheme("ace/theme/twilight");
+			    		_editor.getSession().setTabSize(2);
+			  			_editor.getSession().setUseWrapMode(true);
+			  			if (scope.testData) {
+			  				_editor.getSession().getDocument().setValue(scope.testData);
+			  			}
+					};
+	
+		
+					$scope.aceChanged = function () {
+					    $scope.sourceContent = $scope.sourceEditorSession.getDocument().getValue();
+					};
+					
+					$scope.executeTest = function() {
+						$scope.testInProgress = true;
+						$scope.mappedOutput = null;
+						$scope.errorMessage = null;
+						var testRequest = {
+							specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
+							sourceJson : $scope.sourceContent
+						};
+						$http.put('./rest/mappings/test',testRequest).success(
+							function(data, status, headers, config) {
+								$scope.testInProgress = false;
+								$scope.mappedOutput = JSON.parse(data.mappedOutput);
+								$scope.testResponse = data;
+							}).error(function(data, status, headers, config) {
+								$scope.testInProgress = false;
+								$scope.errorMessage = data.message;
+							});			
+					};
 	
 		
 		$scope.functionEditorChanged = function (e) {
@@ -183,73 +208,6 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 	    	}
 	    };
 	    
-	    $scope.openTestDialog = function () {
-			var modalInstance = $uibModal.open({
-				animation: true,
-				controller: function ($scope, scope) {
-					$scope.infomodel = scope.infomodel;
-					$scope.properties = scope.properties;
-					$scope.testInProgress = false;
-					$scope.mappedOutput = null;
-		
-					$scope.testResponse = {
-						valid : true,
-						validationError : ""
-					};
-										
-					$scope.sourceEditorLoaded = function(_editor) {
-			    		$scope.sourceEditorSession = _editor.getSession();
-			    		_editor.getSession().setMode("ace/mode/json");
-			    		_editor.setTheme("ace/theme/twilight");
-			    		_editor.getSession().setTabSize(2);
-			  			_editor.getSession().setUseWrapMode(true);
-			  			if (scope.testData) {
-			  				_editor.getSession().getDocument().setValue(scope.testData);
-			  			}
-					};
-	
-		
-					$scope.aceChanged = function () {
-					    $scope.sourceContent = $scope.sourceEditorSession.getDocument().getValue();
-					};
-					
-					$scope.executeTest = function() {
-						$scope.testInProgress = true;
-						$scope.mappedOutput = null;
-						$scope.errorMessage = null;
-						var testRequest = {
-							specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
-							sourceJson : $scope.sourceContent
-						};
-						$http.put('./rest/mappings/test',testRequest).success(
-							function(data, status, headers, config) {
-								$scope.testInProgress = false;
-								$scope.mappedOutput = JSON.parse(data.mappedOutput);
-								$scope.testResponse = data;
-							}).error(function(data, status, headers, config) {
-								$scope.testInProgress = false;
-								$scope.errorMessage = data.message;
-							});			
-					};
-
-					$scope.close = function () {
-						modalInstance.close($scope.sourceContent);
-					};
-				},
-				templateUrl: "testDialog.html",
-				size: "lg",
-				resolve: {
-					scope: function () {
-						return $scope;
-					}
-				}
-			});
-			
-			modalInstance.result.then(
-				function (content) {
-					$scope.testData = content;
-			});
-		};
 	    
 	    $scope.save = function() {
 			var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
