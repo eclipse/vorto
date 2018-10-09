@@ -40,7 +40,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
     		_editor.setTheme("ace/theme/twilight");
     		_editor.getSession().setTabSize(2);
   			_editor.getSession().setUseWrapMode(true);
-  			if ($scope.state !== 'Draft') _editor.setReadOnly(true);
+  			//if ($scope.state !== 'Draft') _editor.setReadOnly(true);
   			
   			$timeout(function() {
   				var e = {

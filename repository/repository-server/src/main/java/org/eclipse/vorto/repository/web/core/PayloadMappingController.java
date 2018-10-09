@@ -97,9 +97,16 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		specification.setInfoModel(infomodel);
 		for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
 			ModelId fbModelId = (ModelId) fbProperty.getType();
+			
 			ModelId mappingId = fbProperty.getMappingReference();
-
-			FunctionblockModel fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(), mappingId.getPrettyFormat());
+			
+			FunctionblockModel fbm = null;
+			if (mappingId != null) {
+				fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(), mappingId.getPrettyFormat());
+			} else {
+				ModelContent fbmContent = modelController.getModelContentForTargetPlatform(fbModelId.getPrettyFormat(), targetPlatform);
+				fbm = (FunctionblockModel)fbmContent.getModels().get(fbmContent.getRoot());
+			}			
 			
 			specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
 		}
