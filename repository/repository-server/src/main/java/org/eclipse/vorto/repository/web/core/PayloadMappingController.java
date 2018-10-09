@@ -104,7 +104,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 			if (mappingId != null) {
 				fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(), mappingId.getPrettyFormat());
 			} else {
-				ModelContent fbmContent = modelController.getModelContentForTargetPlatform(fbModelId.getPrettyFormat(), targetPlatform);
+				ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
 				fbm = (FunctionblockModel)fbmContent.getModels().get(fbmContent.getRoot());
 			}			
 			
