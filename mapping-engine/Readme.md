@@ -14,21 +14,17 @@ Follow the following easy steps to get started:
 ```
 <dependency>
    <groupId>org.eclipse.vorto</groupId>
-   <artifactId>mapping-engine</artifactId>
+   <artifactId>mapping-engine-all</artifactId>
    <version>LATEST</version>
 </dependency>
 
 ```
 
-7. Configure the mapping engine with your downloaded mapping specification JSON:
+7. Create the mapping engine with your downloaded mapping specification JSON:
 
 ```
-InputStream mappingSpecJSON = ...; // read json from Classpath
+MappingEngine engine = MappingEngine.create(mappingSpecJSON);
 
-IMappingSpecification spec = IMappingSpecification.newBuilder().fromInputStream(mappingSpecJSON).build();		
-
-IDataMapper mapper = IDataMapper.newBuilder().withSpecification(spec).build();
-
-InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromObject(deviceData), MappingContext.empty());
+InfomodelData mappedOutput = engine.map(DataInput.newInstance().fromObject(deviceData));
 
 ```

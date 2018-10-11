@@ -1,6 +1,6 @@
 package org.eclipse.vorto.repository.web.core.dto.mapping;
 
-import org.eclipse.vorto.service.mapping.spec.MappingSpecification;
+import org.eclipse.vorto.mapping.engine.spec.MappingSpecification;
 
 public class TestMappingRequest {
 

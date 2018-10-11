@@ -106,7 +106,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
-				<artifactId>mapping-engine</artifactId>
+				<artifactId>mapping-engine-all</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>mapping-serializer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

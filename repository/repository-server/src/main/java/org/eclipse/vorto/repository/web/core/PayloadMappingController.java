@@ -16,6 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
+import org.eclipse.vorto.mapping.engine.DataInputFactory;
+import org.eclipse.vorto.mapping.engine.MappingEngine;
+import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
+import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
+import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
+import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.spec.MappingSpecification;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -34,14 +41,6 @@ import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
-import org.eclipse.vorto.service.mapping.DataInputFactory;
-import org.eclipse.vorto.service.mapping.IDataMapper;
-import org.eclipse.vorto.service.mapping.MappingContext;
-import org.eclipse.vorto.service.mapping.normalized.InfomodelData;
-import org.eclipse.vorto.service.mapping.serializer.IMappingSerializer;
-import org.eclipse.vorto.service.mapping.serializer.MappingSpecificationSerializer;
-import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
-import org.eclipse.vorto.service.mapping.spec.MappingSpecification;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -190,10 +189,9 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
 	@RequestMapping(value = "/test", method = RequestMethod.PUT)
 	public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest) throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(testRequest.getSpecification())
-				.build();
-		InfomodelData mappedOutput = mapper
-				.map(DataInputFactory.getInstance().fromJson(testRequest.getSourceJson()), MappingContext.empty());
+		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
+		
+		InfomodelData mappedOutput = engine.map(DataInputFactory.getInstance().fromJson(testRequest.getSourceJson()));
 
 		TestMappingResponse response = new TestMappingResponse();
 		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.getProperties()));
