@@ -1,5 +1,5 @@
-repositoryControllers.controller('GeneratorController', [ '$scope','$http', 
-	function ($scope,$http) {
+repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope','$http', 
+	function ($rootScope, $scope, $http) {
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
@@ -32,8 +32,8 @@ $scope.listTopUsed();
 
 } ]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', 
-	function ($scope,$http,generator,model,$uibModalInstance) {
+repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$scope','$http','generator','model','$uibModalInstance', 
+	function ($rootScope, $scope, $http, generator, model, $uibModalInstance) {
 
 	$scope.model = model;
 	$scope.generator = generator;
