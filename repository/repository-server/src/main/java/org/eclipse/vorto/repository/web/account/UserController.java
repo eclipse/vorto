@@ -40,7 +40,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/users")
+@RequestMapping(value = "/rest/{tenant}/users")
 public class UserController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());

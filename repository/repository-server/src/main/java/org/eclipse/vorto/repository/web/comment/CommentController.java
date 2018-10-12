@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value="/rest/comments")
+@RequestMapping(value="/rest/{tenant}/comments")
 public class CommentController {
 
     @Autowired

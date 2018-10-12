@@ -50,7 +50,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value = "/rest/importers")
+@RequestMapping(value = "/rest/{tenant}/importers")
 public class ImportController {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());

@@ -22,11 +22,15 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HasPermissionEvaluator implements PermissionEvaluator {
 
+	@Autowired
 	private IModelRepository repository;
 
 	public HasPermissionEvaluator(IModelRepository repository) {

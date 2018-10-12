@@ -71,7 +71,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 							specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
 							sourceJson : $scope.sourceContent
 						};
-						$http.put('./rest/mappings/test',testRequest).success(
+						$http.put('./rest/' + $rootScope.tenant + '/mappings/test',testRequest).success(
 							function(data, status, headers, config) {
 								$scope.testInProgress = false;
 								$scope.mappedOutput = JSON.parse(data.mappedOutput);
@@ -174,7 +174,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 				
 	    $scope.loadMappingSpec = function() {
 	    	$scope.isLoading = true;
-			$http.get('./rest/mappings/'+$scope.modelId+"/"+$scope.targetPlatform).success(
+			$http.get('./rest/' + $rootScope.tenant + '/mappings/'+$scope.modelId+"/"+$scope.targetPlatform).success(
 				function(data, status, headers, config) {
 					$scope.infomodel = data.infoModel;
 					$scope.properties = data.properties;
@@ -206,21 +206,20 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 	    
 	    $scope.save = function() {
 			var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
-							$http.put("./rest/mappings/"+$scope.modelId+"/"+$scope.targetPlatform,specification).success(
-								function(data, status, headers, config) {
-								$scope.success = true;
-									
-								$timeout(function() {
-		    						$scope.success = false;
-		    					},2000);
-								}).error(function(data, status, headers, config) {
-									$scope.errorMessage = data.msg;
-									$timeout(function() {
-	    								$scope.errorMessage = null;
-	    							},2000);
-									
-								});	
-			    
+            $http.put('./rest/' + $rootScope.tenant + '/mappings/' + $scope.modelId + '/' + $scope.targetPlatform,specification).success(
+    			function(data, status, headers, config) {
+    			$scope.success = true;
+    				
+    			$timeout(function() {
+    				$scope.success = false;
+    			},2000);
+    			}).error(function(data, status, headers, config) {
+    				$scope.errorMessage = data.msg;
+    				$timeout(function() {
+    					$scope.errorMessage = null;
+    				},2000);
+    				
+    			});
 		};
 	    	    
 	    $scope.loadSimpleExample = function(property) {
@@ -294,10 +293,10 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 	    };
 	    
 	    $scope.getMappingState = function() {
-	    	$http.get('./rest/mappings/'+$scope.modelId+'/'+$scope.targetPlatform+'/info').success(
+	    	$http.get('./rest/' + $rootScope.tenant + '/mappings/'+$scope.modelId+'/'+$scope.targetPlatform+'/info').success(
 				function(data, status, headers, config) {
 					if (data.length > 0) {
-						$http.get('./rest/workflows/'+data[0].id.prettyFormat).success(
+						$http.get('./rest/' + $rootScope.tenant + '/workflows/'+data[0].id.prettyFormat).success(
 							function(result, status, headers, config) {
 								$scope.state = result.name;
 						});

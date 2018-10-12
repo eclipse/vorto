@@ -7,7 +7,7 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
 
     $scope.listGenerators = function() {
     	$scope.isLoading = true;
-        $http.get('./api/v1/generators').success(
+        $http.get('./api/v1/' + $rootScope.tenant + '/generators').success(
             function(data, status, headers, config) {
             	$scope.isLoading = false;
                 $scope.generators = data;
@@ -15,7 +15,7 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/generators/rankings/3').success(
+        $http.get('./rest/' + $rootScope.tenant + '/generators/rankings/3').success(
             function(data, status, headers, config) {
                 $scope.mostUsedGenerators = data;
             });
@@ -54,7 +54,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	};
 	
 	$scope.loadConfiguration = function() {
-		$http.get('./api/v1/generators/'+$scope.generator.key)
+		$http.get('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				

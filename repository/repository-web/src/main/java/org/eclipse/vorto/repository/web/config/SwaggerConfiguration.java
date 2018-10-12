@@ -53,10 +53,10 @@ public class SwaggerConfiguration {
 
 	@SuppressWarnings("unchecked")
 	private Predicate<String> paths() {
-		return or(PathSelectors.regex("/api/v1/models.*"),
-				  PathSelectors.regex("/api/v1/search.*"),
-				  PathSelectors.regex("/api/v1/generators.*"),
-				  PathSelectors.regex("/api/v1/attachments.*"));
+		return or(PathSelectors.regex("/api/v1/[^/]+/models.*"),
+				  PathSelectors.regex("/api/v1/[^/]+/search.*"),
+				  PathSelectors.regex("/api/v1/[^/]+/generators.*"),
+				  PathSelectors.regex("/api/v1/[^/]+/attachments.*"));
 	}
 
 	@SuppressWarnings("deprecation")

@@ -4,6 +4,7 @@ server:
   admin: aedelmann
   config:
     authenticatedSearchMode: false
+    singleTenantMode: true
     updateDate: 2018-08-07 14:28:00
     supportEmail: vorto-dev@eclipse.org
 

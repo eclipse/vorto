@@ -8,7 +8,7 @@ repositoryControllers.controller('SignUpController', [ '$location', '$rootScope'
     $scope.acceptTermsAndConditions = function() {
     	isAcceptingTermsAndCondition = true;
     	
-        $http.post('./rest/users', {
+        $http.post('./rest/' + $rootScope.tenant + '/users', {
             headers: {'Content-Type': "application/json"}
         })
         .success( function(data, status, headers, config) {

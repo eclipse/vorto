@@ -17,7 +17,6 @@ package org.eclipse.vorto.repository.sso.oauth;
 import java.lang.reflect.Type;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.google.gson.Gson;
@@ -29,7 +28,9 @@ public class JwtToken {
 	private String signature;
 	
 	public static Optional<JwtToken> instance(String jwtToken) {
-		Objects.requireNonNull(jwtToken);
+		if(jwtToken == null) {
+			return Optional.empty();
+		}
 		
 		String[] jwtParts = jwtToken.split("\\.");
 		if (jwtParts.length != 3) {

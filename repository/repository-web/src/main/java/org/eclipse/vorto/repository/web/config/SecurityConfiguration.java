@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
 import org.eclipse.vorto.repository.sso.boschid.JwtTokenUserInfoServices;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
+import org.eclipse.vorto.repository.web.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,6 +87,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthoritiesExtractor authoritiesExtractor;
 	
+	@Autowired
+	private TenantVerificationFilter tenantVerificationFilter;
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -101,6 +105,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class)
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
+				.addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class)
 				.csrf()
 					.csrfTokenRepository(csrfTokenRepository())
 			.and()

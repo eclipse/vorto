@@ -30,7 +30,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getFileNames = function (model) {
-			$http.get('./rest/models/' + model.id.prettyFormat + '/files')
+			$http.get('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/files')
 				.success(function (result) {
 					$scope.modelFileNames = result;
 				});
@@ -50,7 +50,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 			};
 
-			$http.put('./rest/models/' + $scope.model.id.prettyFormat, newContent)
+			$http.put('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat, newContent)
 				.success(function (result) {
 					$scope.isLoading = false;
 					if (result.valid) {
@@ -70,7 +70,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.uploadImage = function () {
 			var fd = new FormData();
 			fd.append('file', document.getElementById('imageFile').files[0]);
-			$http.post('./rest/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
+			$http.post('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
 					transformRequest: angular.identity,
 					headers: {
 						'Content-Type': undefined
@@ -108,7 +108,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get('./api/v1/attachments/' + model.id.prettyFormat)
+			$http.get('./api/v1/' + $rootScope.tenant + '/attachments/' + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
 				})
@@ -119,7 +119,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelMappings = [];
 			for(var i = 0; i < Object.keys($scope.model.platformMappings).length;i++){
 				var key = Object.keys($scope.model.platformMappings)[i];
-				$http.get('./api/v1/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
+				$http.get('./api/v1/' + $rootScope.tenant + '/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
 				    (function(key) {
 				        return function(result) {
 				        	var mapping = {
@@ -142,7 +142,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelReferences.show = false;
 			var tmpIdx = 0;
 			for( var index in references){
-		        $http.get('./api/v1/models/' + references[index].prettyFormat)
+		        $http.get('./api/v1/' + $rootScope.tenant + '/models/' + references[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferences[tmpIdx] = result;
 					$scope.modelReferences.show = true;
@@ -157,7 +157,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelReferencedBy.show = false;
 			var tmpIdx = 0;
 			for( var index in referencedBy){
-		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
+		        $http.get('./api/v1/' + $rootScope.tenant + '/models/' + referencedBy[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferencedBy[tmpIdx] = result;
 					$scope.modelReferencedBy.show = true;
@@ -168,7 +168,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 		$scope.getDetails = function (modelId) {
 			$scope.modelIsLoading = true;
-			$http.get('./api/v1/models/' + modelId)
+			$http.get('./api/v1/' + $rootScope.tenant + '/models/' + modelId)
 				.success(function (result) {
 					$scope.model = result;
 					if($scope.model.author.length === 64) {
@@ -194,7 +194,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getContent = function (modelId) {
-			$http.get('./api/v1/models/' + modelId + '/file')
+			$http.get('./api/v1/' + $rootScope.tenant + '/models/' + modelId + '/file')
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
@@ -209,7 +209,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 		$scope.getPlatformGenerators = function () {
 			$scope.isLoadingGenerators = true;
-			$http.get('./api/v1/generators')
+			$http.get('./api/v1/' + $rootScope.tenant + '/generators')
 				.success(function (result) {
 					$scope.isLoadingGenerators = false;
 					var productionGenerators = $scope.filterByTag(result, "production");
@@ -266,7 +266,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 		$scope.getCommentsForModelId = function (modelId) {
 
-			$http.get('./rest/comments/' + modelId)
+			$http.get('./rest/' + $rootScope.tenant + '/comments/' + modelId)
 				.success(function (result) {
 					$scope.comments = result;
 					$scope.comments.reverse();
@@ -299,7 +299,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				"content": $scope.newComment.value
 			};
 			
-			$http.post('./rest/comments', comment)
+			$http.post('./rest/' + $rootScope.tenant + '/comments', comment)
 				.success(function (result) {
                     $scope.getCommentsForModelId();
 				}).error(function (data, status, headers, config) {
@@ -343,7 +343,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		 * Start - Workflow
 		 */
 		$scope.getWorkflowActions = function () {
-			$http.get('./rest/workflows/' + $scope.modelId + '/actions')
+			$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.modelId + '/actions')
 				.success(function (result) {
 					$scope.workflowActions = result;
 				});
@@ -362,7 +362,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.hasError = false;
 
 					$scope.takeWorkflowAction = function () {
-						$http.put('./rest/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
+						$http.put('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
 							.success(function (result) {
 								if (result.hasErrors) {
 									$scope.hasErrors = true;
@@ -376,7 +376,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.getModel = function () {
 						if ($scope.action != 'Claim') {
-							$http.get('./rest/workflows/' + $scope.modelId)
+							$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.modelId)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -421,7 +421,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.model = model;
 
 					$scope.delete = function () {
-						$http.delete('./rest/models/' + model.id.prettyFormat)
+						$http.delete('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat)
 							.success(function (result) {
 								modalInstance.close();
 							});
@@ -458,7 +458,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.create = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/models/' + $rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion) + '/' + $scope.modelType, null)
+						$http.post('./rest/' + $rootScope.tenant + '/models/' + $rootScope.modelId($scope.modelNamespace, $scope.modelName, $scope.modelVersion) + '/' + $scope.modelType, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
@@ -499,7 +499,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.createVersion = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/models/' + $scope.model.id.prettyFormat + '/versions/' + $scope.modelVersion, null)
+						$http.post('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat + '/versions/' + $scope.modelVersion, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
@@ -542,7 +542,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	
 					$scope.create = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
+						$http.post('./rest/' + $rootScope.tenant + '/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
 							.success(function (result) {
 								$scope.isLoading = false;
 								var data = {"targetPlatform" : $scope.targetPlatform, 
@@ -595,7 +595,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						} else {
 							filter = $scope.searchFilter + " " + $scope.searchModelType;
 						}
-						$http.get('./api/v1/search/models?expression=' + filter).success(
+						$http.get('./api/v1/' + $rootScope.tenant + '/search/models?expression=' + filter).success(
 							function (data, status, headers, config) {
 								$scope.searchResult = data;
 								$scope.isLoading = false;
@@ -689,7 +689,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
                         var payload = new FormData();
                         payload.append('file', $scope.selectedFile, encodeURIComponent($scope.selectedFile.name));
 
-                        const attachment_url = './api/v1/attachments/' + $scope.modelId;
+                        const attachment_url = './api/v1/' + $rootScope.tenant + '/attachments/' + $scope.modelId;
                         $scope.attachmentNote = "Uploading..."
                         $http.put(attachment_url, payload, {
                             transformRequest: angular.identity,
@@ -744,7 +744,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.deleteAttachment = function () {
 						$scope.isDeleting = true;
-						const attachment_url = './api/v1/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
+						const attachment_url = './api/v1/' + $rootScope.tenant + '/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
 
 						$http.delete(attachment_url, {
 								transformRequest: angular.identity,

@@ -77,6 +77,9 @@ public class HomeController {
 	@Value("${server.config.supportEmail:#{null}}")
 	private String supportEmail;
 	
+	@Value("${server.config.singleTenantMode}")
+	private boolean singleTenantMode;
+	
 	@Autowired
 	private IUserAccountService accountService;
 	
@@ -139,10 +142,11 @@ public class HomeController {
 		
 		context.put("githubEnabled", githubEnabled);
 		context.put("eidpEnabled", eidpEnabled);
-		context.put("authenticatedSearchMode", authenticatedSearchMode);
+		context.put("authenticatedSearchMode", authenticatedSearchMode || !singleTenantMode);
 		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
 		context.put("attachmentAllowedSize", attachmentAllowedSize);
 		context.put("supportEmail", supportEmail);
+		context.put("singleTenantMode", singleTenantMode);
 		
 		return context;
 	}

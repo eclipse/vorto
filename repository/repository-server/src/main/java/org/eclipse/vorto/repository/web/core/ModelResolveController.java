@@ -35,7 +35,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/models/resolvers")
+@RequestMapping(value = "/rest/{tenant}/models/resolvers")
 @Api(value="/resolve", description="Resolve information models by mapped platform attributes")
 public class ModelResolveController {
 

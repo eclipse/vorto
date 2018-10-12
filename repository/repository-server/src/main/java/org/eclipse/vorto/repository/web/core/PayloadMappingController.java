@@ -63,7 +63,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/mappings")
+@RequestMapping(value = "/rest/{tenant}/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
 	
 	@Autowired
