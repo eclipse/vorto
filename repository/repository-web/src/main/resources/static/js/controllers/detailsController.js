@@ -268,7 +268,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 			$http.get('./rest/' + $rootScope.tenant + '/comments/' + modelId)
 				.success(function (result) {
-					$scope.comments = result;
+                    $scope.comments = result;
 					$scope.comments.reverse();
 				}).error(function (data, status, headers, config) {
 

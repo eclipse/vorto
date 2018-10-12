@@ -77,7 +77,7 @@ public class HomeController {
 	@Value("${server.config.supportEmail:#{null}}")
 	private String supportEmail;
 	
-	@Value("${server.config.singleTenantMode}")
+	@Value("${server.config.singleTenantMode:#{true}}")
 	private boolean singleTenantMode;
 	
 	@Autowired
