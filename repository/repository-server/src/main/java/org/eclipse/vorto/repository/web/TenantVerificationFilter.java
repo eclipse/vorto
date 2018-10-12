@@ -107,7 +107,11 @@ public class TenantVerificationFilter extends GenericFilterBean {
 	}
 	
 	private Optional<JwtToken> getJwtTokenFromAuthentication(Authentication authentication) {
-		if (authentication != null && authentication instanceof OAuth2Authentication) {
+		if (authentication != null && 
+			authentication instanceof OAuth2Authentication && 
+			oauthClientContext != null && 
+			oauthClientContext.getAccessToken() != null &&
+			oauthClientContext.getAccessToken().getAdditionalInformation() != null) {
 			return JwtToken.instance((String) oauthClientContext.getAccessToken().getAdditionalInformation().get("id_token"));
 		} 
 		
