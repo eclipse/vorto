@@ -10,10 +10,10 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/import", {
         templateUrl : "partials/import-template.html",
         controller : "ImportController"
-    }).when("/payloadmapping/:namespace/:name/:version/:targetPlatform", {
+    }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
         templateUrl : "partials/mapping/mappingcreator.html",
         controller : "MappingBuilderController"
-    }).when("/details/:namespace/:name/:version", {
+    }).when("/details/:modelId", {
         templateUrl : "partials/details-template.html",
         controller : "DetailsController"
     }).when("/generators", {
@@ -99,7 +99,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
             if (!$rootScope.context.authenticatedSearchMode) {
-                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators"];
+                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
             } else {
                 $rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
             }

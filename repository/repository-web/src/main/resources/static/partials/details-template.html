@@ -158,7 +158,7 @@
 																	<span ng-show="reference.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>	
-																	<a ng-href="./#/details/{{reference.id.namespace}}/{{reference.id.name}}/{{reference.id.version}}" class="ng-binding">{{reference.id.name}}:{{reference.id.version}}</a>
+																	<a ng-href="./#/details/{{reference.id.prettyFormat}}" class="ng-binding">{{reference.id.name}}:{{reference.id.version}}</a>
 																	 (State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>)																																				
 																</li>
 															</ul>
@@ -190,7 +190,7 @@
 																	<span ng-show="usage.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>	
-																	<a ng-href="./#/details/{{usage.id.namespace}}/{{usage.id.name}}/{{usage.id.version}}" class="ng-binding">{{usage.id.name}}:{{usage.id.version}}</a>
+																	<a ng-href="./#/details/{{usage.id.prettyFormat}}" class="ng-binding">{{usage.id.name}}:{{usage.id.version}}</a>
 																	(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)																
 																</li>
 															</ul>
@@ -215,8 +215,8 @@
 																			<span>
 																				<i class="fa fa-exchange" aria-hidden="true"></i>
 																			</span>	
-																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.namespace}}/{{mapping.id.name}}/{{mapping.id.version}}" class="ng-binding">{{mapping.targetPlatform}}</a>
-																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.namespace}}/{{model.id.name}}/{{model.id.version}}/{{mapping.targetPlatform}}" class="ng-binding">{{mapping.targetPlatform}}</a>												
+																			<a ng-show="model.type !== 'InformationModel'" ng-href="./#/details/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}}</a>
+																			<a ng-show="model.type === 'InformationModel'" ng-href="./#/payloadmapping/{{model.id.prettyFormat}}/{{mapping.targetPlatform}}/{{mapping.id.prettyFormat}}" class="ng-binding">{{mapping.targetPlatform}}</a>												
 																			(State: <span class="state state-{{mapping.state}}">{{ mapping.state}}</span>)																																																															
 																	</li>
 																</ul>
@@ -462,8 +462,8 @@
 
 			<ul style="margin-top:30px;">
 				<li ng-repeat="usage in model.referencedBy" class="ng-scope">
-					<a ng-href="./#/details/{{usage.namespace}}/{{usage.name}}/{{usage.version}}" class="ng-binding">
-						{{usage.namespace}}.{{usage.name}}:{{usage.version}}
+					<a ng-href="./#/details/{{usage.prettyFormat}}" class="ng-binding">
+						{{usage.prettyFormat}}
 					</a>
 				</li>
 			</ul>
@@ -608,6 +608,7 @@
 </form>
 <div class="modal-footer">
 	<div class="align-right">
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createPayloadMappingForm.$invalid" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
 	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createPayloadMappingForm.$invalid" ng-click="create()">Create</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>

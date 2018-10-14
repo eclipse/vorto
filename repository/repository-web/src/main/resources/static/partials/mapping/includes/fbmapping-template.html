@@ -6,7 +6,7 @@
 		     <ul ng-if="customFunctions.length > 0">
 		     	 </br>
 		      	 <li ng-repeat="f in customFunctions | filter:{ property:property.name }">
-		      	 	{{property.name.toLowerCase()}}:{{f.name}} <a href="" ng-show="state === 'Draft'" ng-click="editFunction(f)">Edit</a> <a href="" ng-show="state === 'Draft'" ng-click="deleteFunction(f,property)">Delete</a>
+		      	 	<a href="" ng-click="editFunction(f)">{{property.name.toLowerCase()}}:{{f.name}}</a> <a href="" class="delete-button" ng-show="state === 'Draft'" ng-click="deleteFunction(f,property)"><i class="fa fa-close"></i></a>
 		      	 </li>
 	      	 </ul>
       	 </div>
@@ -20,8 +20,7 @@
 				<div data-property="{{property.name}}" ui-ace="{ onLoad : functionEditorLoaded, onChange: functionEditorChanged }" style="height: 200px;"></div>
 			</div>
 		</div>
-	     <button ng-show="editMode && state === 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Save Function</button>
-	     <button ng-hide="editMode || state !== 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Add Function</button>
+	     <button ng-show="state === 'Draft'" type="button" class="btn btn-default btn-sm" ng-click="addFunction(property.name,true)">Save Function</button>
 	     </br>
 	</div>
 	<br>

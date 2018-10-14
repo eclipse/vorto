@@ -16,7 +16,6 @@ package org.eclipse.vorto.repository.web.api.v1;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,12 +25,8 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -65,9 +60,6 @@ public class ModelSearchController extends AbstractRepositoryController {
 		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
 		return modelResources.stream()
-				.filter(model -> isReleased(model)
-						|| isUser(SecurityContextHolder.getContext().getAuthentication())
-						|| isAdmin(SecurityContextHolder.getContext().getAuthentication()))
 				.map(resource -> ModelDtoFactory.createDto(resource, userContext)).sorted(new Comparator<ModelInfo>() {
 
 					@Override
@@ -76,20 +68,6 @@ public class ModelSearchController extends AbstractRepositoryController {
 					}
 					
 				}).collect(Collectors.toList());
-	}
-
-	private boolean isAdmin(Authentication authentication) {
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		return authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-	}
-
-	private boolean isUser(Authentication authentication) {
-		Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-		return authorities.contains(new SimpleGrantedAuthority("ROLE_USER"));
-	}
-
-	private boolean isReleased(ModelInfo model) {
-		return SimpleWorkflowModel.STATE_RELEASED.getName().equals(model.getState());
 	}
 	
 	public boolean isAuthenticatedSearchMode() {

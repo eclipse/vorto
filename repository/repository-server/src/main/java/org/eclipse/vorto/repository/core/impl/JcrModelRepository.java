@@ -300,6 +300,22 @@ public class JcrModelRepository implements IModelRepository {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		}
 	}
+	
+	private ModelInfo getBasicById(ModelId modelId) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+
+			Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
+
+			return createMinimalModelInfo(modelFileNode);
+		} catch (PathNotFoundException e) {
+			return null;
+		} catch (RepositoryException e) {
+			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
+		}
+	}
 
 	public void setSession(Session session) {
 		this.session = session;
@@ -307,11 +323,12 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
+		logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "+targetPlatform);
 		List<ModelInfo> mappingResources = new ArrayList<>();
 		ModelInfo modelResource = getById(modelId);
 		if (modelResource != null) {
 			for (ModelId referenceeModelId : modelResource.getReferencedBy()) {
-				ModelInfo referenceeModelResources = getById(referenceeModelId);
+				ModelInfo referenceeModelResources = getBasicById(referenceeModelId);
 				if (referenceeModelResources.getType() == ModelType.Mapping
 						&& isTargetPlatformMapping(referenceeModelResources, targetPlatform)) {
 					mappingResources.add(referenceeModelResources);

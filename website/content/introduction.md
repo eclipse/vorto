@@ -4,13 +4,13 @@ title: What is Vorto?
 weight: 10
 ---
 
-> **TL;DR** Vorto provides a way to fully describe an IoT device's functionality and use that information to reduce integration time with IoT Platforms, e.g. by generating firmware, payload transformation logic and more.
+> **TL;DR** Vorto provides a Vorto Repository managing IoT device descriptions and providing code generators to integrate devices easily with various IoT platforms, e.g. Bosch IoT Suite, AWS IoT, Samsung ARTIK and more.
 
 ![Material Screenshot](/images/Vorto_Ar.png)
 	
 The indented use of the Vorto project is that a IoT Device is described using  Vorto DSL. 
-By providing a unified way to describe an IoT Device, a variety of services can be employed that draw on the information contained in the model. One use case that Vorto supports out-of-the-box is the automatic code generation for the integration with Eclipse Hono and Eclipse Ditto. Check out [our tutorials]({{< relref "tutorials/arduino.md" >}}) to find out more.
+By providing a unified way to describe an IoT Device, a variety of services can be employed that draw on the information contained in the description. One use case is th code generation for the integration with Bosch IoT Suite and other IoT platforms. Check out [our tutorials]({{< relref "tutorials/arduino.md" >}}) to find out more.
 
-The Vorto Repository is a central repository where you can manage and organize the IoT Device Information Models. We set up a [Vorto Repository Sandbox](http://vorto.eclipse.org) but you can easily set up your own, as described [here](https://github.com/eclipse/vorto/tree/development/repository/repository-web) 
+The [Vorto Repository](http://vorto.eclipse.org) is a central repository where you can manage and organize IoT Device Information Models. If you want to set up your own repository in your infrastructure, take a look at our [setup guide](https://github.com/eclipse/vorto/tree/development/repository/repository-web) 
 
 

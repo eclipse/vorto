@@ -59,7 +59,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
     }
 
     $scope.go = function(model){
-        $location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+        $location.path("/details/"+model.id.prettyFormat);
     };
 
     $scope.showYourModels = function() {
@@ -136,7 +136,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
       
       modalInstance.result.then(
         function(model) {
-            $location.path("/details/"+model.id.namespace+"/"+model.id.name+"/"+model.id.version);
+            $location.path("/details/"+model.id.prettyFormat);
         });
 };
 } ]);

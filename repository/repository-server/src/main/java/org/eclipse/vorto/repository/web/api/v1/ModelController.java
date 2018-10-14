@@ -72,7 +72,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found"),
 			@ApiResponse(code = 403, message = "Not Authorized to view model") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
 	public ModelInfo getModelInfo(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
@@ -91,7 +91,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiOperation(value = "Returns the complete model content")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
 	public ModelContent getModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
@@ -119,7 +119,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiOperation(value = "Returns the complete model content including target platform specific attributes")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
 	public ModelContent getModelContentForTargetPlatform(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -191,7 +191,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiOperation(value = "Downloads the model file")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,

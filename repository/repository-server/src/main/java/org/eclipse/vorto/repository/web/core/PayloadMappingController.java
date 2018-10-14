@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.mapping.engine.DataInputFactory;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
@@ -39,11 +40,14 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
+import org.eclipse.vorto.repository.web.core.validation.ValidationHelper;
+import org.eclipse.vorto.repository.web.core.validation.ValidationProblem;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,8 +75,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	@Autowired
 	private IWorkflowService workflowService;
 	
+	private static Logger logger = Logger.getLogger(PayloadMappingController.class);
+
+	
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.POST)
-	public IMappingSpecification createMappingSpecification(@PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
+	@PreAuthorize("isAuthenticated()")
+	public Map<String,Object> createMappingSpecification(@PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
+		logger.info("Creating Mapping Specification for "+modelId + " using key "+targetPlatform);
 		if (!this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform).isEmpty()){
 			throw new ModelAlreadyExistsException();
 		} else {
@@ -82,8 +91,11 @@ public class PayloadMappingController extends AbstractRepositoryController {
 			for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
 				spec.getProperties().put(property.getName(), (FunctionblockModel)modelContent.getModels().get(property.getType()));
 			}
-			this.saveMappingSpecification(spec,modelId,targetPlatform);
-			return spec;
+			final ModelId createdId = this.saveMappingSpecification(spec,modelId,targetPlatform);
+			Map<String,Object> response = new HashMap<String, Object>();
+			response.put("mappingId", createdId.getPrettyFormat());
+			response.put("spec", spec);
+			return response;
 		}
 	}
 
@@ -92,8 +104,14 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		ModelContent infoModelContent = modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
 		Infomodel infomodel = (Infomodel)infoModelContent.getModels().get(infoModelContent.getRoot());		
 		
+		if (infomodel == null) {
+			ModelContent infomodelContent = modelController.getModelContent(modelId);
+			infomodel = (Infomodel)infomodelContent.getModels().get(infomodelContent.getRoot());
+		}
 		MappingSpecification specification = new MappingSpecification();
+		
 		specification.setInfoModel(infomodel);
+		
 		for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
 			ModelId fbModelId = (ModelId) fbProperty.getType();
 			
@@ -193,13 +211,26 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		
 		InfomodelData mappedOutput = engine.map(DataInputFactory.getInstance().fromJson(testRequest.getSourceJson()));
 
+		ValidationHelper validationHelper = new ValidationHelper(testRequest.getSpecification());
+		
 		TestMappingResponse response = new TestMappingResponse();
 		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.getProperties()));
+		try {
+			validationHelper.validate(mappedOutput);
+			response.setValid(true);
+		} catch (ValidationProblem validationProblem) {
+			response.setValid(false);
+			response.setValidationError(validationProblem.getMessage());
+		}
+		
 		return response;
 	}
 
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.PUT)
+	@PreAuthorize("isAuthenticated()")
 	public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification, @PathVariable String modelId, @PathVariable String targetPlatform) {
+		logger.info("Saving mapping specification "+modelId + " with key "+targetPlatform);
+
 		IUserContext userContext = UserContext
 				.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		

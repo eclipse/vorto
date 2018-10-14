@@ -166,9 +166,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			}
 		};
 
-		$scope.getDetails = function (namespace, name, version) {
+		$scope.getDetails = function (modelId) {
 			$scope.modelIsLoading = true;
-			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version))
+			$http.get('./api/v1/models/' + modelId)
 				.success(function (result) {
 					$scope.model = result;
 					if($scope.model.author.length === 64) {
@@ -193,8 +193,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				});
 		};
 
-		$scope.getContent = function (namespace, name, version) {
-			$http.get('./api/v1/models/' + $rootScope.modelId(namespace, name, version) + '/file')
+		$scope.getContent = function (modelId) {
+			$http.get('./api/v1/models/' + modelId + '/file')
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
@@ -251,8 +251,11 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		}
 
 
-		$scope.getDetails($routeParams.namespace, $routeParams.name, $routeParams.version);
-		$scope.getContent($routeParams.namespace, $routeParams.name, $routeParams.version);
+		$scope.modelId = $routeParams.modelId;
+		
+		$scope.getDetails($scope.modelId);
+		$scope.getContent($scope.modelId);
+		
 		$scope.getPlatformGenerators();
 
 		/*
@@ -261,9 +264,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
         $scope.comments = [];
 		$authority = $rootScope.authority;
 
-		$scope.getCommentsForModelId = function () {
+		$scope.getCommentsForModelId = function (modelId) {
 
-			$http.get('./rest/comments/' + $rootScope.modelId($routeParams.namespace, $routeParams.name, $routeParams.version))
+			$http.get('./rest/comments/' + modelId)
 				.success(function (result) {
 					$scope.comments = result;
 					$scope.comments.reverse();
@@ -283,13 +286,14 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				});
 		}
 
-		$scope.getCommentsForModelId();
+		$scope.getCommentsForModelId($scope.modelId);
+		
 		$scope.createComment = function () {
 
 			$scope.date = new Date();
 
 			var comment = {
-				"modelId": $routeParams.namespace + '.' + $routeParams.name + ':' + $routeParams.version,
+				"modelId": $scope.modelId,
 				"author": $scope.user,
 				"date": $scope.date,
 				"content": $scope.newComment.value
@@ -339,7 +343,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		 * Start - Workflow
 		 */
 		$scope.getWorkflowActions = function () {
-			$http.get('./rest/workflows/' + $rootScope.modelId($routeParams.namespace, $routeParams.name, $routeParams.version + '/actions'))
+			$http.get('./rest/workflows/' + $scope.modelId + '/actions')
 				.success(function (result) {
 					$scope.workflowActions = result;
 				});
@@ -372,7 +376,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.getModel = function () {
 						if ($scope.action != 'Claim') {
-							$http.get('./rest/workflows/' + $rootScope.modelId($routeParams.namespace, $routeParams.name, $routeParams.version))
+							$http.get('./rest/workflows/' + $scope.modelId)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -454,7 +458,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.create = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/models/' + $rootScope.modelId($scope.modelNamespace, $scope.modelName, $scope.modelVersion) + '/' + $scope.modelType, null)
+						$http.post('./rest/models/' + $rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion) + '/' + $scope.modelType, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
@@ -481,7 +485,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 			modalInstance.result.then(
 				function (model) {
-					$location.path("/details/" + model.id.namespace + "/" + model.id.name + "/" + model.id.version);
+					$location.path("/details/" + model.id.prettyFormat);
 				});
 		};
 		
@@ -524,7 +528,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 			modalInstance.result.then(
 				function (model) {
-					$location.path("/details/" + model.id.namespace + "/" + model.id.name + "/" + model.id.version);
+					$location.path("/details/" + model.id.prettyFormat);
 				});
 		};
 		
@@ -541,7 +545,9 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						$http.post('./rest/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
 							.success(function (result) {
 								$scope.isLoading = false;
-								modalInstance.close($scope.targetPlatform);
+								var data = {"targetPlatform" : $scope.targetPlatform, 
+											"mappingId" : result.mappingId };
+								modalInstance.close(data);
 							}).error(function (data, status, header, config) {
 								$scope.isLoading = false;
 								if (status === 409) {
@@ -566,8 +572,8 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			});
 
 			modalInstance.result.then(
-				function (targetPlatform) {
-					$location.path("/payloadmapping/" + $scope.model.id.namespace + "/" + $scope.model.id.name + "/" + $scope.model.id.version + "/" + targetPlatform);
+				function (data) {
+					$location.path("/payloadmapping/" + $scope.model.id.prettyFormat + "/" + data.targetPlatform + "/" + data.mappingId);
 				});
 		};
 
