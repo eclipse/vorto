@@ -22,7 +22,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 
 @Configuration
-public class RepositoryConfiguration {
+public class RepositoryConfiguration extends BaseConfiguration {
 
 	@Value("${http.proxyHost:#{null}}")
 	String proxyHost;

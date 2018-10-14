@@ -3,7 +3,6 @@
 <locations>
 <location path="${eclipse_home}" type="Profile"/>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="false" type="InstallableUnit">
-<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
 <unit id="org.apache.commons.collections" version="3.2.0.v2013030210310"/>
 <unit id="org.apache.commons.io" version="2.2.0.v201405211200"/>
 <unit id="org.easymock" version="2.4.0.v20090202-0900"/>
@@ -162,8 +161,6 @@
 <plugin id="org.apache.commons.cli"/>
 <plugin id="org.apache.commons.collections"/>
 <plugin id="org.apache.commons.io"/>
-<plugin id="org.apache.commons.lang.source"/>
-<plugin id="org.apache.commons.lang3"/>
 <plugin id="org.easymock"/>
 <plugin id="org.eclipse.emf.mwe.core"/>
 <plugin id="org.eclipse.emf.mwe.utils"/>

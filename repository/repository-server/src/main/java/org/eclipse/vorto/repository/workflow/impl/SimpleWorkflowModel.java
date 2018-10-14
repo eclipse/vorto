@@ -41,7 +41,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	
 	
 	private static DefaultAction ACTION_INITAL = new DefaultAction("start");
-	public static DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger an internal review process, done by the Vorto Team. Once approved, your model will be released and is publicly visible.");
+	public static DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger an internal review process, done by the Vorto Team. Once approved, your model will be released.");
 	public static DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
 	public static DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
 	public static DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");

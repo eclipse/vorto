@@ -3,12 +3,14 @@ date: 2018-05-28T21:07:13+01:00
 title: What is Vorto?
 weight: 10
 ---
+
+> **TL;DR** Vorto provides a Vorto Repository managing IoT device descriptions and providing code generators to integrate devices easily with various IoT platforms, e.g. Bosch IoT Suite, AWS IoT, Samsung ARTIK and more.
+
 ![Material Screenshot](/images/Vorto_Ar.png)
 	
-> Interaction among different stakeholders via Vorto
+The indented use of the Vorto project is that a IoT Device is described using  Vorto DSL. 
+By providing a unified way to describe an IoT Device, a variety of services can be employed that draw on the information contained in the description. One use case is th code generation for the integration with Bosch IoT Suite and other IoT platforms. Check out [our tutorials]({{< relref "tutorials/arduino.md" >}}) to find out more.
 
-Vorto provides Web Editors that allow Device Manufacturers to easily describe device functionality and characteristics using a simple Vorto language (Vorto DSL) and save them as Information Models in the [Vorto Repository](http://vorto.eclipse.org/). Platform Providers provide [Code generators](http://vorto.eclipse.org/#/generators) that convert these models into device - specific "stubs" that run on the device and send Information Model compliant messages to IoT Digital Twin services. In order to process these messages in the IoT platform, Vorto offers a set of convenient technical components, for example parsers and validators. For devices sending arbitrary messages, e.g. as JSON or Binary, the Vorto Payload Mapping Engine helps to transform these messages to specific IoT Digital Twin API compliant data, such as Eclipse Ditto or AWS IoT Shadow.
+The [Vorto Repository](http://vorto.eclipse.org) is a central repository where you can manage and organize IoT Device Information Models. If you want to set up your own repository in your infrastructure, take a look at our [setup guide](https://github.com/eclipse/vorto/tree/development/repository/repository-web) 
 
-![Material Screenshot](/images/vorto_technicalview.png)
 
-> Technical View

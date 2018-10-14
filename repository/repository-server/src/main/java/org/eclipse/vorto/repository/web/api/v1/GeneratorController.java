@@ -77,7 +77,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	@ApiOperation(value = "Generate code for a specified platform, and extract specified path")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Code was successfully generated."), @ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model or generator not found")})
 	@RequestMapping(value = "/{serviceKey}/models/{modelId:.+}/!/**", method = RequestMethod.GET)
-	public void generateAndExtract(@ApiParam(value = "The iD of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId, 
+	public void generateAndExtract(@ApiParam(value = "The iD of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId, 
 							@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) @PathVariable String serviceKey,
 							final HttpServletRequest request,
 							final HttpServletResponse response) {
@@ -144,7 +144,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	@ApiOperation(value = "Generate code for a specified platform")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Code was successfully generated."),@ApiResponse(code = 400, message = "Wrong input"), @ApiResponse(code = 404, message = "Model or generator not found")})
 	@RequestMapping(value = "/{serviceKey}/models/{modelId:.+}", method = RequestMethod.GET)
-	public void generate( 	@ApiParam(value = "the vorto model ID, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId, 
+	public void generate( 	@ApiParam(value = "the vorto model ID, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId, 
 							@ApiParam(value = "generator key, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
 							final HttpServletRequest request,
 							final HttpServletResponse response) {

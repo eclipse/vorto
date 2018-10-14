@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.0.M6</version>
+		<version>0.10.0.M7</version>
 	</parent>
 	
 	<artifactId>repository-generators</artifactId>
@@ -161,4 +161,25 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+		<id>include-docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<configuration>
+							<repository>eclipsevorto/vorto-generators</repository>
+							<buildArgs>
+								<JAR_FILE>${project.build.finalName}-exec.jar</JAR_FILE>
+								<https_proxy>${env.https_proxy}</https_proxy>
+								<http_proxy>${env.http_proxy}</http_proxy>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

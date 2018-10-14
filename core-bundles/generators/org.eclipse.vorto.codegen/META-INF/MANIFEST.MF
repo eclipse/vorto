@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Vorto Code-Generation Infrastructure (Incubation)
 Bundle-SymbolicName: org.eclipse.vorto.codegen;singleton:=true
-Bundle-Version: 0.10.0.M6
+Bundle-Version: 0.10.0.M7
 Bundle-Vendor: Eclipse.org/Vorto
 Require-Bundle: com.google.guava,
  org.eclipse.xtext.xbase.lib,

@@ -23,6 +23,7 @@ import org.eclipse.vorto.repository.api.content.EntityModel;
 import org.eclipse.vorto.repository.api.content.EnumModel;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
+import org.eclipse.vorto.repository.api.content.ModelContent;
 
 /**
  * Model repository lets you find and retrieve Vorto information models from the Vorto Repository
@@ -50,7 +51,7 @@ public interface IModelRepository {
 	 * @param resultClass expected model class, either {@link Infomodel}, {@link FunctionblockModel}, {@link EntityModel} or {@link EnumModel}
 	 * @return model content
 	 */
-	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass);
+	CompletableFuture<ModelContent> getContent(ModelId modelId);
 	
 	/**
 	 * Gets the actual model content for a given model id including the meta data for the given target platform.
@@ -59,7 +60,7 @@ public interface IModelRepository {
 	 * @param key of the target platform
 	 * @return model content
 	 */
-	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass, String targetPlatformKey);
+	CompletableFuture<ModelContent> getContent(ModelId modelId, String targetPlatformKey);
 	
 	/**
 	 * Gets the actual model content for a given model id including the meta data for the given mapping model ID
@@ -69,7 +70,7 @@ public interface IModelRepository {
 	 * @param mappingModelId model id of the mapping to look up
 	 * @return model content
 	 */
-	<ModelContent extends IModel> CompletableFuture<ModelContent> getContent(ModelId modelId, Class<ModelContent> resultClass, ModelId mappingModelId);
+	CompletableFuture<ModelContent> getContent(ModelId modelId, ModelId mappingModelId);
 
 	/**
 	 * Get a list of file attachments for a model

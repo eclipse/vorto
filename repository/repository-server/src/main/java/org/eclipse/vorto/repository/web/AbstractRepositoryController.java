@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -78,11 +79,11 @@ public abstract class AbstractRepositoryController {
     }
 	
 	protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
-		FileContent fileContent = modelRepository.getModelContent(modelId);
+		Optional<FileContent> fileContent = modelRepository.getFileContent(modelId,Optional.empty());
 		
-		final byte[] modelContent = fileContent.getContent();
+		final byte[] modelContent = fileContent.get().getContent();
 		if (modelContent != null && modelContent.length > 0) {
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileContent.getFileName());
+			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileContent.get().getFileName());
 			response.setContentType(APPLICATION_OCTET_STREAM);
 			try {
 				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());

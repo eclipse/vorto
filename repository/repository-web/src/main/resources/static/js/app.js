@@ -1,5 +1,5 @@
 var repository = angular.module("repository", [ "ngRoute", "repositoryControllers", "repositoryDirectives",
-    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace"]);
+    "swaggerUi", "smart-table", "ngAnimate","ui.bootstrap","ui.bootstrap.tpls","ui.ace" ,"ngPrettyJson"]);
 
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
@@ -10,7 +10,10 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     }).when("/import", {
         templateUrl : "partials/import-template.html",
         controller : "ImportController"
-    }).when("/details/:namespace/:name/:version", {
+    }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
+        templateUrl : "partials/mapping/mappingcreator.html",
+        controller : "MappingBuilderController"
+    }).when("/details/:modelId", {
         templateUrl : "partials/details-template.html",
         controller : "DetailsController"
     }).when("/generators", {
@@ -55,7 +58,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     };
     
     $rootScope.modelId = function(namespace,name,version) {
-    	return namespace + "." + name + ":" + version;
+    	return namespace + ":" + name + ":" + version;
 	};
     
     $rootScope.logout = function() {
@@ -96,7 +99,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
             if (!$rootScope.context.authenticatedSearchMode) {
-                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators"];
+                $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
             } else {
                 $rootScope.unrestrictedUrls = ["/login", "/api", "/generators"];
             }

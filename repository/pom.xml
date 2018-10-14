@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.10.0.M6</version>
+		<version>0.10.0.M7</version>
 	</parent>
 	
 	<artifactId>repository</artifactId>
@@ -102,6 +102,16 @@
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>repository-api</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>mapping-engine-all</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.vorto</groupId>
+				<artifactId>mapping-serializer</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -289,6 +299,37 @@
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>1.4.4</version>
+					<executions>
+						<execution>
+							<id>tag-latest</id>
+							<phase>deploy</phase>
+						<goals>
+						  <goal>build</goal>
+						  <goal>tag</goal>
+						  <goal>push</goal>
+						</goals>
+						<configuration>
+						  <tag>latest</tag>
+						</configuration>
+					  </execution>
+					  <execution>
+						<id>tag-version</id>
+						<phase>deploy</phase>
+						<goals>
+						  <goal>build</goal>
+						  <goal>tag</goal>
+						  <goal>push</goal>
+						</goals>
+						<configuration>
+						  <tag>${project.version}</tag>
+						</configuration>
+					  </execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

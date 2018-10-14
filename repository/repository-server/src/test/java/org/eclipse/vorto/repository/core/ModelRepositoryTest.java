@@ -78,11 +78,22 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 	}
 
 	@Test
-	public void testGetDSLContentForModel() throws Exception {
+	public void testGetDSLContentForModelByFileName() throws Exception {
 		importModel("Color.type");
 		ModelInfo model = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		
-		Optional<FileContent> fileContent = modelRepository.getFileContent(model.getId(), model.getFileName());
+		Optional<FileContent> fileContent = modelRepository.getFileContent(model.getId(), Optional.of(model.getFileName()));
+		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
+		assertEquals(expectedContent, new String(fileContent.get().getContent(),"utf-8"));
+		assertEquals("Color.type",fileContent.get().getFileName());
+	}
+	
+	@Test
+	public void testGetDSLContentForModelWithoutFileName() throws Exception {
+		importModel("Color.type");
+		ModelInfo model = modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+		
+		Optional<FileContent> fileContent = modelRepository.getFileContent(model.getId(), Optional.empty());
 		String expectedContent = IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
 		assertEquals(expectedContent, new String(fileContent.get().getContent(),"utf-8"));
 		assertEquals("Color.type",fileContent.get().getFileName());
@@ -96,7 +107,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.fb.ColorLight", "1.0.0"));
 		assertEquals(1, result.getReferences().size());
-		assertEquals("org.eclipse.vorto.examples.type.Color:1.0.0", result.getReferences().get(0).getPrettyFormat());
+		assertEquals("org.eclipse.vorto.examples.type:Color:1.0.0", result.getReferences().get(0).getPrettyFormat());
 	}
 
 	@Test
@@ -107,7 +118,7 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		ModelInfo result = modelRepository
 				.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
 		assertEquals(1, result.getReferencedBy().size());
-		assertEquals("org.eclipse.vorto.examples.fb.ColorLight:1.0.0",
+		assertEquals("org.eclipse.vorto.examples.fb:ColorLight:1.0.0",
 				result.getReferencedBy().get(0).getPrettyFormat());
 	}
 

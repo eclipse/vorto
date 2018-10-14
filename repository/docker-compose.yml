@@ -1,7 +1,7 @@
 version: '3'
 services:
   repository:
-    build: eclipsevorto/vorto-repo
+    image: eclipsevorto/vorto-repo
     ports:
       - "8080:8080"
     volumes:
@@ -12,14 +12,14 @@ services:
       - backend
   generators:
     depends_on: ["repository"]
-    build: eclipsevorto/vorto-generators
+    image: eclipsevorto/vorto-generators
     volumes:
       - "./repository-web/docker:/gen/config"
     networks:
       - backend
-  generators-example:
+  example-generators:
     depends_on: ["repository"]
-    build: eclipsevorto/vorto-generators-3d-party
+    image: eclipsevorto/vorto-generators-3rd-party
     volumes:
       - "./repository-web/docker:/gen/config"
     networks:

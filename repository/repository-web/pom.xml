@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.0.M6</version>
+		<version>0.10.0.M7</version>
 	</parent>
 	<artifactId>repository-web</artifactId>
 	<packaging>jar</packaging>
@@ -93,6 +93,11 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>webjars-locator</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.18</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.webjars</groupId>
@@ -118,6 +123,11 @@
 			<groupId>org.webjars</groupId>
 			<artifactId>angular-ui-ace</artifactId>
 			<version>0.2.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>ng-prettyjson</artifactId>
+		    <version>0.2.0</version>
 		</dependency>
 	</dependencies>
 
@@ -161,6 +171,25 @@
 	
 	<profiles>
 		<profile>
+		<id>include-docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<configuration>
+							<repository>eclipsevorto/vorto-repo</repository>
+							<buildArgs>
+								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+								<https_proxy>${env.https_proxy}</https_proxy>
+								<http_proxy>${env.http_proxy}</http_proxy>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 		<id>exclude-h2</id>
 			<build>
 				<plugins>
@@ -182,7 +211,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					
 				</plugins>
 			</build>
 		</profile>

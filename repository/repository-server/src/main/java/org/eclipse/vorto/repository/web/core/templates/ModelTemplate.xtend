@@ -33,6 +33,18 @@ class ModelTemplate {
 			functionblocks {
 				
 			}
+			«ELSEIF modelType == ModelType.Functionblock»
+			
+			configuration {
+			
+			}
+			
+			status {
+			
+			}
+			
+			events {}
+			operations {}
 			«ENDIF»
 		}
 		'''

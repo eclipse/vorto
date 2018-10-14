@@ -68,7 +68,7 @@ public class DefaultModelBackupService implements IModelBackupService {
 			LOGGER.info("attempting to import backup of current content");
 			doRestore(currentContent);
 		} catch (Exception invalidCurrentContent) {
-			throw new Exception(this.EXCEPTION_MESSAGE_CURRENT_CONTENT);
+			throw new Exception(this.EXCEPTION_MESSAGE_CURRENT_CONTENT,invalidCurrentContent);
 		}
 
 		removeAll();
@@ -78,7 +78,7 @@ public class DefaultModelBackupService implements IModelBackupService {
 			doRestore(restorableContent);
 		} catch (Exception invalidContent) {
 			doRestore(currentContent);
-			throw new Exception(this.EXCEPTION_MESSAGE_RESTORABLE_CONTENT);
+			throw new Exception(this.EXCEPTION_MESSAGE_RESTORABLE_CONTENT,invalidContent);
 		}
 	}
 

@@ -6,7 +6,7 @@
 
 	<groupId>org.eclipse.vorto</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.10.0.M6</version>
+	<version>0.10.0.M7</version>
 
 	<name>Vorto Parent</name>
 

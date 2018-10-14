@@ -99,7 +99,7 @@ public class MappingTest extends AbstractIntegrationTest {
 		Thread.sleep(2000);
 		assertEquals(1, modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
 				.getReferencedBy().size());
-		assertEquals("org.eclipse.vorto.examples.type.Color_ios:1.0.0",
+		assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0",
 				modelRepository.getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
 						.getReferencedBy().get(0).getPrettyFormat());
 		

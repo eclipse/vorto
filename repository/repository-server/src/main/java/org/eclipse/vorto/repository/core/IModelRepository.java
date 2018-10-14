@@ -117,7 +117,7 @@ public interface IModelRepository {
 	 * @param fileName
 	 * @return
 	 */
-	Optional<FileContent> getFileContent(ModelId modelId, String fileName);
+	Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName);
 	
 	/**
 	 * Attaches the given file to the model
