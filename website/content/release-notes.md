@@ -4,6 +4,14 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 7
+
+**Fixes and Enhancements**
+
+* Anonymous read-access to Vorto Models
+* Payload Mapping Specification Editor, which allows to simply create & test device payload mapping specifications 
+
+
 ## 0.10.0 milestone 6
 
 **Fixes and Enhancements**

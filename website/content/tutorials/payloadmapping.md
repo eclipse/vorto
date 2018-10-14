@@ -82,23 +82,21 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 
 		<dependency>
 		   <groupId>org.eclipse.vorto</groupId>
-		   <artifactId>mapping-engine</artifactId>
+		   <artifactId>mapping-engine-all</artifactId>
 		   <version>${vorto.version}</version>
 		</dependency>
 
-2. Code snippet that transforms a sample Distance Sensor JSON to Eclipse Vorto/Eclipse Ditto compliant data:
+2. Download the Mapping Specification via the Payload Mapping Specification Editor in the Vorto Repository
 
-		IMappingSpecification spec = MappingSpecificationBuilder.create()
-		.infomodelId("org.eclipse.vorto.tutorial.DistanceSensor:1.0.0")
-		.targetPlatformKey("distance_ipso")
-		.build();
 
-		IDataMapper<DittoData> mapper = IDataMapper.newBuilder().withSpecification(spec).buildDittoMapper();
+3. Code snippet that transforms a sample Distance Sensor JSON to Eclipse Vorto/Eclipse Ditto compliant data:
+
+		//load mapping specification from inputstream, e.g. classpath
+		MappingEngine engine = MappingEngine.createFromInputStream(is);
 
 		String sampleDevicePayload = "{\"distance\": \"100m\"}";
 
-		DittoData mappedResult = mapper.map(DataInput.newInstance().fromJson(sampleDevicePayload),
-				MappingContext.empty());
+		InfomodelData mappedResult mappingEngine.map(DataInput.newInstance().fromJson(sampleDevicePayload));
 		
 		System.out.println(mappedResult.toJson());
 
@@ -106,12 +104,10 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 
 		{
 			"distance":{
-				"properties":{
 					"status":{
 						"sensorValue": 100,
 						"sensorUnits": "m"
 					}
-				}
 			}
 		}
 	
@@ -132,52 +128,4 @@ We are now ready to send the mapped JSON payload and modify an [Eclipse Ditto](h
 
 
 **Voila!** Your digital twin of the Distance Sensor is now stored as standardized data, described as Vorto Function Blocks. 
-
-### Appendix: Plug-in other IoT Platform Data Mapper
-
-The Vorto Mapping Engine is IoT platform agnostic, thus allowing you to extend it in order to integrate devices in a standardized way with other IoT platforms, like AWS IoT Shadow or Azure IoT. 
-
-Let's take a look what you need to do in order to do that:
-
-1. Add the Mapping Engine to your Maven project, if you have not already done so:
-
-		<dependency>
-		   <groupId>org.eclipse.vorto</groupId>
-		   <artifactId>mapping-engine</artifactId>
-		   <version>${vorto.version}</version>
-		</dependency>
-
-2. Extend the *org.eclipse.vorto.service.mapping.AbstractDataMapper* and override the *doMap()* method 
-
-		import java.util.HashMap;
-		import java.util.Map;
-		
-		import org.eclipse.vorto.service.mapping.AbstractDataMapper;
-		import org.eclipse.vorto.service.mapping.MappingContext;
-		import org.eclipse.vorto.service.mapping.normalized.FunctionblockData;
-		import org.eclipse.vorto.service.mapping.normalized.InfomodelData;
-		import org.eclipse.vorto.service.mapping.spec.IMappingSpecification;
-		
-		public class MyPlatformMapper extends AbstractDataMapper<MyPlatformModel> {
-			
-			public MyPlatformMapper(IMappingSpecification spec) {
-				super(spec);
-			}
-		
-			@Override
-			protected MyPlatformModel doMap(InfomodelData normalized, MappingContext mappingContext){
-				// add your code here that maps the already normalized Vorto model to the platform specific model
-			}
-			
-		
-		}
-
-3. Use the Mapper to convert arbitrary device data to the specific platform data model:
-
-		IDataMapper<MyPlatformModel> mapper = new MyPlatformMapper(mappingSpecification);
-		
-		String sampleDeviceData = "{\"distance\": \"100m\"}";
-		
-		MyPlatformModel result = mapper.map(DataInput.newInstance().fromJson(sampleDeviceData), MappingContext.empty());
-
 		
