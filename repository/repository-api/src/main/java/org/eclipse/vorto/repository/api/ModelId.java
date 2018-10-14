@@ -26,7 +26,7 @@ public class ModelId implements IReferenceType {
 	private String namespace;
 	private String version;
 	
-	private static final Pattern ID_PATTERN = Pattern.compile("([\\w\\.]+).([\\w\\.]+)*:([A-Z][\\w\\.]+):([\\w\\.]+)");
+	//private static final Pattern ID_PATTERN = Pattern.compile("([\\w\\.]+).([\\w\\.]+)*:([A-Z][\\w\\.]+):([\\w\\.]+)");
 	
 	public ModelId() {
 	}
@@ -45,9 +45,6 @@ public class ModelId implements IReferenceType {
 	}
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
-		if (!ID_PATTERN.matcher(prettyFormat).matches()) {
-			throw new IllegalArgumentException("Model ID must match pattern <namespace>:<name>:<version>");
-		}
 		final String[] tripleParts = prettyFormat.split(":");
 		return new ModelId(tripleParts[1],tripleParts[0],tripleParts[2]);
 	}
