@@ -33,12 +33,6 @@ public class ModelIdTest {
 		ModelId.fromPrettyFormat(modelId);
 	}
 	
-	@Test (expected=IllegalArgumentException.class)
-	public void testInvalidModelId3() {
-		String modelId = "com.bosch:test:1.0.0";
-		ModelId.fromPrettyFormat(modelId);
-	}
-	
 	@Test
 	public void testValidModelId() {
 		String modelId = "com.bosch:Test:1.0.0";
