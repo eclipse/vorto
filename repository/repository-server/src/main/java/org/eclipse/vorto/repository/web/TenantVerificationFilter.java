@@ -66,17 +66,15 @@ public class TenantVerificationFilter extends GenericFilterBean {
 			if (resourceTenant.isPresent()) {
 				Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 				Optional<String> userTenant = getTenantFromJwtToken(authentication, httpRequest);
-				if (!userTenant.isPresent()) {
-					LOGGER.warn("ERROR: Either no JWT token or no '" + TENANT_ID + "' in JWT token.");
-					((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-							"ERROR: Either no JWT token or no " + TENANT_ID + " in JWT token.");
-					return;
-				}
 				
-				if (!resourceTenant.get().equals(userTenant.get())) {
-					LOGGER.warn("ERROR: tenant in JWT token and tenant for resource doesn't match.");
-					((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, 
-							"ERROR: tenant in JWT token and tenant for resource doesn't match.");
+				if (!(userTenant.isPresent() && resourceTenant.get().equals(userTenant.get()))) {
+					String errorMessage = "ERROR: tenant in JWT token and tenant for resource doesn't match.";
+					if (!userTenant.isPresent()) {
+						errorMessage = "ERROR: Either no JWT token or no '" + TENANT_ID + "' in JWT token.";
+					}
+					
+					LOGGER.warn(errorMessage);
+					((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, errorMessage);
 					return;
 				}
 			}
