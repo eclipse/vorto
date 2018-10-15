@@ -191,24 +191,24 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
                 if ($scope.properties.hasOwnProperty(propertyName)) {
                     var stereotypes = $scope.properties[propertyName].stereotypes;
                     if (stereotypes != null) {
-                        $scope.loadCustomFunctionsFromStereotype(stereotypes);
+                        $scope.loadCustomFunctionsFromStereotype(propertyName, stereotypes);
                     }
                 }
             }
         };
 	    
-        $scope.loadCustomFunctionsFromStereotype = function(stereotypes) {
+        $scope.loadCustomFunctionsFromStereotype = function(propertyName, stereotypes) {
             for (var i = 0; i < stereotypes.length;i++) {
                 if (stereotypes[i].name === "functions") {
-                    $scope.loadCustomFunctionsFromStereotypeAttributes(stereotypes, stereotypes[i].attributes);
+                    $scope.loadCustomFunctionsFromStereotypeAttributes(propertyName, stereotypes, stereotypes[i].attributes);
                 }
             }
 	    };
 	    
-        $scope.loadCustomFunctionsFromStereotypeAttributes = function(stereotypes, stereotypeAttributes) {
+        $scope.loadCustomFunctionsFromStereotypeAttributes = function(propertyName, stereotypes, stereotypeAttributes) {
             for (var attributeKey in stereotypeAttributes) {
                 if (stereotypeAttributes.hasOwnProperty(attributeKey) && attributeKey !== "_namespace") {
-                    $scope.newFunctionCode = stereotypes[i].attributes[attributeKey];
+                    $scope.newFunctionCode = stereotypeAttributes[attributeKey];
                     $scope.addFunction(propertyName,false);
                 }   
             }
