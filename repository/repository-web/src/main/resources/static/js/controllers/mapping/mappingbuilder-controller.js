@@ -212,7 +212,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
                     $scope.addFunction(propertyName,false);
                 }   
             }
-        }
+        };
 	    
 	    $scope.save = function() {
 			var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
