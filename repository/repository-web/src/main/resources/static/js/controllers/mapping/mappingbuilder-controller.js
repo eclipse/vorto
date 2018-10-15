@@ -186,14 +186,14 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 				});		
 	    };
 	    
-	    $scope.loadCustomFunctions = function() {
-	    	for (propertyName in $scope.properties) {
-	    		var stereotypes = $scope.properties[propertyName].stereotypes;
+        $scope.loadCustomFunctions = function() {
+            for (propertyName in $scope.properties) {
+                var stereotypes = $scope.properties[propertyName].stereotypes;
                 if (stereotypes != null) {
                     $scope.loadCustomFunctionsFromStereotype(stereotypes);
                 }
             }
-	    };
+        };
 	    
         $scope.loadCustomFunctionsFromStereotype = function(stereotypes) {
             for (var i = 0; i < stereotypes.length;i++) {
