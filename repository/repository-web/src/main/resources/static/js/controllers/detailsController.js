@@ -301,7 +301,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			
 			$http.post('./rest/' + $rootScope.tenant + '/comments', comment)
 				.success(function (result) {
-                    $scope.getCommentsForModelId();
+                    $scope.getCommentsForModelId($scope.modelId);
 				}).error(function (data, status, headers, config) {
 					if (status == 403) {
 						$rootScope.error = "Operation is Forbidden";
