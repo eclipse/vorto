@@ -207,7 +207,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 	    
         $scope.loadCustomFunctionsFromStereotypeAttributes = function(stereotypes, stereotypeAttributes) {
             for (var attributeKey in stereotypeAttributes) {
-                if (stereotypeAttributes.hasOwnProperty(attributeKey) && attributeKey != "_namespace") {
+                if (stereotypeAttributes.hasOwnProperty(attributeKey) && attributeKey !== "_namespace") {
                     $scope.newFunctionCode = stereotypes[i].attributes[attributeKey];
                     $scope.addFunction(propertyName,false);
                 }   
