@@ -189,20 +189,24 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 	    $scope.loadCustomFunctions = function() {
 	    	for (propertyName in $scope.properties) {
 	    		var stereotypes = $scope.properties[propertyName].stereotypes;
-	  			for (var i = 0; i < stereotypes.length;i++) {
-	  				if (stereotypes[i].name === "functions") {
-	  					for (attributeKey in stereotypes[i].attributes) {
-	  						if (attributeKey != "_namespace") {
-	  							$scope.newFunctionCode = stereotypes[i].attributes[attributeKey];
-	    						$scope.addFunction(propertyName,false);
-	  						}	
-	  					}
-	  					
-	  				}
-	  			}
-	    	}
+                if (stereotypes != null) {
+                    $scope.loadCustomFunctionsFromStereotype(stereotypes);
+                }
+            }
 	    };
 	    
+        $scope.loadCustomFunctionsFromStereotype = function(stereotypes) {
+            for (var i = 0; i < stereotypes.length;i++) {
+                if (stereotypes[i].name === "functions") {
+                    for (attributeKey in stereotypes[i].attributes) {
+                        if (attributeKey != "_namespace") {
+                            $scope.newFunctionCode = stereotypes[i].attributes[attributeKey];
+                            $scope.addFunction(propertyName,false);
+                        }   
+                    }
+                }
+            }
+	    };
 	    
 	    $scope.save = function() {
 			var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
