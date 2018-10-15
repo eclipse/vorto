@@ -83,7 +83,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$
 			}
 			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
-     	window.location.assign('./api/v1/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
+     	window.location.assign('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 
