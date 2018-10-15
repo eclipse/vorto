@@ -174,7 +174,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 				
 	    $scope.loadMappingSpec = function() {
 	    	$scope.isLoading = true;
-			$http.get('./rest/' + $rootScope.tenant + '/mappings/'+$scope.modelId+"/"+$scope.targetPlatform).success(
+			$http.get("./rest/" + $rootScope.tenant + "/mappings/"+$scope.modelId+"/"+$scope.targetPlatform).success(
 				function(data, status, headers, config) {
 					$scope.infomodel = data.infoModel;
 					$scope.properties = data.properties;

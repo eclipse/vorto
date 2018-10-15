@@ -103,7 +103,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
             if ($rootScope.context.singleTenantMode) {
-                $rootScope.tenant = 'default';
+                $rootScope.tenant = "default";
             }
             if (!$rootScope.context.authenticatedSearchMode) {
                 $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
