@@ -57,7 +57,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         githubEnabled: false,
         eidpEnabled: false,
         authenticatedSearchMode: false,
-        singleTenantMode: true
+        tenant: "default"
     };
     
     $rootScope.modelId = function(namespace,name,version) {
@@ -102,9 +102,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.init = function() {    	
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
-            if ($rootScope.context.singleTenantMode) {
-                $rootScope.tenant = "default";
-            }
+            $rootScope.tenant = $rootScope.context.tenant;
             if (!$rootScope.context.authenticatedSearchMode) {
                 $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
             } else {

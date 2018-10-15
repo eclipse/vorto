@@ -146,7 +146,12 @@ public class HomeController {
 		context.put("logOutUrl", getLogoutEndpointUrl(getBaseUrl(request)));
 		context.put("attachmentAllowedSize", attachmentAllowedSize);
 		context.put("supportEmail", supportEmail);
-		context.put("singleTenantMode", singleTenantMode);
+		if (singleTenantMode) {
+			context.put("tenant", "default");
+		} else {
+			// TODO : we need to check if the user is logged-in, and if so, extract his tenant
+			context.put("tenant", "default");
+		}
 		
 		return context;
 	}
