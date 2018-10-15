@@ -61,7 +61,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value="/generate")
 @RestController
-@RequestMapping(value = "/api/v1/generators")
+@RequestMapping(value = "/api/v1/{tenant}/generators")
 public class GeneratorController extends AbstractRepositoryController {
 	
 	private static final String ZIPFILE_EXTENSION = ".zip";

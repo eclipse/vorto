@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping(value = "/rest/backups")
+@RequestMapping(value = "/rest/{tenant}/backups")
 public class BackupController extends AbstractRepositoryController {
 	
 	@Autowired

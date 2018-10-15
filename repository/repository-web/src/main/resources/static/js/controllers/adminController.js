@@ -13,7 +13,7 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
                 var filename = document.getElementById('file-upload').files[0].name;
                 var fd = new FormData();
                 fd.append('file', fileToUpload);
-                $http.post('./rest/backups', fd, {
+                $http.post('./rest/' + $rootScope.tenant + '/backups', fd, {
                         transformRequest: angular.identity,
                         headers: {
                             'Content-Type': undefined

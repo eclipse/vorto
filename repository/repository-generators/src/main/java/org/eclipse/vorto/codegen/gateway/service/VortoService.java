@@ -61,6 +61,7 @@ import com.google.common.base.Throwables;
 public class VortoService {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(VortoService.class);
+	private static final String TENANT = "default";
 	
 	@Autowired
 	private EnvironmentConfig env;
@@ -111,7 +112,7 @@ public class VortoService {
 	}
 	
 	private String urlForModel(String namespace, String name, String version) {
-		return String.format("%s/api/v1/models/%s/file?includeDependencies=true", 
+		return String.format("%s/api/v1/" + TENANT + "/models/%s/file?includeDependencies=true", 
 				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat());
 	}
 	
@@ -139,7 +140,7 @@ public class VortoService {
 	}
 	
 	private String urlForMapping(String targetPlatform, String namespace, String name, String version) {
-		return String.format("%s/rest/models/%s/download/mappings/%s", 
+		return String.format("%s/rest/" + TENANT + "/models/%s/download/mappings/%s", 
 				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat(), targetPlatform);
 	}
 	
@@ -164,14 +165,14 @@ public class VortoService {
 	
 	public void register(Generator generator) {
 		String serviceUrl = getServiceUrl(generator);
-		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/generators/%s]", 
+		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/" + TENANT + "/generators/%s]", 
 				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey()));
-		restTemplate.put(env.getVortoRepoUrl() + "/rest/generators/{serviceKey}", getEntity(serviceUrl),generator.getInstance().getServiceKey());
+		restTemplate.put(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}", getEntity(serviceUrl),generator.getInstance().getServiceKey());
 	}
 	
 	public void deregister(Generator generator) {
 		LOGGER.info("Deregistering Generator[" + generator.getInstance().getServiceKey() + "]");
-		restTemplate.delete(env.getVortoRepoUrl() + "/rest/generators/{serviceKey}", String.class, generator.getInstance().getServiceKey());
+		restTemplate.delete(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}", String.class, generator.getInstance().getServiceKey());
 	}
 	
 	private HttpEntity<String> getEntity(String serviceUrl) {

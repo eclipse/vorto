@@ -36,7 +36,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(value="/generate", description="Generate code from information models")
 @RestController("internal.GeneratorController")
-@RequestMapping(value = "/rest/generators")
+@RequestMapping(value = "/rest/{tenant}/generators")
 public class GeneratorController extends AbstractRepositoryController {
 	
 	@Autowired

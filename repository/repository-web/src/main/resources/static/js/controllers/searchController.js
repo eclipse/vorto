@@ -27,7 +27,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
         } else {
             filter = $scope.queryFilter + " "+$scope.modelType;
         }
-        $http.get('./api/v1/search/models?expression=' + filter).success(
+        $http.get('./api/v1/' + $rootScope.tenant + '/search/models?expression=' + filter).success(
             function(data, status, headers, config) {            	
             	$scope.models = data;
                 $scope.isLoading = false;
@@ -105,7 +105,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
         	
 			$scope.create = function() {
 				$scope.isLoading = true;
-		    	$http.post('./rest/models/'+$rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion)+'/'+$scope.modelType,null)
+		    	$http.post('./rest/' + $rootScope.tenant + '/models/'+$rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion)+'/'+$scope.modelType,null)
 			        .success(function(result){
 			        	$scope.isLoading = false;
 			        	if (result.status === 409) {

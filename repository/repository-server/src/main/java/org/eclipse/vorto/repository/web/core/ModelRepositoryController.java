@@ -64,7 +64,7 @@ import io.swagger.annotations.ApiResponses;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController("internal.modelRepositoryController")
-@RequestMapping(value = "/rest/models")
+@RequestMapping(value = "/rest/{tenant}/models")
 public class ModelRepositoryController extends AbstractRepositoryController  {
 	
 	@Autowired

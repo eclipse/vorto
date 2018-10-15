@@ -56,7 +56,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Api(value="/attachments")
 @RestController
-@RequestMapping(value = "/api/v1/attachments")
+@RequestMapping(value = "/api/v1/{tenant}/attachments")
 public class AttachmentController extends AbstractRepositoryController {
 	
 	private static final String ATTACHMENT_FILENAME = "attachment; filename = ";

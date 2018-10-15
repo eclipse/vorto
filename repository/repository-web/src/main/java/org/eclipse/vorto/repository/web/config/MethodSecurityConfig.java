@@ -14,7 +14,6 @@
  */
 package org.eclipse.vorto.repository.web.config;
 
-import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.web.security.HasPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -32,21 +31,16 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 	private ApplicationContext context;
 	
 	@Autowired
-	private IModelRepository repository;
+	private HasPermissionEvaluator permissionEvaluator;
 	
 	public MethodSecurityConfig() {
-    }
-
-    @Autowired
-    public MethodSecurityConfig(IModelRepository repository) {
-        this.repository = repository;
     }
 	
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = 
           new DefaultMethodSecurityExpressionHandler();
-        expressionHandler.setPermissionEvaluator(new HasPermissionEvaluator(repository));
+        expressionHandler.setPermissionEvaluator(permissionEvaluator);
         expressionHandler.setApplicationContext(context);
         return expressionHandler;
     }

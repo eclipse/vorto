@@ -1,5 +1,5 @@
-repositoryControllers.controller('GeneratorController', [ '$scope','$http', 
-	function ($scope,$http) {
+repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope','$http', 
+	function ($rootScope, $scope, $http) {
 
     $scope.generators = [];
     $scope.mostUsedGenerators = [];
@@ -7,7 +7,7 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
 
     $scope.listGenerators = function() {
     	$scope.isLoading = true;
-        $http.get('./api/v1/generators').success(
+        $http.get('./api/v1/' + $rootScope.tenant + '/generators').success(
             function(data, status, headers, config) {
             	$scope.isLoading = false;
                 $scope.generators = data;
@@ -15,7 +15,7 @@ repositoryControllers.controller('GeneratorController', [ '$scope','$http',
     };
 
     $scope.listTopUsed = function() {
-        $http.get('./rest/generators/rankings/3').success(
+        $http.get('./rest/' + $rootScope.tenant + '/generators/rankings/3').success(
             function(data, status, headers, config) {
                 $scope.mostUsedGenerators = data;
             });
@@ -32,8 +32,8 @@ $scope.listTopUsed();
 
 } ]);
 
-repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http','generator','model','$uibModalInstance', 
-	function ($scope,$http,generator,model,$uibModalInstance) {
+repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$scope','$http','generator','model','$uibModalInstance', 
+	function ($rootScope, $scope, $http, generator, model, $uibModalInstance) {
 
 	$scope.model = model;
 	$scope.generator = generator;
@@ -54,7 +54,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 	};
 	
 	$scope.loadConfiguration = function() {
-		$http.get('./api/v1/generators/'+$scope.generator.key)
+		$http.get('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				
@@ -83,7 +83,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$scope','$http'
 			}
 			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
-     	window.location.assign('./api/v1/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
+     	window.location.assign('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 

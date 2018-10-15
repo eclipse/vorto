@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+  * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -32,14 +32,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.google.common.base.Strings;
-
 public class AuthorizationTokenFilter extends GenericFilterBean {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
-	private static final String BEARER = "Bearer";
-	private static final String AUTHORIZATION = "Authorization";
 	private UserInfoTokenServices userInfoService;
 	
 	public AuthorizationTokenFilter(UserInfoTokenServices userInfoService) {
@@ -51,7 +47,7 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 			throws IOException, ServletException {
 		
 		if (SecurityContextHolder.getContext().getAuthentication() == null) {
-			Optional<String> authToken = getBearerToken((HttpServletRequest) request);
+			Optional<String> authToken = FilterUtils.getBearerToken((HttpServletRequest) request);
 			if (authToken.isPresent()) {
 				try {
 					Authentication authentication = userInfoService.loadAuthentication(authToken.get());
@@ -74,19 +70,6 @@ public class AuthorizationTokenFilter extends GenericFilterBean {
 		}
 		
 		chain.doFilter(request, response);
-	}
-	
-	public Optional<String> getBearerToken(HttpServletRequest request) {
-		String authToken = request.getHeader(AUTHORIZATION);
-		if (!Strings.nullToEmpty(authToken).trim().isEmpty()) {
-			String[] tokenComposite = authToken.split(" ");
-			if (BEARER.equals(tokenComposite[0]) && 
-					!Strings.nullToEmpty(tokenComposite[1]).isEmpty()) {
-				return Optional.of(tokenComposite[1]);
-			}
-		}
-		
-		return Optional.empty();
 	}
 
 }

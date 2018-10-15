@@ -51,10 +51,13 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
     $rootScope.user = null;
     
+    $rootScope.tenant = "default";
+    
     $rootScope.context = {
         githubEnabled: false,
         eidpEnabled: false,
         authenticatedSearchMode: false,
+        tenant: "default"
     };
     
     $rootScope.modelId = function(namespace,name,version) {
@@ -72,6 +75,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.displayName = user.displayName;
             $rootScope.authenticated = true;
             $rootScope.authority = user.role;
+            // TODO : set the $rootScope.tenant to the tenant of the user
         } else {
             $rootScope.userInfo = null;
             $rootScope.user = null;
@@ -98,6 +102,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.init = function() {    	
         var getContextSucceeded = function(result) {
             $rootScope.context = result.data;
+            $rootScope.tenant = $rootScope.context.tenant;
             if (!$rootScope.context.authenticatedSearchMode) {
                 $rootScope.unrestrictedUrls = ["/", "/details", "/login", "/api", "/generators" , "/payloadmapping"];
             } else {

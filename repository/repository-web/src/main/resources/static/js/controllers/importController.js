@@ -20,7 +20,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
             if (fileToUpload != undefined) {
                 var filename = document.getElementById('file-upload').files[0].name;
                 var extn = filename.split(".").pop();
-                upload('./rest/importers/', fileToUpload);
+                upload('./rest/' + $rootScope.tenant + '/importers/', fileToUpload);
             } else {
                 $rootScope.error = "Choose model file(s) and click Upload.";
             }
@@ -135,7 +135,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         checkinSingle = function (handleId) {
-            $http.put('./rest/importers/' + handleId + '?key=' + $scope.selectedImporter.key)
+            $http.put('./rest/' + $rootScope.tenant + '/importers/' + handleId + '?key=' + $scope.selectedImporter.key)
                 .success(function (result) {
                     $scope.showResultBox = true;
                     $scope.beingCheckedIn = false;
@@ -163,7 +163,7 @@ repositoryControllers.controller('ImportController', ['$scope', '$rootScope', '$
         };
 
         $scope.getImporters = function () {
-            $http.get('./rest/importers')
+            $http.get('./rest/' + $rootScope.tenant + '/importers')
                 .success(function (result) {
                     $scope.importers = result;
                 });

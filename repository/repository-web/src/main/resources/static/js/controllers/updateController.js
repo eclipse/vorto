@@ -22,7 +22,7 @@ repositoryControllers.controller("UpdateController", [ "$location", "$rootScope"
                 $scope.isUpdating = false;
             };
 
-            $http.post("./rest/users/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"}  })
+            $http.post("./rest/" + $rootScope.tenant + "/users/" + $rootScope.user + "/updateTask", { headers: {"Content-Type": "application/json"} })
                 .success(updateSuccess)
                 .error(updateError);
         };

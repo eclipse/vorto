@@ -25,7 +25,7 @@ import io.swagger.annotations.ApiParam;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 @RestController
-@RequestMapping(value="/rest/workflows")
+@RequestMapping(value="/rest/{tenant}/workflows")
 public class WorkflowController {
 
 	@Autowired
