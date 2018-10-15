@@ -71,7 +71,7 @@ repositoryControllers.controller('MappingBuilderController', ['$rootScope','$uib
 							specification : {"infoModel":$scope.infomodel,"properties":$scope.properties},
 							sourceJson : $scope.sourceContent
 						};
-						$http.put('./rest/' + $rootScope.tenant + '/mappings/test',testRequest).success(
+						$http.put("./rest/" + $rootScope.tenant + "/mappings/test",testRequest).success(
 							function(data, status, headers, config) {
 								$scope.testInProgress = false;
 								$scope.mappedOutput = JSON.parse(data.mappedOutput);

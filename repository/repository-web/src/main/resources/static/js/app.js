@@ -51,7 +51,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
 
     $rootScope.user = null;
     
-    $rootScope.tenant = 'default';
+    $rootScope.tenant = "default";
     
     $rootScope.context = {
         githubEnabled: false,
