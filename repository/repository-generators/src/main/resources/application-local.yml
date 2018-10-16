@@ -1,8 +1,0 @@
-server:
-  host: localhost
-  port: 8081
-  contextPath: /generatorgateway
-  serviceUrl: http://localhost:8081/generatorgateway
-
-vorto:
-  serverUrl: http://localhost:8080/infomodelrepository

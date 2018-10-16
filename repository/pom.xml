@@ -18,9 +18,9 @@
 
 	<modules>
 		<module>repository-api</module>
-		<module>repository-generators</module>
 		<module>repository-server</module>
 		<module>repository-importer</module>
+		<module>repository-java-client</module>
 		<module>repository-web</module>
 	</modules>
 
@@ -62,16 +62,6 @@
 			<dependency>
 				<groupId>org.eclipse.vorto</groupId>
 				<artifactId>org.eclipse.vorto.core</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.vorto</groupId>
-				<artifactId>org.eclipse.vorto.codegen</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.vorto</groupId>
-				<artifactId>org.eclipse.vorto.codegen.templates.java</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

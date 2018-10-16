@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-
-   <extension-point id="org_eclipse_vorto_codegen_Generators" name="Generator" schema="schema/org_eclipse_vorto_codegen_Generators.exsd"/>
-
-</plugin>

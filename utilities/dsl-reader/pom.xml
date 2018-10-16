@@ -27,7 +27,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.codegen</artifactId>
+			<artifactId>repository-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
@@ -80,12 +80,6 @@
 					<groupId>org.ow2.asm</groupId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repository-api</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		
 		<dependency>

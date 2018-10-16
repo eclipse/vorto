@@ -14,7 +14,6 @@
 	<url>http://www.eclipse.org/vorto</url>
 	
 	<modules>	
-		<module>generators</module>
 		<module>targetplatform</module>
 		<module>language</module>
 		<module>meta-model</module>
