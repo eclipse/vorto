@@ -258,7 +258,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
 
         $scope.properties[property].statusProperties.some(function(e) {
             if (e.mandatory) {
-                e.stereotypes[0].attributes["xpath"] = property.toLowerCase()+":convertSensorValue(conversion:byteArrayToInt(characteristics[@uuid="23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00"]/data, 3, 0, 0, 3))";
+                e.stereotypes[0].attributes["xpath"] = property.toLowerCase()+':convertSensorValue(conversion:byteArrayToInt(characteristics[@uuid="23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00"]/data, 3, 0, 0, 3))';
                 return true;
             }
         });	    	

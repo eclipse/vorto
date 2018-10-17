@@ -70,6 +70,7 @@ public class TenantVerificationFilter extends GenericFilterBean {
 				if (!(userTenant.isPresent() && resourceTenant.get().equals(userTenant.get()))) {
 					String errorMessage = "ERROR: tenant in JWT token and tenant for resource doesn't match.";
 					int error = HttpServletResponse.SC_FORBIDDEN;
+					
 					if (!userTenant.isPresent()) {
 						errorMessage = "ERROR: Either no JWT token or no '" + TENANT_ID + "' in JWT token.";
 						error = HttpServletResponse.SC_UNAUTHORIZED;
