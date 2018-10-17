@@ -2,11 +2,11 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
-# Overview
+[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to convert Device Information Models to source code that runs on the device or gateway, easing the **integration with IoT Platforms**.
 
-[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and manage them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to **convert** Device Information Models **to source code** that runs on the device or gateway, easing the integration with IoT Platforms, such as the Bosch IoT Suite. This enables IoT Solution Developers to easily **integrate devices** into their IoT Solutions.
+<img src="website/static/images/vorto_cover.png"/>
 
- 
+
 # Getting started with Vorto 
 
 The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
@@ -15,7 +15,7 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
 
 ## Repository Java Client
 
-Search and access Vorto models as well as generate code using the [Repository Java Client](client/repository-java-client/Readme.md)
+Search and access Vorto models as well as generate code using the [Repository Java Client](repository/repository-java-client/Readme.md)
 
 ## Repository Import API
 
