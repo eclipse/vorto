@@ -8,7 +8,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
-import org.eclipse.vorto.mapping.engine.DataInput;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
@@ -24,9 +23,12 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
 import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class JsonMappingTest {
 	
-	
+	private static Gson gson = new GsonBuilder().create();
 
 	@Test
 	public void testMapWithSimpleCondition() throws Exception {
@@ -35,14 +37,14 @@ public class JsonMappingTest {
 
 		String json = "{\"count\" : 2 }";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertNull(mappedOutput.get("button").getStatus().get("sensor_value"));
-		assertEquals(2, mappedOutput.get("button").getStatus().get("sensor_value2"));
+		assertEquals(2.0, mappedOutput.get("button").getStatus().get("sensor_value2"));
 
 		json = "{\"count\" : 0 }";
 
-		mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
-		assertEquals(0, mappedOutput.get("button").getStatus().get("sensor_value"));
+		mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		assertEquals(0.0, mappedOutput.get("button").getStatus().get("sensor_value"));
 		assertNull(mappedOutput.get("button").getStatus().get("sensor_value2"));
 	}
 
@@ -53,7 +55,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : \"aGFsbG8=\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertEquals("hallo", mappedOutput.get("button").getStatus().get("sensor_value"));
 
 	}
@@ -65,7 +67,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertEquals(100.0, mappedOutput.get("button").getStatus().get("sensor_value"));
 
 	}
@@ -77,7 +79,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatus()
 				.get("digital_input_state")));
 
@@ -91,7 +93,7 @@ public class JsonMappingTest {
 
 		String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -112,7 +114,7 @@ public class JsonMappingTest {
 		final Date timestamp = new Date();
 		String json = "{\"time\" : " + timestamp.getTime() + "}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -130,7 +132,7 @@ public class JsonMappingTest {
 
 		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -147,7 +149,7 @@ public class JsonMappingTest {
 		
 		final String sampleHomeConnectRESTResponse = "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(sampleHomeConnectRESTResponse), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(sampleHomeConnectRESTResponse,Object.class), MappingContext.empty());
 		System.out.println(mappedOutput);
 		assertNull(mappedOutput.get("operationState"));
 		FunctionblockData doorStateFunctionblockData = mappedOutput.get("doorState");
@@ -163,15 +165,15 @@ public class JsonMappingTest {
 
 		String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("btn1");
 
-		assertEquals(2, buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(2.0, buttonFunctionblockData.getStatus().get("sensor_value"));
 
 		FunctionblockData button2FunctionblockData = mappedOutput.get("btn2");
 
-		assertEquals(10, button2FunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(10.0, button2FunctionblockData.getStatus().get("sensor_value"));
 
 		System.out.println(mappedOutput);
 

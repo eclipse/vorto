@@ -6,21 +6,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.Conversion;
-import org.eclipse.vorto.mapping.engine.DataInputFactory;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.ble.json.GattCharacteristic;
 import org.eclipse.vorto.mapping.engine.ble.json.GattDevice;
 import org.eclipse.vorto.mapping.engine.ble.json.GattService;
-import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class BinaryMappingTest {
 
+	private static Gson gson = new GsonBuilder().create();
 	
 	@Test
 	public void testMappingWithBinary() throws Exception {
@@ -31,7 +31,7 @@ public class BinaryMappingTest {
 		String x = "4f00630063007500700061006e0063007900200002";
 		String json = "{\"data\" : \""+x+"\"}";
 		
-		InfomodelData mappedDittoOutput = mapper.map(DataInputFactory.getInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedDittoOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData button = mappedDittoOutput.get("button");
 		
@@ -69,7 +69,7 @@ public class BinaryMappingTest {
 		
 		String json = new Gson().toJson(gattDevice);
 			
-		InfomodelData mapped = mapper.map(DataInputFactory.getInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mapped = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertEquals(20.00,mapped.get("button").getStatus().get("sensor_value"));
 		System.out.println(mapped);
 	}

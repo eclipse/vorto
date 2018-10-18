@@ -3,20 +3,12 @@ package org.eclipse.vorto.mapping.engine.normalized;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 public class FunctionblockData {
 
-	@JsonIgnore
 	private String id;
 	
-	@JsonInclude(Include.NON_EMPTY)
 	private Map<String, Object> status = new HashMap<String, Object>();
-	@JsonInclude(Include.NON_EMPTY)
 	private Map<String,Object> configuration = new HashMap<String, Object>();
-    @JsonInclude(Include.NON_EMPTY)
 	private Map<String,Object> fault = new HashMap<String, Object>();
 		
 	public FunctionblockData(String id) {

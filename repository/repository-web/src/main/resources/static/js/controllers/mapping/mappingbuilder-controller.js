@@ -247,61 +247,6 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         },2000);	   	
     };
 
-    $scope.loadGattExample = function(property) {
-        var gattTestData = { "characteristics" : [{
-            "uuid" : "23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00",
-            "data" : [0, 0, 0, -48, 7, 0]	
-        }]
-        };	    	
-        $scope.newFunctionCode = "function convertSensorValue(value) { return value*0.01; }";
-        $scope.addFunction(property,false);
-
-        $scope.properties[property].statusProperties.some(function(e) {
-            if (e.mandatory) {
-                e.stereotypes[0].attributes["xpath"] = property.toLowerCase()+':convertSensorValue(conversion:byteArrayToInt(characteristics[@uuid="23-D1-13-EF-5F-78-23-15-DE-EF-12-12-0D-F0-00-00"]/data, 3, 0, 0, 3))';
-                return true;
-            }
-        });	    	
-
-        $timeout(function() {
-            $scope.sourceEditorSession.getDocument().setValue(JSON.stringify(gattTestData,null,4));
-        },2000);	   	
-    };
-
-
-    $scope.loadBinaryExample = function(property) {
-        var binaryTestData = {"data" : [0, 0, 0, -48, 7, 0]};
-        $scope.newFunctionCode = "function convertSensorValue(value) { return value*0.01; }";
-        $scope.addFunction(property,false);
-
-        $scope.properties[property].statusProperties.some(function(e) {
-            if (e.mandatory) {
-                e.stereotypes[0].attributes["xpath"] = property.toLowerCase()+":convertSensorValue(conversion:byteArrayToInt(/data, 3, 0, 0, 3))";
-                return true;
-            }
-        });	
-
-        $timeout(function() {
-            $scope.sourceEditorSession.getDocument().setValue(JSON.stringify(binaryTestData,null,4));
-        },2000);
-    };
-
-    $scope.loadConditionExample = function(property) {
-        var simpleTestData = { "x" : { "header" : "T", "v" : 10 }};	    
-
-        $scope.properties[property].statusProperties.some(function(e) {
-            if (e.mandatory) {
-                e.stereotypes[0].attributes["condition"] = "x/header == "T"";
-                e.stereotypes[0].attributes["xpath"] = "x/v";
-                return true; 
-            }
-        });	    	
-
-        $timeout(function() {
-            $scope.sourceEditorSession.getDocument().setValue(JSON.stringify(simpleTestData,null,4));
-        },2000);	  
-    };
-
     $scope.getMappingState = function() {
         $http.get("./rest/" + $rootScope.tenant + "/mappings/"+$scope.modelId+"/"+$scope.targetPlatform+"/info").success(
                 function(data, status, headers, config) {

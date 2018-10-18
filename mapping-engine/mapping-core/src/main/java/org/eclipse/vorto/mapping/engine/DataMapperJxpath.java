@@ -65,9 +65,9 @@ public class DataMapperJxpath implements IDataMapper {
 		return jexl;
 	}
 
-	public InfomodelData map(DataInput input, MappingContext mappingContext) {
+	public InfomodelData map(Object input, MappingContext mappingContext) {
 
-		JXPathContext context = jxpathHelper.newContext(input.getValue());
+		JXPathContext context = jxpathHelper.newContext(input);
 		
 		InfomodelData normalized = new InfomodelData();
 		

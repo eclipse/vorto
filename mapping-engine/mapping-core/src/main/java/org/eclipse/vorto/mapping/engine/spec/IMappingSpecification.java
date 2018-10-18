@@ -43,9 +43,8 @@ public interface IMappingSpecification {
 	 * @return
 	 */
 	FunctionLibrary getScriptFunctions(IScriptEvalProvider evalProvider);
-	
-	static MappingSpecBuilder newBuilder() {
+		
+	public static MappingSpecBuilder newBuilder() {
 		return new MappingSpecBuilder();
 	}
-	
 }

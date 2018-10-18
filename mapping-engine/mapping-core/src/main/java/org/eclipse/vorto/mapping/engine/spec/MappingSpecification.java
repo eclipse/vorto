@@ -11,8 +11,6 @@ import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.Stereotype;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class MappingSpecification implements IMappingSpecification {
 
 	private Infomodel infoModel;
@@ -51,7 +49,6 @@ public class MappingSpecification implements IMappingSpecification {
 	}
 
 	@Override
-	@JsonIgnore
 	public FunctionLibrary getScriptFunctions(IScriptEvalProvider factory) {
 		FunctionLibrary library = new FunctionLibrary();
 		for (String propertyKey : this.properties.keySet()) {
