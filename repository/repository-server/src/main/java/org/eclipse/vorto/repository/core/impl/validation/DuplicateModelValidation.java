@@ -15,11 +15,14 @@
 package org.eclipse.vorto.repository.core.impl.validation;
 
 import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
+
+import java.util.List;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -50,9 +53,11 @@ public class DuplicateModelValidation implements IModelValidator {
 		assert(context.getUserContext().getUsername() != null);
 		assert(userRepository != null);
 		
-		User user = userRepository.findByUsername(context.getUserContext().getUsername()); 
-		
-		return user != null && user.getRole() != null && user.getRole().equals(Role.ADMIN);
+		User user = userRepository.findByUsername(context.getUserContext().getUsername());
+		if(user == null)
+			return false;
+		List<String> roles = UserUtils.extractRolesAsList(user.getRoles());
+		return roles.contains(Role.ADMIN.toString());
 	}
 	
 	private boolean isAuthor(ModelInfo model, InvocationContext context) {

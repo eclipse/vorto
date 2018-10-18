@@ -26,30 +26,30 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="(authority === 'ROLE_ADMIN' || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
+			<div ng-show="((hasAuthority('ROLE_ADMIN'))|| model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="authority === 'ROLE_ADMIN' && model.author === 'anonymousUser'">
+			<div ng-show="(hasAuthority('ROLE_ADMIN')) && model.author === 'anonymousUser'">
 				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="authority === 'ROLE_ADMIN' || authority === 'ROLE_USER'">
+			<div ng-show="(hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')">
 				<a class="btn btn-primary pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="(authority === 'ROLE_ADMIN' || authority === 'ROLE_USER') && model.type === 'InformationModel' ">
+			<div ng-show="((hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')) && model.type === 'InformationModel' ">
 				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping Spec.</a>
 			</div>
 
-			<div ng-show="authority === 'ROLE_ADMIN' || authority === 'ROLE_USER'">
+			<div ng-show="(hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
@@ -92,7 +92,7 @@
 													<div class="noimg" ng-show="!model.hasImage">No Image Yet
 													</div>
 													<img ng-if="model.hasImage" ng-src="rest/{{tenant}}/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
-													<div class="upload" ng-show="authority == 'ROLE_ADMIN' && model.type === 'InformationModel'">
+													<div class="upload" ng-show="hasAuthority('ROLE_ADMIN') && model.type === 'InformationModel'">
 														<a href="" ng-click="chooseImageFile()">
 															<i class="fa fa-upload"></i> Click to change image</a>
 													</div>
@@ -230,10 +230,10 @@
 													<a ng-href="./api/v1/{{tenant}}/models/{{model.id.prettyFormat}}/file" class="pull-center">
 														<i class="fa fa-fw fa-download"></i>{{model.fileName}}</a>
 												</dd>
-												<dt ng-show="authority == 'ROLE_ADMIN'">
+												<dt ng-show="hasAuthority('ROLE_ADMIN')">
 													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
 												</dt>
-												<dt ng-show="authority != 'ROLE_ADMIN'">
+												<dt ng-show="!(hasAuthority('ROLE_ADMIN'))">
 													Attachments:
 												</dt>
 												<dd>
@@ -241,7 +241,7 @@
 														<a ng-href="./api/v1/{{tenant}}/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 														</a>
-														<button ng-hide="(authority !== 'ROLE_ADMIN') || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
+														<button ng-hide="(!hasAuthority('ROLE_ADMIN')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">
 															<i class="fa fa-close"></i>
 														</button>
 													</div>
@@ -258,17 +258,17 @@
 												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
 												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
 											</div>
-											<div ng-hide="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
+											<div ng-hide="model.imported && !(hasAuthority('ROLE_ADMIN'))  && (model.state != 'Released' && model.state != 'Deprecated')"
 											    class="col-sm-9">
 											    <a class= "helpBtn pull-right" target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
 												
-												<a ng-if="isLoading" ng-show="(authority == 'ROLE_ADMIN' || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="isLoading" ng-show="(hasAuthority('ROLE_ADMIN') || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-												<a ng-if="!isLoading" ng-show="(authority == 'ROLE_ADMIN' || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="!isLoading" ng-show="(hasAuthority('ROLE_ADMIN') || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
@@ -280,7 +280,7 @@
 												
 
 											</div>
-											<div ng-show="model.imported && authority != 'ROLE_ADMIN'  && (model.state != 'Released' && model.state != 'Deprecated')"
+											<div ng-show="model.imported && !(hasAuthority('ROLE_ADMIN'))  && (model.state != 'Released' && model.state != 'Deprecated')"
 											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
 												<a class="btn btn-sm btn-primary pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>

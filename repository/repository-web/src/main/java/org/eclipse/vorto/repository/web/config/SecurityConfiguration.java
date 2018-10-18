@@ -86,7 +86,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private AuthoritiesExtractor authoritiesExtractor;
-	
+
 	@Autowired
 	private TenantVerificationFilter tenantVerificationFilter;
 	

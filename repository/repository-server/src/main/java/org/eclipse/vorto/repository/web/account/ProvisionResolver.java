@@ -12,18 +12,23 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.web.account;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public enum Role {
-	USER,
-	ADMIN,
-	MODEL_VALIDATOR,
-	MODEL_EXPLORER,
-	MODEL_INTEGRATOR,
-	MODEL_CREATOR,
-	MODEL_PROMOTER,
-	MODEL_REVIEWER
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
+
+public class ProvisionResolver {
+
+    private OAuth2Authentication user;
+
+    public ProvisionResolver(OAuth2Authentication user) {
+        this.user = user;
+    }
+
+    public Provisioner resolveRole(){
+        if(user.getAuthorities() != null) {
+            return new NoOps();
+        }else{
+            return new RoleProvisioner();
+        }
+    }
 }

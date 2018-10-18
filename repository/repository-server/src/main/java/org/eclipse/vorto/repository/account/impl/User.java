@@ -14,17 +14,15 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import java.sql.Timestamp;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.UserUtils;
+
+import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.StringJoiner;
 
 @Entity
 public class User {
@@ -36,9 +34,8 @@ public class User {
 	@Column(unique = true)
 	private String username;
 
-	@Column(name = "role", nullable = false)
-	@Enumerated(EnumType.STRING)
-	private Role role;
+	@OneToMany( mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<UserRole> roles;
 
 	@Column(nullable = false)
 	private Timestamp dateCreated;
@@ -53,18 +50,62 @@ public class User {
 
 	}
 
+	public void addUserRoles(UserRole userRole){
+		if(userRole != null) {
+			if(roles == null) {
+				roles = new HashSet<>();
+			}
+			userRole.setUser(this);
+			roles.add(userRole);
+		}
+	}
+
+	public void addRoles(Role role) {
+		UserRole userRole = new UserRole();
+		userRole.setRole(role.toString());
+		addUserRoles(userRole);
+	}
+
+	public String getUserRolesAsCommaSeparatedString(){
+		List<String> userRoles = UserUtils.extractRolesAsList(this.getRoles());
+		StringJoiner roles = new StringJoiner(",");
+
+		for(String userRole : userRoles) {
+			roles.add("ROLE_" +userRole);
+
+		}
+		return roles.toString();
+	}
+
 	public static User create(String username) {
 		User user = new User();
 		user.username = username;
-		user.role = Role.USER;
 		return user;
 	}
 	
 	public static User create(String username, Role role) {
 		User user = new User();
 		user.username = username;
-		user.role = role;
+		user.addRoles(role);
 		return user;
+	}
+
+	public Set<UserRole> getRoles() {
+		return roles;
+	}
+	public boolean isAdmin() {
+		List<String> roles = UserUtils.extractRolesAsList(this.getRoles());
+		return roles.stream().anyMatch( e -> e.equalsIgnoreCase(Role.ADMIN.toString()));
+	}
+
+	public boolean isReviewer() {
+		List<String> roles = UserUtils.extractRolesAsList(this.getRoles());
+		return roles.stream().anyMatch( e -> e.equalsIgnoreCase(Role.MODEL_REVIEWER.toString()));
+	}
+
+
+	public void setRoles(Set<UserRole> roles) {
+		this.roles = roles;
 	}
 
 	public Long getId() {
@@ -81,14 +122,6 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
 	}
 
 	public Timestamp getDateCreated() {
@@ -117,11 +150,15 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", role=" + role + ", dateCreated=" + dateCreated
-				+ ", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp + ", lastUpdated=" + lastUpdated + "]";
+		return "User{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", roles=" + roles +
+				", dateCreated=" + dateCreated +
+				", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp +
+				", lastUpdated=" + lastUpdated +
+				'}';
 	}
 
-	public boolean isAdmin() {
-		return this.role == Role.ADMIN;
-	}
+
 }

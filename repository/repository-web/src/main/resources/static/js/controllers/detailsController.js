@@ -198,7 +198,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
-							if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated' || $rootScope.authenticated === false || $scope.model.author != $rootScope.user && $rootScope.authority != 'ROLE_ADMIN') {
+							if ($scope.model.state === 'InReview' || $scope.model.state === 'Released' || $scope.model.state === 'Deprecated' || $rootScope.authenticated === false || $scope.model.author != $rootScope.user && !$rootScope.hasAuthority('ROLE_ADMIN')) {
 								$scope.modelEditor.setReadOnly(true);
 							}
 						}, 1000);

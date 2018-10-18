@@ -12,18 +12,22 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.web.account;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public enum Role {
-	USER,
-	ADMIN,
-	MODEL_VALIDATOR,
-	MODEL_EXPLORER,
-	MODEL_INTEGRATOR,
-	MODEL_CREATOR,
-	MODEL_PROMOTER,
-	MODEL_REVIEWER
+import org.eclipse.vorto.repository.account.impl.User;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class NoOps implements Provisioner {
+    @Override
+    public User provisionRole(User user) {
+        return null;
+    }
+
+    @Override
+    public List<String> getRoles() {
+        return Collections.emptyList() ;
+    }
 }

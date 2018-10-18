@@ -14,8 +14,18 @@ bin/
 .project
 generated-sources
 *.orig
+*.rej
 
 devtool-project-repository/
 website/themes
 website/public
-*.rej
+
+######################
+# Intellij
+######################
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+classes/

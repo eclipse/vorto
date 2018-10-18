@@ -33,8 +33,8 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component("jwtTokenUserInfoServices")
-public class JwtTokenUserInfoServices extends UserInfoTokenServices {
+@Component("simpleUserInfoServices")
+public class SimpleUserInfoServices extends UserInfoTokenServices {
 
 	private static final String ISSUER = "iss";
 
@@ -52,14 +52,21 @@ public class JwtTokenUserInfoServices extends UserInfoTokenServices {
 	
 	@Value("${oauth2.verification.keycloak.publicKeyUri: #{null}}")
 	private String keycloakPublicKeyUri;
+
+	@Value("${oauth2.verification.keycloak.resource.client_id: #{null}}")
+	private String resource_client_id;
 	
 	@Autowired
 	private IUserAccountService userAccountService;
 	
 	private Map<String, JwtVerifyAndIdStrategy> verifyAndIdStrategies = new HashMap<>();
 	
-	public JwtTokenUserInfoServices() {
+	public SimpleUserInfoServices() {
 		super(null, null);
+	}
+
+	public SimpleUserInfoServices(String userInfoEndpointUrl, String clientId){
+		super(userInfoEndpointUrl, clientId);
 	}
 	
 	private Optional<JwtVerifyAndIdStrategy> getStrategy(JwtToken jwtToken) {
@@ -74,11 +81,11 @@ public class JwtTokenUserInfoServices extends UserInfoTokenServices {
 	@PostConstruct
 	public void init() {
 		if (ciamJwtIssuer != null) {
-			verifyAndIdStrategies.put(ciamJwtIssuer, new CiamUserStrategy(new RestTemplate(), ciamPublicKeyUri, userAccountService, ciamClientId));
+			verifyAndIdStrategies.put(ciamJwtIssuer, new CiamUserStrategy(new RestTemplate(), ciamPublicKeyUri, userAccountService, ciamClientId, resource_client_id));
 		}
 		
 		if (keycloakJwtIssuer != null) {
-			verifyAndIdStrategies.put(keycloakJwtIssuer, new KeycloakUserStrategy(new RestTemplate(), keycloakPublicKeyUri, userAccountService, ciamClientId));
+			verifyAndIdStrategies.put(keycloakJwtIssuer, new KeycloakUserStrategy(new RestTemplate(), keycloakPublicKeyUri, userAccountService, ciamClientId, resource_client_id));
 		}
 	}
 
@@ -98,7 +105,10 @@ public class JwtTokenUserInfoServices extends UserInfoTokenServices {
 		 	
 		 	throw new InvalidTokenException("The JWT token '" + accessToken + "' cannot be verified. Either it is malformed, the user isn't registered, or it has already expired.");
 		}
-		
+		if(accessToken != null) {
+			return super.loadAuthentication(accessToken);
+		}
+
 		throw new InvalidTokenException("No strategy for authenticating the JWT token. Tokens must have 'iss' whose issuers are configured in Thingtype.");
 	}
 

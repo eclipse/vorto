@@ -25,8 +25,8 @@ public class CiamUserStrategy extends AbstractVerifyAndIdStrategy {
 	protected static final String JWT_CLIENT_ID = "client_id";
 	
 	public CiamUserStrategy(RestTemplate restTemplate, String publicKeyUri, IUserAccountService userAccountService,
-			String clientId) {
-		super(restTemplate, publicKeyUri, userAccountService, clientId);
+			String clientId, String resourceClientId) {
+		super(restTemplate, publicKeyUri, userAccountService, clientId, resourceClientId);
 	}
 
 	protected Optional<String> getUserId(Map<String, Object> map) {

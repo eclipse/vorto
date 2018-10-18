@@ -35,7 +35,7 @@ import org.springframework.web.filter.GenericFilterBean;
 public class AuthorizationTokenFilter extends GenericFilterBean {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
+
 	private UserInfoTokenServices userInfoService;
 	
 	public AuthorizationTokenFilter(UserInfoTokenServices userInfoService) {
