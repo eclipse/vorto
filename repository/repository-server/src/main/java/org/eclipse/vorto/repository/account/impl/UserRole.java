@@ -15,18 +15,27 @@
 package org.eclipse.vorto.repository.account.impl;
 
 import javax.persistence.*;
+
+import org.eclipse.vorto.repository.account.Role;
+
 import java.io.Serializable;
 
 @Entity
 @Table(name = "user_roles")
 public class UserRole implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -35,7 +44,7 @@ public class UserRole implements Serializable {
     public UserRole() {
     }
 
-    public UserRole(String role, User user) {
+    public UserRole(Role role, User user) {
         this.role = role;
         this.user = user;
     }
@@ -48,11 +57,11 @@ public class UserRole implements Serializable {
         this.id = id;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
@@ -63,4 +72,10 @@ public class UserRole implements Serializable {
     public void setUser(User user) {
         this.user = user;
     }
+
+	@Override
+	public String toString() {
+		return "UserRole [id=" + id + ", role=" + role + ", user=" + user + "]";
+	}
+    
 }

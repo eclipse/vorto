@@ -27,6 +27,7 @@ import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
+import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -83,9 +84,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
-	
-	@Autowired
-	private AuthoritiesExtractor authoritiesExtractor;
 
 	@Autowired
 	private TenantVerificationFilter tenantVerificationFilter;
@@ -155,17 +153,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	private Filter githubFilter() {
 		return newSsoFilter("/github/login", interceptedUserInfoTokenServices, accessTokenProvider, 
-				new OAuth2RestTemplate(github, oauth2ClientContext));		
+				new OAuth2RestTemplate(github, oauth2ClientContext),authoritiesExtractor("login"));		
 	}
 	
 	private Filter eidpFilter() {
 		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices("https://accounts.bosch.com/adfs/userinfo", eidp.getClientId());
 		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
-				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext));
+				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext),authoritiesExtractor("sub"));
 	}
 	
 	private Filter newSsoFilter(String defaultFilterProcessesUrl, UserInfoTokenServices tokenService, AccessTokenProvider accessTokenProvider,
-			OAuth2RestTemplate restTemplate) {
+			OAuth2RestTemplate restTemplate, AuthoritiesExtractor authoritiesExtractor ) {
 		restTemplate.setAccessTokenProvider(accessTokenProvider);
 		
 		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(defaultFilterProcessesUrl);
@@ -176,6 +174,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		filter.setTokenServices(tokenService);
 		
 		return filter;
+	}
+	
+	@Bean
+	public AuthoritiesExtractor authoritiesExtractor(String userAttributeId) {
+		return new UserDBAuthoritiesExtractor(userAttributeId);
 	}
 	
 	@Bean

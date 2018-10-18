@@ -1,16 +1,17 @@
 package org.eclipse.vorto.repository.web.account.dto;
 
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.account.impl.UserRole;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.impl.UserRole;
+
 public class UserDto {
 	private String username;
 
-	private List<String> roles;
+	private List<Role> roles;
 
 	private Timestamp dateCreated;
 
@@ -37,11 +38,11 @@ public class UserDto {
 		this.lastUpdated = lastUpdated;
 	}
 
-	public List<String> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(List<String> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 

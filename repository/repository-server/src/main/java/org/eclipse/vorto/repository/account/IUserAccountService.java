@@ -37,9 +37,8 @@ public interface IUserAccountService {
 	 * @param username
 	 * @param userRoles
 	 * @return
-	 * @throws RoleNotSupportedException
 	 */
-	public User create(String username, List<String> userRoles) throws RoleNotSupportedException;
+	public User create(String username, Role... userRoles);
 	
 	/**
 	 * 

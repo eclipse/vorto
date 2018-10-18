@@ -17,8 +17,11 @@ package org.eclipse.vorto.repository.web;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -87,18 +90,18 @@ public class HomeController {
 	@ApiResponses(value = { @ApiResponse(code = 401, message = "Unauthorized"), 
 							@ApiResponse(code = 200, message = "OK")})
 	@RequestMapping(value ={ "/user", "/me" }, method = RequestMethod.GET)
-	public ResponseEntity<Map<String, String>> getUser(Principal user, final HttpServletRequest request) throws ParseException {
+	public ResponseEntity<Map<String, Object>> getUser(Principal user, final HttpServletRequest request) throws ParseException {
 		
-		Map<String, String> map = new LinkedHashMap<>();
+		Map<String, Object> map = new LinkedHashMap<>();
 
 		if(user == null)
-			return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Map<String, Object>>(map, HttpStatus.UNAUTHORIZED);
 		
 		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 
 		List<String> roles = new ArrayList<>();
 		oauth2User.getAuthorities().stream().forEach( e -> roles.add(e.getAuthority()));
-		map.put("role", roles.stream().collect(Collectors.joining(",")));
+		map.put("roles", roles);
 
 		User userAccount = accountService.getUser(oauth2User.getName());
 		
@@ -111,7 +114,7 @@ public class HomeController {
 		Map<String, String> userDetails = ((Map<String, String>) oauth2User.getUserAuthentication().getDetails());
 		map.put("loginType", userDetails.get(LOGIN_TYPE));
 		
-		return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(map, HttpStatus.OK);
 	}
 
 	private boolean needUpdate(User user, Date updateCutoff) {

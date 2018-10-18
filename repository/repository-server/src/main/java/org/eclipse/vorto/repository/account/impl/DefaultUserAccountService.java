@@ -15,11 +15,15 @@
 package org.eclipse.vorto.repository.account.impl;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import javax.transaction.Transactional;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
@@ -27,8 +31,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -50,9 +52,11 @@ public class DefaultUserAccountService implements IUserAccountService {
 	public User create(String username) {
 
 		User user = createUser(username);
+		user.addRoles(Role.MODEL_CREATOR,Role.MODEL_EXPLORER,Role.MODEL_INTEGRATOR,Role.MODEL_PROMOTER,Role.MODEL_REVIEWER,Role.MODEL_VALIDATOR);
 		user = userRepository.save(user);
 		return user;
 	}
+	
 
 	private User createUser(String username) {
 		User user = new User();
@@ -61,30 +65,20 @@ public class DefaultUserAccountService implements IUserAccountService {
 		user.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
-		//user.setRole(toRole(username));
 		user.addRoles(toRole(username));
 		return user;
 	}
 
 	@Transactional
-	public User create(String username, List<String> userRoles) throws RoleNotSupportedException {
-		if(userRoles == null) {
-			throw new RoleNotSupportedException("Please enter roles");
-		}
-		User user = new User();
+	public User create(String username, Role... userRoles) throws RoleNotSupportedException {
 		User existingUser = userRepository.findByUsername(username);
-		if(existingUser == null) {
-			user = createUser(username);
-		}else{
-			user = existingUser;
+		if(existingUser != null) {
+			throw new IllegalArgumentException("User with ID already exists");
 		}
-
-		List<UserRole> roles = createRoles(userRoles, user);
-		for(UserRole role : roles) {
-			user.addUserRoles(role);
-		}
-		user = userRepository.save(user);
-		return user;
+		
+		User user = createUser(username);
+		user.addRoles(userRoles);	
+		return userRepository.save(user);
 	}
 
 	@Transactional
@@ -101,23 +95,6 @@ public class DefaultUserAccountService implements IUserAccountService {
 
 		return userRepository.save(user);
 	}
-
-	private List<UserRole> createRoles(List<String> userRoles, User user) {
-
-		List<UserRole> userRoleList = new ArrayList<>();
-		List<String> existingRoles = UserUtils.extractRolesAsList(user.getRoles());
-
-		userRoles.forEach( s -> {
-			if(!existingRoles.contains(s)){
-				UserRole role = new UserRole();
-				role.setRole(s);
-				userRoleList.add(role);
-			}
-		});
-		return userRoleList;
-	}
-
-
 
 	private Role toRole(String username) {
 		if (admins != null && Arrays.asList(admins.split(";")).contains(username)) {

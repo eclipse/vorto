@@ -74,7 +74,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
             $rootScope.user = user.name;
             $rootScope.displayName = user.displayName;
             $rootScope.authenticated = true;
-            $rootScope.authority = user.role;
+            $rootScope.authority = user.roles;
             // TODO : set the $rootScope.tenant to the tenant of the user
         } else {
             $rootScope.userInfo = null;
@@ -102,9 +102,7 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
     $rootScope.hasAuthority = function(role) {
         var flag = false;
         if($rootScope.authority != undefined){
-            var roles = $rootScope.authority.split(',');
-
-            for (var element of roles) {
+            for (var element of $rootScope.authority) {
                 if(element === role) {
                     flag = true;
                     break;

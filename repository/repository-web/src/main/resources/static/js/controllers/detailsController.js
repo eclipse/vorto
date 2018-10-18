@@ -360,7 +360,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.model = model;
 					$scope.errorMessage = "";
 					$scope.hasError = false;
-
+					
 					$scope.takeWorkflowAction = function () {
 						$http.put('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
 							.success(function (result) {
@@ -376,7 +376,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.getModel = function () {
 						if ($scope.action != 'Claim') {
-							$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.modelId)
+							$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {

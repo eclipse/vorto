@@ -14,8 +14,13 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
-import io.swagger.annotations.ApiParam;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.UserUtils;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
@@ -24,18 +29,18 @@ import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import io.swagger.annotations.ApiParam;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -45,18 +50,15 @@ import java.util.Objects;
 public class UserController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-    
+     
 	@Autowired
 	private IUserRepository userRepository;
 	    
     @Autowired
 	private IUserAccountService accountService;
-    
+     
     @Autowired
     private IUpgradeService updateService;
-
-	@Value("#{'${oauth2.roles.default}'.split(',')}")
-	private List<String> defaultRoles;
 
 	@RequestMapping(method = RequestMethod.GET,
 					value = "/{username:.+}")
@@ -80,7 +82,7 @@ public class UserController {
 
 		LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
-		User createdUser = accountService.create(oauth2User.getName(), defaultRoles);
+		User createdUser = accountService.create(oauth2User.getName());
 		UserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with the updated user and its roles
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
@@ -109,8 +111,8 @@ public class UserController {
 
 	@RequestMapping(value = "/{username:.+}", method = RequestMethod.PUT)
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-	public ResponseEntity<UserDto> createUser(@PathVariable("username") final String userName, @RequestBody List<String> roles) {
-		User user = accountService.create(userName, roles);
+	public ResponseEntity<UserDto> createUser(@PathVariable("username") final String userName, @RequestBody List<Role> roles) {
+		User user = accountService.create(userName, roles.toArray(new Role[roles.size()]));
 
 		return new ResponseEntity<UserDto>(
 				UserDto.fromUser(this.userRepository.findByUsername(userName),

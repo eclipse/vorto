@@ -14,15 +14,21 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.UserUtils;
-
-import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.StringJoiner;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.account.UserUtils;
 
 @Entity
 public class User {
@@ -60,21 +66,12 @@ public class User {
 		}
 	}
 
-	public void addRoles(Role role) {
-		UserRole userRole = new UserRole();
-		userRole.setRole(role.toString());
-		addUserRoles(userRole);
-	}
-
-	public String getUserRolesAsCommaSeparatedString(){
-		List<String> userRoles = UserUtils.extractRolesAsList(this.getRoles());
-		StringJoiner roles = new StringJoiner(",");
-
-		for(String userRole : userRoles) {
-			roles.add("ROLE_" +userRole);
-
+	public void addRoles(Role... roles) {
+		for (Role role : roles) {
+			UserRole userRole = new UserRole();
+			userRole.setRole(role);
+			addUserRoles(userRole);
 		}
-		return roles.toString();
 	}
 
 	public static User create(String username) {
@@ -93,14 +90,19 @@ public class User {
 	public Set<UserRole> getRoles() {
 		return roles;
 	}
+	
+	public Set<Role> getUserRoles() {
+		return UserUtils.extractRolesAsList(this.roles);
+	}
+
 	public boolean isAdmin() {
-		List<String> roles = UserUtils.extractRolesAsList(this.getRoles());
-		return roles.stream().anyMatch( e -> e.equalsIgnoreCase(Role.ADMIN.toString()));
+		Set<Role> roles = UserUtils.extractRolesAsList(this.getRoles());
+		return roles.stream().anyMatch( e -> e == Role.ADMIN);
 	}
 
 	public boolean isReviewer() {
-		List<String> roles = UserUtils.extractRolesAsList(this.getRoles());
-		return roles.stream().anyMatch( e -> e.equalsIgnoreCase(Role.MODEL_REVIEWER.toString()));
+		Set<Role> roles = UserUtils.extractRolesAsList(this.getRoles());
+		return roles.stream().anyMatch( e -> e == Role.MODEL_REVIEWER);
 	}
 
 
@@ -160,5 +162,61 @@ public class User {
 				'}';
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((ackOfTermsAndCondTimestamp == null) ? 0 : ackOfTermsAndCondTimestamp.hashCode());
+		result = prime * result + ((dateCreated == null) ? 0 : dateCreated.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (ackOfTermsAndCondTimestamp == null) {
+			if (other.ackOfTermsAndCondTimestamp != null)
+				return false;
+		} else if (!ackOfTermsAndCondTimestamp.equals(other.ackOfTermsAndCondTimestamp))
+			return false;
+		if (dateCreated == null) {
+			if (other.dateCreated != null)
+				return false;
+		} else if (!dateCreated.equals(other.dateCreated))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (lastUpdated == null) {
+			if (other.lastUpdated != null)
+				return false;
+		} else if (!lastUpdated.equals(other.lastUpdated))
+			return false;
+		if (roles == null) {
+			if (other.roles != null)
+				return false;
+		} else if (!roles.equals(other.roles))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
+	}
+
+	
 
 }

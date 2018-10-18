@@ -26,7 +26,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="((hasAuthority('ROLE_ADMIN'))|| model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
+			<div ng-show="((hasAuthority('ROLE_ADMIN')) || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
@@ -38,18 +38,18 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="(hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')">
+			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
 				<a class="btn btn-primary pull-left" ng-click="openCreateModelVersionDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Version</a>
 					<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
-			<div ng-show="((hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')) && model.type === 'InformationModel' ">
+			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR') && model.type === 'InformationModel' ">
 				<a class="btn btn-primary pull-right" ng-click="openPayloadMappingDialog()" role="button">
 					<span class="fa fa-exchange" aria-hidden="true"></span>&nbsp;Create Mapping Spec.</a>
 			</div>
 
-			<div ng-show="(hasAuthority('ROLE_ADMIN')) || hasAuthority('ROLE_EXPLORER')">
+			<div ng-show="hasAuthority('ROLE_MODEL_CREATOR')">
 				<a class="btn btn-primary pull-right" ng-click="openCreateModelDialog()" role="button">
 					<span class="fa fa-plus" aria-hidden="true"></span>&nbsp;Create Model</a>
 				<div class="pull-right">&nbsp;&nbsp;</div>
@@ -264,11 +264,11 @@
 													<i class="fa fa-question fa-2x"></i>
 												</a>
 												
-												<a ng-if="isLoading" ng-show="(hasAuthority('ROLE_ADMIN') || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_MODEL_CREATOR') && model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-												<a ng-if="!isLoading" ng-show="(hasAuthority('ROLE_ADMIN') || model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_MODEL_CREATOR') && model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
