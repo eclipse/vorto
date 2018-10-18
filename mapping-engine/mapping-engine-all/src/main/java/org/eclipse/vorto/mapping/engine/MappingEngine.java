@@ -42,7 +42,7 @@ public final class MappingEngine {
 	 * @param input source input data that is supposed to get mapped.
 	 * @return mapped payload that complies to Vorto Information Model
 	 */
-	public InfomodelData map(DataInput deviceData) {
+	public InfomodelData map(Object deviceData) {
 		return mapper.map(deviceData, MappingContext.empty());
 	}
 }

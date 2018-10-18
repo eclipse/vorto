@@ -18,3 +18,4 @@ generated-sources
 devtool-project-repository/
 website/themes
 website/public
+*.rej

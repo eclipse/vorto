@@ -3,18 +3,19 @@ package org.eclipse.vorto.mapping.engine.converter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.eclipse.vorto.mapping.engine.DataInput;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.MappingException;
-import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class JsonMappingTest {
+	
+	private static Gson gson = new GsonBuilder().create();
 	
 	@Test
 	public void testConfigMapping() throws Exception {
@@ -25,7 +26,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		System.out.println(mappedOutput);
 
@@ -40,7 +41,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -52,7 +53,7 @@ public class JsonMappingTest {
 		assertEquals(2322f, voltageFunctionblockData.getStatus().get("sensor_value"));
 		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
 
-		System.out.println(new ObjectMapper().writeValueAsString(mappedOutput.getProperties()));
+		System.out.println(gson.toJson(mappedOutput.getProperties()));
 
 	}
 	
@@ -72,7 +73,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 	}
 	
 	@Test(expected = MappingException.class)
@@ -91,7 +92,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 	}
 	
 	@Test(expected = MappingException.class)
@@ -110,7 +111,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 	}
 	
 	@Test(expected = MappingException.class)
@@ -129,7 +130,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 	}
 	
 	@Test(expected = MappingException.class)
@@ -147,7 +148,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 	}
 
 	@Test
@@ -159,7 +160,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json),
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class),
 				MappingContext.functionblockProperties("button"));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
@@ -182,7 +183,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -205,7 +206,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\"}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 

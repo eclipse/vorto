@@ -29,7 +29,7 @@ public interface IDataMapper {
 	 * @param context providing more meta - data for the mapper
 	 * @return mapped payload that complies to Vorto Information Model
 	 */
-	InfomodelData map(DataInput input, MappingContext context);
+	InfomodelData map(Object input, MappingContext context);
 	
 	static DataMapperBuilder newBuilder() {
 		return new DataMapperBuilder();

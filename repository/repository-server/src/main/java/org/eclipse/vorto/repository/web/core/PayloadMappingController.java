@@ -17,7 +17,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
-import org.eclipse.vorto.mapping.engine.DataInputFactory;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
@@ -58,6 +57,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -65,6 +66,8 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping(value = "/rest/{tenant}/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
+	
+	private static Gson gson = new GsonBuilder().create();
 	
 	@Autowired
 	private ModelController modelController;
@@ -209,7 +212,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest) throws Exception {
 		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 		
-		InfomodelData mappedOutput = engine.map(DataInputFactory.getInstance().fromJson(testRequest.getSourceJson()));
+		InfomodelData mappedOutput = engine.map(gson.fromJson(testRequest.getSourceJson(),Object.class));
 
 		ValidationHelper validationHelper = new ValidationHelper(testRequest.getSpecification());
 		

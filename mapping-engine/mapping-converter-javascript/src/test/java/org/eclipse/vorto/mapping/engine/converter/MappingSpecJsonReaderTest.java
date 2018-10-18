@@ -2,15 +2,18 @@ package org.eclipse.vorto.mapping.engine.converter;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.vorto.mapping.engine.DataInput;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
-import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class MappingSpecJsonReaderTest {
+	
+	private static Gson gson = new GsonBuilder().create();
 	
 	@Test
 	public void testMappingFromJson() {
@@ -22,7 +25,7 @@ public class MappingSpecJsonReaderTest {
 
 		String json = "{\"state\" : false, \"count\": 50}";
 
-		InfomodelData mappedOutput = mapper.map(DataInput.newInstance().fromJson(json), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
 		assertEquals(false,mappedOutput.get("button").getStatus().get("digitalInputState"));
 		assertEquals(25.0,mappedOutput.get("button").getStatus().get("digitalInputStateCount"));
 	}

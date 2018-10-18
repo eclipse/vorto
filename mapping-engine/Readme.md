@@ -28,3 +28,5 @@ MappingEngine engine = MappingEngine.create(mappingSpecJSON);
 InfomodelData mappedOutput = engine.map(DataInput.newInstance().fromObject(deviceData));
 
 ```
+
+Take a look at a [demo app](demo)
