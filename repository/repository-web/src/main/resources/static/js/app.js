@@ -98,6 +98,23 @@ repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, 
         var split = $location.path().split("/");
         return (split.length > 1) && ($rootScope.unrestrictedUrls.indexOf("/" + split[1]) === -1);
     };
+
+    $rootScope.hasAuthority = function(role) {
+        var flag = false;
+        if($rootScope.authority != undefined){
+            var roles = $rootScope.authority.split(',');
+
+            for (var element of roles) {
+                if(element === role) {
+                    flag = true;
+                    break;
+                }else{
+                    flag = false;
+                }
+            }
+        }
+        return flag;
+    }
     
     $rootScope.init = function() {    	
         var getContextSucceeded = function(result) {

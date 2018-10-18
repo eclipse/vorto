@@ -14,7 +14,11 @@
  */
 package org.eclipse.vorto.repository.account;
 
+import org.eclipse.vorto.repository.account.impl.RoleNotSupportedException;
 import org.eclipse.vorto.repository.account.impl.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.util.List;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -23,10 +27,19 @@ public interface IUserAccountService {
 	
 	/**
 	 * creates a new account in the Vorto Repository
-	 * @param account
+	 * @param username
 	 * @return createdUser
 	 */
 	User create(String username);
+
+	/**
+	 * create a new user with roles in Vorto Repository
+	 * @param username
+	 * @param userRoles
+	 * @return
+	 * @throws RoleNotSupportedException
+	 */
+	public User create(String username, List<String> userRoles) throws RoleNotSupportedException;
 	
 	/**
 	 * 
@@ -61,5 +74,12 @@ public interface IUserAccountService {
 	 * @return
 	 */
 	String getAnonymousUserId();
-	
+
+	/**
+	 * Remove role from user
+	 * @param userName
+	 * @param roles
+	 * @return
+	 */
+    User removeUserRole(String userName, List<String> roles) throws UsernameNotFoundException;
 }

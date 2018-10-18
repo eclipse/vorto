@@ -17,9 +17,8 @@ package org.eclipse.vorto.repository.web;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -96,9 +95,11 @@ public class HomeController {
 			return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
 		
 		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
-		
-		oauth2User.getAuthorities().stream().findFirst().ifPresent(role -> map.put("role", role.getAuthority()));
-		
+
+		List<String> roles = new ArrayList<>();
+		oauth2User.getAuthorities().stream().forEach( e -> roles.add(e.getAuthority()));
+		map.put("role", roles.stream().collect(Collectors.joining(",")));
+
 		User userAccount = accountService.getUser(oauth2User.getName());
 		
 		Date updateCutoff = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(updateDate);

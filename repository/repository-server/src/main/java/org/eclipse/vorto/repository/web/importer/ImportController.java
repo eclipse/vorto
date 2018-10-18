@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,6 +70,7 @@ public class ImportController {
 	private IWorkflowService workflowService;
 
 	@RequestMapping(method = RequestMethod.POST)
+	@PreAuthorize(" hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_CREATOR)")
 	public ResponseEntity<UploadModelResponse> uploadModel(
 			@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file,
 			@RequestParam("key") String key) {
@@ -109,6 +111,7 @@ public class ImportController {
 	}
 
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
+	@PreAuthorize("hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_CREATOR)")
 	public ResponseEntity<List<ModelInfo>> doImport(
 			@ApiParam(value = "The file name of uploaded model", required = true) final @PathVariable String handleId,
 			@RequestParam("key") String key) {

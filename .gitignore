@@ -18,3 +18,14 @@ generated-sources
 devtool-project-repository/
 website/themes
 website/public
+
+######################
+# Intellij
+######################
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+classes/

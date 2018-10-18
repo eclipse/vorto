@@ -50,6 +50,7 @@ public class CommentController {
     @RequestMapping(method = RequestMethod.GET,
     				value = "/{modelId:.+}",
     				produces = "application/json")
+    @PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER)")
     public List<Comment> getCommentsforModelId(	@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     	final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     	return commentService.getCommentsforModelId(modelID).stream()
@@ -59,7 +60,7 @@ public class CommentController {
     
     @RequestMapping(method = RequestMethod.POST,
     				consumes = "application/json")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_CREATOR)")
     public ResponseEntity<Void> addCommentToModel(@RequestBody @Valid Comment comment) throws Exception {
        	commentService.createComment(comment);
        	return new ResponseEntity<>(HttpStatus.CREATED);

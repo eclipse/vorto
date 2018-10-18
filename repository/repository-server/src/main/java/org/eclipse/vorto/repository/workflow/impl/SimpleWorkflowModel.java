@@ -22,6 +22,7 @@ import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsOwnerCondition;
+import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
 import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
 import org.eclipse.vorto.repository.workflow.model.IAction;
@@ -61,6 +62,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public SimpleWorkflowModel(IUserRepository userRepository, IModelRepository repository) {
 		
 		final IWorkflowCondition isAdminCondition = new IsAdminCondition(userRepository);
+		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
 
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		
@@ -68,13 +70,12 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER,isAdminCondition));
 		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 
-		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
-		ACTION_APPROVE.setConditions(isAdminCondition);
+		ACTION_APPROVE.setConditions(isAdminCondition,isReviewerCondition);
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
-		ACTION_REJECT.setConditions(isAdminCondition);
+		ACTION_REJECT.setConditions(isAdminCondition, isReviewerCondition);
 		
 		ACTION_WITHDRAW.setTo(STATE_DRAFT);
 		ACTION_WITHDRAW.setConditions(ONLY_OWNER);

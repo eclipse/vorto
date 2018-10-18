@@ -12,18 +12,12 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.account.impl;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public enum Role {
-	USER,
-	ADMIN,
-	MODEL_VALIDATOR,
-	MODEL_EXPLORER,
-	MODEL_INTEGRATOR,
-	MODEL_CREATOR,
-	MODEL_PROMOTER,
-	MODEL_REVIEWER
+public class RoleNotSupportedException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public RoleNotSupportedException(String message) {
+        super(message);
+    }
 }

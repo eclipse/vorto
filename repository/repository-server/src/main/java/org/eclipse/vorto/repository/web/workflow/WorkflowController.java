@@ -38,6 +38,7 @@ public class WorkflowController {
     @RequestMapping(method = RequestMethod.GET,
     				value = "/{modelId:.+}/actions",
     				produces = "application/json")
+	@PreAuthorize(" hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_PROMOTER)")
     public List<String> getPossibleActions(	@ApiParam(value = "modelId", required = true) @PathVariable String modelId) { 	
     	return workflowService.getPossibleActions(ModelId.fromPrettyFormat(modelId),UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
     }
@@ -46,6 +47,7 @@ public class WorkflowController {
     @RequestMapping(method = RequestMethod.PUT,
     				value = "/{modelId:.+}/actions/{actionName}",
     				produces = "application/json")
+	@PreAuthorize("hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_PROMOTER)")
     public WorkflowResponse executeAction(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 									      @ApiParam(value = "actionName", required = true) @PathVariable String actionName) {
 
@@ -59,7 +61,7 @@ public class WorkflowController {
     }
     
     @ApiOperation(value = "Claims the ownership of a specific model")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN,  T(org.eclipse.vorto.repository.account.Role).MODEL_PROMOTER)")
     @RequestMapping(method = RequestMethod.PUT,
     				value = "/{modelId:.+}/actions/Claim",
     				produces = "application/json")
@@ -74,6 +76,7 @@ public class WorkflowController {
     @RequestMapping(method = RequestMethod.GET,
     				value = "/{modelId:.+}",
     				produces = "application/json")
+	@PreAuthorize("hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_PROMOTER)")
     public WorkflowState getState(@ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     	return new WorkflowState(this.workflowService.getStateModel(ModelId.fromPrettyFormat(modelId)).get());
     }

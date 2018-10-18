@@ -16,13 +16,9 @@ package org.eclipse.vorto.repository.sso.oauth.strategy;
 
 import java.security.PublicKey;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.eclipse.vorto.repository.sso.oauth.JwtVerifyAndIdStrategy;
@@ -40,6 +36,9 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
 	protected static final String JWT_NAME = "name";
 	protected static final String JWT_SUB = "sub";
 	private static final String KEY_ID = "kid";
+	private static final String RESOURCE_ACCESS = "resource_access";
+	private String resourceClientId;
+
 	
 	protected static final String ROLE_ADMIN = "ROLE_ADMIN";
 	protected static final String ROLE_USER = "ROLE_USER";
@@ -50,11 +49,12 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
 	private String publicKeyUri = null;
 	private IUserAccountService userAccountService;
 	
-	public AbstractVerifyAndIdStrategy(RestTemplate restTemplate, String publicKeyUri, IUserAccountService userAccountService, String clientId) {
+	public AbstractVerifyAndIdStrategy(RestTemplate restTemplate, String publicKeyUri, IUserAccountService userAccountService, String clientId, String resourceClientId) {
 		this.publicKeyHelper = PublicKeyHelper.instance(restTemplate);
 		this.publicKeyUri = Objects.requireNonNull(publicKeyUri);
 		this.ciamClientId = Objects.requireNonNull(clientId);
 		this.userAccountService = Objects.requireNonNull(userAccountService);
+		this.resourceClientId = Objects.requireNonNull(resourceClientId);
 	}
 	
 	@Override
@@ -65,13 +65,27 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
 		
 		Optional<String> email = Optional.ofNullable((String) map.get(JWT_EMAIL));
 		Optional<String> name = Optional.ofNullable((String) map.get(JWT_NAME)).map(str -> str.split("@")[0]);
-		
-		String userId = getUserId(map).orElseThrow(() -> 
+
+		Optional<Map<String, Object>> resourceAccess = Optional.ofNullable((Map)map.get(RESOURCE_ACCESS));
+		Map<String, Object> client = (Map<String, Object>)resourceAccess.get().get(resourceClientId);
+		List<String> roles = (List<String>)client.get("roles");
+
+		String userId = getUserId(map).orElseThrow(() ->
 			new InvalidTokenException("Cannot generate a userId from your provided token. Maybe 'sub' or 'client_id' is not present in JWT token?"));
 		User user = userAccountService.getUser(userId);
 
-		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",
-				AuthorityUtils.commaSeparatedStringToAuthorityList(user.getRole() == Role.USER ? ROLE_USER: ROLE_ADMIN));
+		String userRole = "";
+		UsernamePasswordAuthenticationToken authToken = null;
+		if(roles != null){
+			for(String role : roles) {
+				userRole = "ROLE_" + role.toUpperCase() + ",";
+			}
+			authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",
+					AuthorityUtils.commaSeparatedStringToAuthorityList(userRole));
+		}else{
+			authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",
+					AuthorityUtils.commaSeparatedStringToAuthorityList(user.getUserRolesAsCommaSeparatedString()));
+		}
 
 		Map<String, String> detailsMap = new HashMap<String, String>();
 		detailsMap.put(JWT_SUB, userId);

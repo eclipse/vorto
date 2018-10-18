@@ -39,7 +39,7 @@ public class UserAuthoritiesExtractor implements AuthoritiesExtractor {
 		 if (user == null) {
 			 return Collections.<GrantedAuthority> emptyList();
 		 }
-		return AuthorityUtils.createAuthorityList("ROLE_"+user.getRole().name());
+		return AuthorityUtils.createAuthorityList(user.getUserRolesAsCommaSeparatedString());
 	}
 
 }

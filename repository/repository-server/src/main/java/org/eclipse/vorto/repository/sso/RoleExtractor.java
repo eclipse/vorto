@@ -12,18 +12,11 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.sso;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public enum Role {
-	USER,
-	ADMIN,
-	MODEL_VALIDATOR,
-	MODEL_EXPLORER,
-	MODEL_INTEGRATOR,
-	MODEL_CREATOR,
-	MODEL_PROMOTER,
-	MODEL_REVIEWER
+import java.util.Map;
+
+public interface RoleExtractor {
+
+    String extractAuthorities(Map<String, Object> map);
 }

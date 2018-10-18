@@ -25,8 +25,8 @@ public class KeycloakUserStrategy extends AbstractVerifyAndIdStrategy {
 	private static final String CLIENT_ID = "clientId";
 
 	public KeycloakUserStrategy(RestTemplate restTemplate, String publicKeyUri, IUserAccountService userAccountService,
-			String clientId) {
-		super(restTemplate, publicKeyUri, userAccountService, clientId);
+			String clientId, String resourceClientId) {
+		super(restTemplate, publicKeyUri, userAccountService, clientId, resourceClientId);
 	}
 
 	@Override

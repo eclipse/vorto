@@ -12,18 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account;
+package org.eclipse.vorto.repository.web.account;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public enum Role {
-	USER,
-	ADMIN,
-	MODEL_VALIDATOR,
-	MODEL_EXPLORER,
-	MODEL_INTEGRATOR,
-	MODEL_CREATOR,
-	MODEL_PROMOTER,
-	MODEL_REVIEWER
+import org.eclipse.vorto.repository.account.impl.User;
+
+import java.util.List;
+
+public interface Provisioner {
+
+    User provisionRole(User user);
+
+    List<String> getRoles();
 }

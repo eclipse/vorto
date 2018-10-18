@@ -91,6 +91,44 @@ public class WorkflowTest extends AbstractIntegrationTest {
 		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
 		assertEquals(0,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
 	}
+
+	@Test
+	public void testApproveModelByModelReviewerInReviewState() throws Exception {
+		ModelInfo model = importModel("Color.type");
+		workflow.start(model.getId());
+
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
+
+		when(userRepository.findByUsername(UserContext.user("admin").getUsername())).thenReturn(User.create("admin",Role.MODEL_REVIEWER));
+		assertEquals(1,workflow.getPossibleActions(model.getId(), UserContext.user(getCallerId())).size());
+		assertEquals(2,workflow.getPossibleActions(model.getId(), UserContext.user("admin")).size());
+		model = workflow.doAction(model.getId(),UserContext.user("admin"), SimpleWorkflowModel.ACTION_APPROVE.getName());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
+		assertEquals(0,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
+	}
+
+	@Test
+	public void testRejectModelByModelReviewerInReviewState() throws Exception {
+		ModelInfo model = importModel("Color.type");
+		workflow.start(model.getId());
+
+		when(userRepository.findByUsername(UserContext.user(getCallerId()).getUsername())).thenReturn(User.create(getCallerId(),Role.USER));
+		model = workflow.doAction(model.getId(),UserContext.user(getCallerId()), SimpleWorkflowModel.ACTION_RELEASE.getName());
+		assertEquals(SimpleWorkflowModel.STATE_IN_REVIEW.getName(),model.getState());
+
+		when(userRepository.findByUsername(UserContext.user("admin").getUsername())).thenReturn(User.create("admin",Role.MODEL_REVIEWER));
+		assertEquals(1,workflow.getPossibleActions(model.getId(), UserContext.user(getCallerId())).size());
+		assertEquals(2,workflow.getPossibleActions(model.getId(), UserContext.user("admin")).size());
+		model = workflow.doAction(model.getId(),UserContext.user("admin"), SimpleWorkflowModel.ACTION_REJECT.getName());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_RELEASED.getName()).size());
+		assertEquals(0,workflow.getModelsByState(SimpleWorkflowModel.STATE_IN_REVIEW.getName()).size());
+		assertEquals(1,workflow.getModelsByState(SimpleWorkflowModel.STATE_DRAFT.getName()).size());
+		assertEquals(1,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
+	}
 	
 	@Test (expected = WorkflowException.class)
 	public void testApproveModelByUserInReviewState() throws Exception  {

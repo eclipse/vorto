@@ -67,12 +67,14 @@ import io.swagger.annotations.ApiResponses;
 public class ModelController extends AbstractRepositoryController {
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
-	
+
 	@ApiOperation(value = "Returns a model by its full qualified model ID")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found"),
 			@ApiResponse(code = 403, message = "Not Authorized to view model") })
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() " +
+			"||  hasAnyRole(T(org.eclipse.vorto.repository.account.Role).MODEL_VALIDATOR,  T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER) " +
+			"|| hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
 	public ModelInfo getModelInfo(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
@@ -80,7 +82,7 @@ public class ModelController extends AbstractRepositoryController {
 
 		logger.info("getModelInfo: [" + modelId + "]");
 		ModelInfo resource = modelRepository.getById(ModelId.fromPrettyFormat(modelId));
-		
+
 		if (resource == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
@@ -91,7 +93,7 @@ public class ModelController extends AbstractRepositoryController {
 	@ApiOperation(value = "Returns the complete model content")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() ||  hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER) || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
 	public ModelContent getModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
@@ -100,26 +102,26 @@ public class ModelController extends AbstractRepositoryController {
 		if (this.modelRepository.getById(modelID) == null) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
-		
+
 		byte[] modelContent = createZipWithAllDependencies(modelID);
 
 		IModelWorkspace workspace = IModelWorkspace.newReader()
 				.addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
-				
+
 		ModelContent result = new ModelContent();
 		result.setRoot(modelID);
-		
+
 		workspace.get().stream().forEach(model -> {
 			result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.empty()));
 		});
-		
+
 		return result;
 	}
-	
+
 	@ApiOperation(value = "Returns the complete model content including target platform specific attributes")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() ||  hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER)|| hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
 	public ModelContent getModelContentForTargetPlatform(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
@@ -132,10 +134,10 @@ public class ModelController extends AbstractRepositoryController {
 			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId());
 			IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
 					.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
-		
+
 			ModelContent result = new ModelContent();
 			result.setRoot(modelID);
-			
+
 			mappingWorkspace.get().stream().forEach(model -> {
 				if (!(model instanceof MappingModel)) {
 					Optional<Model> mappingModel =  mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel).filter(p -> isMappingForModel((MappingModel)p,model))
@@ -145,7 +147,7 @@ public class ModelController extends AbstractRepositoryController {
 					}
 				}
 			});
-			
+
 			return result;
 
 		} else {
@@ -187,11 +189,11 @@ public class ModelController extends AbstractRepositoryController {
 			throw new RuntimeException(ex);
 		}
 	}
-	
+
 	@ApiOperation(value = "Downloads the model file")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated() || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() ||  hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER) || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
