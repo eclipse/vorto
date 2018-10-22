@@ -50,7 +50,9 @@ public class DefaultUserAccountService implements IUserAccountService {
 	private IModelRepository modelRepository;
 
 	public User create(String username) {
-
+		if (userRepository.findByUsername(username) != null) {
+			throw new IllegalArgumentException("User with given username already exists");
+		}
 		User user = createUser(username);
 		user.addRoles(Role.MODEL_CREATOR,Role.MODEL_EXPLORER,Role.MODEL_INTEGRATOR,Role.MODEL_PROMOTER,Role.MODEL_REVIEWER,Role.MODEL_VALIDATOR);
 		user = userRepository.save(user);
