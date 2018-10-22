@@ -72,24 +72,46 @@ public class DefaultUserAccountService implements IUserAccountService {
 	@Transactional
 	public User create(String username, Role... userRoles) throws RoleNotSupportedException {
 		User existingUser = userRepository.findByUsername(username);
-		if(existingUser != null) {
+		if(isUserAlreadyExistAndRoleNotProvided(existingUser, userRoles)) {
 			throw new IllegalArgumentException("User with ID already exists");
+		} else if( existingUser != null) {
+			updateRole(existingUser, userRoles);
+			return userRepository.save(existingUser);
+		}else {
+			User user = createUser(username);
+			user.addRoles(userRoles);
+			return userRepository.save(user);
 		}
-		
-		User user = createUser(username);
-		user.addRoles(userRoles);	
-		return userRepository.save(user);
+	}
+
+	private void updateRole(User existingUser, Role[] userRoles) {
+		Set<UserRole> existingRoles = existingUser.getRoles();
+		removeDuplicateRoles(userRoles, existingRoles);
+		existingUser.addRoles(userRoles);
+	}
+
+	private void removeDuplicateRoles(Role[] userRoles, Set<UserRole> existingRoles) {
+		Arrays.asList(userRoles).forEach(role -> {
+			existingRoles.removeIf( e -> e.getRole() == role);
+		});
+	}
+
+	private boolean isUserAlreadyExistAndRoleNotProvided(User existingUser, Role[] userRoles) {
+		return existingUser != null && Objects.isNull(userRoles);
 	}
 
 	@Transactional
-	public User removeUserRole(String userName, List<String> roles) {
+	public User removeUserRole(String userName, List<Role> roles) {
 
 		User user = userRepository.findByUsername(userName);
 		if(Objects.isNull(user)){
 			throw new UsernameNotFoundException("User Not Found: " + userName);
 		}
 		Set<UserRole> userRoles = user.getRoles();
-		userRoles.removeIf( e -> roles.contains(e.getRole()));
+
+		roles.forEach( role -> {
+			userRoles.removeIf( e -> role == e.getRole());
+		});
 
 		user.setRoles(userRoles);
 

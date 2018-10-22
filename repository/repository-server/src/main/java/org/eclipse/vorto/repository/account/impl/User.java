@@ -150,19 +150,18 @@ public class User {
 		this.lastUpdated = lastUpdated;
 	}
 
-	@Override
-	public String toString() {
-		return "User{" +
-				"id=" + id +
-				", username='" + username + '\'' +
-				", roles=" + roles +
-				", dateCreated=" + dateCreated +
-				", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp +
-				", lastUpdated=" + lastUpdated +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", ackOfTermsAndCondTimestamp=" + ackOfTermsAndCondTimestamp +
+                ", lastUpdated=" + lastUpdated +
+                '}';
+    }
 
-	@Override
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

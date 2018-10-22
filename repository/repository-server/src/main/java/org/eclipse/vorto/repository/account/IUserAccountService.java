@@ -80,5 +80,5 @@ public interface IUserAccountService {
 	 * @param roles
 	 * @return
 	 */
-    User removeUserRole(String userName, List<String> roles) throws UsernameNotFoundException;
+    User removeUserRole(String userName, List<Role> roles) throws UsernameNotFoundException;
 }

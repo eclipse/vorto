@@ -58,7 +58,14 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 	public void testCreateUserAlreadyExists() throws Exception {
 		User user = setupUserWithRoles();
 		when(userRepository.findByUsername("S-1-5-21")).thenReturn(user);
-		accountService.create(user.getUsername(), Role.ADMIN,Role.MODEL_VALIDATOR);
+		accountService.create(user.getUsername());
+	}
+
+	@Test
+	public void testUpdateRole() {
+		User user = setupUserWithRoles();
+		when(userRepository.findByUsername("S-1-5-21")).thenReturn(user);
+		accountService.create(user.getUsername(), Role.ADMIN, Role.MODEL_CREATOR, Role.MODEL_INTEGRATOR);
 	}
 
 	private User setupUserWithRoles() {
@@ -67,6 +74,4 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 		user.addRoles(Role.ADMIN,Role.MODEL_VALIDATOR);
 		return user;
 	}
-
-
 }
