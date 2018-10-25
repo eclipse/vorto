@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.ble.BleGattCharacteristic;
 import org.eclipse.vorto.mapping.engine.ble.BleGattDevice;
 import org.eclipse.vorto.mapping.engine.ble.BleGattDeviceBuilder;
@@ -66,7 +65,7 @@ public class BleGattMappingTest {
 		BleGattCharacteristic accelerometerValue = bleGattDevice.getCharacteristics().get("f000aa81-0451-4000-b000-000000000000");
 		accelerometerValue.setData(new Short[] {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, /* X Value = 1.0 */0x00, 0x40, /* Y Value = -1 */ 0x00, 0xC0, /* Z Value  = 0.0 */ 0x00, 0x00 });
 		
-		InfomodelData mapped = mapper.map(bleGattDevice,MappingContext.empty());
+		InfomodelData mapped = mapper.mapSource(bleGattDevice);
 		
 		// TEST
 		FunctionblockData buttonFeature = mapped.get("accelerometer");

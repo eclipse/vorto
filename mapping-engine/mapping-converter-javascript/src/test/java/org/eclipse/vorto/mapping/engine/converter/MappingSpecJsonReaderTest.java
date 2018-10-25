@@ -3,7 +3,6 @@ package org.eclipse.vorto.mapping.engine.converter;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
 import org.junit.Test;
@@ -25,7 +24,7 @@ public class MappingSpecJsonReaderTest {
 
 		String json = "{\"state\" : false, \"count\": 50}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals(false,mappedOutput.get("button").getStatus().get("digitalInputState"));
 		assertEquals(25.0,mappedOutput.get("button").getStatus().get("digitalInputStateCount"));
 	}

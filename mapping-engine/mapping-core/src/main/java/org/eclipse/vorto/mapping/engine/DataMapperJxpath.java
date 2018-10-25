@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.mapping.engine;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ import org.apache.commons.text.StrSubstitutor;
 import org.eclipse.vorto.mapping.engine.functions.CustomFunctionsLibrary;
 import org.eclipse.vorto.mapping.engine.internal.JxPathFactory;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
+import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
@@ -37,8 +39,8 @@ import org.eclipse.vorto.repository.api.content.Stereotype;
 
 /**
  * 
- * Extend this class in order to implement a platform mapper that maps normlized vorto model 
- * to the target platform specific data model
+ * Extend this class in order to implement a platform mapper that maps normlized
+ * vorto model to the target platform specific data model
  *
  */
 public class DataMapperJxpath implements IDataMapper {
@@ -46,49 +48,48 @@ public class DataMapperJxpath implements IDataMapper {
 	private IMappingSpecification specification;
 
 	private JxPathFactory jxpathHelper = null;
-	
+
 	private JexlEngine jexlEngine = null;
-	
-	private static final String STEREOTYPE = "source";
+
+	private static final String STEREOTYPE_SOURCE = "source";
+	private static final String STEREOTYPE_TARGET = "target";
 	private static final String ATTRIBUTE_XPATH = "xpath";
 	private static final Object ATTRIBUTE_CONDITION = "condition";
 
-	public DataMapperJxpath(IMappingSpecification mappingSpecification,CustomFunctionsLibrary functionLibrary) {
+	public DataMapperJxpath(IMappingSpecification mappingSpecification, CustomFunctionsLibrary functionLibrary) {
 		this.specification = mappingSpecification;
 		this.jxpathHelper = new JxPathFactory(functionLibrary);
 		this.jexlEngine = createJexlEngine(functionLibrary);
 	}
-	
+
 	private static JexlEngine createJexlEngine(CustomFunctionsLibrary functionLibrary) {
 		JexlEngine jexl = new JexlEngine();
-        jexl.setFunctions(functionLibrary.getConditionFunctions());
+		jexl.setFunctions(functionLibrary.getConditionFunctions());
 		return jexl;
 	}
 
 	public InfomodelData map(Object input, MappingContext mappingContext) {
 
 		JXPathContext context = jxpathHelper.newContext(input);
-		
+
 		InfomodelData normalized = new InfomodelData();
-		
+
 		final Infomodel deviceInfoModel = specification.getInfoModel();
 
 		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
-			if (mappingContext.isIncluded(fbProperty.getName())) {
-				FunctionblockData mappedFb = mapFunctionBlock(fbProperty, context);
-				if (mappedFb != null) {
-					normalized.withFunctionblock(mappedFb);
-				}
+			FunctionblockData mappedFb = mapFunctionBlock(fbProperty, context);
+			if (mappedFb != null) {
+				normalized.withFunctionblock(mappedFb);
 			}
 		}
-		
+
 		return normalized;
 	}
-	
+
 	private FunctionblockData mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
-		
+
 		FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
-		
+
 		FunctionblockData fbData = new FunctionblockData(fbProperty.getName());
 
 		for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
@@ -98,46 +99,45 @@ public class DataMapperJxpath implements IDataMapper {
 				if (mapped != null) {
 					fbData.withStatusProperty(statusProperty.getName(), mapped);
 				}
-			} catch (JXPathNotFoundException  ex) {
+			} catch (JXPathNotFoundException ex) {
 				if (statusProperty.isMandatory()) {
 					return null;
 				}
-			} catch(JXPathInvalidAccessException ex) {
+			} catch (JXPathInvalidAccessException ex) {
 				if (ex.getCause() instanceof JXPathNotFoundException) {
 					if (statusProperty.isMandatory()) {
 						return null;
 					}
 				}
-				throw new MappingException("A problem occured during mapping",ex);
+				throw new MappingException("A problem occured during mapping", ex);
 			}
 
 		}
 
 		for (ModelProperty configProperty : fbModel.getConfigurationProperties()) {
-			
+
 			try {
 				Object mapped = this.mapProperty(configProperty, context);
 				if (mapped != null) {
 					fbData.withConfigurationProperty(configProperty.getName(), mapped);
 				}
-			} catch (JXPathNotFoundException  ex) {
+			} catch (JXPathNotFoundException ex) {
 				if (configProperty.isMandatory()) {
 					return null;
 				}
-			} catch(JXPathInvalidAccessException ex) {
+			} catch (JXPathInvalidAccessException ex) {
 				if (ex.getCause() instanceof JXPathNotFoundException) {
 					if (configProperty.isMandatory()) {
 						return null;
 					}
 				}
-				throw new MappingException("A problem occured during mapping",ex);
+				throw new MappingException("A problem occured during mapping", ex);
 			}
 		}
 
 		return onlyReturnIfPopulated(fbData);
 	}
 
-	
 	private FunctionblockData onlyReturnIfPopulated(FunctionblockData fbData) {
 		if (!fbData.getConfiguration().isEmpty() || !fbData.getStatus().isEmpty()) {
 			return fbData;
@@ -145,28 +145,28 @@ public class DataMapperJxpath implements IDataMapper {
 			return null;
 		}
 	}
-	
+
 	private Object mapProperty(ModelProperty property, JXPathContext input) {
-		Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE);
+		Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE_SOURCE);
 		if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
 			String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),
 					sourceStereotype.get().getAttributes());
-			
+
 			if (matchesCondition(sourceStereotype.get().getAttributes(), input)) {
 				return input.getValue(expression);
 			}
 		}
-		
+
 		return null;
 
 	}
-	
+
 	private boolean matchesCondition(Map<String, String> attributes, JXPathContext context) {
 		if (attributes.containsKey(ATTRIBUTE_CONDITION) && !attributes.get(ATTRIBUTE_CONDITION).equals("")) {
-			Expression e = jexlEngine.createExpression( normalizeCondition(attributes.get(ATTRIBUTE_CONDITION) ) );
+			Expression e = jexlEngine.createExpression(normalizeCondition(attributes.get(ATTRIBUTE_CONDITION)));
 			JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
 			jc.set("this", context.getContextBean());
-			return (boolean)e.evaluate(jc);		
+			return (boolean) e.evaluate(jc);
 		} else {
 			return true;
 		}
@@ -185,5 +185,34 @@ public class DataMapperJxpath implements IDataMapper {
 		StrSubstitutor sub = new StrSubstitutor(mappedAttributes);
 		return sub.replace(expression);
 	}
-	
+
+	@Override
+	public InfomodelData mapSource(Object input) {
+		return this.map(input, MappingContext.empty());
+	}
+
+	@Override
+	public Object mapTarget(FunctionblockProperty newValue, Optional<FunctionblockProperty> oldValue) {
+		Optional<Stereotype> targetStereotype = newValue.getModel().getStereotype(STEREOTYPE_TARGET);
+		if (!targetStereotype.isPresent()) {
+			throw new MappingException("No mapping rule defined for property");
+		}
+		
+		Map<String,Object> jxpathContext = new HashMap<String, Object>();
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("newValue", newValue.getPropertyValue());
+		param.put("oldValue", oldValue.isPresent()? oldValue.get().getPropertyValue() : null);
+		
+		jxpathContext.put("ctx", param);
+		final String functionName = "convert" + newValue.getModel().getName().substring(0, 1).toUpperCase() + newValue.getModel().getName().substring(1);
+		
+		final String xpath = newValue.getInfomodelProperty()+":"+functionName+"(ctx)";
+		JXPathContext context = jxpathHelper.newContext(jxpathContext);
+		try {
+			return context.getValue(xpath);
+		} catch(Exception ex) {
+			throw new MappingException("Problem occurred during mapping",ex);
+		}
+	}
+
 }

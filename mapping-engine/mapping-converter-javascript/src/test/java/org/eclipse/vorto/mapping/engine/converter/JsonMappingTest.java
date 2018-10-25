@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
@@ -26,7 +25,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		System.out.println(mappedOutput);
 
@@ -41,7 +40,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -73,7 +72,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mapper.mapSource(gson.fromJson(json, Object.class));
 	}
 	
 	@Test(expected = MappingException.class)
@@ -92,7 +91,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mapper.mapSource(gson.fromJson(json, Object.class));
 	}
 	
 	@Test(expected = MappingException.class)
@@ -111,7 +110,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mapper.mapSource(gson.fromJson(json, Object.class));
 	}
 	
 	@Test(expected = MappingException.class)
@@ -130,7 +129,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mapper.mapSource(gson.fromJson(json, Object.class));
 	}
 	
 	@Test(expected = MappingException.class)
@@ -148,32 +147,8 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mapper.mapSource(gson.fromJson(json, Object.class));
 	}
-
-	@Test
-	public void testMappingOnlyOneFunctionblockData() throws Exception {
-
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
-
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
-
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class),
-				MappingContext.functionblockProperties("button"));
-
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
-
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
-
-		assertNull(mappedOutput.get("voltage"));
-
-		System.out.println(mappedOutput);
-
-	}
-
 
 	@Test
 	public void testMapDevicePayloadWithInitialValue() {
@@ -183,7 +158,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -206,7 +181,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 

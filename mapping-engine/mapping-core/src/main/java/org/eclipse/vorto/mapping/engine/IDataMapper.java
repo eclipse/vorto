@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.mapping.engine;
 
+import java.util.Optional;
+
+import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 
 /**
@@ -23,13 +26,31 @@ import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
  */
 public interface IDataMapper {
 	
+	
+	@Deprecated
 	/**
-	 * Performs the actual platform specific mapping for the given input.
-	 * @param input source input data that is supposed to get mapped.
-	 * @param context providing more meta - data for the mapper
-	 * @return mapped payload that complies to Vorto Information Model
+	 * Use {@link#mapSource} instead
+	 * @param input
+	 * @param context
+	 * @return
 	 */
 	InfomodelData map(Object input, MappingContext context);
+	
+	/**
+	 * Maps the given source object to Vorto compliant data structure
+	 * @param input source input data that is supposed to get mapped.
+	 * @return mapped payload that complies to Vorto Information Model
+	 */
+	InfomodelData mapSource(Object input);
+
+	/**
+	 * Maps the given new property 
+	 * @param newValue
+	 * @param oldValue
+	 * @param context
+	 * @return
+	 */
+	Object mapTarget(FunctionblockProperty newValue, Optional<FunctionblockProperty> oldValue);
 	
 	static DataMapperBuilder newBuilder() {
 		return new DataMapperBuilder();

@@ -9,7 +9,6 @@ import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
 import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
@@ -37,13 +36,13 @@ public class JsonMappingTest {
 
 		String json = "{\"count\" : 2 }";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertNull(mappedOutput.get("button").getStatus().get("sensor_value"));
 		assertEquals(2.0, mappedOutput.get("button").getStatus().get("sensor_value2"));
 
 		json = "{\"count\" : 0 }";
 
-		mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals(0.0, mappedOutput.get("button").getStatus().get("sensor_value"));
 		assertNull(mappedOutput.get("button").getStatus().get("sensor_value2"));
 	}
@@ -55,7 +54,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : \"aGFsbG8=\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals("hallo", mappedOutput.get("button").getStatus().get("sensor_value"));
 
 	}
@@ -67,7 +66,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals(100.0, mappedOutput.get("button").getStatus().get("sensor_value"));
 
 	}
@@ -79,7 +78,7 @@ public class JsonMappingTest {
 
 		String json = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatus()
 				.get("digital_input_state")));
 
@@ -93,7 +92,7 @@ public class JsonMappingTest {
 
 		String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -114,7 +113,7 @@ public class JsonMappingTest {
 		final Date timestamp = new Date();
 		String json = "{\"time\" : " + timestamp.getTime() + "}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -132,7 +131,7 @@ public class JsonMappingTest {
 
 		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
@@ -149,7 +148,7 @@ public class JsonMappingTest {
 		
 		final String sampleHomeConnectRESTResponse = "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(sampleHomeConnectRESTResponse,Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(sampleHomeConnectRESTResponse,Object.class));
 		System.out.println(mappedOutput);
 		assertNull(mappedOutput.get("operationState"));
 		FunctionblockData doorStateFunctionblockData = mappedOutput.get("doorState");
@@ -165,7 +164,7 @@ public class JsonMappingTest {
 
 		String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
 
-		InfomodelData mappedOutput = mapper.map(gson.fromJson(json, Object.class), MappingContext.empty());
+		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("btn1");
 
