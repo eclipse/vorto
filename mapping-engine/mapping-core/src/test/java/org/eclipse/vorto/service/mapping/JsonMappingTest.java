@@ -9,8 +9,8 @@ import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;

@@ -12,18 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.functions.impl;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
-import org.apache.commons.jxpath.JXPathContext;
-import org.eclipse.vorto.mapping.engine.functions.CustomFunctionsLibrary;
-import org.eclipse.vorto.mapping.engine.internal.JxPathFactory;
+public class Base64 {
 
-public class Jxpath {
-
-	private static JxPathFactory helper = new JxPathFactory(CustomFunctionsLibrary.createDefault());
+	public static byte[] decodeString(String value) {
+		return org.apache.commons.codec.binary.Base64.decodeBase64(value);
+	}
 	
-	public static Object eval(String exp, Object value) {
-		JXPathContext context = helper.newContext(value);
-		return context.getValue(exp.replaceAll("\\.", "/"));
+	public static byte[] decodeByteArray(byte[] value) {
+		return org.apache.commons.codec.binary.Base64.decodeBase64(value);
 	}
 }

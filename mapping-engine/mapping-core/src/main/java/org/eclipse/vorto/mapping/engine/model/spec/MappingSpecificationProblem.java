@@ -12,11 +12,20 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.functions.impl;
+package org.eclipse.vorto.mapping.engine.model.spec;
 
-public class Arrays {
+public class MappingSpecificationProblem extends RuntimeException {
 
-	public static int length(Object[] array) {
-		return array.length;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public MappingSpecificationProblem(String msg, Throwable t) {
+		super(msg, t);
+	}
+	
+	public MappingSpecificationProblem(String msg) {
+		super(msg);
 	}
 }

@@ -16,9 +16,9 @@ package org.eclipse.vorto.repository.web.core.validation;
 
 import java.util.Map;
 
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;

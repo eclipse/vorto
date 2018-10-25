@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.spec;
+package org.eclipse.vorto.mapping.engine.model.spec;
 
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;

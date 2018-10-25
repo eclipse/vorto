@@ -19,7 +19,7 @@ import java.util.List
 import java.util.Map
 import java.util.stream.Collectors
 import org.apache.commons.text.StringEscapeUtils
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification
 import org.eclipse.vorto.repository.api.ModelId
 import org.eclipse.vorto.repository.api.content.Stereotype
 

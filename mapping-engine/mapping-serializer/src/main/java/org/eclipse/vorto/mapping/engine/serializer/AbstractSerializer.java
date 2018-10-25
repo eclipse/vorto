@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.mapping.engine.serializer;
 
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 
 public abstract class AbstractSerializer implements IMappingSerializer {
 

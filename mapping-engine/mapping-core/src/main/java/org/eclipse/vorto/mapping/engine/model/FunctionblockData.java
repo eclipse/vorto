@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.normalized;
+package org.eclipse.vorto.mapping.engine.model;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -12,15 +12,11 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.functions.impl;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
-public class Base64 {
+public class Arrays {
 
-	public static byte[] decodeString(String value) {
-		return org.apache.commons.codec.binary.Base64.decodeBase64(value);
-	}
-	
-	public static byte[] decodeByteArray(byte[] value) {
-		return org.apache.commons.codec.binary.Base64.decodeBase64(value);
+	public static int length(Object[] array) {
+		return array.length;
 	}
 }

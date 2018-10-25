@@ -19,7 +19,7 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.commons.jxpath.util.BasicTypeConverter;
 import org.apache.commons.jxpath.util.TypeUtils;
-import org.eclipse.vorto.mapping.engine.functions.CustomFunctionsLibrary;
+import org.eclipse.vorto.mapping.engine.internal.functions.CustomFunctionsLibrary;
 
 public class JxPathFactory {
 

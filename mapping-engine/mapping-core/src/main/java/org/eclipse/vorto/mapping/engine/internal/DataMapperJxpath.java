@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine;
+package org.eclipse.vorto.mapping.engine.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +26,14 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.JXPathNotFoundException;
 import org.apache.commons.text.StrSubstitutor;
-import org.eclipse.vorto.mapping.engine.functions.CustomFunctionsLibrary;
-import org.eclipse.vorto.mapping.engine.internal.JxPathFactory;
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.IDataMapper;
+import org.eclipse.vorto.mapping.engine.MappingContext;
+import org.eclipse.vorto.mapping.engine.MappingException;
+import org.eclipse.vorto.mapping.engine.internal.functions.CustomFunctionsLibrary;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.repository.api.content.FunctionblockModel;
 import org.eclipse.vorto.repository.api.content.Infomodel;
 import org.eclipse.vorto.repository.api.content.ModelProperty;

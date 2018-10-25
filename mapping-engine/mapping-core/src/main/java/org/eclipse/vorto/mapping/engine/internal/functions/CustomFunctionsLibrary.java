@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.functions;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.apache.commons.jxpath.Functions;
+import org.eclipse.vorto.mapping.engine.functions.IFunction;
 
 public class CustomFunctionsLibrary {
 

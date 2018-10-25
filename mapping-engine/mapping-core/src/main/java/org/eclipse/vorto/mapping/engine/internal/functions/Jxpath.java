@@ -12,19 +12,17 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.functions.impl;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
-import java.util.Date;
+import org.apache.commons.jxpath.JXPathContext;
+import org.eclipse.vorto.mapping.engine.internal.JxPathFactory;
 
-import org.apache.commons.lang3.time.DateFormatUtils;
+public class Jxpath {
 
-public class DateUtils {
+	private static JxPathFactory helper = new JxPathFactory(CustomFunctionsLibrary.createDefault());
 	
-	public static String format(final long time) {
-		return DateFormatUtils.format(time, "yyyy-MM-dd HH:mm:ssZ");
-	}
-	
-	public static String format(final long time, String pattern) {
-		return DateFormatUtils.format(new Date(time), pattern);
+	public static Object eval(String exp, Object value) {
+		JXPathContext context = helper.newContext(value);
+		return context.getValue(exp.replaceAll("\\.", "/"));
 	}
 }

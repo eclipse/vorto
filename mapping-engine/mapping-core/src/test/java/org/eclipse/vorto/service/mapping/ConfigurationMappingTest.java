@@ -8,8 +8,8 @@ import java.util.Optional;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.functions.ClassFunction;
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConfiguration;
 import org.junit.Test;
 

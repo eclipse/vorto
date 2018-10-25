@@ -1,4 +1,4 @@
-package org.eclipse.vorto.mapping.engine.spec;
+package org.eclipse.vorto.mapping.engine.model.spec;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;

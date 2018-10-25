@@ -1,4 +1,4 @@
-package org.eclipse.vorto.mapping.engine.spec;
+package org.eclipse.vorto.mapping.engine.model.spec;
 
 import java.util.HashMap;
 import java.util.Map;

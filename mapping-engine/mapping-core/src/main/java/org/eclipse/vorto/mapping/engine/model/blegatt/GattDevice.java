@@ -1,4 +1,4 @@
-package org.eclipse.vorto.mapping.engine.ble.json;
+package org.eclipse.vorto.mapping.engine.model.blegatt;
 
 import java.util.List;
 

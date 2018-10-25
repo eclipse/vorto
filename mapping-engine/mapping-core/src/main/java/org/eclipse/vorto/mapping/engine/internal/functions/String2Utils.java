@@ -1,4 +1,4 @@
-package org.eclipse.vorto.mapping.engine.functions.impl;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
 public class String2Utils {
 

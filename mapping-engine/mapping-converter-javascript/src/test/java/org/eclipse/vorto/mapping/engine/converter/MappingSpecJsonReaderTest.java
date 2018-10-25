@@ -3,8 +3,8 @@ package org.eclipse.vorto.mapping.engine.converter;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.junit.Test;
 
 import com.google.gson.Gson;

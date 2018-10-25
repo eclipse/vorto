@@ -16,8 +16,8 @@ package org.eclipse.vorto.mapping.engine;
 
 import java.util.Optional;
 
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 
 /**
  * Data Mapper that maps specific device payload to Vorto compliant data and vica versa.

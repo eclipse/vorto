@@ -18,9 +18,9 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
-import org.eclipse.vorto.mapping.engine.normalized.FunctionblockProperty;
-import org.eclipse.vorto.mapping.engine.normalized.InfomodelData;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
+import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 
 public final class MappingEngine {
 

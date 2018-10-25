@@ -1,4 +1,4 @@
-package org.eclipse.vorto.mapping.engine.binary;
+package org.eclipse.vorto.mapping.engine.model.binary;
 
 public class BinaryData {
 

@@ -22,16 +22,17 @@ import org.apache.commons.lang3.Conversion;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.eclipse.vorto.mapping.engine.functions.ClassFunction;
-import org.eclipse.vorto.mapping.engine.functions.CustomFunctionsLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IFunction;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
-import org.eclipse.vorto.mapping.engine.functions.impl.Arrays;
-import org.eclipse.vorto.mapping.engine.functions.impl.Base64;
-import org.eclipse.vorto.mapping.engine.functions.impl.ConvertUtils;
-import org.eclipse.vorto.mapping.engine.functions.impl.DateUtils;
-import org.eclipse.vorto.mapping.engine.functions.impl.Jxpath;
-import org.eclipse.vorto.mapping.engine.functions.impl.String2Utils;
-import org.eclipse.vorto.mapping.engine.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.internal.DataMapperJxpath;
+import org.eclipse.vorto.mapping.engine.internal.functions.Arrays;
+import org.eclipse.vorto.mapping.engine.internal.functions.Base64;
+import org.eclipse.vorto.mapping.engine.internal.functions.ConvertUtils;
+import org.eclipse.vorto.mapping.engine.internal.functions.CustomFunctionsLibrary;
+import org.eclipse.vorto.mapping.engine.internal.functions.DateUtils;
+import org.eclipse.vorto.mapping.engine.internal.functions.Jxpath;
+import org.eclipse.vorto.mapping.engine.internal.functions.String2Utils;
+import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 
 public class DataMapperBuilder {
 		

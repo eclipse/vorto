@@ -12,20 +12,19 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.mapping.engine.spec;
+package org.eclipse.vorto.mapping.engine.internal.functions;
 
-public class MappingSpecificationProblem extends RuntimeException {
+import java.util.Date;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+import org.apache.commons.lang3.time.DateFormatUtils;
 
-	public MappingSpecificationProblem(String msg, Throwable t) {
-		super(msg, t);
+public class DateUtils {
+	
+	public static String format(final long time) {
+		return DateFormatUtils.format(time, "yyyy-MM-dd HH:mm:ssZ");
 	}
 	
-	public MappingSpecificationProblem(String msg) {
-		super(msg);
+	public static String format(final long time, String pattern) {
+		return DateFormatUtils.format(new Date(time), pattern);
 	}
 }
