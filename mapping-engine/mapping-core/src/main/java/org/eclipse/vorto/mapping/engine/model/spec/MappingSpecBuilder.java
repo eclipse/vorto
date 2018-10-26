@@ -4,12 +4,12 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
-import org.eclipse.vorto.repository.api.content.EnumAttributeProperty;
-import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
-import org.eclipse.vorto.repository.api.content.IReferenceType;
-import org.eclipse.vorto.repository.api.content.PrimitiveType;
+import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.IPropertyAttribute;
+import org.eclipse.vorto.model.IReferenceType;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.PrimitiveType;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

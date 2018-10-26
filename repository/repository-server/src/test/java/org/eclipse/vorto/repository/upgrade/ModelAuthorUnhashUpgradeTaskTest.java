@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;

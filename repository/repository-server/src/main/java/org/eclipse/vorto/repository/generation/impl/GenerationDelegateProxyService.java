@@ -24,9 +24,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.api.exception.GenerationException;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;

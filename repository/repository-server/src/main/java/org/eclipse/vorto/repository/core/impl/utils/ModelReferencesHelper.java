@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.core.impl.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

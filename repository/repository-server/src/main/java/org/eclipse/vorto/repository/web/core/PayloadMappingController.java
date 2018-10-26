@@ -18,18 +18,17 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.mapping.engine.MappingEngine;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecification;
 import org.eclipse.vorto.mapping.engine.serializer.IMappingSerializer;
 import org.eclipse.vorto.mapping.engine.serializer.MappingSpecificationSerializer;
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.Stereotype;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelContent;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -88,7 +87,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		if (!this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform).isEmpty()){
 			throw new ModelAlreadyExistsException();
 		} else {
-			ModelContent modelContent = this.modelController.getModelContent(modelId);
+			org.eclipse.vorto.repository.api.ModelContent modelContent = this.modelController.getModelContent(modelId);
 			MappingSpecification spec = new MappingSpecification();
 			spec.setInfoModel((Infomodel)modelContent.getModels().get(modelContent.getRoot()));
 			for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
@@ -104,11 +103,11 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.GET)
 	public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,@PathVariable String targetPlatform) throws Exception {
-		ModelContent infoModelContent = modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+		org.eclipse.vorto.repository.api.ModelContent infoModelContent = modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
 		Infomodel infomodel = (Infomodel)infoModelContent.getModels().get(infoModelContent.getRoot());		
 		
 		if (infomodel == null) {
-			ModelContent infomodelContent = modelController.getModelContent(modelId);
+			org.eclipse.vorto.repository.api.ModelContent infomodelContent = modelController.getModelContent(modelId);
 			infomodel = (Infomodel)infomodelContent.getModels().get(infomodelContent.getRoot());
 		}
 		MappingSpecification specification = new MappingSpecification();
@@ -124,7 +123,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 			if (mappingId != null) {
 				fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(), mappingId.getPrettyFormat());
 			} else {
-				ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
+				org.eclipse.vorto.repository.api.ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
 				fbm = (FunctionblockModel)fbmContent.getModels().get(fbmContent.getRoot());
 			}			
 			

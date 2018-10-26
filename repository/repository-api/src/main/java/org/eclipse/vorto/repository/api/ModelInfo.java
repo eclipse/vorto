@@ -20,6 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.vorto.model.AbstractModel;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */

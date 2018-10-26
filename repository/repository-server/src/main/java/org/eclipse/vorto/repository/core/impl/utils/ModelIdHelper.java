@@ -3,7 +3,7 @@ package org.eclipse.vorto.repository.core.impl.utils;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 
 public class ModelIdHelper {
 

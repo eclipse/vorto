@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.core.impl.validation;
 import java.util.List;
 import java.util.Objects;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 
 

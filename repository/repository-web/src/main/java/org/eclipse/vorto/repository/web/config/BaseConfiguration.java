@@ -2,12 +2,12 @@ package org.eclipse.vorto.repository.web.config;
 
 import java.io.IOException;
 
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
-import org.eclipse.vorto.repository.api.content.EnumAttributeProperty;
-import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
-import org.eclipse.vorto.repository.api.content.IReferenceType;
-import org.eclipse.vorto.repository.api.content.PrimitiveType;
+import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.IPropertyAttribute;
+import org.eclipse.vorto.model.IReferenceType;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.PrimitiveType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 

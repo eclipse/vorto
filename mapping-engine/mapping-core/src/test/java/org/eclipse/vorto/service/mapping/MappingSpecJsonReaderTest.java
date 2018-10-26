@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 import org.junit.Test;
 
 import com.google.gson.GsonBuilder;

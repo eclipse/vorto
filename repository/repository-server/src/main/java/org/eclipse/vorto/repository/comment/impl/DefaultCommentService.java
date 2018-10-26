@@ -19,7 +19,7 @@ import java.util.List;
 
 import javax.jcr.PathNotFoundException;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;

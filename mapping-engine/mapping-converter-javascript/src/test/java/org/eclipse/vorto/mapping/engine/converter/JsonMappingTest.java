@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 import org.junit.Test;
 
 import com.google.gson.Gson;

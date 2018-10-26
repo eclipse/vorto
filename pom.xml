@@ -90,6 +90,8 @@
 
 	<modules>
 		<module>core-bundles</module>
+		<module>model</module>
+		<module>model-runtime</module>
 		<module>plugin-sdk</module>
 		<module>generators</module>
 		<module>mapping-engine</module>

@@ -17,10 +17,8 @@ package org.eclipse.vorto.repository.core;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.TestConfig;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.core.AttachmentException;
-import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.junit.Before;
 import org.junit.Test;

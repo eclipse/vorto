@@ -14,6 +14,8 @@
  */
 package org.eclipse.vorto.repository.api;
 
+import org.eclipse.vorto.model.ModelType;
+
 public class ModelQueryBuilder {
 
 	private StringBuilder expression = new StringBuilder();

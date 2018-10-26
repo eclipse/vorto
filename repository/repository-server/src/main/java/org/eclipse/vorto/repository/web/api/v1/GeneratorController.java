@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
