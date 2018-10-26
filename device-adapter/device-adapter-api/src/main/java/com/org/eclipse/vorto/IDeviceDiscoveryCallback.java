@@ -1,6 +1,6 @@
-package com.bosch.otf81sgp.vortopayloadmappingengine;
+package org.eclipse.vorto.deviceadapter;
 
-import com.bosch.otf81sgp.vortopayloadmappingengine.DeviceInfo;
+import package org.eclipse.vorto.deviceadapter.DeviceInfo;
 
 /**
  * The interface Device discovery callback.

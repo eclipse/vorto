@@ -1,4 +1,4 @@
-package com.bosch.otf81sgp.vortopayloadmappingengine;
+package org.eclipse.vorto.deviceadapter;
 
 /**
  * To be used in an Adapter implementation.

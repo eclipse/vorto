@@ -1,6 +1,4 @@
-package com.bosch.otf81sgp.vortopayloadmappingengine;
-
-import com.bosch.otf81sgp.vortopayloadmappingengine.util.VortoGattDevice;
+package org.eclipse.vorto.deviceadapter;
 
 import org.eclipse.vorto.mapping.engine.normalized.FunctionblockData;
 import org.eclipse.vorto.repository.api.ModelId;
