@@ -38,8 +38,6 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
-import org.eclipse.vorto.repository.web.core.validation.ValidationHelper;
-import org.eclipse.vorto.repository.web.core.validation.ValidationProblem;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
@@ -212,19 +210,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 		
 		InfomodelData mappedOutput = engine.map(gson.fromJson(testRequest.getSourceJson(),Object.class));
-
-		ValidationHelper validationHelper = new ValidationHelper(testRequest.getSpecification());
-		
+				
 		TestMappingResponse response = new TestMappingResponse();
-		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.getProperties()));
-		try {
-			validationHelper.validate(mappedOutput);
-			response.setValid(true);
-		} catch (ValidationProblem validationProblem) {
-			response.setValid(false);
-			response.setValidationError(validationProblem.getMessage());
-		}
-		
+		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
+		response.setReport(mappedOutput.validate());
 		return response;
 	}
 

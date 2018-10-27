@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.content.IMappedElement;
+import org.eclipse.vorto.model.IMappedElement;
 import org.eclipse.vorto.repository.api.mapping.IMappingQuery;
 
 public abstract class MappingQueryJxPath<Result extends IMappedElement> implements IMappingQuery<Result> {

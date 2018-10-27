@@ -12,16 +12,17 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.core.validation;
+package org.eclipse.vorto.deviceadapter;
 
-public class ValidationProblem extends RuntimeException {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	public ValidationProblem(String msg) {
-		super(msg);
-	}
+/**
+ * The interface Device discovery.
+ */
+public interface IDeviceDiscovery {
+    /**
+     * List available devices.
+     *
+     * @param callback     the callback
+     * @param scantimeInMs the scantime in ms
+     */
+    void listAvailableDevices(IDeviceDiscoveryCallback callback, int scantimeInMs);
 }

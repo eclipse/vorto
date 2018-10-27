@@ -44,13 +44,13 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
 		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
 
-		assertEquals(2322f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
+		assertEquals(2322f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
 
 		System.out.println(gson.toJson(mappedOutput.getProperties()));
 
@@ -162,13 +162,13 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
 		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
 
-		assertEquals(0f, voltageFunctionblockData.getStatus().get("sensor_value"));
-		assertEquals("mV", voltageFunctionblockData.getStatus().get("sensor_units"));
+		assertEquals(0f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
 
 		System.out.println(mappedOutput);
 	}
@@ -185,8 +185,8 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatus().get("digital_input_state"));
-		assertEquals(2, buttonFunctionblockData.getStatus().get("digital_input_count"));
+		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
+		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
 		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
 

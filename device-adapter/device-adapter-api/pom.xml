@@ -11,17 +11,19 @@
 	
 	<artifactId>device-adapter-api</artifactId>
 	<name>Device Adapter API</name>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
-		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>model</artifactId>
-		<version>${project.version}</version>
-	</dependencies>
-	<dependencies>
-		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>model-runtime</artifactId>
-		<version>${project.version}</version>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>model</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>model-runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 </project>

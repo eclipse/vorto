@@ -29,7 +29,7 @@ public class MappingSpecJsonReaderTest {
 		String json = "{\"state\" : false, \"count\": 50}";
 
 		InfomodelData mappedOutput = mapper.mapSource(new GsonBuilder().create().fromJson(json, Object.class));
-		assertEquals(false,mappedOutput.get("button").getStatus().get("digitalInputState"));
-		assertEquals(50.0,mappedOutput.get("button").getStatus().get("digitalInputStateCount"));
+		assertEquals(false,mappedOutput.get("button").getStatusProperty("digitalInputState").get().getValue());
+		assertEquals(50.0,mappedOutput.get("button").getStatusProperty("digitalInputStateCount").get().getValue());
 	}
 }

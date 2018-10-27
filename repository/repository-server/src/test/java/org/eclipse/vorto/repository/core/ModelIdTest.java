@@ -16,7 +16,7 @@ package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.junit.Test;
 
 public class ModelIdTest {

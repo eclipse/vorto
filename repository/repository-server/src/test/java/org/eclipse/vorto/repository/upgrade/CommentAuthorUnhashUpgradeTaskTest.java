@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.impl.UserContext;

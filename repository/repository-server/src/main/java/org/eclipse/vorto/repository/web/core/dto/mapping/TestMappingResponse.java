@@ -1,12 +1,12 @@
 package org.eclipse.vorto.repository.web.core.dto.mapping;
 
+import org.eclipse.vorto.model.runtime.ValidationReport;
+
 public class TestMappingResponse {
 
 	private String mappedOutput;
 	
-	private boolean valid = true;
-	
-	private String validationError;
+	private ValidationReport report;
 
 	public String getMappedOutput() {
 		return mappedOutput;
@@ -16,22 +16,14 @@ public class TestMappingResponse {
 		this.mappedOutput = mappedOutput;
 	}
 
-	public boolean isValid() {
-		return valid;
+	public ValidationReport getReport() {
+		return report;
 	}
 
-	public void setValid(boolean valid) {
-		this.valid = valid;
+	public void setReport(ValidationReport report) {
+		this.report = report;
 	}
 
-	public String getValidationError() {
-		return validationError;
-	}
-
-	public void setValidationError(String validationError) {
-		this.validationError = validationError;
-	}
-	
 	
 	
 }

@@ -34,7 +34,7 @@ public class BinaryMappingTest {
 
 		FunctionblockData button = mappedDittoOutput.get("button");
 		
-		assertEquals(2,button.getStatus().get("sensor_value"));
+		assertEquals(2,button.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedDittoOutput);
 	}
@@ -69,7 +69,7 @@ public class BinaryMappingTest {
 		String json = new Gson().toJson(gattDevice);
 			
 		InfomodelData mapped = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(20.00,mapped.get("button").getStatus().get("sensor_value"));
+		assertEquals(20.00,mapped.get("button").getStatusProperty("sensor_value").get().getValue());
 		System.out.println(mapped);
 	}
 	

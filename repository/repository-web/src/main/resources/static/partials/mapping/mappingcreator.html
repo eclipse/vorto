@@ -30,11 +30,11 @@
   		<div class="alert alert-success" ng-show="success">
 			<p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Saved successfully.</p>
 		</div>
-		<div class="alert alert-warning alert-dismissable" ng-hide="testResponse.valid">
+		<div class="alert alert-warning alert-dismissable" ng-hide="testResponse.report.valid">
     		<h4><i class="fa fa-warning"></i> Invalid according to Vorto Model </h4>
-        	{{testResponse.validationError}}!<br/><br/>
+        	{{testResponse.report.items[0].message}}!<br/><br/>
     	</div>
-	    <div class="alert alert-success" ng-show="testResponse.valid && mappedOutput != null">
+	    <div class="alert alert-success" ng-show="testResponse.report.valid && mappedOutput != null">
 	      <p><i class="fa fa-check-circle-o fa-3x" aria-hidden="true"></i> Nice work! Your mapping is valid according to the Vorto model!</p>
 	    </div>
 	    <p>

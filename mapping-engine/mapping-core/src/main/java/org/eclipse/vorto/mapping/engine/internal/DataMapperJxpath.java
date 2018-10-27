@@ -74,7 +74,7 @@ public class DataMapperJxpath implements IDataMapper {
 
 		JXPathContext context = jxpathHelper.newContext(input);
 
-		InfomodelData normalized = new InfomodelData();
+		InfomodelData normalized = new InfomodelData(specification.getInfoModel());
 
 		final Infomodel deviceInfoModel = specification.getInfoModel();
 
@@ -92,7 +92,7 @@ public class DataMapperJxpath implements IDataMapper {
 
 		FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
 
-		FunctionblockData fbData = new FunctionblockData(fbProperty.getName());
+		FunctionblockData fbData = new FunctionblockData(fbProperty.getName(),fbModel);
 
 		for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
 

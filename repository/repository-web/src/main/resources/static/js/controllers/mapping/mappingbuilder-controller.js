@@ -11,8 +11,9 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.mappedOutput = null;
 
     $scope.testResponse = {
-            valid : true,
-            validationError : ""
+            report : {
+            	valid : true
+            }
     };
 
 

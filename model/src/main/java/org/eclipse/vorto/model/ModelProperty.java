@@ -35,7 +35,6 @@ public class ModelProperty extends AbstractProperty {
 				+ ", isMultiple=" + isMultiple + ", description=" + description + ", type=" + type + ", constraints="
 				+ constraints + "]";
 	}
-	
 
 	
 }
