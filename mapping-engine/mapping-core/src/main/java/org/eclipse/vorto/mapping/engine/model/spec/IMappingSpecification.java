@@ -16,8 +16,8 @@ package org.eclipse.vorto.mapping.engine.model.spec;
 
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Infomodel;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.Infomodel;
 
 /**
  * Mapping Specification that combines the Information Model properties merged with the target platform attributes defined in the mapping models. 

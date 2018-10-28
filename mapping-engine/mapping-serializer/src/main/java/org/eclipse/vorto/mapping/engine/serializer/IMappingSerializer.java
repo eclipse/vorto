@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.mapping.engine.serializer;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 
 /**
  * Serializer for serializing a mapping specification 

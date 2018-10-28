@@ -6,12 +6,12 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvaluator;
 import org.eclipse.vorto.mapping.engine.functions.ScriptClassFunction;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.repository.api.content.PrimitiveType;
-import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 
 public class SpecWithCustomFunction extends AbstractTestSpec {

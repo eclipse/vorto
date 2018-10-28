@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.springframework.beans.factory.annotation.Value;

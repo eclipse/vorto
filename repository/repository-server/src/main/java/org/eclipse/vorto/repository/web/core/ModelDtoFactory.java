@@ -54,27 +54,27 @@ import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
-import org.eclipse.vorto.repository.api.AbstractModel;
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.AbstractModel;
+import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.BooleanAttributePropertyType;
+import org.eclipse.vorto.model.Constraint;
+import org.eclipse.vorto.model.ConstraintType;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.EnumAttributePropertyType;
+import org.eclipse.vorto.model.EnumLiteral;
+import org.eclipse.vorto.model.EnumModel;
+import org.eclipse.vorto.model.IPropertyAttribute;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelEvent;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.Operation;
+import org.eclipse.vorto.model.Param;
+import org.eclipse.vorto.model.ReturnType;
+import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
-import org.eclipse.vorto.repository.api.content.BooleanAttributePropertyType;
-import org.eclipse.vorto.repository.api.content.Constraint;
-import org.eclipse.vorto.repository.api.content.ConstraintType;
-import org.eclipse.vorto.repository.api.content.EntityModel;
-import org.eclipse.vorto.repository.api.content.EnumAttributeProperty;
-import org.eclipse.vorto.repository.api.content.EnumAttributePropertyType;
-import org.eclipse.vorto.repository.api.content.EnumLiteral;
-import org.eclipse.vorto.repository.api.content.EnumModel;
-import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelEvent;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.repository.api.content.Operation;
-import org.eclipse.vorto.repository.api.content.Param;
-import org.eclipse.vorto.repository.api.content.ReturnType;
-import org.eclipse.vorto.repository.api.content.Stereotype;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.core.IUserContext;
 
@@ -174,8 +174,8 @@ public class ModelDtoFactory {
 		return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
 	}
 
-	public static org.eclipse.vorto.repository.api.content.FunctionblockModel createResource(FunctionblockModel model,Optional<MappingModel> mappingModel) {
-		org.eclipse.vorto.repository.api.content.FunctionblockModel resource = new org.eclipse.vorto.repository.api.content.FunctionblockModel(
+	public static org.eclipse.vorto.model.FunctionblockModel createResource(FunctionblockModel model,Optional<MappingModel> mappingModel) {
+		org.eclipse.vorto.model.FunctionblockModel resource = new org.eclipse.vorto.model.FunctionblockModel(
 				new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.Functionblock);
 		resource.setDescription(model.getDescription());
 		resource.setDisplayName(model.getDisplayname());
@@ -239,7 +239,7 @@ public class ModelDtoFactory {
 			if (o.getReturnType() instanceof ReturnPrimitiveType) {
 				returnType.setPrimitive(true);
 				PrimitiveType pt = ((ReturnPrimitiveType) o.getReturnType()).getReturnType();
-				returnType.setType(org.eclipse.vorto.repository.api.content.PrimitiveType.valueOf(pt.name()));
+				returnType.setType(org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name()));
 			} else {
 				returnType.setPrimitive(false);
 				returnType.setType(createModelId(((ReturnObjectType) o.getReturnType()).getReturnType()));
@@ -269,7 +269,7 @@ public class ModelDtoFactory {
 		param.setName(p.getName());
 		if (p instanceof PrimitiveParam) {
 			PrimitiveType pt = ((PrimitiveParam) p).getType();
-			param.setType(org.eclipse.vorto.repository.api.content.PrimitiveType.valueOf(pt.name()));
+			param.setType(org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name()));
 
 			if (((PrimitiveParam) p).getConstraintRule() != null
 					&& ((PrimitiveParam) p).getConstraintRule().getConstraints() != null) {
@@ -327,7 +327,7 @@ public class ModelDtoFactory {
 		p.setName(property.getName());
 		if (property.getType() instanceof PrimitivePropertyType) {
 			PrimitiveType pt = ((PrimitivePropertyType) property.getType()).getType();
-			p.setType(org.eclipse.vorto.repository.api.content.PrimitiveType.valueOf(pt.name()));
+			p.setType(org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name()));
 		} else {
 			p.setType(createModelId(((ObjectPropertyType) property.getType()).getType()));
 		}

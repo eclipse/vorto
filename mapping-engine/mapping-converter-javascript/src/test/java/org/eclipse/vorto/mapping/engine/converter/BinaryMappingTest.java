@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.apache.commons.lang3.Conversion;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattCharacteristic;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattDevice;
 import org.eclipse.vorto.mapping.engine.model.blegatt.GattService;
+import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -34,7 +34,7 @@ public class BinaryMappingTest {
 
 		FunctionblockData button = mappedDittoOutput.get("button");
 		
-		assertEquals(2,button.getStatus().get("sensor_value"));
+		assertEquals(2,button.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedDittoOutput);
 	}
@@ -69,7 +69,7 @@ public class BinaryMappingTest {
 		String json = new Gson().toJson(gattDevice);
 			
 		InfomodelData mapped = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(20.00,mapped.get("button").getStatus().get("sensor_value"));
+		assertEquals(20.00,mapped.get("button").getStatusProperty("sensor_value").get().getValue());
 		System.out.println(mapped);
 	}
 	

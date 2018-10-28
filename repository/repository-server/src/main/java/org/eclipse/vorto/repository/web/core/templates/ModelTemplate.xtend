@@ -14,8 +14,8 @@
  */
 package org.eclipse.vorto.repository.web.core.templates
 
-import org.eclipse.vorto.repository.api.ModelId
-import org.eclipse.vorto.repository.api.ModelType
+import org.eclipse.vorto.model.ModelId
+import org.eclipse.vorto.model.ModelType
 
 class ModelTemplate {
 	

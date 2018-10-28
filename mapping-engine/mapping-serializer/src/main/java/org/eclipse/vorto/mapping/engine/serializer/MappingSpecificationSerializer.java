@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
+import org.eclipse.vorto.model.ModelProperty;
 
 public class MappingSpecificationSerializer  {
 

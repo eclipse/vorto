@@ -2,12 +2,12 @@ package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.Arrays;
 
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.repository.api.content.PrimitiveType;
-import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.model.Stereotype;
 
 public class SpecWithConditionXpath extends AbstractTestSpec {
 	

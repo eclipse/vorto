@@ -30,14 +30,14 @@ import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.internal.functions.CustomFunctionsLibrary;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
-import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.Stereotype;
+import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.FunctionblockProperty;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 
 /**
  * 
@@ -74,7 +74,7 @@ public class DataMapperJxpath implements IDataMapper {
 
 		JXPathContext context = jxpathHelper.newContext(input);
 
-		InfomodelData normalized = new InfomodelData();
+		InfomodelData normalized = new InfomodelData(specification.getInfoModel());
 
 		final Infomodel deviceInfoModel = specification.getInfoModel();
 
@@ -92,7 +92,7 @@ public class DataMapperJxpath implements IDataMapper {
 
 		FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
 
-		FunctionblockData fbData = new FunctionblockData(fbProperty.getName());
+		FunctionblockData fbData = new FunctionblockData(fbProperty.getName(),fbModel);
 
 		for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
 

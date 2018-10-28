@@ -7,9 +7,9 @@ import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvaluator;
 import org.eclipse.vorto.mapping.engine.functions.ScriptClassFunction;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.Stereotype;
 
 public class MappingSpecification implements IMappingSpecification {
 

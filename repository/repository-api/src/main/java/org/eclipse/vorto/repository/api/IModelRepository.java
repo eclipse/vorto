@@ -18,12 +18,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumModel;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
-import org.eclipse.vorto.repository.api.content.EntityModel;
-import org.eclipse.vorto.repository.api.content.EnumModel;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelContent;
 
 /**
  * Model repository lets you find and retrieve Vorto information models from the Vorto Repository

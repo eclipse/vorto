@@ -20,8 +20,8 @@ import java.util.Map
 import java.util.stream.Collectors
 import org.apache.commons.text.StringEscapeUtils
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification
-import org.eclipse.vorto.repository.api.ModelId
-import org.eclipse.vorto.repository.api.content.Stereotype
+import org.eclipse.vorto.model.ModelId
+import org.eclipse.vorto.model.Stereotype
 
 /**
  * Creates a Information Model Payload Mapping DSL File 

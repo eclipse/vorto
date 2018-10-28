@@ -10,10 +10,11 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.testInProgress = false;
     $scope.mappedOutput = null;
 
-    $scope.testResponse = {
-            valid : true,
-            validationError : ""
-    };
+	$scope.testResponse = {
+		report : {
+			valid : true
+		}
+	};
 
 
     $scope.isLoading = false;

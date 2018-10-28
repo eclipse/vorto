@@ -16,7 +16,7 @@ package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;

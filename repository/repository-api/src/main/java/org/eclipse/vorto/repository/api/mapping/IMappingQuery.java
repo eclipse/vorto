@@ -16,7 +16,7 @@ package org.eclipse.vorto.repository.api.mapping;
 
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.content.IMappedElement;
+import org.eclipse.vorto.model.IMappedElement;
 
 public interface IMappingQuery<Result extends IMappedElement> {
 

@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.ModelType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;

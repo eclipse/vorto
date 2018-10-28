@@ -1,7 +1,6 @@
 package org.eclipse.vorto.service.mapping;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,8 +8,8 @@ import java.util.Date;
 
 import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockData;
-import org.eclipse.vorto.mapping.engine.model.InfomodelData;
+import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.InfomodelData;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
 import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
@@ -37,14 +36,14 @@ public class JsonMappingTest {
 		String json = "{\"count\" : 2 }";
 
 		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertNull(mappedOutput.get("button").getStatus().get("sensor_value"));
-		assertEquals(2.0, mappedOutput.get("button").getStatus().get("sensor_value2"));
+		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
+		assertEquals(2.0, mappedOutput.get("button").getStatusProperty("sensor_value2").get().getValue());
 
 		json = "{\"count\" : 0 }";
 
 		mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(0.0, mappedOutput.get("button").getStatus().get("sensor_value"));
-		assertNull(mappedOutput.get("button").getStatus().get("sensor_value2"));
+		assertEquals(0.0, mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
+		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
 	}
 
 	@Test
@@ -55,7 +54,7 @@ public class JsonMappingTest {
 		String json = "{\"data\" : \"aGFsbG8=\"}";
 
 		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatus().get("sensor_value"));
+		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
 
 	}
 
@@ -67,7 +66,7 @@ public class JsonMappingTest {
 		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
 		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(100.0, mappedOutput.get("button").getStatus().get("sensor_value"));
+		assertEquals(100.0, mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
 
 	}
 
@@ -79,8 +78,7 @@ public class JsonMappingTest {
 		String json = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
 
 		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatus()
-				.get("digital_input_state")));
+		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatusProperty("digital_input_state").get().getValue()));
 
 	}
 
@@ -96,7 +94,7 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals("DOUBLE", buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals("DOUBLE", buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedOutput);
 
@@ -117,7 +115,7 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedOutput);
 
@@ -135,7 +133,7 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals("0.002322", buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals("0.002322", buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedOutput);
 
@@ -152,7 +150,7 @@ public class JsonMappingTest {
 		System.out.println(mappedOutput);
 		assertNull(mappedOutput.get("operationState"));
 		FunctionblockData doorStateFunctionblockData = mappedOutput.get("doorState");
-		assertEquals("Locked", (String)doorStateFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals("Locked", (String)doorStateFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 		
 	}
 
@@ -168,11 +166,11 @@ public class JsonMappingTest {
 
 		FunctionblockData buttonFunctionblockData = mappedOutput.get("btn1");
 
-		assertEquals(2.0, buttonFunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(2.0, buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		FunctionblockData button2FunctionblockData = mappedOutput.get("btn2");
 
-		assertEquals(10.0, button2FunctionblockData.getStatus().get("sensor_value"));
+		assertEquals(10.0, button2FunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedOutput);
 

@@ -35,7 +35,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
-import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;

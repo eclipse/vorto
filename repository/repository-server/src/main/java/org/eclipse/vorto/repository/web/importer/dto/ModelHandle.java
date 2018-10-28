@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.web.importer.dto;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 
 /**
  * Model class to hold file handle id and associated model details.

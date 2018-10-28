@@ -8,8 +8,8 @@ import java.util.Optional;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.functions.ClassFunction;
-import org.eclipse.vorto.mapping.engine.model.FunctionblockProperty;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.model.runtime.FunctionblockProperty;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConfiguration;
 import org.junit.Test;
 
@@ -22,8 +22,8 @@ public class ConfigurationMappingTest {
 				.registerConverterFunction(new ClassFunction("button", ConfigurationMappingTest.class))
 				.build();
 		
-		FunctionblockProperty newValue = FunctionblockProperty.newBuilder(spec,"button").property("enable").value(true).build();
-		FunctionblockProperty oldValue = FunctionblockProperty.newBuilder(spec,"button").property("enable").value(false).build();
+		FunctionblockProperty newValue = FunctionblockProperty.newBuilder(spec.getFunctionBlock("button"),"button").property("enable").value(true).build();
+		FunctionblockProperty oldValue = FunctionblockProperty.newBuilder(spec.getFunctionBlock("button"),"button").property("enable").value(false).build();
 		
 		Object mapped = mapper.mapTarget(newValue,Optional.of(oldValue));
 		assertEquals("1",mapped);
@@ -32,7 +32,7 @@ public class ConfigurationMappingTest {
 	@Test (expected = IllegalArgumentException.class)
 	public void testUnknownConfigProperty() throws Exception {
 		IMappingSpecification spec = new SpecWithConfiguration();		
-		FunctionblockProperty.newBuilder(spec,"button").property("notExistProperty").value(true).build();
+		FunctionblockProperty.newBuilder(spec.getFunctionBlock("button"),"button").property("notExistProperty").value(true).build();
 	}
 	
 	@Test (expected = MappingException.class)
@@ -41,8 +41,8 @@ public class ConfigurationMappingTest {
 		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(spec)
 				.build();
 		
-		FunctionblockProperty newValue = FunctionblockProperty.newBuilder(spec,"button").property("enable").value(true).build();
-		FunctionblockProperty oldValue = FunctionblockProperty.newBuilder(spec,"button").property("enable").value(false).build();
+		FunctionblockProperty newValue = FunctionblockProperty.newBuilder(spec.getFunctionBlock("button"),"button").property("enable").value(true).build();
+		FunctionblockProperty oldValue = FunctionblockProperty.newBuilder(spec.getFunctionBlock("button"),"button").property("enable").value(false).build();
 		
 		Object mapped = mapper.mapTarget(newValue,Optional.of(oldValue));
 		assertEquals("1",mapped);

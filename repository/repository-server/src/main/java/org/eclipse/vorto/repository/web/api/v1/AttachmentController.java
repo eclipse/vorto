@@ -25,7 +25,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.attachment.Tag;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;

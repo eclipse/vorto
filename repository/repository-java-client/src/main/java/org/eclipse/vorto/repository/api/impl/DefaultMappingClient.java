@@ -18,11 +18,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.content.EntityModel;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.IMappedElement;
-import org.eclipse.vorto.repository.api.content.Infomodel;
-import org.eclipse.vorto.repository.api.content.ModelProperty;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.IMappedElement;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
 import org.eclipse.vorto.repository.api.mapping.IMappingQuery;
 

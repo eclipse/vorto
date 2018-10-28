@@ -2,12 +2,12 @@ package org.eclipse.vorto.service.mapping.spec;
 
 import java.util.Arrays;
 
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.ModelType;
-import org.eclipse.vorto.repository.api.content.FunctionblockModel;
-import org.eclipse.vorto.repository.api.content.Operation;
-import org.eclipse.vorto.repository.api.content.Param;
-import org.eclipse.vorto.repository.api.content.Stereotype;
+import org.eclipse.vorto.model.FunctionblockModel;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.model.Operation;
+import org.eclipse.vorto.model.Param;
+import org.eclipse.vorto.model.Stereotype;
 
 public class SpecWithOperationMapping extends AbstractTestSpec {
 	

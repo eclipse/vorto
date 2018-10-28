@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.web.core;
 
-import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
 import org.eclipse.vorto.repository.core.impl.resolver.UnknownModelIdResolverException;

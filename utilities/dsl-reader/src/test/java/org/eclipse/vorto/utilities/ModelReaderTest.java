@@ -26,7 +26,7 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.repository.api.ModelType;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.junit.Test;
 
