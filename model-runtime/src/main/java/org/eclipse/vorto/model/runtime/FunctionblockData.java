@@ -106,10 +106,8 @@ public class FunctionblockData implements IValidatable {
 				&& !mpd.isPresent()) {
 			report.addItem(property, "Mandatory field " + path + "/" + property.getName() + " is missing");
 		} else {
-			if (mpd.isPresent()) {
-				if (property.getType() instanceof PrimitiveType) {
-					checkPrimitiveTypeValue(path, mpd.get().getValue(), property,report);
-				} 
+			if (mpd.isPresent() && property.getType() instanceof PrimitiveType) {
+				checkPrimitiveTypeValue(path, mpd.get().getValue(), property,report);
 			}
 		}
 	}
