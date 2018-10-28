@@ -15,7 +15,6 @@
 package org.eclipse.vorto.deviceadapter;
 
 import org.eclipse.vorto.model.runtime.FunctionblockData;
-import org.eclipse.vorto.model.runtime.FunctionblockProperty;
 
 /**
  * This interface presents the API on how to receive/send data from/to an Adapter. The Adapter

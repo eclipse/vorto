@@ -85,9 +85,6 @@ public class AbstractProperty extends DefaultMappedElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((constraints == null) ? 0 : constraints.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + (isMultiple ? 1231 : 1237);
 		result = prime * result + (mandatory ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
@@ -103,18 +100,6 @@ public class AbstractProperty extends DefaultMappedElement {
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractProperty other = (AbstractProperty) obj;
-		if (constraints == null) {
-			if (other.constraints != null)
-				return false;
-		} else if (!constraints.equals(other.constraints))
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (isMultiple != other.isMultiple)
-			return false;
 		if (mandatory != other.mandatory)
 			return false;
 		if (name == null) {
@@ -129,6 +114,8 @@ public class AbstractProperty extends DefaultMappedElement {
 			return false;
 		return true;
 	}
+
+
 	
 	
 }

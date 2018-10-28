@@ -24,7 +24,7 @@ public class ValidationReport {
 	
 	private List<ValidationReportItem> invalidProperties = new  ArrayList<ValidationReport.ValidationReportItem>();
 	
-	void addItem(ModelProperty meta, String message) {
+	public void addItem(ModelProperty meta, String message) {
 		this.invalidProperties.add(new ValidationReportItem(message, meta));
 	}
 	

@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.vorto.model.FunctionblockModel;
-import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.PrimitiveType;
 
@@ -110,9 +109,7 @@ public class FunctionblockData implements IValidatable {
 			if (mpd.isPresent()) {
 				if (property.getType() instanceof PrimitiveType) {
 					checkPrimitiveTypeValue(path, mpd.get().getValue(), property,report);
-				} else if (property.getType() instanceof ModelId) {
-					// FIXME: validate entities / enums
-				}
+				} 
 			}
 		}
 	}
