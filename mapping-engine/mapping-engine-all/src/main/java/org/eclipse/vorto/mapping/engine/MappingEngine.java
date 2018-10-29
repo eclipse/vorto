@@ -19,8 +19,8 @@ import java.util.Optional;
 
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
-import org.eclipse.vorto.model.runtime.FunctionblockProperty;
-import org.eclipse.vorto.model.runtime.InfomodelData;
+import org.eclipse.vorto.model.runtime.InfomodelValue;
+import org.eclipse.vorto.model.runtime.PropertyValue;
 
 public final class MappingEngine {
 
@@ -44,7 +44,7 @@ public final class MappingEngine {
 	 * @param input source input data that is supposed to get mapped.
 	 * @return mapped payload that complies to Vorto Information Model
 	 */
-	public InfomodelData map(Object deviceData) {
+	public InfomodelValue map(Object deviceData) {
 		return mapper.mapSource(deviceData);
 	}
 	
@@ -52,9 +52,10 @@ public final class MappingEngine {
 	 * Maps the given Functionblock Property to device specific object.
 	 * @param newValue the value to map
 	 * @param oldValue the value that is currently set on the device
+	 * @param infomodelProperty the name of the property defined in the information model
 	 * @return the mapped device specific object
 	 */
-	public Object mapTarget(FunctionblockProperty newValue, Optional<FunctionblockProperty> oldValue) {
-		return mapper.mapTarget(newValue,oldValue);
+	public Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infomodelProperty) {
+		return mapper.mapTarget(newValue,oldValue,infomodelProperty);
 	}
 }

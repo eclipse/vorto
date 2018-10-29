@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.deviceadapter;
 
-import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.FunctionblockValue;
 
 /**
  * This interface presents the API on how to receive/send data from/to an Adapter. The Adapter
@@ -27,9 +27,12 @@ public interface IDeviceData {
      * Sets the configuration on the device.
      *
      * @param configurationProperties the configuration properties
-     * @param deviceId                the device id
+     * @param infoModelProperty       name of the infomodel property
+     * @param propertyName			  name of the function block property
+     * @param propertyValue			  value of the function block property
+     * @param deviceId				  deviceId
      */
-    void setConfiguration(String fbProperty, String propertyName, Object propertyValue, String deviceId);
+    void setConfiguration(String infoModelProperty, String propertyName, Object propertyValue, String deviceId);
 
     /**
      * Receive data by using some blocking mechanism.
@@ -38,7 +41,7 @@ public interface IDeviceData {
      * @param fbProperty the fb property
      * @return the functionblock data
      */
-    FunctionblockData receiveFBData(String fbProperty, String deviceId);
+    FunctionblockValue receiveFBData(String fbProperty, String deviceId);
 
     /**
      * Receive fb data async, starts a new read process and calls the callback once done.

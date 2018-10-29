@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
-import org.eclipse.vorto.model.runtime.FunctionblockData;
-import org.eclipse.vorto.model.runtime.InfomodelData;
+import org.eclipse.vorto.model.runtime.FunctionblockValue;
+import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -25,7 +25,7 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
 		System.out.println(mappedOutput);
 
@@ -40,14 +40,14 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
 		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
 
 		assertEquals(2322f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
@@ -158,14 +158,14 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
 		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
 
 		assertEquals(0f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
@@ -181,14 +181,14 @@ public class JsonMappingTest {
 
 		String json = "{\"clickType\" : \"DOUBLE\"}";
 
-		InfomodelData mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		FunctionblockData buttonFunctionblockData = mappedOutput.get("button");
+		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
 		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
 		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
-		FunctionblockData voltageFunctionblockData = mappedOutput.get("voltage");
+		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
 
 		assertNull(voltageFunctionblockData);
 

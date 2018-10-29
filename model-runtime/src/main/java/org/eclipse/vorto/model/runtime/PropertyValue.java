@@ -14,10 +14,35 @@
  */
 package org.eclipse.vorto.model.runtime;
 
-public interface IValidatable {
-	/**
-	 * validates the Vorto Model Runtime data according to the model
-	 * @return
-	 */
-	ValidationReport validate();
+import org.eclipse.vorto.model.ModelProperty;
+
+public class PropertyValue {
+	private ModelProperty meta;
+	private Object value;
+	
+	public PropertyValue(ModelProperty meta, Object value) {
+		this.meta = meta;
+		this.value = value;
+	}
+	
+	public ModelProperty getMeta() {
+		return meta;
+	}
+	public void setMeta(ModelProperty meta) {
+		this.meta = meta;
+	}
+	public Object getValue() {
+		return value;
+	}
+	public void setValue(Object value) {
+		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return "PropertyValue [meta=" + meta + ", value=" + value + "]";
+	}
+	
+	
+	
 }

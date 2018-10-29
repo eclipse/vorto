@@ -21,7 +21,7 @@ import org.eclipse.vorto.model.Infomodel;
  */
 class Context {
 
-   private String deviceID;
+   private String deviceId;
    private Infomodel infomodel;
    
    /**
@@ -30,8 +30,8 @@ class Context {
     * @param deviceID           the device id
     * @param infomodel          the infomodel
     */
-   public Context(String deviceID, Infomodel infomodel) {
-      this.deviceID = deviceID;
+   public Context(String deviceId, Infomodel infomodel) {
+      this.deviceId = deviceId;
       this.infomodel = infomodel;
    }
 
@@ -40,8 +40,8 @@ class Context {
     *
     * @return the device id
     */
-   public String getDeviceID() {
-      return deviceID;
+   public String getDeviceId() {
+      return deviceId;
    }
 
    /**

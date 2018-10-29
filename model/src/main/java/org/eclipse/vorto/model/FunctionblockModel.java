@@ -18,10 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.vorto.model.AbstractModel;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.ModelType;
-
 public class FunctionblockModel extends AbstractModel {
 
 	private List<ModelProperty> configurationProperties = new ArrayList<>();
@@ -67,10 +63,16 @@ public class FunctionblockModel extends AbstractModel {
 		this.statusProperties = statusProperties;
 	}
 
+	@Deprecated
+	/**
+	 * Use events instead
+	 * @return
+	 */
 	public List<ModelProperty> getFaultProperties() {
 		return faultProperties;
 	}
 
+	@Deprecated
 	public void setFaultProperties(List<ModelProperty> faultProperties) {
 		this.faultProperties = faultProperties;
 	}

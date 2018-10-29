@@ -21,7 +21,7 @@ import org.eclipse.vorto.model.Infomodel;
  */
 public class DeviceInfo {
 
-    private String deviceID;
+    private String deviceId;
     private Infomodel informationModel;
 
     /**
@@ -29,8 +29,8 @@ public class DeviceInfo {
      *
      * @return the device id
      */
-    public String getDeviceID() {
-        return deviceID;
+    public String getDeviceId() {
+        return deviceId;
     }
 
     /**
@@ -48,8 +48,8 @@ public class DeviceInfo {
      * @param deviceID         the device id
      * @param informationModel the information model
      */
-    public DeviceInfo(String deviceID, Infomodel informationModel) {
-        this.deviceID = deviceID;
+    public DeviceInfo(String deviceId, Infomodel informationModel) {
+        this.deviceId = deviceId;
         this.informationModel = informationModel;
     }
 }
