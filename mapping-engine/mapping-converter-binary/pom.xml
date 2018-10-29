@@ -7,7 +7,7 @@
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>mapping-converter-javascript</artifactId>
+	<artifactId>mapping-converter-binary</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -16,10 +16,28 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.11</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>mapping-core</artifactId>
+			<artifactId>mapping-converter-javascript</artifactId>
 			<version>${project.version}</version>
-			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -32,6 +50,13 @@
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>mapping-converter-types</artifactId>
 			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>mapping-core</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

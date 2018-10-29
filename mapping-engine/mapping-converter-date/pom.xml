@@ -7,7 +7,7 @@
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>mapping-converter-javascript</artifactId>
+	<artifactId>mapping-converter-date</artifactId>
 
 	<dependencies>
 		<dependency>
@@ -16,22 +16,14 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>mapping-core</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>mapping-converter-string</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>mapping-converter-types</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
