@@ -27,7 +27,7 @@ import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
-import org.eclipse.vorto.model.runtime.InfomodelData;
+import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -209,7 +209,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest) throws Exception {
 		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 		
-		InfomodelData mappedOutput = engine.map(gson.fromJson(testRequest.getSourceJson(),Object.class));
+		InfomodelValue mappedOutput = engine.map(gson.fromJson(testRequest.getSourceJson(),Object.class));
 				
 		TestMappingResponse response = new TestMappingResponse();
 		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));

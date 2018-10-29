@@ -14,7 +14,8 @@
  */
 package org.eclipse.vorto.deviceadapter;
 
-import org.eclipse.vorto.model.runtime.FunctionblockData;
+import org.eclipse.vorto.model.runtime.FBEventValue;
+import org.eclipse.vorto.model.runtime.FunctionblockValue;
 
 /**
  * To be used by the Adapter to communicate data changes back to the Application.
@@ -27,7 +28,7 @@ public interface IDataCallback {
      * @param status the status
      * @param ctx    the ctx
      */
-    void onStatusReceived(FunctionblockData data, Context context);
+    void onStatusReceived(FunctionblockValue data, Context context);
 
     /**
      * On configuration.
@@ -35,7 +36,14 @@ public interface IDataCallback {
      * @param deviceProperties the device properties
      * @param ctx              the ctx
      */
-    void onConfigurationReceived(FunctionblockData data, Context context);
+    void onConfigurationReceived(FunctionblockValue data, Context context);
+    
+    /**
+     * 
+     * @param event
+     * @param context
+     */
+    void onEventReceived(FBEventValue event, Context context);
 
 
 }

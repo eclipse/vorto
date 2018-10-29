@@ -35,9 +35,9 @@ import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
-import org.eclipse.vorto.model.runtime.FunctionblockData;
-import org.eclipse.vorto.model.runtime.FunctionblockProperty;
-import org.eclipse.vorto.model.runtime.InfomodelData;
+import org.eclipse.vorto.model.runtime.FunctionblockValue;
+import org.eclipse.vorto.model.runtime.InfomodelValue;
+import org.eclipse.vorto.model.runtime.PropertyValue;
 
 /**
  * 
@@ -70,29 +70,29 @@ public class DataMapperJxpath implements IDataMapper {
 		return jexl;
 	}
 
-	public InfomodelData map(Object input, MappingContext mappingContext) {
+	public InfomodelValue map(Object input, MappingContext mappingContext) {
 
 		JXPathContext context = jxpathHelper.newContext(input);
 
-		InfomodelData normalized = new InfomodelData(specification.getInfoModel());
+		InfomodelValue normalized = new InfomodelValue(specification.getInfoModel());
 
 		final Infomodel deviceInfoModel = specification.getInfoModel();
 
 		for (ModelProperty fbProperty : deviceInfoModel.getFunctionblocks()) {
-			FunctionblockData mappedFb = mapFunctionBlock(fbProperty, context);
+			FunctionblockValue mappedFb = mapFunctionBlock(fbProperty, context);
 			if (mappedFb != null) {
-				normalized.withFunctionblock(mappedFb);
+				normalized.withFunctionblock(fbProperty.getName(), mappedFb);
 			}
 		}
 
 		return normalized;
 	}
 
-	private FunctionblockData mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
+	private FunctionblockValue mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
 
 		FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
 
-		FunctionblockData fbData = new FunctionblockData(fbProperty.getName(),fbModel);
+		FunctionblockValue fbData = new FunctionblockValue(fbModel);
 
 		for (ModelProperty statusProperty : fbModel.getStatusProperties()) {
 
@@ -140,7 +140,7 @@ public class DataMapperJxpath implements IDataMapper {
 		return onlyReturnIfPopulated(fbData);
 	}
 
-	private FunctionblockData onlyReturnIfPopulated(FunctionblockData fbData) {
+	private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
 		if (!fbData.getConfiguration().isEmpty() || !fbData.getStatus().isEmpty()) {
 			return fbData;
 		} else {
@@ -189,26 +189,31 @@ public class DataMapperJxpath implements IDataMapper {
 	}
 
 	@Override
-	public InfomodelData mapSource(Object input) {
+	public InfomodelValue mapSource(Object input) {
 		return this.map(input, MappingContext.empty());
 	}
 
 	@Override
-	public Object mapTarget(FunctionblockProperty newValue, Optional<FunctionblockProperty> oldValue) {
-		Optional<Stereotype> targetStereotype = newValue.getModel().getStereotype(STEREOTYPE_TARGET);
+	public Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infomodelProperty) {
+		FunctionblockModel fbm = this.specification.getFunctionBlock(infomodelProperty);
+		if (fbm == null) {
+			throw new IllegalArgumentException("No property with the given name could be found in Information Model");
+		}
+		
+		Optional<Stereotype> targetStereotype = newValue.getMeta().getStereotype(STEREOTYPE_TARGET);
 		if (!targetStereotype.isPresent()) {
 			throw new MappingException("No mapping rule defined for property");
 		}
 		
 		Map<String,Object> jxpathContext = new HashMap<String, Object>();
 		Map<String,Object> param = new HashMap<String,Object>();
-		param.put("newValue", newValue.getPropertyValue());
-		param.put("oldValue", oldValue.isPresent()? oldValue.get().getPropertyValue() : null);
+		param.put("newValue", newValue.getValue());
+		param.put("oldValue", oldValue.isPresent()? oldValue.get().getValue() : null);
 		
 		jxpathContext.put("ctx", param);
-		final String functionName = "convert" + newValue.getModel().getName().substring(0, 1).toUpperCase() + newValue.getModel().getName().substring(1);
+		final String functionName = "convert" + newValue.getMeta().getName().substring(0, 1).toUpperCase() + newValue.getMeta().getName().substring(1);
 		
-		final String xpath = newValue.getInfomodelProperty()+":"+functionName+"(ctx)";
+		final String xpath = infomodelProperty.toLowerCase()+":"+functionName+"(ctx)";
 		JXPathContext context = jxpathHelper.newContext(jxpathContext);
 		try {
 			return context.getValue(xpath);
