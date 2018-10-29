@@ -18,6 +18,10 @@ import java.io.InputStream;
 import java.util.Optional;
 
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
+import org.eclipse.vorto.mapping.engine.converter.binary.BinaryFunctionFactory;
+import org.eclipse.vorto.mapping.engine.converter.date.DateFunctionFactory;
+import org.eclipse.vorto.mapping.engine.converter.string.StringFunctionFactory;
+import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.model.runtime.PropertyValue;
@@ -27,7 +31,18 @@ public final class MappingEngine {
 	private IDataMapper mapper;
 	
 	private MappingEngine(IMappingSpecification specification) {
-		mapper = IDataMapper.newBuilder().registerScriptEvalProvider(new JavascriptEvalProvider()).withSpecification(specification).build();
+		DataMapperBuilder builder = IDataMapper.newBuilder()
+					.registerScriptEvalProvider(new JavascriptEvalProvider())
+					.registerConverterFunction(BinaryFunctionFactory.createFunctions())
+					.registerConverterFunction(DateFunctionFactory.createFunctions())
+					.registerConverterFunction(StringFunctionFactory.createFunctions())
+					.registerConverterFunction(TypeFunctionFactory.createFunctions())
+					.registerConditionFunction(BinaryFunctionFactory.createFunctions())
+					.registerConditionFunction(DateFunctionFactory.createFunctions())
+					.registerConditionFunction(StringFunctionFactory.createFunctions())
+					.registerConditionFunction(TypeFunctionFactory.createFunctions())
+					.withSpecification(specification);
+		mapper = builder.build();
 	}
 	
 	public static MappingEngine create(IMappingSpecification specification) {
@@ -38,13 +53,13 @@ public final class MappingEngine {
 		IMappingSpecification spec = IMappingSpecification.newBuilder().fromInputStream(inputStream).build();
 		return new MappingEngine(spec);
 	}
-	
+		
 	/**
 	 * Maps the given device source object to Vorto compliant Information Model data.
 	 * @param input source input data that is supposed to get mapped.
 	 * @return mapped payload that complies to Vorto Information Model
 	 */
-	public InfomodelValue map(Object deviceData) {
+	public InfomodelValue mapSource(Object deviceData) {
 		return mapper.mapSource(deviceData);
 	}
 	

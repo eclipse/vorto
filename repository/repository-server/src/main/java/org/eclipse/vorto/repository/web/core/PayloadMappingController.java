@@ -209,7 +209,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest) throws Exception {
 		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 		
-		InfomodelValue mappedOutput = engine.map(gson.fromJson(testRequest.getSourceJson(),Object.class));
+		InfomodelValue mappedOutput = engine.mapSource(gson.fromJson(testRequest.getSourceJson(),Object.class));
 				
 		TestMappingResponse response = new TestMappingResponse();
 		response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));

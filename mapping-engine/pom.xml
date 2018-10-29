@@ -8,7 +8,7 @@
 		<artifactId>parent</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>mapping-engine</artifactId>
 	<name>Vorto Repository</name>
 	<packaging>pom</packaging>
@@ -19,9 +19,23 @@
 	<modules>
 		<module>mapping-core</module>
 		<module>mapping-converter-javascript</module>
+		<module>mapping-converter-string</module>
+		<module>mapping-converter-types</module>
+		<module>mapping-converter-date</module>
+		<module>mapping-converter-binary</module>
 		<module>mapping-serializer</module>
 		<module>mapping-engine-all</module>
 	</modules>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>3.6</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 </project>
 

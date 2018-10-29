@@ -16,11 +16,18 @@ package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
 
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.model.ModelId;
 import org.junit.Test;
 
 public class ModelIdTest {
 
+	@Test
+	public void testFileName() {
+		org.eclipse.vorto.core.api.model.model.ModelId modelId = new org.eclipse.vorto.core.api.model.model.ModelId(ModelType.Functionblock,"Location","org.eclipse.vorto","1.0.0");
+		assertEquals("org.eclipse.vorto_Location_1_0_0.fbmodel",modelId.getFileName());
+	}
+	
 	@Test (expected=IllegalArgumentException.class)
 	public void testInvalidModelId() {
 		String modelId = "Test";

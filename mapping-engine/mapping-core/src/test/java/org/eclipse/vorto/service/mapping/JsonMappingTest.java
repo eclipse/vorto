@@ -1,24 +1,17 @@
 package org.eclipse.vorto.service.mapping;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.commons.codec.binary.Base64;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
-import org.eclipse.vorto.service.mapping.spec.SpecWithBase64Converter;
 import org.eclipse.vorto.service.mapping.spec.SpecWithCondition;
-import org.eclipse.vorto.service.mapping.spec.SpecWithConditionFunction;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
-import org.eclipse.vorto.service.mapping.spec.SpecWithTimestamp;
-import org.eclipse.vorto.service.mapping.spec.SpecWithTypeConversion;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -46,17 +39,7 @@ public class JsonMappingTest {
 		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
 	}
 
-	@Test
-	public void testMapWithCustomFunctionCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionFunction())
-				.build();
-
-		String json = "{\"data\" : \"aGFsbG8=\"}";
-
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals("hallo", mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-
-	}
+	
 
 	@Test
 	public void testMapWithJxpathCondition() throws Exception {
@@ -67,18 +50,6 @@ public class JsonMappingTest {
 
 		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals(100.0, mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-
-	}
-
-	@Test
-	public void testMapUsingBase64Converter() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithBase64Converter())
-				.build();
-
-		String json = "{\"data\" : \"" + Base64.encodeBase64String("20".getBytes()) + "\"}";
-
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals("20", new String((byte[]) mappedOutput.get("button").getStatusProperty("digital_input_state").get().getValue()));
 
 	}
 
@@ -95,45 +66,6 @@ public class JsonMappingTest {
 		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
 		assertEquals("DOUBLE", buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
-
-		System.out.println(mappedOutput);
-
-	}
-
-	static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-
-	@Test
-	public void testMappingTimestamp() throws Exception {
-
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
-				.build();
-
-		final Date timestamp = new Date();
-		String json = "{\"time\" : " + timestamp.getTime() + "}";
-
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-
-		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
-
-		System.out.println(mappedOutput);
-
-	}
-
-	@Test
-	public void testMappingTypeConversion() throws Exception {
-
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTypeConversion())
-				.build();
-
-		String json = "[{\"lng\" : 0.002322},{\"lng\" : 0.002222}]";
-
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
-
-		assertEquals("0.002322", buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
 		System.out.println(mappedOutput);
 
