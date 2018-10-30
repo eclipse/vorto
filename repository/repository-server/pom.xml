@@ -66,11 +66,6 @@
 			<artifactId>mapping-serializer</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.vorto.utilities</groupId>
-			<artifactId>dsl-reader</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.xtext</groupId>
 			<artifactId>org.eclipse.xtext</artifactId>
 			<exclusions>

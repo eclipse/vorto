@@ -105,6 +105,7 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
+                <version>${xtext.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.eclipse.platform</groupId>

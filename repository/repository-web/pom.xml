@@ -24,7 +24,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>importer-ipso</artifactId>
@@ -64,18 +64,18 @@
 			<artifactId>spring-data-commons</artifactId>
 			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$-->
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>18.0</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
 		<dependency>
-		    <groupId>org.apache.tika</groupId>
-		    <artifactId>tika-core</artifactId>
-		    <version>1.17</version>
+			<groupId>org.apache.tika</groupId>
+			<artifactId>tika-core</artifactId>
+			<version>1.17</version>
 		</dependency>
 
 		<dependency>
@@ -137,9 +137,9 @@
 			<version>0.2.3</version>
 		</dependency>
 		<dependency>
-		    <groupId>org.webjars.bower</groupId>
-		    <artifactId>ng-prettyjson</artifactId>
-		    <version>0.2.0</version>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>ng-prettyjson</artifactId>
+			<version>0.2.0</version>
 		</dependency>
 	</dependencies>
 
@@ -180,7 +180,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<profiles>
 		<profile>
 		<id>include-docker</id>
