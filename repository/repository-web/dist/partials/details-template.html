@@ -1,4 +1,3 @@
-<link href="css/comment.css" rel="stylesheet">
 <div ng-if="errorLoading" class="row">
 	<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
 </div>
@@ -147,13 +146,13 @@
 															<ul>
 																<li ng-repeat="reference in modelReferences" class="ng-scope">															
 																	<span ng-show="reference.type === 'InformationModel'">
-																		<img src="images/im.png" />
+																		<img src="webjars/repository-web/dist/images/im.png" />
 																	</span>
 																	<span ng-show="reference.type === 'Functionblock'">
-																		<img src="images/fb.png" />
+																		<img src="webjars/repository-web/dist/images/fb.png" />
 																	</span>
 																	<span ng-show="reference.type === 'Datatype'">
-																		<img src="images/dt.png" />
+																		<img src="webjars/repository-web/dist/images/dt.png" />
 																	</span>
 																	<span ng-show="reference.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
@@ -179,13 +178,13 @@
 															<ul>
 																<li ng-repeat="usage in modelReferencedBy" class="ng-scope">
 																	<span ng-show="usage.type === 'InformationModel'">
-																		<img src="images/im.png" />
+																		<img src="webjars/repository-web/dist/images/im.png" />
 																	</span>
 																	<span ng-show="usage.type === 'Functionblock'">
-																		<img src="images/fb.png" />
+																		<img src="webjars/repository-web/dist/images/fb.png" />
 																	</span>
 																	<span ng-show="usage.type === 'Datatype'">
-																		<img src="images/dt.png" />
+																		<img src="webjars/repository-web/dist/images/dt.png" />
 																	</span>
 																	<span ng-show="usage.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
@@ -534,9 +533,9 @@
 			<tbody ng-show="!isLoading">
 				<tr ng-repeat="current in displayedSearchResult track by $index">
 					<td>
-						<img ng-if="current.type === 'InformationModel'" src="images/im.png" />
-						<img ng-if="current.type === 'Functionblock'" src="images/fb.png" />
-						<img ng-if="current.type === 'Datatype'" src="images/dt.png" />
+						<img ng-if="current.type === 'InformationModel'" src="webjars/repository-web/dist/images/im.png" />
+						<img ng-if="current.type === 'Functionblock'" src="webjars/repository-web/dist/images/fb.png" />
+						<img ng-if="current.type === 'Datatype'" src="webjars/repository-web/dist/images/dt.png" />
 						<i ng-if="current.type === 'Mapping'" class="fa fa-exchange" aria-hidden="true"></i>
 					</td>
 					<td>

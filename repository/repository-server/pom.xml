@@ -10,137 +10,25 @@
 	<artifactId>repository-server</artifactId>
 	<packaging>jar</packaging>
 
-	<description>Vorto Model Repository Backend</description>
+	<description>Vorto Model Repository - Server</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repository-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>model</artifactId>
+			<artifactId>repository-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto.utilities</groupId>
-			<artifactId>dsl-reader</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-		</dependency>
-
-		<!-- Vorto DSL Dependencies -->
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor.datatype</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor.functionblock</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor.infomodel</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>org.eclipse.vorto.editor.mapping</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>mapping-engine-all</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>mapping-serializer</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext</artifactId>
 			<exclusions>
 				<exclusion>
-					<groupId>com.google.guava</groupId>
 					<artifactId>guava</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
+					<groupId>com.google.guava</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
+		
 		<dependency>
-			<groupId>org.eclipse.xtext</groupId>
-			<artifactId>org.eclipse.xtext.xbase</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>asm</artifactId>
-					<groupId>org.ow2.asm</groupId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.guava</groupId>
-					<artifactId>guava</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.interceptor</groupId>
-			<artifactId>javax.interceptor-api</artifactId>
-		</dependency>
-
-		<!--Java Content Repository API -->
-		<dependency>
-			<groupId>javax.jcr</groupId>
-			<artifactId>jcr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-sequencer-xml</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-jcr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-jcr-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-common</artifactId>
-		</dependency>
-
-		<!-- Email -->
-		<dependency>
-			<groupId>com.sun.mail</groupId>
-			<artifactId>javax.mail</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.freemarker</groupId>
-			<artifactId>freemarker</artifactId>
-		</dependency>
-
-		<!-- Misc -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>importer-ipso</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Spring Boot dependencies -->
@@ -166,82 +54,188 @@
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
 		</dependency>
-
-		<!-- Swagger -->
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-models</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-models</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- Testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 		</dependency>
-
-
-
+		<!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-commons -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-commons</artifactId>
+			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$-->
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>18.0</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
+		<dependency>
+		    <groupId>org.apache.tika</groupId>
+		    <artifactId>tika-core</artifactId>
+		    <version>1.17</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-swagger-ui</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>jquery</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>bootstrap-less-only</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>angular</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-bootstrap</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.subethamail</groupId>
-			<artifactId>subethasmtp</artifactId>
-			<scope>test</scope>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.18</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-unit-test</artifactId>
-			<scope>test</scope>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-route</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular-animate</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>font-awesome</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.npm</groupId>
+			<artifactId>angular-smart-table</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-ace</artifactId>
+			<version>0.2.3</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>ng-prettyjson</artifactId>
+		    <version>0.2.0</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.eclipse.vorto</groupId>
+		    <artifactId>repository-style-default</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.eclipse.vorto</groupId>
+		    <artifactId>repository-web</artifactId>
+		    <version>${project.version}</version>
 		</dependency>
 	</dependencies>
+
 	<build>
+		<finalName>infomodelrepository</finalName>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.xtend</groupId>
-				<artifactId>xtend-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.0.0.RELEASE</version>
 				<executions>
 					<execution>
 						<goals>
-							<goal>test-jar</goal>
+							<goal>repackage</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>org.eclipse.vorto.repository.web.VortoRepository</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+		<id>include-docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<configuration>
+							<repository>eclipsevorto/vorto-repo</repository>
+							<buildArgs>
+								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+								<https_proxy>${env.https_proxy}</https_proxy>
+								<http_proxy>${env.http_proxy}</http_proxy>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+		<id>exclude-h2</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>2.0.0.RELEASE</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<configuration>
+									<excludes>
+										<exclude>
+											<groupId>com.h2database</groupId>
+											<artifactId>h2</artifactId>
+										</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

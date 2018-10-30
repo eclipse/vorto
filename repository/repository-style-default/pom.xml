@@ -7,10 +7,10 @@
 		<artifactId>repository</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
-	<artifactId>repository-web</artifactId>
+	<artifactId>repository-style-default</artifactId>
 	<packaging>jar</packaging>
 
-	<description>Vorto Repository Web</description>
+	<description>Vorto Repository Web Vorto Style</description>
 
 	<properties>
 		<destDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</destDir>
@@ -29,11 +29,11 @@
 						</goals>
 						<configuration>
 							<target>
-								<echo message="moving Vorto web resources" />
+								<echo message="moving Vorto resources" />
 								<copy todir="${destDir}/dist">
-									<fileset dir="${project.basedir}/dist" includes="js/,css/,fonts/,images/,partials/" />
+									<fileset dir="${project.basedir}/dist" includes="js/*.min.js,css/,fonts/,images/" />
 								</copy>
-								<echo message="moving vorto web resources" />
+								<echo message="moving vorto resources" />
 							</target>
 						</configuration>
 					</execution>

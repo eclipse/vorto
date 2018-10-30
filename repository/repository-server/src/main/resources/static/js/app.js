@@ -4,38 +4,38 @@ var repository = angular.module("repository", [ "ngRoute", "repositoryController
 repository.config([ "$routeProvider", "$httpProvider", function($routeProvider, $httpProvider) {
 
     $routeProvider.when("/", {
-        templateUrl : "partials/search-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/search-template.html",
         controller : "SearchController",
         reloadOnSearch: false
     }).when("/import", {
-        templateUrl : "partials/import-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/import-template.html",
         controller : "ImportController"
     }).when("/payloadmapping/:modelId/:targetPlatform/:mappingId", {
-        templateUrl : "partials/mapping/mappingcreator.html",
+        templateUrl : "webjars/repository-web/dist/partials/mapping/mappingcreator.html",
         controller : "MappingBuilderController"
     }).when("/details/:modelId", {
-        templateUrl : "partials/details-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/details-template.html",
         controller : "DetailsController"
     }).when("/generators", {
-        templateUrl : "partials/generators-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/generators-template.html",
         controller : "GeneratorController"
     }).when("/api", {
-        templateUrl : "partials/swagger-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/swagger-template.html",
         controller : "SwaggerController"
     }).when("/login", {
-        templateUrl : "partials/login-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/login-template.html",
         controller : "LoginController"
     }).when("/signup", {
-        templateUrl : "partials/signup-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/signup-template.html",
         controller : "SignUpController"
     }).when("/update", {
-        templateUrl : "partials/update-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/update-template.html",
         controller : "UpdateController"
     }).when("/settings", {
-        templateUrl : "partials/settings-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/settings-template.html",
         controller : "SettingsController"
     }).when("/manage", {
-        templateUrl : "partials/admin-template.html",
+        templateUrl : "webjars/repository-web/dist/partials/admin-template.html",
         controller : "AdminController"
     }).otherwise({
         redirectTo : "/"
