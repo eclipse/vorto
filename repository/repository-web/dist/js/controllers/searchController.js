@@ -125,7 +125,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 				modalInstance.dismiss();
 			};
         },
-        templateUrl: "partials/createmodel-template.html",
+        templateUrl: "webjars/repository-web/dist/partials/createmodel-template.html",
         size: "lg",
         resolve: {
         	model: function() {
