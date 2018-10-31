@@ -197,11 +197,6 @@
 			</exclusions>
 		</dependency>
 		
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>

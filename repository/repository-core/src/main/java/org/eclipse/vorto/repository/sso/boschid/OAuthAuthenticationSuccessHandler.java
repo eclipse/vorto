@@ -1,6 +1,21 @@
+/**
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.sso.boschid;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +24,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,11 +32,17 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 @Component
 public class OAuthAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 	
 	@Autowired
 	private OAuth2ClientContext oauthClientContext;
+	
+	private static Gson gson = new GsonBuilder().create();
 	
 	protected void handle(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
@@ -55,16 +75,12 @@ public class OAuthAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 			throw new ServletException("User is not authenticated yet");
 		}
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	private Map<String, String> getJwtTokenMap(String accessToken) {
 		String[] jwtParts = accessToken.split("\\.");
-		JSONObject claims = new JSONObject(new String(Base64.getUrlDecoder().decode(jwtParts[1])));
-		
-		Map<String, String> map = new HashMap<String, String>();
-		claims.keySet().stream().forEach(key -> map.put((String) key, claims.get((String) key).toString()));
-		
-		return map;
+		String jwtTokenString = new String(Base64.getUrlDecoder().decode(jwtParts[1]));
+		Type type = new TypeToken<Map<String, String>>(){}.getType();
+		return gson.fromJson(jwtTokenString, type);
 	}
 
 }
