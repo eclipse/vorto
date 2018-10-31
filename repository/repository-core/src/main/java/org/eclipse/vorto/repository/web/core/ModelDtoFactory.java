@@ -191,11 +191,6 @@ public class ModelDtoFactory {
 					.map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
 		}
 
-		if (model.getFunctionblock().getFault() != null) {
-			resource.setFaultProperties(model.getFunctionblock().getFault().getProperties().stream()
-					.map(p -> createProperty(p,mappingModel)).collect(Collectors.toList()));
-		}
-
 		if (model.getFunctionblock().getEvents() != null) {
 			resource.setEvents(model.getFunctionblock().getEvents().stream().map(e -> createEvent(e,mappingModel))
 					.collect(Collectors.toList()));

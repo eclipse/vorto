@@ -69,7 +69,7 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
 		Optional<String> name = Optional.ofNullable((String) map.get(JWT_NAME)).map(str -> str.split("@")[0]);
 
 		//FIXME: Use Spring Security Adapter for Keycloak ? 
-		Optional<Map<String, Object>> resourceAccess = Optional.ofNullable((Map)map.get(RESOURCE_ACCESS));
+		Optional<Map<String, Object>> resourceAccess = Optional.ofNullable((Map<String, Object>)map.get(RESOURCE_ACCESS));
 		Map<String, Object> client = (Map<String, Object>)resourceAccess.get().get(resourceClientId);
 		List<String> roles = (List<String>)client.get("roles");
 

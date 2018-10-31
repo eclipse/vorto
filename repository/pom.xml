@@ -21,8 +21,8 @@
 		<module>repository-core</module>
 		<module>repository-importer</module>
 		<module>repository-java-client</module>
-		<module>repository-style-default</module>
 		<module>repository-server</module>
+		<module>repository-server-config</module>
 		<module>repository-web</module>
 	</modules>
 

@@ -1,4 +1,4 @@
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
 import java.io.IOException;
 

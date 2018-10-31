@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
 import org.eclipse.vorto.repository.web.security.HasPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;

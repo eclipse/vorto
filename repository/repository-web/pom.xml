@@ -29,11 +29,11 @@
 						</goals>
 						<configuration>
 							<target>
-								<echo message="moving Vorto web resources" />
+								<echo message="moving Vorto web ui resources" />
 								<copy todir="${destDir}/dist">
 									<fileset dir="${project.basedir}/dist" includes="js/,css/,fonts/,images/,partials/" />
 								</copy>
-								<echo message="moving vorto web resources" />
+								<echo message="moving vorto web ui resources" />
 							</target>
 						</configuration>
 					</execution>

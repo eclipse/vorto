@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
 import static com.google.common.base.Predicates.or;
 
@@ -36,7 +36,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerConfiguration {
 
 	@Bean
-	@Profile({"local"})
+	@Profile({"local","local-https"})
 	public Docket vortoApiLocal() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build();
@@ -44,7 +44,7 @@ public class SwaggerConfiguration {
 	}
 	
 	@Bean
-	@Profile({"eclipse"})
+	@Profile({"eclipse","cloud*"})
 	public Docket vortoApiCloud() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build().pathProvider(new BasePathAwareRelativePathProvider(""));
