@@ -25,7 +25,7 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 public class RepositoryConfiguration extends BaseConfiguration {
 
 	@Value("${http.proxyHost:#{null}}")
-	String proxyHost;
+	private String proxyHost;
 
 	@Value("${http.proxyPort:8080}")
 	protected int proxyPort;

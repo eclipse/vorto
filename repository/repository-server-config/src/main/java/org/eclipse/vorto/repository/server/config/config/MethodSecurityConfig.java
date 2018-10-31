@@ -32,10 +32,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 	
 	@Autowired
 	private HasPermissionEvaluator permissionEvaluator;
-	
-	public MethodSecurityConfig() {
-    }
-	
+		
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = 

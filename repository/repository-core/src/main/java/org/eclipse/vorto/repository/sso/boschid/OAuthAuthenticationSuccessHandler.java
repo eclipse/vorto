@@ -48,11 +48,11 @@ public class OAuthAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
 		userAuthentication.setDetails(detailsMap);
 	}
 
-	private String extractToken(Authentication authentication) {
+	private String extractToken(Authentication authentication) throws ServletException {
 		if (authentication instanceof OAuth2Authentication) {
 			return (String) oauthClientContext.getAccessToken().getAdditionalInformation().get("id_token");
 		} else {
-			throw new RuntimeException("User is not authenticated yet");
+			throw new ServletException("User is not authenticated yet");
 		}
 	}
 	
