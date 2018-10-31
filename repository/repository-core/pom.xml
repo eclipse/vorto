@@ -196,7 +196,7 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
+		
 		<!-- Testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>

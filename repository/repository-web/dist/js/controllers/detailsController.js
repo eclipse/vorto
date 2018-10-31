@@ -327,7 +327,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			var modalInstance = $uibModal.open({
 				animation: true,
 				controller: "GeneratorConfigController",
-				templateUrl: "partials/generator-config-template.html",
+				templateUrl: "webjars/repository-web/dist/partials/generator-config-template.html",
 				size: "lg",
 				resolve: {
 					generator: function () {
@@ -474,7 +474,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						modalInstance.dismiss();
 					};
 				},
-				templateUrl: "partials/createmodel-template.html",
+				templateUrl: "webjars/repository-web/dist/partials/createmodel-template.html",
 				size: "lg",
 				resolve: {
 					model: function () {
@@ -517,7 +517,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						modalInstance.dismiss();
 					};
 				},
-				templateUrl: "partials/createversion-template.html",
+				templateUrl: "webjars/repository-web/dist/partials/createversion-template.html",
 				size: "lg",
 				resolve: {
 					model: function () {

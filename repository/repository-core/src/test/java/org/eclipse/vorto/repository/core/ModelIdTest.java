@@ -22,6 +22,7 @@ import org.junit.Test;
 
 public class ModelIdTest {
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void testFileName() {
 		org.eclipse.vorto.core.api.model.model.ModelId modelId = new org.eclipse.vorto.core.api.model.model.ModelId(ModelType.Functionblock,"Location","org.eclipse.vorto","1.0.0");

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
 import org.eclipse.vorto.repository.web.security.HasPermissionEvaluator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +32,7 @@ public class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
 	
 	@Autowired
 	private HasPermissionEvaluator permissionEvaluator;
-	
-	public MethodSecurityConfig() {
-    }
-	
+		
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler expressionHandler = 

@@ -12,9 +12,9 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
-import org.eclipse.vorto.repository.sso.boschid.EidpUtils;
+import org.eclipse.vorto.repository.sso.TokenUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +25,7 @@ import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 public class RepositoryConfiguration extends BaseConfiguration {
 
 	@Value("${http.proxyHost:#{null}}")
-	String proxyHost;
+	private String proxyHost;
 
 	@Value("${http.proxyPort:8080}")
 	protected int proxyPort;
@@ -47,9 +47,9 @@ public class RepositoryConfiguration extends BaseConfiguration {
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
 		if (proxyHost != null) {
-			return EidpUtils.proxiedAccessTokenProvider(proxyHost, proxyPort, proxyUsername, proxyPassword);
+			return TokenUtils.proxiedAccessTokenProvider(proxyHost, proxyPort, proxyUsername, proxyPassword);
 		} else {
-			return EidpUtils.accessTokenProvider();
+			return TokenUtils.accessTokenProvider();
 		}
 	}
 }

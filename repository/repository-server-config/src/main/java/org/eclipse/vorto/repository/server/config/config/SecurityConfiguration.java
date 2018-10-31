@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.config;
+package org.eclipse.vorto.repository.server.config.config;
 
 import java.util.Arrays;
 
@@ -21,14 +21,16 @@ import javax.servlet.Filter;
 import org.eclipse.vorto.repository.sso.AuthorizationTokenFilter;
 import org.eclipse.vorto.repository.sso.InterceptedUserInfoTokenServices;
 import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
+import org.eclipse.vorto.repository.sso.boschid.EidpPrincipalExtractor;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
-import org.eclipse.vorto.repository.sso.boschid.JwtTokenUserInfoServices;
+import org.eclipse.vorto.repository.sso.oauth.SimpleUserInfoServices;
 import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
 import org.eclipse.vorto.repository.web.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -75,7 +77,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private OAuth2ClientContext oauth2ClientContext;
 	
 	@Autowired
+	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
+	
+	@Autowired
 	private EidpResourceDetails eidp;
+		
+	@Value("${eidp.oauth2.resource.userInfoUri}")
+	private String eidpUserInfoUri;
+	
+	@Value("${github.oauth2.resource.userInfoUri}") 
+	private String githubUserInfoEndpointUrl;
+	
+	@Value("${github.oauth2.enabled}")
+	private boolean githubEnabled = false; 
 	
 	@Autowired
 	private AuthorizationCodeResourceDetails github;
@@ -83,9 +97,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AccessTokenProvider accessTokenProvider;
 	
-	@Autowired
-	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
-
 	@Autowired
 	private TenantVerificationFilter tenantVerificationFilter;
 	
@@ -143,7 +154,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter bearerTokenFilter() {
-		return new AuthorizationTokenFilter(interceptedUserInfoTokenServices);
+		if (githubEnabled) {
+			return new AuthorizationTokenFilter(interceptedUserInfoTokenServices);
+		} else {
+			return new AuthorizationTokenFilter(new SimpleUserInfoServices(githubUserInfoEndpointUrl, github.getClientId()));
+		}
 	}
 	
 	private Filter ssoFilter() {
@@ -158,7 +173,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-		UserInfoTokenServices tokenService = new JwtTokenUserInfoServices("https://accounts.bosch.com/adfs/userinfo", eidp.getClientId());
+		SimpleUserInfoServices tokenService =  new SimpleUserInfoServices(eidpUserInfoUri, eidp.getClientId());
+		tokenService.setPrincipalExtractor(new EidpPrincipalExtractor());
 		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext),authoritiesExtractor("sub"));
 	}

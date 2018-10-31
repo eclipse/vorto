@@ -14,11 +14,9 @@
  */
 package org.eclipse.vorto.repository.account;
 
-import org.eclipse.vorto.repository.account.impl.RoleNotSupportedException;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import java.util.List;
+
+import org.eclipse.vorto.repository.account.impl.User;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -80,5 +78,5 @@ public interface IUserAccountService {
 	 * @param roles
 	 * @return
 	 */
-    User removeUserRole(String userName, List<Role> roles) throws UsernameNotFoundException;
+    User removeUserRole(String userName, List<Role> roles);
 }

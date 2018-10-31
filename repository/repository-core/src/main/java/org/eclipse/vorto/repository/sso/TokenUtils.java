@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.sso.boschid;
+package org.eclipse.vorto.repository.sso;
 
 import java.util.Arrays;
 
@@ -33,7 +33,7 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitAccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
 
-public class EidpUtils {
+public class TokenUtils {
 	public static AccessTokenProvider proxiedAccessTokenProvider(String proxyHost, int proxyPort, String proxyUser, String proxyPassword) {
 		ClientHttpRequestFactory requestFactory = proxyAuthenticatedRequestFactory(proxyHost, proxyPort, proxyUser, proxyPassword);
 		
