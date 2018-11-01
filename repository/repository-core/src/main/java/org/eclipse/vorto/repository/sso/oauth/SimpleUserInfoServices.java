@@ -21,6 +21,7 @@ import java.util.Optional;
 import javax.annotation.PostConstruct;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
 import org.eclipse.vorto.repository.sso.oauth.strategy.CiamUserStrategy;
 import org.eclipse.vorto.repository.sso.oauth.strategy.KeycloakUserStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,14 +62,14 @@ public class SimpleUserInfoServices extends UserInfoTokenServices {
 	
 	private Map<String, JwtVerifyAndIdStrategy> verifyAndIdStrategies = new HashMap<>();
 	
-	public SimpleUserInfoServices() {
-		super(null, null);
+	
+	@Autowired
+	public SimpleUserInfoServices(
+			@Value("${eidp.oauth2.resource.userInfoUri}") String userInfoEndpointUrl, 
+			@Autowired EidpResourceDetails eidp) {
+		super(userInfoEndpointUrl, eidp.getClientId());
 	}
 
-	public SimpleUserInfoServices(String userInfoEndpointUrl, String clientId){
-		super(userInfoEndpointUrl, clientId);
-	}
-	
 	private Optional<JwtVerifyAndIdStrategy> getStrategy(JwtToken jwtToken) {
 		String issuer = (String) jwtToken.getPayloadMap().get(ISSUER);
 		if (issuer != null) {

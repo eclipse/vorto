@@ -30,6 +30,7 @@ import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -77,13 +78,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private OAuth2ClientContext oauth2ClientContext;
 	
 	@Autowired
+	@Qualifier("githubUserInfoTokenService")
 	private InterceptedUserInfoTokenServices interceptedUserInfoTokenServices;
+	
+	@Autowired
+	@Qualifier("simpleUserInfoServices")
+	private SimpleUserInfoServices simpleUserInfoService;
 	
 	@Autowired
 	private EidpResourceDetails eidp;
 		
-	@Value("${eidp.oauth2.resource.userInfoUri}")
-	private String eidpUserInfoUri;
 	
 	@Value("${github.oauth2.resource.userInfoUri}") 
 	private String githubUserInfoEndpointUrl;
@@ -157,7 +161,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		if (githubEnabled) {
 			return new AuthorizationTokenFilter(interceptedUserInfoTokenServices);
 		} else {
-			return new AuthorizationTokenFilter(new SimpleUserInfoServices(githubUserInfoEndpointUrl, github.getClientId()));
+			return new AuthorizationTokenFilter(simpleUserInfoService);
 		}
 	}
 	
@@ -173,9 +177,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-		SimpleUserInfoServices tokenService =  new SimpleUserInfoServices(eidpUserInfoUri, eidp.getClientId());
-		tokenService.setPrincipalExtractor(new EidpPrincipalExtractor());
-		return newSsoFilter("/eidp/login", tokenService, accessTokenProvider, 
+		simpleUserInfoService.setPrincipalExtractor(new EidpPrincipalExtractor());
+		return newSsoFilter("/eidp/login", simpleUserInfoService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext),authoritiesExtractor("sub"));
 	}
 	
@@ -210,4 +213,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public AuthorizationCodeResourceDetails github() {
 		return new AuthorizationCodeResourceDetails();
 	}
+
 }
