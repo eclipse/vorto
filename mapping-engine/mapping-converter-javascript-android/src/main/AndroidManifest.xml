@@ -1,0 +1,2 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.eclipse.vorto.mapping.engine.converter.android.mapping_converter_javascript_android" />

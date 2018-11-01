@@ -19,13 +19,16 @@
 	<modules>
 		<module>mapping-core</module>
 		<module>mapping-converter-javascript</module>
+		<module>mapping-converter-javascript-android</module>
 		<module>mapping-converter-string</module>
 		<module>mapping-converter-types</module>
 		<module>mapping-converter-date</module>
 		<module>mapping-converter-binary</module>
 		<module>mapping-serializer</module>
 		<module>mapping-engine-all</module>
-	</modules>
+		<module>mapping-engine-android</module>
+        <module>mapping-core-android</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -36,6 +39,40 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.simpligility.maven.plugins</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>4.5.0</version>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.simpligility.maven.plugins</groupId>
+				<artifactId>android-maven-plugin</artifactId>
+				<configuration>
+					<sdk>
+						<!--suppress UnresolvedMavenProperty -->
+						<path>${android.sdk.path}</path>
+					</sdk>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<!--<source>1.6</source>
+					<target>1.6</target>-->
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
 
