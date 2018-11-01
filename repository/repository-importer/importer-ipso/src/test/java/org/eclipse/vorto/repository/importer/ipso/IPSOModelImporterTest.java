@@ -31,6 +31,7 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 		this.ipsoImporter.setModelRepository(modelRepository);
 		this.ipsoImporter.setUploadStorage(new InMemoryTemporaryStorage());
 		this.ipsoImporter.setUserRepository(userRepository);
+		this.ipsoImporter.setModelParserFactory(modelParserFactory);
 	}
 	
 	@Test (expected=ModelImporterException.class)

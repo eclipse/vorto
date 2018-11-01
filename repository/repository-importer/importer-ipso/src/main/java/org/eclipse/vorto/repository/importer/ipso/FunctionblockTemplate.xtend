@@ -34,7 +34,7 @@ class FunctionblockTemplate {
 				
 				«FOR item : source.getResources.item»
 					«IF item.operations == "RW" || item.operations == "W"»
-						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : «IF item.operations == "RW"»true«ELSE»false«ENDIF», writable: true} «constraints(item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
+						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : «IF item.operations == "RW"»true«ELSE»false«ENDIF», writable: true} «constraints(item.type, item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
 					«ENDIF»
 				«ENDFOR»
 			}
@@ -42,7 +42,7 @@ class FunctionblockTemplate {
 			status {
 				«FOR item : source.getResources.item»
 					«IF item.operations == "R"»
-						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : true, writable: false } «constraints(item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
+						«item.mandatory.toFirstLower» «IF item.multipleInstances != 'Single'»multiple «ENDIF»«parseName(item.name).toFirstLower» as «parseType(item.type)» with {readable : true, writable: false } «constraints(item.type, item.rangeEnumeration)»  "«item.description.replace("\"","'")»"
 					«ENDIF»
 				«ENDFOR»
 			}
@@ -62,9 +62,12 @@ class FunctionblockTemplate {
 		return name.replace(" ","").replace("/","").replace("-","")
 	}
 	
-	def constraints(String rangeEnumeration) {
+	def constraints(String dataType, String rangeEnumeration) {
 		logger.debug("Processing range enumeration "+rangeEnumeration);
-		if (!rangeEnumeration.nullOrEmpty) {
+		if (!rangeEnumeration.nullOrEmpty && 
+			dataType.equalsIgnoreCase("time") && 
+			dataType.equalsIgnoreCase("integer") && 
+			dataType.equalsIgnoreCase("float")) {
 			var minMax = rangeEnumeration.split("-");
 			if (minMax.length == 2) {
 				return "<MIN "+minMax.get(0) + ", MAX "+minMax.get(1)+">";
