@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,13 +34,16 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
+import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
@@ -115,26 +119,44 @@ public class BulkUploadHelper {
 		parsingResult.invalidModels = new HashSet<>();
 		parsingResult.validModels = new HashSet<>();
 		
+		Collection<FileContent> fileContents = getFileContentsFromZip(content);
+		fileContents.forEach(fileContent -> {
+			Collection<FileContent> possibleDependencies = fileContents.stream().filter(file -> !file.equals(fileContent)).collect(Collectors.toList());
+			try {
+				IModelParser parser = ModelParserFactory.instance().getParser(fileContent.getFileName());
+				parser.setReferences(possibleDependencies);
+				parsingResult.validModels.add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
+			} catch (CouldNotResolveReferenceException grammarProblem) {
+				parsingResult.invalidModels.add(ValidationReport.invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), 
+						grammarProblem.getMessage(), grammarProblem.getMissingReferences()));
+			} catch (ValidationException grammarProblem) {
+				parsingResult.invalidModels.add(ValidationReport.invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), 
+						grammarProblem.getMessage()));
+			} catch(UnsupportedOperationException fileNotSupportedException) {
+				// Do nothing. Don't process the file
+			}
+		});
+		
+		return parsingResult;
+	}
+	
+	private Collection<FileContent> getFileContentsFromZip(byte[] content) {
+		Collection<FileContent> fileContents = new ArrayList<FileContent>();
+		
 		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(content));
 		ZipEntry entry = null;
 		
 		try {
 			while ((entry = zis.getNextEntry()) != null) {
-				if (!entry.isDirectory()) {
-					try {
-						parsingResult.validModels.add(ModelParserFactory.getParser(entry.getName()).parse(new ByteArrayInputStream(copyStream(zis,entry))));
-					} catch (ValidationException grammarProblem) {
-						parsingResult.invalidModels.add(ValidationReport.invalid(trytoCreateModelFromCorruptFile(entry.getName()), grammarProblem.getMessage()));
-					} catch(UnsupportedOperationException fileNotSupportedException) {
-						// Do nothing. Don't process the file
-					}
+				if (!entry.isDirectory() && ModelParserFactory.hasParserFor(entry.getName())) {
+					fileContents.add(new FileContent(entry.getName(), copyStream(zis,entry))); 
 				}
 			}
 		} catch (IOException e) {
 			throw new BulkUploadException("IOException while getting next entry from zip file", e);
 		}
 		
-		return parsingResult;
+		return fileContents;
 	}
 	
 	private ModelInfo trytoCreateModelFromCorruptFile(String fileName) {
