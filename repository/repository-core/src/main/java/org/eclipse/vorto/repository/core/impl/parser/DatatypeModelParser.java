@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
+import org.eclipse.vorto.repository.core.IModelRepository;
 
 import com.google.inject.Injector;
 
@@ -23,9 +24,9 @@ import com.google.inject.Injector;
  */
 public class DatatypeModelParser extends AbstractModelParser {
 	
-	public DatatypeModelParser(String fileName) {
-		super(fileName);
-	}		
+	public DatatypeModelParser(String fileName, IModelRepository repository) {
+		super(fileName, repository);
+	}
 
 	@Override
 	protected Injector getInjector() {
