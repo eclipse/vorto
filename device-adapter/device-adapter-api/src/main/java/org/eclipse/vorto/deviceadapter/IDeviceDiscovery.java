@@ -15,14 +15,15 @@
 package org.eclipse.vorto.deviceadapter;
 
 /**
- * The interface Device discovery.
+ * Discovers all devices for the specific target platform and specific information model 
  */
 public interface IDeviceDiscovery {
-    /**
-     * List available devices.
+    
+	/**
+     * Discovers all devices for the specific target platform and information model
      *
-     * @param callback     the callback
      * @param scantimeInMs the scantime in ms
+     * @param discoveryCallbackHandler 
      */
-    void listAvailableDevices(IDeviceDiscoveryCallback callback, int scantimeInMs);
+    void listAvailableDevicesAsync(int scantimeInMs, IDeviceDiscoveryCallback discoveryCallbackHandler);
 }

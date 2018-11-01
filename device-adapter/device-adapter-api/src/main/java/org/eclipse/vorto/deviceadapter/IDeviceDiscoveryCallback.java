@@ -15,12 +15,12 @@
 package org.eclipse.vorto.deviceadapter;
 
 /**
- * The interface Device discovery callback.
+ * Callback Discovery Handler that a client application implements when a device is discovered by the adapter.
  */
 public interface IDeviceDiscoveryCallback {
 
     /**
-     * On device found.
+     * Is invoked when by the adapter when a device is found. 
      *
      * @param deviceInfo the device info
      */

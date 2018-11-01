@@ -14,24 +14,33 @@
  */
 package org.eclipse.vorto.deviceadapter;
 
-import org.eclipse.vorto.model.Infomodel;
+import java.util.List;
+
+import org.eclipse.vorto.model.runtime.PropertyValue;
 
 /**
- * Device Adapter that abstracts the communication layer between the client application and the device. 
- * The data returned or set is based on Vorto compliant data structures according to the Vorto Information Model 
+ * New Configuration which can be set via {@link IDeviceData#setConfiguration(INewConfiguration, String)}}
+ *
  */
-public interface IDeviceAdapter extends IDeviceDiscovery, IDeviceData{
+public interface INewConfiguration {
 
 	/**
-	 * Gets the target platform for which this adapter is configured
-	 * @return
+	 * sets the configuration value
+	 * @param name
+	 * @param value
+	 * @throws IllegalArgumentException if the given propertyName is not defined in the Information Model
 	 */
-	String getTargetPlatform();
+	void addConfigurationValue(String propertyName, Object propertyValue);
 	
 	/**
-	 * Gets the Information model for which this adapter is configured
+	 * The information model property for which the configuration applies
 	 * @return
 	 */
-	Infomodel getInfomodel();
-
+	String getInfomodelProperty();
+	
+	/**
+	 * Gets the configuration values
+	 * @return
+	 */
+	List<PropertyValue> getConfigurationValues();
 }

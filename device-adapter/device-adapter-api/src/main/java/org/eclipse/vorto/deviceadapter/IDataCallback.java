@@ -18,32 +18,32 @@ import org.eclipse.vorto.model.runtime.FBEventValue;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 
 /**
- * To be used by the Adapter to communicate data changes back to the Application.
+ * To be implemented by the client application to handle the device data. The device data is already mapped to Vorto compliant data structures. 
  */
 public interface IDataCallback {
 
     /**
-     * On status.
+     * Is Invoked when the adapter receives status data from the device
      *
      * @param status the status
      * @param ctx    the ctx
      */
-    void onStatusReceived(FunctionblockValue data, Context context);
+    void onStatusReceived(FunctionblockValue deviceData, CallbackContext context);
 
     /**
-     * On configuration.
+     * Is Invoked when the adapter receives configuration data from the device
      *
      * @param deviceProperties the device properties
      * @param ctx              the ctx
      */
-    void onConfigurationReceived(FunctionblockValue data, Context context);
+    void onConfigurationReceived(FunctionblockValue deviceData, CallbackContext context);
     
     /**
-     * 
+     * Is Invoked when the adapter receives event data from the device
      * @param event
      * @param context
      */
-    void onEventReceived(FBEventValue event, Context context);
+    void onEventReceived(FBEventValue event, CallbackContext context);
 
 
 }

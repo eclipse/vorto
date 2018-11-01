@@ -21,33 +21,52 @@ import org.eclipse.vorto.model.runtime.FunctionblockValue;
  * that implements this interface is responsible for implementing the functionality.
  */
 public interface IDeviceData {
-	
+		
+	/**
+	 * Creates a new configuration to set properties. Send the configuration to device via {@link IDeviceData#setConfiguration(INewConfiguration, String)}}
+	 * 
+	 * @param infomodelProperty
+	 * @return new configuration which can be set on the device via {@link IDeviceData#setConfiguration(INewConfiguration, String)}}
+	 */
+	INewConfiguration newConfiguration(String infomodelProperty);
 	
     /**
-     * Sets the configuration on the device.
+     * Writes configuration values on the device 
      *
-     * @param configurationProperties the configuration properties
-     * @param infoModelProperty       name of the infomodel property
-     * @param propertyName			  name of the function block property
-     * @param propertyValue			  value of the function block property
-     * @param deviceId				  deviceId
+     * @param configuration        	  configuration to write to the device
+     * @param deviceId				  deviceId of the device. See {@link IDeviceDiscovery#listAvailableDevices(IDeviceDiscoveryCallback, int)}} for device id discovery
+     * @throws {@link DeviceConfigurationProblem}} if the given configuration cannot be written to the device
      */
-    void setConfiguration(String infoModelProperty, String propertyName, Object propertyValue, String deviceId);
-
+    void setConfiguration(INewConfiguration configuration, String deviceId);
+    
     /**
-     * Receive data by using some blocking mechanism.
+     * Receive device data by using some blocking mechanism.
      *
-     * @param deviceID   the device id
-     * @param fbProperty the fb property
+     * @param infomodelProperty  name of the infomodel property
+     * @param deviceId			 deviceId of the device. See {@link IDeviceDiscovery#listAvailableDevices(IDeviceDiscoveryCallback, int)}} for device id discovery
      * @return the functionblock data
      */
-    FunctionblockValue receiveFBData(String fbProperty, String deviceId);
+    FunctionblockValue receive(String infomodelProperty, String deviceId);
 
     /**
-     * Receive fb data async, starts a new read process and calls the callback once done.
+     * Receive device data asynchronously.
      *
-     * @param callback the callback
-     * @param deviceId the device id
+     * @param infomodelProperty name of the infomodel property
+     * @param deviceId 			deviceId of the device. See {@link IDeviceDiscovery#listAvailableDevices(IDeviceDiscoveryCallback, int)}} for device id discovery
+     * @param dataCallback 		the callback handler when data is received by the device
      */
-    void receiveFBDataAsync(IDataCallback callback, String deviceId);
+    void receiveAsync(String infomodelProperty, String deviceId, IDataCallback dataCallback );
+    
+    /**
+     * Configuration Problem that may occur during writing configuration to the device
+     *
+     */
+    public class DeviceConfigurationProblem extends RuntimeException {
+    	
+		private static final long serialVersionUID = 1L;
+
+		public DeviceConfigurationProblem(String msg, Throwable cause) {
+    		super(msg,cause);
+    	}
+    }
 }
