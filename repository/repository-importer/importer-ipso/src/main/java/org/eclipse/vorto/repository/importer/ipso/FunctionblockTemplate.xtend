@@ -65,9 +65,9 @@ class FunctionblockTemplate {
 	def constraints(String dataType, String rangeEnumeration) {
 		logger.debug("Processing range enumeration "+rangeEnumeration);
 		if (!rangeEnumeration.nullOrEmpty && 
-			dataType.equalsIgnoreCase("time") && 
-			dataType.equalsIgnoreCase("integer") && 
-			dataType.equalsIgnoreCase("float")) {
+			(dataType.equalsIgnoreCase("time") || 
+			 dataType.equalsIgnoreCase("integer") ||
+ 			 dataType.equalsIgnoreCase("float"))) {
 			var minMax = rangeEnumeration.split("-");
 			if (minMax.length == 2) {
 				return "<MIN "+minMax.get(0) + ", MAX "+minMax.get(1)+">";
