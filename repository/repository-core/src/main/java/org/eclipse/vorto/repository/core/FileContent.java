@@ -54,9 +54,7 @@ public class FileContent {
 				return false;
 		} else if (!fileName.equals(other.fileName))
 			return false;
-		if (size != other.size)
-			return false;
-		return true;
+		return (size == other.size);
 	}
 
 }
