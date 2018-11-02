@@ -36,10 +36,8 @@ public class ModelParserTest extends AbstractIntegrationTest {
 		try {
 			modelParserFactory.getParser("ColorLightIM.infomodel").parse(new ClassPathResource("sample_models/ColorLightIM.infomodel").getInputStream());
 			fail("Able to get ModelInfo even if dependency is not loaded.");
-		} catch(ValidationException e) {
-			assertTrue(e instanceof CouldNotResolveReferenceException);
-			CouldNotResolveReferenceException e2 = (CouldNotResolveReferenceException) e;
-			assertEquals(1, e2.getMissingReferences().size());
+		} catch(CouldNotResolveReferenceException e) {
+			assertEquals(1, e.getMissingReferences().size());
 		} catch (IOException e) {
 			fail("Not able to load test file");
 		} 
