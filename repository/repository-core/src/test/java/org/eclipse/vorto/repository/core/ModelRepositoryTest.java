@@ -16,8 +16,10 @@ package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
@@ -28,6 +30,7 @@ import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
 import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
  
@@ -221,7 +224,20 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
 		assertEquals(2, modelRepository.search("author:" + alex.getUsername()).size());
 	}
 	
-	
+	@Test
+	public void testSaveInvalidModelWithError() {
+		try {
+			IUserContext erle = UserContext.user("erle");
+			modelRepository.save(ModelId.fromPrettyFormat("com.ipso.smartobjects:Accelerometer:0.0.3"), 
+					IOUtils.toByteArray(new ClassPathResource("sample_models/Accelerometer-invalid.fbmodel").getInputStream()), 
+					"Accelerometer-invalid.fbmodel", erle);
+			fail("This test should be getting a validation exception");
+		} catch(ValidationException e) {
+			assertTrue(e.getMessage().contains("Constraint cannot apply on this property's datatype"));
+		} catch (IOException e) {
+			fail("Not able to load test file");
+		}	
+	}
 	
 	@Test
 	public void testDeleteUnUsedType() {

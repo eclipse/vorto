@@ -72,6 +72,9 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 
 	@Autowired
 	private IWorkflowService workflowService;
+	
+	@Autowired
+	private ModelParserFactory modelParserFactory;
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -128,7 +131,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 
 			IUserContext userContext = UserContext
 					.user(SecurityContextHolder.getContext().getAuthentication().getName());
-			ModelResource modelInfo = (ModelResource)ModelParserFactory
+			ModelResource modelInfo = (ModelResource) modelParserFactory
 					.getParser("model" + ModelType.valueOf(content.getType()).getExtension())
 					.parse(new ByteArrayInputStream(content.getContentDsl().getBytes()));
 

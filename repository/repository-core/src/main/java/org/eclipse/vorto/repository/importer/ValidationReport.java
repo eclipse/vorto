@@ -58,7 +58,6 @@ public class ValidationReport {
 		if (exception instanceof CouldNotResolveReferenceException) {
 			CouldNotResolveReferenceException ex = (CouldNotResolveReferenceException) exception;
 			return new ValidationReport(model, false, new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), ex.getMissingReferences());
-
 		} else {
 			return new ValidationReport(model, false,new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), Collections.emptyList());
 

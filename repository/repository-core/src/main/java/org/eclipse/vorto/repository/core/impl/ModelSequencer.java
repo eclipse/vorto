@@ -54,10 +54,10 @@ public class ModelSequencer extends Sequencer {
 	@Override
 	public boolean execute(Property inputProperty, Node outputNode,
 			Context context) throws Exception {
-
+		
 		Binary binaryValue = inputProperty.getBinary();
 		CheckArg.isNotNull(binaryValue, "binary");
-		ModelInfo modelResource = ModelParserFactory.getParser(outputNode.getPath()).parse(binaryValue.getStream());
+		ModelInfo modelResource = ModelParserFactory.instance().getParser(outputNode.getPath()).parse(binaryValue.getStream());
 		
 		outputNode.setProperty("vorto:description", modelResource
 				.getDescription() != null ? modelResource.getDescription()

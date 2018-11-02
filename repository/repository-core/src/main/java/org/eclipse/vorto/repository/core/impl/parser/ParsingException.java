@@ -14,23 +14,19 @@
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
-import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
-import org.eclipse.vorto.repository.core.IModelRepository;
+public class ParsingException extends RuntimeException {
 
-import com.google.inject.Injector;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7547879180831064180L;
 
-/**
- * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
- */
-public class DatatypeModelParser extends AbstractModelParser {
-	
-	public DatatypeModelParser(String fileName, IModelRepository repository) {
-		super(fileName, repository);
+	public ParsingException(String arg0) {
+		super(arg0);
 	}
 
-	@Override
-	protected Injector getInjector() {
-		return new DatatypeStandaloneSetup().createInjectorAndDoEMFRegistration();
+	public ParsingException(String arg0, Throwable arg1) {
+		super(arg0, arg1);
 	}
 	
 }

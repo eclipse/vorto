@@ -20,10 +20,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -39,6 +41,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
@@ -63,6 +66,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
 	@Autowired
 	private IUserRepository userRepository;
+	
+	@Autowired
+	private ModelParserFactory modelParserFactory;
 
 	private Set<String> supportedFileExtensions = new HashSet<>();
 
@@ -260,16 +266,28 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	}
 
 	protected ModelResource parseDSL(String fileName, byte[] content) {
-		return (ModelResource) ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+		return parseDSL(fileName, content, java.util.Collections.emptyList());
+	}
+	
+	protected ModelResource parseDSL(String fileName, byte[] content, Collection<FileContent> fileReferences) {
+		IModelParser modelParser = modelParserFactory.getParser(fileName);
+		if (!fileReferences.isEmpty()) {
+			modelParser.setReferences(fileReferences.stream()
+					.filter(file -> !file.getFileName().equals(fileName))
+					.collect(Collectors.toList()));
+		}
+		return (ModelResource) modelParser.parse(new ByteArrayInputStream(content));
 	}
 
 	protected ModelResource parseDSL(ModelType type, byte[] content) {
-		return (ModelResource) ModelParserFactory.getParser("model" + type.getExtension())
-				.parse(new ByteArrayInputStream(content));
-
+		return parseDSL("model" + type.getExtension(), content, java.util.Collections.emptyList());
+	}
+	
+	protected ModelResource parseDSL(ModelType type, byte[] content, Collection<FileContent> fileReferences) {
+		return parseDSL("model" + type.getExtension(), content, fileReferences);
 	}
 
-	private String createFileName(ModelInfo resource) {
+	protected String createFileName(ModelInfo resource) {
 		return resource.getId().getName() + resource.getType().getExtension();
 	}
 
@@ -308,6 +326,10 @@ public abstract class AbstractModelImporter implements IModelImporter {
 	public void setUserRepository(IUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
+	
+	public void setModelParserFactory(ModelParserFactory modelParserFactory) {
+		this.modelParserFactory = modelParserFactory;
+	}
 
 	public ITemporaryStorage getUploadStorage() {
 		return uploadStorage;
@@ -321,4 +343,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 		return userRepository;
 	}
 
+	public ModelParserFactory getModelParserFactory() {
+		return modelParserFactory;
+	}
 }

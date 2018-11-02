@@ -15,8 +15,10 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import java.io.InputStream;
+import java.util.Collection;
 
 import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.FileContent;
 
 
 /**
@@ -30,4 +32,11 @@ public interface IModelParser {
 	 * @return
 	 */
 	ModelInfo parse(InputStream is);
+	
+	/**
+	 * Sets the files that needs to be referenced by the file being parsed (i.e its dependencies)
+	 * 
+	 * @param fileReferences
+	 */
+	void setReferences(Collection<FileContent> fileReferences);
 }

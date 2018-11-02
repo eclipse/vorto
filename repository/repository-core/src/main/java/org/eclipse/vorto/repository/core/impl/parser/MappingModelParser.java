@@ -15,6 +15,7 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
+import org.eclipse.vorto.repository.core.IModelRepository;
 
 import com.google.inject.Injector;
 
@@ -23,9 +24,8 @@ import com.google.inject.Injector;
  */
 public class MappingModelParser extends AbstractModelParser {
 
-	public MappingModelParser(String fileName) {
-		super(fileName);
-		
+	public MappingModelParser(String fileName, IModelRepository repository) {
+		super(fileName, repository);
 	}
 
 	@Override

@@ -11,6 +11,7 @@ import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -46,8 +47,14 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	
 	protected IWorkflowService workflow = null;
 	
+	protected ModelParserFactory modelParserFactory = null;
+	
 	public void beforeEach() throws Exception {
 		super.beforeEach();
+		
+		modelParserFactory = new ModelParserFactory();
+		modelParserFactory.init();
+		
 		startRepositoryWithConfiguration(new ClassPathResource("vorto-repository.json").getInputStream());
 
 		Mockito.when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
@@ -57,11 +64,15 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		modelRepository.setSession(jcrSession());
 		modelRepository.setUserRepository(userRepository);
 		modelRepository.setModelSearchUtil(modelSearchUtil);
+		modelRepository.setModelParserFactory(modelParserFactory);
+		
+		modelParserFactory.setRepository(modelRepository);
 		
 		this.importer = new VortoModelImporter();
 		this.importer.setModelRepository(modelRepository);
 		this.importer.setUploadStorage(new InMemoryTemporaryStorage());
 		this.importer.setUserRepository(userRepository);
+		this.importer.setModelParserFactory(modelParserFactory);
 		
 		this.workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
 

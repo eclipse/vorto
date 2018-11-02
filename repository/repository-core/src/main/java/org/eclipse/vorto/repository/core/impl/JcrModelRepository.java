@@ -94,6 +94,9 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private AttachmentValidator attachmentValidator;
+	
+	@Autowired
+	private ModelParserFactory modelParserFactory;
 
 	@Override
 	public List<ModelInfo> search(final String expression) {
@@ -206,7 +209,7 @@ public class JcrModelRepository implements IModelRepository {
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
 			final String fileContent = IOUtils.toString(is);
-			ModelResource resource = (ModelResource) ModelParserFactory.getParser(fileNode.getName())
+			ModelResource resource = (ModelResource) modelParserFactory.getParser(fileNode.getName())
 					.parse(IOUtils.toInputStream(fileContent));
 			return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
 
@@ -241,6 +244,10 @@ public class JcrModelRepository implements IModelRepository {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
 
+		ModelResource modelInfo = (ModelResource) modelParserFactory
+				.getParser("model" + ModelType.fromFileName(fileName).getExtension())
+				.parse(new ByteArrayInputStream(content));
+		
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 
 		try {
@@ -254,20 +261,20 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
 				contentNode.setProperty("jcr:data", binary);
 			} else { // node already exists.
 				Node fileNode = nodeIt.nextNode();
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.getNode("jcr:content");
-				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
 				contentNode.setProperty("jcr:data", binary);
 			}
 
 			session.save();
 			logger.info("Model was saved successful");
-			return ModelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+			return modelInfo;
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
@@ -358,7 +365,7 @@ public class JcrModelRepository implements IModelRepository {
 			Node fileNode = (Node) folderNode.getNodes().next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
-			return (ModelResource) ModelParserFactory.getParser(fileNode.getName()).parse(is);
+			return (ModelResource) modelParserFactory.getParser(fileNode.getName()).parse(is);
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
@@ -477,6 +484,7 @@ public class JcrModelRepository implements IModelRepository {
 	public Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
 			Node fileNode;
@@ -493,7 +501,7 @@ public class JcrModelRepository implements IModelRepository {
 			return Optional.of(new FileContent(fileNode.getName(), fileContent.getBytes()));
 
 		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Could not find model with the given model id", e);
+			return Optional.empty();
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
@@ -673,5 +681,8 @@ public class JcrModelRepository implements IModelRepository {
 			return resource;
 		}
 	}
-	
+
+	public void setModelParserFactory(ModelParserFactory modelParserFactory) {
+		this.modelParserFactory = modelParserFactory;
+	}
 }

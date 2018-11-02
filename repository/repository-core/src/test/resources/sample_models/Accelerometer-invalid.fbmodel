@@ -1,0 +1,16 @@
+namespace com.ipso.smartobjects
+version 0.0.3
+displayname "Accelerometer"
+description "Description: This IPSO object can be used to represent a 1-3 axis accelerometer."
+category SmartObject
+
+functionblock Accelerometer {
+	status {
+		mandatory x_value as float with { readable: true} "The measured value along the X axis."
+		optional y_value as float with { readable: true} "The measured value along the Y axis."
+		optional z_value as float with { readable: true} "The measured value along the Z axis."
+		optional sensor_units as string with { readable: true} <MIN 0, MAX 7> "Measurement Units Definition e.g. “Cel” for Temperature in Celsius."
+		optional min_range_value as float with { readable: true} "The minimum value that can be measured by the sensor"
+		optional max_range_value as float with { readable: true} "The maximum value that can be measured by the sensor"
+	}
+}
