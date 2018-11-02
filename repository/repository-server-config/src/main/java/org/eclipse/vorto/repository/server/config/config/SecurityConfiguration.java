@@ -92,6 +92,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Value("${github.oauth2.resource.userInfoUri}") 
 	private String githubUserInfoEndpointUrl;
 	
+	@Value("${eidp.oauth2.resource.userInfoUri}") 
+	private String eidpUserInfoEndpointUrl;
+	
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled = false; 
 	
@@ -177,8 +180,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 	
 	private Filter eidpFilter() {
-		simpleUserInfoService.setPrincipalExtractor(new EidpPrincipalExtractor());
-		return newSsoFilter("/eidp/login", simpleUserInfoService, accessTokenProvider, 
+		SimpleUserInfoServices userInfoService = new SimpleUserInfoServices(eidpUserInfoEndpointUrl, eidp);
+		userInfoService.setPrincipalExtractor(new EidpPrincipalExtractor());
+		return newSsoFilter("/eidp/login", userInfoService, accessTokenProvider, 
 				new EidpOAuth2RestTemplate(eidp, oauth2ClientContext),authoritiesExtractor("sub"));
 	}
 	
