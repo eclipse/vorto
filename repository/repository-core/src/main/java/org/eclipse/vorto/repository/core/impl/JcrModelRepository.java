@@ -244,6 +244,10 @@ public class JcrModelRepository implements IModelRepository {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
 
+		ModelResource modelInfo = (ModelResource) modelParserFactory
+				.getParser("model" + ModelType.fromFileName(fileName).getExtension())
+				.parse(new ByteArrayInputStream(content));
+		
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 
 		try {
@@ -257,20 +261,20 @@ public class JcrModelRepository implements IModelRepository {
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
 				contentNode.setProperty("jcr:data", binary);
 			} else { // node already exists.
 				Node fileNode = nodeIt.nextNode();
 				fileNode.addMixin("mix:lastModified");
 				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.getNode("jcr:content");
-				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(content));
+				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
 				contentNode.setProperty("jcr:data", binary);
 			}
 
 			session.save();
 			logger.info("Model was saved successful");
-			return modelParserFactory.getParser(fileName).parse(new ByteArrayInputStream(content));
+			return modelInfo;
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
