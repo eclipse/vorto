@@ -121,7 +121,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.DELETE, "/rest/**","/api/**").authenticated()
 			.and()
 				.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class)
-				.addFilterAfter(new MyAnonymousAuthFilter(),AnonymousAuthenticationFilter.class)
+				.addFilterAfter(anonymousFilter(),AnonymousAuthenticationFilter.class)
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
 				.addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class)
@@ -142,6 +142,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 	}
 	
+	@Bean
+	public Filter anonymousFilter() {
+		return new MyAnonymousAuthFilter();
+	}
+
 	@Bean
 	public static PasswordEncoder encoder() {
 		return new BCryptPasswordEncoder(11);
