@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account.impl;
+package org.eclipse.vorto.repository.account;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
@@ -26,9 +26,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.UserUtils;
 
 @Entity
 public class User {

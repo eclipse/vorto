@@ -19,6 +19,7 @@ import java.util.Arrays;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Deprecated
 public class GeneratedOutput {
 
 	private byte[] content;

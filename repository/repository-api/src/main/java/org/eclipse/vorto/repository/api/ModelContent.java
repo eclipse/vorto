@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.vorto.model.AbstractModel;
 import org.eclipse.vorto.model.ModelId;
 
+@Deprecated
 public class ModelContent {
 
 	private ModelId root = null;

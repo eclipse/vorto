@@ -19,8 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;

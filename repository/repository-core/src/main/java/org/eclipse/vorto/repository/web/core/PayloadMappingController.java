@@ -28,11 +28,11 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
@@ -79,13 +79,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
 	
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.POST)
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
 	public Map<String,Object> createMappingSpecification(@PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
 		logger.info("Creating Mapping Specification for "+modelId + " using key "+targetPlatform);
 		if (!this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform).isEmpty()){
 			throw new ModelAlreadyExistsException();
 		} else {
-			org.eclipse.vorto.repository.api.ModelContent modelContent = this.modelController.getModelContent(modelId);
+			org.eclipse.vorto.repository.core.ModelContent modelContent = this.modelController.getModelContent(modelId);
 			MappingSpecification spec = new MappingSpecification();
 			spec.setInfoModel((Infomodel)modelContent.getModels().get(modelContent.getRoot()));
 			for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
@@ -100,12 +100,13 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	}
 
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,@PathVariable String targetPlatform) throws Exception {
-		org.eclipse.vorto.repository.api.ModelContent infoModelContent = modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+		org.eclipse.vorto.repository.core.ModelContent infoModelContent = modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
 		Infomodel infomodel = (Infomodel)infoModelContent.getModels().get(infoModelContent.getRoot());		
 		
 		if (infomodel == null) {
-			org.eclipse.vorto.repository.api.ModelContent infomodelContent = modelController.getModelContent(modelId);
+			org.eclipse.vorto.repository.core.ModelContent infomodelContent = modelController.getModelContent(modelId);
 			infomodel = (Infomodel)infomodelContent.getModels().get(infomodelContent.getRoot());
 		}
 		MappingSpecification specification = new MappingSpecification();
@@ -121,7 +122,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 			if (mappingId != null) {
 				fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(), mappingId.getPrettyFormat());
 			} else {
-				org.eclipse.vorto.repository.api.ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
+				org.eclipse.vorto.repository.core.ModelContent fbmContent = modelController.getModelContent(fbModelId.getPrettyFormat());
 				fbm = (FunctionblockModel)fbmContent.getModels().get(fbmContent.getRoot());
 			}			
 			
@@ -185,6 +186,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	}
 
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info", method = RequestMethod.GET)
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public List<ModelInfo> getMappingModels(@PathVariable final String modelId,@PathVariable String targetPlatform){
 		return this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform);
 	}
@@ -206,6 +208,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	}
 
 	@RequestMapping(value = "/test", method = RequestMethod.PUT)
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest) throws Exception {
 		MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
 		
@@ -218,7 +221,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	}
 
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}", method = RequestMethod.PUT)
-	@PreAuthorize("isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
 	public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification, @PathVariable String modelId, @PathVariable String targetPlatform) {
 		logger.info("Saving mapping specification "+modelId + " with key "+targetPlatform);
 
@@ -250,6 +253,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of mapping specification"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file", method = RequestMethod.GET)
 	public void downloadModelById(@PathVariable final String modelId,@PathVariable String targetPlatform,
 			final HttpServletResponse response) {

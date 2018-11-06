@@ -16,11 +16,12 @@ package org.eclipse.vorto.repository.web.generation;
 
 import java.util.Collection;
 
-import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
+import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,6 +44,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	private IGeneratorService generatorService;
 		
 	@ApiOperation(value = "Returns the rank of code generators by usage")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/rankings/{top}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
 	public Collection<GeneratorInfo> getMostlyUsedGenerators(@ApiParam(value = "The upper limit number of top code generator list", required = true) final @PathVariable int top) {
 		return this.generatorService.getMostlyUsedGenerators(top);
@@ -50,6 +52,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Register a code generator",hidden=true)
 	@RequestMapping(value = "/{serviceKey}", method = RequestMethod.PUT)
+	//FIXME : ONLY TECHNICAL USERS MAY REGISTER AND DEREGISTER GENERATORS
 	public void registerGenerator(	@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey,
 									@ApiParam(value = "The URL links to a specified code generator", required = true) final @RequestBody String baseUrl) {
 		this.generatorService.registerGenerator(serviceKey, baseUrl);

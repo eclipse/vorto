@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.IModelImportService;
@@ -70,7 +70,7 @@ public class ImportController {
 	private IWorkflowService workflowService;
 
 	@RequestMapping(method = RequestMethod.POST)
-	@PreAuthorize(" hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_CREATOR)")
+	@PreAuthorize("hasRole('MODEL_CREATOR')")
 	public ResponseEntity<UploadModelResponse> uploadModel(
 			@ApiParam(value = "The vorto model file to upload", required = true) @RequestParam("file") MultipartFile file,
 			@RequestParam("key") String key) {
@@ -111,7 +111,7 @@ public class ImportController {
 	}
 
 	@RequestMapping(value = "/{handleId:.+}", method = RequestMethod.PUT)
-	@PreAuthorize("hasAnyRole(T(org.eclipse.vorto.repository.account.Role).ADMIN, T(org.eclipse.vorto.repository.account.Role).MODEL_CREATOR)")
+	@PreAuthorize("hasRole('MODEL_CREATOR')")
 	public ResponseEntity<List<ModelInfo>> doImport(
 			@ApiParam(value = "The file name of uploaded model", required = true) final @PathVariable String handleId,
 			@RequestParam("key") String key) {
@@ -133,6 +133,7 @@ public class ImportController {
 	}
 
 	@ApiOperation(value = "Returns a list of supported importers")
+	@PreAuthorize("hasRole('MODEL_CREATOR')")
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
 	public List<ImporterInfo> getImporters() {
 		List<ImporterInfo> importers = new ArrayList<ImporterInfo>();

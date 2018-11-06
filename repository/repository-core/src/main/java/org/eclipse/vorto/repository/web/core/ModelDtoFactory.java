@@ -74,9 +74,9 @@ import org.eclipse.vorto.model.Operation;
 import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.ReturnType;
 import org.eclipse.vorto.model.Stereotype;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
 /**
  * Converts the EMF Model to POJO's

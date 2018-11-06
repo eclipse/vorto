@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.account.impl;
 
+import org.eclipse.vorto.repository.account.User;
 import org.springframework.data.repository.CrudRepository;
 
 /**

@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.api.exception;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@Deprecated
 public class GenerationException extends RuntimeException {
 
 	/**

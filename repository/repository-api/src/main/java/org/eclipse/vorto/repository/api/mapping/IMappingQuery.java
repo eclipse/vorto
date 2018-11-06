@@ -16,8 +16,10 @@ package org.eclipse.vorto.repository.api.mapping;
 
 import java.util.List;
 
-import org.eclipse.vorto.model.IMappedElement;
+import org.eclipse.vorto.repository.api.content.IMappedElement;
 
+
+@Deprecated
 public interface IMappingQuery<Result extends IMappedElement> {
 
 	/**

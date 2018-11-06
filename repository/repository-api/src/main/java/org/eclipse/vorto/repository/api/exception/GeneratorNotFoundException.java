@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.api.exception;
 
+@Deprecated
 public class GeneratorNotFoundException extends RuntimeException {
 
 	/**

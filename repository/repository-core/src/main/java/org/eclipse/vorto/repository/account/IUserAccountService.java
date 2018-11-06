@@ -16,8 +16,6 @@ package org.eclipse.vorto.repository.account;
 
 import java.util.List;
 
-import org.eclipse.vorto.repository.account.impl.User;
-
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */

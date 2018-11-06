@@ -20,8 +20,8 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.junit.Test;

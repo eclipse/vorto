@@ -29,6 +29,12 @@ public class ModelIdTest {
 		assertEquals("org.eclipse.vorto_Location_1_0_0.fbmodel",modelId.getFileName());
 	}
 	
+	@Test
+	public void testDeprecatedModelId() {
+		String modelId = "com.bosch.Car:1.0.0";
+		assertEquals(new ModelId("Car", "com.bosch", "1.0.0"),ModelId.fromPrettyFormat(modelId));
+	}
+	
 	@Test (expected=IllegalArgumentException.class)
 	public void testInvalidModelId() {
 		String modelId = "Test";

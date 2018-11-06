@@ -14,10 +14,10 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
 /**

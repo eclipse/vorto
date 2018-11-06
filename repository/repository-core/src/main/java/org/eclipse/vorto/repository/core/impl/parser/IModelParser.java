@@ -17,8 +17,8 @@ package org.eclipse.vorto.repository.core.impl.parser;
 import java.io.InputStream;
 import java.util.Collection;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
 
 /**

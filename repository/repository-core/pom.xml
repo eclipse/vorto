@@ -15,10 +15,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
-			<artifactId>repository-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>model</artifactId>
 			<version>${project.version}</version>
 		</dependency>

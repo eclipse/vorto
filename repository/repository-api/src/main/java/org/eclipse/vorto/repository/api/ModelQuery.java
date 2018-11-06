@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.api;
 
+@Deprecated
 public class ModelQuery {
 	
 	private String expression;

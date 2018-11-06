@@ -18,8 +18,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
 public class OrCondition implements IWorkflowCondition {

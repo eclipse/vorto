@@ -17,8 +17,8 @@ package org.eclipse.vorto.repository.importer;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 
 /**
@@ -66,4 +66,5 @@ public interface IModelImporter {
 	 * @return model that was been checked in
 	 */
 	List<ModelInfo> doImport(String uploadHandleId, IUserContext user) throws ModelImporterException;
+
 }

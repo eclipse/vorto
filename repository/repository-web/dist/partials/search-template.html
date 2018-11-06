@@ -11,7 +11,7 @@
 									<h2 id="searchHeadline">Models</h2>
 								</td>
 								<td colspan="3" class="headerTable">
-									<a ng-show="authenticated && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"
+									<a ng-show="hasAuthority('ROLE_MODEL_CREATOR') && userInfo.isRegistered === 'true'" class="btn btn-primary pull-right" ng-click="openCreateModelDialog()"
 									    role="button">
 										<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;Create new Model</a>
 								</td>

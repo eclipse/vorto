@@ -18,8 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.api.ModelId;
 
+@Deprecated
 public class Attachment {
 
 	private ModelId modelId;

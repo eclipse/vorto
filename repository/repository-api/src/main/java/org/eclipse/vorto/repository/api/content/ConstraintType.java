@@ -12,25 +12,15 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web.core;
+package org.eclipse.vorto.repository.api.content;
 
-public class ModelContent {
+@Deprecated
+public enum ConstraintType {
 
-	private String contentDsl = null;
-	private String type = null;
-	
-	public String getContentDsl() {
-		return contentDsl;
-	}
-	public void setContentDsl(String contentDsl) {
-		this.contentDsl = contentDsl;
-	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	
+	MIN,
+	MAX,
+	STRLEN,
+	REGEX,
+	MIMETYPE,
+	SCALING
 }

@@ -21,10 +21,10 @@ import java.util.Optional;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelFileContent;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 

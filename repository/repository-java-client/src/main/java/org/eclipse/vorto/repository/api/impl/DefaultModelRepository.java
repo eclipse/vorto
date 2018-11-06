@@ -24,9 +24,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.HttpClient;
-import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelContent;
+import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.api.ModelQuery;
 import org.eclipse.vorto.repository.api.attachment.Attachment;

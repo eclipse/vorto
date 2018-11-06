@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.model.IState;
 
 public interface IWorkflowService {

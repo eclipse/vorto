@@ -20,10 +20,10 @@ import java.util.List;
 import javax.jcr.PathNotFoundException;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
-import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
+import org.eclipse.vorto.repository.generation.GeneratedOutput;
+import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.slf4j.Logger;

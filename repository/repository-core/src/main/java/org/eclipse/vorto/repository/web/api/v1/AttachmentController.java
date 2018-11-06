@@ -26,12 +26,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.attachment.Attachment;
-import org.eclipse.vorto.repository.api.attachment.Tag;
-import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.dto.AttachResult;
@@ -67,7 +67,7 @@ public class AttachmentController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Upload a file to be attached to a model")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
-	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
 	public AttachResult attach(
 			@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0", required = true) @PathVariable String modelId,
 			@ApiParam(value = "The file to be uploaded as attachmment", required = true) @RequestParam("file") MultipartFile file) {
@@ -148,7 +148,7 @@ public class AttachmentController extends AbstractRepositoryController {
 	        @ApiResponse(code = 200, message = "Successfully deleted the attachment"),
 	        @ApiResponse(code = 404, message = "The resource could not be found")})
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
-	@PreAuthorize("isAuthenticated() && (hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:owner'))")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
 	public ResponseEntity<Void> deleteAttachment(@ApiParam(value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0", required = true) @PathVariable String modelId,
 			@ApiParam(value = "The name of the attached file that you want to delete", required = true) @PathVariable String filename) {
 		

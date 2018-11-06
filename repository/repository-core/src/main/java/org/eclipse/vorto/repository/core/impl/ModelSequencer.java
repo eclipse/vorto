@@ -26,7 +26,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;

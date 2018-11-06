@@ -26,12 +26,12 @@ import java.util.Set;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.exception.GenerationException;
-import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
-import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
-import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.generation.GeneratedOutput;
+import org.eclipse.vorto.repository.generation.GenerationException;
+import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.modeshape.common.collection.Collections;
 import org.slf4j.Logger;

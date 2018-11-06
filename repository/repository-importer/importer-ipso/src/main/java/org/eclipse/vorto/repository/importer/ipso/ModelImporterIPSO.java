@@ -27,9 +27,9 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -101,8 +101,8 @@ public class ModelImporterIPSO extends AbstractModelImporter {
 			LWM2M.Object obj = lwm2mModel.getObject().get(0);
 			final ModelInfo modelInfo = createModelInfo(obj);
 			FileContent fbFileContent = new FileContent(createFileName(modelInfo), FB_TEMPLATE.create(obj, modelInfo).getBytes());
-			vortoModels.add(this.parseDSL(ModelType.Functionblock, fbFileContent.getContent()));
-			vortoModels.add(this.parseDSL(ModelType.Mapping, MAPPING_TEMPLATE.create(obj, modelInfo).getBytes(), Arrays.asList(fbFileContent)));
+ 			vortoModels.add(this.parseDSL(ModelType.Functionblock, fbFileContent.getContent()));
+ 			vortoModels.add(this.parseDSL(ModelType.Mapping, MAPPING_TEMPLATE.create(obj, modelInfo).getBytes(), Arrays.asList(fbFileContent)));
 			return Collections.unmodifiableList(vortoModels);
 		} catch (Exception ex) {
 			throw new ModelImporterException("Problem importing ipso files", ex);

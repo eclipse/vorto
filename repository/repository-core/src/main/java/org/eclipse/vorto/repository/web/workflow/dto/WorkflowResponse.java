@@ -1,6 +1,6 @@
 package org.eclipse.vorto.repository.web.workflow.dto;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 
 public class WorkflowResponse {

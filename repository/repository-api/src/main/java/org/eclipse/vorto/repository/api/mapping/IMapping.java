@@ -14,9 +14,10 @@
  */
 package org.eclipse.vorto.repository.api.mapping;
 
-import org.eclipse.vorto.model.IMappedElement;
-import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.repository.api.content.IMappedElement;
+import org.eclipse.vorto.repository.api.content.ModelProperty;
 
+@Deprecated
 public interface IMapping {
 
 	/**

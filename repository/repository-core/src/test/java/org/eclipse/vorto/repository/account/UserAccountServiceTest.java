@@ -5,7 +5,6 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
-import org.eclipse.vorto.repository.account.impl.User;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -65,13 +64,13 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 	public void testUpdateRole() {
 		User user = setupUserWithRoles();
 		when(userRepository.findByUsername("S-1-5-21")).thenReturn(user);
-		accountService.create(user.getUsername(), Role.ADMIN, Role.MODEL_CREATOR, Role.MODEL_INTEGRATOR);
+		accountService.create(user.getUsername(), Role.ADMIN, Role.MODEL_CREATOR);
 	}
 
 	private User setupUserWithRoles() {
 		User user = new User();
 		user.setUsername("S-1-5-21");
-		user.addRoles(Role.ADMIN,Role.MODEL_VALIDATOR);
+		user.addRoles(Role.ADMIN,Role.MODEL_CREATOR);
 		return user;
 	}
 }

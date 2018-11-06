@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.api.generation;
 import java.util.Arrays;
 import java.util.Set;
 
+@Deprecated
 public class GeneratorInfo {
 	private String key;
 	private String name;

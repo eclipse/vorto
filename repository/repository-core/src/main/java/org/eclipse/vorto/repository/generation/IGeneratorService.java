@@ -19,9 +19,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.exception.GenerationException;
-import org.eclipse.vorto.repository.api.generation.GeneratedOutput;
-import org.eclipse.vorto.repository.api.generation.GeneratorInfo;
 
 /**
  * This service is a facade service to communicate to all registered Vorto Generators

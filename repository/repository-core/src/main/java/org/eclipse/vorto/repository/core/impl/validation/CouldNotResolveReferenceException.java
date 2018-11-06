@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
 
 public class CouldNotResolveReferenceException extends ValidationException {

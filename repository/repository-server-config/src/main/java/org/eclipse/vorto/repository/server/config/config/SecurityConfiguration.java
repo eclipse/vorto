@@ -24,11 +24,11 @@ import org.eclipse.vorto.repository.sso.boschid.EidpOAuth2RestTemplate;
 import org.eclipse.vorto.repository.sso.boschid.EidpPrincipalExtractor;
 import org.eclipse.vorto.repository.sso.boschid.EidpResourceDetails;
 import org.eclipse.vorto.repository.sso.oauth.SimpleUserInfoServices;
-import org.eclipse.vorto.repository.web.AngularCsrfHeaderFilter;
-import org.eclipse.vorto.repository.web.TenantVerificationFilter;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationEntryPoint;
 import org.eclipse.vorto.repository.web.listeners.AuthenticationSuccessHandler;
 import org.eclipse.vorto.repository.web.security.UserDBAuthoritiesExtractor;
+import org.eclipse.vorto.repository.web.tenant.TenantVerificationFilter;
+import org.eclipse.vorto.repository.web.ui.AngularCsrfHeaderFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +54,7 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilt
 import org.springframework.security.oauth2.client.token.AccessTokenProvider;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
@@ -120,6 +121,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.DELETE, "/rest/**","/api/**").authenticated()
 			.and()
 				.addFilterAfter(new AngularCsrfHeaderFilter(), CsrfFilter.class)
+				.addFilterAfter(new MyAnonymousAuthFilter(),AnonymousAuthenticationFilter.class)
 				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
 				.addFilterAfter(bearerTokenFilter(), SecurityContextPersistenceFilter.class)
 				.addFilterAfter(tenantVerificationFilter, SecurityContextPersistenceFilter.class)

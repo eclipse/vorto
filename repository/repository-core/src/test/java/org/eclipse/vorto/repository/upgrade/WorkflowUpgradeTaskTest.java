@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.upgrade.impl.WorkflowUpgradeTask;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
 import org.junit.Test;

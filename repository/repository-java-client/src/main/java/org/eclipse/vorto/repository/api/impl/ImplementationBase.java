@@ -25,12 +25,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.eclipse.vorto.model.BooleanAttributeProperty;
-import org.eclipse.vorto.model.EnumAttributeProperty;
-import org.eclipse.vorto.model.IPropertyAttribute;
-import org.eclipse.vorto.model.IReferenceType;
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.model.PrimitiveType;
+import org.eclipse.vorto.repository.api.ModelId;
+import org.eclipse.vorto.repository.api.content.BooleanAttributeProperty;
+import org.eclipse.vorto.repository.api.content.EnumAttributeProperty;
+import org.eclipse.vorto.repository.api.content.IPropertyAttribute;
+import org.eclipse.vorto.repository.api.content.IReferenceType;
+import org.eclipse.vorto.repository.api.content.PrimitiveType;
 import org.eclipse.vorto.repository.client.RepositoryClientException;
 
 import com.google.gson.Gson;

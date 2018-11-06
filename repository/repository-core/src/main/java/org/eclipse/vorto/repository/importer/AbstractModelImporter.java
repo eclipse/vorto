@@ -31,13 +31,13 @@ import java.util.zip.ZipInputStream;
 
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.StorageItem;

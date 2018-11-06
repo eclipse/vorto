@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.account.impl.UserRole;
+import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.account.UserRole;
 
 public class UserDto {
 	private String username;

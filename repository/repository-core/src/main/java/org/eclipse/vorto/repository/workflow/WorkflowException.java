@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.workflow;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
 public class WorkflowException extends Exception {
 

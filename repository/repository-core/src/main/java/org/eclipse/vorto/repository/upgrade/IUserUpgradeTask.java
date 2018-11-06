@@ -17,7 +17,7 @@ package org.eclipse.vorto.repository.upgrade;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
 
 public interface IUserUpgradeTask {
 	

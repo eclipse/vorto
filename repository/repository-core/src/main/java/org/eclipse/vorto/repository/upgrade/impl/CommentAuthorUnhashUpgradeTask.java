@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IUserContext;

@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.api.attachment;
 
+@Deprecated
 public final class Tag {
 	private String id;
 	private String label;

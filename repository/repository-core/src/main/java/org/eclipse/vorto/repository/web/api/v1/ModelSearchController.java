@@ -20,12 +20,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,13 +46,10 @@ import io.swagger.annotations.ApiResponses;
 @RestController("modelSearchController")
 public class ModelSearchController extends AbstractRepositoryController {
 	
-	@Value("${server.config.authenticatedSearchMode:#{false}}")
-	private boolean authenticatedSearchMode = false;
-	
 	@ApiOperation(value = "Finds models by free-text search expressions")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of search result"), @ApiResponse(code = 400, message = "Malformed search expression")})
 	@RequestMapping(value = "/api/v1/{tenant}/search/models", method = RequestMethod.GET)
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() || isAuthenticated()")
+	@PreAuthorize("hasRole('ROLE_USER')")
 	public List<ModelInfo> searchByExpression(
 			@ApiParam(value = "The owning tenant", required = true) final @PathVariable String tenant,
 			@ApiParam(value = "a free-text search expression", required = true) @RequestParam("expression") String expression)
@@ -69,13 +65,5 @@ public class ModelSearchController extends AbstractRepositoryController {
 					}
 					
 				}).collect(Collectors.toList());
-	}
-	
-	public boolean isAuthenticatedSearchMode() {
-		return authenticatedSearchMode;
-	}
-
-	public void setAuthenticatedSearchMode(boolean authenticatedSearchMode) {
-		this.authenticatedSearchMode = authenticatedSearchMode;
 	}
 }

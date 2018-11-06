@@ -14,6 +14,9 @@
  */
 package org.eclipse.vorto.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
@@ -21,6 +24,8 @@ public class ModelId implements IReferenceType {
 	private String name;
 	private String namespace;
 	private String version;
+	
+	private static final List<ModelIdParser> parsers = Arrays.asList(new ModelIdParserOld(),new ModelIdParserNew());
 		
 	public ModelId() {
 	}
@@ -39,11 +44,12 @@ public class ModelId implements IReferenceType {
 	}
 	
 	public static ModelId fromPrettyFormat(String prettyFormat) {
-		final String[] tripleParts = prettyFormat.split(":");
-		if (tripleParts.length != 3) {
-			throw new IllegalArgumentException("Model ID is invalid. Must follow pattern <namespace>:<name>:<version>");
-		}
-		return new ModelId(tripleParts[1],tripleParts[0],tripleParts[2]);
+		for (ModelIdParser parser : parsers) {
+			if (parser.canHandle(prettyFormat)) {
+				return parser.parse(prettyFormat);
+			}
+		}	
+		throw new IllegalArgumentException("Model ID is invalid. Must follow either pattern <namespace>:<name>:<version> or <namespace>.<name>:<version>");
 	} 
 	
 
@@ -115,5 +121,38 @@ public class ModelId implements IReferenceType {
 
 	public String getPrettyFormat() {	
 		return namespace + ":" + name + ":" +version;
+	}
+	
+	private static interface ModelIdParser {
+		boolean canHandle(String modelId);	
+		ModelId parse(String modelId);
+	}
+	
+	public static class ModelIdParserNew implements ModelIdParser {
+
+		@Override
+		public boolean canHandle(String modelId) {
+			return modelId.split(":").length == 3; 
+		}
+
+		@Override
+		public ModelId parse(String modelId) {
+			String[] tripleParts = modelId.split(":");
+			return new ModelId(tripleParts[1],tripleParts[0],tripleParts[2]);
+		}	
+	}
+	
+	public static class ModelIdParserOld implements ModelIdParser {
+
+		@Override
+		public boolean canHandle(String modelId) {
+			return modelId.split(":").length == 2; 
+		}
+
+		@Override
+		public ModelId parse(String modelId) {
+			final int versionIndex = modelId.indexOf(":");
+			return ModelId.fromReference(modelId.substring(0,versionIndex),modelId.substring(versionIndex+1));
+		}	
 	}
 }

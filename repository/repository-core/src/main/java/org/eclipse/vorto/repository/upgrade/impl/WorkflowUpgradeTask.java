@@ -17,8 +17,8 @@ package org.eclipse.vorto.repository.upgrade.impl;
 import java.util.List;
 import java.util.Optional;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;

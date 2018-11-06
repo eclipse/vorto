@@ -24,8 +24,10 @@ import javax.transaction.Transactional;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.account.UserRole;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +56,6 @@ public class DefaultUserAccountService implements IUserAccountService {
 			throw new IllegalArgumentException("User with given username already exists");
 		}
 		User user = createUser(username);
-		user.addRoles(Role.MODEL_CREATOR,Role.MODEL_EXPLORER,Role.MODEL_INTEGRATOR,Role.MODEL_PROMOTER,Role.MODEL_REVIEWER,Role.MODEL_VALIDATOR);
 		user = userRepository.save(user);
 		return user;
 	}
@@ -67,8 +68,15 @@ public class DefaultUserAccountService implements IUserAccountService {
 		user.setDateCreated(new Timestamp(System.currentTimeMillis()));
 		user.setLastUpdated(new Timestamp(System.currentTimeMillis()));
 		user.setAckOfTermsAndCondTimestamp(new Timestamp(System.currentTimeMillis()));
-		user.addRoles(toRole(username));
+		user.addRoles(Role.USER, Role.MODEL_CREATOR,Role.MODEL_PROMOTER); // newly registered users may fully interact with the system
+		if (isConfiguredAsAdmin(username)) {
+			user.addRoles(Role.ADMIN);
+		}
 		return user;
+	}
+	
+	private boolean isConfiguredAsAdmin(String username) {
+		return admins != null && Arrays.asList(admins.split(";")).contains(username);
 	}
 
 	@Transactional
@@ -118,14 +126,6 @@ public class DefaultUserAccountService implements IUserAccountService {
 		user.setRoles(userRoles);
 
 		return userRepository.save(user);
-	}
-
-	private Role toRole(String username) {
-		if (admins != null && Arrays.asList(admins.split(";")).contains(username)) {
-			return Role.ADMIN;
-		}
-
-		return Role.USER;
 	}
 
 	@Override

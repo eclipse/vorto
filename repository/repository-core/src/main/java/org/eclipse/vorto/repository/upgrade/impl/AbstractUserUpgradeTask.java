@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
 import org.eclipse.vorto.repository.upgrade.IUserUpgradeTask;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

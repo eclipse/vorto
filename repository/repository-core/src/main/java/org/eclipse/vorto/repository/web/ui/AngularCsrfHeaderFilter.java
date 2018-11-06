@@ -12,7 +12,7 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.web;
+package org.eclipse.vorto.repository.web.ui;
 
 import java.io.IOException;
 

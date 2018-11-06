@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.UserUtils;
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,7 +43,7 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
 		 if (user == null) {
 			 return Collections.<GrantedAuthority> emptyList();
 		 }
-	    return UserUtils.toAuthorityList(user.getUserRoles()); 
+	    return SpringUserUtils.toAuthorityList(user.getUserRoles()); 
 	}
 
 }

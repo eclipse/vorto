@@ -14,6 +14,7 @@
  */
 package org.eclipse.vorto.repository.api.exception;
 
+@Deprecated
 public class ModelQueryException extends RuntimeException {
 
 	private static final long serialVersionUID = -1149098806464291065L;

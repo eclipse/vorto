@@ -26,13 +26,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.exception.GenerationException;
-import org.eclipse.vorto.repository.api.exception.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelFileContent;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.generation.GenerationException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

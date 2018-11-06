@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;

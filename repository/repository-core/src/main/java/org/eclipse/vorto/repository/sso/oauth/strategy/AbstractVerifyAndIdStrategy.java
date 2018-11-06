@@ -23,8 +23,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.UserUtils;
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.sso.oauth.JwtToken;
 import org.eclipse.vorto.repository.sso.oauth.JwtVerifyAndIdStrategy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -86,7 +86,7 @@ public abstract class AbstractVerifyAndIdStrategy implements JwtVerifyAndIdStrat
 			authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",
 					AuthorityUtils.commaSeparatedStringToAuthorityList(userRole));
 		}else{
-			authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",UserUtils.toAuthorityList(user.getUserRoles()));
+			authToken = new UsernamePasswordAuthenticationToken(name.orElse(userId), "N/A",SpringUserUtils.toAuthorityList(user.getUserRoles()));
 		}
 
 		Map<String, String> detailsMap = new HashMap<String, String>();

@@ -12,11 +12,9 @@
  * Contributors:
  * Bosch Software Innovations GmbH - Please refer to git log
  */
-package org.eclipse.vorto.repository.account.impl;
+package org.eclipse.vorto.repository.account;
 
 import javax.persistence.*;
-
-import org.eclipse.vorto.repository.account.Role;
 
 import java.io.Serializable;
 

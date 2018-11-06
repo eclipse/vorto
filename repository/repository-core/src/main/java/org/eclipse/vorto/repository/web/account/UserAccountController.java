@@ -21,9 +21,9 @@ import java.util.Objects;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.UserUtils;
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.web.account.dto.UserDto;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ import io.swagger.annotations.ApiParam;
  */
 @RestController
 @RequestMapping(value = "/rest/{tenant}/users")
-public class UserController {
+public class UserAccountController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
      
@@ -62,7 +62,7 @@ public class UserController {
 
 	@RequestMapping(method = RequestMethod.GET,
 					value = "/{username:.+}")
-	@PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).ADMIN) or #username == authentication.name")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
 	public ResponseEntity<UserDto> getUser(@ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
 		LOGGER.debug("User {} - {} ", username, userRepository.findByUsername(username));
@@ -72,7 +72,8 @@ public class UserController {
 	
 	@RequestMapping(method = RequestMethod.POST,
 	    		consumes = "application/json")
-	public ResponseEntity<Boolean> createUser(Principal user) {
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #user.name == authentication.name")
+	public ResponseEntity<Boolean> createUserAccount(Principal user) {
 		
 		OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 		
@@ -83,14 +84,14 @@ public class UserController {
 		LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
 		User createdUser = accountService.create(oauth2User.getName());
-		UserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with the updated user and its roles
+		SpringUserUtils.refreshSpringSecurityUser(createdUser); // change the spring oauth context with the updated user and its roles
 		
 		return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(method = RequestMethod.POST, value = "/{username:.+}/updateTask")
-	@PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).ADMIN) or #username == authentication.name")
-	public ResponseEntity<Boolean> updateUser(Principal user, @ApiParam(value = "Username", required = true) @PathVariable String username) {
+	@PreAuthorize("hasRole('ROLE_ADMIN') or #username == authentication.name")
+	public ResponseEntity<Boolean> upgradeUserAccount(Principal user, @ApiParam(value = "Username", required = true) @PathVariable String username) {
 		
 		User userAccount = userRepository.findByUsername(username);
 		if (userAccount == null) {
@@ -104,14 +105,14 @@ public class UserController {
 	
 	@RequestMapping(value = "/{username:.+}", method = RequestMethod.DELETE)
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
-	public ResponseEntity<Void> deleteAccount(@PathVariable("username") final String username) {	
+	public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {	
 		accountService.delete(username);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{username:.+}", method = RequestMethod.PUT)
-	@PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).ADMIN)")
-	public ResponseEntity<UserDto> createUser(@PathVariable("username") final String userName, @RequestBody List<Role> roles) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<UserDto> updateUserAccount(@PathVariable("username") final String userName, @RequestBody List<Role> roles) {
 		User user = accountService.create(userName, roles.toArray(new Role[roles.size()]));
 
 		return new ResponseEntity<UserDto>(
@@ -120,7 +121,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).ADMIN)")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<UserDto> removeUserRole(@PathVariable("username") final String userName, @RequestBody List<Role> roles) {
 
 		User user = accountService.removeUserRole(userName, roles);
@@ -130,8 +131,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/{username:.+}/roles", method = RequestMethod.GET)
-	@PreAuthorize("hasRole(T(org.eclipse.vorto.repository.account.Role).ADMIN)")
-	public ResponseEntity<UserDto> showRoles(@PathVariable("username") final String userName) {
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<UserDto> getUserRoles(@PathVariable("username") final String userName) {
 		User user = this.userRepository.findByUsername(userName);
 
 		if(Objects.isNull(user)){

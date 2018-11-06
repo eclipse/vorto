@@ -27,11 +27,11 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.api.ModelInfo;
-import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -39,6 +39,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.core.dto.ModelContent;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -122,7 +123,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 		
 	@ApiOperation(value = "Saves a model to the repository.")
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
 	public ValidationReport saveModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@RequestBody ModelContent content) {
@@ -153,6 +154,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 
 	@ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
 	@RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/{modelType}", produces = "application/json")
 	public ResponseEntity<ModelInfo> createModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType)
@@ -175,6 +177,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@ApiOperation(value = "Creates a new version for the given model in the specified version")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
 	@RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
 	public ResponseEntity<ModelInfo> createVersionOfModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@ApiParam(value = "modelVersion", required = true) @PathVariable String modelVersion)
@@ -191,7 +194,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:delete')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:delete')")
 	public void deleteModelResource(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "modelId must not be null");
 		this.modelRepository.removeModel(ModelId.fromPrettyFormat(modelId));
@@ -215,7 +218,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@ApiOperation(value = "Getting all mapping resources for the given model")
-	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}", method = RequestMethod.GET)
 	public void downloadMappingsForPlatform(
 			@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId,

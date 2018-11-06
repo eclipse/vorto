@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
-import org.eclipse.vorto.repository.api.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.

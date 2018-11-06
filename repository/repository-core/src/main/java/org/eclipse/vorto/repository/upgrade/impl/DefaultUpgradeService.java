@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
 
-import org.eclipse.vorto.repository.account.impl.User;
+import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.upgrade.IUpgradeService;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUserUpgradeTask;

@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.api.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
