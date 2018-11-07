@@ -191,9 +191,15 @@ public class ModelController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Downloads the model file")
-	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
-			@ApiResponse(code = 404, message = "Model not found") })
-	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() ||  hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER) || hasPermission(T(org.eclipse.vorto.repository.api.ModelId).fromPrettyFormat(#modelId),'model:get')")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful download of model file"),
+			@ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 403, message = "Access forbidden"),
+			@ApiResponse(code = 404, message = "Model not found")
+	})
+	@PreAuthorize("!@modelSearchController.isAuthenticatedSearchMode() ||  " +
+			"hasRole(T(org.eclipse.vorto.repository.account.Role).MODEL_EXPLORER) || " +
+			"hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:get')")
 	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
