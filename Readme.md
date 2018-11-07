@@ -13,10 +13,6 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
 
 # Developer Guide
 
-## Repository Java Client
-
-Search and access Vorto models as well as generate code using the [Repository Java Client](repository/repository-java-client/Readme.md)
-
 ## Repository Import API
 
 If you want to manage other existing (standardized) device descriptions with the Vorto Repository, you can extend the Repository by providing a model importer using the [Importer API](repository/repository-importer/Readme.md).

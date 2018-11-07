@@ -15,6 +15,7 @@
 
 package org.eclipse.vorto.repository.client;
 
+@Deprecated
 public class RepositoryClientException extends RuntimeException {
 
 	private static final long serialVersionUID = -5425741247121181918L;

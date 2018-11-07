@@ -27,6 +27,7 @@ import org.eclipse.vorto.repository.api.impl.DefaultModelRepository;
 import org.eclipse.vorto.repository.api.impl.RequestContext;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
 
+@Deprecated
 public class RepositoryClientBuilder {
 	private String baseUrl = "http://vorto.eclipse.org";
 	private String proxyHost;
