@@ -82,7 +82,7 @@ public class SimpleUserInfoServices extends UserInfoTokenServices {
 	@PostConstruct
 	public void init() {
 		if (ciamJwtIssuer != null) {
-			verifyAndIdStrategies.put(ciamJwtIssuer, new CiamUserStrategy(new RestTemplate(), ciamPublicKeyUri, userAccountService, ciamClientId, resource_client_id));
+			verifyAndIdStrategies.put(ciamJwtIssuer, new CiamUserStrategy(new RestTemplate(), ciamPublicKeyUri, userAccountService, ciamClientId));
 		}
 		
 		if (keycloakJwtIssuer != null) {
