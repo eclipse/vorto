@@ -15,5 +15,4 @@
 package org.eclipse.vorto.model;
 
 public interface IReferenceType {
-
 }

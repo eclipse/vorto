@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -91,7 +92,7 @@ public abstract class AbstractModelParser implements IModelParser {
 			if (missingReferences.size() > 0) {
 				throw new CouldNotResolveReferenceException(getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
 			} else {
-				throw new ValidationException(collate(issues), getModelInfo(model).orElse(getModelInfoFromFilename()));
+				throw new ValidationException(collate(convertIssues(issues)), getModelInfo(model).orElse(getModelInfoFromFilename()));
 			}
 		}
 		
@@ -101,6 +102,10 @@ public abstract class AbstractModelParser implements IModelParser {
 		}
 		
 		return new ModelResource((Model) resource.getContents().get(0));
+	}
+
+	private Set<ModelIssue> convertIssues(List<Issue> issues) {
+		return issues.stream().map(issue -> new ModelIssue(issue.getLineNumber(), issue.getMessage())).collect(Collectors.toSet());
 	}
 
 	private List<ModelId> getMissingReferences(Model model, List<Issue> issues) {
@@ -168,16 +173,11 @@ public abstract class AbstractModelParser implements IModelParser {
 		return Optional.of(new ModelInfo(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelType.fromFileName(fileName)));
 	}
 	
-	private String collate(List<Issue> issues) {
-		StringBuffer error = new StringBuffer();
-		
-		for(Issue issue : issues) {
-			error.append("On line number ")
-				.append(issue.getLineNumber())
-				.append(" : ")
-				.append(issue.getMessage());
+	private String collate(Set<ModelIssue> issues) {
+		StringBuffer error = new StringBuffer();		
+		for(ModelIssue issue : issues) {
+			error.append(issue);
 		}
-		
 		return error.toString();
 	}
 
@@ -232,4 +232,48 @@ public abstract class AbstractModelParser implements IModelParser {
 
 	protected abstract Injector getInjector();
 
+	
+	private static class ModelIssue {
+		private int lineNumber;
+		private String msg;
+		
+		public ModelIssue(int lineNumber, String msg) {
+			this.lineNumber = lineNumber;
+			this.msg = msg;
+		}
+		
+		public String toString() {
+			return "On line number "+lineNumber+ " : "+msg;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + lineNumber;
+			result = prime * result + ((msg == null) ? 0 : msg.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			ModelIssue other = (ModelIssue) obj;
+			if (lineNumber != other.lineNumber)
+				return false;
+			if (msg == null) {
+				if (other.msg != null)
+					return false;
+			} else if (!msg.equals(other.msg))
+				return false;
+			return true;
+		}
+		
+		
+	}
 }

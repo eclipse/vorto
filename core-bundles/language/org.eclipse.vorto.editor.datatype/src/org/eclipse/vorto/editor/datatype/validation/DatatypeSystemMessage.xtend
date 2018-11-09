@@ -17,6 +17,8 @@
  package org.eclipse.vorto.editor.datatype.validation
 
 class DatatypeSystemMessage {
+	
+	public static final String ERROR_DICTIONARY_INVALID = "Dictionary must define a valid key- and value type, e.g. dictionary[string,string]";
 	public static final String ERROR_OBJ_PROPERTY_CIRCULAR_REF = 'Object property type has circular reference'
 	public static final String ERROR_SUPERTYPE_CIRCULAR_REF = 'Super type has circular reference'
 	

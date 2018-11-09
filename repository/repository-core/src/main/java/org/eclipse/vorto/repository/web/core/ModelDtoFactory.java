@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.vorto.core.api.model.datatype.BooleanPropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
 import org.eclipse.vorto.core.api.model.datatype.Enum;
 import org.eclipse.vorto.core.api.model.datatype.EnumLiteralPropertyAttribute;
@@ -28,6 +29,8 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitivePropertyType;
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
+import org.eclipse.vorto.core.api.model.datatype.PropertyType;
+import org.eclipse.vorto.core.api.model.functionblock.DictonaryParam;
 import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam;
@@ -59,12 +62,14 @@ import org.eclipse.vorto.model.BooleanAttributeProperty;
 import org.eclipse.vorto.model.BooleanAttributePropertyType;
 import org.eclipse.vorto.model.Constraint;
 import org.eclipse.vorto.model.ConstraintType;
+import org.eclipse.vorto.model.Dictionary;
 import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.EnumAttributeProperty;
 import org.eclipse.vorto.model.EnumAttributePropertyType;
 import org.eclipse.vorto.model.EnumLiteral;
 import org.eclipse.vorto.model.EnumModel;
 import org.eclipse.vorto.model.IPropertyAttribute;
+import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelEvent;
 import org.eclipse.vorto.model.ModelId;
@@ -272,6 +277,8 @@ public class ModelDtoFactory {
 						.map(c -> createConstraint(c)).collect(Collectors.toList());
 				param.setConstraints(constraints);
 			}
+		} else if (p instanceof DictonaryParam) {
+			param.setType(createReferenceType(((DictonaryParam)p).getType()));
 		} else {
 			param.setType(createModelId(((RefParam) p).getType()));
 		}
@@ -313,6 +320,18 @@ public class ModelDtoFactory {
 		
 		return p;
 	}
+	
+	private static IReferenceType createReferenceType(PropertyType propertyType) {
+		if (propertyType instanceof PrimitivePropertyType) {
+			PrimitiveType pt = ((PrimitivePropertyType) propertyType).getType();
+			return org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name());
+		} else if (propertyType instanceof DictionaryPropertyType) {
+			DictionaryPropertyType dt = ((DictionaryPropertyType) propertyType);
+			return new Dictionary(createReferenceType(dt.getKeyType()), createReferenceType(dt.getValueType()));
+		} else {
+			return createModelId(((ObjectPropertyType)propertyType).getType());
+		}
+	}
 
 	private static ModelProperty createProperty(Property property,Optional<MappingModel> mappingModel) {
 		ModelProperty p = new ModelProperty();
@@ -320,13 +339,8 @@ public class ModelDtoFactory {
 		p.setMandatory(property.getPresence() != null ? property.getPresence().isMandatory() : true);
 		p.setMultiple(property.isMultiplicity());
 		p.setName(property.getName());
-		if (property.getType() instanceof PrimitivePropertyType) {
-			PrimitiveType pt = ((PrimitivePropertyType) property.getType()).getType();
-			p.setType(org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name()));
-		} else {
-			p.setType(createModelId(((ObjectPropertyType) property.getType()).getType()));
-		}
-
+		p.setType(createReferenceType(property.getType()));
+		
 		if (property.getConstraintRule() != null && property.getConstraintRule().getConstraints() != null) {
 			List<Constraint> constraints = property.getConstraintRule().getConstraints().stream()
 					.map(c -> createConstraint(c)).collect(Collectors.toList());
