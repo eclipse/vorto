@@ -35,7 +35,7 @@ public class DataMapperBuilder {
 	
 	private IScriptEvalProvider provider = null;
 
-	protected DataMapperBuilder() {
+	public DataMapperBuilder() {
 		registerConditionFunction(FUNC_XPATH);
 	}
 	

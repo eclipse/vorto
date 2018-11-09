@@ -15,11 +15,12 @@
 package org.eclipse.vorto.mapping.engine.android;
 
 import java.io.InputStream;
-import java.util.Optional;
 
+import org.eclipse.vorto.mapping.engine.DataMapperBuilder;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.converter.android.JavascriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecBuilder;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.model.runtime.PropertyValue;
 
@@ -28,7 +29,7 @@ public final class MappingEngine {
 	private IDataMapper mapper;
 	
 	private MappingEngine(IMappingSpecification specification) {
-		mapper = IDataMapper.newBuilder().registerScriptEvalProvider(new JavascriptEvalProvider()).withSpecification(specification).build();
+		mapper = new DataMapperBuilder().registerScriptEvalProvider(new JavascriptEvalProvider()).withSpecification(specification).build();
 	}
 	
 	public static MappingEngine create(IMappingSpecification specification) {
@@ -36,7 +37,7 @@ public final class MappingEngine {
 	}
 	
 	public static MappingEngine createFromInputStream(InputStream inputStream) {
-		IMappingSpecification spec = IMappingSpecification.newBuilder().fromInputStream(inputStream).build();
+		IMappingSpecification spec = new MappingSpecBuilder().fromInputStream(inputStream).build();
 		return new MappingEngine(spec);
 	}
 	
@@ -56,7 +57,7 @@ public final class MappingEngine {
 	 * @param infomodelProperty the name of the property defined in the information model
 	 * @return the mapped device specific object
 	 */
-	public Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infomodelProperty) {
+	public Object mapTarget(PropertyValue newValue, PropertyValue oldValue, String infomodelProperty) {
 		return mapper.mapTarget(newValue,oldValue,infomodelProperty);
 	}
 }

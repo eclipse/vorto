@@ -14,7 +14,7 @@
  */
 package org.eclipse.vorto.model.runtime;
 
-import java.util.Optional;
+import java.util.ListIterator;
 
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelProperty;
@@ -108,11 +108,20 @@ public class FunctionblockProperty {
 		}
 		
 		public PropertyBuilder property(String name) {
-			Optional<ModelProperty> property = prop.parent.getConfigurationProperties().stream().filter(p -> p.getName().equals(name)).findFirst();
-			if (!property.isPresent()) {
+
+			ModelProperty property = null;
+			ListIterator<ModelProperty> iterator = prop.parent.getConfigurationProperties().listIterator();
+			while(iterator.hasNext()){
+				ModelProperty modelProperty = iterator.next();
+				if(modelProperty.getName().equals(name)){
+					property = modelProperty;
+					break;
+				}
+			}
+			if (property == null) {
 				throw new IllegalArgumentException("Property is not defined in model");
 			}
-			this.prop.model = property.get();
+			this.prop.model = property;
 			return this;
 		}
 		public PropertyBuilder value (Object value) {

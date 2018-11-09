@@ -109,7 +109,7 @@ public class JavascriptEvalFunction implements Function {
 	}
 
 	private Class<?>[] toTypes(Object[] parameters) {
-		List<Class<?>> result = new ArrayList<>();
+		List<Class<?>> result = new ArrayList<Class<?>>();
 		for (@SuppressWarnings("unused")
 		Object o : parameters) {
 			result.add(Object.class);

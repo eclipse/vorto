@@ -15,8 +15,8 @@
 package org.eclipse.vorto.mapping.engine.internal;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.commons.jexl2.Expression;
 import org.apache.commons.jexl2.JexlContext;
@@ -25,7 +25,7 @@ import org.apache.commons.jexl2.ObjectContext;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathInvalidAccessException;
 import org.apache.commons.jxpath.JXPathNotFoundException;
-import org.apache.commons.text.StrSubstitutor;
+import org.eclipse.vorto.mapping.engine.DataMapperBuilder;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingContext;
 import org.eclipse.vorto.mapping.engine.MappingException;
@@ -57,6 +57,10 @@ public class DataMapperJxpath implements IDataMapper {
 	private static final String STEREOTYPE_TARGET = "target";
 	private static final String ATTRIBUTE_XPATH = "xpath";
 	private static final Object ATTRIBUTE_CONDITION = "condition";
+
+	public DataMapperBuilder newBuilder() {
+		return new DataMapperBuilder();
+	}
 
 	public DataMapperJxpath(IMappingSpecification mappingSpecification, CustomFunctionsLibrary functionLibrary) {
 		this.specification = mappingSpecification;
@@ -149,12 +153,12 @@ public class DataMapperJxpath implements IDataMapper {
 	}
 
 	private Object mapProperty(ModelProperty property, JXPathContext input) {
-		Optional<Stereotype> sourceStereotype = property.getStereotype(STEREOTYPE_SOURCE);
-		if (sourceStereotype.isPresent() && hasXpath(sourceStereotype.get().getAttributes())) {
-			String expression = replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),
-					sourceStereotype.get().getAttributes());
+		Stereotype sourceStereotype = property.getStereotype(STEREOTYPE_SOURCE);
+		if (sourceStereotype != null && hasXpath(sourceStereotype.getAttributes())) {
+			String expression = replacePlaceHolders(sourceStereotype.getAttributes().get(ATTRIBUTE_XPATH),
+					sourceStereotype.getAttributes());
 
-			if (matchesCondition(sourceStereotype.get().getAttributes(), input)) {
+			if (matchesCondition(sourceStereotype.getAttributes(), input)) {
 				return input.getValue(expression);
 			}
 		}
@@ -168,7 +172,7 @@ public class DataMapperJxpath implements IDataMapper {
 			Expression e = jexlEngine.createExpression(normalizeCondition(attributes.get(ATTRIBUTE_CONDITION)));
 			JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
 			jc.set("this", context.getContextBean());
-			return (boolean) e.evaluate(jc);
+			return (Boolean) e.evaluate(jc);
 		} else {
 			return true;
 		}
@@ -184,8 +188,15 @@ public class DataMapperJxpath implements IDataMapper {
 	}
 
 	private String replacePlaceHolders(String expression, Map<String, String> mappedAttributes) {
-		StrSubstitutor sub = new StrSubstitutor(mappedAttributes);
-		return sub.replace(expression);
+	    Iterator<Map.Entry<String, String>> iterator = mappedAttributes.entrySet().iterator();
+		System.out.println(expression);
+	    while (iterator.hasNext()){
+	    	Map.Entry<String, String> entry = iterator.next();
+			System.out.println(entry.getKey() + " " + entry.getValue());
+	    	expression = expression.replaceAll("\\$\\{"+entry.getKey()+"\\}", entry.getValue());
+
+		}
+		return expression;
 	}
 
 	@Override
@@ -194,21 +205,21 @@ public class DataMapperJxpath implements IDataMapper {
 	}
 
 	@Override
-	public Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infomodelProperty) {
+	public Object mapTarget(PropertyValue newValue, PropertyValue oldValue, String infomodelProperty) {
 		FunctionblockModel fbm = this.specification.getFunctionBlock(infomodelProperty);
 		if (fbm == null) {
 			throw new IllegalArgumentException("No property with the given name could be found in Information Model");
 		}
 		
-		Optional<Stereotype> targetStereotype = newValue.getMeta().getStereotype(STEREOTYPE_TARGET);
-		if (!targetStereotype.isPresent()) {
+		Stereotype targetStereotype = newValue.getMeta().getStereotype(STEREOTYPE_TARGET);
+		if (targetStereotype == null) {
 			throw new MappingException("No mapping rule defined for property");
 		}
 		
 		Map<String,Object> jxpathContext = new HashMap<String, Object>();
 		Map<String,Object> param = new HashMap<String,Object>();
 		param.put("newValue", newValue.getValue());
-		param.put("oldValue", oldValue.isPresent()? oldValue.get().getValue() : null);
+		param.put("oldValue", oldValue != null? oldValue.getValue() : null);
 		
 		jxpathContext.put("ctx", param);
 		final String functionName = "convert" + newValue.getMeta().getName().substring(0, 1).toUpperCase() + newValue.getMeta().getName().substring(1);

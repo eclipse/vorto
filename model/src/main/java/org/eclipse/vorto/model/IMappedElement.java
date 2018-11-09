@@ -15,7 +15,6 @@
 package org.eclipse.vorto.model;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.vorto.model.ModelId;
 
@@ -38,7 +37,7 @@ public interface IMappedElement {
 	 * @param name
 	 * @return
 	 */
-	Optional<Stereotype> getStereotype(String name);
+	Stereotype getStereotype(String name);
 	
 	/**
 	 * Gets the referenced mapping model Id for the current model element

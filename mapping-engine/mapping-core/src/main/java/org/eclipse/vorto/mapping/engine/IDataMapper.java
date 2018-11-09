@@ -14,8 +14,6 @@
  */
 package org.eclipse.vorto.mapping.engine;
 
-import java.util.Optional;
-
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.model.runtime.PropertyValue;
 
@@ -50,9 +48,7 @@ public interface IDataMapper {
 	 * @param infomodelProperty property of the information model
 	 * @return
 	 */
-	Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infoModelProperty);
+	Object mapTarget(PropertyValue newValue, PropertyValue oldValue, String infoModelProperty);
 	
-	static DataMapperBuilder newBuilder() {
-		return new DataMapperBuilder();
-	}
+	DataMapperBuilder newBuilder();
 }

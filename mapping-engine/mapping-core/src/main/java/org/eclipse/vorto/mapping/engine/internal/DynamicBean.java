@@ -56,7 +56,7 @@ public class DynamicBean {
 				if (isArray(pathElement)) {
 					String arrayName = getArrayName(pathElement);
 					if (!bean.containsKey(arrayName)) {
-						List<Map<String, Object>> array = new ArrayList<>();
+						List<Map<String, Object>> array = new ArrayList<Map<String, Object>>();
 						bean.put(arrayName, array);
 						newBean = new HashMap<String, Object>();
 						array.add(newBean);

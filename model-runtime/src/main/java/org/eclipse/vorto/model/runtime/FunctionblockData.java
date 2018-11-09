@@ -14,12 +14,7 @@
  */
 package org.eclipse.vorto.model.runtime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelProperty;
@@ -51,32 +46,47 @@ public class FunctionblockData implements IValidatable {
 		return Collections.unmodifiableList(this.status);
 	}
 	
-	public Optional<ModelPropertyData> getStatusProperty(String propertyName) {
-		return this.status.stream().filter(p -> p.getPropertyMeta().getName().equals(propertyName)).findAny();
+	public ModelPropertyData getStatusProperty(String propertyName) {
+
+		ListIterator<ModelPropertyData> iterator = this.status.listIterator();
+		while(iterator.hasNext()){
+			ModelPropertyData modelPropertyData = iterator.next();
+			if(modelPropertyData.getPropertyMeta().getName().equals(propertyName)){
+				return modelPropertyData;
+			}
+		}
+		return null;
 	}
 
 	public List<ModelPropertyData> getConfiguration() {
 		return Collections.unmodifiableList(this.status);
 	}
 	
-	public Optional<ModelPropertyData> getConfigurationProperty(String propertyName) {
-		return this.configuration.stream().filter(p -> p.getPropertyMeta().getName().equals(propertyName)).findAny();
+	public ModelPropertyData getConfigurationProperty(String propertyName) {
+		ListIterator<ModelPropertyData> iterator = this.configuration.listIterator();
+		while(iterator.hasNext()){
+			ModelPropertyData modelPropertyData = iterator.next();
+			if(modelPropertyData.getPropertyMeta().getName().equals(propertyName)){
+				return modelPropertyData;
+			}
+		}
+		return null;
 	}
 
     public void withStatusProperty(String name, Object value) {
-    	Optional<ModelProperty> mp = meta.getStatusProperty(name);
-    	if (!mp.isPresent()) {
+    	ModelProperty mp = meta.getStatusProperty(name);
+    	if (mp == null) {
     		throw new IllegalArgumentException("Status property with given name is not defined in Function Block");
     	}
-		this.status.add(new ModelPropertyData(mp.get(), value));
+		this.status.add(new ModelPropertyData(mp, value));
 	}
 	
     public void withConfigurationProperty(String name, Object value) {
-    	Optional<ModelProperty> mp = meta.getConfigurationProperty(name);
-    	if (!mp.isPresent()) {
+    	ModelProperty mp = meta.getConfigurationProperty(name);
+    	if (mp == null) {
     		throw new IllegalArgumentException("Configuration property with given name is not defined in Function Block");
     	}
-		this.configuration.add(new ModelPropertyData(mp.get(), value));
+		this.configuration.add(new ModelPropertyData(mp, value));
 	}
 
 	@Override
@@ -101,13 +111,20 @@ public class FunctionblockData implements IValidatable {
 	}
 	
 	private void checkProperty(List<ModelPropertyData> properties, ModelProperty property, String path, ValidationReport report) {
-		Optional<ModelPropertyData> mpd = properties.stream().filter(p -> p.getPropertyMeta().equals(property)).findAny();
+		ListIterator<ModelPropertyData> iterator = properties.listIterator();
+		ModelPropertyData mpd = null;
+		while (iterator.hasNext()){
+			ModelPropertyData modelPropertyData = iterator.next();
+			if(modelPropertyData.getPropertyMeta().equals(property)){
+				mpd = modelPropertyData;
+			}
+		}
 		if (property.isMandatory()
-				&& !mpd.isPresent()) {
+				&& mpd == null) {
 			report.addItem(property, "Mandatory field " + path + "/" + property.getName() + " is missing");
 		} else {
-			if (mpd.isPresent() && property.getType() instanceof PrimitiveType) {
-				checkPrimitiveTypeValue(path, mpd.get().getValue(), property,report);
+			if (mpd != null && property.getType() instanceof PrimitiveType) {
+				checkPrimitiveTypeValue(path, mpd.getValue(), property,report);
 			}
 		}
 	}

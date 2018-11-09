@@ -24,7 +24,7 @@ public class InfomodelValue implements IValidatable {
 
 	private Infomodel meta = null;
 	
-	private Map<String, FunctionblockValue> functionblocks = new HashMap<>();
+	private Map<String, FunctionblockValue> functionblocks = new HashMap<String, FunctionblockValue>();
 	
 	public InfomodelValue(Infomodel meta) {
 		this.meta = meta;

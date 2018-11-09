@@ -16,7 +16,7 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.ListIterator;
 
 import org.eclipse.vorto.model.ModelId;
 
@@ -42,8 +42,15 @@ public class DefaultMappedElement implements IMappedElement {
 	}
 
 	@Override
-	public Optional<Stereotype> getStereotype(String name) {
-		return this.stereotypes.stream().filter(s -> s.getName().equalsIgnoreCase(name)).findAny();		
+	public Stereotype getStereotype(String name) {
+		ListIterator<Stereotype> iterator = this.stereotypes.listIterator();
+		while(iterator.hasNext()){
+			Stereotype stereotype = iterator.next();
+			if(stereotype.getName().equalsIgnoreCase(name)){
+				return stereotype;
+			}
+		}
+		return null;
 	}
 	
 	public void addStereotype(Stereotype stereotype) {

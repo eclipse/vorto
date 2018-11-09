@@ -13,25 +13,18 @@ addons:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
-    branches:
-      - development
 
 before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
 
 install: true
 script:
+  - sonar-scanner
   - mvn clean install -f pom.xml
+  - bash <(curl -s https://codecov.io/bash)
+  
 
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
 
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f repository/repository-web/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-web;
-    docker build -f repository/generator-gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./repository/generator-gateway;
-    docker push eclipsevorto/vorto-repo;
-    docker push eclipsevorto/vorto-generator-gateway;
-    fi

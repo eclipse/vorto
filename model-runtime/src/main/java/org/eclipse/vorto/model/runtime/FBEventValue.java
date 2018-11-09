@@ -14,12 +14,7 @@
  */
 package org.eclipse.vorto.model.runtime;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.eclipse.vorto.model.ModelEvent;
 import org.eclipse.vorto.model.ModelProperty;
@@ -36,11 +31,20 @@ public class FBEventValue {
 	}
 
 	public void withProperty(String name, Object value) {
-		Optional<ModelProperty> mp = meta.getProperties().stream().filter(p -> p.getName().equals(name)).findFirst();
-    	if (!mp.isPresent()) {
+		ListIterator<ModelProperty> iterator = meta.getProperties().listIterator();
+		ModelProperty mp = null;
+		while(iterator.hasNext()) {
+			ModelProperty modelProperty = iterator.next();
+			if (modelProperty.getName().equals(name)) {
+				mp = modelProperty;
+				break;
+
+			}
+		}
+    	if (mp == null) {
     		throw new IllegalArgumentException("Event property with given name is not defined in Function Block Event Type");
     	}
-		this.eventProperties.add(new PropertyValue(mp.get(), value));
+		this.eventProperties.add(new PropertyValue(mp, value));
 	}
 	
 	public List<PropertyValue> getProperties() {

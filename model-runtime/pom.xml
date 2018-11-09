@@ -12,6 +12,11 @@
 	<artifactId>model-runtime</artifactId>
 	<name>Eclipse Vorto Model Runtime</name>
 	<packaging>jar</packaging>
+
+	<properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+	</properties>
 	
 	<dependencies>
 		<dependency>

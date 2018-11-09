@@ -26,7 +26,7 @@ public class Operation extends DefaultMappedElement {
 	
 	private ReturnType result;
 	
-	private List<Param> params = new ArrayList<>();
+	private List<Param> params = new ArrayList();
 
 	public String getName() {
 		return name;

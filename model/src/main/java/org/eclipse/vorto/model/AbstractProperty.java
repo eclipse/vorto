@@ -27,7 +27,7 @@ public class AbstractProperty extends DefaultMappedElement {
 	
 	protected IReferenceType type = null;
 	
-	protected List<Constraint> constraints = new ArrayList<>();
+	protected List<Constraint> constraints = new ArrayList();
 	
 	public List<Constraint> getConstraints() {
 		return constraints;

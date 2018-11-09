@@ -26,7 +26,7 @@ public class CustomFunctionsLibrary {
 
 	private FunctionLibrary converterLibrary;
 	
-	private Map<String,Object> conditionFunctions = new HashMap<>();
+	private Map<String,Object> conditionFunctions = new HashMap<String, Object>();
 	
 	private CustomFunctionsLibrary() {
 		this.converterLibrary = new FunctionLibrary();

@@ -1,6 +1,7 @@
 package org.eclipse.vorto.mapping.engine.model.spec;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -53,15 +54,20 @@ public class MappingSpecification implements IMappingSpecification {
 		FunctionLibrary library = new FunctionLibrary();
 		for (String propertyKey : this.properties.keySet()) {
 			FunctionblockModel fbm = this.properties.get(propertyKey);
-			if (fbm.getStereotype("functions").isPresent()) {
-				Stereotype functionsStereoType = fbm.getStereotype("functions").get();
+			if (fbm.getStereotype("functions") != null) {
+				Stereotype functionsStereoType = fbm.getStereotype("functions");
 				IScriptEvaluator evaluator = factory.createEvaluator(propertyKey.toLowerCase());
-				functionsStereoType.getAttributes().keySet().stream()
-					.filter(functionName -> !functionName.equalsIgnoreCase("_namespace"))
-					.forEach(functionName -> evaluator.addScriptFunction(new ScriptClassFunction(functionName,functionsStereoType.getAttributes().get(functionName))));
+				Iterator<String> iterator = functionsStereoType.getAttributes().keySet().iterator();
+				while(iterator.hasNext()){
+					String functionName = iterator.next();
+					if(functionName.equalsIgnoreCase("_namespace")){
+						evaluator.addScriptFunction(new ScriptClassFunction(functionName,functionsStereoType.getAttributes().get(functionName)));
+					}
+				}
 				library.addFunctions(evaluator.getFunctions());
 			}
 		}
 		return library;
 	}
+
 }

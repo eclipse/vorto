@@ -16,16 +16,16 @@ package org.eclipse.vorto.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.ListIterator;
 
 public class FunctionblockModel extends AbstractModel {
 
-	private List<ModelProperty> configurationProperties = new ArrayList<>();
-	private List<ModelProperty> statusProperties = new ArrayList<>();
-	private List<ModelProperty> faultProperties = new ArrayList<>();
-	private List<ModelEvent> events = new ArrayList<>();
+	private List<ModelProperty> configurationProperties = new ArrayList();
+	private List<ModelProperty> statusProperties = new ArrayList();
+	private List<ModelProperty> faultProperties = new ArrayList();
+	private List<ModelEvent> events = new ArrayList();
 
-	private List<Operation> operations = new ArrayList<>();
+	private List<Operation> operations = new ArrayList();
 
 	public FunctionblockModel(ModelId modelId, ModelType modelType) {
 		super(modelId, modelType);
@@ -47,16 +47,37 @@ public class FunctionblockModel extends AbstractModel {
 		return statusProperties;
 	}
 	
-	public Optional<ModelProperty> getStatusProperty(String propertyName) {
-		return statusProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+	public ModelProperty getStatusProperty(String propertyName) {
+		ListIterator<ModelProperty> iterator = statusProperties.listIterator();
+		while (iterator.hasNext()){
+			ModelProperty statusPropterty = iterator.next();
+			if (statusPropterty.getName().equals(propertyName)){
+				return statusPropterty;
+			}
+		}
+		return null;
 	}
 	
-	public Optional<ModelProperty> getConfigurationProperty(String propertyName) {
-		return configurationProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+	public ModelProperty getConfigurationProperty(String propertyName) {
+		ListIterator<ModelProperty> iterator = configurationProperties.listIterator();
+		while (iterator.hasNext()){
+			ModelProperty configurationPropterty = iterator.next();
+			if (configurationPropterty.getName().equals(propertyName)){
+				return configurationPropterty;
+			}
+		}
+		return null;
 	}
 	
-	public Optional<ModelProperty> getFaultProperty(String propertyName) {
-		return faultProperties.stream().filter(p -> p.getName().equals(propertyName)).findAny();
+	public ModelProperty getFaultProperty(String propertyName) {
+		ListIterator<ModelProperty> iterator = faultProperties.listIterator();
+		while (iterator.hasNext()){
+			ModelProperty faultProperty = iterator.next();
+			if (faultProperty.getName().equals(propertyName)){
+				return faultProperty;
+			}
+		}
+		return null;
 	}
 
 	public void setStatusProperties(List<ModelProperty> statusProperties) {

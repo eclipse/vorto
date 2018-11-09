@@ -25,7 +25,7 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
 	protected String description;
 	protected String fileName;
 	
-	protected List<ModelId> references = new ArrayList<>();
+	protected List<ModelId> references = new ArrayList();
 	
 	public AbstractModel(ModelId modelId,ModelType modelType) {
 		this.id = modelId;
