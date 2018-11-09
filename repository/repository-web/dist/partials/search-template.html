@@ -76,10 +76,11 @@
 										<i class="fa fa-sort">
 								</th>
 								<th>Description</th>
+								<th>Actions</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-show="!isLoading" ng-repeat="model in displayedModels track by $index" ng-click="go(model)">
+							<tr ng-show="!isLoading" ng-repeat="model in displayedModels track by $index">
 								<td ng-show="model.type === 'InformationModel'">
 									<img src="webjars/repository-web/dist/images/im.png" />
 								</td>
@@ -101,6 +102,9 @@
 								<td>{{ model.creationDate | date:"dd-MM-yyyy" }}</td>
 								<td>{{ model.description | limitTo : 80 }}
 									<span ng-show="model.description.length > 80">[...]</span>
+								</td>
+								<td>
+									<a class="btn btn-sm btn-primary" href="./#/details/{{model.id.prettyFormat}}" role="button">Details</a>
 								</td>
 							</tr>
 							<tr ng-show="isLoading">
