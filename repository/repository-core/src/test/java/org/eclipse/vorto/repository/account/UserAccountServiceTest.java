@@ -20,10 +20,7 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 	
 	@Before
 	public void setUp() {
-		accountService = new DefaultUserAccountService();
-		accountService.setModelRepository(modelRepository);
-		accountService.setUserRepository(userRepository);
-		workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+		workflow = new DefaultWorkflowService(this.modelRepository,accountService,notificationService);
 
 	}
 	

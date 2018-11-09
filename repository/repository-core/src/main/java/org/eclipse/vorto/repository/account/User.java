@@ -48,6 +48,8 @@ public class User {
 
 	@Column(nullable = false)
 	private Timestamp lastUpdated;
+	
+	private String emailAddress;
 
 	public User() {
 
@@ -146,8 +148,16 @@ public class User {
 	public void setLastUpdated(Timestamp lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
+	
+    public String getEmailAddress() {
+		return emailAddress;
+	}
 
-    @Override
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	@Override
     public String toString() {
         return "User{" +
                 "id=" + id +
@@ -211,6 +221,10 @@ public class User {
 		} else if (!username.equals(other.username))
 			return false;
 		return true;
+	}
+
+	public boolean hasEmailAddress() {
+		return !"".equals(this.emailAddress);
 	}
 
 	

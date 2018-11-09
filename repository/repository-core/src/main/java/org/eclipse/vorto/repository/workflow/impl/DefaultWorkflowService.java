@@ -19,10 +19,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.InvalidInputException;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -42,9 +43,9 @@ public class DefaultWorkflowService implements IWorkflowService {
 
 	private IWorkflowModel SIMPLE_WORKFLOW = null;
 
-	public DefaultWorkflowService(@Autowired IModelRepository modelRepository, @Autowired IUserRepository userRepository) {
+	public DefaultWorkflowService(@Autowired IModelRepository modelRepository, @Autowired IUserAccountService userRepository, @Autowired INotificationService notificationService) {
 		this.modelRepository = modelRepository;
-		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository,modelRepository);
+		this.SIMPLE_WORKFLOW = new SimpleWorkflowModel(userRepository,modelRepository,notificationService);
 	}
 
 	@Override

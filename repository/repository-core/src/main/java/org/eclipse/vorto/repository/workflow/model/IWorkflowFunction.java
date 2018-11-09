@@ -14,30 +14,10 @@
  */
 package org.eclipse.vorto.repository.workflow.model;
 
-import java.util.List;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
 
-public interface IAction extends IWorkflowElement {
+public interface IWorkflowFunction {
 
-	/**
-	 * @return the state the the action is pointing to
-	 */
-	IState getTo();
-	
-	/**
-	 * 
-	 * @return all conditions for the action
-	 */
-	List<IWorkflowCondition> getConditions();
-	
-	/**
-	 * 
-	 * @return all validators for the action
-	 */
-	List<IWorkflowValidator> getValidators();
-	
-	/**
-	 * 
-	 * @return all functions for the action
-	 */
-	List<IWorkflowFunction> getFunctions();
+	void execute(ModelInfo model, IUserContext user);
 }
