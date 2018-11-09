@@ -5,6 +5,8 @@ server:
   admin: aedelmann
   config:
     authenticatedSearchMode: false
+    generatorUser: generator
+    generatorPassword: 123
     
 github:
   oauth2:

@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -99,6 +100,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Value("${github.oauth2.enabled}")
 	private boolean githubEnabled = false; 
 	
+	@Value("${server.config.generatorUser}")
+	private String generatorUser = ""; 
+	
+	@Value("${server.config.generatorPassword}")
+	private String generatorUserPassword = ""; 
+	
 	@Autowired
 	private AuthorizationCodeResourceDetails github;
 	
@@ -108,6 +115,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private TenantVerificationFilter tenantVerificationFilter;
 	
+	private static final String ROLE_GENERATOR_PROVIDER = "GENERATOR_PROVIDER";
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
@@ -116,7 +125,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.authorizeRequests()
 				.antMatchers(HttpMethod.GET, "/rest/**","/api/**").permitAll()
 				.antMatchers("/user/**").permitAll()
-				.antMatchers(HttpMethod.PUT, "/rest/**","/api/**").permitAll()
+				.antMatchers(HttpMethod.PUT, "/rest/**","/api/**").authenticated()
 				.antMatchers(HttpMethod.POST, "/rest/**","/api/**").authenticated()
 				.antMatchers(HttpMethod.DELETE, "/rest/**","/api/**").authenticated()
 			.and()
@@ -141,6 +150,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					.disable();
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
 	}
+	
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication().withUser(generatorUser).password(generatorUserPassword).roles(ROLE_GENERATOR_PROVIDER);
+	}
+
 	
 	@Bean
 	public Filter anonymousFilter() {

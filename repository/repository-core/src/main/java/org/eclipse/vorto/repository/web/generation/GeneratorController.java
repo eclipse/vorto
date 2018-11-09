@@ -52,7 +52,7 @@ public class GeneratorController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Register a code generator",hidden=true)
 	@RequestMapping(value = "/{serviceKey}", method = RequestMethod.PUT)
-	//FIXME : ONLY TECHNICAL USERS MAY REGISTER AND DEREGISTER GENERATORS
+	@PreAuthorize("hasRole('ROLE_GENERATOR_PROVIDER')")
 	public void registerGenerator(	@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey,
 									@ApiParam(value = "The URL links to a specified code generator", required = true) final @RequestBody String baseUrl) {
 		this.generatorService.registerGenerator(serviceKey, baseUrl);
@@ -60,6 +60,7 @@ public class GeneratorController extends AbstractRepositoryController {
 
 	@ApiOperation(value = "Deregister a code generator",hidden=true)
 	@RequestMapping(value = "/{serviceKey}", method = RequestMethod.DELETE)
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public boolean deregisterGenerator(@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey) {
 		this.generatorService.unregisterGenerator(serviceKey);
 		return true;
