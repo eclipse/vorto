@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 
 public class WorkItemPendingMessage extends AbstractMessage {
 
@@ -45,7 +46,7 @@ public class WorkItemPendingMessage extends AbstractMessage {
 		try {
 			return renderer.render(ctx);
 		} catch (Exception e) {
-			throw new RuntimeException("Problem rendering template",e);
+			throw new NotificationProblem("Problem rendering notification message",e);
 			
 		}
 	}

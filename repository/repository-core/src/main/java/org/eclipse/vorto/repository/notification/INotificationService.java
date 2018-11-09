@@ -23,4 +23,16 @@ public interface INotificationService {
 	 * @param message
 	 */
 	void sendNotification(IMessage message);
+	
+	public class NotificationProblem extends RuntimeException {
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public NotificationProblem(String msg, Throwable t) {
+			super(msg,t);
+		}
+	}
 }

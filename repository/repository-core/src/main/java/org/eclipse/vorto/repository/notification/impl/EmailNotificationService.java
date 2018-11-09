@@ -48,7 +48,6 @@ public class EmailNotificationService implements INotificationService {
 	@Value("${mail.smtp.port}")
 	private String smtpPort;
 	
-	
 	@Value("${mail.smtp.auth}")
 	private String needsAuth = "false";
 	
@@ -79,7 +78,8 @@ public class EmailNotificationService implements INotificationService {
 			transport.sendMessage(smtpMessage,InternetAddress.parse(message.getRecipient().getEmailAddress()));
 			transport.close();
 		} catch (MessagingException me) {
-			logger.error("Problem sending email", me);
+			logger.error(me.getMessage(),me);
+			throw new NotificationProblem("Problem sending email", me);
 		} 
 		
 	}
@@ -91,7 +91,7 @@ public class EmailNotificationService implements INotificationService {
 		final String mailUser = this.mailUser;
 		final String mailPassword = this.mailPassword;
 		
-		return Session.getDefaultInstance(props, Boolean.valueOf(this.needsAuth) == false? null : new javax.mail.Authenticator() {
+		return Session.getDefaultInstance(props, this.needsAuth.equalsIgnoreCase("false")? null : new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(mailUser,mailPassword);

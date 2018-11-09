@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 
 public class DeleteAccountMessage extends AbstractMessage {
 
@@ -40,8 +41,7 @@ public class DeleteAccountMessage extends AbstractMessage {
 		try {
 			return renderer.render(ctx);
 		} catch (Exception e) {
-			throw new RuntimeException("Problem rendering delete account email content",e);
-			
+			throw new NotificationProblem("Problem rendering delete account email content",e);
 		}
 	}
 
