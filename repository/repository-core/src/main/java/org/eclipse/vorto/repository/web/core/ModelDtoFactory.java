@@ -322,7 +322,9 @@ public class ModelDtoFactory {
 	}
 	
 	private static IReferenceType createReferenceType(PropertyType propertyType) {
-		if (propertyType instanceof PrimitivePropertyType) {
+		if (propertyType == null) {
+			return null;
+		} else if (propertyType instanceof PrimitivePropertyType) {
 			PrimitiveType pt = ((PrimitivePropertyType) propertyType).getType();
 			return org.eclipse.vorto.model.PrimitiveType.valueOf(pt.name());
 		} else if (propertyType instanceof DictionaryPropertyType) {

@@ -29,7 +29,6 @@ import org.eclipse.vorto.core.api.model.model.Model
 import org.eclipse.vorto.core.api.model.model.ModelPackage
 import org.eclipse.vorto.editor.datatype.internal.validation.ConstraintValueValidator
 import org.eclipse.xtext.validation.Check
-import org.eclipse.vorto.core.api.model.datatype.DictionaryPropertyType
 
 /**
  * Custom validation rules. 
@@ -144,16 +143,6 @@ class DatatypeValidator extends AbstractDatatypeValidator {
 		}
 	}
 	
-	@Check
-	def checkDictionary(DictionaryPropertyType ref) {
-		if (ref.keyType === null) {
-			error(DatatypeSystemMessage.ERROR_DICTIONARY_INVALID, ref, DatatypePackage.Literals.DICTIONARY_PROPERTY_TYPE__KEY_TYPE);
-		}
-		if (ref.valueType === null) {
-			error(DatatypeSystemMessage.ERROR_DICTIONARY_INVALID, ref, DatatypePackage.Literals.DICTIONARY_PROPERTY_TYPE__VALUE_TYPE);
-		}
-	}
-
 	@Check
 	def checkEntityName(Entity entity) {
 		val name = entity.name
