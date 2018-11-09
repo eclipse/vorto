@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -17,6 +18,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
+import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
@@ -40,8 +42,13 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 	@Mock
 	protected IUserRepository userRepository = Mockito.mock(IUserRepository.class);
 	
+	protected DefaultUserAccountService accountService = null;
+	
 	@Mock
 	protected AttachmentValidator attachmentValidator = Mockito.mock(AttachmentValidator.class);
+	
+	@Mock
+	protected INotificationService notificationService = Mockito.mock(INotificationService.class);
 	
 	protected VortoModelImporter importer = null;
 	
@@ -74,7 +81,13 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		this.importer.setUserRepository(userRepository);
 		this.importer.setModelParserFactory(modelParserFactory);
 		
-		this.workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+		this.accountService = new DefaultUserAccountService();
+		this.accountService.setModelRepository(modelRepository);
+		this.accountService.setNotificationService(notificationService);
+		this.accountService.setUserRepository(userRepository);
+		
+		
+		this.workflow = new DefaultWorkflowService(this.modelRepository,accountService,notificationService);
 
 
 	}

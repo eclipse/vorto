@@ -1,6 +1,6 @@
 Dear ${user.username},<br/>
 <br/>
-Your Account has been deleted successfully. 
+A model release approval is pending for ${model.id.prettyFormat}
 
 Best regards,
 <br/>

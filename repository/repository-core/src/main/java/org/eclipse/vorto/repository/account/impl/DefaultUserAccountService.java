@@ -29,6 +29,8 @@ import org.eclipse.vorto.repository.account.UserRole;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.notification.message.DeleteAccountMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,6 +52,9 @@ public class DefaultUserAccountService implements IUserAccountService {
 
 	@Autowired
 	private IModelRepository modelRepository;
+	
+	@Autowired
+	private INotificationService notificationService;
 
 	public User create(String username) {
 		if (userRepository.findByUsername(username) != null) {
@@ -131,11 +136,15 @@ public class DefaultUserAccountService implements IUserAccountService {
 	@Override
 	public void delete(final String userId) {
 		User userToDelete = userRepository.findByUsername(userId);
-
+		
 		if (userToDelete != null) {	
 			makeModelsAnonymous(UserContext.user(userToDelete.getUsername()).getHashedUsername());
 			makeModelsAnonymous(userToDelete.getUsername());
 			userRepository.delete(userToDelete);
+		}
+		
+		if (userToDelete.hasEmailAddress()) {
+			notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
 		}
 	}
 	
@@ -163,6 +172,17 @@ public class DefaultUserAccountService implements IUserAccountService {
 	public void setModelRepository(IModelRepository modelRepository) {
 		this.modelRepository = modelRepository;
 	}
+	
+
+	public INotificationService getNotificationService() {
+		return notificationService;
+	}
+
+
+	public void setNotificationService(INotificationService notificationService) {
+		this.notificationService = notificationService;
+	}
+
 
 	@Override
 	public boolean exists(String userId) {

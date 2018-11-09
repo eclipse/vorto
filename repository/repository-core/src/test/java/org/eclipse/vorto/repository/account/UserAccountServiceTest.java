@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -13,17 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class UserAccountServiceTest extends AbstractIntegrationTest  {
-
-	private DefaultUserAccountService accountService;
 	
 	private IWorkflowService workflow = null;
 	
 	@Before
 	public void setUp() {
-		accountService = new DefaultUserAccountService();
-		accountService.setModelRepository(modelRepository);
-		accountService.setUserRepository(userRepository);
-		workflow = new DefaultWorkflowService(this.modelRepository,userRepository);
+		workflow = new DefaultWorkflowService(this.modelRepository,accountService,notificationService);
 
 	}
 	
@@ -49,27 +43,20 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 
 	@Test
 	public void testGetUserRoles() throws Exception {
-		User user = setupUserWithRoles();
+		User user = setupUserWithRoles("alex");
 		assertEquals(2, user.getRoles().size());
 	}
 
 	@Test (expected = IllegalArgumentException.class)
 	public void testCreateUserAlreadyExists() throws Exception {
-		User user = setupUserWithRoles();
-		when(userRepository.findByUsername("S-1-5-21")).thenReturn(user);
+		User user = setupUserWithRoles("alex");
+		when(userRepository.findByUsername("alex")).thenReturn(user);
 		accountService.create(user.getUsername());
 	}
 
-	@Test
-	public void testUpdateRole() {
-		User user = setupUserWithRoles();
-		when(userRepository.findByUsername("S-1-5-21")).thenReturn(user);
-		accountService.create(user.getUsername(), Role.ADMIN, Role.MODEL_CREATOR);
-	}
-
-	private User setupUserWithRoles() {
+	private User setupUserWithRoles(String username) {
 		User user = new User();
-		user.setUsername("S-1-5-21");
+		user.setUsername(username);
 		user.addRoles(Role.ADMIN,Role.MODEL_CREATOR);
 		return user;
 	}

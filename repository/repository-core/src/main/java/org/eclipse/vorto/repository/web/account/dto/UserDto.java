@@ -1,3 +1,17 @@
+/**
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * and Eclipse Distribution License v1.0 which accompany this distribution.
+ *
+ * The Eclipse Public License is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * The Eclipse Distribution License is available at
+ * http://www.eclipse.org/org/documents/edl-v10.php.
+ *
+ * Contributors:
+ * Bosch Software Innovations GmbH - Please refer to git log
+ */
 package org.eclipse.vorto.repository.web.account.dto;
 
 import java.sql.Timestamp;
@@ -16,15 +30,14 @@ public class UserDto {
 	private Timestamp dateCreated;
 
 	private Timestamp lastUpdated;
+	
+	private String email;
 
 	public static UserDto fromUser(User user) {
-		return new UserDto(user.getUsername(), user.getDateCreated(), user.getLastUpdated());
-	}
-
-	public static UserDto fromUser(User user, List<UserRole> userRoles) {
-		UserDto userDto = fromUser(user);
-		userDto.addRoles(userRoles);
-		return userDto;
+		UserDto dto =  new UserDto(user.getUsername(), user.getDateCreated(), user.getLastUpdated());
+		dto.addRoles(new ArrayList<>(user.getRoles()));
+		dto.setEmail(user.getEmailAddress());
+		return dto;
 	}
 
 	public UserDto() {
@@ -78,4 +91,13 @@ public class UserDto {
 		this.lastUpdated = lastUpdated;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	
 }
