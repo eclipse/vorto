@@ -35,7 +35,7 @@ public class WorkItemPendingMessage extends AbstractMessage {
 
 	@Override
 	public String getSubject() {
-		return "Vorto: Pending Model Release approval";
+		return "[Vorto] Pending Approval for "+modelInfo.getId().getPrettyFormat();
 	}
 
 	@Override

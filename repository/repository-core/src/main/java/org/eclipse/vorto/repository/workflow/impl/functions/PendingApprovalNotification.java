@@ -35,9 +35,7 @@ public class PendingApprovalNotification implements IWorkflowFunction {
 	@Override
 	public void execute(ModelInfo model, IUserContext user) {
 		User account = accountService.getUser(user.getUsername());
-		if (account.hasEmailAddress()) {
-			notificationService.sendNotification(new WorkItemPendingMessage(account, model));
-		}
+		notificationService.sendNotification(new WorkItemPendingMessage(account, model));
 	}
 
 }

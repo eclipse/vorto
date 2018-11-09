@@ -18,30 +18,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 
-public class DeleteAccountMessage extends AbstractMessage {
+public class CommentReplyMessage extends AbstractMessage {
 
 	private TemplateRenderer renderer;
 	
-	public DeleteAccountMessage(User recipient) {
+	private ModelInfo modelInfo;
+	
+	private String commentMessage;
+	
+	public CommentReplyMessage(User recipient, ModelInfo modelInfo, String commentMessage) {
 		super(recipient);
-		this.renderer = new TemplateRenderer("delete_account.ftl");
+		this.renderer = new TemplateRenderer("comment_reply.ftl");
+		this.modelInfo = modelInfo;
+		this.commentMessage = commentMessage;
 	}
 
 	@Override
 	public String getSubject() {
-		return "[Vorto] Your Vorto account was deleted.";
+		return "Re: [Vorto] Comment Reply for " + modelInfo.getId().getPrettyFormat();
 	}
 
 	@Override
 	public String getContent() {
 		Map<String,Object> ctx = new HashMap<>(1);
-		ctx.put("user", recipient);
+		ctx.put("model", modelInfo);
+		ctx.put("comment", commentMessage);
 		try {
 			return renderer.render(ctx);
 		} catch (Exception e) {
-			throw new NotificationProblem("Problem rendering delete account email content",e);
+			throw new NotificationProblem("Problem rendering notification message",e);
+			
 		}
 	}
 

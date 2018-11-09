@@ -63,6 +63,10 @@ public class EmailNotificationService implements INotificationService {
 
 	private void doSendEmail(IMessage message) {
 		
+		if (!message.getRecipient().hasEmailAddress()) {
+			return;
+		}
+		
 		try {
 			final Session emailSession = newSession();
 			Transport transport = emailSession.getTransport("smtp");
