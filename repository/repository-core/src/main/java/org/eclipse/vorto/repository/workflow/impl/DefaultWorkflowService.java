@@ -30,8 +30,11 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowModel;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,9 @@ public class DefaultWorkflowService implements IWorkflowService {
 	private IModelRepository modelRepository;
 
 	private IWorkflowModel SIMPLE_WORKFLOW = null;
+	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultWorkflowService.class);
 
 	public DefaultWorkflowService(@Autowired IModelRepository modelRepository, @Autowired IUserAccountService userRepository, @Autowired INotificationService notificationService) {
 		this.modelRepository = modelRepository;
@@ -56,9 +62,21 @@ public class DefaultWorkflowService implements IWorkflowService {
 		if (action.isPresent() && isValidInput(modelInfo,action.get()) && passesConditions(action.get().getConditions(),modelInfo,user)) {
 			final IState newState = action.get().getTo();
 			modelInfo.setState(newState.getName());
-			return modelRepository.updateMeta(modelInfo);
+			
+			ModelInfo updatedInfo = modelRepository.updateMeta(modelInfo);
+			action.get().getFunctions().stream().forEach(a -> executeFunction(a,modelInfo,user));
+			
+			return updatedInfo;
 		} else {
 			throw new WorkflowException(modelInfo,"The given action is invalid.");
+		}
+	}
+	
+	private void executeFunction(IWorkflowFunction function, ModelInfo modelInfo, IUserContext user) {
+		try {
+			function.execute(modelInfo, user);
+		} catch(Throwable t) {
+			LOGGER.error("Problem executing workflow function "+function.getClass(), t);
 		}
 	}
 

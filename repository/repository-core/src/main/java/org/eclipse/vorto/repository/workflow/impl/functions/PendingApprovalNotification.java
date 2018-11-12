@@ -21,11 +21,15 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.WorkItemPendingMessage;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PendingApprovalNotification implements IWorkflowFunction {
 
 	private INotificationService notificationService;
 	private IUserAccountService accountService;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PendingApprovalNotification.class);
 	
 	public PendingApprovalNotification(INotificationService notificationService, IUserAccountService accountService) {
 		this.notificationService = notificationService;
@@ -34,6 +38,7 @@ public class PendingApprovalNotification implements IWorkflowFunction {
 	
 	@Override
 	public void execute(ModelInfo model, IUserContext user) {
+		LOGGER.debug("Executing workflow function: "+this.getClass());
 		User account = accountService.getUser(user.getUsername());
 		notificationService.sendNotification(new WorkItemPendingMessage(account, model));
 	}
