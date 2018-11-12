@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.jcr.Binary;
@@ -51,6 +53,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.AttachmentException;
+import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
@@ -82,6 +85,8 @@ public class JcrModelRepository implements IModelRepository {
 
 	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
+	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
+	
 	@Autowired
 	private Session session;
 
@@ -91,13 +96,14 @@ public class JcrModelRepository implements IModelRepository {
 	@Autowired
 	private ModelSearchUtil modelSearchUtil;
 
-	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
-
 	@Autowired
 	private AttachmentValidator attachmentValidator;
 	
 	@Autowired
 	private ModelParserFactory modelParserFactory;
+	
+	@Autowired
+	private RepositoryDiagnostics repoDiagnostics;
 
 	@Override
 	public List<ModelInfo> search(final String expression) {
@@ -686,8 +692,25 @@ public class JcrModelRepository implements IModelRepository {
 			return resource;
 		}
 	}
-
+	
+	public Collection<Diagnostic> diagnose() {
+		return doInRootNode(repoDiagnostics::diagnose);
+	}
+	
+	private <Result> Result doInRootNode(Function<Node, Result> fn) {
+		try {
+			Node node = getSession().getRootNode();
+			return fn.apply(node);
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException(e.getMessage(), e);
+		}
+	}
+	
 	public void setModelParserFactory(ModelParserFactory modelParserFactory) {
 		this.modelParserFactory = modelParserFactory;
+	}
+
+	public void setRepositoryDiagnostics(RepositoryDiagnostics repoDiagnostics) {
+		this.repoDiagnostics = repoDiagnostics;
 	}
 }
