@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics.NodeDiagnosticTest;
@@ -47,7 +48,7 @@ public class MetadataIntegrityTest implements NodeDiagnosticTest {
 				.ifPresent(diagnostic -> diagnostics.add(diagnostic));
 			
 			checkNodeState(node).ifPresent(diagnostic -> diagnostics.add(diagnostic));
-						
+		
 			return diagnostics;
 		}).orElse(Collections.emptyList());
 	}
@@ -84,6 +85,28 @@ public class MetadataIntegrityTest implements NodeDiagnosticTest {
 						.append(String.join("', '", validStates))
 						.append("' but is '")
 						.append(node.getProperty("vorto:state").getString())
+						.append("'")
+						.toString();
+				return Optional.of(new Diagnostic(modelId, message));
+			}
+			
+			return Optional.empty();
+		} catch (RepositoryException e) {
+			return Optional.of(new Diagnostic(modelId, "Got exception while checking node 'vorto:state' : " + e.getMessage()));
+		}
+	}
+	
+	private Optional<Diagnostic> checkModelType(final Node node) {
+		ModelId modelId = null;
+		try {
+			modelId = ModelIdHelper.fromPath(node.getPath());
+			ModelType fileModelType = ModelType.create(node.getName());
+			ModelType nodeModelType = ModelType.valueOf(node.getProperty("vorto:type").getString()); 
+			if (fileModelType != nodeModelType) {
+				String message = new StringBuilder("The model type should be '")
+						.append(fileModelType.name())
+						.append("' but is '")
+						.append(nodeModelType.name())
 						.append("'")
 						.toString();
 				return Optional.of(new Diagnostic(modelId, message));
