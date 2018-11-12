@@ -1,5 +1,5 @@
-repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', 
-	function ($location, $rootScope, $scope, $http, $uibModal, ) {
+repositoryControllers.controller('SettingsController', [ '$location', '$rootScope', '$scope', '$http', '$uibModal', '$timeout',
+	function ($location, $rootScope, $scope, $http, $uibModal, $timeout ) {
 
 	$scope.email = "";
 	
