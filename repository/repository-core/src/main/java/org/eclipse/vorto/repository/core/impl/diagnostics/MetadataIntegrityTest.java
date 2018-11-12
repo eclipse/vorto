@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.core.impl.diagnostics;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -20,6 +21,8 @@ import com.google.common.collect.Lists;
 @Component
 public class MetadataIntegrityTest implements NodeDiagnosticTest {
 
+	private Collection<String> validStates = Arrays.asList("Draft", "InReview", "Released", "Deprecated");
+	
 	@Autowired
 	private ModelParserFactory modelParserFactory;
 	
@@ -42,6 +45,8 @@ public class MetadataIntegrityTest implements NodeDiagnosticTest {
 			
 			checkNodePropertyError(node, "vorto:displayname", modelInfo.getDisplayName())
 				.ifPresent(diagnostic -> diagnostics.add(diagnostic));
+			
+			checkNodeState(node).ifPresent(diagnostic -> diagnostics.add(diagnostic));
 						
 			return diagnostics;
 		}).orElse(Collections.emptyList());
@@ -67,6 +72,26 @@ public class MetadataIntegrityTest implements NodeDiagnosticTest {
 			return Optional.empty();
 		} catch (RepositoryException e) {
 			return Optional.of(new Diagnostic(modelId, "Got exception while checking node '" + nodePropertyName + "' : " + e.getMessage()));
+		}
+	}
+	
+	private Optional<Diagnostic> checkNodeState(final Node node) {
+		ModelId modelId = null;
+		try {
+			modelId = ModelIdHelper.fromPath(node.getPath());
+			if (!validStates.contains(node.getProperty("vorto:state").getString())) {
+				String message = new StringBuilder("Expected value for node property 'vorto:state' should be in '")
+						.append(String.join("', '", validStates))
+						.append("' but is '")
+						.append(node.getProperty("vorto:state").getString())
+						.append("'")
+						.toString();
+				return Optional.of(new Diagnostic(modelId, message));
+			}
+			
+			return Optional.empty();
+		} catch (RepositoryException e) {
+			return Optional.of(new Diagnostic(modelId, "Got exception while checking node 'vorto:state' : " + e.getMessage()));
 		}
 	}
 }
