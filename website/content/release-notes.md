@@ -4,6 +4,15 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 8
+
+**Fixes and Enhancements**
+
+* Email Notifications for Workflow actions, e.g. Pending Reviews, as well as comments
+* Added more advanced Vorto DSL Validator Checks when importing Vorto Models or when creating/editing models via the Vorto Web Editor
+* Various Bugfixes 
+* Generator Plugin SDK, which allows to build and deploy Vorto Generator plugins as standalone (micro)services and hook them into the Vorto repository. 
+
 ## 0.10.0 milestone 7
 
 **Fixes and Enhancements**
