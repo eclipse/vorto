@@ -44,7 +44,7 @@ public class SwaggerConfiguration {
 	}
 	
 	@Bean
-	@Profile({"eclipse","cloud*"})
+	@Profile({"!local","!local-https"})
 	public Docket vortoApiCloud() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build().pathProvider(new BasePathAwareRelativePathProvider(""));
