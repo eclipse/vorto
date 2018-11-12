@@ -224,7 +224,7 @@ public class User {
 	}
 
 	public boolean hasEmailAddress() {
-		return !"".equals(this.emailAddress);
+		return this.emailAddress != null && !"".equals(this.emailAddress);
 	}
 
 	

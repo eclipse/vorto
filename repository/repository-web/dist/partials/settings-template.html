@@ -4,7 +4,7 @@
     <h2 class="modelHeader ng-binding">Account Settings</h2>
     <hr>
 	<br/>
-	<div ng-show="put">
+	<div>
     	<div ng-show="success">
 		  	<p>
 		  		<div class="alert alert-success" role="alert">
@@ -31,11 +31,11 @@
 	<form name="settings">
 		<div class="form-group">
 			<label>User Id</label>
-			<input readonly type="text" name="userId" id="userId" class="form-control" value="{{user}}" />     
+			<input readonly type="text" name="userId" id="userId" class="form-control" value="{{user.username}}" />     
 		</div>
 	  	<div class="form-group">
 			<label>Email</label>
-			<input type="email" name="email" id="email" class="form-control" placeholder="Enter your Email" ng-model="email" value="{{user}}" />  
+			<input type="email" name="email" id="email" class="form-control" placeholder="Enter your Email" ng-model="user.email" value="{{user.email}}" />  
 			<small style="color:grey;font-size:10px">Optional: Used for notifying you when your model changes.</small>
 		</div>  
  	<br/>
