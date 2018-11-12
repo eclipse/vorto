@@ -226,7 +226,7 @@
 												</div>
 												<dt>Model File:</dt>
 												<dd>
-													<a ng-href="./api/v1/{{tenant}}/models/{{model.id.prettyFormat}}/file" class="pull-center">
+													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file" class="pull-center">
 														<i class="fa fa-fw fa-download"></i>{{model.fileName}}</a>
 												</dd>
 												<dt ng-show="hasAuthority('ROLE_ADMIN')">
@@ -237,7 +237,7 @@
 												</dt>
 												<dd>
 													<div ng-repeat="attachment in attachments">
-														<a ng-href="./api/v1/{{tenant}}/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
+														<a ng-href="./api/v1/attachments/{{model.id.prettyFormat}}/files/{{encodeURIComponent(attachment.filename)}}" class="pull-center">
 															{{attachment.filename}} <div ng-show="attachment.tags.length > 0" class="label">{{attachment.tags[0].label}}</div>
 														</a>
 														<button ng-hide="(!hasAuthority('ROLE_ADMIN')) || (attachment.tags[0].label == 'Imported')" class="delete-button" ng-click="openDeleteAttachmentDialog(model.id.prettyFormat, attachment.filename)">

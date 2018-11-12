@@ -70,7 +70,12 @@ public class EmailNotificationService implements INotificationService {
 		try {
 			final Session emailSession = newSession();
 			Transport transport = emailSession.getTransport("smtp");
-            transport.connect();
+            try {
+            	transport.connect();
+            }catch(Exception connectEx) {
+            	logger.error("Problem connecting to Email server", connectEx);
+            	return;
+            }
 			SMTPMessage smtpMessage = new SMTPMessage(emailSession);
 			smtpMessage.setFrom(new InternetAddress(this.mailFrom));
 			smtpMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(message.getRecipient().getEmailAddress()));

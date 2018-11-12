@@ -1,6 +1,6 @@
 repository.factory('ModelDetailsService',['$rootScope', '$http','$q','$location',function($rootScope, $http, $q, $location){
 
-    var ATTACHMENT_URL = './api/v1/' + $rootScope.tenant + '/attachments/';
+    var ATTACHMENT_URL = './api/v1/attachments/';
 
     var factory = {
         uploadAttachment: uploadAttachment

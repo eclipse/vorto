@@ -108,7 +108,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get('./api/v1/' + $rootScope.tenant + '/attachments/' + model.id.prettyFormat)
+			$http.get('./api/v1/attachments/' + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
 				})
@@ -119,7 +119,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelMappings = [];
 			for(var i = 0; i < Object.keys($scope.model.platformMappings).length;i++){
 				var key = Object.keys($scope.model.platformMappings)[i];
-				$http.get('./api/v1/' + $rootScope.tenant + '/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
+				$http.get('./api/v1/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
 				    (function(key) {
 				        return function(result) {
 				        	var mapping = {
@@ -142,7 +142,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelReferences.show = false;
 			var tmpIdx = 0;
 			for( var index in references){
-		        $http.get('./api/v1/' + $rootScope.tenant + '/models/' + references[index].prettyFormat)
+		        $http.get('./api/v1/models/' + references[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferences[tmpIdx] = result;
 					$scope.modelReferences.show = true;
@@ -157,7 +157,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$scope.modelReferencedBy.show = false;
 			var tmpIdx = 0;
 			for( var index in referencedBy){
-		        $http.get('./api/v1/' + $rootScope.tenant + '/models/' + referencedBy[index].prettyFormat)
+		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferencedBy[tmpIdx] = result;
 					$scope.modelReferencedBy.show = true;
@@ -168,7 +168,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 		$scope.getDetails = function (modelId) {
 			$scope.modelIsLoading = true;
-			$http.get('./api/v1/' + $rootScope.tenant + '/models/' + modelId)
+			$http.get('./api/v1/models/' + modelId)
 				.success(function (result) {
 					$scope.model = result;
 					if($scope.model.author.length === 64) {
@@ -194,7 +194,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 
 		$scope.getContent = function (modelId) {
-			$http.get('./api/v1/' + $rootScope.tenant + '/models/' + modelId + '/file')
+			$http.get('./api/v1/models/' + modelId + '/file')
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
@@ -209,7 +209,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 		$scope.getPlatformGenerators = function () {
 			$scope.isLoadingGenerators = true;
-			$http.get('./api/v1/' + $rootScope.tenant + '/generators')
+			$http.get('./api/v1/generators')
 				.success(function (result) {
 					$scope.isLoadingGenerators = false;
 					var productionGenerators = $scope.filterByTag(result, "production");
@@ -595,7 +595,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						} else {
 							filter = $scope.searchFilter + " " + $scope.searchModelType;
 						}
-						$http.get('./api/v1/' + $rootScope.tenant + '/search/models?expression=' + filter).success(
+						$http.get('./api/v1/search/models?expression=' + filter).success(
 							function (data, status, headers, config) {
 								$scope.searchResult = data;
 								$scope.isLoading = false;
@@ -689,7 +689,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
                         var payload = new FormData();
                         payload.append('file', $scope.selectedFile, encodeURIComponent($scope.selectedFile.name));
 
-                        const attachment_url = './api/v1/' + $rootScope.tenant + '/attachments/' + $scope.modelId;
+                        const attachment_url = './api/v1/attachments/' + $scope.modelId;
                         $scope.attachmentNote = "Uploading..."
                         $http.put(attachment_url, payload, {
                             transformRequest: angular.identity,
@@ -744,7 +744,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 
 					$scope.deleteAttachment = function () {
 						$scope.isDeleting = true;
-						const attachment_url = './api/v1/' + $rootScope.tenant + '/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
+						const attachment_url = './api/v1/attachments/' + $scope.modelId + '/files/' + encodeURIComponent($scope.fileToDelete);
 
 						$http.delete(attachment_url, {
 								transformRequest: angular.identity,

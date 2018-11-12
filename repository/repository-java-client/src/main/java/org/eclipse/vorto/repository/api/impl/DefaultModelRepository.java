@@ -37,9 +37,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class DefaultModelRepository extends ImplementationBase implements IModelRepository {
 	
-	private static final String REST_SEARCH_BASE = "api/v1/%s/search/models";
-	private static final String REST_MODEL_BASE = "api/v1/%s/models";
-	private static final String REST_ATTACHMENT_BASE = "api/v1/%s/attachments";
+	private static final String REST_SEARCH_BASE = "api/v1/search/models";
+	private static final String REST_MODEL_BASE = "api/v1/models";
+	private static final String REST_ATTACHMENT_BASE = "api/v1/attachments";
 
 	public DefaultModelRepository(HttpClient httpClient, RequestContext requestContext) {
 		super(httpClient, requestContext);
@@ -56,43 +56,43 @@ public class DefaultModelRepository extends ImplementationBase implements IModel
 			}
 		}
 		
-		String url = String.format("%s/%s?expression=%s", getRequestContext().getBaseUrl(), String.format(REST_SEARCH_BASE,this.requestContext.getTenantId()), expression);
+		String url = String.format("%s/%s?expression=%s", getRequestContext().getBaseUrl(), String.format(REST_SEARCH_BASE), expression);
 		return requestAndTransform(url, transformToType(new TypeToken<ArrayList<ModelInfo>>() {}.getType()));
 	}
 
 	@Override
 	public CompletableFuture<ModelInfo> getById(ModelId modelId) {
-		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat());
+		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE), modelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(ModelInfo.class));
 	}
 
 	@Override
 	public CompletableFuture<ModelContent> getContent(ModelId modelId) {
-		String url = String.format("%s/%s/%s/content", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat());
+		String url = String.format("%s/%s/%s/content", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE), modelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 
 	@Override
 	public CompletableFuture<ModelContent> getContent(ModelId modelId,String targetPlatformKey) {
-		String url = String.format("%s/%s/%s/content/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat(),targetPlatformKey);
+		String url = String.format("%s/%s/%s/content/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE), modelId.getPrettyFormat(),targetPlatformKey);
 		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 
 	@Override
 	public CompletableFuture<ModelContent> getContent(ModelId modelId, ModelId mappingModelId) {
-		String url = String.format("%s/%s/%s/content/mappings/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
+		String url = String.format("%s/%s/%s/content/mappings/%s", getRequestContext().getBaseUrl(),String.format(REST_MODEL_BASE), modelId.getPrettyFormat(),mappingModelId.getPrettyFormat());
 		return requestAndTransform(url, transformToClass(ModelContent.class));
 	}
 	
 	@Override
 	public CompletableFuture<List<Attachment>> getAttachments(ModelId modelId) {
-		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(), String.format(REST_ATTACHMENT_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat());
+		String url = String.format("%s/%s/%s", getRequestContext().getBaseUrl(), String.format(REST_ATTACHMENT_BASE), modelId.getPrettyFormat());
 		return requestAndTransform(url, transformToType(new TypeToken<ArrayList<Attachment>>() {}.getType()));
 	}
 	
 	@Override
 	public CompletableFuture<byte[]> getAttachment(ModelId modelId, String filename) {
-		String url = String.format("%s/%s/%s/files/%s", getRequestContext().getBaseUrl(), String.format(REST_ATTACHMENT_BASE,this.requestContext.getTenantId()), modelId.getPrettyFormat(), filename);
+		String url = String.format("%s/%s/%s/files/%s", getRequestContext().getBaseUrl(), String.format(REST_ATTACHMENT_BASE), modelId.getPrettyFormat(), filename);
 		return requestAndTransform(url, (response) -> {
 			try {
 				return IOUtils.toByteArray(response.getEntity().getContent());

@@ -16,9 +16,9 @@ package org.eclipse.vorto.repository.server.config.config;
 
 import static com.google.common.base.Predicates.or;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.base.Predicate;
@@ -34,20 +34,20 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @Configuration
 public class SwaggerConfiguration {
-
-	@Bean
-	@Profile({"local","local-https"})
-	public Docket vortoApiLocal() {
-		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
-				.select().paths(paths()).build();
-
-	}
 	
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+
 	@Bean
-	@Profile({"!local","!local-https"})
-	public Docket vortoApiCloud() {
-		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
-				.select().paths(paths()).build().pathProvider(new BasePathAwareRelativePathProvider(""));
+	public Docket vortoApi() {
+		Docket docket =  new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
+				.select().paths(paths()).build();
+		
+		if (!activeProfile.contains("local") && !activeProfile.contains("local-https")) {
+			docket.pathProvider(new BasePathAwareRelativePathProvider(""));
+		}
+		
+		return docket;
 
 	}
 
@@ -62,7 +62,7 @@ public class SwaggerConfiguration {
 	@SuppressWarnings("deprecation")
 	private ApiInfo apiInfo() {
 		return new ApiInfo("Vorto","",
-				"", "", "Eclipse Vorto Team", "EPL", "https://eclipse.org/org/documents/epl-v10.php");
+				"", "", "Eclipse Vorto Team", "EPL", "https://www.eclipse.org/legal/epl-2.0");
 	}
 	
 	class BasePathAwareRelativePathProvider extends AbstractPathProvider {

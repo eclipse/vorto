@@ -27,7 +27,6 @@ import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,14 +43,14 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "/search")
 @RestController("modelSearchController")
+@RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Finds models by free-text search expressions")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of search result"), @ApiResponse(code = 400, message = "Malformed search expression")})
-	@RequestMapping(value = "/api/v1/{tenant}/search/models", method = RequestMethod.GET)
+	@RequestMapping(value = "/models", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public List<ModelInfo> searchByExpression(
-			@ApiParam(value = "The owning tenant", required = true) final @PathVariable String tenant,
 			@ApiParam(value = "a free-text search expression", required = true) @RequestParam("expression") String expression)
 			throws UnsupportedEncodingException {
 		IUserContext userContext = UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());

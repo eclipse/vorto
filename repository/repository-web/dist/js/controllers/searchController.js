@@ -27,7 +27,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
         } else {
             filter = $scope.queryFilter + " "+$scope.modelType;
         }
-        $http.get('./api/v1/' + $rootScope.tenant + '/search/models?expression=' + filter).success(
+        $http.get('./api/v1/search/models?expression=' + filter).success(
             function(data, status, headers, config) {            	
             	$scope.models = data;
                 $scope.isLoading = false;

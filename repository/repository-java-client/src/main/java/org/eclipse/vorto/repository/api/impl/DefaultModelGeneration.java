@@ -41,7 +41,7 @@ import com.google.gson.reflect.TypeToken;
 
 public class DefaultModelGeneration extends ImplementationBase implements IModelGeneration {
 	
-	private static final String REST_BASE = "api/v1/%s/generators";
+	private static final String REST_BASE = "api/v1/generators";
 	
 	public DefaultModelGeneration(HttpClient httpClient, RequestContext context) {
 		super(httpClient, context);
@@ -70,7 +70,7 @@ public class DefaultModelGeneration extends ImplementationBase implements IModel
 	private <K> CompletableFuture<K> getAllGenerators(Function<List<GeneratorInfo>, K> converter) {
 		Objects.requireNonNull(converter);
 		
-		String getAllGeneratorsUrl = String.format("%s/%s", getRequestContext().getBaseUrl(),String.format(REST_BASE,this.requestContext.getTenantId()));
+		String getAllGeneratorsUrl = String.format("%s/%s", getRequestContext().getBaseUrl(),String.format(REST_BASE));
 		
 		return requestAndTransform(getAllGeneratorsUrl, 
 				converter.compose(transformToType(new TypeToken<ArrayList<GeneratorInfo>>() {}.getType())), 
@@ -106,7 +106,7 @@ public class DefaultModelGeneration extends ImplementationBase implements IModel
 			StringBuilder url = new StringBuilder();
 			
 			url.append(baseUrl)
-			 	.append("/"+String.format(REST_BASE,this.requestContext.getTenantId())+"/")
+			 	.append("/"+String.format(REST_BASE)+"/")
 			 	.append(generatorKey)
 			 	.append("/models/")
 			 	.append(modelId.getPrettyFormat())
