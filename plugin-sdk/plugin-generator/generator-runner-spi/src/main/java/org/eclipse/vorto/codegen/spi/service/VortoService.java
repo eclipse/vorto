@@ -140,7 +140,7 @@ public class VortoService {
 	}
 	
 	private String urlForModel(String namespace, String name, String version) {
-		return String.format("%s/api/v1/" + TENANT + "/models/%s/file?includeDependencies=true", 
+		return String.format("%s/api/v1/models/%s/file?includeDependencies=true", 
 				env.getVortoRepoUrl(), new ModelId(name,namespace,version).getPrettyFormat());
 	}
 	

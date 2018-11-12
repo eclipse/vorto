@@ -63,7 +63,7 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "/models")
 @RestController("modelRepositoryController")
-@RequestMapping(value = "/api/v1/{tenant}/models")
+@RequestMapping(value = "/api/v1/models")
 public class ModelController extends AbstractRepositoryController {
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);

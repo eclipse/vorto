@@ -7,7 +7,7 @@ repositoryControllers.controller('GeneratorController', [ '$rootScope', '$scope'
 
     $scope.listGenerators = function() {
     	$scope.isLoading = true;
-        $http.get('./api/v1/' + $rootScope.tenant + '/generators').success(
+        $http.get('./api/v1/generators').success(
             function(data, status, headers, config) {
             	$scope.isLoading = false;
                 $scope.generators = data;
@@ -54,7 +54,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$
 	};
 	
 	$scope.loadConfiguration = function() {
-		$http.get('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key)
+		$http.get('./api/v1/generators/'+$scope.generator.key)
 			.success(function(result) {
 				$scope.generator = result;
 				
@@ -83,7 +83,7 @@ repositoryControllers.controller('GeneratorConfigController', [ '$rootScope', '$
 			}
 			requestParams += concat + key + "=" + $scope.configParams[key];
 		}
-     	window.location.assign('./api/v1/' + $rootScope.tenant + '/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
+     	window.location.assign('./api/v1/generators/'+$scope.generator.key+'/models/'+$scope.model.id.prettyFormat+'/'+requestParams);
  	 	$uibModalInstance.dismiss("cancel");
     };
 

@@ -44,11 +44,12 @@ import io.swagger.annotations.ApiResponses;
  */
 @Api(value = "/search")
 @RestController("modelSearchController")
+@RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
 	
 	@ApiOperation(value = "Finds models by free-text search expressions")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of search result"), @ApiResponse(code = 400, message = "Malformed search expression")})
-	@RequestMapping(value = "/api/v1/{tenant}/search/models", method = RequestMethod.GET)
+	@RequestMapping(value = "/models", method = RequestMethod.GET)
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public List<ModelInfo> searchByExpression(
 			@ApiParam(value = "The owning tenant", required = true) final @PathVariable String tenant,
