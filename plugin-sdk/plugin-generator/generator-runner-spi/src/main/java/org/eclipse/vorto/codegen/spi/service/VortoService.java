@@ -15,6 +15,7 @@
 package org.eclipse.vorto.codegen.spi.service;
 
 import java.io.ByteArrayInputStream;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -77,6 +79,12 @@ public class VortoService {
 	
 	@Autowired
 	private IModelRepository modelRepository;
+	
+	@Value("${server.config.generatorUser:#{null}}") 
+	private String generatorUsername;
+  
+	@Value("${server.config.generatorPassword:#{null}}") 
+	private String generatorPassword;
 	
 	
 	public IGenerationResult generate(String key, String namespace, String name, String version, Map<String, String> parameters, Optional<String> headerAuth) {
@@ -187,17 +195,25 @@ public class VortoService {
 		String serviceUrl = getServiceUrl(generator);
 		LOGGER.info(String.format("Registering Generator[%s] on URL[%s] to [%s/rest/" + TENANT + "/generators/%s]", 
 				generator.getInstance().getServiceKey(), serviceUrl, env.getVortoRepoUrl(), generator.getInstance().getServiceKey()));
-		restTemplate.put(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}", getEntity(serviceUrl),generator.getInstance().getServiceKey());
+			    
+		restTemplate.put(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}", getEntity(serviceUrl,Optional.of(getGeneratorCredentials())),generator.getInstance().getServiceKey());
 	}
 	
-	public void deregister(Generator generator) {
-		LOGGER.info("Deregistering Generator[" + generator.getInstance().getServiceKey() + "]");
-		restTemplate.delete(env.getVortoRepoUrl() + "/rest/" + TENANT + "/generators/{serviceKey}", String.class, generator.getInstance().getServiceKey());
+	private String getGeneratorCredentials() {
+		if (!"".equals(this.generatorUsername) && !"".equals(this.generatorPassword)) {
+			return this.generatorUsername+":"+this.generatorPassword;
+		} else {
+			return null;
+		}
+		
 	}
 	
-	private HttpEntity<String> getEntity(String serviceUrl) {
+	private HttpEntity<String> getEntity(String serviceUrl, Optional<String> basicCredentials) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
+		if (basicCredentials.isPresent()) {
+			headers.add("Authorization", "Basic "+Base64.getEncoder().encodeToString(basicCredentials.get().getBytes()));
+		}
 		return new HttpEntity<String>(serviceUrl, headers);
 	}
 	

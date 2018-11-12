@@ -3,6 +3,9 @@ server:
   port: 8081
   contextPath: /generatorgateway
   serviceUrl: http://localhost:8081/generatorgateway
+  config:
+    generatorUser: generator
+    generatorPassword: 123
 
 vorto:
   serverUrl: http://localhost:8080/infomodelrepository
