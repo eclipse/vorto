@@ -1,4 +1,3 @@
-
 DROP TABLE IF EXISTS `user_roles`;
 CREATE TABLE `user_roles` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -19,5 +18,5 @@ Select * FROM (
 	UNION ALL
 	SELECT 'MODEL_PROMOTER' as role, `user`.id FROM `user`
 	
-    ) as tmp
+    ) as tmp;
 ALTER TABLE `user` DROP COLUMN role;
