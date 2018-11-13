@@ -316,10 +316,9 @@ select {
     padding-right: 45px;
 }
 
-/*
 .table>tbody>tr {
     cursor: pointer;
-} */
+}
 
 .nav>li>a {
     text-decoration: none;

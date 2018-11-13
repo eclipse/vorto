@@ -93,14 +93,14 @@
 								<td ng-show="model.type === 'Mapping'">
 									<i class="fa fa-exchange" aria-hidden="true"></i>
 								</td>
-								<td>{{ model.id.name }}</td>
-								<td>{{ model.id.namespace }}</td>
-								<td>{{ model.id.version }}</td>
-								<td>
+								<td  ng-click="go(model)">{{ model.id.name }}</td>
+								<td  ng-click="go(model)">{{ model.id.namespace }}</td>
+								<td  ng-click="go(model)">{{ model.id.version }}</td>
+								<td  ng-click="go(model)">
 									<span class="state state-{{model.state}}">{{ model.state }}</span>
 								</td>
-								<td>{{ model.creationDate | date:"dd-MM-yyyy" }}</td>
-								<td>{{ model.description | limitTo : 80 }}
+								<td  ng-click="go(model)">{{ model.creationDate | date:"dd-MM-yyyy" }}</td>
+								<td  ng-click="go(model)">{{ model.description | limitTo : 80 }}
 									<span ng-show="model.description.length > 80">[...]</span>
 								</td>
 								<td>
