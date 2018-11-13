@@ -13,5 +13,6 @@
 		<module>generator-api</module>
 		<module>generator-runner-spi</module>
 		<module>generator-templates-java</module>
+		<module>generator-template</module>
 	</modules>
 </project>

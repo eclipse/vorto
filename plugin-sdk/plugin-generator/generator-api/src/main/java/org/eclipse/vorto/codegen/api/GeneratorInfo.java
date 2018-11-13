@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class GeneratorInfo {
@@ -103,6 +104,11 @@ public class GeneratorInfo {
 		return this;
 	}
 	
+	public GeneratorInfo withTextConfiguration(String key, String label, Optional<String> defaultValue) {
+		this.configurationItems.add(new TextConfigurationItem(key, label, defaultValue));
+		return this;
+	}
+	
 	public List<ConfigurationItem> getConfigurationItems() {
 		return this.configurationItems;
 	}
@@ -152,6 +158,21 @@ public class GeneratorInfo {
 
 		public BinaryConfigurationItem(String key, String label) {
 			super(key,label);
+		}
+		
+	}
+	
+	public static class TextConfigurationItem extends ConfigurationItem {
+		
+		private Optional<String> defaultValue;
+		
+		public TextConfigurationItem(String key, String label, Optional<String> defaultValue) {
+			super(key,label);
+			this.defaultValue = defaultValue;
+		}
+		
+		public Optional<String> getDefaultValue() {
+			return defaultValue;
 		}
 		
 	}
