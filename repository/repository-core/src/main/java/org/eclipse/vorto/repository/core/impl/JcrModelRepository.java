@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import javax.jcr.Binary;
 import javax.jcr.Item;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -171,9 +172,13 @@ public class JcrModelRepository implements IModelRepository {
 				ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
 				for (Value referValue : referenceValues) {
 					String nodeUuid = referValue.getString();
+					try {
 					Node referencedNode = session.getNodeByIdentifier(nodeUuid);
 					referenceHelper.addModelReference(
 							ModelIdHelper.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
+					} catch(ItemNotFoundException itemNotFound) {
+						logger.error("Referential Integrity Problem ----->>>>>>> Broken reference of model "+resource.getId(),itemNotFound);
+					}
 				}
 				resource.setReferences(referenceHelper.getReferences());
 			}
