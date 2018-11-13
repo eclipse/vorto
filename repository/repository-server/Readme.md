@@ -10,7 +10,7 @@ Eager to try out the vorto model repository? This section gives a good introduct
 It assumes you already have `docker-compose` installed and created an GitHub OAuth App. If you do not, head over to the [docker installation](https://docs.docker.com/compose/install/) and after to the [GitHub OAuth App section]().
 
 So the first thing you do, is cloning this repository by running: 
-`git clone https://github.com/eclipse/vorto-examples.git vorto`
+`git clone https://github.com/eclipse/vorto.git vorto`
 
 The next step is to replace the GitHub tokens
 ```json
