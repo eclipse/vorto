@@ -226,8 +226,8 @@
 												</div>
 												<dt>Model File:</dt>
 												<dd>
-													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file" class="pull-center">
-														<i class="fa fa-fw fa-download"></i>{{model.fileName}}</a>
+													<a ng-href="./api/v1/models/{{model.id.prettyFormat}}/file?includeDependencies=true" class="pull-center">
+														<i class="fa fa-fw fa-download"></i>ZIP archive</a>
 												</dd>
 												<dt ng-show="hasAuthority('ROLE_ADMIN')">
 													<a href='' ng-click="openUploadAttachmentDialog(model.id.prettyFormat)">Attachments:</a>
