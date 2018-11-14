@@ -4,9 +4,9 @@ Vorto Code Generators convert Information Model into platform-specific source co
 
 The following Code Generators are currently supported:
 
- - [Bosch IoT Suite Generator](../../core-bundles/generators/bosch/Readme.md) (Key: boschiotsuite)
- - [Eclipse Ditto](../../core-bundles/generators/eclipse-ditto/Readme.md) (Key: eclipseditto)
- - [Eclipse Hono](../../core-bundles/generators/eclipse-hono/Readme.md) (Key: eclipsehono)
+ - [Bosch IoT Suite Generator](./generator-boschiotsuite/Readme.md) (Key: soschiotsuite)
+ - [Eclipse Ditto](./generator-eclipseditto/Readme.md) (Key: eclipseditto)
+ - [Eclipse Hono](./generator-eclipsehono/Readme.md) (Key: eclipsehono)
 
 Invoke Generator via Curl:
 
