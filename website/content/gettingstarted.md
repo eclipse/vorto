@@ -131,9 +131,9 @@ Now let's go back to our generated project and update the `src/main/java/device/
 
 ## What's next? 
 
-- **Forward** the device data to [Eclipse Ditto](https://ditto.eclipse.org) in order to update the digital twin representation for the device. 
+- **Forward** the device data to [Eclipse Ditto](http://ditto.eclipse.org) in order to update the digital twin representation for the device. 
 
 	> The JSON data, sent by the device is already compliant to the Eclipse Ditto protocol. Therefore, you can directly modify the thing in Eclipse Ditto by sending the device JSON data via Websockets. Please take a look at the [Eclipse Ditto Sandbox](https://ditto.eclipse.org) for more information. 
 	
-- [Connect an ESP8266 - based device to Eclipse Hono](../tutorials/#connecting-a-esp8266-arduino)
-- [Connect a GrovePi to Eclipse Hono](../tutorials/#connecting-a-grovepi)
+- [Connect an ESP8266 - based device to Eclipse Hono](../tutorials/arduino.md)
+- [Connect a GrovePi to Eclipse Hono](../tutorials/grovepi.md)

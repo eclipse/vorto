@@ -6,7 +6,7 @@ weight: 40
 
 ## Repository API
 
-Search and access Vorto models as well as invoke Vorto Code Generators with the [Repository Java Client](https://github.com/eclipse/vorto/blob/development/client/repository-java-client/Readme.md)
+Search and access Vorto models as well as invoke Vorto Code Generators with the [Repository Java Client](https://github.com/eclipse/vorto/tree/development/repository/repository-java-client/Readme.md)
 
 ## Repository Import API
 
