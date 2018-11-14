@@ -132,7 +132,7 @@ The Web - based Device Dashboard generator creates a Spring Boot Web application
 
 ### Repository Java Client
 
-With the Repository Java Client you can find information models and process its content as well as generate code for various IoT platforms. [Click here for more info](https://github.com/eclipse/vorto/tree/development/server/repo/repository-java-client/Readme.md).
+With the Repository Java Client you can find information models and process its content as well as generate code for various IoT platforms. [Click here for more info](https://github.com/eclipse/vorto/blob/development/repository/repository-java-client/Readme.md).
 
 
 

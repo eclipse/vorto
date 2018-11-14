@@ -16,10 +16,13 @@ addons:
     branches:
       - development
 
-before_install: echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
+before_install: 
+  - echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
 
-install: true
+install: 
+  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls
 script:
+  - remark -f -u validate-links -u lint-no-dead-urls .
   - mvn clean install -f pom.xml
 
 cache:

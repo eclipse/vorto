@@ -110,7 +110,7 @@ An Entity consist of
 
 **Syntax**
 
-Refer to entity in [Datatype DSL Syntax](#data-type-model-dsl-reference).
+Refer to entity in [Datatype DSL Syntax](#datatype-dsl-reference).
 
 **Usage**
 
@@ -296,7 +296,7 @@ An Enum is an enumeration of values of the same type
 
 **Syntax**
 
-Refer to entity in [Datatype DSL Syntax](#data-type-model-dsl-reference).
+Refer to entity in [Datatype DSL Syntax](#datatype-dsl-reference).
 
 **Usage**
 

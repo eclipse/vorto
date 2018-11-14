@@ -113,7 +113,7 @@ The Vorto Mapping Engine supports Eclipse Ditto as the target platform mapping o
 	
 ## 4. Test the integration
 
-We are now ready to send the mapped JSON payload and modify an [Eclipse Ditto](https://ditto.eclipse.org/) managed thing:
+We are now ready to send the mapped JSON payload and modify an [Eclipse Ditto](http://ditto.eclipse.org/) managed thing:
 
 	 curl -X PUT --header 'Content-Type: application/json' --header 'Accept: application/json' -d '{ \ 
 	 			"distance":{ \

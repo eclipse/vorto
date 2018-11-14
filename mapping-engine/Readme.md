@@ -9,7 +9,7 @@ To use the mapping engine a Vorto model is needed.
 The next couple steps will show you on how to create such model.
 If you already have one, you can skip this and move on to [Create a mapping](#Create a mapping)
 
-To create a model head over to the [Vorto repository](https://vorto.eclipse.org)
+To create a model head over to the [Vorto repository](http://vorto.eclipse.org)
 Login using your GitHub account, then you are all set to get going.
 
 First you create a new model by pressing the **Create new model button**

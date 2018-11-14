@@ -171,7 +171,7 @@ and
 
 * [Install pip](https://packaging.python.org/tutorials/installing-packages/#install-pip-setuptools-and-wheel)
 
-* Install Visual C++ Build Tools(http://landinghub.visualstudio.com/visual-cpp-build-tools). This is a pre-requisite for installing netifaces.
+* Install Visual C++ Build Tools(https://visualstudio.microsoft.com/visual-cpp-build-tools/). This is a pre-requisite for installing netifaces.
 
 * Install the required Python modules
 	 
