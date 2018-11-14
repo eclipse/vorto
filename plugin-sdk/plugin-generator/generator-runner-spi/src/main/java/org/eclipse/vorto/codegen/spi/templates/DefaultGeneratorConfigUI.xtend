@@ -18,6 +18,7 @@ import java.util.stream.Collectors
 import org.eclipse.vorto.codegen.api.GeneratorInfo
 import org.eclipse.vorto.codegen.api.GeneratorInfo.BinaryConfigurationItem
 import org.eclipse.vorto.codegen.api.GeneratorInfo.ChoiceConfigurationItem
+import org.eclipse.vorto.codegen.api.GeneratorInfo.TextConfigurationItem
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo
 
 class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
@@ -42,10 +43,14 @@ class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
 						<div class="box-body">
 							«IF item instanceof ChoiceConfigurationItem»
 								«FOR choice : item.choices»
-									<p><input type="radio" ng-model="configParams.«item.key»" value="«choice»">&nbsp;«choice.toFirstUpper»</p>
+									<p><input type="radio" ng-model="configParams.«item.key»" value="«choice.value»">&nbsp;«choice.label»</p>
 								«ENDFOR»
 								«ELSEIF item instanceof BinaryConfigurationItem»
+									<label>«item.label»</label>
 									<input type="checkbox" ng-model="configParams.«item.key»"><i>&nbsp;Include</i>
+								«ELSEIF item instanceof TextConfigurationItem»
+									<label>«item.label»</label>
+									<input type="input" ng-model="configParams.«item.key»" «IF (item as TextConfigurationItem).defaultValue.isPresent»value="«(item as TextConfigurationItem).defaultValue.get»"«ENDIF»>
 							«ENDIF»
 						</div><!-- /.box-body -->
 					</div><!-- /.box -->
