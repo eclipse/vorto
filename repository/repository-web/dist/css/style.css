@@ -28,7 +28,7 @@ ul.nav {
 
 @media (min-width: 1368px) {
 ul.nav {
-    margin-left: 100px;
+    margin-left: 10px;
 }
 }
 
@@ -51,7 +51,7 @@ ul.nav a {
 
 #userWelcome, #userWelcome:FOCUS , #userWelcome:HOVER {
     text-decoration: none;
-    color: #fff;
+    color: #3a5a82;
 }
 
 @media (min-width: 768px) and (max-width: 1168px){
@@ -64,7 +64,7 @@ ul.nav a {
 .navbar-inverse .navbar-brand {
   font-weight: bold; 
   padding-top:10px;
-  color: #fff;
+  color: #3a5a82;
 }
 
 
@@ -99,8 +99,8 @@ ul.nav a {
 }
 
 .navbar-inverse {
-  background-color: #3a5a82;
-  border-color: #3a5a82;
+  background-color: #fff;
+  border-color: #fff;
   height: 65px;
   padding:10px;
 }
@@ -121,7 +121,7 @@ ul.nav a {
 }
 
 .navbar-inverse .navbar-nav>li>a {
-    color: #fff;
+    color: #3a5a82;
 }
 
 .navbar-inverse .navbar-nav>.active>a, .navbar-inverse .navbar-nav>.active>a:focus, .navbar-inverse .navbar-nav>.active>a:hover {
@@ -136,7 +136,7 @@ ul.nav a {
 
 .navbar-inverse .navbar-brand:hover,
 .navbar-inverse .navbar-brand:focus {
-  color: #2E8DE3;
+  color: #3a5a82;
 }
 
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
@@ -145,7 +145,7 @@ ul.nav a {
 }
 
 .navbar-inverse .navbar-brand:hover {
-  color: #fff;
+  color: #3a5a82;
 }
 
 .btn {
@@ -382,13 +382,13 @@ ul.nav {
     font-size: 28px;
     font-weight: bold;
     padding-top: 10px;
-    color: #fff;
+    color: #3a5a82;
 }
 .navbar-inverse .navbar-brand .navbar-brand-suffix {
   font-size: 12px;
   padding-top: 10px;
   font-weight: bold;
-  color: #fff;
+  color: #3a5a82;
   }
 }
 
@@ -451,7 +451,7 @@ ul.nav {
 
 .fileUploadDetails label.warningModel {
     color:#f39c12;
-      font-weight: 600;
+    font-weight: 600;
 }
 
 .placeHolder {
@@ -1421,7 +1421,7 @@ legend.results-border {
 
 footer {
     padding: 12px 10px 25px;
-    background-color: #3a5a82;
+    background-color: #fff;
     background-position: center bottom;
     background-repeat: no-repeat;
     background-size: 100% 15px;
@@ -1429,8 +1429,12 @@ footer {
     color: #fff;
 }
 
+.copyright {
+	color: #3a5a82;
+}
+
 footer ul.quicklinks a {
-    color: #fff;
+    color: #3a5a82;
 }
 
 .state {
@@ -1623,4 +1627,11 @@ input[type=file]::-webkit-file-upload-button {
 .loadingCenter {
 	padding: 180px 0;
 	text-align: center;
+}
+
+.navbar .navbar-nav > li > a,
+.navbar .navbar-nav > li > a:focus {
+  color: #3a5a82;
+  font-size: 15px;
+  font-weight: 400;
 }
