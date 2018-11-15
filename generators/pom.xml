@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.eclipse.vorto</groupId>
-    <artifactId>parent</artifactId>
-    <version>0.10.0-SNAPSHOT</version>
-  </parent>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eclipse.vorto</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.10.0-SNAPSHOT</version>
+	</parent>
 
- 
-  <artifactId>generators</artifactId>
-  
-  <name>Eclipse Vorto Code Generators</name>
 
-  <packaging>pom</packaging>
+	<artifactId>generators</artifactId>
 
-  <modules>
+	<name>Eclipse Vorto Code Generators</name>
+
+	<packaging>pom</packaging>
+
+	<modules>
 		<module>generator-boschiotsuite</module>
 		<module>generator-eclipsehono</module>
 		<module>generator-eclipseditto</module>
 		<module>generator-runner</module>
-  </modules>
-  
-  <build>
+	</modules>
+
+	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -47,6 +49,13 @@
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtext.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.eclipse.platform</groupId>
+							<artifactId>org.eclipse.equinox.common</artifactId>
+							<version>3.10.0</version>
+						</dependency>
+					</dependencies>
 					<executions>
 						<execution>
 							<goals>
