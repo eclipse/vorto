@@ -4,6 +4,13 @@ date: 2018-05-09T10:58:37+08:00
 weight: 50
 ---
 
+## Publications
+
+### "Avoid tight-coupling of devices in IoT solutions"
+
+* Author: [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
+* [Click to read](https://blog.bosch-si.com/developer/avoid-tight-coupling-of-devices-in-iot-solutions/) 
+
 ## Presentations
 
 Here you can find links to arbitrary material covering Eclipse Vorto which has been presented at events, conferences and meet-ups.

@@ -69,8 +69,8 @@ public class CodeGeneratorTemplateGenerator implements IVortoCodeGenerator {
 
 	@Override
 	public GeneratorInfo getInfo() {
-		return GeneratorInfo.basicInfo("Vorto Generator Template",
-				"Generates a Vorto Code Generator template",
+		return GeneratorInfo.basicInfo("Vorto Code Generator Template",
+				"Generates a Vorto Code Generator template to create custom Vorto Code generators",
 				"Vorto Team").withTextConfigurationItem("serviceKey", "Key", Optional.of("MyPlatform")).infra();
 	}
 }
