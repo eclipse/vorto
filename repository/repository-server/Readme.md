@@ -30,7 +30,7 @@ If you are running this setup behind a proxy check the [proxy section] on what t
 To finally run the repository and the generators run `docker-compose up`
 
 As soon everything is running you can reach your repository under `http://localhost:8080/infomodelrepository`.
-To fill the repository with models see the [import section](#Importing).
+To fill the repository with models see the [import section](#importing).
 
 ## Docker
 
@@ -40,7 +40,7 @@ The current milestone images are provided on [dockerhub](https://hub.docker.com/
 ### Configure
 
 This Docker image exposes the port 8080 and expects a bind mount of the docker folder into `/code/config/` to read the configuration.
-The configuration is provided using the `config.json` file, it contains the configuration for the repoisitory, [the generators](../repository-generators/Readme.md) and [the 3rd party generators](https://github.com/eclipse/vorto-examples).
+The configuration is provided using the `config.json` file, it contains the configuration for the repoisitory, [the generators](../../generators/Readme.md) and [the 3rd party generators](https://github.com/eclipse/vorto-examples).
 If the enviroment variable is set to `USE_PROXY=1` then the proxy settings are read. The complete config file is passed to [Spring Boot](https://spring.io/projects/spring-boot) using the `SPRING_APPLICATION_JSON` env var.
 
 ### Build
@@ -60,7 +60,7 @@ Docker does not put those vars in the resulting image so proxt user and proxy pa
 - Fill in the `Authorization callback URL` with `http://localhost:8080/infomodelrepository/github/login`
 Copy the shown `Client ID` and `Client Secret` to your config.json
 
-## Importing <a name="Importing"></a>
+## Importing
 
 To import models into the repository you have to login with an administrator account. After that you can upload and xml under the Import section.
 
@@ -102,7 +102,7 @@ In command prompt, invoke
 	mvn clean install spring-boot:run -Dspring.profiles.active=mysql
   
 
-> Note: Provide mysql username and password in [application-mysql.yml](src/main/resources/application-mysql.yml) against database username and password fields.
+> Note: Provide mysql username and password in your application-mysql.yml against database username and password fields.
 
 Open your browser and open the URL:
 
