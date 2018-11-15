@@ -105,6 +105,10 @@ public class Generator {
 	public String getGenerationInfoUrl() {
 		 return baseUrl+"/info";
 	}
+	
+	public String getInfraGenerationEndpointUrl() {
+		return baseUrl;
+	}
 
 	@Override
 	public String toString() {

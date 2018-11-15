@@ -41,9 +41,11 @@ import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory;
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
@@ -112,6 +114,18 @@ public class VortoService {
 		
 		
 		return generate(generator.getInstance(), model, invocationContext);
+	}
+	
+	public IGenerationResult generate(String key, Map<String, String> parameters, Optional<String> headerAuth) {
+		LOGGER.info(String.format("Generating for Platform [%s]", key));
+		
+		Generator generator = repo.get(key).orElseThrow(GatewayUtils.notFound(String.format("[Generator %s]", key)));
+		InformationModel infomodel = InformationModelFactory.eINSTANCE.createInformationModel();
+		infomodel.setNamespace("com.mycompany");
+		infomodel.setName("Template");
+		infomodel.setVersion("0.0.1");
+		InvocationContext invocationContext = InvocationContext.simpleInvocationContext(parameters);		
+		return generate(generator.getInstance(), infomodel, invocationContext);
 	}
 
 	private IGenerationResult generate(IVortoCodeGenerator generator, InformationModel model, InvocationContext invocationContext) {

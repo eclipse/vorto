@@ -14,8 +14,20 @@
  */
 package org.eclipse.vorto.repository.web.generation;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
@@ -31,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -64,5 +78,38 @@ public class GeneratorController extends AbstractRepositoryController {
 	public boolean deregisterGenerator(@ApiParam(value = "Service key for a specified platform, e.g. lwm2m", required = true) final @PathVariable String serviceKey) {
 		this.generatorService.unregisterGenerator(serviceKey);
 		return true;
+	}
+	
+	@RequestMapping(value = "/{serviceKey}", method = RequestMethod.GET)
+	public void generate(@ApiParam(value = "generator key, e.g. lwm2m", required = true) @PathVariable String serviceKey, 
+							final HttpServletRequest request,
+							final HttpServletResponse response) {
+		Objects.requireNonNull(serviceKey, "generator Key must not be null");
+
+		try {
+			GeneratedOutput generatedOutput = generatorService.generate(URLDecoder.decode(serviceKey, "utf-8"), getRequestParams(request));
+			writeToResponse(response, generatedOutput);
+		} catch (IOException e) {
+			throw new RuntimeException("Error copying file.", e);
+		}
+	}
+	
+	private Map<String, String> getRequestParams(final HttpServletRequest request) {
+		Map<String, String> requestParams = new HashMap<>();
+		request.getParameterMap().entrySet().stream().forEach(x -> {
+			requestParams.put(x.getKey(), x.getValue()[0]);
+		});
+		
+		return requestParams;
+	}
+
+	private void writeToResponse(final HttpServletResponse response, GeneratedOutput generatedOutput)
+			throws IOException {
+		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + generatedOutput.getFileName());
+		response.setContentLengthLong(generatedOutput.getSize());
+		response.setContentType(APPLICATION_OCTET_STREAM);
+
+		IOUtils.copy(new ByteArrayInputStream(generatedOutput.getContent()), response.getOutputStream());
+		response.flushBuffer();
 	}
 }

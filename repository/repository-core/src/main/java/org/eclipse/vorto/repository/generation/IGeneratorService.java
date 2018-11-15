@@ -74,4 +74,13 @@ public interface IGeneratorService {
 	 * @throws GenerationException if something goes wrong during code generation
 	 */
 	GeneratedOutput generate(ModelId modelId, String serviceKey, Map<String, String> requestParams);
+	
+	/**
+	 * Invokes a generator for the given serviceKey
+	 * @param serviceKey
+	 * @param requestParams
+	 * @return actual generated output
+	 * @throws GenerationException if something goes wrong during code generation
+	 */
+	GeneratedOutput generate(String serviceKey, Map<String, String> requestParams);
 }

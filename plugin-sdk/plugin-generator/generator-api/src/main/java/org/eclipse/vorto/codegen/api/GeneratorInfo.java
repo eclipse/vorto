@@ -36,6 +36,7 @@ public class GeneratorInfo {
 	
 	public static final String TAG_DEMO = "demo";
 	public static final String TAG_PROD = "production";
+	public static final String TAG_INFRA = "infra";
 	
 	public static GeneratorInfo basicInfo(String name, String description, String organisation) {
 		GeneratorInfo info = new GeneratorInfo();
@@ -52,6 +53,12 @@ public class GeneratorInfo {
 	
 	public GeneratorInfo tags(String...tags) {
 		this.tags = new HashSet<String>(Arrays.asList(tags));
+		return this;
+	}
+	
+	public GeneratorInfo infra() {
+		this.tags.clear();
+		this.tags.add(TAG_INFRA);
 		return this;
 	}
 

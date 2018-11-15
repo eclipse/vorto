@@ -19,6 +19,7 @@ import org.eclipse.vorto.codegen.ditto.EclipseDittoGenerator;
 import org.eclipse.vorto.codegen.hono.EclipseHonoGenerator;
 import org.eclipse.vorto.codegen.spi.config.AbstractGeneratorConfiguration;
 import org.eclipse.vorto.codegen.spi.model.Generator;
+import org.eclipse.vorto.codegen.template.CodeGeneratorTemplateGenerator;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -29,5 +30,6 @@ public class GeneratorConfiguration extends AbstractGeneratorConfiguration {
 		addGenerator(Generator.create("/generators/bosch.properties", BoschIoTSuiteGenerator.class));
 		addGenerator(Generator.create("/generators/ditto.properties", EclipseDittoGenerator.class));
 		addGenerator(Generator.create("/generators/hono.properties", EclipseHonoGenerator.class));
+		addGenerator(Generator.create("/generators/generator_template.properties", CodeGeneratorTemplateGenerator.class));
 	}
 }

@@ -223,4 +223,26 @@ public class GenerationDelegateProxyService implements IGeneratorService {
 		return result;
 	}
 
+	@Override
+	public GeneratedOutput generate(String serviceKey, Map<String, String> requestParams) {
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+		Generator generatorEntity = getGenerator(serviceKey);
+		if (generatorEntity == null) {
+			throw new GenerationException("Generator with key "+serviceKey+" is not a registered generator");
+		}
+		generatorEntity.increaseInvocationCount();
+		this.registeredGeneratorsRepository.save(generatorEntity);
+		
+		HttpEntity<String> entity = getUserToken().map(token -> {
+			HttpHeaders headers = new HttpHeaders();
+		    headers.add("Authorization", "Bearer " + token);
+		    return new HttpEntity<String>("parameters", headers);
+		}).orElse(null);
+		
+	    ResponseEntity<byte[]> response = restTemplate.exchange(generatorEntity.getInfraGenerationEndpointUrl() + attachRequestParams(requestParams), 
+	    		HttpMethod.GET, entity, byte[].class);
+		
+		return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response), response.getHeaders().getContentLength());
+	}
+
 }

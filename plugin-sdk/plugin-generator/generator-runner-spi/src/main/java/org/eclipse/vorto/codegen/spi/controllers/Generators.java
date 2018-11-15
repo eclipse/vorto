@@ -72,6 +72,11 @@ public class Generators {
 		return responseFromResult(vorto.generate(key, namespace, name, version, GatewayUtils.mapFromRequest(request), getAuthorization(request)));
 	}
 	
+	@RequestMapping(value = "/generators/{key}/generate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<InputStreamResource> generateInfra(final @PathVariable String key, final HttpServletRequest request) {
+		return responseFromResult(vorto.generate(key, GatewayUtils.mapFromRequest(request), getAuthorization(request)));
+	}
+	
 	private Optional<String> getAuthorization(HttpServletRequest request) {
 		return Optional.ofNullable(request.getHeader(AUTHORIZATION));
 	}
