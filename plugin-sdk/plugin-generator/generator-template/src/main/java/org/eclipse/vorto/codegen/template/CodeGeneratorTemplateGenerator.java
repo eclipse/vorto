@@ -31,6 +31,10 @@ import org.eclipse.vorto.codegen.template.runner.GeneratorConfigurationTemplate;
 import org.eclipse.vorto.codegen.template.runner.GeneratorRunnerTemplate;
 import org.eclipse.vorto.codegen.template.runner.LocalPropertiesFileTemplate;
 import org.eclipse.vorto.codegen.template.runner.PomTemplate;
+import org.eclipse.vorto.codegen.template.runner.DockerComposeTemplate;
+import org.eclipse.vorto.codegen.template.runner.DockerfileTemplate;
+import org.eclipse.vorto.codegen.template.runner.DockerRunShTemplate;
+import org.eclipse.vorto.codegen.template.runner.RepositoryConfigTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 public class CodeGeneratorTemplateGenerator implements IVortoCodeGenerator {
@@ -53,6 +57,10 @@ public class CodeGeneratorTemplateGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new GenPropertiesFileTemplate(serviceKey)));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LocalPropertiesFileTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerComposeTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerRunShTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerfileTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new RepositoryConfigTemplate()));
 		
 		// Generates the Vorto Code Generator Plugin Project
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new org.eclipse.vorto.codegen.template.plugin.PomTemplate(serviceKey)));
