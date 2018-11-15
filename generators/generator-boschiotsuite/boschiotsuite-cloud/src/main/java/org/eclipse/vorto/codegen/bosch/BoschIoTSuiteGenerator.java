@@ -16,6 +16,7 @@ package org.eclipse.vorto.codegen.bosch;
 
 import org.eclipse.vorto.codegen.api.GenerationResultZip;
 import org.eclipse.vorto.codegen.api.GeneratorInfo;
+import org.eclipse.vorto.codegen.api.GeneratorInfo.ChoiceItem;
 import org.eclipse.vorto.codegen.api.IGenerationResult;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
@@ -36,21 +37,18 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 		GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
 		String platform = invocationContext.getConfigurationProperties().getOrDefault("language", "");
-		String gateway = invocationContext.getConfigurationProperties().getOrDefault("gateway", "false");
 		if (platform.equalsIgnoreCase("arduino")) {
 			result.append(generateArduino(infomodel, invocationContext, monitor));
 		} else if (platform.equalsIgnoreCase("python")) {
 			result.append(generatePython(infomodel, invocationContext, monitor));
 		} else if (platform.equalsIgnoreCase("java")) {
 			result.append(generateJava(infomodel, invocationContext, monitor));
+		} else if (platform.equalsIgnoreCase("gateway")) {
+			result.append(generateGateway(infomodel, invocationContext, monitor));
 		} else {
 			result.append(generateJava(infomodel, invocationContext, monitor));
 		}
-
-		if (gateway.equalsIgnoreCase("true")) {
-			result.append(generateGateway(infomodel, invocationContext, monitor));
-		}
-
+		
 		return output;
 	}
 
@@ -91,8 +89,8 @@ public class BoschIoTSuiteGenerator implements IVortoCodeGenerator {
 				.basicInfo("Bosch IoT Suite",
 						"Generates device code that either runs on the Bosch IoT Gateway SW or connects directly to the Bosch IoT Hub.",
 						"Eclipse Vorto Team")
-				.production().withChoiceConfigurationItem("language", "Device Platform", "Arduino", "Python", "Java")
-				.withBinaryConfigurationItem("gateway", "Bosch IoT Gateway Software");
+				.production()
+				.withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)","Arduino"), ChoiceItem.of("Python (v2)","Python"), ChoiceItem.of("Java","Java"),ChoiceItem.of("Bosch IoT Gateway Software","gateway"));
 	}
 
 }

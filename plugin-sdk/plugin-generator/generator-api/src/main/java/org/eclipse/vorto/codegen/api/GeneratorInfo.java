@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class GeneratorInfo {
@@ -98,8 +99,13 @@ public class GeneratorInfo {
 		return this;
 	}
 	
-	public GeneratorInfo withChoiceConfigurationItem(String key, String label, String...choices) {
+	public GeneratorInfo withChoiceConfigurationItem(String key, String label, ChoiceItem...choices) {
 		this.configurationItems.add(new ChoiceConfigurationItem(key,label, choices));
+		return this;
+	}
+	
+	public GeneratorInfo withTextConfigurationItem(String key, String label, Optional<String> defaultValue) {
+		this.configurationItems.add(new TextConfigurationItem(key,label, defaultValue));
 		return this;
 	}
 	
@@ -109,6 +115,29 @@ public class GeneratorInfo {
 	
 	public boolean isConfigurable() {
 		return !this.configurationItems.isEmpty();
+	}
+	
+	public static class ChoiceItem {
+		private String label;
+		private String value;
+		
+		private ChoiceItem(String label, String value) {
+			super();
+			this.label = label;
+			this.value = value;
+		}
+		
+		public static ChoiceItem of(String label, String value) {
+			return new ChoiceItem(label,value);
+		}
+
+		public String getLabel() {
+			return label;
+		}
+
+		public String getValue() {
+			return value;
+		}
 	}
 	
 	public abstract static class ConfigurationItem {
@@ -134,16 +163,16 @@ public class GeneratorInfo {
 	
 	public static class ChoiceConfigurationItem extends ConfigurationItem {
 		
-		private Set<String> choices = new HashSet<String>();
+		private Set<ChoiceItem> choices = new HashSet<ChoiceItem>();
 		
 		
-		public ChoiceConfigurationItem(String key, String label, String...choices) {
+		public ChoiceConfigurationItem(String key, String label, ChoiceItem...choices) {
 			super(key,label);
 			this.choices.addAll(Arrays.asList(choices));
 		}
 
 		
-		public Set<String> getChoices() {
+		public Set<ChoiceItem> getChoices() {
 			return choices;
 		}
 	}
@@ -152,7 +181,20 @@ public class GeneratorInfo {
 
 		public BinaryConfigurationItem(String key, String label) {
 			super(key,label);
-		}
+		}	
+	}
+	
+	public static class TextConfigurationItem extends ConfigurationItem {
+
+		private Optional<String> defaultValue;
 		
+		public TextConfigurationItem(String key, String label, Optional<String> defaultValue) {
+			super(key,label);
+			this.defaultValue = defaultValue;
+		}	
+		
+		public Optional<String> getDefaultValue() {
+			return defaultValue;
+		}
 	}
 }

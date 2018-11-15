@@ -21,6 +21,7 @@ import org.eclipse.vorto.codegen.api.IVortoCodeGenProgressMonitor;
 import org.eclipse.vorto.codegen.api.IVortoCodeGenerator;
 import org.eclipse.vorto.codegen.api.InvocationContext;
 import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException;
+import org.eclipse.vorto.codegen.api.GeneratorInfo.ChoiceItem;
 import org.eclipse.vorto.codegen.hono.arduino.ArduinoCodeGenerator;
 import org.eclipse.vorto.codegen.hono.java.EclipseHonoJavaGenerator;
 import org.eclipse.vorto.codegen.hono.python.PythonGenerator;
@@ -81,6 +82,6 @@ public class EclipseHonoGenerator implements IVortoCodeGenerator {
 		return GeneratorInfo.basicInfo("Eclipse Hono",
 				"Generates device code (Arduino, Python, Java) that integrates with Eclipse Hono and Eclipse Ditto.",
 				"Eclipse Vorto Team").production()
-				.withChoiceConfigurationItem("language", "Device Platform", "Arduino","Python","Java");
+				.withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)","Arduino"), ChoiceItem.of("Python (v2)","Python"), ChoiceItem.of("Java","Java"));
 	}
 }

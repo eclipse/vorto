@@ -20,9 +20,10 @@ before_install:
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
 
 install: 
-  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls
+  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
 script:
-  - remark -i .remark_ignore -f -u validate-links -u lint-no-dead-urls .
+  - remark -i .remark_ignore -f -u validate-links .
+  - remark -i .remark_ignore -u lint-no-dead-urls .
   - mvn clean install -f pom.xml
 
 cache:
