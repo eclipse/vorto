@@ -5,7 +5,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - "./repository-web/docker:/code/config"
+      - "./repository-server/docker:/code/config"
     environment:
     - USE_PROXY=0
     networks:
@@ -14,14 +14,14 @@ services:
     depends_on: ["repository"]
     image: eclipsevorto/vorto-generators
     volumes:
-      - "./repository-web/docker:/gen/config"
+      - "./repository-server/docker:/gen/config"
     networks:
       - backend
   example-generators:
     depends_on: ["repository"]
     image: eclipsevorto/vorto-generators-3rd-party
     volumes:
-      - "./repository-web/docker:/gen/config"
+      - "./repository-server/docker:/gen/config"
     networks:
       - backend
 networks:
