@@ -7,10 +7,9 @@ This generator generates source code that sends telemetry data to the [Bosch IoT
 It generates code for the following platforms:
 
 - Arduino for ESP8266
-- Python
+- Python (v2)
 - Java
-
-For devices that need to be connected via the Bosch IoT Gateway Software, this generator generates an OSGi bundle.
+- Bosch IoT Suite Gateway Software (Functional Items)
 
 ## Example Usage
 
@@ -30,6 +29,6 @@ Generate for Java platform:
 
 Generate for Gateway Software Platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?gateway=true
+	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?language=gateway
 
 	
