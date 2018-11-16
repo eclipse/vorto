@@ -35,7 +35,7 @@ class GeneratorMainTemplate implements IFileTemplate<InformationModel> {
 		import org.eclipse.vorto.codegen.api.VortoCodeGeneratorException
 		import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 		
-		class «serviceKey.toFirstUpper»Generator implements IVortoCodeGenerator {
+		class «serviceKey.toLowerCase.toFirstUpper»Generator implements IVortoCodeGenerator {
 		
 			override generate(InformationModel infomodel, InvocationContext context,
 					IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
