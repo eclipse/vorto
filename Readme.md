@@ -11,15 +11,20 @@
 
 The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
 
-# Developer Guide
+# Repository Plugin SDK
 
-## Repository Import API
-
-If you want to manage other existing (standardized) device descriptions with the Vorto Repository, you can extend the Repository by providing a model importer using the [Importer API](repository/repository-importer/Readme.md).
-
-## Device Payload Transformation Engine
-
-Map arbitrary device payload, expressed as JSON or binary, to standardized data, that is described by Vorto Information Models. See [Payload Mapping Documentation](https://www.eclipse.org/vorto/documentation/mappingengine) for more information. 
+<table>
+	<tr>
+		<th>Code Generator Plugin</th>
+		<td>Learn how to write your own generator and deploy and hook it into the Vorto Repository as a (micro) service</td>
+		<td><a href=plugin-sdk/Readme.md">Read more</a></td>
+	</tr>
+	<tr>
+		<th>Importer Plugin</th>
+		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it as a (micro)service into the Vorto Repository.</td>
+		<td><i>Coming soon</i></td>
+	</tr>
+</table>
 
 # Documentation
 
