@@ -209,7 +209,7 @@ public class JcrModelRepository implements IModelRepository {
 
 		return resource;
 	}
-
+	
 	@Override
 	public ModelFileContent getModelContent(ModelId modelId) {
 		try {

@@ -56,6 +56,15 @@ public enum ModelType {
 	    }
 		return false;
 	}
+	
+	public static boolean supports(String filename) {
+		for (ModelType mType : ModelType.values()) {
+	        if (filename.endsWith(mType.getExtension())) {
+	            return true;
+	        }
+	    }
+		return false;
+	}
 
 	public boolean canHandleReference(IModel reference) {
 		if (this == ModelType.InformationModel && reference.getType() == ModelType.Functionblock) {
