@@ -61,7 +61,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 		
 				<dependency>
 					<groupId>com.mycompany</groupId>
-					<artifactId>generator-«context.configurationProperties.getOrDefault("servicekey","myplatform").replaceAll(" ","")»</artifactId>
+					<artifactId>generator-«context.configurationProperties.getOrDefault("servicekey","myplatform").replaceAll(" ","").toLowerCase»</artifactId>
 					<version>${project.version}</version>
 				</dependency>
 		
@@ -116,5 +116,4 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 		</project>
 		'''
 	}
-	
 }

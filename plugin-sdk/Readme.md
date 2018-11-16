@@ -129,9 +129,38 @@ If you used the generator generator, you are in luck, because the generator also
 ```
 cd generator-runner
 nano docker/config.json
-docker-compose up
+docker-compose up --build
 ```
 in the generator-runner folder.
+If you are running behinde a proxy server add a http_proxy argument to your docker-compose.yml like this:
+```yaml
+version: '3'
+services:
+  repository:
+    image: eclipsevorto/vorto-repo
+    ports:
+      - "8080:8080"
+    volumes:
+      - "./docker:/code/config"
+    environment:
+    - USE_PROXY=1
+    networks:
+      - backend
+  generators:
+    depends_on: ["repository"]
+    build:
+      context: .
+      args:
+        JAR_FILE: generator-runner-0.0.1-SNAPSHOT-exec.jar
+        http_proxy: "http://user:password@your.proxy.com:8080"
+    volumes:
+      - "./docker:/gen/config"
+    networks:
+      - backend
+networks:
+  backend:
+    driver: bridge
+```
 
 ### Parameters and Generators
 It's possible to pass custom parameters to a generator upon invocation. 

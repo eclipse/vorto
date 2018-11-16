@@ -40,7 +40,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 			</properties>
 		
 			<modules>
-				<module>generator-generator-«context.configurationProperties.getOrDefault("servicekey","myplatform").replaceAll(" ","").toLowerCase»</module>
+				<module>generator-«context.configurationProperties.getOrDefault("servicekey","myplatform").replaceAll(" ","").toLowerCase»</module>
 				<module>generator-runner</module>
 			</modules>
 			
