@@ -22,30 +22,28 @@ class RepositoryConfigTemplate implements IFileTemplate<InformationModel> {
 	"serverUrl":"http://repository:8080/infomodelrepository"
 },
 "server":{
-	"profiles":"local",
 	"serviceUrl": "http://generators:8081/example-generators",
 	"contextPath": "/example-generators",
 	"port": 8081,
-	"host": "generators"
-}
-},
-"generators-example": {
-"vorto":{
-	"serverUrl":"http://repository:8080/infomodelrepository"
-},
-"server":{
-	"profiles":"local",
-	"serviceUrl": "http://generators-example:8082/example-generators",
-	"contextPath": "/example-generators",
-	"port": 8082,
-	"host": "generators-example"
+	"host": "generators",
+	"config":{
+    "generatorUser": "generator",
+    "generatorPassword": 123
+  }
 }
 },
 "repository": {
 "github_clientid":"your_client_id",
 "github_secret":"your_github_secret",
 "server": {
-  "admin": "your_github_user"
+  "port": 8080,
+  "contextPath": "/infomodelrepository",
+  "admin": "your_github_user",
+  "config":{
+    "authenticatedSearchMode": false,
+    "generatorUser": "generator",
+    "generatorPassword": 123
+  }
 },
 "eidp_clientid": " ",
 "eidp_secret": " ",
@@ -79,7 +77,6 @@ class RepositoryConfigTemplate implements IFileTemplate<InformationModel> {
 }
 }
 }
-
 		'''
 	}
 	

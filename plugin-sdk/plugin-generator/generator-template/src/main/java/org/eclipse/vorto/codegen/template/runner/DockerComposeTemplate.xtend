@@ -30,7 +30,10 @@ class DockerComposeTemplate implements IFileTemplate<InformationModel> {
 		      - backend
 		  generators:
 		    depends_on: ["repository"]
-		    build: .
+		    build:
+			  context: .
+			  args:
+				JAR_FILE: generator-runner-0.0.1-SNAPSHOT-exec.jar
 		    volumes:
 		      - "./docker:/gen/config"
 		    networks:

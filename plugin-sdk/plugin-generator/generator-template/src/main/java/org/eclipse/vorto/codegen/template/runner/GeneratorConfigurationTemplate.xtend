@@ -18,7 +18,7 @@ class GeneratorConfigurationTemplate implements IFileTemplate<InformationModel>{
 		'''
 		package com.mycompany.runner;
 		
-		import com.mycompany.generator.«context.configurationProperties.getOrDefault("servicekey","MyPlatform").replace(" ","").toFirstUpper»Generator;
+		import com.mycompany.plugin.«context.configurationProperties.getOrDefault("servicekey","Myplatform").replace(" ","").toLowerCase.toFirstUpper»Generator;
 		import org.eclipse.vorto.codegen.spi.config.AbstractGeneratorConfiguration;
 		import org.eclipse.vorto.codegen.spi.model.Generator;
 		import org.springframework.stereotype.Component;
@@ -28,7 +28,7 @@ class GeneratorConfigurationTemplate implements IFileTemplate<InformationModel>{
 			
 			@Override
 			protected void doSetup() {
-				addGenerator(Generator.create("/generators/«context.configurationProperties.getOrDefault("servicekey","myplatform").replace(" ","")».properties", «context.configurationProperties.getOrDefault("servicekey","MyPlatform").replace(" ","").toFirstUpper»Generator.class));
+				addGenerator(Generator.create("/generators/«context.configurationProperties.getOrDefault("servicekey","Myplatform").replace(" ","").toLowerCase».properties", «context.configurationProperties.getOrDefault("servicekey","MyPlatform").replace(" ","").toLowerCase.toFirstUpper»Generator.class));
 			}
 		}
 		'''

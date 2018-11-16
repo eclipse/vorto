@@ -27,7 +27,7 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 			<modelVersion>4.0.0</modelVersion>
 			<parent>
 				<groupId>com.mycompany</groupId>
-				<artifactId>generator-parent</artifactId>
+				<artifactId>parent</artifactId>
 				<version>0.0.1-SNAPSHOT</version>
 			</parent>
 		
@@ -39,13 +39,13 @@ class PomTemplate implements IFileTemplate<InformationModel> {
 				<dependency>
 					<groupId>org.eclipse.vorto</groupId>
 					<artifactId>org.eclipse.vorto.core</artifactId>
-					<version>${project.version}</version>
+					<version>${vorto.version}</version>
 				</dependency>
 				
 				<dependency>
 					<groupId>org.eclipse.vorto</groupId>
 					<artifactId>generator-api</artifactId>
-					<version>${project.version}</version>
+					<version>${vorto.version}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.eclipse.xtend</groupId>

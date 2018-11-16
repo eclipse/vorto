@@ -33,7 +33,8 @@ import org.eclipse.vorto.codegen.template.runner.LocalPropertiesFileTemplate;
 import org.eclipse.vorto.codegen.template.runner.PomTemplate;
 import org.eclipse.vorto.codegen.template.runner.DockerComposeTemplate;
 import org.eclipse.vorto.codegen.template.runner.DockerfileTemplate;
-import org.eclipse.vorto.codegen.template.runner.DockerRunShTemplate;
+import org.eclipse.vorto.codegen.template.runner.DockerWaitForItShTemplate;
+import org.eclipse.vorto.codegen.template.runner.DockerRunGeneratorsShTemplate;
 import org.eclipse.vorto.codegen.template.runner.RepositoryConfigTemplate;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
@@ -58,7 +59,8 @@ public class CodeGeneratorTemplateGenerator implements IVortoCodeGenerator {
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new LocalPropertiesFileTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerComposeTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerRunShTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerWaitForItShTemplate()));
+		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerRunGeneratorsShTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new DockerfileTemplate()));
 		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new RepositoryConfigTemplate()));
 		

@@ -44,6 +44,7 @@ class HelloWorldTemplate implements IFileTemplate<InformationModel> {
 				// here goes the generated content
 				return 'Hello '+model.name
 			}
+		}
 		'''
 	}
 	
