@@ -33,6 +33,19 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
             });  
             $scope.$digest();
         };
+        
+        $scope.diagnostics = [];
+        $scope.isRunningDiagnostics = false;
+        
+        $scope.diagnose = function() {            
+            $scope.isRunningDiagnostics = true;
+            $http.get('./rest/' + $rootScope.tenant + '/diagnostics')
+                .then(function(result) {
+                    console.log(JSON.stringify(result));
+                    $scope.isRunningDiagnostics = false;
+                    $scope.diagnostics = result.data;
+                });
+        };
 
     }
 ]);

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -186,7 +187,9 @@ public abstract class AbstractModelParser implements IModelParser {
 		Objects.requireNonNull(fileContent);
 		Objects.requireNonNull(resourceSet);
 		
-		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + fileName));
+		String filename = "file-" + UUID.randomUUID().toString().replace("-", "") + "-" + fileName;
+		
+		Resource resource = resourceSet.createResource(URI.createURI("dummy:/" + filename));
 		if (resource != null) {
 			try {
 				resource.load(new ByteArrayInputStream(fileContent), resourceSet.getLoadOptions());
