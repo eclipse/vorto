@@ -81,20 +81,26 @@ public class Diagnostic {
 		if (getClass() != obj.getClass())
 			return false;
 		Diagnostic other = (Diagnostic) obj;
-		if (diagnosticMessage == null) {
-			if (other.diagnosticMessage != null)
+		
+		return checkStringProperty(diagnosticMessage, other.diagnosticMessage) && 
+			   checkStringProperty(nodeId, other.nodeId) &&
+			   checkModelId(modelId, other.modelId);
+	}
+	
+	private boolean checkStringProperty(String myString, String otherString) {
+		if (myString == null) {
+			if (otherString != null)
 				return false;
-		} else if (!diagnosticMessage.equals(other.diagnosticMessage))
+		} else if (!myString.equals(otherString))
 			return false;
-		if (modelId == null) {
-			if (other.modelId != null)
+		return true;
+	}
+	
+	private boolean checkModelId(ModelId mine, ModelId other) {
+		if (mine == null) {
+			if (other != null)
 				return false;
-		} else if (!modelId.equals(other.modelId))
-			return false;
-		if (nodeId == null) {
-			if (other.nodeId != null)
-				return false;
-		} else if (!nodeId.equals(other.nodeId))
+		} else if (!mine.equals(other))
 			return false;
 		return true;
 	}
