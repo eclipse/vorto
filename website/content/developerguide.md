@@ -4,9 +4,21 @@ date: 2018-05-09T10:58:37+08:00
 weight: 40
 ---
 
-## Repository API
+## Vorto Repository Plugin SDK
 
-Search and access Vorto models as well as invoke Vorto Code Generators with the [Repository Java Client](https://github.com/eclipse/vorto/blob/development/client/repository-java-client/Readme.md)
+<table>
+	<tr>
+		<th>Code Generator Plugin</th>
+		<td>Learn how to write your own generator and deploy and hook it into the Vorto Repository as a (micro) service</td>
+		<td><a href=https://github.com/eclipse/vorto/blob/development/plugin-sdk/Readme.md">Read more</a></td>
+	</tr>
+	<tr>
+		<th>Importer Plugin</th>
+		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it as a (micro)service into the Vorto Repository.</td>
+		<td><i>Coming soon</i></td>
+	</tr>
+</table>
+
 
 ## Repository Import API
 
