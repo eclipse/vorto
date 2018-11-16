@@ -17,7 +17,7 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
 	<tr>
 		<th>Code Generator Plugin</th>
 		<td>Learn how to write your own generator and deploy and hook it into the Vorto Repository as a (micro) service</td>
-		<td><a href=plugin-sdk/Readme.md">Read more</a></td>
+		<td><a href="plugin-sdk/Readme.md">Read more</a></td>
 	</tr>
 	<tr>
 		<th>Importer Plugin</th>
