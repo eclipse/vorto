@@ -41,7 +41,7 @@ import com.google.common.collect.Lists;
 public class RepositoryDiagnostics {
 	
 	@Autowired
-	Collection<NodeDiagnostic> nodeDiagnosticTests = Collections.emptyList();
+	private Collection<NodeDiagnostic> nodeDiagnosticTests = Collections.emptyList();
 	
 	private static Logger logger = Logger.getLogger(RepositoryDiagnostics.class);
 	private static final String FILE_MIXIN = "nt:file";

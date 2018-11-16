@@ -55,11 +55,13 @@ public class ModelValidationDiagnostic implements NodeDiagnostic {
 			Node contentNode = node.getNode("jcr:content");
 			if (contentNode == null) {
 				diagnostics.add(new Diagnostic(ModelIdHelper.fromPath(node.getPath()), "Model node is empty. No <jcr:content>."));
+				return diagnostics;
 			}
 			
 			Property contentProperty = contentNode.getProperty("jcr:data");
 			if (contentProperty == null) {
 				diagnostics.add(new Diagnostic(ModelIdHelper.fromPath(node.getPath()), "Model node has no file. No <jcr:data> property."));
+				return diagnostics;
 			}
 			
 			try {

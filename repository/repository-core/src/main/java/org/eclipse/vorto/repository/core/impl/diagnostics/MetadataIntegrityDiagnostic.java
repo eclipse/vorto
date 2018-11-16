@@ -118,7 +118,7 @@ public class MetadataIntegrityDiagnostic implements NodeDiagnostic {
 			modelId = NodeDiagnosticUtils.getModelId(node.getPath()).orElseThrow(() -> new NodeDiagnosticException("Cannot get modelId of node"));
 			ModelType fileModelType = ModelType.create(node.getName());
 			ModelType nodeModelType = ModelType.valueOf(node.getProperty("vorto:type").getString()); 
-			if (fileModelType != nodeModelType) {
+			if (!fileModelType.equals(nodeModelType)) {
 				String message = new StringBuilder("The model type should be '")
 						.append(fileModelType.name())
 						.append("' but is '")
