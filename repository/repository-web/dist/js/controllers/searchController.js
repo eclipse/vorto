@@ -73,26 +73,29 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
             $scope.filteredModels = $filter('filter')($scope.filteredModels, {author: $rootScope.user });        
         }
         $scope.filteredModels.sort(function(a, b){
-            if((a.type === "InformationModel") && (b.type !== "InformationModel")) return -1;
-            if((a.type !== "InformationModel") && (b.type === "InformationModel")) return 1;
+        	var result = 0;
+        	
+        	if((a.state === "Released") && (b.state !== "Released")) {
+        		result = -1;
+        	} else if((a.state !== "Released") && (b.state === "Released")) {
+        		result =  1;
+        	} else {
+        		result = 0;
+        	}
             
-            if((a.type === "Functionblock") && (b.type !== "Functionblock")) return -1;
-            if((a.type !== "Functionblock") && (b.type === "Functionblock")) return 1;
+            if (result == 0) {
+            	if ((a.type === "InformationModel") && (b.type !== "InformationModel")) return -1;
+            	if ((a.type !== "InformationModel") && (b.type === "InformationModel")) return 1;
+            	if ((a.type === "Functionblock") && (b.type !== "Functionblock")) return -1;
+            	if ((a.type !== "Functionblock") && (b.type === "Functionblock")) return 1;
+            	if ((a.type === "Datatype") && (b.type !== "Datatype")) return -1;
+            	if ((a.type !== "Datatype") && (b.type === "Datatype")) return 1;
+            }         
             
-            if((a.type === "Datatype") && (b.type !== "Datatype")) return -1;
-            if((a.type !== "Datatype") && (b.type === "Datatype")) return 1;
-            
-            if((a.type === "Mapping") && (b.type !== "Mapping")) return -1;
-            if((a.type !== "Mapping") && (b.type === "Mapping")) return 1;
-            
-            if(a.type == b.type) {
-                if(a.creationDate > b.creationDate) return -1;
-                if(a.creationDate < b.creationDate) return 1;
-            }
-            return 0;
+            return result;
         });
     };
-    
+
     $scope.openCreateModelDialog = function(action) {
       var modalInstance = $uibModal.open({
         animation: true,
