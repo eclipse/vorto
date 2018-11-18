@@ -6,7 +6,9 @@ An example of a generator could be generating a piece of device firmware that co
 
 To show you how easy it is to write a generator the getting started section will explain the required steps in detail so you can develop your own generators.
 
-Quick note that the tutorial here only explains how to build a generator with Java. But since the communication between the Vorto Repository and Generators is via REST, you could also use any other programming language. 
+This tutorial will explain how to build a generator with Java. But since the communication between the Vorto Repository and Generators is via REST, you could also use any other programming language.
+ 
+![Vorto Generator Plugin](docs/generator-plugin.png)
 
 
 ## Getting Started
