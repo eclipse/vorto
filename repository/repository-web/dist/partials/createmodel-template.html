@@ -37,7 +37,7 @@
     </div>
     <div class="form-group">
     	<label>Namespace</label>
-        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/(?:^\w+|\w+\.\w+)+$/" required>
+        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" required>
 		<div ng-show="createModelForm.modelNamespace.$error.pattern">Please enter a valid model namespace. Example: com.mycompany</div>
     </div>
     <div class="form-group">
@@ -54,3 +54,4 @@
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>
 </div>
+
