@@ -26,16 +26,15 @@ import javax.jcr.Value;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics.NodeDiagnostic;
-import org.modeshape.jcr.cache.NodeNotFoundException;
+import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
 @Component
 public class ReferenceIntegrityDiagnostic implements NodeDiagnostic {
-
-	private static final String VORTO_REFERENCES = "vorto:references";
-
+ 	private static final String VORTO_REFERENCES = "vorto:references";
+	
 	@Override
 	public Collection<Diagnostic> apply(Node node) {
 		Collection<Diagnostic> diagnostics = Lists.newArrayList();
@@ -58,19 +57,11 @@ public class ReferenceIntegrityDiagnostic implements NodeDiagnostic {
 			PropertyIterator propIter = node.getReferences();
 			while (propIter.hasNext()) {
 				Property prop = propIter.nextProperty();
-				if (prop.getName().equals(VORTO_REFERENCES) && prop.getValues() != null && prop.isMultiple()) {
-					for(Value value : prop.getValues()) {
-						String identifier = "Unknown";
-						try {
-							identifier = value.getString();
-							Node referringNode = node.getSession().getNodeByIdentifier(identifier);
-							referringNode.getPath();
-						} catch (NodeNotFoundException | ItemNotFoundException e) {
-							diagnostics.add(new Diagnostic(modelId, "The model is being referenced by node '" + identifier + "' but that node cannot be found in the repository."));
-						} catch (Exception e) {
-							diagnostics.add(new Diagnostic(modelId, "Exception while trying to access a referencing node. " + NodeDiagnosticUtils.compileErrorMessage(e)));
-						}
-					}
+				try {
+					Node referencedByFileNode = prop.getParent();
+					ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
+				} catch (Exception e) {
+					diagnostics.add(new Diagnostic(modelId, "The model is being referenced by a stale node."));
 				}
 			}
 		} catch (RepositoryException e) {
