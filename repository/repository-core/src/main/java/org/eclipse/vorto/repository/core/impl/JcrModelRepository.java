@@ -189,24 +189,30 @@ public class JcrModelRepository implements IModelRepository {
 				resource.setReferences(referenceHelper.getReferences());
 			}
 		}
-
+		
 		PropertyIterator propIter = node.getReferences();
 		while (propIter.hasNext()) {
 			Property prop = propIter.nextProperty();
-			Node referencedByFileNode = prop.getParent();
-			final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
-			resource.getReferencedBy().add(referencedById);
+			try {
+				Node referencedByFileNode = prop.getParent();
+				final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
+				resource.getReferencedBy().add(referencedById);
 
-			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
-				try {
-					ModelResource emfResource = getEMFResource(referencedById);
-					resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
-				} catch(ValidationException validationEx) {
-					logger.warn("Stored Vorto Model is corrupt: "+referencedById.getPrettyFormat(),validationEx);
+				if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
+					try {
+						ModelResource emfResource = getEMFResource(referencedById);
+						resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
+					} catch(ValidationException validationEx) {
+						logger.warn("Stored Vorto Model is corrupt: "+referencedById.getPrettyFormat(), validationEx);
+					} catch(Exception e) {
+						logger.warn("Error while getting a platform mapping", e);
+					}
 				}
+			} catch (Exception e) {
+				logger.warn("A reference has gone stale. Please remove this reference. : ", e);
 			}
 		}
-
+		
 		return resource;
 	}
 	
