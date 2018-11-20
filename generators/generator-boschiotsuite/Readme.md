@@ -2,7 +2,7 @@
 
 ### Overview
 
-This generator generates source code that sends telemetry data to the [Bosch IoT Hub](https://www.bosch-iot-suite.com/hub/) and [Bosch IoT Things Service](https://www.bosch-iot-suite.com/things/). 
+This generator generates source code that sends Vorto compliant telemetry data in the Eclipse Ditto protocol to the [Bosch IoT Hub](https://www.bosch-iot-suite.com/hub/) and [Bosch IoT Things Service](https://www.bosch-iot-suite.com/things/). 
 
 It generates code for the following platforms:
 
@@ -17,18 +17,18 @@ The following curl commands show, how you can invoke the Bosch IoT Suite Generat
 
 Generate for Arduino platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?language=arduino
+	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects:Location:1.1.0?language=arduino
 
 Generate for Python platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?language=python
+	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects:Location:1.1.0?language=python
 
 Generate for Java platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?language=java
+	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects:Location:1.1.0?language=java
 
 Generate for Gateway Software Platform:
 
-	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects.Load_Control:1.1.0?language=gateway
+	curl -GET http://vorto.eclipse.org/api/v1/generators/boschiotsuite/models/com.ipso.smartobjects:Location:1.1.0?language=gateway
 
 	
