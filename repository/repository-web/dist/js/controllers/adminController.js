@@ -35,15 +35,25 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
         };
         
         $scope.diagnostics = [];
+        $scope.diagnosticsError = "";
         $scope.isRunningDiagnostics = false;
+        $scope.hasDiagnosticsError = false
         
         $scope.diagnose = function() {            
             $scope.isRunningDiagnostics = true;
+            $scope.hasDiagnosticsError = false;
+            $scope.diagnosticsError = "";
             $http.get('./rest/' + $rootScope.tenant + '/diagnostics')
                 .then(function(result) {
                     console.log(JSON.stringify(result));
+                    $scope.hasDiagnosticsError = false;
                     $scope.isRunningDiagnostics = false;
                     $scope.diagnostics = result.data;
+                }, function(error) {
+                    console.log(JSON.stringify(error));
+                    $scope.hasDiagnosticsError = true;
+                    $scope.diagnosticsError = error.data.error + ": " + error.data.message
+                    $scope.isRunningDiagnostics = false;
                 });
         };
 

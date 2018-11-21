@@ -36,6 +36,7 @@
 		<i class="fa fa-fw fa-download"></i>Download Repository Content</a>
 	</br>
 	<hr>
+	<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
 	<h3>Diagnose</h3>
 	<p>Diagnose the entire repository for error.</p>
 	<a ng-click="diagnose()" class="btn btn-primary"><i ng-if="isRunningDiagnostics" class='fa fa-refresh fa-spin'></i>&nbsp;Diagnose</a>
