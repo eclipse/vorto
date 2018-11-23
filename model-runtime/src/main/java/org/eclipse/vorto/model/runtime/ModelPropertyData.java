@@ -42,7 +42,4 @@ public class ModelPropertyData {
 	public String toString() {
 		return "ModelPropertyData [propertyMeta=" + propertyMeta + ", value=" + value + "]";
 	}
-	
-	
-	
 }

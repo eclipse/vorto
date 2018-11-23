@@ -20,6 +20,16 @@ import java.util.List;
 public class ModelProperty extends AbstractProperty {
 	
 	private List<IPropertyAttribute> attributes = new ArrayList<IPropertyAttribute>();
+	
+	public ModelProperty() {}
+	
+	public static ModelProperty createPrimitiveProperty(String name, boolean isMandatory, PrimitiveType type) {
+		ModelProperty property = new ModelProperty();
+		property.setName(name);
+		property.setType(type);
+		property.setMandatory(isMandatory);
+		return property;
+	}
 
 	public List<IPropertyAttribute> getAttributes() {
 		return attributes;

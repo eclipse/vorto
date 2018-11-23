@@ -14,12 +14,13 @@
  */
 package org.eclipse.vorto.model.runtime;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.ModelProperty;
@@ -31,8 +32,8 @@ public class FunctionblockData implements IValidatable {
 	
 	private FunctionblockModel meta;
 	
-	private List<ModelPropertyData> status = new ArrayList<ModelPropertyData>();
-	private List<ModelPropertyData> configuration = new ArrayList<ModelPropertyData>();
+	private Set<ModelPropertyData> status = new HashSet<ModelPropertyData>();
+	private Set<ModelPropertyData> configuration = new HashSet<ModelPropertyData>();
 	
 	public FunctionblockData(String id, FunctionblockModel meta) {
 		this.id = id;
@@ -47,36 +48,53 @@ public class FunctionblockData implements IValidatable {
 		this.id = id;
 	}
 
-	public List<ModelPropertyData> getStatus() {
-		return Collections.unmodifiableList(this.status);
+	public Set<ModelPropertyData> getStatus() {
+		return Collections.unmodifiableSet(this.status);
 	}
 	
 	public Optional<ModelPropertyData> getStatusProperty(String propertyName) {
 		return this.status.stream().filter(p -> p.getPropertyMeta().getName().equals(propertyName)).findAny();
 	}
 
-	public List<ModelPropertyData> getConfiguration() {
-		return Collections.unmodifiableList(this.status);
+	public Set<ModelPropertyData> getConfiguration() {
+		return Collections.unmodifiableSet(this.status);
 	}
 	
 	public Optional<ModelPropertyData> getConfigurationProperty(String propertyName) {
 		return this.configuration.stream().filter(p -> p.getPropertyMeta().getName().equals(propertyName)).findAny();
 	}
 
-    public void withStatusProperty(String name, Object value) {
+    public FunctionblockData withStatusProperty(String name, Object value) {
     	Optional<ModelProperty> mp = meta.getStatusProperty(name);
     	if (!mp.isPresent()) {
     		throw new IllegalArgumentException("Status property with given name is not defined in Function Block");
     	}
-		this.status.add(new ModelPropertyData(mp.get(), value));
+    	if (this.getStatusProperty(name).isPresent()) {
+    		ModelPropertyData data = this.getStatusProperty(name).get();
+    		data.setValue(value);
+    		
+    		
+    	} else {
+    		this.status.add(new ModelPropertyData(mp.get(), value));
+    	}
+		return this;
 	}
 	
-    public void withConfigurationProperty(String name, Object value) {
+    public FunctionblockData withConfigurationProperty(String name, Object value) {
     	Optional<ModelProperty> mp = meta.getConfigurationProperty(name);
     	if (!mp.isPresent()) {
     		throw new IllegalArgumentException("Configuration property with given name is not defined in Function Block");
     	}
-		this.configuration.add(new ModelPropertyData(mp.get(), value));
+    	if (this.getConfigurationProperty(name).isPresent()) {
+    		ModelPropertyData data = this.getConfigurationProperty(name).get();
+    		data.setValue(value);
+    		
+    		
+    	} else {
+    		this.configuration.add(new ModelPropertyData(mp.get(), value));
+    	}
+		
+		return this;
 	}
 
 	@Override
@@ -100,7 +118,7 @@ public class FunctionblockData implements IValidatable {
 		return report;
 	}
 	
-	private void checkProperty(List<ModelPropertyData> properties, ModelProperty property, String path, ValidationReport report) {
+	private void checkProperty(Set<ModelPropertyData> properties, ModelProperty property, String path, ValidationReport report) {
 		Optional<ModelPropertyData> mpd = properties.stream().filter(p -> p.getPropertyMeta().equals(property)).findAny();
 		if (property.isMandatory()
 				&& !mpd.isPresent()) {
@@ -133,6 +151,9 @@ public class FunctionblockData implements IValidatable {
 	}
 
 	private static boolean isInteger(Object value) {
+		if (value instanceof String) {
+			return false;
+		}
 		try {
 			Integer.parseInt(value.toString());
 			return true;
@@ -142,6 +163,10 @@ public class FunctionblockData implements IValidatable {
 	}
 	
 	private static boolean isFloat(Object value) {
+		if (value instanceof String) {
+			return false;
+		}
+		
 		try {
 			Float.parseFloat(value.toString());
 			return true;
@@ -151,6 +176,9 @@ public class FunctionblockData implements IValidatable {
 	}
 
 	private static boolean isLong(Object value) {
+		if (value instanceof String) {
+			return false;
+		}
 		try {
 			Long.parseLong(value.toString());
 			return true;
