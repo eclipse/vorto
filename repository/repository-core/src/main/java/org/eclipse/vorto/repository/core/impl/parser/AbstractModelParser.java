@@ -31,7 +31,13 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
+import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.core.api.model.model.Model;
+import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
+import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
+import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
@@ -54,6 +60,16 @@ import com.google.inject.Injector;
  */
 public abstract class AbstractModelParser implements IModelParser {
 
+	static {
+		FunctionblockPackage.eINSTANCE.eClass();
+		InformationModelPackage.eINSTANCE.eClass();
+		MappingPackage.eINSTANCE.eClass();
+		
+		FunctionblockStandaloneSetup.doSetup();
+		InformationModelStandaloneSetup.doSetup();
+		MappingStandaloneSetup.doSetup();
+	}
+	
 	private String fileName;
 	private IModelRepository repository;
 	private Collection<FileContent> dependencies = Collections.emptyList();

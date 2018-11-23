@@ -37,6 +37,9 @@ public class FunctionblockValue implements IValidatable {
 		this.meta = meta;
 	}
 
+	public FunctionblockModel getMeta() {
+		return this.meta;
+	}
 
 	public List<PropertyValue> getStatus() {
 		return Collections.unmodifiableList(this.status);
@@ -54,24 +57,41 @@ public class FunctionblockValue implements IValidatable {
 		return this.configuration.stream().filter(p -> p.getMeta().getName().equals(propertyName)).findAny();
 	}
 
-    public void withStatusProperty(String name, Object value) {
+    public FunctionblockValue withStatusProperty(String name, Object value) {
     	Optional<ModelProperty> mp = meta.getStatusProperty(name);
     	if (!mp.isPresent()) {
     		throw new IllegalArgumentException("Status property with given name is not defined in Function Block");
     	}
-		this.status.add(new PropertyValue(mp.get(), value));
+    	
+    	Optional<PropertyValue> pv = this.getStatusProperty(name);
+    	if (pv.isPresent()) {
+    		pv.get().setValue(value);
+    	} else {
+    		this.status.add(new PropertyValue(mp.get(), value));
+    	}
+    			
+		return this;
 	}
 	
-    public void withConfigurationProperty(String name, Object value) {
+    public FunctionblockValue withConfigurationProperty(String name, Object value) {
     	Optional<ModelProperty> mp = meta.getConfigurationProperty(name);
     	if (!mp.isPresent()) {
     		throw new IllegalArgumentException("Configuration property with given name is not defined in Function Block");
     	}
-		this.configuration.add(new PropertyValue(mp.get(), value));
+		
+    	Optional<PropertyValue> pv = this.getConfigurationProperty(name);
+    	if (pv.isPresent()) {
+    		pv.get().setValue(value);
+    	} else {
+    		this.configuration.add(new PropertyValue(mp.get(), value));
+    	}
+		
+		return this;
 	}
     
-    public void withEvent(FBEventValue event) {
+    public FunctionblockValue withEvent(FBEventValue event) {
     	this.events.add(event);
+    	return this;
     }
 
 	@Override
@@ -127,30 +147,15 @@ public class FunctionblockValue implements IValidatable {
 	}
 
 	private static boolean isInteger(Object value) {
-		try {
-			Integer.parseInt(value.toString());
-			return true;
-		} catch (NumberFormatException ex) {
-			return false;
-		}
+		return value instanceof Integer;
 	}
 	
 	private static boolean isFloat(Object value) {
-		try {
-			Float.parseFloat(value.toString());
-			return true;
-		} catch (NumberFormatException ex) {
-			return false;
-		}
+		return value instanceof Float || value instanceof Double;
 	}
 
 	private static boolean isLong(Object value) {
-		try {
-			Long.parseLong(value.toString());
-			return true;
-		} catch (NumberFormatException ex) {
-			return false;
-		}
+		return value instanceof Integer || value instanceof Long;
 	}
 
 	
@@ -170,7 +175,7 @@ public class FunctionblockValue implements IValidatable {
 		if (!configuration.isEmpty()) {
 			result.put("configuration", configuration);
 		}
-		
+				
 		return result;
 	}
 }
