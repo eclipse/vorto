@@ -81,6 +81,8 @@ public class JcrModelRepository implements IModelRepository {
 
 	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
+	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
+	
 	@Autowired
 	private Session session;
 
@@ -94,6 +96,12 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Autowired
 	private AttachmentValidator attachmentValidator;
+	
+	@Autowired
+	private ModelParserFactory modelParserFactory;
+
+	@Autowired
+	private RepositoryDiagnostics repoDiagnostics;
 
 	@Override
 	public List<ModelInfo> search(final String expression) {
@@ -168,31 +176,43 @@ public class JcrModelRepository implements IModelRepository {
 				ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
 				for (Value referValue : referenceValues) {
 					String nodeUuid = referValue.getString();
-					Node referencedNode = session.getNodeByIdentifier(nodeUuid);
-					referenceHelper.addModelReference(
-							ModelIdHelper.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
+					try {
+						Node referencedNode = session.getNodeByIdentifier(nodeUuid);
+						referenceHelper.addModelReference(
+								ModelIdHelper.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
+					} catch (ItemNotFoundException itemNotFound) {
+						logger.error("Referential Integrity Problem ----->>>>>>> Broken reference of model "
+								+ resource.getId(), itemNotFound);
+					}
 				}
 				resource.setReferences(referenceHelper.getReferences());
 			}
 		}
-
-		PropertyIterator propIter = node.getReferences();
-		while (propIter.hasNext()) {
-			Property prop = propIter.nextProperty();
-			Node referencedByFileNode = prop.getParent();
-			final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
-			resource.getReferencedBy().add(referencedById);
-
-			if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
+		if (resource.getType() != ModelType.Mapping) { // only add platform mapping info for non-mapping models
+			PropertyIterator propIter = node.getReferences();
+			while (propIter.hasNext()) {
+				Property prop = propIter.nextProperty();
 				try {
-					ModelResource emfResource = getEMFResource(referencedById);
-					resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
-				} catch(ValidationException validationEx) {
-					logger.warn("Stored Vorto Model is corrupt: "+referencedById.getPrettyFormat(),validationEx);
+					Node referencedByFileNode = prop.getParent();
+					final ModelId referencedById = ModelIdHelper.fromPath(referencedByFileNode.getParent().getPath());
+					resource.getReferencedBy().add(referencedById);
+
+					if (referencedByFileNode.getName().endsWith(ModelType.Mapping.getExtension())) {
+						try {
+							ModelResource emfResource = getEMFResource(referencedById);
+							resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
+						} catch (ValidationException validationEx) {
+							logger.warn("Stored Vorto Model is corrupt: " + referencedById.getPrettyFormat(),
+									validationEx);
+						} catch (Exception e) {
+							logger.warn("Error while getting a platform mapping", e);
+						}
+					}
+				} catch (Exception e) {
+					logger.warn("A reference has gone stale. Please remove this reference. : ", e);
 				}
 			}
 		}
-
 		return resource;
 	}
 
@@ -241,6 +261,10 @@ public class JcrModelRepository implements IModelRepository {
 		Objects.requireNonNull(content);
 		Objects.requireNonNull(modelId);
 
+		ModelResource modelInfo = (ModelResource) modelParserFactory
+				.getParser("model" + ModelType.fromFileName(fileName).getExtension())
+				.parse(new ByteArrayInputStream(content));
+
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 
 		try {
@@ -288,7 +312,7 @@ public class JcrModelRepository implements IModelRepository {
 			if (!getAttachmentsByTag(modelId, Attachment.TAG_IMAGE).isEmpty()) {
 				modelResource.setHasImage(true);
 			}
-			
+
 			if (!getAttachmentsByTag(modelId, Attachment.TAG_IMPORTED).isEmpty()) {
 				modelResource.setImported(true);
 			}
@@ -300,7 +324,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		}
 	}
-	
+
 	private ModelInfo getBasicById(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -323,7 +347,7 @@ public class JcrModelRepository implements IModelRepository {
 
 	@Override
 	public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
-		logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "+targetPlatform);
+		logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key " + targetPlatform);
 		List<ModelInfo> mappingResources = new ArrayList<>();
 		ModelInfo modelResource = getById(modelId);
 		if (modelResource != null) {
@@ -500,12 +524,14 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	@Override
-	public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags) throws AttachmentException {
+	public void attachFile(ModelId modelId, FileContent fileContent, IUserContext userContext, Tag... tags)
+			throws AttachmentException {
 
-		if (Arrays.asList(tags).stream().filter(tag -> tag.equals(Attachment.TAG_IMPORTED)).collect(Collectors.toList()).isEmpty()) {
+		if (Arrays.asList(tags).stream().filter(tag -> tag.equals(Attachment.TAG_IMPORTED)).collect(Collectors.toList())
+				.isEmpty()) {
 			attachmentValidator.validateAttachment(fileContent, modelId);
 		}
-		
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -516,10 +542,10 @@ public class JcrModelRepository implements IModelRepository {
 			} else {
 				attachmentFolderNode = modelFolderNode.getNode("attachments");
 			}
-			
+
 			String[] tagIds = Arrays.asList(tags).stream().map(t -> t.getId()).collect(Collectors.toList())
 					.toArray(new String[tags.length]);
-			
+
 			Node contentNode = null;
 			if (attachmentFolderNode.hasNode(fileContent.getFileName())) {
 				Node attachmentNode = (Node) attachmentFolderNode.getNode(fileContent.getFileName());
@@ -532,17 +558,17 @@ public class JcrModelRepository implements IModelRepository {
 				attachmentNode.setProperty("vorto:tags", tagIds, PropertyType.STRING);
 				contentNode = attachmentNode.addNode("jcr:content", "nt:resource");
 			}
-			
+
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
 		} catch (PathNotFoundException e) {
-			throw new ModelNotFoundException("Model with ID "+modelId+" not found");
+			throw new ModelNotFoundException("Model with ID " + modelId + " not found");
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-	
+
 	@Override
 	public List<Attachment> getAttachments(ModelId modelId) {
 		try {
@@ -619,7 +645,9 @@ public class JcrModelRepository implements IModelRepository {
 	}
 
 	public boolean deleteAttachment(ModelId modelId, String fileName) {
-		if(getAttachments(modelId).stream().anyMatch(attachment -> (attachment.getTags().contains(Attachment.TAG_IMPORTED) && attachment.getFilename().equals(fileName)))){
+		if (getAttachments(modelId).stream()
+				.anyMatch(attachment -> (attachment.getTags().contains(Attachment.TAG_IMPORTED)
+						&& attachment.getFilename().equals(fileName)))) {
 			return false;
 		}
 		try {
@@ -643,7 +671,7 @@ public class JcrModelRepository implements IModelRepository {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		}
 	}
-	
+
 	public Session getSession() {
 		return this.session;
 	}
@@ -652,26 +680,47 @@ public class JcrModelRepository implements IModelRepository {
 		ModelInfo existingModel = this.getById(existingId);
 		if (existingModel == null) {
 			throw new ModelNotFoundException("Model could not be found");
-			
+
 		} else if (existingId.getVersion() == newVersion) {
 			throw new ModelAlreadyExistsException();
-		} else {	
+		} else {
 			ModelId newModelId = ModelId.newVersion(existingId, newVersion);
 			if (this.getById(newModelId) != null) {
 				throw new ModelAlreadyExistsException();
-			} 
-			
+			}
+
 			ModelFileContent existingModelContent = this.getModelContent(existingId);
 			Model model = existingModelContent.getModel();
 			model.setVersion(newVersion);
 			ModelResource resource = new ModelResource(model);
 			try {
-				this.save(newModelId, resource.toDSL(), existingId.getName() + existingModel.getType().getExtension(), user);
+				this.save(newModelId, resource.toDSL(), existingId.getName() + existingModel.getType().getExtension(),
+						user);
 			} catch (IOException e) {
 				throw new FatalModelRepositoryException(e.getMessage(), e);
 			}
 			return resource;
 		}
 	}
-	
+
+	public Collection<Diagnostic> diagnose() {
+		return doInRootNode(repoDiagnostics::diagnose);
+	}
+
+	private <Result> Result doInRootNode(Function<Node, Result> fn) {
+		try {
+			Node node = getSession().getRootNode();
+			return fn.apply(node);
+		} catch (RepositoryException e) {
+			throw new FatalModelRepositoryException(e.getMessage(), e);
+		}
+	}
+
+	public void setModelParserFactory(ModelParserFactory modelParserFactory) {
+		this.modelParserFactory = modelParserFactory;
+	}
+
+	public void setRepositoryDiagnostics(RepositoryDiagnostics repoDiagnostics) {
+		this.repoDiagnostics = repoDiagnostics;
+	}
 }

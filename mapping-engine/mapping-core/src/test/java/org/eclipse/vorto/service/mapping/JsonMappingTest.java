@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.vorto.mapping.engine.DataMapperBuilder;
 import org.eclipse.vorto.mapping.engine.IDataMapper;
+import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.service.mapping.spec.SpecWithArrayPayload;
@@ -20,7 +21,7 @@ import com.google.gson.GsonBuilder;
 
 public class JsonMappingTest {
 	
-	private static Gson gson = new GsonBuilder().create();
+	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	@Test
 	public void testMapWithSimpleCondition() throws Exception {
@@ -38,6 +39,10 @@ public class JsonMappingTest {
 		mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 		assertEquals(0.0, mappedOutput.get("button").getStatusProperty("sensor_value").getValue());
 		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2") != null);
+		
+		System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "org.eclipse.vorto", "123")));
+		
+		System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput.get("button"), "button", "org.eclipse.vorto", "123")));
 	}
 
 	

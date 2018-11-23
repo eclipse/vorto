@@ -38,4 +38,15 @@ eidp:
         - profile
     resource:
       userInfoUri: https://accounts.bosch.com/adfs/userinfo
+      logoutRedirectUrl:
       preferTokenInfo: true
+
+mail:
+  smtp:
+    host: localhost
+    port: 25
+    auth: false
+  from: vorto-dev@eclipse.org
+  login:
+    username:
+    password: 

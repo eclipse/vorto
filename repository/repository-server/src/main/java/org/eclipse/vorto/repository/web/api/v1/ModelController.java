@@ -131,6 +131,7 @@ public class ModelController extends AbstractRepositoryController {
 		List<ModelInfo> mappingResource = modelRepository
 				.getMappingModelsForTargetPlatform(modelID, targetplatformKey);
 		if (!mappingResource.isEmpty()) {
+
 			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId());
 			IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
 					.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();

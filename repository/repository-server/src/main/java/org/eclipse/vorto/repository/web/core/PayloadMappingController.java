@@ -65,6 +65,7 @@ import io.swagger.annotations.ApiResponses;
 public class PayloadMappingController extends AbstractRepositoryController {
 	
 	private static Gson gson = new GsonBuilder().create();
+		        
 	
 	@Autowired
 	private ModelController modelController;
