@@ -154,7 +154,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 			}
 			return validationReport;
 		} catch (ValidationException validationException) {
-			return ValidationReport.invalid(null, validationException.getMessage());
+			return ValidationReport.invalid(null, validationException);
 		}
 
 	}

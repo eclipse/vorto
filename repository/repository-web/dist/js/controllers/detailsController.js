@@ -60,6 +60,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						}, 1000);
 					} else {
 						$scope.message = result.message;
+						$scope.validationIssues = result.validationIssues; 
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.isLoading = false;

@@ -34,7 +34,6 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.BulkUploadHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
-import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -80,10 +79,8 @@ public class VortoModelImporter extends AbstractModelImporter {
 			try {
 				final ModelInfo modelInfo = parseDSL(fileUpload.getFileName(),fileUpload.getContent());
 				return Arrays.asList(validationHelper.validate(modelInfo, user));
-			} catch (CouldNotResolveReferenceException ex) {
-				return Arrays.asList(ValidationReport.invalid(null, ex.getMessage(), ex.getMissingReferences()));
 			} catch (ValidationException ex) {
-				return Arrays.asList(ValidationReport.invalid(null, ex.getMessage()));
+				return Arrays.asList(ValidationReport.invalid(null, ex));
 			}
 		}
 	}
