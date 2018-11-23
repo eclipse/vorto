@@ -43,7 +43,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		using «specification.infoModel.id.namespace».«specification.infoModel.id.name»;«specification.infoModel.id.version»
 		«var imports = new HashSet »
 		«FOR fbProperty : specification.infoModel.functionblocks»
-			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping"+"."+fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper+";1.0.0")»
+			«var status = imports.add("using " + specification.infoModel.id.namespace+".mapping.fbs"+"."+fbProperty.name.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper+";1.0.0")»
 		«ENDFOR»
 		«FOR using : imports»
 		«using»

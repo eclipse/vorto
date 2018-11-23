@@ -31,22 +31,24 @@ public class ValidationTest {
 
 	@Test
 	public void testPrimitiveTypeValidationString() {
-		FunctionblockData data = new FunctionblockData("myprop", createModel(PrimitiveType.STRING));
+		FunctionblockValue data = new FunctionblockValue(createModel(PrimitiveType.STRING));
 		assertTrue(data.withStatusProperty("prop", "value").validate().isValid());
 		assertFalse(data.withStatusProperty("prop", 2).validate().isValid());
 	}
 	
 	@Test
 	public void testPrimitiveTypeValidationInteger() {
-		FunctionblockData data = new FunctionblockData("myprop", createModel(PrimitiveType.INT));
+		FunctionblockValue data = new FunctionblockValue(createModel(PrimitiveType.INT));
 		assertTrue(data.withStatusProperty("prop", 2).validate().isValid());
 		assertFalse(data.withStatusProperty("prop", "2").validate().isValid());
 		assertFalse(data.withStatusProperty("prop", 2.2).validate().isValid());
+		
+		assertFalse(data.withStatusProperty("prop", 2.0).validate().isValid());
 	}
 	
 	@Test
 	public void testPrimitiveTypeValidationFloat() {
-		FunctionblockData data = new FunctionblockData("myprop", createModel(PrimitiveType.FLOAT));
+		FunctionblockValue data = new FunctionblockValue(createModel(PrimitiveType.FLOAT));
 		assertTrue(data.withStatusProperty("prop", 2.2).validate().isValid());
 		assertFalse(data.withStatusProperty("prop", "4.2").validate().isValid());
 	}

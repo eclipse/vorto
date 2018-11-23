@@ -40,7 +40,7 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	
 	def override String serialize() {
 		'''
-		namespace «specification.infoModel.id.namespace».mapping
+		namespace «specification.infoModel.id.namespace».mapping.fbs
 		version 1.0.0
 		displayname "«propertyName»PayloadMapping"
 		description "«targetPlatform.toLowerCase.toFirstUpper» Payload Mapping for the «propertyName» property of the «specification.infoModel.displayName»"
@@ -127,6 +127,6 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	}
 	
 	override getModelId() {
-		return new ModelId(propertyName.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping","1.0.0");
+		return new ModelId(propertyName.toFirstUpper+"PayloadMapping"+targetPlatform.toLowerCase.toFirstUpper,specification.infoModel.id.namespace+".mapping.fbs","1.0.0");
 	}
 }

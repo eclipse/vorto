@@ -50,7 +50,3 @@ mail:
   login:
     username:
     password: 
-  
-  
-repo:
-  configFile: vorto-repository-config-h2.json
