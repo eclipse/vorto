@@ -147,27 +147,15 @@ public class FunctionblockValue implements IValidatable {
 	}
 
 	private static boolean isInteger(Object value) {
-		if (value instanceof Integer)  {
-			return true;
-		} else {
-			return false;
-		}
+		return value instanceof Integer;
 	}
 	
 	private static boolean isFloat(Object value) {
-		if (value instanceof Float || value instanceof Double)  {
-			return true;
-		} else {
-			return false;
-		}
+		return value instanceof Float || value instanceof Double;
 	}
 
 	private static boolean isLong(Object value) {
-		if (value instanceof Integer || value instanceof Long)  {
-			return true;
-		} else {
-			return false;
-		}
+		return value instanceof Integer || value instanceof Long;
 	}
 
 	
