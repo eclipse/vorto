@@ -182,7 +182,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                     $scope.loadCustomFunctions();
                     $scope.isLoading = false;
                 }).error(function(data, status, headers, config) {
-                    $scope.errorMessage = "Error loading model from repository!";
+                    $scope.validationError = data;
                     $scope.isLoading = false;
                 });		
     };
@@ -214,7 +214,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
             }   
         }
     };
-
+    
     $scope.save = function() {
         var specification = {"infoModel":$scope.infomodel,"properties":$scope.properties};
         $http.put("./rest/" + $rootScope.tenant + "/mappings/" + $scope.modelId + "/" + $scope.targetPlatform,specification).success(

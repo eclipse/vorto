@@ -43,9 +43,10 @@
     <table ng-if="diagnostics != null && diagnostics.length > 0" class="table table-striped table-sm">
         <thead>
             <tr>
-                <th style="width: 30%" scope="col">Model ID</th>
+                <th style="width: 20%" scope="col">Model ID</th>
                 <th style="width: 20%" scope="col">NodeId</th>
                 <th style="width: 50%" scope="col">Diagnosis</th>
+                <th style="width: 10%" scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -53,6 +54,7 @@
                 <td>{{ diagnostic.modelId.prettyFormat }}</td>
                 <td>{{ diagnostic.nodeId }}</td>
                 <td>{{ diagnostic.diagnosticMessage }}</td>
+                <td><a class="btn btn-sm btn-primary" href="./#/details/{{diagnostic.modelId.prettyFormat}}" role="button">Go to Model</a></td>
             </tr>
         </tbody>
     </table>

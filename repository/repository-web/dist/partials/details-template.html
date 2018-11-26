@@ -1,6 +1,3 @@
-<div ng-if="errorLoading" class="row">
-	<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
-</div>
 <section ng-if="!errorLoading" class="content">
 	<ol class="breadcrumb">
 		<li>
@@ -12,6 +9,15 @@
 		{{model.id.name}}
 		<small>{{model.type}}</small>
 	</h2>
+	<div ng-if="errorLoading" class="row">
+		<div class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{errorLoading}}</div>
+	</div>
+	<div ng-if="diagnostics != null && diagnostics.length > 0" class="row">
+		<div class="alert alert-danger" ng-repeat="diagnostic in diagnostics">
+			<span class="glyphicon glyphicon-remove invalid"></span>
+			<i class="fa fa-fw fa-exclamation-triangle"></i> {{diagnostic.diagnosticMessage}}
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-sm-12">
 			<div ng-repeat="action in workflowActions">

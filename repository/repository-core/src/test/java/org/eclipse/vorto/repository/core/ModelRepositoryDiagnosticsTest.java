@@ -66,7 +66,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 			fail("Failed to load backup file.");
 		}
 		
-		Collection<Diagnostic> diagnostics = modelRepository.diagnose();
+		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
 		assertEquals(0, diagnostics.size());
 	}
 	
@@ -85,7 +85,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 			fail("Failed to load backup file.");
 		}
 		
-		Collection<Diagnostic> diagnostics = modelRepository.diagnose();
+		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
 		diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
 		assertEquals(1, diagnostics.size());
 	}
@@ -142,7 +142,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 			fail("Sequencing interrupted.");
 		}
 		
-		Collection<Diagnostic> diagnostics = modelRepository.diagnose();
+		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
 		diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
 		assertEquals(0, diagnostics.size());
 	}
