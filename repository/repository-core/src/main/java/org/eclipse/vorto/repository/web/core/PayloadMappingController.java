@@ -297,7 +297,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 	}
 
 	@ExceptionHandler(ValidationException.class)
-	public ResponseEntity<Object> CannotLoadSpecification(final ValidationException ex) {
+	public ResponseEntity<Object> cannotLoadSpecification(final ValidationException ex) {
 		Map<String, Object> validationError = new HashMap<String, Object>();
 		validationError.put("message", ex.getMessage());
 		validationError.put("modelId", ex.getModelResource().getId().getPrettyFormat());
