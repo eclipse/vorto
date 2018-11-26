@@ -3,7 +3,7 @@ package org.eclipse.vorto.repository.web.diagnostics;
 import java.util.Collection;
 
 import org.eclipse.vorto.repository.core.Diagnostic;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
+import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class DiagnosticsController {
 
 	@Autowired
-	private JcrModelRepository modelRepo;
+	private IDiagnostics modelDiagnostics;
 	
 	@RequestMapping(method = RequestMethod.GET)
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public Collection<Diagnostic> diagnose() {
-		return modelRepo.diagnose();
+		return modelDiagnostics.diagnoseAllModels();
 	}
 	
 }

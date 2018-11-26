@@ -56,6 +56,7 @@ import org.eclipse.vorto.repository.core.AttachmentException;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
@@ -81,7 +82,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class JcrModelRepository implements IModelRepository {
+public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
@@ -707,8 +708,18 @@ public class JcrModelRepository implements IModelRepository {
 		}
 	}
 
-	public Collection<Diagnostic> diagnose() {
+	public Collection<Diagnostic> diagnoseAllModels() {
 		return doInRootNode(repoDiagnostics::diagnose);
+	}
+	
+	public Collection<Diagnostic> diagnoseModel(ModelId modelId) {
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			return repoDiagnostics.diagnose(folderNode);
+		} catch(RepositoryException ex) {
+			throw new FatalModelRepositoryException("Diagnostics failed", ex);
+		}
 	}
 
 	private <Result> Result doInRootNode(Function<Node, Result> fn) {

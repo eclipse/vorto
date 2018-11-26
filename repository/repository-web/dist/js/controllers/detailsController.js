@@ -12,7 +12,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.isLoadingGenerators = false;
 		$scope.showReferences = false;
 		$scope.showUsages = false;
-		$scope.showMappings = false;
+		$scope.showMappings = true;
 		$scope.modelFileNames = [];
 		$scope.modelEditor = null;
 		$scope.attachments = [];
@@ -769,5 +769,14 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				size: "lg"
 			});
 		};
+		
+		$scope.diagnoseModel = function () {
+			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/diagnostics')
+				.success(function (result) {
+					$scope.diagnostics = result;
+				});
+		};
+		
+		$scope.diagnoseModel();
 	}
 ]);

@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.web.core;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -28,7 +29,9 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
+import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -76,6 +79,9 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	
 	@Autowired
 	private ModelParserFactory modelParserFactory;
+	
+	@Autowired
+	private IDiagnostics diagnosticsService;
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -233,5 +239,12 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		final String fileName = modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID.getVersion() + ".zip";
 
 		sendAsZipFile(response, fileName, mappingResources);
+	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "/{modelId:.+}/diagnostics", method = RequestMethod.GET)
+	public Collection<Diagnostic> runDiagnostics(final @PathVariable String modelId) {
+		Objects.requireNonNull(modelId, "model ID must not be null");
+		return diagnosticsService.diagnoseModel(ModelId.fromPrettyFormat(modelId));
 	}
 }
