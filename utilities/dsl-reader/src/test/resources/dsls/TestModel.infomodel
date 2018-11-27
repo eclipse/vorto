@@ -1,0 +1,17 @@
+namespace iot
+version 0.0.1
+displayname "TestModel"
+description ""
+
+using iot.SomeFb ; 0.0.1
+
+infomodel TestModel {
+
+	functionblocks {
+		someFb as SomeFb extends {
+			status {
+				extension statusProp as string <MIN 0, MAX 100>
+			}
+		}
+	}
+}

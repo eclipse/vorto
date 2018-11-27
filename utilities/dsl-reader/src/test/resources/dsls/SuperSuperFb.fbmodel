@@ -1,0 +1,21 @@
+namespace iot
+version 0.0.1
+displayname "SuperSuperFb"
+description ""
+
+
+functionblock SuperSuperFb {
+	
+	configuration {
+		mandatory superSuperConfigProp as boolean
+	}
+	
+	status {
+		mandatory superSuperStatusProp as boolean
+	}
+	
+	operations {
+		superSuperOp()
+	}
+	
+}

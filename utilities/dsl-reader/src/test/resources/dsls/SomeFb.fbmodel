@@ -1,0 +1,18 @@
+namespace iot
+version 0.0.1
+displayname "SomeFb"
+description ""
+
+using iot.SuperFb;0.0.1
+
+functionblock SomeFb extends SuperFb {
+	
+	configuration {
+		mandatory configProp as string
+	}
+	
+	status {
+		mandatory statusProp as string
+	}
+	
+}

@@ -21,7 +21,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 
+import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
@@ -96,5 +98,41 @@ public class ModelReaderTest {
 				.read();
 		
 		assertEquals(10,workspace.get().size());
+	}
+	
+	@Test
+	public void testFlatInheritanceFB() {
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SomeFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),ModelType.Functionblock)
+				.read();
+
+		FunctionblockModel fbm = ModelConversionUtils.convertToFlatHierarchy((FunctionblockModel)workspace.get().get(0));
+		assertEquals("SomeFb",fbm.getName());
+		assertEquals(3,fbm.getFunctionblock().getStatus().getProperties().size());
+		assertEquals(3,fbm.getFunctionblock().getConfiguration().getProperties().size());
+		assertEquals(2,fbm.getFunctionblock().getOperations().size());
+	}
+	
+	@Test
+	public void testFlatInheritanceIM() {
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/TestModel.infomodel"),ModelType.InformationModel)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SomeFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),ModelType.Functionblock)
+				.read();
+
+		InformationModel infomodel = ModelConversionUtils.convertToFlatHierarchy((InformationModel)workspace.get().get(0));
+		assertEquals("TestModel",infomodel.getName());
+		
+		assertEquals(3,infomodel.getProperties().get(0).getType().getFunctionblock().getStatus().getProperties().size());
+		assertEquals(3,infomodel.getProperties().get(0).getType().getFunctionblock().getConfiguration().getProperties().size());
+		assertEquals(2,infomodel.getProperties().get(0).getType().getFunctionblock().getOperations().size());
+
+		Property statusProperty = infomodel.getProperties().get(0).getType().getFunctionblock().getStatus().getProperties().stream().filter(p -> p.getName().equals("statusProp")).findFirst().get();
+		
+		assertEquals(2,statusProperty.getConstraintRule().getConstraints().size());
 	}
 }
