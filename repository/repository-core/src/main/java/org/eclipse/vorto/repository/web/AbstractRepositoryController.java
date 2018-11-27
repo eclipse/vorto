@@ -57,19 +57,19 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 
 	@ResponseStatus(value=HttpStatus.NOT_FOUND, reason = "Model not found.")  // 404
     @ExceptionHandler(ModelNotFoundException.class)
-    public void NotFound(final ModelNotFoundException ex){
+    public void notFound(final ModelNotFoundException ex){
 		// do logging
     }
 	
 	@ResponseStatus(value=HttpStatus.CONFLICT, reason = "Model already exists.")  // 409
     @ExceptionHandler(ModelAlreadyExistsException.class)
-    public void ModelExists(final ModelAlreadyExistsException ex){
+    public void modelExists(final ModelAlreadyExistsException ex){
 		// do logging
     }
 	
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Wrong Input")  // 405
     @ExceptionHandler(IllegalArgumentException.class)
-    public void WrongInput(final IllegalArgumentException ex){
+    public void wrongInput(final IllegalArgumentException ex){
 		// do logging
     }
 	
@@ -81,7 +81,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 	
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Error during generation.")
     @ExceptionHandler(GenerationException.class)
-    public void GeneratorProblem(final GenerationException ex){
+    public void generatorProblem(final GenerationException ex){
 		// do logging
     }
 	

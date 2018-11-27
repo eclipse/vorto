@@ -37,6 +37,7 @@ import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 import org.eclipse.vorto.codegen.utils.Utils;
+import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.impl.DatatypePackageImpl;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.impl.FunctionblockPackageImpl;
@@ -130,7 +131,7 @@ public class VortoService {
 
 	private IGenerationResult generate(IVortoCodeGenerator generator, InformationModel model, InvocationContext invocationContext) {
 		try {
-			return generator.generate(model, invocationContext, null);
+			return generator.generate(ModelConversionUtils.convertToFlatHierarchy(model), invocationContext, null);
 		} catch(Exception e) {
 			LOGGER.error(String.format("Exception on generating [%s.%s:%s] for key[%s]", 
 					model.getNamespace(), model.getName(), model.getVersion(), generator.getServiceKey()), e);

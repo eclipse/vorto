@@ -1,0 +1,23 @@
+namespace iot
+version 0.0.1
+displayname "SuperSuperFb"
+description ""
+
+using iot.ColorLight;0.0.1
+
+functionblock SuperSuperFb {
+	
+	configuration {
+		mandatory superSuperConfigProp as boolean
+	}
+	
+	status {
+		mandatory superSuperStatusProp as boolean
+		optional light as ColorLight
+	}
+	
+	operations {
+		superSuperOp()
+	}
+	
+}

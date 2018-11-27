@@ -1,0 +1,6 @@
+namespace iot
+version 0.0.1
+
+enum Brightness {
+	HIGH,LOW
+}
