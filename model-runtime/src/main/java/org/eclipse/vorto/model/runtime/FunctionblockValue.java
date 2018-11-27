@@ -67,7 +67,7 @@ public class FunctionblockValue implements IValidatable {
 	}
 
     public FunctionblockValue withStatusProperty(String name, Object value) {
-    	Optional<ModelProperty> mp = meta.getStatusProperty(name);
+    	ModelProperty mp = meta.getStatusProperty(name);
     	if (mp == null) {
     		throw new IllegalArgumentException("Status property with given name is not defined in Function Block");
     	}
@@ -87,7 +87,7 @@ public class FunctionblockValue implements IValidatable {
     		throw new IllegalArgumentException("Configuration property with given name is not defined in Function Block");
     	}
 		
-    	Optional<PropertyValue> pv = this.getConfigurationProperty(name);
+    	PropertyValue pv = this.getConfigurationProperty(name);
     	if (pv != null) {
     		pv.setValue(value);
     	} else {

@@ -23,15 +23,17 @@ import org.eclipse.vorto.mapping.engine.converter.date.DateFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.string.StringFunctionFactory;
 import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
 import org.eclipse.vorto.mapping.engine.model.spec.IMappingSpecification;
+import org.eclipse.vorto.mapping.engine.model.spec.MappingSpecBuilder;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.eclipse.vorto.model.runtime.PropertyValue;
+import org.eclipse.vorto.mapping.engine.DataMapperBuilder;
 
 public final class MappingEngine {
 
 	private IDataMapper mapper;
 	
 	private MappingEngine(IMappingSpecification specification) {
-		DataMapperBuilder builder = IDataMapper.newBuilder()
+		DataMapperBuilder builder = new DataMapperBuilder()
 					.registerScriptEvalProvider(new JavascriptEvalProvider())
 					.registerConverterFunction(BinaryFunctionFactory.createFunctions())
 					.registerConverterFunction(DateFunctionFactory.createFunctions())
@@ -50,7 +52,7 @@ public final class MappingEngine {
 	}
 	
 	public static MappingEngine createFromInputStream(InputStream inputStream) {
-		IMappingSpecification spec = IMappingSpecification.newBuilder().fromInputStream(inputStream).build();
+		IMappingSpecification spec = new MappingSpecBuilder().fromInputStream(inputStream).build();
 		return new MappingEngine(spec);
 	}
 		
@@ -70,7 +72,7 @@ public final class MappingEngine {
 	 * @param infomodelProperty the name of the property defined in the information model
 	 * @return the mapped device specific object
 	 */
-	public Object mapTarget(PropertyValue newValue, Optional<PropertyValue> oldValue, String infomodelProperty) {
+	public Object mapTarget(PropertyValue newValue, PropertyValue oldValue, String infomodelProperty) {
 		return mapper.mapTarget(newValue,oldValue,infomodelProperty);
 	}
 }

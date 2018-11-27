@@ -84,15 +84,15 @@
 	<repositories>
 		<repository>
 			<id>eclipse</id>
-			<url>https://repo.eclipse.org/content/repositories/snapshots/</url>
+			<url>http://repo.eclipse.org/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
 			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
+			<url>http://jitpack.io</url>
 		</repository>
 		<repository>
 			<id>jcenter</id>
-			<url>https://jcenter.bintray.com/</url>
+			<url>http://jcenter.bintray.com/</url>
 		</repository>
 	</repositories>
 

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
+* Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * and Eclipse Distribution License v1.0 which accompany this distribution.
@@ -55,7 +55,7 @@ public class ValidationTest {
 	
 	private FunctionblockModel createModel(PrimitiveType type) {
 		FunctionblockModel fbModel = new FunctionblockModel(ModelId.fromPrettyFormat("default:TestFB:1.0.0"),ModelType.Functionblock);
-		List<ModelProperty> properties = new ArrayList<>();
+		List<ModelProperty> properties = new ArrayList<ModelProperty>();
 		properties.add(ModelProperty.createPrimitiveProperty("prop", true, type));
 		fbModel.setStatusProperties(properties);
 		return fbModel;
