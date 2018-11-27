@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.servlet.http.HttpServletResponse;
@@ -101,10 +100,7 @@ public class ModelController extends AbstractRepositoryController {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
 
-		byte[] modelContent = createZipWithAllDependencies(modelID);
-
-		IModelWorkspace workspace = IModelWorkspace.newReader()
-				.addZip(new ZipInputStream(new ByteArrayInputStream(modelContent))).read();
+		IModelWorkspace workspace = getWorkspaceForModel(modelID);
 
 		ModelContent result = new ModelContent();
 		result.setRoot(modelID);
@@ -130,16 +126,14 @@ public class ModelController extends AbstractRepositoryController {
 				.getMappingModelsForTargetPlatform(modelID, targetplatformKey);
 		if (!mappingResource.isEmpty()) {
 
-			byte[] mappingContentZip = createZipWithAllDependencies(mappingResource.get(0).getId());
-			IModelWorkspace mappingWorkspace = IModelWorkspace.newReader()
-					.addZip(new ZipInputStream(new ByteArrayInputStream(mappingContentZip))).read();
-
+			IModelWorkspace workspace = getWorkspaceForModel(mappingResource.get(0).getId());
+			
 			ModelContent result = new ModelContent();
 			result.setRoot(modelID);
 
-			mappingWorkspace.get().stream().forEach(model -> {
+			workspace.get().stream().forEach(model -> {
 				if (!(model instanceof MappingModel)) {
-					Optional<Model> mappingModel =  mappingWorkspace.get().stream().filter(p -> p instanceof MappingModel).filter(p -> isMappingForModel((MappingModel)p,model))
+					Optional<Model> mappingModel =  workspace.get().stream().filter(p -> p instanceof MappingModel).filter(p -> isMappingForModel((MappingModel)p,model))
 							.findFirst();
 					if (mappingModel.isPresent()) {
 						result.getModels().put(new ModelId(model.getName(), model.getNamespace(), model.getVersion()), ModelDtoFactory.createResource(model,Optional.of((MappingModel)mappingModel.get())));
@@ -172,23 +166,6 @@ public class ModelController extends AbstractRepositoryController {
 		}
 	}
 
-	private byte[] createZipWithAllDependencies(ModelId modelId) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
-
-		try {
-			addModelToZip(zos, modelId);
-
-			zos.close();
-			baos.close();
-
-			return baos.toByteArray();
-
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
-	}
-
 	@ApiOperation(value = "Downloads the model file")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
@@ -218,6 +195,23 @@ public class ModelController extends AbstractRepositoryController {
 			}
 		} else {
 			createSingleModelContent(modelID, response);
+		}
+	}
+	
+	private byte[] createZipWithAllDependencies(ModelId modelId) {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ZipOutputStream zos = new ZipOutputStream(baos);
+
+		try {
+			addModelToZip(zos, modelId);
+
+			zos.close();
+			baos.close();
+
+			return baos.toByteArray();
+
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 	}
 }

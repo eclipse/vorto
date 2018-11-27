@@ -17,6 +17,8 @@ package org.eclipse.vorto.repository.web;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -29,11 +31,13 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
-import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
 import org.eclipse.vorto.repository.generation.GenerationException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
+import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -100,7 +104,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 	}
 
 	protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-		ModelFileContent modelFile = modelRepository.getModelContent(modelId);
+		FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
 		ModelInfo modelResource = modelRepository.getById(modelId);
 
 		try {
@@ -140,6 +144,34 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 		} catch (IOException e) {
 			throw new RuntimeException("Error copying file.", e);
 		}
+	}
+	
+	protected IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
+		List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
+		DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
+		allModels = dm.getSorted();
+		
+		ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
+		for (ModelInfo model : allModels) {
+			FileContent modelContent = this.modelRepository.getFileContent(model.getId(), Optional.of(model.getFileName())).get();
+			workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
+		}
+		
+		return workspaceReader.read();
+	}
+	
+	
+	private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
+		List<ModelInfo> modelInfos = new ArrayList<>();
+		
+		ModelInfo modelResource = modelRepository.getById(modelId);
+		modelInfos.add(modelResource);
+		
+		for (ModelId reference : modelResource.getReferences()) {
+			modelInfos.addAll(getModelWithAllDependencies(reference));
+		}
+		
+		return modelInfos;
 	}
 
 }
