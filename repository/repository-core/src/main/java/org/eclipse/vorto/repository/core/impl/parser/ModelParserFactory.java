@@ -21,6 +21,9 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockPackage;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModelPackage;
 import org.eclipse.vorto.core.api.model.mapping.MappingPackage;
 import org.eclipse.vorto.core.api.model.model.ModelType;
+import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
+import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
+import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,16 +37,30 @@ public class ModelParserFactory {
 	
 	private static ModelParserFactory instance;
 	
+	private boolean isInit = false;
+	
 	@Autowired
 	private IModelRepository repository;
 	
 	@PostConstruct
 	public void init() {
+		if (!isInit) {
+			initDSLPackages();
+		}
+		ModelParserFactory.instance = this;
+	}
+	
+	public void initDSLPackages() {
 		DatatypePackage.eINSTANCE.eClass();
 		FunctionblockPackage.eINSTANCE.eClass();
 		InformationModelPackage.eINSTANCE.eClass();
 		MappingPackage.eINSTANCE.eClass();
-		ModelParserFactory.instance = this;
+				
+		FunctionblockStandaloneSetup.doSetup();
+		InformationModelStandaloneSetup.doSetup();
+		MappingStandaloneSetup.doSetup();
+		
+		this.isInit = true;
 	}
 
 	public IModelParser getParser(String fileName) {

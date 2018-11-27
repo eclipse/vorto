@@ -18,6 +18,7 @@ import org.eclipse.vorto.codegen.spi.service.VortoService;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ public abstract class AbstractGeneratorConfiguration implements ApplicationRunne
 
 	@PostConstruct
 	public void init() {
+		ModelWorkspaceReader.init();
 		ignoreHostnameVerification();
 		ignoreSSLCertificateVerification();
 	}

@@ -28,10 +28,17 @@ import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
+import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class ModelReaderTest {
 
+	@BeforeClass
+	public static void initParser() {
+		ModelWorkspaceReader.init();
+	}
+	
 	@Test
 	public void testReadFromFile() {
 		IModelWorkspace workspace = IModelWorkspace.newReader()
