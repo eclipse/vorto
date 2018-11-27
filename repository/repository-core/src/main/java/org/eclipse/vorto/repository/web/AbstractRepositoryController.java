@@ -61,12 +61,6 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 		// do logging
     }
 	
-	@ResponseStatus(value=HttpStatus.CONFLICT, reason = "Model already exists.")  // 409
-    @ExceptionHandler(ModelAlreadyExistsException.class)
-    public void ModelExists(final ModelAlreadyExistsException ex){
-		// do logging
-    }
-	
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Wrong Input")  // 405
     @ExceptionHandler(IllegalArgumentException.class)
     public void WrongInput(final IllegalArgumentException ex){
