@@ -1,0 +1,4 @@
+{
+	"mismatched input '(\\S+)' expecting 'as'" : "Symbol '%s' is not a valid character for the property name.",
+	"extraneous input '(\\S+)' expecting 'as'" : "Malformed property."	
+}

@@ -57,10 +57,12 @@ public abstract class AbstractModelParser implements IModelParser {
 	private String fileName;
 	private IModelRepository repository;
 	private Collection<FileContent> dependencies = Collections.emptyList();
+	private ErrorMessageProvider errorMessageProvider;
 	
-	public AbstractModelParser(String fileName, IModelRepository repository) {
+	public AbstractModelParser(String fileName, IModelRepository repository, ErrorMessageProvider errorMessageProvider) {
 		this.fileName = fileName;
 		this.repository = Objects.requireNonNull(repository);
+		this.errorMessageProvider = errorMessageProvider;
 	}
 	
 	@Override
@@ -107,7 +109,12 @@ public abstract class AbstractModelParser implements IModelParser {
 	}
 
 	private Set<ValidationIssue> convertIssues(List<Issue> issues) {
-		return issues.stream().map(issue -> new ValidationIssue(issue.getLineNumber(), issue.getMessage())).collect(Collectors.toSet());
+		return issues.stream().map(issue -> {
+				if (errorMessageProvider != null) {
+					return new ValidationIssue(issue.getLineNumber(), errorMessageProvider.convertError(issue.getMessage()));
+				}
+				return new ValidationIssue(issue.getLineNumber(), issue.getMessage());
+			}).collect(Collectors.toSet());
 	}
 
 	private List<ModelId> getMissingReferences(Model model, List<Issue> issues) {
