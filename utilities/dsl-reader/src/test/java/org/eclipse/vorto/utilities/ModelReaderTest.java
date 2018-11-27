@@ -23,6 +23,7 @@ import java.util.zip.ZipInputStream;
 
 import org.eclipse.vorto.core.api.model.ModelConversionUtils;
 import org.eclipse.vorto.core.api.model.datatype.Entity;
+import org.eclipse.vorto.core.api.model.datatype.ObjectPropertyType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
@@ -110,7 +111,7 @@ public class ModelReaderTest {
 
 		FunctionblockModel fbm = ModelConversionUtils.convertToFlatHierarchy((FunctionblockModel)workspace.get().get(0));
 		assertEquals("SomeFb",fbm.getName());
-		assertEquals(3,fbm.getFunctionblock().getStatus().getProperties().size());
+		assertEquals(4,fbm.getFunctionblock().getStatus().getProperties().size());
 		assertEquals(3,fbm.getFunctionblock().getConfiguration().getProperties().size());
 		assertEquals(2,fbm.getFunctionblock().getOperations().size());
 	}
@@ -127,7 +128,7 @@ public class ModelReaderTest {
 		InformationModel infomodel = ModelConversionUtils.convertToFlatHierarchy((InformationModel)workspace.get().get(0));
 		assertEquals("TestModel",infomodel.getName());
 		
-		assertEquals(3,infomodel.getProperties().get(0).getType().getFunctionblock().getStatus().getProperties().size());
+		assertEquals(4,infomodel.getProperties().get(0).getType().getFunctionblock().getStatus().getProperties().size());
 		assertEquals(3,infomodel.getProperties().get(0).getType().getFunctionblock().getConfiguration().getProperties().size());
 		assertEquals(2,infomodel.getProperties().get(0).getType().getFunctionblock().getOperations().size());
 
@@ -135,4 +136,32 @@ public class ModelReaderTest {
 		
 		assertEquals(2,statusProperty.getConstraintRule().getConstraints().size());
 	}
+	
+	@Test
+	public void testFlatInheritanceFBwithDatatypes() {
+		IModelWorkspace workspace = IModelWorkspace.newReader()
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Brightness.type"),ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/Light.type"),ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/ColorLight.type"),ModelType.Datatype)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/TestModel.infomodel"),ModelType.InformationModel)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SomeFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperFb.fbmodel"),ModelType.Functionblock)
+				.addFile(getClass().getClassLoader().getResourceAsStream("dsls/SuperSuperFb.fbmodel"),ModelType.Functionblock)
+				.read();
+
+		InformationModel infomodel = ModelConversionUtils.convertToFlatHierarchy((InformationModel)workspace.get().get(3));
+		assertEquals("TestModel",infomodel.getName());
+		
+		Property colorLightProperty = infomodel.getProperties().get(0).getType().getFunctionblock().getStatus().getProperties().stream().filter(p -> p.getName().equals("light")).findFirst().get();
+		assertNotNull(colorLightProperty);
+		
+		ObjectPropertyType type = (ObjectPropertyType)colorLightProperty.getType();
+		Entity colorLight = (Entity)type.getType();
+		assertEquals(2,colorLight.getProperties().size());
+		assertEquals(1,colorLight.getReferences().size());
+		
+		assertEquals(1,infomodel.getProperties().get(0).getType().getReferences().size());
+		assertEquals("iot.ColorLight",infomodel.getProperties().get(0).getType().getReferences().get(0).getImportedNamespace());
+	}
+	
 }

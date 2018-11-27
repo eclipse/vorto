@@ -3,6 +3,7 @@ version 0.0.1
 displayname "SuperSuperFb"
 description ""
 
+using iot.ColorLight;0.0.1
 
 functionblock SuperSuperFb {
 	
@@ -12,6 +13,7 @@ functionblock SuperSuperFb {
 	
 	status {
 		mandatory superSuperStatusProp as boolean
+		optional light as ColorLight
 	}
 	
 	operations {
