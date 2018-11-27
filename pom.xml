@@ -86,6 +86,18 @@
 			<id>eclipse</id>
 			<url>https://repo.eclipse.org/content/repositories/snapshots/</url>
 		</repository>
+        <repository>
+          <id>oss-sonatype</id>
+          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
 	</repositories>
 
 	<modules>
