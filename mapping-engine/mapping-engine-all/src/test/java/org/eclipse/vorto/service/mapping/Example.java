@@ -1,4 +1,4 @@
-package org.mycompany;
+package org.eclipse.vorto.service.mapping;
 
 import java.io.File;
 import java.util.HashMap;
@@ -13,7 +13,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-public class Main {
+public class Example {
+	
+	private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void main(String[] args) throws Exception {
 		MappingEngine engine = MappingEngine

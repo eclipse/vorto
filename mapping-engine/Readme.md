@@ -2,9 +2,7 @@
 
 The Payload Mapping Engine allows to map arbitrary device data to platform - specific data structure complying to Vorto Information Models.  
 
-Getting Started
-===
-# Create a new Information Model
+# Step 1: Create a new Information Model
 To use the mapping engine a Vorto model is needed.
 The next couple steps will show you on how to create such model.
 If you already have one, you can skip this and move on to [Create a mapping](#Create a mapping)
@@ -32,7 +30,7 @@ distance as Distance
 Once done you are ready to move on to create a mapping.
 
 
-# Create a mapping
+# Step 2: Create a mapping
 A mapping adds platform specific information to an Information Model. Since the representation of data can vary from platform to platform.
 
 To create a mapping go to your newly created model and press the **Create Mapping Spec** Button
@@ -77,7 +75,57 @@ To add a custom function for JavaScript use the web editor. The function will be
 ![custom function](./docs/custom_js_function.png)
 
 
+# Step 3: Download & Execute Mapping Specification
 
+#### 1. Add Maven dependency:
+```
+<dependency>
+	<groupId>org.eclipse.vorto</groupId>
+	<artifactId>mapping-engine-all</artifactId>
+	<version>LATEST</version>
+</dependency>
+```
+
+#### 2. Initialize the mapping engine with the downloaded specification:
+
+```Java
+MappingEngine engine = MappingEngine.createFromInputStream(FileUtils.openInputStream(new File("src/main/resources/mappingspec.json")));
+
+```
+
+#### 3. Pass the arbitrary device payload to the engine to get it converted to Vorto compliant data:
+
+```Java
+Object deviceData = ...;
+InfomodelValue mappedData = engine.map(deviceData);
+
+```
+
+#### 4. Optionally validate the mapped data to check if it complies to the Vorto model:
+
+```Java
+ValidationReport validationReport = mappedData.validate();
+if (!validationReport.isValid()) {
+	// handle invalid data
+}
+
+```
+
+#### 5. Convert mapped data to Digital Twin IoT compliant data
+ 
+Convert the mapped data to IoT Platform data. The mapping engine provides a useful utility in order to create a JSON object complying to the Eclipse Ditto protocol:
+
+```Java
+import com.google.gson.JsonObject;
+import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
+...
+
+final String dittoNamespace = "org.mycompany";
+final String dittoNamespaceSuffix = "123";
+JSONObject dittoPayload = TwinPayloadFactory.toDittoProtocol(mappedData, dittoNamespace, dittoNamespaceSuffix);
+
+sendToDitto(dittoPayload);
+```
 
 
 
