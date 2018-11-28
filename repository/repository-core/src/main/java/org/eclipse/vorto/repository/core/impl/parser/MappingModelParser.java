@@ -24,8 +24,8 @@ import com.google.inject.Injector;
  */
 public class MappingModelParser extends AbstractModelParser {
 
-	public MappingModelParser(String fileName, IModelRepository repository) {
-		super(fileName, repository);
+	public MappingModelParser(String fileName, IModelRepository repository, ErrorMessageProvider errorMessageProvider) {
+		super(fileName, repository, errorMessageProvider);
 	}
 
 	@Override

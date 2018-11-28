@@ -20,6 +20,7 @@ import java.util.Collections;
 
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.parser.ValidationIssue;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 
@@ -33,6 +34,7 @@ public class ValidationReport {
 	private boolean valid = false;
 	private StatusMessage message = null;
 	private Collection<ModelId> unresolvedReferences = new ArrayList<ModelId>();
+	private Collection<ValidationIssue> validationIssues = new ArrayList<ValidationIssue>();
 
 	public ValidationReport(ModelInfo model, boolean valid, StatusMessage message, Collection<ModelId> missingReferences) {
 		super();
@@ -40,6 +42,12 @@ public class ValidationReport {
 		this.valid = valid;
 		this.message = message;
 		this.unresolvedReferences.addAll(missingReferences);
+	}
+	
+	public ValidationReport(ModelInfo model, boolean valid, StatusMessage message,
+			Collection<ModelId> unresolvedReferences, Collection<ValidationIssue> validationIssues) {
+		this(model, valid, message, unresolvedReferences);
+		this.validationIssues = validationIssues;
 	}
 
 	public static ValidationReport invalid(ModelInfo model, String msg) {
@@ -57,9 +65,11 @@ public class ValidationReport {
 	public static ValidationReport invalid(ModelInfo model, ValidationException exception) {
 		if (exception instanceof CouldNotResolveReferenceException) {
 			CouldNotResolveReferenceException ex = (CouldNotResolveReferenceException) exception;
-			return new ValidationReport(model, false, new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), ex.getMissingReferences());
+			return new ValidationReport(model, false, new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), ex.getMissingReferences(),
+					ex.getValidationIssues());
 		} else {
-			return new ValidationReport(model, false,new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), Collections.emptyList());
+			return new ValidationReport(model, false, new StatusMessage(exception.getMessage(), MessageSeverity.ERROR), Collections.emptyList(),
+					exception.getValidationIssues());
 
 		}
 	}
@@ -102,5 +112,9 @@ public class ValidationReport {
 
 	public void setUnresolvedReferences(Collection<ModelId> unresolvedReferences) {
 		this.unresolvedReferences = unresolvedReferences;
+	}
+
+	public Collection<ValidationIssue> getValidationIssues() {
+		return validationIssues;
 	}
 }

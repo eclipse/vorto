@@ -161,14 +161,19 @@
 												</table>
 												</td>
 										</tr>
-										<tr ng-show="!fileImported && report.message.severity === 'ERROR'">
+										<tr ng-if="!fileImported && report.message.severity === 'ERROR'">
 											<td colspan="2">
-												<label class="error">
-													<i class="fa fa-fw fa-close"></i> Error - {{report.message.message}}
-												</label>
+												<div class="alert alert-danger" role="alert">
+													<p class="error" ng-if="report.validationIssues != null && report.validationIssues.length > 0" ng-repeat="issue in report.validationIssues">
+													<i class="fa fa-fw fa-close"></i>Line {{issue.lineNumber}}&nbsp;-&nbsp;{{issue.msg}}
+													</p>
+													<p class="error" ng-if="report.validationIssues == null || report.validationIssues.length <= 0">
+														<i class="fa fa-fw fa-close"></i> Error - {{report.message.message}}
+													</p>
+												</div>
 											</td>
 										</tr>
-										<tr ng-show="!fileImported && report.message.severity === 'WARNING'">
+										<tr ng-if="!fileImported && report.message.severity === 'WARNING'">
 											<td colspan="2">
 												<label class="warningModel">
 													Warning - {{report.message.message}}

@@ -43,7 +43,6 @@ import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelDuplicateIdValidation;
 import org.eclipse.vorto.repository.core.impl.validation.BulkModelReferencesValidation;
-import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
 import org.eclipse.vorto.repository.core.impl.validation.DuplicateModelValidation;
 import org.eclipse.vorto.repository.core.impl.validation.IModelValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
@@ -126,12 +125,9 @@ public class BulkUploadHelper {
 				IModelParser parser = ModelParserFactory.instance().getParser(fileContent.getFileName());
 				parser.setReferences(possibleDependencies);
 				parsingResult.validModels.add(parser.parse(new ByteArrayInputStream(fileContent.getContent())));
-			} catch (CouldNotResolveReferenceException grammarProblem) {
-				parsingResult.invalidModels.add(ValidationReport.invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), 
-						grammarProblem.getMessage(), grammarProblem.getMissingReferences()));
 			} catch (ValidationException grammarProblem) {
 				parsingResult.invalidModels.add(ValidationReport.invalid(trytoCreateModelFromCorruptFile(fileContent.getFileName()), 
-						grammarProblem.getMessage()));
+						grammarProblem));
 			} catch(UnsupportedOperationException fileNotSupportedException) {
 				// Do nothing. Don't process the file
 			}
