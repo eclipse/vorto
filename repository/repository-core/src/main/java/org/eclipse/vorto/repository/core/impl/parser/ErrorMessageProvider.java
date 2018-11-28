@@ -32,7 +32,7 @@ public class ErrorMessageProvider {
 					.map(entry -> { return new AbstractMap.SimpleEntry<Pattern, String>(Pattern.compile(entry.getKey()), entry.getValue()); })
 					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 		} catch (JsonIOException | JsonSyntaxException | IOException e) {
-			throw new RuntimeException("Error loading error translation file", e);
+			throw new ParsingException("Error loading error translation file", e);
 		}
     }
 	
