@@ -12,7 +12,7 @@ public class ErrorMessageProviderTest {
 		ErrorMessageProvider provider = new ErrorMessageProvider();
 		assertEquals("", provider.convertError(""));
 		assertEquals("test", provider.convertError("test"));
-		assertEquals("Symbol '-' is not a valid character for the property name.", provider.convertError("mismatched input '-' expecting 'as'"));
+		assertEquals("Symbol '-' is not a valid character for property name.", provider.convertError("mismatched input '-' expecting 'as'"));
 		assertEquals("Malformed property.", provider.convertError("extraneous input 'has' expecting 'as'"));
 	}
 	
