@@ -158,7 +158,7 @@ public class ModelSearchUtil {
 	 */
 	public String getJCRStatementQuery(String queryExpression) {
 		if (getSearchStrategy(queryExpression) == SearchStrategy.FULL_TEXT) {
-			return queryExpression;
+			return SELECT_QUERY+"[vorto:type] = '"+queryExpression+"' OR CONTAINS([vorto:name],'"+queryExpression+"') or CONTAINS([vorto:description],'"+queryExpression+"')";
 		} else {
 			for (String string : SEARCH_FILTER_TYPE_LIST) {
 				if (queryExpression.contains(string)) {
@@ -289,7 +289,7 @@ public class ModelSearchUtil {
 			QueryManager queryManager = session.getWorkspace().getQueryManager();
 			String jcrStatementQuery = this.getJCRStatementQuery(queryExpression);
 			if (jcrStatementQuery.equals(queryExpression)) {
-				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.FULL_TEXT_SEARCH);
+				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.JCR_SQL2);
 			} else {
 				return queryManager.createQuery(jcrStatementQuery, org.modeshape.jcr.api.query.Query.JCR_SQL2);
 			}
