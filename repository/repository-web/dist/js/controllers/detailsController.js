@@ -53,13 +53,13 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$http.put('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat, newContent)
 				.success(function (result) {
 					$scope.isLoading = false;
+					$scope.message = result.message;
 					if (result.valid) {
 						$scope.success = "Changes saved successfully. Reloading page ...";
 						$timeout(function () {
 							$window.location.reload();
 						}, 1000);
 					} else {
-						$scope.message = result.message;
 						$scope.validationIssues = result.validationIssues; 
 					}
 				}).error(function (data, status, headers, config) {
