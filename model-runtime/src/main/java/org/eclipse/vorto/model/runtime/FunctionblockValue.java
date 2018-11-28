@@ -50,7 +50,7 @@ public class FunctionblockValue implements IValidatable {
 	}
 
 	public List<PropertyValue> getConfiguration() {
-		return Collections.unmodifiableList(this.status);
+		return Collections.unmodifiableList(this.configuration);
 	}
 	
 	public Optional<PropertyValue> getConfigurationProperty(String propertyName) {
