@@ -69,6 +69,10 @@
 			<artifactId>spring-data-commons</artifactId>
 			<version>1.13.13.RELEASE</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>com.google.guava</groupId>
