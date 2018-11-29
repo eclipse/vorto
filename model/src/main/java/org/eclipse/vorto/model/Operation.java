@@ -1,16 +1,12 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
+ * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * Contributors: Bosch Software Innovations GmbH - Please refer to git log
  */
 package org.eclipse.vorto.model;
 
@@ -19,60 +15,60 @@ import java.util.List;
 
 public class Operation extends DefaultMappedElement {
 
-	private String name;
-	private String description;
-	
-	private boolean isBreakable = false;
-	
-	private ReturnType result;
-	
-	private List<Param> params = new ArrayList<>();
+  private String name;
+  private String description;
 
-	public String getName() {
-		return name;
-	}
+  private boolean isBreakable = false;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  private ReturnType result;
 
-	public String getDescription() {
-		return description;
-	}
+  private List<Param> params = new ArrayList<>();
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public boolean isBreakable() {
-		return isBreakable;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setBreakable(boolean isBreakable) {
-		this.isBreakable = isBreakable;
-	}
+  public String getDescription() {
+    return description;
+  }
 
-	public ReturnType getResult() {
-		return result;
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-	public void setResult(ReturnType result) {
-		this.result = result;
-	}
+  public boolean isBreakable() {
+    return isBreakable;
+  }
 
-	public List<Param> getParams() {
-		return params;
-	}
+  public void setBreakable(boolean isBreakable) {
+    this.isBreakable = isBreakable;
+  }
 
-	public void setParams(List<Param> params) {
-		this.params = params;
-	}
+  public ReturnType getResult() {
+    return result;
+  }
 
-	@Override
-	public String toString() {
-		return "OperationDto [name=" + name + ", description=" + description + ", isBreakable=" + isBreakable
-				+ ", result=" + result + ", params=" + params + "]";
-	}
-	
-	
+  public void setResult(ReturnType result) {
+    this.result = result;
+  }
+
+  public List<Param> getParams() {
+    return params;
+  }
+
+  public void setParams(List<Param> params) {
+    this.params = params;
+  }
+
+  @Override
+  public String toString() {
+    return "OperationDto [name=" + name + ", description=" + description + ", isBreakable="
+        + isBreakable + ", result=" + result + ", params=" + params + "]";
+  }
+
+
 }

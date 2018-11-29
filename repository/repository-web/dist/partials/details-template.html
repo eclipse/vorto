@@ -293,8 +293,14 @@
 											</div>
 
 										</div>
+										<br>
 										<div class="row">
-											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</div>
+											<div ng-if="message.severity === 'ERROR'" class="alert alert-danger">
+												<span ng-if="validationIssues == null || validationIssues.length <= 0"><i class="fa fa-fw fa-exclamation-triangle"></i> {{message.message}}</span>
+												<p ng-if="validationIssues != null && validationIssues.length > 0" ng-repeat="issue in validationIssues">
+													<i class="fa fa-fw fa-exclamation-triangle"></i>Line {{ issue.lineNumber }} - {{ issue.msg}}
+												</p>
+											</div>
 											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
 											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
 										</div>
@@ -556,7 +562,7 @@
 			<tfoot>
 				<tr>
 					<td colspan="6" class="text-center">
-						<div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="displayedSearchResult.length"></div>
+						<div st-pagination="" st-template="webjars/repository-web/dist/partials/templates/pagination.custom.html" st-items-by-page="itemsByPage" st-displayed-pages="displayedSearchResult.length"></div>
 					</td>
 				</tr>
 			</tfoot>

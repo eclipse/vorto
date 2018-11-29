@@ -1,42 +1,39 @@
 package org.eclipse.vorto.mapping.engine.converter.date;
 
 import static org.junit.Assert.assertEquals;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.converter.date.DateFunctionFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class DateConvertTest {
 
-	private static Gson gson = new GsonBuilder().create();
-	private static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-	
-	@Test
-	public void testMappingTimestamp() throws Exception {
+  private static Gson gson = new GsonBuilder().create();
+  private static final DateFormat JSON_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
-				.registerConverterFunction(DateFunctionFactory.createFunctions())
-				.build();
+  @Test
+  public void testMappingTimestamp() throws Exception {
 
-		final Date timestamp = new Date();
-		String json = "{\"time\" : " + timestamp.getTime() + "}";
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithTimestamp())
+        .registerConverterFunction(DateFunctionFactory.createFunctions()).build();
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    final Date timestamp = new Date();
+    String json = "{\"time\" : " + timestamp.getTime() + "}";
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		assertEquals(JSON_DATE_FORMAT.format(timestamp), buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
-		System.out.println(mappedOutput);
+    assertEquals(JSON_DATE_FORMAT.format(timestamp),
+        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
-	}
+    System.out.println(mappedOutput);
+
+  }
 }

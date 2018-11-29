@@ -5,5 +5,5 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 
 public interface IWorkflowCondition {
 
-	boolean passesCondition(ModelInfo model, IUserContext user);
+  boolean passesCondition(ModelInfo model, IUserContext user);
 }

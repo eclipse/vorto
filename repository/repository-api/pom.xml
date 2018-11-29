@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>repository-api</artifactId>
 	<packaging>jar</packaging>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
