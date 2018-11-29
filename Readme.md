@@ -45,5 +45,11 @@ When you create a Pull Request, make sure:
 2. All your commits are signed off (git commit -s)
 3. Your commit message contains "Fixes #`<Github issue no>`
 4. Target to merge your fix is development branch
+5. Your code fits the code style guidelines
+
+
+#### Attribution
+The code style guidlines are taken from https://github.com/google/styleguide.
+
 
 
