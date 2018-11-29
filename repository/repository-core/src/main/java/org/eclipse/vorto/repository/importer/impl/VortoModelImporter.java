@@ -66,7 +66,7 @@ public class VortoModelImporter extends AbstractModelImporter {
   protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
     if (fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
       BulkUploadHelper bulkUploadService =
-          new BulkUploadHelper(getModelRepository(), getUploadStorage(), getUserRepository());
+          new BulkUploadHelper(getModelRepository(),getUserRepository());
       return bulkUploadService.uploadMultiple(fileUpload.getContent(), fileUpload.getFileName(),
           user);
     } else {

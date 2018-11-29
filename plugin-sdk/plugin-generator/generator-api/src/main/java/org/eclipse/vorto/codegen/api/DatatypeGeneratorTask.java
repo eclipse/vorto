@@ -35,10 +35,10 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 public class DatatypeGeneratorTask implements ICodeGeneratorTask<InformationModel> {
 
   private IFileTemplate<Entity> entityTemplate;
-  private IFileTemplate<org.eclipse.vorto.core.api.model.datatype.Enum> enumTemplate;
+  private IFileTemplate<Enum> enumTemplate;
 
   public DatatypeGeneratorTask(IFileTemplate<Entity> entityTemplate,
-      IFileTemplate<org.eclipse.vorto.core.api.model.datatype.Enum> enumTemplate) {
+      IFileTemplate<Enum> enumTemplate) {
     this.entityTemplate = entityTemplate;
     this.enumTemplate = enumTemplate;
   }

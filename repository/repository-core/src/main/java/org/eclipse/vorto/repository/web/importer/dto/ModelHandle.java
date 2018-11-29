@@ -21,8 +21,6 @@ public class ModelHandle {
   private String handleId;
   private ModelId id;
 
-  public ModelHandle() {}
-
   public String getHandleId() {
     return handleId;
   }

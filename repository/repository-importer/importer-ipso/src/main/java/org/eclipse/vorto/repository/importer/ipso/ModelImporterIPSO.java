@@ -39,16 +39,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class ModelImporterIPSO extends AbstractModelImporter {
 
-  public ModelImporterIPSO() {
-    super(".xml");
-  }
-
   private static final String NAMESPACE = "com.ipso.smartobjects";
   private static final String VERSION = "1.1.0"; // set globally because object definitions do not
                                                  // contain the version information
 
   private static final FunctionblockTemplate FB_TEMPLATE = new FunctionblockTemplate();
   private static final MappingTemplate MAPPING_TEMPLATE = new MappingTemplate();
+  
+  public ModelImporterIPSO() {
+    super(".xml");
+  }
 
   @Override
   public String getKey() {

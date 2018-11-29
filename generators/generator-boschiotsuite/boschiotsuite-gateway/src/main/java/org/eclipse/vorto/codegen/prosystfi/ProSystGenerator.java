@@ -60,7 +60,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
       FunctionBlock fb = fbp.getType().getFunctionblock();
       for (Entity entity : Utils.getReferencedEntities(fb)) {
         if (!visited.contains(entity)) {
-          generateForEntity(infomodel, ctx, entity, zipOutputter);
+          generateForEntity(ctx, entity, zipOutputter);
           visited.add(entity);
         }
         imports.add(entity.getNamespace());
@@ -68,14 +68,14 @@ public class ProSystGenerator implements IVortoCodeGenerator {
       }
       for (Enum en : Utils.getReferencedEnums(fb)) {
         if (!visited.contains(en)) {
-          generateForEnum(infomodel, ctx, en, zipOutputter);
+          generateForEnum(ctx, en, zipOutputter);
           visited.add(en);
         }
         imports.add(en.getNamespace());
         exports.add(en.getNamespace());
       }
       exports.add(infomodel.getNamespace());
-      generateForFunctionBlock(infomodel, ctx, fbp.getType(), zipOutputter,
+      generateForFunctionBlock(ctx, fbp.getType(), zipOutputter,
           imports.toArray(new String[imports.size()]));
     }
     generateEclipseProject(infomodel, ctx, zipOutputter, exports);
@@ -92,7 +92,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
     generator.generate(infomodel, ctx, outputter);
   }
 
-  private void generateForFunctionBlock(InformationModel infomodel, InvocationContext ctx,
+  private void generateForFunctionBlock(InvocationContext ctx,
       FunctionblockModel fbm, IGeneratedWriter outputter, String[] imports) {
     ChainedCodeGeneratorTask<FunctionblockModel> generator =
         new ChainedCodeGeneratorTask<FunctionblockModel>();
@@ -103,7 +103,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
     generator.generate(fbm, ctx, outputter);
   }
 
-  private void generateForEntity(InformationModel infomodel, InvocationContext ctx, Entity entity,
+  private void generateForEntity(InvocationContext ctx, Entity entity,
       IGeneratedWriter outputter) {
     ChainedCodeGeneratorTask<Entity> generator = new ChainedCodeGeneratorTask<Entity>();
     generator.addTask(new JavaClassGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, entity.getNamespace(),
@@ -111,7 +111,7 @@ public class ProSystGenerator implements IVortoCodeGenerator {
     generator.generate(entity, ctx, outputter);
   }
 
-  private void generateForEnum(InformationModel infomodel, InvocationContext ctx, Enum en,
+  private void generateForEnum(InvocationContext ctx, Enum en,
       IGeneratedWriter outputter) {
     ChainedCodeGeneratorTask<Enum> generator = new ChainedCodeGeneratorTask<Enum>();
     generator.addTask(new JavaEnumGeneratorTask(JAVA_FILE_EXTENSION, SOURCE, en.getNamespace()));

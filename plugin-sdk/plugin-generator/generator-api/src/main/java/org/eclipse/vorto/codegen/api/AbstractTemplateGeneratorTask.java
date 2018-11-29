@@ -13,10 +13,10 @@ package org.eclipse.vorto.codegen.api;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-public abstract class AbstractTemplateGeneratorTask<InformationModelFragment>
-    implements ICodeGeneratorTask<InformationModelFragment> {
+public abstract class AbstractTemplateGeneratorTask<T>
+    implements ICodeGeneratorTask<T> {
 
-  public void generate(final InformationModelFragment fragmentModel,
+  public void generate(final T fragmentModel,
       final InvocationContext context, final IGeneratedWriter writer) {
 
     Generated generated = new Generated(getFileName(fragmentModel), getPath(fragmentModel),
@@ -24,10 +24,10 @@ public abstract class AbstractTemplateGeneratorTask<InformationModelFragment>
     writer.write(generated);
   }
 
-  public abstract String getFileName(final InformationModelFragment fragment);
+  public abstract String getFileName(final T fragment);
 
-  public abstract String getPath(final InformationModelFragment fragment);
+  public abstract String getPath(final T fragment);
 
-  public abstract ITemplate<InformationModelFragment> getTemplate();
+  public abstract ITemplate<T> getTemplate();
 
 }

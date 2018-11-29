@@ -15,27 +15,27 @@ package org.eclipse.vorto.codegen.api;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  *
  */
-public class GeneratorTaskFromFileTemplate<Context> extends AbstractTemplateGeneratorTask<Context>
-    implements ICodeGeneratorTask<Context> {
+public class GeneratorTaskFromFileTemplate<T> extends AbstractTemplateGeneratorTask<T>
+    implements ICodeGeneratorTask<T> {
 
-  private IFileTemplate<Context> fileTemplate;
+  private IFileTemplate<T> fileTemplate;
 
-  public GeneratorTaskFromFileTemplate(IFileTemplate<Context> template) {
+  public GeneratorTaskFromFileTemplate(IFileTemplate<T> template) {
     this.fileTemplate = template;
   }
 
   @Override
-  public String getFileName(Context ctx) {
+  public String getFileName(T ctx) {
     return fileTemplate.getFileName(ctx);
   }
 
   @Override
-  public String getPath(Context ctx) {
+  public String getPath(T ctx) {
     return fileTemplate.getPath(ctx);
   }
 
   @Override
-  public ITemplate<Context> getTemplate() {
+  public ITemplate<T> getTemplate() {
     return fileTemplate;
   }
 }

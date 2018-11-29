@@ -64,8 +64,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
     startRepositoryWithConfiguration(
         new ClassPathResource("vorto-repository.json").getInputStream());
 
-    Mockito.when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
-    Mockito.when(userRepository.findByUsername("admin"))
+    when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
+    when(userRepository.findByUsername("admin"))
         .thenReturn(User.create("admin", Role.ADMIN));
 
     modelRepository = new JcrModelRepository();

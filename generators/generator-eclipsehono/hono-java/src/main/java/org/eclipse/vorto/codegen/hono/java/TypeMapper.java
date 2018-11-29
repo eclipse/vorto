@@ -19,7 +19,7 @@ import org.eclipse.vorto.core.api.model.datatype.PropertyType;
 
 public class TypeMapper {
 
-  static final List<String> keywords =
+  private static final List<String> keywords =
       Arrays.asList("abstract", "assert", "boolean", "break", "byte", "case", "catch", "char",
           "class", "const", "continue", "default", "do", "double", "else", "extends", "false",
           "final", "finally", "float", "for", "goto", "if", "implements", "import", "instanceof",

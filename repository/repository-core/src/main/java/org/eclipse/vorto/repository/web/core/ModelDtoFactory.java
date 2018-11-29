@@ -434,19 +434,13 @@ public class ModelDtoFactory {
   }
 
   private static boolean matchesOperation(Source source, String operationName) {
-    if (source instanceof OperationSource
-        && ((OperationSource) source).getOperation().getName().equals(operationName)) {
-      return true;
-    }
-    return false;
+    return source instanceof OperationSource
+        && ((OperationSource) source).getOperation().getName().equals(operationName);
   }
 
   private static boolean matchesParam(Source source, String paramName) {
-    if (source instanceof OperationSource && ((OperationSource) source).getParam() != null
-        && ((OperationSource) source).getParam().getName().equals(paramName)) {
-      return true;
-    }
-    return false;
+    return source instanceof OperationSource && ((OperationSource) source).getParam() != null
+        && ((OperationSource) source).getParam().getName().equals(paramName);
   }
 
   private static IPropertyAttribute createAttribute(PropertyAttribute attribute) {

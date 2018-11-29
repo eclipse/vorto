@@ -32,7 +32,6 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.ITemporaryStorage;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
@@ -51,7 +50,7 @@ public class BulkUploadHelper {
 
   private IUserRepository userRepository;
 
-  public BulkUploadHelper(IModelRepository modelRepository, ITemporaryStorage storage,
+  public BulkUploadHelper(IModelRepository modelRepository,
       IUserRepository userRepository) {
     this.repositoryService = modelRepository;
     this.userRepository = userRepository;

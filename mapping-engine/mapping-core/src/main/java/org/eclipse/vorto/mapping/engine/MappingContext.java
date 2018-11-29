@@ -16,10 +16,6 @@ package org.eclipse.vorto.mapping.engine;
  */
 public class MappingContext {
 
-
-
-  public MappingContext() {}
-
   /**
    * Empty Mapping Context tries to map all function block properties of the information model
    * 
