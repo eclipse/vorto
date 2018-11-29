@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -31,6 +29,7 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.api.v1.ModelController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
@@ -40,6 +39,7 @@ import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,11 +49,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -258,5 +256,15 @@ public class PayloadMappingController extends AbstractRepositoryController {
     @ExceptionHandler(ModelAlreadyExistsException.class)
     public void modelExists(final ModelAlreadyExistsException ex){
 		// do logging
-    }
+	}
+
+	@ResponseStatus(value = HttpStatus.BAD_GATEWAY)
+	@ExceptionHandler(ValidationException.class)
+	public ResponseEntity<Object> cannotLoadSpecification(final ValidationException ex) {
+		Map<String, Object> validationError = new HashMap<String, Object>();
+		validationError.put("message", ex.getMessage());
+		validationError.put("modelId", ex.getModelResource().getId().getPrettyFormat());
+		return new ResponseEntity<Object>(validationError, HttpStatus.BAD_REQUEST);
+	}
+
 }
