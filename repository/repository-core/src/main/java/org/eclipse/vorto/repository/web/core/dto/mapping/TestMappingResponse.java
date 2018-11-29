@@ -4,26 +4,26 @@ import org.eclipse.vorto.model.runtime.ValidationReport;
 
 public class TestMappingResponse {
 
-	private String mappedOutput;
-	
-	private ValidationReport report;
+  private String mappedOutput;
 
-	public String getMappedOutput() {
-		return mappedOutput;
-	}
+  private ValidationReport report;
 
-	public void setMappedOutput(String mappedOutput) {
-		this.mappedOutput = mappedOutput;
-	}
+  public String getMappedOutput() {
+    return mappedOutput;
+  }
 
-	public ValidationReport getReport() {
-		return report;
-	}
+  public void setMappedOutput(String mappedOutput) {
+    this.mappedOutput = mappedOutput;
+  }
 
-	public void setReport(ValidationReport report) {
-		this.report = report;
-	}
+  public ValidationReport getReport() {
+    return report;
+  }
 
-	
-	
+  public void setReport(ValidationReport report) {
+    this.report = report;
+  }
+
+
+
 }

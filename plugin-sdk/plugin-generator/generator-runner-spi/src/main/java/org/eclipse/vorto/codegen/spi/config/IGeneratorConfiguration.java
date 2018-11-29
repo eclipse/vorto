@@ -2,7 +2,7 @@ package org.eclipse.vorto.codegen.spi.config;
 
 public interface IGeneratorConfiguration {
 
-	String getVortoRepoUrl();
+  String getVortoRepoUrl();
 
-	String getAppServiceUrl();
+  String getAppServiceUrl();
 }

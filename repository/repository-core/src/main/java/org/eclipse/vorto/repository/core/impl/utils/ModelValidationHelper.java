@@ -2,7 +2,6 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -18,30 +17,30 @@ import org.eclipse.vorto.repository.importer.ValidationReport;
 
 public class ModelValidationHelper {
 
-	private List<IModelValidator> validators = new ArrayList<IModelValidator>();
-	
-	public ModelValidationHelper(IModelRepository modelRepository, IUserRepository userRepository) {
-		this.validators.add(new DuplicateModelValidation(modelRepository, userRepository));
-		this.validators.add(new ModelReferencesValidation(modelRepository));
-		this.validators.add(new TypeImportValidation());
-	}
-	
-	public ValidationReport validate(ModelInfo model, IUserContext userContext) {
-		List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
-		for (IModelValidator validator : validators) {
-			try {
-				validator.validate(model, InvocationContext.create(userContext));
-			} catch (ValidationException validationException) {
-				validationExceptions.add(validationException);
-			}
-		}
+  private List<IModelValidator> validators = new ArrayList<IModelValidator>();
 
-		if (validationExceptions.size() <= 0) {
-			return ValidationReport.valid(model);
-		} else {
-			return ValidationReportFactory
-					.create(validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
-		}
-	}
-	
+  public ModelValidationHelper(IModelRepository modelRepository, IUserRepository userRepository) {
+    this.validators.add(new DuplicateModelValidation(modelRepository, userRepository));
+    this.validators.add(new ModelReferencesValidation(modelRepository));
+    this.validators.add(new TypeImportValidation());
+  }
+
+  public ValidationReport validate(ModelInfo model, IUserContext userContext) {
+    List<ValidationException> validationExceptions = new ArrayList<ValidationException>();
+    for (IModelValidator validator : validators) {
+      try {
+        validator.validate(model, InvocationContext.create(userContext));
+      } catch (ValidationException validationException) {
+        validationExceptions.add(validationException);
+      }
+    }
+
+    if (validationExceptions.size() <= 0) {
+      return ValidationReport.valid(model);
+    } else {
+      return ValidationReportFactory.create(
+          validationExceptions.toArray(new ValidationException[validationExceptions.size()]));
+    }
+  }
+
 }

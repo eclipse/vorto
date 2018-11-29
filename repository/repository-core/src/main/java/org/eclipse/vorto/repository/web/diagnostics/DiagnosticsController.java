@@ -1,7 +1,6 @@
 package org.eclipse.vorto.repository.web.diagnostics;
 
 import java.util.Collection;
-
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest/{tenant}/diagnostics")
 public class DiagnosticsController {
 
-	@Autowired
-	private IDiagnostics modelDiagnostics;
-	
-	@RequestMapping(method = RequestMethod.GET)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	public Collection<Diagnostic> diagnose() {
-		return modelDiagnostics.diagnoseAllModels();
-	}
-	
+  @Autowired
+  private IDiagnostics modelDiagnostics;
+
+  @RequestMapping(method = RequestMethod.GET)
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  public Collection<Diagnostic> diagnose() {
+    return modelDiagnostics.diagnoseAllModels();
+  }
+
 }

@@ -24,12 +24,12 @@ public class ConfigurationMappingTest {
         .registerConverterFunction(new ClassFunction("button", ConfigurationMappingTest.class))
         .build();
 
-    Map<String,Object> source = new HashMap<String, Object>(1);
-    source.put("e",true);
- 
+    Map<String, Object> source = new HashMap<String, Object>(1);
+    source.put("e", true);
+
     InfomodelValue mapped = mapper.mapSource(source);
-    assertEquals(1,mapped.get("button").getConfiguration().size());
-    assertEquals(true,mapped.get("button").getConfiguration().get(0).getValue());
+    assertEquals(1, mapped.get("button").getConfiguration().size());
+    assertEquals(true, mapped.get("button").getConfiguration().get(0).getValue());
   }
 
   @Test
