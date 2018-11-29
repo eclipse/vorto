@@ -16,7 +16,7 @@
 			<artifactId>repository-api</artifactId>
 		</dependency>
 
- 		<dependency>
+		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 		</dependency>

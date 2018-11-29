@@ -1,7 +1,6 @@
 package org.eclipse.vorto.mapping.engine.converter.javascript;
 
 import java.util.Arrays;
-
 import org.apache.commons.jxpath.FunctionLibrary;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvalProvider;
 import org.eclipse.vorto.mapping.engine.functions.IScriptEvaluator;
@@ -16,75 +15,77 @@ import org.eclipse.vorto.service.mapping.spec.AbstractTestSpec;
 
 public class SpecWithCustomFunction extends AbstractTestSpec {
 
-	@Override
-	protected void createFBSpec() {
-		addFunctionblockProperty("button", createButtonFb());
-		addFunctionblockProperty("voltage", createVoltageFb());
-	}
-	
-	private FunctionblockModel createButtonFb() {
-		FunctionblockModel buttonModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"),
-				ModelType.Functionblock);
-		ModelProperty digitalInputStateProperty = new ModelProperty();
-		digitalInputStateProperty.setMandatory(true);
-		digitalInputStateProperty.setName("digital_input_state");
-		digitalInputStateProperty.setType(PrimitiveType.BOOLEAN);
+  @Override
+  protected void createFBSpec() {
+    addFunctionblockProperty("button", createButtonFb());
+    addFunctionblockProperty("voltage", createVoltageFb());
+  }
 
-		digitalInputStateProperty.setTargetPlatformKey("iotbutton");
+  private FunctionblockModel createButtonFb() {
+    FunctionblockModel buttonModel = new FunctionblockModel(
+        ModelId.fromPrettyFormat("demo.fb:PushButton:1.0.0"), ModelType.Functionblock);
+    ModelProperty digitalInputStateProperty = new ModelProperty();
+    digitalInputStateProperty.setMandatory(true);
+    digitalInputStateProperty.setName("digital_input_state");
+    digitalInputStateProperty.setType(PrimitiveType.BOOLEAN);
 
-		digitalInputStateProperty.addStereotype(Stereotype.createWithXpath("boolean:toBoolean(\"true\")"));
+    digitalInputStateProperty.setTargetPlatformKey("iotbutton");
 
-		ModelProperty digitalInputCount = new ModelProperty();
-		digitalInputCount.setMandatory(true);
-		digitalInputCount.setName("digital_input_count");
-		digitalInputCount.setType(PrimitiveType.INT);
+    digitalInputStateProperty
+        .addStereotype(Stereotype.createWithXpath("boolean:toBoolean(\"true\")"));
 
-		digitalInputCount.setTargetPlatformKey("iotbutton");
-		digitalInputCount.addStereotype(Stereotype.createWithXpath("button:convertClickType(clickType)"));
+    ModelProperty digitalInputCount = new ModelProperty();
+    digitalInputCount.setMandatory(true);
+    digitalInputCount.setName("digital_input_count");
+    digitalInputCount.setType(PrimitiveType.INT);
 
-		buttonModel.setStatusProperties(
-				Arrays.asList(new ModelProperty[] { digitalInputStateProperty, digitalInputCount }));
+    digitalInputCount.setTargetPlatformKey("iotbutton");
+    digitalInputCount
+        .addStereotype(Stereotype.createWithXpath("button:convertClickType(clickType)"));
 
-		return buttonModel;
-	}
-	
-	private FunctionblockModel createVoltageFb() {
-		FunctionblockModel voltageModel = new FunctionblockModel(ModelId.fromPrettyFormat("demo.fb:Voltage:1.0.0"),
-				ModelType.Functionblock);
-		ModelProperty sensorValueProperty = new ModelProperty();
-		sensorValueProperty.setMandatory(true);
-		sensorValueProperty.setName("sensor_value");
-		sensorValueProperty.setType(PrimitiveType.FLOAT);
+    buttonModel.setStatusProperties(
+        Arrays.asList(new ModelProperty[] {digitalInputStateProperty, digitalInputCount}));
 
-		sensorValueProperty.setTargetPlatformKey("iotbutton");
+    return buttonModel;
+  }
 
-		sensorValueProperty.addStereotype(Stereotype.createWithXpath(
-				"number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"));
+  private FunctionblockModel createVoltageFb() {
+    FunctionblockModel voltageModel = new FunctionblockModel(
+        ModelId.fromPrettyFormat("demo.fb:Voltage:1.0.0"), ModelType.Functionblock);
+    ModelProperty sensorValueProperty = new ModelProperty();
+    sensorValueProperty.setMandatory(true);
+    sensorValueProperty.setName("sensor_value");
+    sensorValueProperty.setType(PrimitiveType.FLOAT);
 
-		ModelProperty sensorUnitsProperty = new ModelProperty();
-		sensorUnitsProperty.setMandatory(false);
-		sensorUnitsProperty.setName("sensor_units");
-		sensorUnitsProperty.setType(PrimitiveType.STRING);
+    sensorValueProperty.setTargetPlatformKey("iotbutton");
 
-		sensorUnitsProperty.setTargetPlatformKey("iotbutton");
-		sensorUnitsProperty.addStereotype(Stereotype.createWithXpath(
-				"string:substring(batteryVoltage,string:length(batteryVoltage)-2)"));
-		voltageModel
-				.setStatusProperties(Arrays.asList(new ModelProperty[] { sensorValueProperty, sensorUnitsProperty }));
-		
-		return voltageModel;
-	}
-	
-	@Override
-	public FunctionLibrary getScriptFunctions(IScriptEvalProvider evalProvider) {
-		FunctionLibrary library = new FunctionLibrary();
-		IScriptEvaluator evaluator = evalProvider.createEvaluator("button");
-		evaluator.addScriptFunction(new ScriptClassFunction("convertClickType",
-				"function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}"));
-		library.addFunctions(evaluator.getFunctions());
+    sensorValueProperty.addStereotype(Stereotype.createWithXpath(
+        "number:toFloat(string:substring(batteryVoltage,0,string:length(batteryVoltage)-2))"));
 
-		return library;
-	}
+    ModelProperty sensorUnitsProperty = new ModelProperty();
+    sensorUnitsProperty.setMandatory(false);
+    sensorUnitsProperty.setName("sensor_units");
+    sensorUnitsProperty.setType(PrimitiveType.STRING);
+
+    sensorUnitsProperty.setTargetPlatformKey("iotbutton");
+    sensorUnitsProperty.addStereotype(Stereotype
+        .createWithXpath("string:substring(batteryVoltage,string:length(batteryVoltage)-2)"));
+    voltageModel.setStatusProperties(
+        Arrays.asList(new ModelProperty[] {sensorValueProperty, sensorUnitsProperty}));
+
+    return voltageModel;
+  }
+
+  @Override
+  public FunctionLibrary getScriptFunctions(IScriptEvalProvider evalProvider) {
+    FunctionLibrary library = new FunctionLibrary();
+    IScriptEvaluator evaluator = evalProvider.createEvaluator("button");
+    evaluator.addScriptFunction(new ScriptClassFunction("convertClickType",
+        "function convertClickType(clickType) {if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return 99;}"));
+    library.addFunctions(evaluator.getFunctions());
+
+    return library;
+  }
 
 
 }

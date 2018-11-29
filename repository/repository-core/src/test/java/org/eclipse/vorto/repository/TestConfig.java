@@ -9,13 +9,13 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @PropertySource("classpath:application.properties")
 public class TestConfig {
 
-    public TestConfig(){
-        super();
-    }
+  public TestConfig() {
+    super();
+  }
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
-        return new PropertySourcesPlaceholderConfigurer();
-    }
+  @Bean
+  public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+    return new PropertySourcesPlaceholderConfigurer();
+  }
 
 }
