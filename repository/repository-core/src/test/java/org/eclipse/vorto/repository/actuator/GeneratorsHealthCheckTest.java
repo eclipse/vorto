@@ -11,11 +11,12 @@
 
 package org.eclipse.vorto.repository.actuator;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.assertj.core.api.Assertions;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.impl.Generator;
 import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
@@ -51,7 +52,7 @@ public class GeneratorsHealthCheckTest {
    @Test
    public void testNoGeneratorsRegisteredExpectStatusUp() {
       Mockito.when( registeredGeneratorsRepository.findAll() ).thenReturn( new ArrayList<>() );
-      Assertions.assertThat( generatorsHealthCheck.health() ).isEqualTo( Health.up().build() );
+      assertEquals( generatorsHealthCheck.health(), Health.up().build() );
    }
 
    @Test
@@ -66,7 +67,7 @@ public class GeneratorsHealthCheckTest {
             .getForEntity( Matchers.anyString(), Matchers.eq( GeneratorInfo.class ), Matchers.eq( false ) ) )
              .thenReturn( generatorInfoResponseEntitySuccess );
 
-      Assertions.assertThat( generatorsHealthCheck.health() ).isEqualTo( Health.up().build() );
+      assertEquals( generatorsHealthCheck.health(), Health.up().build() );
    }
 
    @Test
@@ -88,12 +89,12 @@ public class GeneratorsHealthCheckTest {
              .thenReturn( generatorInfoResponseEntityFailure );
 
       final Health health = generatorsHealthCheck.health();
-      Assertions.assertThat( health.getStatus() ).isEqualTo( Health.down().build().getStatus() );
+      assertEquals( health.getStatus(), Health.down().build().getStatus() );
 
       final Map<String, Object> healthDetails = health.getDetails();
-      Assertions.assertThat( healthDetails ).hasSize( 1 );
-      Assertions.assertThat( healthDetails ).containsKey( "Generator down." );
-      Assertions.assertThat( healthDetails.get( "Generator down." ) ).isEqualTo( "Generator Key: genTwo" );
+      assertEquals( healthDetails.size(), 1 );
+      assertTrue( healthDetails.containsKey( "Generator down." ) );
+      assertEquals( healthDetails.get( "Generator down." ), "Generator Key: genTwo" );
    }
 
    private Generator createGenerator( final String baseUrl, final String key ) {
