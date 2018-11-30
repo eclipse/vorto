@@ -39,6 +39,8 @@ import com.google.common.collect.Lists;
 
 public class TypeImportValidation implements IModelValidator {
 
+  private static final String FB_PROPERTY_PATTERN = "(\\^?[a-zA-Z_][a-zA-Z0-9_]*)\\s+[aA][sS]\\s+((\\w+\\.)*\\w+)\\s*";
+
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
@@ -198,12 +200,11 @@ public class TypeImportValidation implements IModelValidator {
   }
 
   private String getNamespace(String text) {
-    Pattern pattern = Pattern.compile("[aA][sS](\\s)+((\\w+\\.)*\\w+)\\s*");
+    Pattern pattern = Pattern.compile(FB_PROPERTY_PATTERN);
     Matcher matcher = pattern.matcher(text);
     if (matcher.find()) {
       return matcher.group(2);
     }
-
     return text;
   }
 }
