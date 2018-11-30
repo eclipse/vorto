@@ -1,0 +1,141 @@
+{
+  "specification": {
+    "infoModel": {
+      "targetPlatformKey": "TestMapping",
+      "stereotypes": [],
+      "mappingReference": null,
+      "id": {
+        "name": "IntIm",
+        "namespace": "com.test",
+        "version": "1.0.0",
+        "prettyFormat": "com.test:IntIm:1.0.0"
+      },
+      "type": "InformationModel",
+      "displayName": "IntIm",
+      "description": "InformationModel for IntIm",
+      "fileName": null,
+      "references": [
+        {
+          "name": "IntFb",
+          "namespace": "com.test",
+          "version": "1.0.0",
+          "prettyFormat": "com.test:IntFb:1.0.0"
+        }
+      ],
+      "functionblocks": [
+        {
+          "targetPlatformKey": "TestMapping",
+          "stereotypes": [],
+          "mappingReference": {
+            "name": "FbPayloadMappingTestmapping",
+            "namespace": "com.test.mapping.fbs",
+            "version": "1.0.0",
+            "prettyFormat": "com.test.mapping.fbs:FbPayloadMappingTestmapping:1.0.0"
+          },
+          "mandatory": false,
+          "name": "fb",
+          "description": null,
+          "type": {
+            "name": "IntFb",
+            "namespace": "com.test",
+            "version": "1.0.0",
+            "prettyFormat": "com.test:IntFb:1.0.0"
+          },
+          "constraints": [],
+          "attributes": [],
+          "primitive": false,
+          "multiple": false,
+          "$$hashKey": "object:200"
+        }
+      ]
+    },
+    "properties": {
+      "fb": {
+        "targetPlatformKey": "TestMapping",
+        "stereotypes": [],
+        "mappingReference": null,
+        "id": {
+          "name": "IntFb",
+          "namespace": "com.test",
+          "version": "1.0.0",
+          "prettyFormat": "com.test:IntFb:1.0.0"
+        },
+        "type": "Functionblock",
+        "displayName": "IntFb",
+        "description": "Functionblock for IntFb",
+        "fileName": null,
+        "references": [],
+        "configurationProperties": [],
+        "statusProperties": [
+          {
+            "targetPlatformKey": "TestMapping",
+            "stereotypes": [
+              {
+                "name": "source",
+                "attributes": {
+                  "xpath": "my_x"
+                }
+              }
+            ],
+            "mappingReference": null,
+            "mandatory": true,
+            "name": "x",
+            "description": null,
+            "type": "INT",
+            "constraints": [],
+            "attributes": [],
+            "primitive": true,
+            "multiple": false,
+            "$$hashKey": "object:211"
+          },
+          {
+            "targetPlatformKey": "TestMapping",
+            "stereotypes": [
+              {
+                "name": "source",
+                "attributes": {
+                  "xpath": "my_y"
+                }
+              }
+            ],
+            "mappingReference": null,
+            "mandatory": true,
+            "name": "y",
+            "description": null,
+            "type": "INT",
+            "constraints": [],
+            "attributes": [],
+            "primitive": true,
+            "multiple": false,
+            "$$hashKey": "object:212"
+          },
+          {
+            "targetPlatformKey": "TestMapping",
+            "stereotypes": [
+              {
+                "name": "source",
+                "attributes": {
+                  "xpath": "my_z"
+                }
+              }
+            ],
+            "mappingReference": null,
+            "mandatory": true,
+            "name": "z",
+            "description": null,
+            "type": "INT",
+            "constraints": [],
+            "attributes": [],
+            "primitive": true,
+            "multiple": false,
+            "$$hashKey": "object:213"
+          }
+        ],
+        "faultProperties": [],
+        "events": [],
+        "operations": []
+      }
+    }
+  },
+  "sourceJson": "{\n  \"my_x\" : 1,\n  \"my_y\" : 2,\n  \"my_z\" : 3\n}"
+}
