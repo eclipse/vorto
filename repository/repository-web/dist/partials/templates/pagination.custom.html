@@ -1,4 +1,4 @@
-<nav ng-if="numPages && pages.length >= 1">
+<nav ng-if="numPages && pages.length >= 1 && totalItemCount > 15">
 <ul class="pagination">
     <li><a href="#" ng-click="selectPage(1)">First</a></li>
     <li><a href="#" ng-click="selectPage(currentPage - 1)">&lt;</a></li>
