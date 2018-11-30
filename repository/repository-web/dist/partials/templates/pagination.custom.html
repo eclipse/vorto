@@ -1,4 +1,5 @@
-<nav ng-if="numPages && pages.length >= 2"><ul class="pagination">
+<nav ng-if="numPages && pages.length >= 1">
+<ul class="pagination">
     <li><a ng-click="selectPage(1)">First</a></li>
     <li><a ng-click="selectPage(currentPage - 1)">&lt;</a></li>
     <li ng-repeat="page in pages" ng-class="{active: page==currentPage}">
