@@ -167,7 +167,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 			throws WorkflowException {
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-		if (this.modelRepository.getById(modelID) != null) {
+		if (this.modelRepository.exists(modelID)) {
 			throw new ModelAlreadyExistsException();
 		} else {
 			ModelTemplate template = new ModelTemplate();

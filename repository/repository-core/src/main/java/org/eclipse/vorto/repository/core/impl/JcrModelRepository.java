@@ -17,7 +17,6 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,6 +28,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
@@ -79,6 +79,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
+import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -367,8 +368,6 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
 			Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
-			session.logout();
 			return createMinimalModelInfo(modelFileNode);
 		} catch (PathNotFoundException e) {
 			return null;
@@ -807,5 +806,101 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 	public void setRepositoryDiagnostics(RepositoryDiagnostics repoDiagnostics) {
 		this.repoDiagnostics = repoDiagnostics;
+	}
+
+	@Override
+	public boolean exists(ModelId modelId) {
+		final Session session = getSession();
+
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			return session.itemExists(modelIdHelper.getFullPath());
+		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				return true;
+			}
+			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
+		} finally {
+			session.logout();
+		}
+	}
+
+	@Override
+	public void addModelPolicy(ModelId modelId, IUserContext user) {
+		final Session session = getSession();
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			
+			String path = modelIdHelper.getFullPath();
+			String[] privileges = new String[]{Privilege.JCR_READ, Privilege.JCR_WRITE, Privilege.JCR_MODIFY_ACCESS_CONTROL,Privilege.JCR_READ_ACCESS_CONTROL};
+			AccessControlManager acm = session.getAccessControlManager();
+	 
+			Privilege[] permissions = new Privilege[privileges.length];
+			for (int i = 0; i < privileges.length; i++) {
+				permissions[i] = acm.privilegeFromName(privileges[i]);
+			}
+	 
+			AccessControlList acl = null;
+			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+			if (it.hasNext()) {
+			    acl = (AccessControlList)it.nextAccessControlPolicy();
+			} else {
+			    acl = (AccessControlList)acm.getPolicies(path)[0];
+			}
+			// add ACL for admin role
+			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
+			
+			// add ACL for user 
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(user.getUsername()), permissions);
+	 
+			
+			acm.setPolicy(path, acl);
+			session.save();
+		} catch(RepositoryException ex) {
+			logger.error("Could not set permissions for model",ex);
+			throw new FatalModelRepositoryException("Problem setting permissions on model node",ex);
+		}finally {
+			session.logout();
+		}
+	}
+
+	@Override
+	public void removeModelPolicy(ModelId modelId, IUserContext user) {
+		final Session session = getSession();
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+			String path = modelIdHelper.getFullPath();
+			String[] privileges = new String[] { Privilege.JCR_READ, Privilege.JCR_WRITE,
+					Privilege.JCR_MODIFY_ACCESS_CONTROL, Privilege.JCR_READ_ACCESS_CONTROL };
+			AccessControlManager acm = session.getAccessControlManager();
+
+			Privilege[] permissions = new Privilege[privileges.length];
+			for (int i = 0; i < privileges.length; i++) {
+				permissions[i] = acm.privilegeFromName(privileges[i]);
+			}
+
+			AccessControlList acl = null;
+			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+			if (it.hasNext()) {
+				acl = (AccessControlList) it.nextAccessControlPolicy();
+			} else {
+				acl = (AccessControlList) acm.getPolicies(path)[0];
+			}
+
+			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
+
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(user.getUsername()), permissions);
+
+			if (acm.hasPrivileges(path, permissions)) {
+				acm.removePolicy(path, acl);
+				session.save();
+			}
+		} catch (RepositoryException ex) {
+			logger.error("Could not remove permissions from model", ex);
+			throw new FatalModelRepositoryException("Problem clearing permissions on model node", ex);
+		} finally {
+			session.logout();
+		}
 	}
 }

@@ -17,8 +17,6 @@ package org.eclipse.vorto.repository.core;
 import java.util.List;
 import java.util.Optional;
 
-import javax.jcr.AccessDeniedException;
-
 import org.eclipse.vorto.model.ModelId;
 
 /**
@@ -161,5 +159,20 @@ public interface IModelRepository {
 	 * @return
 	 */
 	boolean deleteAttachment(ModelId modelId, String fileName);
-		
+	
+	/**
+	 * Checks if the given model ID exists in the repository
+	 * @param modelId
+	 * @return
+	 */
+	boolean exists(ModelId modelId);
+	
+	/**
+	 * 
+	 * @param modelId
+	 * @param user
+	 */
+	void addModelPolicy(ModelId modelId, IUserContext user);
+
+	void removeModelPolicy(ModelId modelId, IUserContext user); 
 }

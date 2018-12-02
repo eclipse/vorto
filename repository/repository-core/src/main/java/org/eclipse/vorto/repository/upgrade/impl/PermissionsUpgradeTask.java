@@ -14,24 +14,16 @@
  */
 package org.eclipse.vorto.repository.upgrade.impl;
 
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.security.AccessControlList;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.security.AccessControlPolicyIterator;
-import javax.jcr.security.Privilege;
-
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
@@ -77,13 +69,19 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 			if (modelInfo.getState() != null && modelInfo.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName())) {
 				logger.info("Setting permissions for model " + modelInfo.toString());
 				
-				setPermissions(modelInfo);
+				modelRepository.addModelPolicy(modelInfo.getId(), UserContext.user(modelInfo.getAuthor()));
+
 			}
 		}
 	}
 	
 	private Authentication createAuthentication() {
 		return new Authentication() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public String getName() {
@@ -121,57 +119,6 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 			}
 			
 		};
-	}
-
-	private void setPermissions(ModelInfo model) {
-		final Session session = modelRepository.getSession();
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(model.getId());
-			
-			String path = modelIdHelper.getFullPath();
-			String[] privileges = new String[]{Privilege.JCR_READ, Privilege.JCR_WRITE, Privilege.JCR_MODIFY_ACCESS_CONTROL,Privilege.JCR_READ_ACCESS_CONTROL};
-			AccessControlManager acm = session.getAccessControlManager();
-	 
-			Privilege[] permissions = new Privilege[privileges.length];
-			for (int i = 0; i < privileges.length; i++) {
-				permissions[i] = acm.privilegeFromName(privileges[i]);
-			}
-	 
-			AccessControlList acl = null;
-			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
-			if (it.hasNext()) {
-			    acl = (AccessControlList)it.nextAccessControlPolicy();
-			} else {
-			    acl = (AccessControlList)acm.getPolicies(path)[0];
-			}
-			// add ACL for admin role
-			acl.addAccessControlEntry(new Principal() {
-				
-				@Override
-				public String getName() {
-					return "admin";
-				}
-			}, permissions);
-			
-			// add ACL for user 
-			acl.addAccessControlEntry(new Principal() {
-				
-				@Override
-				public String getName() {
-					return model.getAuthor();
-				}
-			}, permissions);
-	 
-			
-			acm.setPolicy(path, acl);
-			session.save();
-		} catch(RepositoryException ex) {
-			logger.error("Could not set permissions for model",ex);
-			throw new RuntimeException("Problem setting permissions on model node",ex);
-		}finally {
-			session.logout();
-		}
-		
 	}
 
 	public Optional<IUpgradeTaskCondition> condition() {
