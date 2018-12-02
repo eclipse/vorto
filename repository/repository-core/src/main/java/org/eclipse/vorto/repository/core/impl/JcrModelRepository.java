@@ -63,6 +63,7 @@ import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IDiagnostics;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
@@ -93,7 +94,7 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public class JcrModelRepository implements IModelRepository, IDiagnostics {
+public class JcrModelRepository implements IModelRepository, IDiagnostics, IModelPolicyManager {
 
 	private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
@@ -851,13 +852,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	}
 
 	@Override
-	public void addModelPolicy(ModelId modelId, IUserContext user) {
+	public void grantOwnerAccess(ModelInfo modelInfo) {
 		final Session session = getSession();
 		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelInfo.getId());
 			
 			String path = modelIdHelper.getFullPath();
+			
 			String[] privileges = new String[]{Privilege.JCR_READ, Privilege.JCR_WRITE, Privilege.JCR_MODIFY_ACCESS_CONTROL,Privilege.JCR_READ_ACCESS_CONTROL};
+										
 			AccessControlManager acm = session.getAccessControlManager();
 	 
 			Privilege[] permissions = new Privilege[privileges.length];
@@ -876,28 +879,64 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
 			
 			// add ACL for user 
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(user.getUsername()), permissions);
-	 
-			
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(modelInfo.getAuthor()), permissions);
+
 			acm.setPolicy(path, acl);
 			session.save();
 		} catch(RepositoryException ex) {
-			logger.error("Could not set permissions for model",ex);
-			throw new FatalModelRepositoryException("Problem setting permissions on model node",ex);
+			logger.error("Could not set owner permissions for model",ex);
+			throw new FatalModelRepositoryException("Problem setting owner permissions on model node",ex);
 		}finally {
 			session.logout();
 		}
 	}
 
 	@Override
-	public void removeModelPolicy(ModelId modelId, IUserContext user) {
+	public void grantReadAccess(ModelId modelId, String userOrRole) {
+		final Session session = getSession();
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+			
+			String path = modelIdHelper.getFullPath();
+			
+			String[] privileges = new String[]{Privilege.JCR_READ};
+										
+			AccessControlManager acm = session.getAccessControlManager();
+	 
+			Privilege[] permissions = new Privilege[privileges.length];
+			for (int i = 0; i < privileges.length; i++) {
+				permissions[i] = acm.privilegeFromName(privileges[i]);
+			}
+	 
+			AccessControlList acl = null;
+			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+			if (it.hasNext()) {
+			    acl = (AccessControlList)it.nextAccessControlPolicy();
+			} else {
+			    acl = (AccessControlList)acm.getPolicies(path)[0];
+			}
+			
+			// add ACL for user 
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(userOrRole), permissions);
+
+			acm.setPolicy(path, acl);
+			session.save();
+		} catch(RepositoryException ex) {
+			logger.error("Could not grant user readd permissions for model",ex);
+			throw new FatalModelRepositoryException("Problem to grant user read permissions for model",ex);
+		}finally {
+			session.logout();
+		}
+	}
+
+	@Override
+	public void revokeReadAccess(ModelId modelId, String userOrRole) {
 		final Session session = getSession();
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
 			String path = modelIdHelper.getFullPath();
-			String[] privileges = new String[] { Privilege.JCR_READ, Privilege.JCR_WRITE,
-					Privilege.JCR_MODIFY_ACCESS_CONTROL, Privilege.JCR_READ_ACCESS_CONTROL };
+			String[] privileges = new String[] { Privilege.JCR_READ};
 			AccessControlManager acm = session.getAccessControlManager();
 
 			Privilege[] permissions = new Privilege[privileges.length];
@@ -913,17 +952,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 				acl = (AccessControlList) acm.getPolicies(path)[0];
 			}
 
-			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
-
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(user.getUsername()), permissions);
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(userOrRole), permissions);
 
 			if (acm.hasPrivileges(path, permissions)) {
 				acm.removePolicy(path, acl);
 				session.save();
 			}
 		} catch (RepositoryException ex) {
-			logger.error("Could not remove permissions from model", ex);
-			throw new FatalModelRepositoryException("Problem clearing permissions on model node", ex);
+			logger.error("Could not revoke read permissions from model", ex);
+			throw new FatalModelRepositoryException("Problem revoking read permissions on model node", ex);
 		} finally {
 			session.logout();
 		}

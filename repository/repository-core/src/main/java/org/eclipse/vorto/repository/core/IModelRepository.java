@@ -169,18 +169,4 @@ public interface IModelRepository {
 	 * @return
 	 */
 	boolean exists(ModelId modelId);
-	
-	/**
-	 * Adds a model policy for the given modelID and the given user
-	 * @param modelId
-	 * @param user
-	 */
-	void addModelPolicy(ModelId modelId, IUserContext user);
-
-	/**
-	 * Removes the model policy for the given modelId and user
-	 * @param modelId
-	 * @param user
-	 */
-	void removeModelPolicy(ModelId modelId, IUserContext user); 
 }

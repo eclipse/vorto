@@ -21,9 +21,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
@@ -46,6 +46,8 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 	
 	@Value("${server.upgrade.permissions:false}")
 	private boolean shouldUpgrade;
+	
+	private IModelPolicyManager policyManager;
 
 	private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
 		
@@ -55,8 +57,9 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 		}
 	};
 	
-	public PermissionsUpgradeTask(@Autowired IModelRepository repository) {
+	public PermissionsUpgradeTask(@Autowired IModelPolicyManager policyManager, @Autowired IModelRepository repository) {
 		super(repository);
+		this.policyManager = policyManager;
 	}
 
 	@Override
@@ -68,8 +71,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 		for(ModelInfo modelInfo : modelInfos) {
 			if (modelInfo.getState() != null && modelInfo.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName())) {
 				logger.info("Setting permissions for model " + modelInfo.toString());
-				
-				modelRepository.addModelPolicy(modelInfo.getId(), UserContext.user(modelInfo.getAuthor()));
+				policyManager.grantOwnerAccess(modelInfo);
 
 			}
 		}

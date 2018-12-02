@@ -19,15 +19,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsOwnerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
-import org.eclipse.vorto.repository.workflow.impl.functions.ClearModelPermissions;
+import org.eclipse.vorto.repository.workflow.impl.functions.GrantModelOwnerPolicy;
+import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
-import org.eclipse.vorto.repository.workflow.impl.functions.SetModelPermissions;
 import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
@@ -70,16 +71,16 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		final IWorkflowCondition isReviewerCondition = new IsReviewerCondition(userRepository);
 		final IWorkflowFunction pendingWorkItemNotification = new PendingApprovalNotification(notificationService, userRepository);
 		
-		final IWorkflowFunction setModelPermissions = new SetModelPermissions(repository);
-		final IWorkflowFunction clearModelPermissions = new ClearModelPermissions(repository);
+		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy((IModelPolicyManager)repository);
+		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy((IModelPolicyManager)repository);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
-		ACTION_INITAL.setFunctions(setModelPermissions);
+		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
 		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
 		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER,isAdminCondition));
 		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
-		ACTION_RELEASE.setFunctions(pendingWorkItemNotification,clearModelPermissions);
+		ACTION_RELEASE.setFunctions(pendingWorkItemNotification,grantReviewerModelAccess);
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(isAdminCondition,isReviewerCondition);
@@ -87,12 +88,10 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(isAdminCondition, isReviewerCondition);
-		ACTION_REJECT.setFunctions(setModelPermissions);
 
 		
 		ACTION_WITHDRAW.setTo(STATE_DRAFT);
 		ACTION_WITHDRAW.setConditions(ONLY_OWNER);
-		ACTION_WITHDRAW.setFunctions(setModelPermissions);
 		
 		ACTION_DEPRECATE.setTo(STATE_DEPRECATED);
 		ACTION_DEPRECATE.setConditions(isAdminCondition);

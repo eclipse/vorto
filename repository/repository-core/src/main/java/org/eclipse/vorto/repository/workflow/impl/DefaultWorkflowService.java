@@ -120,14 +120,16 @@ public class DefaultWorkflowService implements IWorkflowService {
 	@Override
 	public ModelId start(ModelId modelId, IUserContext user) {
 		IAction initial = SIMPLE_WORKFLOW.getInitialAction();
-		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId),user));
+		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId,user),user));
 
 		IState nextState = initial.getTo();
 		return modelRepository.updateState(modelId, nextState.getName());
 	}
 
-	private ModelInfo createDummyModelInfo(ModelId modelId) {
-		return new ModelInfo(modelId, ModelType.Functionblock); //FIXME ?!?
+	private ModelInfo createDummyModelInfo(ModelId modelId, IUserContext user) {
+		ModelInfo model = new ModelInfo(modelId, ModelType.Functionblock); //FIXME ?!?
+		model.setAuthor(user.getUsername());
+		return model;
 	}
 
 	@Override
