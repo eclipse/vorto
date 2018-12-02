@@ -62,7 +62,7 @@ public class BulkModelReferencesValidation extends ModelReferencesValidation {
 	}
 
 	private boolean isNotInRepository(ModelId modelId) {
-		return getModelRepository().getById(modelId) == null;
+		return !getModelRepository().exists(modelId);
 		
 	}
 

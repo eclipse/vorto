@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 /**
  * 
@@ -37,16 +38,18 @@ public interface IModelRepository {
 	 * Gets a model resource for the given model id
 	 * @param modelId
 	 * @return
+	 * @throws NotAuthorizedException if current user is not allowed to access the given model
 	 */
-	ModelInfo getById(ModelId modelId);
+	ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
 	
 	/**
 	 * Returns the actual model content for the given model id
 	 * @param modelId
 	 * @throws ModelNotFoundException
+	 * @throws NotAuthorizedException if current user is not allowed to access the given model
 	 * @return
 	 */
-	ModelFileContent getModelContent(ModelId modelId);
+	ModelFileContent getModelContent(ModelId modelId) throws NotAuthorizedException;
 	
 	/**
 	 * Creates a new version of an existing model
@@ -76,13 +79,13 @@ public interface IModelRepository {
 	 * @param targetPlatform
 	 * @return
 	 */
-	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform);
+	List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) throws NotAuthorizedException;;
 	
 	/**
 	 * Removes the model for the given ModelID
 	 * @param modelId
 	 */
-    void removeModel(ModelId modelId);
+    void removeModel(ModelId modelId) throws NotAuthorizedException;;
     
     /**
      * Updates the model meta information 
@@ -113,7 +116,7 @@ public interface IModelRepository {
 	 * @param fileName
 	 * @return
 	 */
-	Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName);
+	Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName) throws NotAuthorizedException;;
 	
 	/**
 	 * Attaches the given file to the model
@@ -132,7 +135,7 @@ public interface IModelRepository {
 	 * @param modelId
 	 * @return list of attachments of the given model
 	 */
-	List<Attachment> getAttachments(ModelId modelId);
+	List<Attachment> getAttachments(ModelId modelId) throws NotAuthorizedException;;
 	
 	/**
 	 * Gets a list of attachments having the given tag 
@@ -140,7 +143,7 @@ public interface IModelRepository {
 	 * @param attachmentTag
 	 * @return
 	 */
-	List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag);
+	List<Attachment> getAttachmentsByTag(ModelId modelId, Tag attachmentTag) throws NotAuthorizedException;;
 	
 	/**
 	 * Gets the content of the attachment
@@ -149,7 +152,7 @@ public interface IModelRepository {
 	 * @param fileName the filename of the attachment
 	 * @return
 	 */
-	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName);
+	Optional<FileContent> getAttachmentContent(ModelId modelid, String fileName) throws NotAuthorizedException;;
 	
 	/**
 	 * Deletes the attachment
@@ -158,7 +161,7 @@ public interface IModelRepository {
 	 * @param fileName the filename of the attachment
 	 * @return
 	 */
-	boolean deleteAttachment(ModelId modelId, String fileName);
+	boolean deleteAttachment(ModelId modelId, String fileName) throws NotAuthorizedException;;
 	
 	/**
 	 * Checks if the given model ID exists in the repository
@@ -168,11 +171,16 @@ public interface IModelRepository {
 	boolean exists(ModelId modelId);
 	
 	/**
-	 * 
+	 * Adds a model policy for the given modelID and the given user
 	 * @param modelId
 	 * @param user
 	 */
 	void addModelPolicy(ModelId modelId, IUserContext user);
 
+	/**
+	 * Removes the model policy for the given modelId and user
+	 * @param modelId
+	 * @param user
+	 */
 	void removeModelPolicy(ModelId modelId, IUserContext user); 
 }

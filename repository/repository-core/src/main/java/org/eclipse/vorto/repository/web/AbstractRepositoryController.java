@@ -73,10 +73,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
 		// do logging
     }
 	
-	@ResponseStatus(value=HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model")  // 403
+	@ResponseStatus(value=HttpStatus.UNAUTHORIZED, reason = "Not authorized to access the model")  // 403
     @ExceptionHandler(NotAuthorizedException.class)
     public void unAuthorized(final NotAuthorizedException ex){
-		// do logging
+		
     }
 	
 	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Error during generation.")

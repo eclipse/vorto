@@ -79,6 +79,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.modeshape.jcr.security.SimplePrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -353,6 +354,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (PathNotFoundException e) {
 			return null;
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		} finally {
 			session.logout();
@@ -372,6 +376,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (PathNotFoundException e) {
 			return null;
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
 		} finally {
 			session.logout();
@@ -418,6 +425,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 			return (ModelResource) modelParserFactory.getParser(fileNode.getName()).parse(is);
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		} finally {
 			session.logout();
@@ -440,6 +450,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			item.remove();
 			session.save();
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		} finally {
 			session.logout();
@@ -472,6 +485,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			session.save();
 			return modelId;
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
 		} finally {
 			session.logout();
@@ -572,6 +588,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (PathNotFoundException e) {
 			return Optional.empty();
 		} catch (Exception e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		} finally {
 			session.logout();
@@ -622,6 +641,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Model with ID " + modelId + " not found");
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		} finally {
 			session.logout();
@@ -655,6 +677,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (PathNotFoundException e) {
 			return Collections.emptyList();
 		} catch (RepositoryException e) {
+			if (e instanceof AccessDeniedException) {
+				throw new NotAuthorizedException(modelId, e);
+			}
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
 		} finally {
 			session.logout();
