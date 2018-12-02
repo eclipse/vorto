@@ -38,7 +38,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	public void testUploadSameModelTwiceByAuthorWhichIsInDraftState() throws Exception {
 		IUserContext alex = UserContext.user("alex");
 		ModelInfo info = importModel("Color.type", alex);
-		this.workflow.start(info.getId());
+		this.workflow.start(info.getId(),alex);
 		UploadModelResult uploadResult = this.importer.upload(
 				FileUpload.create("Color.type",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/Color2.type").getInputStream())),
@@ -54,7 +54,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	public void testUploadSameModelTwiceByAuthorAlreadyReleased() throws Exception {
 		IUserContext alex = UserContext.user("alex");
 		ModelInfo info = importModel("Color.type", alex);
-		this.workflow.start(info.getId());
+		this.workflow.start(info.getId(),alex);
 		setReleaseState(info);
 		UploadModelResult uploadResult = this.importer.upload(
 				FileUpload.create("Color.type",
@@ -84,7 +84,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	@Test
 	public void testUploadSameModelByAdminDraftState() throws Exception {
 		ModelInfo info = importModel("Color.type", UserContext.user("alex"));
-		this.workflow.start(info.getId());
+		this.workflow.start(info.getId(),UserContext.user("alex"));
 		IUserContext admin = UserContext.user("admin");
 
 		UploadModelResult uploadResult = this.importer.upload(
@@ -107,7 +107,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 	@Test
 	public void testUploadSameModelByAdminReleasedState() throws Exception {
 		ModelInfo info = importModel("Color.type", UserContext.user("alex"));
-		this.workflow.start(info.getId());
+		this.workflow.start(info.getId(),UserContext.user("alex"));
 		setReleaseState(info);
 		IUserContext admin = UserContext.user("admin");
 

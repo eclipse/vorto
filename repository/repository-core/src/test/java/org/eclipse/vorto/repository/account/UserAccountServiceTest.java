@@ -27,8 +27,8 @@ public class UserAccountServiceTest extends AbstractIntegrationTest  {
 		IUserContext admin = UserContext.user("admin");
 		
 		
-		this.workflow.start(importModel("Color.type", alex).getId());
-		this.workflow.start(importModel("Colorlight.fbmodel", alex).getId());
+		this.workflow.start(importModel("Color.type", alex).getId(),alex);
+		this.workflow.start(importModel("Colorlight.fbmodel", alex).getId(),alex);
 		importModel("Switcher.fbmodel", admin);
 		importModel("ColorLightIM.infomodel", admin);
 		importModel("HueLightStrips.infomodel", admin);

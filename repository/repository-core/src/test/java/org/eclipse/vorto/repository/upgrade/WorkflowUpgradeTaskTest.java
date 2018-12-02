@@ -23,7 +23,6 @@ public class WorkflowUpgradeTaskTest extends AbstractIntegrationTest {
 		super.beforeEach();
 		repositoryManager = new DefaultModelBackupService();
 		repositoryManager.setModelRepository(this.modelRepository);
-		repositoryManager.setSession(jcrSession());
 		
 		repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 		

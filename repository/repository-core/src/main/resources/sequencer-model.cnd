@@ -14,7 +14,7 @@
  *******************************************************************************/
 <vorto='http://www.eclipse.org/vorto/sequencer/model/1.0'>
 
-[vorto:meta] > mix:referenceable, mix:lastModified mixin
+[vorto:meta] > mix:referenceable, mix:lastModified, mode:accessControllable mixin
 - vorto:description (string)
 - vorto:displayname (string)
 - vorto:type (string)

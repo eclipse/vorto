@@ -23,10 +23,10 @@ import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
-	private IModelRepository modelRepository;
+	protected JcrModelRepository modelRepository;
 	
 	public AbstractUpgradeTask(IModelRepository repository) {
-		this.modelRepository = repository;
+		this.modelRepository = (JcrModelRepository)repository;
 	}
 	
 	public Optional<IUpgradeTaskCondition> condition() {
@@ -38,10 +38,10 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
 	}
 	
 	protected ModelResource getModel(ModelId modelId) {
-		return ((JcrModelRepository)modelRepository).getEMFResource(modelId);
+		return modelRepository.getEMFResource(modelId);
 	}
 	
 	protected void saveModel(ModelResource resource) {
-		((JcrModelRepository)modelRepository).saveModel(resource);
+		modelRepository.saveModel(resource);
 	}
 }

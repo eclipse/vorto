@@ -17,6 +17,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,6 +38,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
@@ -44,6 +46,10 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+import javax.jcr.security.AccessControlList;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.security.AccessControlPolicyIterator;
+import javax.jcr.security.Privilege;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -72,7 +78,10 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -89,9 +98,6 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
 	@Autowired
-	private Session session;
-
-	@Autowired
 	private IUserRepository userRepository;
 
 	@Autowired
@@ -106,6 +112,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	@Autowired
 	private RepositoryDiagnostics repoDiagnostics;
 
+	@Autowired
+	private Repository repository;
+
 	@Override
 	public List<ModelInfo> search(final String expression) {
 		String queryExpression = expression;
@@ -114,6 +123,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		}
 		try {
 			List<ModelInfo> modelResources = new ArrayList<>();
+
+			Session session = getSession();
 
 			Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
 
@@ -132,9 +143,19 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 				}
 			}
 
+			session.logout();
 			return modelResources;
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Could not create query manager", e);
+		}
+	}
+
+	public Session getSession() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		try {
+			return repository.login(new SpringSecurityCredentials(authentication));
+		} catch (RepositoryException ex) {
+			throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
 		}
 	}
 
@@ -180,7 +201,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 				for (Value referValue : referenceValues) {
 					String nodeUuid = referValue.getString();
 					try {
-						Node referencedNode = session.getNodeByIdentifier(nodeUuid);
+						Node referencedNode = getSession().getNodeByIdentifier(nodeUuid);
 						referenceHelper.addModelReference(
 								ModelIdHelper.fromPath(referencedNode.getParent().getPath()).getPrettyFormat());
 					} catch (ItemNotFoundException itemNotFound) {
@@ -192,7 +213,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			}
 		}
 
-		if (resource.getType() != ModelType.Mapping) { // only add platform mapping info for non-mapping models
+		if (resource.getType() != ModelType.Mapping) { // only add platform
+														// mapping info for
+														// non-mapping models
 			PropertyIterator propIter = node.getReferences();
 			while (propIter.hasNext()) {
 				Property prop = propIter.nextProperty();
@@ -224,7 +247,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	public ModelFileContent getModelContent(ModelId modelId) {
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-			Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			Node folderNode = getSession().getNode(modelIdHelper.getFullPath());
 			Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
 			InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
@@ -241,9 +264,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		}
 	}
 
-	private Node createNodeForModelId(ModelId id) throws RepositoryException {
+	private Node createNodeForModelId(Session session, ModelId id) throws RepositoryException {
 		ModelIdHelper modelIdHelper = new ModelIdHelper(id);
-
 		StringBuilder pathBuilder = new StringBuilder();
 		Iterator<String> modelIdIterator = modelIdHelper.iterator();
 		Node rootNode = session.getRootNode();
@@ -271,15 +293,16 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 		logger.info("Saving " + modelId.toString() + " as " + fileName + " to Repo");
 
+		Session session = getSession();
 		try {
-
-			Node folderNode = createNodeForModelId(modelId);
+			Node folderNode = createNodeForModelId(session, modelId);
 			NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
 			if (!nodeIt.hasNext()) { // new node
 				Node fileNode = folderNode.addNode(fileName, "nt:file");
 				fileNode.addMixin("vorto:meta");
 				fileNode.addMixin("mix:referenceable");
 				fileNode.addMixin("mix:lastModified");
+				fileNode.addMixin("mode:accessControllable");
 				fileNode.setProperty("vorto:author", userContext.getUsername());
 				Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
 				Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
@@ -299,11 +322,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 		} catch (Exception e) {
 			logger.error("Error checking in model", e);
 			throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
+		} finally {
+			session.logout();
 		}
 	}
 
 	@Override
 	public ModelInfo getById(ModelId modelId) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
@@ -326,10 +353,14 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			return null;
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
 	private ModelInfo getBasicById(ModelId modelId) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
@@ -337,16 +368,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 			Node modelFileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
+			session.logout();
 			return createMinimalModelInfo(modelFileNode);
 		} catch (PathNotFoundException e) {
 			return null;
 		} catch (RepositoryException e) {
 			throw new RuntimeException("Retrieving Content of Resource: Problem accessing repository", e);
+		} finally {
+			session.logout();
 		}
-	}
-
-	public void setSession(Session session) {
-		this.session = session;
 	}
 
 	@Override
@@ -379,9 +409,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	}
 
 	public ModelResource getEMFResource(ModelId modelId) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 			Node fileNode = (Node) folderNode.getNodes().next();
 			Node fileItem = (Node) fileNode.getPrimaryItem();
@@ -389,11 +420,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			return (ModelResource) modelParserFactory.getParser(fileNode.getName()).parse(is);
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
 	@Override
 	public void removeModel(ModelId modelId) {
+		final Session session = getSession();
+
 		try {
 			ModelInfo modelResource = this.getById(modelId);
 			if (!modelResource.getReferencedBy().isEmpty()) {
@@ -407,6 +442,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			session.save();
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -425,17 +462,20 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	}
 
 	private ModelId updateProperty(ModelId modelId, NodeConsumer nodeConsumer) {
+		final Session session = getSession();
+
 		try {
-			Node folderNode = createNodeForModelId(modelId);
+			Node folderNode = createNodeForModelId(session, modelId);
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
 					: null;
 			fileNode.addMixin("mix:lastModified");
 			nodeConsumer.accept(fileNode);
 			session.save();
-
 			return modelId;
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -445,8 +485,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	}
 
 	public void saveModel(ModelResource resource) {
+		final Session session = getSession();
+
 		try {
-			Node folderNode = createNodeForModelId(resource.getId());
+			Node folderNode = createNodeForModelId(session, resource.getId());
 			Node fileNode = folderNode.getNodes(FILE_NODES).hasNext() ? folderNode.getNodes(FILE_NODES).nextNode()
 					: null;
 			Node contentNode = fileNode.getNode("jcr:content");
@@ -455,6 +497,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			session.save();
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Problem occured removing the model", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -476,6 +520,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 	@Override
 	public void addFileContent(ModelId modelId, FileContent fileContent) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
@@ -493,16 +539,19 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			Binary binary = session.getValueFactory().createBinary(new ByteArrayInputStream(fileContent.getContent()));
 			contentNode.setProperty("jcr:data", binary);
 			session.save();
-
 		} catch (PathNotFoundException e) {
 			throw new ModelNotFoundException("Could not find model with the given model id", e);
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
 	@Override
 	public Optional<FileContent> getFileContent(ModelId modelId, Optional<String> fileName) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
@@ -525,6 +574,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			return Optional.empty();
 		} catch (Exception e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -536,6 +587,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 				.isEmpty()) {
 			attachmentValidator.validateAttachment(fileContent, modelId);
 		}
+
+		final Session session = getSession();
 
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
@@ -571,11 +624,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			throw new ModelNotFoundException("Model with ID " + modelId + " not found");
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
 	@Override
 	public List<Attachment> getAttachments(ModelId modelId) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -595,12 +652,13 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 				}
 				return attachments;
 			}
-
 			return Collections.emptyList();
 		} catch (PathNotFoundException e) {
 			return Collections.emptyList();
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -628,6 +686,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
 	@Override
 	public Optional<FileContent> getAttachmentContent(ModelId modelId, String fileName) {
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -640,12 +700,13 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 							IOUtils.toByteArray(attachment.getProperty("jcr:data").getBinary().getStream())));
 				}
 			}
-
 			return Optional.empty();
 		} catch (PathNotFoundException e) {
 			return Optional.empty();
 		} catch (IOException | RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
 	}
 
@@ -655,6 +716,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 						&& attachment.getFilename().equals(fileName)))) {
 			return false;
 		}
+		final Session session = getSession();
+
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
@@ -665,20 +728,19 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 					Node attachmentNode = attachmentFolderNode.getNode(fileName);
 					attachmentNode.remove();
 					session.save();
+					session.logout();
 					return true;
 				}
 			}
-
+			session.logout();
 			return false;
 		} catch (PathNotFoundException e) {
 			return false;
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+		} finally {
+			session.logout();
 		}
-	}
-
-	public Session getSession() {
-		return this.session;
 	}
 
 	public ModelResource createVersion(ModelId existingId, String newVersion, IUserContext user) {
@@ -704,6 +766,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 			} catch (IOException e) {
 				throw new FatalModelRepositoryException(e.getMessage(), e);
 			}
+
 			return resource;
 		}
 	}
@@ -711,23 +774,30 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 	public Collection<Diagnostic> diagnoseAllModels() {
 		return doInRootNode(repoDiagnostics::diagnose);
 	}
-	
+
 	public Collection<Diagnostic> diagnoseModel(ModelId modelId) {
+		final Session session = getSession();
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 			Node folderNode = session.getNode(modelIdHelper.getFullPath());
 			return repoDiagnostics.diagnose(folderNode);
-		} catch(RepositoryException ex) {
+		} catch (RepositoryException ex) {
 			throw new FatalModelRepositoryException("Diagnostics failed", ex);
+		} finally {
+			session.logout();
 		}
 	}
 
 	private <Result> Result doInRootNode(Function<Node, Result> fn) {
+		final Session session = getSession();
+
 		try {
-			Node node = getSession().getRootNode();
+			Node node = session.getRootNode();
 			return fn.apply(node);
 		} catch (RepositoryException e) {
 			throw new FatalModelRepositoryException(e.getMessage(), e);
+		} finally {
+			session.logout();
 		}
 	}
 

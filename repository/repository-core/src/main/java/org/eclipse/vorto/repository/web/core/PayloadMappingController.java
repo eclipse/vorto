@@ -219,7 +219,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 		final ModelId createdModelId = m.getModelId();	
 		repository.save(createdModelId, m.serialize().getBytes(), createdModelId.getName()+".mapping", user);
 		try {
-			workflowService.start(createdModelId);
+			workflowService.start(createdModelId,user);
 		} catch (WorkflowException e) {
 			// 
 		}

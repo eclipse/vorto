@@ -2,6 +2,9 @@ package org.eclipse.vorto.repository;
 
 import static org.mockito.Mockito.when;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.User;
@@ -67,8 +70,17 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		Mockito.when(userRepository.findByUsername("alex")).thenReturn(User.create("alex"));
 		Mockito.when(userRepository.findByUsername("admin")).thenReturn(User.create("admin", Role.ADMIN));
 		
-		modelRepository = new JcrModelRepository();
-		modelRepository.setSession(jcrSession());
+		modelRepository = new JcrModelRepository() {
+			
+			@Override
+			public Session getSession() {
+				try {
+					return newSession();
+				} catch (RepositoryException e) {
+					throw new RuntimeException(e);
+				}
+			}		
+		};
 		modelRepository.setUserRepository(userRepository);
 		modelRepository.setModelSearchUtil(modelSearchUtil);
 		modelRepository.setModelParserFactory(modelParserFactory);

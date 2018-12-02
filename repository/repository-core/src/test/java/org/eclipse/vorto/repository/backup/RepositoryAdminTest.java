@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -36,7 +35,6 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
 		super.beforeEach();
 		repositoryManager = new DefaultModelBackupService();
 		repositoryManager.setModelRepository(this.modelRepository);
-		repositoryManager.setSession(((JcrModelRepository)this.modelRepository).getSession());
 	}
 	
 	@Test

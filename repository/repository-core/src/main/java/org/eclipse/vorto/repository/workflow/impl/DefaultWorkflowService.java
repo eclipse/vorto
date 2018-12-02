@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -117,9 +118,16 @@ public class DefaultWorkflowService implements IWorkflowService {
 	}
 	
 	@Override
-	public ModelId start(ModelId modelId) {
-		IState nextState = SIMPLE_WORKFLOW.getInitialAction().getTo();
+	public ModelId start(ModelId modelId, IUserContext user) {
+		IAction initial = SIMPLE_WORKFLOW.getInitialAction();
+		initial.getFunctions().stream().forEach(a -> executeFunction(a,createDummyModelInfo(modelId),user));
+
+		IState nextState = initial.getTo();
 		return modelRepository.updateState(modelId, nextState.getName());
+	}
+
+	private ModelInfo createDummyModelInfo(ModelId modelId) {
+		return new ModelInfo(modelId, ModelType.Functionblock); //FIXME ?!?
 	}
 
 	@Override

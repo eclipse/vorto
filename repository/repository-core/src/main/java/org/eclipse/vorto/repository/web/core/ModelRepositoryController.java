@@ -176,7 +176,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 			ModelInfo savedModel = this.modelRepository.save(modelID,
 					template.createModelTemplate(modelID, modelType).getBytes(),
 					modelID.getName() + modelType.getExtension(), userContext);
-			this.workflowService.start(modelID);
+			this.workflowService.start(modelID,userContext);
 			return new ResponseEntity<>(savedModel,HttpStatus.CREATED);
 
 		}
@@ -194,7 +194,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 				.user(SecurityContextHolder.getContext().getAuthentication().getName());
 		
 		ModelResource resource = this.modelRepository.createVersion(modelID, modelVersion, userContext);
-		this.workflowService.start(resource.getId());
+		this.workflowService.start(resource.getId(),userContext);
 		return new ResponseEntity<>(resource,HttpStatus.CREATED);
 
 	}

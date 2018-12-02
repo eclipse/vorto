@@ -30,7 +30,7 @@ public interface IWorkflowService {
 	 * @return
 	 * @throws InvalidInputException
 	 */
-	ModelId start(ModelId model) throws WorkflowException;
+	ModelId start(ModelId model, IUserContext context) throws WorkflowException;
 
 	/**
 	 * Transitions the given models to the next possible state

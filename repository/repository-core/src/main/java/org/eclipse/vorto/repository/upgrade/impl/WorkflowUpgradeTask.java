@@ -62,7 +62,7 @@ public class WorkflowUpgradeTask extends AbstractUpgradeTask implements IUpgrade
 			if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
 				logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
 				try {
-					workflowService.start(modelInfo.getId());
+					workflowService.start(modelInfo.getId(),null);
 				} catch (WorkflowException e) {
 					throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
 				}

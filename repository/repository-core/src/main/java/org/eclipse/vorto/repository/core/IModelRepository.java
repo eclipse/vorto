@@ -17,6 +17,8 @@ package org.eclipse.vorto.repository.core;
 import java.util.List;
 import java.util.Optional;
 
+import javax.jcr.AccessDeniedException;
+
 import org.eclipse.vorto.model.ModelId;
 
 /**
@@ -25,7 +27,7 @@ import org.eclipse.vorto.model.ModelId;
  *
  */
 public interface IModelRepository {
-		
+	
 	/**
 	 * Searches model resources for the given expression
 	 * @param queryExpression
@@ -159,4 +161,5 @@ public interface IModelRepository {
 	 * @return
 	 */
 	boolean deleteAttachment(ModelId modelId, String fileName);
+		
 }

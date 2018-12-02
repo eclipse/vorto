@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
@@ -120,9 +121,10 @@ public class ImportController {
 
 			IModelImporter importer = importerService.getImporterByKey(key).get();
 
-			List<ModelInfo> importedModels = importer.doImport(handleId, getUserContext());
+			IUserContext user = getUserContext();
+			List<ModelInfo> importedModels = importer.doImport(handleId, user);
 			for (ModelInfo modelInfo : importedModels) {
-				workflowService.start(modelInfo.getId());
+				workflowService.start(modelInfo.getId(),user);
 			}
 
 			return new ResponseEntity<List<ModelInfo>>(importedModels, HttpStatus.OK);

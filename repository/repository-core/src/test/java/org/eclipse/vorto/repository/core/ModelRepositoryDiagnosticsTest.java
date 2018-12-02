@@ -30,7 +30,6 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ModelValidationDiagnostic;
 import org.eclipse.vorto.repository.core.impl.diagnostics.NodeDiagnosticUtils;
@@ -48,7 +47,6 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		super.beforeEach();
 		repositoryManager = new DefaultModelBackupService();
 		repositoryManager.setModelRepository(this.modelRepository);
-		repositoryManager.setSession(((JcrModelRepository)this.modelRepository).getSession());
 	}
 	
 	@Test
