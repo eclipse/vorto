@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+import javax.jcr.security.AccessControlEntry;
 import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicyIterator;
@@ -72,6 +75,7 @@ import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
@@ -856,87 +860,12 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 		final Session session = getSession();
 		try {
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelInfo.getId());
-			
-			String path = modelIdHelper.getFullPath();
-			
-			String[] privileges = new String[]{Privilege.JCR_READ, Privilege.JCR_WRITE, Privilege.JCR_MODIFY_ACCESS_CONTROL,Privilege.JCR_READ_ACCESS_CONTROL};
-										
-			AccessControlManager acm = session.getAccessControlManager();
-	 
-			Privilege[] permissions = new Privilege[privileges.length];
-			for (int i = 0; i < privileges.length; i++) {
-				permissions[i] = acm.privilegeFromName(privileges[i]);
-			}
-	 
-			AccessControlList acl = null;
-			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
-			if (it.hasNext()) {
-			    acl = (AccessControlList)it.nextAccessControlPolicy();
-			} else {
-			    acl = (AccessControlList)acm.getPolicies(path)[0];
-			}
-			// add ACL for admin role
-			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
-			
-			// add ACL for user 
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(modelInfo.getAuthor()), permissions);
-
-			acm.setPolicy(path, acl);
-			session.save();
-		} catch(RepositoryException ex) {
-			logger.error("Could not set owner permissions for model",ex);
-			throw new FatalModelRepositoryException("Problem setting owner permissions on model node",ex);
-		}finally {
-			session.logout();
-		}
-	}
-
-	@Override
-	public void grantReadAccess(ModelId modelId, String userOrRole) {
-		final Session session = getSession();
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-			
-			String path = modelIdHelper.getFullPath();
-			
-			String[] privileges = new String[]{Privilege.JCR_READ};
-										
-			AccessControlManager acm = session.getAccessControlManager();
-	 
-			Privilege[] permissions = new Privilege[privileges.length];
-			for (int i = 0; i < privileges.length; i++) {
-				permissions[i] = acm.privilegeFromName(privileges[i]);
-			}
-	 
-			AccessControlList acl = null;
-			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
-			if (it.hasNext()) {
-			    acl = (AccessControlList)it.nextAccessControlPolicy();
-			} else {
-			    acl = (AccessControlList)acm.getPolicies(path)[0];
-			}
-			
-			// add ACL for user 
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(userOrRole), permissions);
-
-			acm.setPolicy(path, acl);
-			session.save();
-		} catch(RepositoryException ex) {
-			logger.error("Could not grant user readd permissions for model",ex);
-			throw new FatalModelRepositoryException("Problem to grant user read permissions for model",ex);
-		}finally {
-			session.logout();
-		}
-	}
-
-	@Override
-	public void revokeReadAccess(ModelId modelId, String userOrRole) {
-		final Session session = getSession();
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
 			String path = modelIdHelper.getFullPath();
-			String[] privileges = new String[] { Privilege.JCR_READ};
+
+			String[] privileges = new String[] { Privilege.JCR_READ, Privilege.JCR_WRITE,
+					Privilege.JCR_MODIFY_ACCESS_CONTROL, Privilege.JCR_READ_ACCESS_CONTROL };
+
 			AccessControlManager acm = session.getAccessControlManager();
 
 			Privilege[] permissions = new Privilege[privileges.length];
@@ -951,18 +880,114 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			} else {
 				acl = (AccessControlList) acm.getPolicies(path)[0];
 			}
+			// add ACL for admin role
+			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
 
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(userOrRole), permissions);
+			// add ACL for user
+			acl.addAccessControlEntry(SimplePrincipal.newInstance(modelInfo.getAuthor()), permissions);
 
-			if (acm.hasPrivileges(path, permissions)) {
-				acm.removePolicy(path, acl);
-				session.save();
-			}
+			acm.setPolicy(path, acl);
+			session.save();
 		} catch (RepositoryException ex) {
-			logger.error("Could not revoke read permissions from model", ex);
-			throw new FatalModelRepositoryException("Problem revoking read permissions on model node", ex);
+			logger.error("Could not set owner permissions for model", ex);
+			throw new FatalModelRepositoryException("Problem setting owner permissions on model node", ex);
 		} finally {
 			session.logout();
 		}
+	}
+
+	@Override
+	public Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user) {
+		List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
+		final Session session = getSession();
+		try {			
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+			String path = modelIdHelper.getFullPath();
+			AccessControlManager acm = session.getAccessControlManager();
+			
+			AccessControlList acl = null;
+			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+			if (it.hasNext()) {
+				acl = (AccessControlList) it.nextAccessControlPolicy();
+			} else {
+				acl = (AccessControlList) acm.getPolicies(path)[0];
+			}
+			
+			for (AccessControlEntry entry : acl.getAccessControlEntries()) {
+				if (!entry.getPrincipal().getName().equals(user.getUsername())) { //not interested in owner policy
+					policyEntries.add(PolicyEntry.of(entry));
+				}
+			}
+
+		} catch(RepositoryException ex) {
+			logger.error("Could not read policies entries of model", ex);
+			throw new FatalModelRepositoryException("Problem reading model policy entries", ex);
+		} finally {
+			session.logout();
+		}
+		
+		return policyEntries;
+	}
+
+	@Override
+	public void addPolicyEntry(ModelId modelId, PolicyEntry newEntry) {
+		final Session session = getSession();
+		try {
+			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+			String path = modelIdHelper.getFullPath();
+
+			AccessControlManager acm = session.getAccessControlManager();
+
+			AccessControlList acl = null;
+			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+			if (it.hasNext()) {
+				acl = (AccessControlList) it.nextAccessControlPolicy();
+			} else {
+				acl = (AccessControlList) acm.getPolicies(path)[0];
+			}
+			
+			AccessControlEntry existingEntry = null;
+			for (AccessControlEntry entry : acl.getAccessControlEntries()) {
+				if (entry.getPrincipal().getName().equals(newEntry.getPrincipalId())) {
+					existingEntry = entry;
+					break;
+				}
+			}
+			
+			if (existingEntry != null) {
+				acl.removeAccessControlEntry(existingEntry); // firstly remove policy entry before altering id
+			}
+			
+			String[] privileges = createPrivileges(newEntry);
+			Privilege[] permissions = new Privilege[privileges.length];
+			for (int i = 0; i < privileges.length; i++) {
+				permissions[i] = acm.privilegeFromName(privileges[i]);
+			}
+			if (privileges.length > 0) {
+				acl.addAccessControlEntry(SimplePrincipal.newInstance(newEntry.getPrincipalId()), permissions);
+			}
+			
+			acm.setPolicy(path, acl);
+			
+			session.save();
+		} catch (RepositoryException ex) {
+			logger.error("Could not grant user readd permissions for model", ex);
+			throw new FatalModelRepositoryException("Problem to grant user read permissions for model", ex);
+		} finally {
+			session.logout();
+		}
+	}
+
+	private String[] createPrivileges(PolicyEntry newEntry) {
+		Set<String> result = new HashSet<>();
+		if (newEntry.isGrantRead()) {
+			result.add(Privilege.JCR_READ);
+		}
+		if (newEntry.isGrantWrite()) {
+			result.add(Privilege.JCR_WRITE);
+		}
+		return result.toArray(new String[result.size()]);
 	}
 }

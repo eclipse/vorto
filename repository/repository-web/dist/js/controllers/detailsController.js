@@ -2,6 +2,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, $timeout, $window, $timeout) {
 
 		$scope.model = [];
+		$scope.aclEntries = [];
 		$scope.platformGeneratorMatrix = null;
 		$scope.platformDemoGeneratorMatrix = null;
 		$scope.workflowActions = [];
@@ -779,5 +780,52 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		};
 		
 		$scope.diagnoseModel();
+		
+		$scope.getPolicies = function() {
+			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies')
+				.success(function (result) {
+					$scope.aclEntries = result;
+				});
+		};
+		
+		$scope.openCreatePolicyEntryDialog = function (model) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope, model) {
+					$scope.model = model;
+					$scope.isLoading = false;
+					
+					$scope.createEntry = function (entry) {
+						$scope.isLoading = true;
+						console.log(entry);
+						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close();
+						});
+					};
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
+				size: "sm",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+			
+			modalInstance.result.then(
+				function (data) {
+					$scope.getPolicies();
+				});
+		};
+
+		
+		$scope.getPolicies();
 	}
+	
 ]);

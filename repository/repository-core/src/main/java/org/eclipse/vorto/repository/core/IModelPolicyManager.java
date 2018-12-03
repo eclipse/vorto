@@ -1,5 +1,7 @@
 package org.eclipse.vorto.repository.core;
 
+import java.util.Collection;
+
 import org.eclipse.vorto.model.ModelId;
 
 public interface IModelPolicyManager {
@@ -9,19 +11,20 @@ public interface IModelPolicyManager {
 	 * @param modelInfo
 	 */
 	void grantOwnerAccess(ModelInfo modelInfo);
-	
-	/**
-	 * Adds a model policy for the given modelID and the given user
-	 * @param modelId
-	 * @param userOrRole
-	 */
-	void grantReadAccess(ModelId modelId, String userOrRole);
 
 	/**
-	 * Removes the model policy for the given modelId and user
-	 * @param modelId
-	 * @param userOrRole
+	 * Gets a list of all policy entries for the given model ID
+	 * @param modelID
+	 * @param user caller userID requesting the policyentries
+	 * @return
 	 */
-	void revokeReadAccess(ModelId modelId, String userOrRole); 
+	Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user);
+
+	/**
+	 * Adds a policy entry for the given model
+	 * @param modelId
+	 * @param entry
+	 */
+	void addPolicyEntry(ModelId modelId, PolicyEntry entry); 
 	
 }

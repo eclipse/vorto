@@ -23,4 +23,27 @@ public enum Role {
 	MODEL_CREATOR, // users with this role may create models in the system, import models, edit his own models and delete own models as long as they are not released
 	MODEL_PROMOTER, // users with this role may start a release process for a model and deprecate a model
 	MODEL_REVIEWER // user with this role may review models and either approve or reject them
+;
+
+	private static final String rolePrefix = "ROLE_";
+	
+	public static boolean isValid(String name) {
+		if (name.equalsIgnoreCase("admin")) {
+			return true;
+		} else if (name.startsWith(rolePrefix)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static Role of(String value) {
+		if (value.equalsIgnoreCase("admin")) {
+			return Role.ADMIN;
+		} else if (value.startsWith(rolePrefix)) {
+			return Role.valueOf(value.substring(value.indexOf(rolePrefix)+rolePrefix.length()));
+		} else {
+			return Role.valueOf(value);
+		}
+	}
 }

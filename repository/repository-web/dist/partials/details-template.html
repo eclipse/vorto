@@ -38,7 +38,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="(hasAuthority('ROLE_ADMIN')) && model.author === 'anonymousUser'">
+			<div ng-show="model.author === 'anonymousUser'">
 				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
@@ -75,6 +75,11 @@
 						<a href="" role="tab" data-target="#discussion" data-toggle="tab">
 							<i class="fa fa-comment"></i> Review Discussions
 							<span class="badge">{{comments.length}}</span>
+						</a>
+					</li>
+					<li ng-show="!model.released && (model.author === user || hasAuthority('ROLE_ADMIN'))">
+						<a href="" role="tab" data-target="#policies" data-toggle="tab">
+							<i class="fa fa-lock"></i> Policy
 						</a>
 					</li>
 				</ul>
@@ -360,6 +365,35 @@
 								</div>
 								<!-- /.box (chat box) -->
 
+							</section>
+						</div>
+
+					</div>
+					
+					<div class="tab-pane" id="policies">
+						<div class="row ">
+							<!-- Left col -->
+							<section class="col-md-12">
+								<div class="pull-right">
+  									<button type="button" class="btn btn-default btn-lg" ng-click="openCreatePolicyEntryDialog()">
+    									<i class="fa fa-plus"></i></span> Add Entry
+  									</button>
+								</div>
+								<table class="table table-bordered table-condensed" ng-show="aclEntries.length > 0">
+									<tr>
+										<td style="text-align:center">Principal ID</td>
+										<td style="text-align:center">Principal Type</td>
+										<td style="text-align:center">Read</td>
+										<td style="text-align:center">Write</td>
+									</tr>
+									<tr ng-repeat="entry in aclEntries">
+										<td style="text-align:center">{{entry.principalId}}</td>
+										<td style="text-align:center">{{entry.principalType}}</td>
+										<td style="text-align:center"><input type="checkbox" disabled="disabled" class="form-control input-sm" ng-model="entry.grantRead"></td>
+										<td style="text-align:center"><input type="checkbox" disabled="disabled" class="form-control input-sm" ng-model="entry.grantWrite"></td>
+									</tr>
+								</table>
+								<p ng-show="aclEntries.length === 0">No policies defined</p>
 							</section>
 						</div>
 

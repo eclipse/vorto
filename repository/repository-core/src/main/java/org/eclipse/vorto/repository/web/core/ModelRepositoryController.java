@@ -32,10 +32,12 @@ import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IDiagnostics;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
+import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -82,6 +84,9 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	
 	@Autowired
 	private IDiagnostics diagnosticsService;
+	
+	@Autowired
+	private IModelPolicyManager policyManager;
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
@@ -246,5 +251,20 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	public Collection<Diagnostic> runDiagnostics(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "model ID must not be null");
 		return diagnosticsService.diagnoseModel(ModelId.fromPrettyFormat(modelId));
+	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.GET)
+	public Collection<PolicyEntry> getPolicies(final @PathVariable String modelId, Principal user) {
+		Objects.requireNonNull(modelId, "model ID must not be null");
+		return policyManager.getPolicyEntries(ModelId.fromPrettyFormat(modelId),UserContext.user(user.getName()));
+	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.PUT)
+	public void addOrUpdatePolicyEntry(final @PathVariable String modelId, final @RequestBody PolicyEntry entry) {
+		Objects.requireNonNull(modelId, "modelID must not be null");
+		Objects.requireNonNull(entry, "entry must not be null");
+		policyManager.addPolicyEntry(ModelId.fromPrettyFormat(modelId),entry);
 	}
 }
