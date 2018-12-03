@@ -3,7 +3,6 @@ package org.eclipse.vorto.service.mapping;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.twin.TwinPayloadFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
@@ -14,104 +13,112 @@ import org.eclipse.vorto.service.mapping.spec.SpecWithConditionXpath;
 import org.eclipse.vorto.service.mapping.spec.SpecWithConditionedRules;
 import org.eclipse.vorto.service.mapping.spec.SpecWithSameFunctionblock;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonMappingTest {
-	
-	private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-	@Test
-	public void testMapWithSimpleCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCondition())
-				.build();
+  private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-		String json = "{\"count\" : 2 }";
+  @Test
+  public void testMapWithSimpleCondition() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithCondition()).build();
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
-		assertEquals(2.0, mappedOutput.get("button").getStatusProperty("sensor_value2").get().getValue());
+    String json = "{\"count\" : 2 }";
 
-		json = "{\"count\" : 0 }";
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value").isPresent());
+    assertEquals(2.0,
+        mappedOutput.get("button").getStatusProperty("sensor_value2").get().getValue());
 
-		mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(0.0, mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
-		assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
-		
-		System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "org.eclipse.vorto", "123")));
-		
-		System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput.get("button"), "button", "org.eclipse.vorto", "123")));
+    json = "{\"count\" : 0 }";
 
-	}
+    mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    assertEquals(0.0,
+        mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
+    assertFalse(mappedOutput.get("button").getStatusProperty("sensor_value2").isPresent());
 
-	
+    System.out.println(
+        gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput, "org.eclipse.vorto", "123")));
 
-	@Test
-	public void testMapWithJxpathCondition() throws Exception {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath())
-				.build();
+    System.out.println(gson.toJson(TwinPayloadFactory.toDittoProtocol(mappedOutput.get("button"),
+        "button", "org.eclipse.vorto", "123")));
 
-		String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
+  }
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
-		assertEquals(100.0, mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
 
-	}
 
-	@Test
-	public void testMappingUsingListInput() throws Exception {
+  @Test
+  public void testMapWithJxpathCondition() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithConditionXpath()).build();
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload())
-				.build();
+    String json = "{\"data\" : [{\"id\": 100,\"value\": \"x\"},{\"id\": 200,\"value\": \"y\"}]}";
 
-		String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    assertEquals(100.0,
+        mappedOutput.get("button").getStatusProperty("sensor_value").get().getValue());
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+  @Test
+  public void testMappingUsingListInput() throws Exception {
 
-		assertEquals("DOUBLE", buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithArrayPayload()).build();
 
-		System.out.println(mappedOutput);
+    String json = "[{\"clickType\" : \"DOUBLE\" }, {\"clickType\" : \"SINGLE\" }]";
 
-	}
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-	@Test
-	public void testMapSingleFunctionblockOfInfomodel2() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConditionedRules())
-				.build();
-		
-		final String sampleHomeConnectRESTResponse = "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(sampleHomeConnectRESTResponse,Object.class));
-		System.out.println(mappedOutput);
-		assertNull(mappedOutput.get("operationState"));
-		FunctionblockValue doorStateFunctionblockData = mappedOutput.get("doorState");
-		assertEquals("Locked", (String)doorStateFunctionblockData.getStatusProperty("sensor_value").get().getValue());
-		
-	}
+    assertEquals("DOUBLE",
+        buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
-	@Test
-	public void testMappingWithInfoModelUsingSameFunctionblock() throws Exception {
+    System.out.println(mappedOutput);
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithSameFunctionblock())
-				.build();
+  }
 
-		String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
+  @Test
+  public void testMapSingleFunctionblockOfInfomodel2() {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithConditionedRules()).build();
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    final String sampleHomeConnectRESTResponse =
+        "{\"data\" : { \"key\" : \"DoorState\", \"value\" : \"Locked\"}}";
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("btn1");
+    InfomodelValue mappedOutput =
+        mapper.mapSource(gson.fromJson(sampleHomeConnectRESTResponse, Object.class));
+    System.out.println(mappedOutput);
+    assertNull(mappedOutput.get("operationState"));
+    FunctionblockValue doorStateFunctionblockData = mappedOutput.get("doorState");
+    assertEquals("Locked",
+        (String) doorStateFunctionblockData.getStatusProperty("sensor_value").get().getValue());
 
-		assertEquals(2.0, buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+  }
 
-		FunctionblockValue button2FunctionblockData = mappedOutput.get("btn2");
+  @Test
+  public void testMappingWithInfoModelUsingSameFunctionblock() throws Exception {
 
-		assertEquals(10.0, button2FunctionblockData.getStatusProperty("sensor_value").get().getValue());
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithSameFunctionblock()).build();
 
-		System.out.println(mappedOutput);
+    String json = "{\"btnvalue1\" : 2, \"btnvalue2\": 10}";
 
-	}
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("btn1");
+
+    assertEquals(2.0, buttonFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+
+    FunctionblockValue button2FunctionblockData = mappedOutput.get("btn2");
+
+    assertEquals(10.0, button2FunctionblockData.getStatusProperty("sensor_value").get().getValue());
+
+    System.out.println(mappedOutput);
+
+  }
 
 }

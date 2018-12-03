@@ -2,7 +2,6 @@ package org.eclipse.vorto.mapping.engine.converter.javascript;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-
 import org.eclipse.vorto.mapping.engine.IDataMapper;
 import org.eclipse.vorto.mapping.engine.MappingException;
 import org.eclipse.vorto.mapping.engine.converter.JavascriptEvalProvider;
@@ -11,198 +10,195 @@ import org.eclipse.vorto.mapping.engine.converter.types.TypeFunctionFactory;
 import org.eclipse.vorto.model.runtime.FunctionblockValue;
 import org.eclipse.vorto.model.runtime.InfomodelValue;
 import org.junit.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonMappingTest {
-	
-	private static Gson gson = new GsonBuilder().create();
-	
-	@Test
-	public void testConfigMapping() throws Exception {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
-				.registerConverterFunction(TypeFunctionFactory.createFunctions())
-				.registerConverterFunction(StringFunctionFactory.createFunctions())
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+  private static Gson gson = new GsonBuilder().create();
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+  @Test
+  public void testConfigMapping() throws Exception {
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithConfigMapping())
+        .registerConverterFunction(TypeFunctionFactory.createFunctions())
+        .registerConverterFunction(StringFunctionFactory.createFunctions())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		System.out.println(mappedOutput);
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-	}
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-	@Test
-	public void testMapping() throws Exception {
+    System.out.println(mappedOutput);
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.registerConverterFunction(TypeFunctionFactory.createFunctions())
-				.registerConverterFunction(StringFunctionFactory.createFunctions())
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+  }
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+  @Test
+  public void testMapping() throws Exception {
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+        .registerConverterFunction(TypeFunctionFactory.createFunctions())
+        .registerConverterFunction(StringFunctionFactory.createFunctions())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
-		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
-		assertEquals(2322f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
-		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
+    assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
+        .get().getValue());
+    assertEquals(2,
+        buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
 
-		System.out.println(gson.toJson(mappedOutput.getProperties()));
+    FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
 
-	}
-	
-	@Test(expected = MappingException.class)
-	public void testMappingWithMalicousScript() throws Exception {
+    assertEquals(2322f,
+        voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+    assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+    System.out.println(gson.toJson(mappedOutput.getProperties()));
 
-			@Override
-			protected String getMaliciousFunctionBody() {
-				return "return quit();";
-			}
-			
-		})
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+  }
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+  @Test(expected = MappingException.class)
+  public void testMappingWithMalicousScript() throws Exception {
 
-		mapper.mapSource(gson.fromJson(json, Object.class));
-	}
-	
-	@Test(expected = MappingException.class)
-	public void testMappingWithMalicousScript2() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+          @Override
+          protected String getMaliciousFunctionBody() {
+            return "return quit();";
+          }
 
-			@Override
-			protected String getMaliciousFunctionBody() {
-				return "return exit();";
-			}
-			
-		})
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.mapSource(gson.fromJson(json, Object.class));
-	}
-	
-	@Test(expected = MappingException.class)
-	public void testMappingWithMalicousScript3() throws Exception {
+    mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+  @Test(expected = MappingException.class)
+  public void testMappingWithMalicousScript2() throws Exception {
 
-			@Override
-			protected String getMaliciousFunctionBody() {
-				return "while (true) { }";
-			}
-			
-		})
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+          @Override
+          protected String getMaliciousFunctionBody() {
+            return "return exit();";
+          }
 
-		mapper.mapSource(gson.fromJson(json, Object.class));
-	}
-	
-	@Test(expected = MappingException.class)
-	public void testMappingWithMalicousScript4() throws Exception {
+        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-			@Override
-			protected String getMaliciousFunctionBody() {
-				return "for (;;) { }";
-			}
-			
-		})
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+    mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+  @Test(expected = MappingException.class)
+  public void testMappingWithMalicousScript3() throws Exception {
 
-		mapper.mapSource(gson.fromJson(json, Object.class));
-	}
-	
-	@Test(expected = MappingException.class)
-	public void testMappingWithMalicousScriptUsingJavaImports() throws Exception {
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
+          @Override
+          protected String getMaliciousFunctionBody() {
+            return "while (true) { }";
+          }
 
-			@Override
-			protected String getMaliciousFunctionBody() {
-				return "load('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js')";
-			}
-		})
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		mapper.mapSource(gson.fromJson(json, Object.class));
-	}
+    mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-	@Test
-	public void testMapDevicePayloadWithInitialValue() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.registerConverterFunction(TypeFunctionFactory.createFunctions())
-				.registerConverterFunction(StringFunctionFactory.createFunctions())
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+  @Test(expected = MappingException.class)
+  public void testMappingWithMalicousScript4() throws Exception {
 
-		String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+          @Override
+          protected String getMaliciousFunctionBody() {
+            return "for (;;) { }";
+          }
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
-		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+    mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-		assertEquals(0f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
-		assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
+  @Test(expected = MappingException.class)
+  public void testMappingWithMalicousScriptUsingJavaImports() throws Exception {
 
-		System.out.println(mappedOutput);
-	}
+    IDataMapper mapper =
+        IDataMapper.newBuilder().withSpecification(new SpecWithMaliciousFunction() {
 
-	@Test
-	public void testMapSingleFunctionblockOfInfomodel() {
-		IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
-				.registerConverterFunction(TypeFunctionFactory.createFunctions())
-				.registerConverterFunction(StringFunctionFactory.createFunctions())
-				.registerScriptEvalProvider(new JavascriptEvalProvider())
-				.build();
+          @Override
+          protected String getMaliciousFunctionBody() {
+            return "load('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js')";
+          }
+        }).registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		String json = "{\"clickType\" : \"DOUBLE\"}";
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"2322mV\"}";
 
-		InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+    mapper.mapSource(gson.fromJson(json, Object.class));
+  }
 
-		FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+  @Test
+  public void testMapDevicePayloadWithInitialValue() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+        .registerConverterFunction(TypeFunctionFactory.createFunctions())
+        .registerConverterFunction(StringFunctionFactory.createFunctions())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
 
-		assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state").get().getValue());
-		assertEquals(2, buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+    String json = "{\"clickType\" : \"DOUBLE\", \"batteryVoltage\": \"0mV\"}";
 
-		FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
 
-		assertNull(voltageFunctionblockData);
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
 
-		System.out.println(mappedOutput);
-	}
+    assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
+        .get().getValue());
+    assertEquals(2,
+        buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+
+    FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+
+    assertEquals(0f, voltageFunctionblockData.getStatusProperty("sensor_value").get().getValue());
+    assertEquals("mV", voltageFunctionblockData.getStatusProperty("sensor_units").get().getValue());
+
+    System.out.println(mappedOutput);
+  }
+
+  @Test
+  public void testMapSingleFunctionblockOfInfomodel() {
+    IDataMapper mapper = IDataMapper.newBuilder().withSpecification(new SpecWithCustomFunction())
+        .registerConverterFunction(TypeFunctionFactory.createFunctions())
+        .registerConverterFunction(StringFunctionFactory.createFunctions())
+        .registerScriptEvalProvider(new JavascriptEvalProvider()).build();
+
+    String json = "{\"clickType\" : \"DOUBLE\"}";
+
+    InfomodelValue mappedOutput = mapper.mapSource(gson.fromJson(json, Object.class));
+
+    FunctionblockValue buttonFunctionblockData = mappedOutput.get("button");
+
+    assertEquals(true, (Boolean) buttonFunctionblockData.getStatusProperty("digital_input_state")
+        .get().getValue());
+    assertEquals(2,
+        buttonFunctionblockData.getStatusProperty("digital_input_count").get().getValue());
+
+    FunctionblockValue voltageFunctionblockData = mappedOutput.get("voltage");
+
+    assertNull(voltageFunctionblockData);
+
+    System.out.println(mappedOutput);
+  }
 }

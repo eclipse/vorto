@@ -38,15 +38,11 @@ public class ModelControllerIntegrationTest {
 
     @Test public void testModelAccess() throws Exception {
         mockMvc.perform(get("/api/v1/models/" + testModel.prettyName))
-            .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
-            .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
             .andExpect(status().isOk());
     }
 
     @Test public void testGetModelContent() throws Exception {
         mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/content"))
-            .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
-            .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
             .andExpect(status().isOk());
     }
 

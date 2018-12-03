@@ -1,16 +1,12 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of the Eclipse Public
+ * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
+ * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * Contributors: Bosch Software Innovations GmbH - Please refer to git log
  */
 package org.eclipse.vorto.repository.api;
 
@@ -25,138 +21,136 @@ import java.util.Map;
  */
 @Deprecated
 public class ModelInfo extends AbstractModel {
-	
-	protected String author;
-	protected Date creationDate;
-	protected Date modificationDate;
-	protected boolean hasImage = false;
-	protected String state;
-	protected Boolean imported = false;
-		
-	protected List<ModelId> referencedBy = new ArrayList<ModelId>();
-	
-	protected Map<String,ModelId> platformMappings = new HashMap<>();
-	
-	public ModelInfo(ModelId modelId,ModelType modelType) {
-		super(modelId,modelType);
-	}
-	
-	public ModelInfo(ModelId modelId, String type) {
-		this(modelId,ModelType.valueOf(type));
-	}
-	
-	public ModelInfo() {
-	}
-	
-	public List<ModelId> getReferencedBy() {
-		return referencedBy;
-	}
 
-	public void setReferencedBy(List<ModelId> referencedBy) {
-		this.referencedBy = referencedBy;
-	}
+  protected String author;
+  protected Date creationDate;
+  protected Date modificationDate;
+  protected boolean hasImage = false;
+  protected String state;
+  protected Boolean imported = false;
 
-	public String getAuthor() {
-		return author;
-	}
+  protected List<ModelId> referencedBy = new ArrayList<ModelId>();
 
-	public void setAuthor(String author) {
-		this.author = author;
-	}
+  protected Map<String, ModelId> platformMappings = new HashMap<>();
 
-	public Date getCreationDate() {
-		return creationDate;
-	}
+  public ModelInfo(ModelId modelId, ModelType modelType) {
+    super(modelId, modelType);
+  }
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-	
-	public Date getModificationDate() {
-		return modificationDate;
-	}
+  public ModelInfo(ModelId modelId, String type) {
+    this(modelId, ModelType.valueOf(type));
+  }
 
-	public void setModificationDate(Date modificationDate) {
-		this.modificationDate = modificationDate;
-	}
+  public ModelInfo() {}
 
-	public Map<String,ModelId> getPlatformMappings() {
-		return this.platformMappings;
-	}
+  public List<ModelId> getReferencedBy() {
+    return referencedBy;
+  }
 
-	public void setPlatformMappings(Map<String,ModelId> platformMappings) {
-		this.platformMappings = platformMappings;
-	}
+  public void setReferencedBy(List<ModelId> referencedBy) {
+    this.referencedBy = referencedBy;
+  }
 
-	public boolean isHasImage() {
-		return hasImage;
-	}
+  public String getAuthor() {
+    return author;
+  }
 
-	public void setHasImage(boolean hasImage) {
-		this.hasImage = hasImage;
-	}
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-	public String getState() {
-		return state;
-	}
+  public Date getCreationDate() {
+    return creationDate;
+  }
 
-	public void setState(String state) {
-		this.state = state;
-	}
-	
-	@Override
-	public String toString() {
-		return "ModelInfo [ id =" + id + ", type=" + type + "]";
-	}
+  public void setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
-				+ ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
+  public Date getModificationDate() {
+    return modificationDate;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ModelInfo other = (ModelInfo) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
+  public void setModificationDate(Date modificationDate) {
+    this.modificationDate = modificationDate;
+  }
 
-		return (type == other.type);
-	}
+  public Map<String, ModelId> getPlatformMappings() {
+    return this.platformMappings;
+  }
 
-	public void addPlatformMapping(String targetPlatform,ModelId mappingId) {
-		if (targetPlatform != null && !targetPlatform.equals("")) {
-			this.platformMappings.put(targetPlatform,mappingId);
-		}
-	}
+  public void setPlatformMappings(Map<String, ModelId> platformMappings) {
+    this.platformMappings = platformMappings;
+  }
 
-	public void addReferencedBy(ModelId id) {
-		this.referencedBy.add(id);
-	}
+  public boolean isHasImage() {
+    return hasImage;
+  }
 
-	public boolean isReleased() {
-		return "released".equalsIgnoreCase(this.state) || "deprecated".equalsIgnoreCase(this.state);
-	}
+  public void setHasImage(boolean hasImage) {
+    this.hasImage = hasImage;
+  }
 
-	public Boolean getImported() {
-		return imported;
-	}
+  public String getState() {
+    return state;
+  }
 
-	public void setImported(Boolean imported) {
-		this.imported = imported;
-	}
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  @Override
+  public String toString() {
+    return "ModelInfo [ id =" + id + ", type=" + type + "]";
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    result = prime * result + ((type == null) ? 0 : type.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    ModelInfo other = (ModelInfo) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+
+    return (type == other.type);
+  }
+
+  public void addPlatformMapping(String targetPlatform, ModelId mappingId) {
+    if (targetPlatform != null && !targetPlatform.equals("")) {
+      this.platformMappings.put(targetPlatform, mappingId);
+    }
+  }
+
+  public void addReferencedBy(ModelId id) {
+    this.referencedBy.add(id);
+  }
+
+  public boolean isReleased() {
+    return "released".equalsIgnoreCase(this.state) || "deprecated".equalsIgnoreCase(this.state);
+  }
+
+  public Boolean getImported() {
+    return imported;
+  }
+
+  public void setImported(Boolean imported) {
+    this.imported = imported;
+  }
 
 }

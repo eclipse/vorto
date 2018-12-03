@@ -5,29 +5,29 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 public class UserUtils {
-	
 
-	public static String getUserRolesAsCommaSeparatedString(User user) {
-		Set<Role> userRoles = UserUtils.extractRolesAsList(user.getRoles());
-		StringJoiner roles = new StringJoiner(",");
 
-		for (Role userRole : userRoles) {
-			roles.add("ROLE_" + userRole);
+  public static String getUserRolesAsCommaSeparatedString(User user) {
+    Set<Role> userRoles = UserUtils.extractRolesAsList(user.getRoles());
+    StringJoiner roles = new StringJoiner(",");
 
-		}
-		return roles.toString();
-	}
-	 
-	public static Set<Role> extractRolesAsList(Set<UserRole> userRoles) {
-		Set<Role> existingRole = new HashSet<>();
+    for (Role userRole : userRoles) {
+      roles.add("ROLE_" + userRole);
 
-		if(userRoles == null)
-			return existingRole;
+    }
+    return roles.toString();
+  }
 
-		for(UserRole userRole : userRoles) {
-			existingRole.add(userRole.getRole());
-		}
-		return existingRole;
-	}
-	
+  public static Set<Role> extractRolesAsList(Set<UserRole> userRoles) {
+    Set<Role> existingRole = new HashSet<>();
+
+    if (userRoles == null)
+      return existingRole;
+
+    for (UserRole userRole : userRoles) {
+      existingRole.add(userRole.getRole());
+    }
+    return existingRole;
+  }
+
 }
