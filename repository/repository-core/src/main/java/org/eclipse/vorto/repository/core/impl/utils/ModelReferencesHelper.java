@@ -12,6 +12,7 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.vorto.core.api.model.model.ModelReference;
 import org.eclipse.vorto.model.ModelId;
 
 /**
@@ -38,6 +39,11 @@ public class ModelReferencesHelper {
 
   public void addModelReference(String prettyFormat) {
     this.references.add(ModelId.fromPrettyFormat(prettyFormat));
+  }
+  
+  public void addModelReference(ModelReference reference) {
+    ModelId modelId = ModelId.fromReference(reference.getImportedNamespace(), reference.getVersion());
+    references.add(modelId);
   }
 
   public List<ModelId> getReferences() {

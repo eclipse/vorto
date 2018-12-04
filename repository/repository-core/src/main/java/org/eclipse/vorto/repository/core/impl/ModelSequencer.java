@@ -62,6 +62,11 @@ public class ModelSequencer extends Sequencer {
     outputNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
     outputNode.setProperty("vorto:name", modelResource.getId().getName());
 
+    if (outputNode.hasProperty("vorto:references")) { // first remove any previous references of the node.
+      outputNode.getProperty("vorto:references").remove();
+      outputNode.getSession().save();
+    }
+    
     ModelReferencesHelper referencesHelper =
         new ModelReferencesHelper(modelResource.getReferences());
     if (referencesHelper.hasReferences()) {

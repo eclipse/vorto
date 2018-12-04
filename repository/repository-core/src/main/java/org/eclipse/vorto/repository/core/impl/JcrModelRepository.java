@@ -24,7 +24,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.jcr.Binary;
-import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -66,6 +65,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.modeshape.jcr.api.JcrTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +99,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
   @Autowired
   private RepositoryDiagnostics repoDiagnostics;
+  
+  private static final JcrTools jcrTools = new JcrTools();
 
   @Override
   public List<ModelInfo> search(final String expression) {
@@ -117,12 +119,12 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
       while (rowIterator.hasNext()) {
         Row row = rowIterator.nextRow();
         Node currentNode = row.getNode();
-        if (currentNode.hasProperty("vorto:type")) {
-          try {
+        try {
+          if (currentNode.hasProperty("vorto:type")) {
             modelResources.add(createMinimalModelInfo(currentNode));
-          } catch (Exception ex) {
-            logger.debug("Error while converting node to a ModelInfo", ex);
           }
+        } catch (Exception ex) {
+          logger.debug("Error while converting node to a ModelInfo", ex);
         }
       }
 
@@ -149,8 +151,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
       resource.setAuthor(node.getProperty("vorto:author").getString());
     }
 
-    NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
-    if (imageNodeIterator.hasNext()) {
+    if (!getAttachmentsByTag(resource.getId(), Attachment.TAG_IMAGE).isEmpty()) {
       resource.setHasImage(true);
     }
 
@@ -403,9 +404,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
             modelResource.getReferencedBy());
       }
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-      Item item = session.getItem(modelIdHelper.getFullPath());
-      item.remove();
-      session.save();
+      jcrTools.removeAllChildren(session, modelIdHelper.getFullPath());
     } catch (RepositoryException e) {
       throw new FatalModelRepositoryException("Problem occured removing the model", e);
     }

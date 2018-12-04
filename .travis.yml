@@ -24,7 +24,7 @@ install:
 script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean install -f pom.xml
+  - mvn clean install -P checkstyle
 
 cache:
   directories:
@@ -34,8 +34,8 @@ cache:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f repository/repository-web/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-web;
-    docker build -f repository/generator-gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./repository/generator-gateway;
+    docker build -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-server;
+    docker build -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
     docker push eclipsevorto/vorto-repo;
-    docker push eclipsevorto/vorto-generator-gateway;
+    docker push eclipsevorto/vorto-generators;
     fi

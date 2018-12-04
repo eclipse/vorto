@@ -51,7 +51,7 @@ public class DefaultModelBackupService implements IModelBackupService {
   @Override
   public byte[] backup() throws Exception {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ((org.modeshape.jcr.api.Session) session).exportDocumentView("/", baos, false, false);
+    ((org.modeshape.jcr.api.Session) session).exportSystemView("/", baos, false, false);
     baos.close();
     return baos.toByteArray();
   }

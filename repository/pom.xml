@@ -36,12 +36,12 @@
 				<scope>import</scope>
 				<exclusions>
 					<exclusion>
-						<artifactId>org.apache.tomcat.embed</artifactId>
-						<groupId>tomcat-embed-core</groupId>
+						<groupId>org.apache.tomcat.embed</groupId>
+						<artifactId>tomcat-embed-core</artifactId>
 					</exclusion>
 					<exclusion>
-						<artifactId>org.apache.tomcat.embed</artifactId>
-						<groupId>tomcat-embed-websocket</groupId>
+						<groupId>org.apache.tomcat.embed</groupId>
+						<artifactId>tomcat-embed-websocket</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
