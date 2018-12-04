@@ -103,7 +103,7 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     ModelInfo modelResource = modelRepository.getById(modelId);
 
     try {
-      ZipEntry zipEntry = new ZipEntry(modelFile.getFileName());
+      ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
       zipOutputStream.putNextEntry(zipEntry);
       zipOutputStream.write(modelFile.getContent());
       zipOutputStream.closeEntry();
