@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import javax.jcr.Binary;
+import javax.jcr.Item;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -405,6 +406,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
       }
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
       jcrTools.removeAllChildren(session, modelIdHelper.getFullPath());
+      Item item = session.getItem(modelIdHelper.getFullPath());
+      item.remove();
+      session.save();
     } catch (RepositoryException e) {
       throw new FatalModelRepositoryException("Problem occured removing the model", e);
     }
