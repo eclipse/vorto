@@ -33,3 +33,5 @@ Any user who wants to create a new model need to be logged in to Vorto repositor
 [Complete DSL Reference]({{< ref "appendix/infomodel_dsl.md" >}}) for Information Models
 
 [Model Versioning]({{< ref "userguide/model_versioning.md" >}}) for existing Models
+
+[Model Importing]({{< ref "userguide/import_model.md" >}}) through import function
