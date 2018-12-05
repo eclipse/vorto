@@ -4,14 +4,21 @@ date: 2018-12-02T10:58:37+08:00
 weight: 105
 ---
 
-This section would lead you through the steps to create a new model, say either a Information model or function block or data type.
+This section would lead you through the various ways to create a new model, say either a Information model or function block or data type.
 <!-- more -->
 
 ## Prerequisite 
 
-Any user who wants to create a new model need to be logged in to Vorto repository. If the user is not logged in yet, click on the button **login** on the top right hand coner.
+The user needs to be logged in to repository to create models.
 
 ## Create a model
+
+* There are 2 ways to create new models in the repository
+
+1. Using the **Web Editor** with the repository
+2. Using any 3rd party tool and importing the models, refer: [Model Importing]({{< ref "userguide/import_model.md" >}})
+
+Here we will be seeing the steps to create models through the _Web Editor_
 
 * click on **create new model** button that leads to the following dialog box.
  
@@ -33,3 +40,5 @@ Any user who wants to create a new model need to be logged in to Vorto repositor
 [Complete DSL Reference]({{< ref "appendix/infomodel_dsl.md" >}}) for Information Models
 
 [Model Versioning]({{< ref "userguide/model_versioning.md" >}}) for existing Models
+
+[Model Importing]({{< ref "userguide/import_model.md" >}}) through import function
