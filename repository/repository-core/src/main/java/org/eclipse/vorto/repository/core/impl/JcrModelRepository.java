@@ -585,10 +585,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
   @Override
   public List<Attachment> getAttachments(ModelId modelId) {
+    ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+    Node modelFolderNode = null;
     try {
-      ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-      Node modelFolderNode = session.getNode(modelIdHelper.getFullPath());
-
+      modelFolderNode = session.getNode(modelIdHelper.getFullPath());
+    } catch (RepositoryException e) {
+      throw new ModelNotFoundException("Model with ID " + modelId + " not found");
+    }
+    
+    try {
       if (modelFolderNode.hasNode("attachments")) {
         Node attachmentFolderNode = modelFolderNode.getNode("attachments");
         List<Attachment> attachments = new ArrayList<Attachment>();

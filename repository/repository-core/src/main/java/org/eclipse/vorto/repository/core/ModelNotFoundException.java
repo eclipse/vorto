@@ -12,9 +12,13 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
+@ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "Model not found")
 public class ModelNotFoundException extends RuntimeException {
 
   /**
