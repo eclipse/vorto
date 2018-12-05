@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'User Guide'
 title: "Steps to create Model"
 date: 2018-12-02T10:58:37+08:00
 weight: 105

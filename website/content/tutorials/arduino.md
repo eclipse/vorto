@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'Tutorials'
 date: 2016-03-09T20:08:11+01:00
 title: Connecting an ESP8266 to Eclipse Hono
 weight: 31

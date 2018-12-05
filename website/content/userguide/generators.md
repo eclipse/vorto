@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'User Guide'
 title: "Code Generators"
 date: 2018-05-09T10:58:37+08:00
 weight: 103
