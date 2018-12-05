@@ -9,16 +9,16 @@ In this page you will shown how to import an existing model.
 
 ## Prerequisite
 
-If any user who needs to import any model(s), he/she need to be logged in to the Vorto repository.
+The user must be a logged in user to carry out the import function.
 
 ## Steps to Import any type of model
 
-* Let's say that the user uses any text editor and using the DSL documentations comes up with a new models, example: <filename>.<extensions>, and wants to have it into the repository. He/She needs to do the following two steps
+* Let's say that the user uses any 3rd party editor and with the DSL documentations comes up with a new model(s) and wants to have it into the repository. He/She needs to do the following two steps
 
 1. Select and upload model for validation
 2. Decide to Import the validated model
 
-> Extensions could be: mapping, .infomodel, .type, .fbmodel
+> The file name extensions could be: _.mapping_, _.infomodel_, _.type_, _.fbmodel_
 
 ### Steps to select and upload model (in our case: function block model with .fbmodel)
 
