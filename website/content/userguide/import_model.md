@@ -15,12 +15,14 @@ The user must be a logged in user to carry out the import function.
 
 * Let's say that the user uses any 3rd party editor and with the DSL documentations comes up with a new model(s) and wants to have it into the repository. He/She needs to do the following two steps
 
-1. Select and upload model for validation
-2. Decide to Import the validated model
+1. Select and upload model(s) for validation
+2. Decide to Import the validated model(s)
 
 > The file name extensions could be: _.mapping_, _.infomodel_, _.type_, _.fbmodel_
 
-### Steps to select and upload model (in our case: function block model with .fbmodel)
+### Steps to select and upload model(s):
+
+Let's say in our case: function block model with .fbmodel extension
 
  * Click on the **Import** tab, which leads to the following screenshot.
  
@@ -32,6 +34,9 @@ The user must be a logged in user to carry out the import function.
 
  * Choose the **model type** in this case it is _Vorto_
  * Choose the _file_ that needs to be imported by the _browse_ button
+
+> We can also upload many models at once by packaging all the models as a single **.zip** file
+
  * if every detail is correct, then click **Upload** button
  
 #### Validation Response
@@ -47,3 +52,4 @@ The user must be a logged in user to carry out the import function.
 <figure class="screenshot">
     <img src="/images/documentation/import_model_success.png" />
 </figure>
+
