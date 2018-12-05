@@ -39,6 +39,13 @@ public class ModelControllerIntegrationTest {
 
     @Autowired protected WebApplicationContext wac;
 
+    static {
+      System.setProperty("github_clientid", "foo");
+      System.setProperty("github_clientSecret", "foo");
+      System.setProperty("eidp_clientid", "foo");
+      System.setProperty("eidp_clientSecret", "foo");
+    }
+    
     @Before public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).
             apply(springSecurity()).build();
