@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.core.impl;
 
@@ -66,6 +68,7 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelSearchUtil;
 import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.modeshape.jcr.api.JcrTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +102,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
 
   @Autowired
   private RepositoryDiagnostics repoDiagnostics;
+  
+  private static final JcrTools jcrTools = new JcrTools();
 
   @Override
   public List<ModelInfo> search(final String expression) {
@@ -117,12 +122,12 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
       while (rowIterator.hasNext()) {
         Row row = rowIterator.nextRow();
         Node currentNode = row.getNode();
-        if (currentNode.hasProperty("vorto:type")) {
-          try {
+        try {
+          if (currentNode.hasProperty("vorto:type")) {
             modelResources.add(createMinimalModelInfo(currentNode));
-          } catch (Exception ex) {
-            logger.debug("Error while converting node to a ModelInfo", ex);
           }
+        } catch (Exception ex) {
+          logger.debug("Error while converting node to a ModelInfo", ex);
         }
       }
 
@@ -149,8 +154,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
       resource.setAuthor(node.getProperty("vorto:author").getString());
     }
 
-    NodeIterator imageNodeIterator = node.getParent().getNodes("img.png*");
-    if (imageNodeIterator.hasNext()) {
+    if (!getAttachmentsByTag(resource.getId(), Attachment.TAG_IMAGE).isEmpty()) {
       resource.setHasImage(true);
     }
 
@@ -403,6 +407,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics {
             modelResource.getReferencedBy());
       }
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+      jcrTools.removeAllChildren(session, modelIdHelper.getFullPath());
       Item item = session.getItem(modelIdHelper.getFullPath());
       item.remove();
       session.save();
