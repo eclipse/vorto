@@ -10,65 +10,38 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server;
+package org.eclipse.vorto.repository.server.it;
 
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
 import static org.eclipse.vorto.repository.account.Role.USER;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
-import org.eclipse.vorto.repository.web.VortoRepository;
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
-@SpringBootTest(classes = VortoRepository.class,
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// https://github.com/spring-projects/spring-boot/issues/12280
-public class AttachmentsControllerIntegrationTest {
+public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTest {
 
-  MockMvc mockMvc;
-  TestModel testModel;
-
-  SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1;
+  private SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1;
   // Switch user
-  SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user2;
+  private SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user2;
 
-  @Autowired
-  protected WebApplicationContext wac;
 
-  static {
-    System.setProperty("github_clientid", "foo");
-    System.setProperty("github_clientSecret", "foo");
-    System.setProperty("eidp_clientid", "foo");
-    System.setProperty("eidp_clientSecret", "foo");
-  }
-
-  @Before
-  public void setup() throws Exception {
-    mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+  @Override
+  protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
     testModel.createModel(mockMvc);
     user1 = user("user1").password("pass")
@@ -76,13 +49,14 @@ public class AttachmentsControllerIntegrationTest {
     user2 = user("user2").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
   }
-
+  
   @Test
   public void testRandomModelAttachmentController() throws Exception {
     String nonExistingNamespace = TestUtils.createRandomString(10).toLowerCase();
     mockMvc.perform(get(
         "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0"))
         .andExpect(status().isNotFound());
+    assertTrue(true);
   }
 
   @Test
@@ -91,6 +65,7 @@ public class AttachmentsControllerIntegrationTest {
     test.createModel(mockMvc, user1);
     addAttachment(mockMvc, test, user1, "test.json", MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
+    assertTrue(true);
   }
 
   @Test
@@ -104,6 +79,8 @@ public class AttachmentsControllerIntegrationTest {
           JsonElement tree = jsonParser.parse(result.getResponse().getContentAsString());
           assert !tree.getAsJsonObject().get("success").getAsBoolean();
         });
+   
+    assertTrue(true);
 
   }
 
@@ -122,6 +99,8 @@ public class AttachmentsControllerIntegrationTest {
     mockMvc.perform(
         delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(user1))
         .andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   @Test
@@ -137,12 +116,16 @@ public class AttachmentsControllerIntegrationTest {
     mockMvc.perform(
         delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(user2))
         .andExpect(status().isForbidden());
+    
+    assertTrue(true);
   }
 
   @Test
   public void testAttachmentGetWithPermissions() throws Exception {
     mockMvc.perform(get("/api/v1/attachments/" + testModel.prettyName).with(user1))
         .andExpect(status().isOk());
+    
+    assertTrue(true);
   }
 
   private static ResultActions addAttachment(MockMvc mockMvc, TestModel testModel,

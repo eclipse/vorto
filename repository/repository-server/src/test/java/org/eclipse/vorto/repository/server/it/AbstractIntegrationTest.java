@@ -10,15 +10,12 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server;
+package org.eclipse.vorto.repository.server.it;
 
-import static java.lang.Thread.sleep;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,52 +29,28 @@ import org.springframework.web.context.WebApplicationContext;
 @ContextConfiguration
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-// https://github.com/spring-projects/spring-boot/issues/12280
-public class ModelControllerIntegrationTest {
+//https://github.com/spring-projects/spring-boot/issues/12280
+public abstract class AbstractIntegrationTest {
 
-  MockMvc mockMvc;
-  TestModel testModel;
-
+  protected MockMvc mockMvc;
+  protected TestModel testModel;
+  
   @Autowired
   protected WebApplicationContext wac;
-
-  static {
+  
+  @BeforeClass
+  public static void configureOAuthConfiguration() {
     System.setProperty("github_clientid", "foo");
     System.setProperty("github_clientSecret", "foo");
     System.setProperty("eidp_clientid", "foo");
     System.setProperty("eidp_clientSecret", "foo");
   }
-
+  
   @Before
-  public void setup() throws Exception {
+  public void startUpServer() throws Exception {
     mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc);
-    sleep(1000);
-    // Creating a model takes a while
+    setUpTest();
   }
-
-  @Test
-  public void testModelAccess() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName))
-        .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
-        .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  public void testGetModelContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/content"))
-        .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
-        .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
-        .andExpect(status().isOk());
-  }
-
-  @Test
-  public void testModelFileDownloadContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/file"))
-        .andExpect(status().isOk());
-  }
-
-
+  
+  protected abstract void setUpTest() throws Exception;
 }

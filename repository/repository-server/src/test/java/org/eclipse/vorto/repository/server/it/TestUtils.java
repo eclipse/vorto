@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server;
+package org.eclipse.vorto.repository.server.it;
 
 import org.apache.commons.text.RandomStringGenerator;
 

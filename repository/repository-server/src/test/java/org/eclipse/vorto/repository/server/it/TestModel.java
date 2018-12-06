@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.server;
+package org.eclipse.vorto.repository.server.it;
 
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
@@ -36,13 +36,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.google.common.collect.Sets;
 
 public class TestModel {
-  String namespace = TestUtils.createRandomString(10).toLowerCase();
-  String modelName = TestUtils.createRandomString(10).toUpperCase();
-  String description = "InformationModel for " + modelName;
-  String version = "1.0.0";
-  String prettyName = namespace + ":" + modelName + ":" + version;
-  String targetPlatform = "target";
-  String json = "{" + "\"targetPlatformKey\":" + targetPlatform + "," + "\"stereotypes\":[],"
+  public String namespace = TestUtils.createRandomString(10).toLowerCase();
+  public String modelName = TestUtils.createRandomString(10).toUpperCase();
+  public String description = "InformationModel for " + modelName;
+  public String version = "1.0.0";
+  public String prettyName = namespace + ":" + modelName + ":" + version;
+  public String targetPlatform = "target";
+  public String json = "{" + "\"targetPlatformKey\":" + targetPlatform + "," + "\"stereotypes\":[],"
       + "\"mappingReference\":null," + "\"id\":{" + "\"name\":\"" + modelName
       + "\",\"namespace\":\"" + namespace + "\",\"version\":\"1.0.0\"," + "\"prettyFormat\":\""
       + prettyName + "\"}," + "\"type\":\"InformationModel\"," + "\"displayName\":\"" + modelName
