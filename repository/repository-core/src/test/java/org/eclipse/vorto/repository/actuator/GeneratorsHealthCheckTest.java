@@ -12,12 +12,11 @@
  */
 package org.eclipse.vorto.repository.actuator;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.impl.Generator;
 import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
@@ -38,9 +37,12 @@ public class GeneratorsHealthCheckTest {
    private final GeneratorsHealthCheck generatorsHealthCheck = new GeneratorsHealthCheck(
          registeredGeneratorsRepository, restTemplate );
 
-   private final ResponseEntity<GeneratorInfo> generatorInfoResponseEntitySuccess = Mockito
+  
+   @SuppressWarnings("unchecked")
+  private final ResponseEntity<GeneratorInfo> generatorInfoResponseEntitySuccess = Mockito
          .mock( ResponseEntity.class );
 
+   @SuppressWarnings("unchecked")
    private final ResponseEntity<GeneratorInfo> generatorInfoResponseEntityFailure = Mockito
          .mock( ResponseEntity.class );
 
