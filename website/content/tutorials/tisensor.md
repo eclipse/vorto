@@ -2,7 +2,7 @@
 menu:
   main:
     parent: 'Tutorials'
-date: 2018-12-07T11:08:11+01:00
+date: 2016-03-09T20:08:11+01:00
 title: How to describe a TI SensorTag device with Vorto
 weight: 34
 ---
