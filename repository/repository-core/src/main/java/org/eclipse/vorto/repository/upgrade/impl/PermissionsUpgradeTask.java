@@ -24,6 +24,9 @@ import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTask;
@@ -71,7 +74,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 		for(ModelInfo modelInfo : modelInfos) {
 			if (modelInfo.getState() != null && modelInfo.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName())) {
 				logger.info("Setting permissions for model " + modelInfo.toString());
-				policyManager.grantOwnerAccess(modelInfo);
+				policyManager.addPolicyEntry(modelInfo.getId(), PolicyEntry.of(modelInfo.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS));
 
 			}
 		}

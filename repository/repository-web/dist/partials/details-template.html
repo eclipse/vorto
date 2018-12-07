@@ -383,14 +383,12 @@
 									<tr>
 										<td style="text-align:center">Principal ID</td>
 										<td style="text-align:center">Principal Type</td>
-										<td style="text-align:center">Read</td>
-										<td style="text-align:center">Write</td>
+										<td style="text-align:center">Permission</td>
 									</tr>
 									<tr ng-repeat="entry in aclEntries">
 										<td style="text-align:center">{{entry.principalId}}</td>
 										<td style="text-align:center">{{entry.principalType}}</td>
-										<td style="text-align:center"><input type="checkbox" disabled="disabled" class="form-control input-sm" ng-model="entry.grantRead"></td>
-										<td style="text-align:center"><input type="checkbox" disabled="disabled" class="form-control input-sm" ng-model="entry.grantWrite"></td>
+										<td style="text-align:center">{{entry.principalType}}</td>
 									</tr>
 								</table>
 								<p ng-show="aclEntries.length === 0">No policies defined</p>

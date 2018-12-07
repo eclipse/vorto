@@ -76,6 +76,7 @@ import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.Tag;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
@@ -855,46 +856,45 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 		}
 	}
 
-	@Override
-	public void grantOwnerAccess(ModelInfo modelInfo) {
-		final Session session = getSession();
-		try {
-			ModelIdHelper modelIdHelper = new ModelIdHelper(modelInfo.getId());
-
-			String path = modelIdHelper.getFullPath();
-
-			String[] privileges = new String[] { Privilege.JCR_READ, Privilege.JCR_WRITE,
-					Privilege.JCR_MODIFY_ACCESS_CONTROL, Privilege.JCR_READ_ACCESS_CONTROL };
-
-			AccessControlManager acm = session.getAccessControlManager();
-
-			Privilege[] permissions = new Privilege[privileges.length];
-			for (int i = 0; i < privileges.length; i++) {
-				permissions[i] = acm.privilegeFromName(privileges[i]);
-			}
-
-			AccessControlList acl = null;
-			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
-			if (it.hasNext()) {
-				acl = (AccessControlList) it.nextAccessControlPolicy();
-			} else {
-				acl = (AccessControlList) acm.getPolicies(path)[0];
-			}
-			// add ACL for admin role
-			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
-
-			// add ACL for user
-			acl.addAccessControlEntry(SimplePrincipal.newInstance(modelInfo.getAuthor()), permissions);
-
-			acm.setPolicy(path, acl);
-			session.save();
-		} catch (RepositoryException ex) {
-			logger.error("Could not set owner permissions for model", ex);
-			throw new FatalModelRepositoryException("Problem setting owner permissions on model node", ex);
-		} finally {
-			session.logout();
-		}
-	}
+//	@Override
+//	public void grantOwnerAccess(ModelInfo modelInfo) {
+//		final Session session = getSession();
+//		try {
+//			ModelIdHelper modelIdHelper = new ModelIdHelper(modelInfo.getId());
+//
+//			String path = modelIdHelper.getFullPath();
+//
+//			String[] privileges = new String[] { Privilege.JCR_ALL};
+//
+//			AccessControlManager acm = session.getAccessControlManager();
+//
+//			Privilege[] permissions = new Privilege[privileges.length];
+//			for (int i = 0; i < privileges.length; i++) {
+//				permissions[i] = acm.privilegeFromName(privileges[i]);
+//			}
+//
+//			AccessControlList acl = null;
+//			AccessControlPolicyIterator it = acm.getApplicablePolicies(path);
+//			if (it.hasNext()) {
+//				acl = (AccessControlList) it.nextAccessControlPolicy();
+//			} else {
+//				acl = (AccessControlList) acm.getPolicies(path)[0];
+//			}
+//			// add ACL for admin role
+//			acl.addAccessControlEntry(SimplePrincipal.newInstance("admin"), permissions);
+//
+//			// add ACL for user
+//			acl.addAccessControlEntry(SimplePrincipal.newInstance(modelInfo.getAuthor()), permissions);
+//
+//			acm.setPolicy(path, acl);
+//			session.save();
+//		} catch (RepositoryException ex) {
+//			logger.error("Could not set owner permissions for model", ex);
+//			throw new FatalModelRepositoryException("Problem setting owner permissions on model node", ex);
+//		} finally {
+//			session.logout();
+//		}
+//	}
 
 	@Override
 	public Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user) {
@@ -915,9 +915,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			}
 			
 			for (AccessControlEntry entry : acl.getAccessControlEntries()) {
-				if (!entry.getPrincipal().getName().equals(user.getUsername())) { //not interested in owner policy
-					policyEntries.add(PolicyEntry.of(entry));
-				}
+			  policyEntries.add(PolicyEntry.of(entry));
 			}
 
 		} catch(RepositoryException ex) {
@@ -982,12 +980,15 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
 	private String[] createPrivileges(PolicyEntry newEntry) {
 		Set<String> result = new HashSet<>();
-		if (newEntry.isGrantRead()) {
-			result.add(Privilege.JCR_READ);
-		}
-		if (newEntry.isGrantWrite()) {
-			result.add(Privilege.JCR_WRITE);
-		}
+		if (newEntry.getPermission() == Permission.READ) {
+		  result.add(Privilege.JCR_READ);
+		} else if (newEntry.getPermission() == Permission.MODIFY) {
+		  result.add(Privilege.JCR_READ);
+		  result.add(Privilege.JCR_WRITE);
+		} else if (newEntry.getPermission() == Permission.FULL_ACCESS) {
+          result.add(Privilege.JCR_ALL);
+        }
+		
 		return result.toArray(new String[result.size()]);
 	}
 }

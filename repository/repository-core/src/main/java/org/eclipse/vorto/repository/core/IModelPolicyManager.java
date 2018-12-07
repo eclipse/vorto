@@ -7,12 +7,6 @@ import org.eclipse.vorto.model.ModelId;
 public interface IModelPolicyManager {
 	
 	/**
-	 * 
-	 * @param modelInfo
-	 */
-	void grantOwnerAccess(ModelInfo modelInfo);
-
-	/**
 	 * Gets a list of all policy entries for the given model ID
 	 * @param modelID
 	 * @param user caller userID requesting the policyentries
