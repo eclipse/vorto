@@ -13,8 +13,6 @@ addons:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
-    branches:
-      - development
 
 before_install: 
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
@@ -25,6 +23,7 @@ script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
   - mvn clean install -P checkstyle
+  - sonar-scanner
 
 cache:
   directories:
