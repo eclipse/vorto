@@ -9,7 +9,7 @@ In this tutorial, we are going to walk you through the process of creating a Vor
 To work through this tutorial, you will need:
 
 - A Github account to log in to the Vorto Repository
-- A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/arduino/), managed in the Vorto Repository
+- A [Vorto Information Model](https://www.eclipse.org/vorto/tutorials/tisensor/), managed in the Vorto Repository
 
 
 ## Step 1: Create Mapping Specification
