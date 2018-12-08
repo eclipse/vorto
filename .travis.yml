@@ -22,7 +22,7 @@ install:
 script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent sonar:sonar install -q -P checkstyle
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -q -P checkstyle
 
 cache:
   directories:
