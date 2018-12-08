@@ -22,7 +22,7 @@ install:
 script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean install -P checkstyle
+  - mvn clean install -q -P checkstyle
   - sonar-scanner
 
 cache:
