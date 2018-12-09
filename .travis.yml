@@ -13,6 +13,8 @@ addons:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
+    branches:
+      - jacoco
 
 before_install: 
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
@@ -25,7 +27,7 @@ script:
   - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean org.jacoco:jacoco-maven-plugin:report-aggregate package
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
 
 cache:
   directories:
