@@ -9,10 +9,12 @@ services:
 jdk: oraclejdk8
 
 addons:
-  sonarqube:
+  sonarcloud:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
+    branches:
+      - development
 
 before_install: 
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
@@ -25,8 +27,7 @@ script:
   - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean install -q -P checkstyle
-  - sonar-scanner
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent org.jacoco:jacoco-maven-plugin:report-aggregate install sonar:sonar -q -P checkstyle
 
 cache:
   directories:
