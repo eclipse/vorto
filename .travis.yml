@@ -14,7 +14,7 @@ addons:
     token:
       secure: $SONAR_TOKEN
     branches:
-      - jacoco
+      - development
 
 before_install: 
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
