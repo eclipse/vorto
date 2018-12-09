@@ -27,7 +27,7 @@ script:
   - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent jacoco:aggregate-report install sonar:sonar
 
 cache:
   directories:
