@@ -9,7 +9,7 @@ services:
 jdk: oraclejdk8
 
 addons:
-  sonarqube:
+  sonarcloud:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
