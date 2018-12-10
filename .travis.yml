@@ -32,8 +32,8 @@ script:
   - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn -q clean org.jacoco:jacoco-maven-plugin:prepare-agent org.jacoco:jacoco-maven-plugin:report-aggregate install sonar:sonar -P checkstyle
-  - docker build -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-server;
+  - mvn -q clean install -P checkstyle
+  - docker build -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
   - docker build -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
 
 deploy:
