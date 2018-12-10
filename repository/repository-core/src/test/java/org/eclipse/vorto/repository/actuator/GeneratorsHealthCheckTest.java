@@ -15,95 +15,113 @@ package org.eclipse.vorto.repository.actuator;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.vorto.repository.generation.GeneratorInfo;
+
+import org.apache.http.HttpStatus;
+import org.eclipse.vorto.repository.TestConfig;
 import org.eclipse.vorto.repository.generation.impl.Generator;
 import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.health.Health;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.web.client.RestTemplate;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
+@RunWith( SpringRunner.class )
+@SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )
+@ContextConfiguration( classes = { TestConfig.class, GeneratorsHealthCheck.class, RestTemplate.class },
+                       loader = AnnotationConfigContextLoader.class )
+@AutoConfigureWireMock(port = 8888)
 public class GeneratorsHealthCheckTest {
 
-   private final RestTemplate restTemplate = Mockito.mock( RestTemplate.class );
-   private final IGeneratorLookupRepository registeredGeneratorsRepository = Mockito
-         .mock( IGeneratorLookupRepository.class );
-   private final GeneratorsHealthCheck generatorsHealthCheck = new GeneratorsHealthCheck(
-         registeredGeneratorsRepository, restTemplate );
+   private final String infoEndpointResponse = "{\n" +
+         "	\"key\": \"boschiotsuite\",\n" +
+         "	\"name\": \"Bosch IoT Suite\",\n" +
+         "	\"description\": \"Generates device code that either runs on the Bosch IoT Gateway SW or connects directly to the Bosch IoT Hub.\",\n"
+         +
+         "	\"organisation\": \"Eclipse Vorto Team\"\n" +
+         "}";
 
-  
-   @SuppressWarnings("unchecked")
-  private final ResponseEntity<GeneratorInfo> generatorInfoResponseEntitySuccess = Mockito
-         .mock( ResponseEntity.class );
+   @MockBean
+   private IGeneratorLookupRepository registeredGeneratorsRepository;
 
-   @SuppressWarnings("unchecked")
-   private final ResponseEntity<GeneratorInfo> generatorInfoResponseEntityFailure = Mockito
-         .mock( ResponseEntity.class );
+   @Autowired
+   private GeneratorsHealthCheck generatorsHealthCheck;
+
+   private Generator testGeneratorOne;
+   private Generator testGeneratorTwo;
+   private final ArrayList<Generator> generators = new ArrayList<>();
 
    @Before
    public void setUp() {
-      Mockito.when( generatorInfoResponseEntitySuccess.getStatusCode() ).thenReturn( HttpStatus.OK );
-      Mockito.when( generatorInfoResponseEntityFailure.getStatusCode() ).thenReturn( HttpStatus.NOT_FOUND );
-   }
+      testGeneratorOne = new Generator( "test-generator-one", "http://localhost:8888/test-generator-one", "test" );
+      testGeneratorTwo = new Generator( "test-generator-two", "http://localhost:8888/test-generator-two", "test" );
 
-   @Test
-   public void testNoGeneratorsRegisteredExpectStatusUp() {
-      Mockito.when( registeredGeneratorsRepository.findAll() ).thenReturn( new ArrayList<>() );
-      assertEquals( generatorsHealthCheck.health(), Health.up().build() );
-   }
-
-   @Test
-   public void testGeneratorsAvailableExpectStatusUp() {
-      final List<Generator> generators = new ArrayList<>();
-      generators.add( new Generator() );
-      generators.add( new Generator() );
+      generators.add( testGeneratorOne );
+      generators.add( testGeneratorTwo );
 
       Mockito.when( registeredGeneratorsRepository.findAll() ).thenReturn( generators );
-
-      Mockito.when( restTemplate
-            .getForEntity( Matchers.anyString(), Matchers.eq( GeneratorInfo.class ), Matchers.eq( false ) ) )
-             .thenReturn( generatorInfoResponseEntitySuccess );
-
-      assertEquals( generatorsHealthCheck.health(), Health.up().build() );
+      createTestGeneratorOneInfoEndpointStub();
    }
 
    @Test
-   public void testGeneratorNotAvailableExpectStatusDown() {
-      final List<Generator> generators = new ArrayList<>();
-      generators.add( createGenerator( "https://gen-one", "genOne" ) );
-      generators.add( createGenerator( "https://gen-two", "genTwo" ) );
+   public void testApplicationHealthyExpectStatusUp() {
+      createTestGeneratorTwoInfoEndpointSuccessStub();
+      assertEquals( Health.up().build(), generatorsHealthCheck.health() );
+   }
 
-      Mockito.when( registeredGeneratorsRepository.findAll() ).thenReturn( generators );
-
-      Mockito.when( restTemplate
-            .getForEntity( Matchers.eq( "https://gen-one/info?includeConfigUI={includeConfigUI}" ),
-                  Matchers.eq( GeneratorInfo.class ), Matchers.eq( false ) ) )
-             .thenReturn( generatorInfoResponseEntitySuccess );
-
-      Mockito.when( restTemplate
-            .getForEntity( Matchers.eq( "https://gen-two/info?includeConfigUI={includeConfigUI}" ),
-                  Matchers.eq( GeneratorInfo.class ), Matchers.eq( false ) ) )
-             .thenReturn( generatorInfoResponseEntityFailure );
-
+   @Test
+   public void testGeneratorNotFoundExpectStatusDown() {
+      createTestGeneratorTwoInfoEndpointFailureStub( HttpStatus.SC_NOT_FOUND );
       final Health health = generatorsHealthCheck.health();
       assertEquals( health.getStatus(), Health.down().build().getStatus() );
 
       final Map<String, Object> healthDetails = health.getDetails();
       assertEquals( healthDetails.size(), 1 );
       assertTrue( healthDetails.containsKey( "Generator down." ) );
-      assertEquals( healthDetails.get( "Generator down." ), "Generator Key: genTwo" );
+      assertEquals( "Generator Key: test-generator-two", healthDetails.get( "Generator down." ) );
    }
 
-   private Generator createGenerator( final String baseUrl, final String key ) {
-      final Generator generator = new Generator();
-      generator.setBaseUrl( baseUrl );
-      generator.setKey( key );
-      return generator;
+   @Test
+   public void testGeneratorInternalServerErrorExpectStatusDown() {
+      createTestGeneratorTwoInfoEndpointFailureStub( HttpStatus.SC_INTERNAL_SERVER_ERROR );
+      final Health health = generatorsHealthCheck.health();
+      assertEquals( health.getStatus(), Health.down().build().getStatus() );
+
+      final Map<String, Object> healthDetails = health.getDetails();
+      assertEquals( healthDetails.size(), 1 );
+      assertTrue( healthDetails.containsKey( "Generator down." ) );
+      assertEquals( "Generator Key: test-generator-two", healthDetails.get( "Generator down." ) );
+   }
+
+   private void createTestGeneratorOneInfoEndpointStub() {
+      WireMock.stubFor( WireMock.get( "/test-generator-one/info?includeConfigUI=false" )
+                                .willReturn( WireMock.aResponse()
+                                                     .withBody( infoEndpointResponse )
+                                                     .withHeader( HttpHeaders.CONTENT_TYPE,
+                                                           MediaType.APPLICATION_JSON_VALUE )
+                                                     .withStatus( HttpStatus.SC_OK ) ) );
+   }
+
+   private void createTestGeneratorTwoInfoEndpointSuccessStub() {
+      WireMock.stubFor( WireMock.get( "/test-generator-two/info?includeConfigUI=false" )
+                                .willReturn( WireMock.aResponse().withStatus( HttpStatus.SC_OK ) ) );
+   }
+
+   private void createTestGeneratorTwoInfoEndpointFailureStub( final int httpStatus ) {
+      WireMock.stubFor( WireMock.get( "/test-generator-two/info?includeConfigUI=false" )
+                                .willReturn( WireMock.aResponse().withStatus( httpStatus ) ) );
    }
 }
