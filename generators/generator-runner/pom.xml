@@ -130,6 +130,7 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<finalName>generator-runner</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

@@ -12,18 +12,18 @@
  */
 package org.eclipse.vorto.model;
 
-public class Dictionary implements IReferenceType {
+public class DictionaryType implements IReferenceType {
 
   private IReferenceType key;
   private IReferenceType value;
   private String type = "dictionary";
 
-  public Dictionary(IReferenceType key, IReferenceType value) {
+  public DictionaryType(IReferenceType key, IReferenceType value) {
     this.key = key;
     this.value = value;
   }
 
-  protected Dictionary() {}
+  protected DictionaryType() {}
 
   public IReferenceType getKey() {
     return key;
@@ -51,7 +51,7 @@ public class Dictionary implements IReferenceType {
 
   @Override
   public String toString() {
-    return "Dictionary [key=" + key + ", value=" + value + "]";
+    return "DictionaryType [key=" + key + ", value=" + value + "]";
   }
 
 
