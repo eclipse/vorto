@@ -3,49 +3,28 @@ title: "Getting Started"
 date: 2018-05-09T10:58:37+08:00
 weight: 20
 ---
-To get started with Vorto easily, we are going to show you how you can use the Vorto IoT Tool to describe a simple device that measures distance and integrate it with [Eclipse Hono](https://www.eclipse.org/hono).
+
+Vorto provides a simple language to describe the capabilities and functionality of devices as Information Models. But how can these models be consumed to help IoT solution development ? 
+
+I think, it will get clearer, if we walk you through an easy example. In this example we are going to describe a TI Sensor Tag device using abstract Vorto Function Blocks which on the other hand define specific piece of functionality and data. You can translate Function Blocks of the device to source code that may run on the device and integrate it with the [Eclipse Ditto](https://www.eclipse.org/ditto) Digital Twin service using a MQTT Connector, provided by the [Eclipse Hono](https://www.eclipse.org/hono) platform.
+
+An IoT Application (which is not part of this tutorial) then consumes the device data from Eclipse Ditto and process the humidity data. In fact the IoT Application does not make any assumption of whether this humidity data originates from a TI SensorTag or any other device or service, capable of providing humidity data, as long as it is described as a Humidity Vorto Function Block. The following illustration shows the entire components and data flow:  
 
 ![Material Screenshot](/images/getting-started-ar2.png)
 
+So, let's get started with this, by splitting up our work into several steps:
 
-## Different types of Models
-### Infomation Model
-
-Information Models represent the capabilities of a particular type of device in its entirety. An Information Model is assembled from abstract and re-usable Function Blocks.
-
-### Function Block
-
-A Function Block provides an abstract view on a device to applications that want to employ the devices’ functionality. Thus, it is a consistent, self-contained set of (potentially re-usable) properties and capabilities.
-The properties that a Function Block may define are classified as follows:
-
-* **Status** Properties - These _read-only_ properties indicating the current state of the device. 
-* **Configuration** Properties - _Read- and Writable_ properties required to be set in order for the device to work properly.
-* **Fault** Properties - _Read-only_ properties indicating fault states of the device.
-* **Event** Properties - _Read-only_ properties that are published by the device, e.g. on state changes
-* **Operations** - Indicate functionality that can be invoked on the device, that may lead to device state changes or merely give additional meta-data information.
-
-[Get more information]({{< relref "userguide/quickhelp_dsl.md" >}}) on the Vorto Meta-Model and DSL.
-
-## Defining a Model
-
-1. Click the **Create new Model** Button and choose the type you want to create from the context menu.
-	<figure class="screenshot">
-	<img src="/images/tutorials/getting_started/create_function_block_designer_btn.png">
-	</figure> 
-2. Enter a name, for example, Distance as a **Function Block**.
-3. Adjust the entries for the input fields **Namespace** and **Version**, if necessary.
-4. Optionally, enter a description in the **Description** entry field.
-5. Click **Create**.
-	<figure class="screenshot">
-  	<img src="/images/tutorials/getting_started/create_function_block_designer_name.png">
-	</figure>
-6. In the Model Editor add the distance specific properties and click **Save**:
-	<figure class="screenshot">
-  	<img src="/images/tutorials/getting_started/create_function_block_editor.png">
-	</figure>
+1. Describe the TI Sensor Tag as an Information Model using re-usable, abstract Function Blocks
+2. Generating Code from Model, integrating the TI Sensor Tag with Eclipse Hono & Eclipse Ditto
+3. Test the integration with Eclipse Hono
 
 
-## Generating Device Code
+## Step 1: Creating TI Sensor Tag Information Model
+
+[Click here]({{< relref "tutorials/tisensor.md" >}}) that walks you through the process of creating an Information Model.
+
+## Step 2: Generating Device Code
+
 1. Click on one of the Generators, here Eclipse Hono.
 	<figure class="screenshot">
   	<img src="/images/tutorials/getting_started/create_function_block_generator.png">
@@ -55,7 +34,8 @@ The properties that a Function Block may define are classified as follows:
   	<img src="/images/tutorials/getting_started/create_function_block_generator_hono.png">
 	</figure> 
 
-## Registering device in Eclipse Hono
+## Test the Integration with Eclipse Hono
+
 Eclipse Hono provides a sandbox infrastructure which we can use to demonstrate the device integration. Before we can send data from our generated project, we must register the device under a tenant:
 
 ### Registering the Device ID
@@ -94,7 +74,7 @@ JSON Request payload:
 }
 ```
 
-## Editing device configuration
+### Editing device configuration
 
 Now let's go back to our generated project and update the `src/main/java/device/distancesensor/Distancesensor.java` accordingly:
 
@@ -120,7 +100,7 @@ Now let's go back to our generated project and update the `src/main/java/device/
 
 > Copy and paste the [certificate](https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem.txt) into `src/main/resources/certificate/hono.crt` of your project.
 
-## Running and verifying data in Hono
+### Running and verifying data in Hono
 
 - Right click on `Distancesensor.java` in you IDE and **Run as Java Application`** to start sending data to Eclipse Hono. You should be seeing the following output in the console:
 
