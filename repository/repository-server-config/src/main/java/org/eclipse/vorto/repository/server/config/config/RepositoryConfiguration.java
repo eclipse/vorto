@@ -66,8 +66,11 @@ public class RepositoryConfiguration extends BaseConfiguration {
 
 	@Bean
 	public AccessTokenProvider accessTokenProvider() {
-		if (proxyHost != null) {
+		if (proxyHost != null && proxyUsername != null) {
 			return TokenUtils.proxiedAccessTokenProvider(proxyHost, proxyPort, proxyUsername, proxyPassword);
+		}else if(proxyHost != null && proxyUsername == null){
+			return TokenUtils.proxiedAccessTokenProvider(proxyHost, proxyPort);
+
 		} else {
 			return TokenUtils.accessTokenProvider();
 		}
