@@ -16,6 +16,11 @@ addons:
     branches:
       - development
 
+cache:
+  directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
 before_install: 
   - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
 
@@ -27,18 +32,12 @@ script:
   - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent org.jacoco:jacoco-maven-plugin:report-aggregate install sonar:sonar -q -P checkstyle
+  - mvn -q clean install -P checkstyle
+  - docker build -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
+  - docker build -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
 
-cache:
-  directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.sonar/cache'
-
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-server;
-    docker build -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
-    docker push eclipsevorto/vorto-repo;
-    docker push eclipsevorto/vorto-generators;
-    fi
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
