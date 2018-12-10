@@ -43,7 +43,7 @@ The Vorto Payload Mapping Engine is a very easy and light-weight component to co
 
 It supports Eclipse Ditto as the target platform mapping out-of-the-box. A Data Mapping API is available to implement the integration with other IoT platforms.
 
-[Get started]({{< relref "tutorials/payloadmapping.md" >}}) of using the Vorto Payload Mapping Engine in a concrete example. 
+[Get started](https://github.com/eclipse/vorto/blob/development/mapping-engine/Readme.md) of using the Vorto Payload Mapping Engine in a concrete example. 
 
 
 ### Built-in Mapping Converter functions
@@ -130,4 +130,4 @@ Function Block Illuminance Mapping
 
 ### Useful Links
 
-- [Mapping device payload to standardized Vorto Function Blocks]({{< relref "tutorials/payloadmapping.md" >}})
+- [Getting Started with Vorto Mappings](https://github.com/eclipse/vorto/blob/development/mapping-engine/Readme.md)
