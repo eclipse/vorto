@@ -26,4 +26,4 @@ If you want to manage other existing (standardized) device descriptions with the
 
 ## Device Payload Mapping API
 
-Map arbitrary device payload, expressed as JSON or binary, to standardized data, that is described by Vorto Information Models. See [Payload Mapping Documentation]({{< ref "tutorials/payloadmapping.md" >}}) for more information. 
+Map arbitrary device payload, expressed as JSON or binary, to standardized data, that is described by Vorto Information Models. See [Getting started with Vorto Mappings](https://github.com/eclipse/vorto/blob/development/mapping-engine/Readme.md) for more information. 
