@@ -165,10 +165,10 @@ public class ModelDtoFactory {
         return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
     }
 
-    public static org.eclipse.vorto.model.FunctionblockModel createResource(
+    public static FunctionblockModel createResource(
         FunctionblockModel model, Optional<MappingModel> mappingModel) {
-        org.eclipse.vorto.model.FunctionblockModel resource =
-            new org.eclipse.vorto.model.FunctionblockModel(
+        FunctionblockModel resource =
+            new FunctionblockModel(
                 new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
                 ModelType.Functionblock);
         resource.setDescription(model.getDescription());
@@ -225,7 +225,7 @@ public class ModelDtoFactory {
     }
 
     private static Operation createOperation(
-        org.eclipse.vorto.core.api.model.functionblock.Operation o,
+        Operation o,
         Optional<MappingModel> mappingModel) {
         Operation operation = new Operation();
         operation.setBreakable(o.isBreakable());
@@ -273,7 +273,7 @@ public class ModelDtoFactory {
         return operation;
     }
 
-    private static Param createParam(org.eclipse.vorto.core.api.model.functionblock.Param p,
+    private static Param createParam(Param p,
         Optional<MappingModel> mappingModel) {
         Param param = new Param();
         param.setDescription(p.getDescription());
@@ -299,7 +299,7 @@ public class ModelDtoFactory {
         if (mappingModel.isPresent()) {
             param.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
             for (MappingRule rule : getParamRule(
-                ((org.eclipse.vorto.core.api.model.functionblock.Operation) p.eContainer())
+                ((Operation) p.eContainer())
                     .getName(), param.getName(), mappingModel.get().getRules())) {
                 if (rule.getTarget() instanceof StereoTypeTarget) {
                     StereoTypeTarget target = (StereoTypeTarget) rule.getTarget();
