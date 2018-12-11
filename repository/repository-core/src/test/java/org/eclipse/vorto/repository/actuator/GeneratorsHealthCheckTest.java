@@ -12,8 +12,8 @@
  */
 package org.eclipse.vorto.repository.actuator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 @SpringBootTest( webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT )
 @ContextConfiguration( classes = { TestConfig.class, GeneratorsHealthCheck.class, RestTemplate.class },
                        loader = AnnotationConfigContextLoader.class )
-@AutoConfigureWireMock(port = 8888)
+@AutoConfigureWireMock( port = 8888 )
 public class GeneratorsHealthCheckTest {
 
    private final String infoEndpointResponse = "{\n" +
@@ -60,14 +60,14 @@ public class GeneratorsHealthCheckTest {
    @Autowired
    private GeneratorsHealthCheck generatorsHealthCheck;
 
-   private Generator testGeneratorOne;
-   private Generator testGeneratorTwo;
    private final ArrayList<Generator> generators = new ArrayList<>();
 
    @Before
    public void setUp() {
-      testGeneratorOne = new Generator( "test-generator-one", "http://localhost:8888/test-generator-one", "test" );
-      testGeneratorTwo = new Generator( "test-generator-two", "http://localhost:8888/test-generator-two", "test" );
+      final Generator testGeneratorOne = new Generator( "test-generator-one",
+            "http://localhost:8888/test-generator-one", "test" );
+      final Generator testGeneratorTwo = new Generator( "test-generator-two",
+            "http://localhost:8888/test-generator-two", "test" );
 
       generators.add( testGeneratorOne );
       generators.add( testGeneratorTwo );
