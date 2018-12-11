@@ -35,6 +35,10 @@ script:
   - mvn -q clean install -P checkstyle
   - docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
   - docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
+  - if [ -n "$TRAVIS_TAG" ];
+  docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG ./repository/repository-server;
+  docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG ./generators/generator-runner;
+  fi
 
 deploy:
   provider: script
