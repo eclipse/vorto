@@ -4,19 +4,19 @@ date: 2018-05-09T10:58:37+08:00
 weight: 20
 ---
 
-Vorto provides a simple language to describe the capabilities and functionality of devices as Information Models. But how can these models be consumed to help IoT solution development ? 
+Vorto provides a simple language (Vorto DSL) to describe the capabilities and functionality of  a device as an Information Model. Information Models are assembled from re-usable, abstract and technology-agnostic Function Blocks. IoT Solutions process the Function Block specific data, to be able to stay agnostic of the actual device(s). Take a look at the [Blog Post](https://blog.bosch-si.com/developer/avoid-tight-coupling-of-devices-in-iot-solutions/) to find out about the Vorto benefits.
 
-I think, it will get clearer, if we walk you through an easy example. In this example we are going to describe a TI Sensor Tag device using abstract Vorto Function Blocks which on the other hand define specific piece of functionality and data. You can translate Function Blocks of the device to source code that may run on the device and integrate it with the [Eclipse Ditto](https://www.eclipse.org/ditto) Digital Twin service using a MQTT Connector, provided by the [Eclipse Hono](https://www.eclipse.org/hono) platform.
+Let me walk you through an easy example, where we are going to describe a TI Sensor Tag device using abstract Vorto Function Blocks which on the other hand define specific piece of functionality and data of the sensors provided by the TI SensorTag. We then translate the Function Blocks to source code that can run on the device and integrate it with the [Eclipse Ditto](https://www.eclipse.org/ditto) and [Eclipse Hono](https://www.eclipse.org/hono) IoT backend services.
 
-An IoT Application (which is not part of this tutorial) then consumes the device data from Eclipse Ditto and process the humidity data. In fact the IoT Application does not make any assumption of whether this humidity data originates from a TI SensorTag or any other device or service, capable of providing humidity data, as long as it is described as a Humidity Vorto Function Block. The following illustration shows the entire components and data flow:  
+An IoT Solution (which is not part of this tutorial) is then able to consume the the device data in a harmonized and device-agnostic way. In fact the IoT Application does not make any assumption of whether this humidity data originates from a TI SensorTag or any other device or service, capable of providing humidity data, as long as it is described as a Humidity Vorto Function Block. The following illustration shows the entire components and data flow:  
 
 ![Material Screenshot](/images/getting-started-ar2.png)
 
 So, let's get started with this, by splitting up our work into several steps:
 
-1. Describe the TI Sensor Tag as an Information Model using re-usable, abstract Function Blocks
-2. Generating Code from Model, integrating the TI Sensor Tag with Eclipse Hono & Eclipse Ditto
-3. Test the integration with Eclipse Hono
+1. **Describing** the TI Sensor Tag as an Information Model using re-usable, abstract Function Blocks
+2. **Generating** Code from Model, integrating the TI Sensor Tag with Eclipse Hono & Eclipse Ditto
+3. **Testing** the integration by sending device data as Vorto payload to Eclipse Hono via MQTT
 
 
 ## Step 1: Creating TI Sensor Tag Information Model
@@ -25,16 +25,16 @@ So, let's get started with this, by splitting up our work into several steps:
 
 ## Step 2: Generating Device Code
 
-1. Click on one of the Generators, here Eclipse Hono.
+1. Open the [Information Model](http://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:TISensorTag:1.0.0)
+
+2. Choose **Eclipse Hono** Generator, select **Java** and confirm with **Generate**
 	<figure class="screenshot">
   	<img src="/images/tutorials/getting_started/create_function_block_generator.png">
 	</figure>
-2. Choose **Java** and click **Generate Code**. This will generate a Java source code bundle and will be downloaded automatically.
-	<figure class="screenshot">
-  	<img src="/images/tutorials/getting_started/create_function_block_generator_hono.png">
-	</figure> 
 
-## Test the Integration with Eclipse Hono
+This generates a Java Maven bundle for the TI SensorTag that sends TI SensorTag specific data to Eclipse Hono as JSON via MQTT. Save the bundle on your local hard-drive and import it as a Maven Project in your IDE. 
+
+## Step 3: Test the Integration with Eclipse Hono
 
 Eclipse Hono provides a sandbox infrastructure which we can use to demonstrate the device integration. Before we can send data from our generated project, we must register the device under a tenant:
 
@@ -76,7 +76,7 @@ JSON Request payload:
 
 ### Editing device configuration
 
-Now let's go back to our generated project and update the `src/main/java/device/distancesensor/Distancesensor.java` accordingly:
+Now let's go back to our generated project and update the `src/main/java/device/tisensortag/TISensorTagApp.java` accordingly:
 
 	// Hono MQTT Endpoint
 	private static final String MQTT_ENDPOINT = "ssl://hono.eclipse.org:8883";
@@ -102,7 +102,7 @@ Now let's go back to our generated project and update the `src/main/java/device/
 
 ### Running and verifying data in Hono
 
-- Right click on `Distancesensor.java` in you IDE and **Run as Java Application`** to start sending data to Eclipse Hono. You should be seeing the following output in the console:
+- Right click on `TISensorTagApp.java` in you IDE and **Run as Java Application`** to start sending data to Eclipse Hono. You should be seeing the following output in the console:
 
 ![Material Screenshot](/images/run_java.PNG)
 
