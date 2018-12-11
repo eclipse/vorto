@@ -61,6 +61,19 @@ The properties that a Function Block may define are classified as follows:
 			optional yValue as float "The measured value along the Y axis."
 			optional zValue as float "The measured value along the Z axis."
 		}
+
+		event {
+			DataChanged {
+				xValue as float
+				yValue as float
+				zValue as float
+			}
+			SensorCalibrated {}
+		}
+		
+		operations {
+			reset() returns boolean
+		}
 	}
 
 #### Example 2 (using inheritance):
