@@ -33,12 +33,16 @@ script:
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
   - mvn -q clean install -P checkstyle
-  - docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
-  - docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
-  - if [ -n "$TRAVIS_TAG" ];
+  - docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:nightly ./repository/repository-server;
+  - docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:nightly ./generators/generator-runner;
+  - docker push eclipsevorto/vorto-repo:nightly;
+  - docker push eclipsevorto/vorto-generators:nightly;
+  - if [ -n "$TRAVIS_TAG" ]; then
+  docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
+  docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
   docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG ./repository/repository-server;
   docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG ./generators/generator-runner;
-  fi
+  fi;
 
 deploy:
   provider: script
