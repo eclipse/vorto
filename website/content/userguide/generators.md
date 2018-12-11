@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'User Guide'
 title: "Code Generators"
 date: 2018-05-09T10:58:37+08:00
 weight: 103
@@ -15,7 +18,7 @@ Vorto provides the following Code Generators that convert Vorto Models to device
 * Eclipse Ditto Generator
 * Eclipse Hono Generator
 
-For more information, please read the [Generator Overview](https://github.com/eclipse/vorto/blob/development/core-bundles/generators/Readme.md)
+For more information, please read the [Generator Overview](https://github.com/eclipse/vorto/tree/development/generators)
 
 
 ## More Generators

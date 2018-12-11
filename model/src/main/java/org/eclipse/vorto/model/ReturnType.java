@@ -1,56 +1,55 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.model;
 
 public class ReturnType {
 
-	private boolean isMultiple;
-	
-	private boolean isPrimitive;
-	
-	private IReferenceType type = null;
+  private boolean isMultiple;
 
-	public boolean isMultiple() {
-		return isMultiple;
-	}
+  private boolean isPrimitive;
 
-	public void setMultiple(boolean isMultiple) {
-		this.isMultiple = isMultiple;
-	}
+  private IReferenceType type = null;
 
-	public IReferenceType getType() {
-		return type;
-	}
+  public boolean isMultiple() {
+    return isMultiple;
+  }
 
-	public void setType(IReferenceType type) {
-		this.type = type;
-	}
+  public void setMultiple(boolean isMultiple) {
+    this.isMultiple = isMultiple;
+  }
 
-	public boolean isPrimitive() {
-		return isPrimitive;
-	}
+  public IReferenceType getType() {
+    return type;
+  }
 
-	public void setPrimitive(boolean isPrimitive) {
-		this.isPrimitive = isPrimitive;
-	}
+  public void setType(IReferenceType type) {
+    this.type = type;
+  }
 
-	@Override
-	public String toString() {
-		return "ReturnTypeDto [isMultiple=" + isMultiple + ", isPrimitive=" + isPrimitive + ", type=" + type + "]";
-	}
-	
-	
-	
+  public boolean isPrimitive() {
+    return isPrimitive;
+  }
+
+  public void setPrimitive(boolean isPrimitive) {
+    this.isPrimitive = isPrimitive;
+  }
+
+  @Override
+  public String toString() {
+    return "ReturnTypeDto [isMultiple=" + isMultiple + ", isPrimitive=" + isPrimitive + ", type="
+        + type + "]";
+  }
+
+
+
 }

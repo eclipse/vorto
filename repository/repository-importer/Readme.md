@@ -13,7 +13,7 @@ Add the following dependencies to your importer project:
 
 	<dependency>
 		<groupId>org.eclipse.vorto</groupId>
-		<artifactId>repository-server</artifactId>
+		<artifactId>repository-core</artifactId>
 		<version>${vorto.version}</version>
 	</dependency>
 
@@ -75,11 +75,11 @@ If you want to use the Xtend Template Language for converting your model to Vort
 
 Here is a just a code snippet of the Importer. [Please go here](https://github.com/eclipse/vorto/tree/development/repository/repository-importer/importer-ipso) to look at the full implementation.
 
-	import org.eclipse.vorto.repository.api.ModelId;
-	import org.eclipse.vorto.repository.api.ModelInfo;
-	import org.eclipse.vorto.repository.api.ModelType;
+	import org.eclipse.vorto.model.ModelId;
+	import org.eclipse.vorto.model.ModelType;
 	import org.eclipse.vorto.repository.core.FileContent;
 	import org.eclipse.vorto.repository.core.IUserContext;
+	import org.eclipse.vorto.repository.core.ModelInfo;
 	import org.eclipse.vorto.repository.core.ModelResource;
 	import org.eclipse.vorto.repository.importer.AbstractModelImporter;
 	import org.eclipse.vorto.repository.importer.FileUpload;
@@ -104,7 +104,7 @@ Here is a just a code snippet of the Importer. [Please go here](https://github.c
 
 		@Override
 		protected List<ValidationReport> validate(FileUpload fileUpload, IUserContext user) {
-			/* Validates the uploaded SDT XMLs e.g. through parsing. An uploaded file can 
+			/* Validates the uploaded IPSO/LWM2M XMLs e.g. through parsing. An uploaded file can 
 			 * potentially create multiple Vorto Models, e.g. Function Blocks and Datatypes. Each of 
 			 * these would have its own Validation Report
 			 */
@@ -124,9 +124,7 @@ Here is a just a code snippet of the Importer. [Please go here](https://github.c
 
 #### Step 3. Register the Importer
 
-You have two options of registering your importer in the Repository
+Create a Pull Request on Github and contribute your Importer to the Vorto Project. 
 
-1. Create Pull Request for your Importer. 
-2. Get in touch with us for special handling.
 
 

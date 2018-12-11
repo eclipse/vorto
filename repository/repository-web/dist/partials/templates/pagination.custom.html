@@ -1,0 +1,12 @@
+<nav ng-if="numPages && pages.length >= 1 && totalItemCount > 15">
+<ul class="pagination">
+    <li><a class="pagination-item" ng-click="selectPage(1)">First</a></li>
+    <li><a class="pagination-item" ng-click="selectPage(currentPage - 1)">&lt;</a></li>
+    <li ng-repeat="page in pages" ng-class="{active: page==currentPage}">
+        <a class="pagination-item" ng-click="selectPage(page); $event.preventDefault(); $event.stopPropagation();">{{page}}
+        </a>
+    </li>
+    <li><a class="pagination-item" ng-click="selectPage(currentPage + 1)">&gt;</a></li>
+    <li><a class="pagination-item" ng-click="selectPage(numPages)">Last</a></li>
+</ul>
+</nav>

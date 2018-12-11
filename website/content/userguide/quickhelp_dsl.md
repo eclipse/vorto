@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'User Guide'
 date: 2016-03-09T20:08:11+01:00
 title: Vorto DSL Help
 weight: 101
@@ -40,8 +43,8 @@ Information Models describe a specific device type by grouping abstract and re-u
 A Function Block provides an abstract view on a device to applications that want to employ the devices’ functionality. Thus, it is a consistent, self-contained set of (potentially re-usable) properties and capabilities.
 The properties that a Function Block may define are classified as follows:
 
-* **Status** Properties - These _read-only_ properties indicating the current state of the device. 
 * **Configuration** Properties - _Read- and Writable_ properties that can be set on the device.
+* **Status** Properties - These _read-only_ properties indicating the current state of the device.
 * **Fault** Properties - _Read-only_ properties indicating fault states of the device.
 * **Event** Properties - _Read-only_ properties that are published by the device, e.g. on state changes
 * **Operations** - Indicate functionality that can be invoked on the device, that may lead to device state changes or give additional meta-data information.
@@ -159,3 +162,4 @@ The following example defines a mapping that references another mapping for re-u
 Device Payload Mappings use Vorto Mappings expressing mapping rules in order to map arbitrary device data to Vorto Models.
 
 For more information about payload mappings, please read the [Payload Mapping Documentation]({{< ref "userguide/mappingengine.md" >}})
+

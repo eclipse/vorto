@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.notification.message;
 
@@ -19,15 +17,15 @@ import org.eclipse.vorto.repository.notification.IMessage;
 
 public abstract class AbstractMessage implements IMessage {
 
-	protected User recipient;
-	
-	public AbstractMessage(User recipient) {
-		this.recipient = recipient;
-	}
-	
-	@Override
-	public User getRecipient() {
-		return recipient;
-	}
-	
+  protected User recipient;
+
+  public AbstractMessage(User recipient) {
+    this.recipient = recipient;
+  }
+
+  @Override
+  public User getRecipient() {
+    return recipient;
+  }
+
 }

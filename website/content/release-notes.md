@@ -4,6 +4,24 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 10
+
+**Fixes and Enhancements**
+
+* Various Bug-fixes
+* Various Stabilization fixes
+
+## 0.10.0 milestone 9
+
+**Fixes and Enhancements**
+
+* Support for model inheritance during Code Generation
+* Model Details and Mapping Editor now gives immediate feedback to developer if model is invalid
+* Boost of performance upon model search and retrieval
+* Various UI fixes, e.g Pagination in search etc.
+* Various Stabilization fixes
+
+
 ## 0.10.0 milestone 8
 
 **Fixes and Enhancements**

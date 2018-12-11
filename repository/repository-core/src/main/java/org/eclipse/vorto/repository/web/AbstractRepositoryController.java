@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.web;
 
@@ -23,9 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
@@ -46,132 +42,135 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @ControllerAdvice
-public abstract class AbstractRepositoryController extends ResponseEntityExceptionHandler{
-	
-	@Autowired
-	protected IModelRepository modelRepository;
-	
-	protected static final String ATTACHMENT_FILENAME = "attachment; filename = ";
-	protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-	protected static final String CONTENT_DISPOSITION = "content-disposition";
+public abstract class AbstractRepositoryController extends ResponseEntityExceptionHandler {
 
-	@ResponseStatus(value=HttpStatus.NOT_FOUND, reason = "Model not found.")  // 404
-    @ExceptionHandler(ModelNotFoundException.class)
-    public void notFound(final ModelNotFoundException ex){
-		// do logging
+  @Autowired
+  protected IModelRepository modelRepository;
+
+  protected static final String ATTACHMENT_FILENAME = "attachment; filename = ";
+  protected static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  protected static final String CONTENT_DISPOSITION = "content-disposition";
+
+  @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Model not found.") // 404
+  @ExceptionHandler(ModelNotFoundException.class)
+  public void notFound(final ModelNotFoundException ex) {
+    // do logging
+  }
+
+  @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Model already exists.") // 409
+  @ExceptionHandler(ModelAlreadyExistsException.class)
+  public void modelExists(final ModelAlreadyExistsException ex) {
+    // do logging
+  }
+
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Wrong Input") // 405
+  @ExceptionHandler(IllegalArgumentException.class)
+  public void wrongInput(final IllegalArgumentException ex) {
+    // do logging
+  }
+
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model") // 403
+  @ExceptionHandler(NotAuthorizedException.class)
+  public void unAuthorized(final NotAuthorizedException ex) {
+    // do logging
+  }
+
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during generation.")
+  @ExceptionHandler(GenerationException.class)
+  public void generatorProblem(final GenerationException ex) {
+    // do logging
+  }
+
+  protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
+    Optional<FileContent> fileContent = modelRepository.getFileContent(modelId, Optional.empty());
+
+    final byte[] modelContent = fileContent.get().getContent();
+    if (modelContent != null && modelContent.length > 0) {
+      response.setHeader(CONTENT_DISPOSITION,
+          ATTACHMENT_FILENAME + fileContent.get().getFileName());
+      response.setContentType(APPLICATION_OCTET_STREAM);
+      try {
+        IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
+        response.flushBuffer();
+      } catch (IOException e) {
+        throw new RuntimeException("Error copying file.", e);
+      }
+    } else {
+      throw new RuntimeException("File not found.");
     }
-	
-	@ResponseStatus(value=HttpStatus.CONFLICT, reason = "Model already exists.")  // 409
-    @ExceptionHandler(ModelAlreadyExistsException.class)
-    public void modelExists(final ModelAlreadyExistsException ex){
-		// do logging
+  }
+
+  protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
+    FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
+    ModelInfo modelResource = modelRepository.getById(modelId);
+
+    try {
+      ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
+      zipOutputStream.putNextEntry(zipEntry);
+      zipOutputStream.write(modelFile.getContent());
+      zipOutputStream.closeEntry();
+    } catch (Exception ex) {
+      // entry possible exists already, so skipping TODO: ugly hack!!
     }
-	
-	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Wrong Input")  // 405
-    @ExceptionHandler(IllegalArgumentException.class)
-    public void wrongInput(final IllegalArgumentException ex){
-		// do logging
+
+    for (ModelId reference : modelResource.getReferences()) {
+      addModelToZip(zipOutputStream, reference);
     }
-	
-	@ResponseStatus(value=HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model")  // 403
-    @ExceptionHandler(NotAuthorizedException.class)
-    public void unAuthorized(final NotAuthorizedException ex){
-		// do logging
+  }
+
+  protected void sendAsZipFile(final HttpServletResponse response, final String fileName,
+      List<ModelInfo> modelInfos) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ZipOutputStream zos = new ZipOutputStream(baos);
+
+    try {
+      for (ModelInfo modelInfo : modelInfos) {
+        addModelToZip(zos, modelInfo.getId());
+      }
+
+      zos.close();
+      baos.close();
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
-	
-	@ResponseStatus(value=HttpStatus.BAD_REQUEST, reason = "Error during generation.")
-    @ExceptionHandler(GenerationException.class)
-    public void generatorProblem(final GenerationException ex){
-		// do logging
+
+    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
+    response.setContentType(APPLICATION_OCTET_STREAM);
+    try {
+      IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
+      response.flushBuffer();
+    } catch (IOException e) {
+      throw new RuntimeException("Error copying file.", e);
     }
-	
-	protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
-		Optional<FileContent> fileContent = modelRepository.getFileContent(modelId,Optional.empty());
-		
-		final byte[] modelContent = fileContent.get().getContent();
-		if (modelContent != null && modelContent.length > 0) {
-			response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileContent.get().getFileName());
-			response.setContentType(APPLICATION_OCTET_STREAM);
-			try {
-				IOUtils.copy(new ByteArrayInputStream(modelContent), response.getOutputStream());
-				response.flushBuffer();
-			} catch (IOException e) {
-				throw new RuntimeException("Error copying file.", e);
-			}
-		} else {
-			throw new RuntimeException("File not found.");
-		}
-	}
+  }
 
-	protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-		FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
-		ModelInfo modelResource = modelRepository.getById(modelId);
+  protected IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
+    List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
+    DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
+    allModels = dm.getSorted();
 
-		try {
-			ZipEntry zipEntry = new ZipEntry(modelFile.getFileName());
-			zipOutputStream.putNextEntry(zipEntry);
-			zipOutputStream.write(modelFile.getContent());
-			zipOutputStream.closeEntry();
-		} catch (Exception ex) {
-			// entry possible exists already, so skipping TODO: ugly hack!!
-		}
+    ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
+    for (ModelInfo model : allModels) {
+      FileContent modelContent = this.modelRepository
+          .getFileContent(model.getId(), Optional.of(model.getFileName())).get();
+      workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
+    }
 
-		for (ModelId reference : modelResource.getReferences()) {
-			addModelToZip(zipOutputStream, reference);
-		}
-	}
-	
-	protected void sendAsZipFile(final HttpServletResponse response, final String fileName, List<ModelInfo> modelInfos) {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ZipOutputStream zos = new ZipOutputStream(baos);
+    return workspaceReader.read();
+  }
 
-		try {
-			for (ModelInfo modelInfo : modelInfos) {
-				addModelToZip(zos, modelInfo.getId());
-			}
 
-			zos.close();
-			baos.close();
-		} catch (Exception ex) {
-			throw new RuntimeException(ex);
-		}
+  private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
+    List<ModelInfo> modelInfos = new ArrayList<>();
 
-		response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
-		response.setContentType(APPLICATION_OCTET_STREAM);
-		try {
-			IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
-			response.flushBuffer();
-		} catch (IOException e) {
-			throw new RuntimeException("Error copying file.", e);
-		}
-	}
-	
-	protected IModelWorkspace getWorkspaceForModel(final ModelId modelId) {
-		List<ModelInfo> allModels = getModelWithAllDependencies(modelId);
-		DependencyManager dm = new DependencyManager(new HashSet<>(allModels));
-		allModels = dm.getSorted();
-		
-		ModelWorkspaceReader workspaceReader = IModelWorkspace.newReader();
-		for (ModelInfo model : allModels) {
-			FileContent modelContent = this.modelRepository.getFileContent(model.getId(), Optional.of(model.getFileName())).get();
-			workspaceReader.addFile(new ByteArrayInputStream(modelContent.getContent()), model.getType());
-		}
-		
-		return workspaceReader.read();
-	}
-	
-	
-	private List<ModelInfo> getModelWithAllDependencies(ModelId modelId) {
-		List<ModelInfo> modelInfos = new ArrayList<>();
-		
-		ModelInfo modelResource = modelRepository.getById(modelId);
-		modelInfos.add(modelResource);
-		
-		for (ModelId reference : modelResource.getReferences()) {
-			modelInfos.addAll(getModelWithAllDependencies(reference));
-		}
-		
-		return modelInfos;
-	}
+    ModelInfo modelResource = modelRepository.getById(modelId);
+    modelInfos.add(modelResource);
+
+    for (ModelId reference : modelResource.getReferences()) {
+      modelInfos.addAll(getModelWithAllDependencies(reference));
+    }
+
+    return modelInfos;
+  }
 
 }

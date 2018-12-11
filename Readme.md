@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/eclipse/vorto.svg?branch=development)](https://travis-ci.org/eclipse/vorto)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/569649bfe2594bedae2cd172e5ee0741)](https://www.codacy.com/app/alexander-edelmann/vorto?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eclipse/vorto&amp;utm_campaign=Badge_Grade)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
 [Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to convert Device Information Models to source code that runs on the device or gateway, easing the **integration with IoT Platforms**.
@@ -45,5 +46,11 @@ When you create a Pull Request, make sure:
 2. All your commits are signed off (git commit -s)
 3. Your commit message contains "Fixes #`<Github issue no>`
 4. Target to merge your fix is development branch
+5. Your code fits the code style guidelines
+
+
+#### Attribution
+The code style guidlines are taken from https://github.com/google/styleguide.
+
 
 

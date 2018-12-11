@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono;
 
@@ -29,59 +27,60 @@ import org.eclipse.vorto.codegen.utils.GenerationResultBuilder;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * Generates source code for various device platforms that sends a JSON to the
- * Hono MQTT Connector. The data is compliant to a Vorto & Ditto format.
+ * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector.
+ * The data is compliant to a Vorto & Ditto format.
  *
  */
 public class EclipseHonoGenerator implements IVortoCodeGenerator {
 
-	@Override
-	public IGenerationResult generate(InformationModel model, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
+  @Override
+  public IGenerationResult generate(InformationModel model, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+    GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
 
-		GenerationResultBuilder result = GenerationResultBuilder.from(output);
+    GenerationResultBuilder result = GenerationResultBuilder.from(output);
 
-		String platform = context.getConfigurationProperties().getOrDefault("language", "java");
-		if (platform.equalsIgnoreCase("arduino")) {
-			result.append(generateArduino(model, context, monitor));
-		} else if (platform.equalsIgnoreCase("python")) {
-			result.append(generatePython(model, context, monitor));
-		} else {
-			result.append(generateJava(model, context, monitor));
-		}
+    String platform = context.getConfigurationProperties().getOrDefault("language", "java");
+    if (platform.equalsIgnoreCase("arduino")) {
+      result.append(generateArduino(model, context, monitor));
+    } else if (platform.equalsIgnoreCase("python")) {
+      result.append(generatePython(model, context, monitor));
+    } else {
+      result.append(generateJava(model, context, monitor));
+    }
 
-		return output;
-	}
+    return output;
+  }
 
-	private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		EclipseHonoJavaGenerator javaGenerator = new EclipseHonoJavaGenerator();
-		return javaGenerator.generate(infomodel, context, monitor);
-	}
+  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+    EclipseHonoJavaGenerator javaGenerator = new EclipseHonoJavaGenerator();
+    return javaGenerator.generate(infomodel, context, monitor);
+  }
 
-	private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		PythonGenerator pythonGenerator = new PythonGenerator();
-		return pythonGenerator.generate(infomodel, context, monitor);
-	}
+  private IGenerationResult generatePython(InformationModel infomodel, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+    PythonGenerator pythonGenerator = new PythonGenerator();
+    return pythonGenerator.generate(infomodel, context, monitor);
+  }
 
-	private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		ArduinoCodeGenerator arduinoGenerator = new ArduinoCodeGenerator();
-		return arduinoGenerator.generate(infomodel, context, monitor);
-	}
+  private IGenerationResult generateArduino(InformationModel infomodel, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+    ArduinoCodeGenerator arduinoGenerator = new ArduinoCodeGenerator();
+    return arduinoGenerator.generate(infomodel, context, monitor);
+  }
 
-	@Override
-	public String getServiceKey() {
-		return "eclipsehono";
-	}
+  @Override
+  public String getServiceKey() {
+    return "eclipsehono";
+  }
 
-	@Override
-	public GeneratorInfo getInfo() {
-		return GeneratorInfo.basicInfo("Eclipse Hono",
-				"Generates device code (Arduino, Python, Java) that integrates with Eclipse Hono and Eclipse Ditto.",
-				"Eclipse Vorto Team").production()
-				.withChoiceConfigurationItem("language", "Device Platform", ChoiceItem.of("Arduino (ESP8266)","Arduino"), ChoiceItem.of("Python (v2)","Python"), ChoiceItem.of("Java","Java"));
-	}
+  @Override
+  public GeneratorInfo getInfo() {
+    return GeneratorInfo.basicInfo("Eclipse Hono",
+        "Generates device code (Arduino, Python, Java) that integrates with Eclipse Hono and Eclipse Ditto.",
+        "Eclipse Vorto Team").production().withChoiceConfigurationItem("language",
+            "Device Platform", ChoiceItem.of("Arduino (ESP8266)", "Arduino"),
+            ChoiceItem.of("Python (v2)", "Python"), ChoiceItem.of("Java", "Java"));
+  }
 }

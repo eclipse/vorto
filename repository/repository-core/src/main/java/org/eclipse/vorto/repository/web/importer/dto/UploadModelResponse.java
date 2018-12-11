@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.web.importer.dto;
 
@@ -21,40 +19,40 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
  */
 public class UploadModelResponse {
 
-	private String message = null;
-	private UploadModelResult result = null;
+  private String message = null;
+  private UploadModelResult result = null;
 
-	public UploadModelResponse() {
-		
-	}
-		
-	public UploadModelResponse(String message, UploadModelResult result) {
-		this.message = message;
-		this.result = result;
-	}
+  public UploadModelResponse() {
 
-	/**
-	 * Status message returned from server about request.
-	 **/
-	public String getMessage() {
-		return message;
-	}
+  }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+  public UploadModelResponse(String message, UploadModelResult result) {
+    this.message = message;
+    this.result = result;
+  }
 
-	public UploadModelResult getResult() {
-		return result;
-	}
+  /**
+   * Status message returned from server about request.
+   **/
+  public String getMessage() {
+    return message;
+  }
 
-	public void setResult(UploadModelResult result) {
-		this.result = result;
-	}
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-	@Override
-	public String toString() {
-		return "UploadModelResponse [message=" + message + ", result=" + result + "]";
-	}
-	
+  public UploadModelResult getResult() {
+    return result;
+  }
+
+  public void setResult(UploadModelResult result) {
+    this.result = result;
+  }
+
+  @Override
+  public String toString() {
+    return "UploadModelResponse [message=" + message + ", result=" + result + "]";
+  }
+
 }

@@ -1,7 +1,7 @@
 var repositoryControllers = angular.module('repositoryControllers', ['swaggerUi']);
 
-repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location',
-    function ($scope, $rootScope, $http, $location) {
+repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$http', '$location', '$timeout',
+    function ($scope, $rootScope, $http, $location,$timeout) {
 
         $scope.restore = function () {
             $scope.restoreResult = {};
@@ -45,12 +45,13 @@ repositoryControllers.controller('AdminController', ['$scope', '$rootScope', '$h
             $scope.diagnosticsError = "";
             $http.get('./rest/' + $rootScope.tenant + '/diagnostics')
                 .then(function(result) {
-                    console.log(JSON.stringify(result));
                     $scope.hasDiagnosticsError = false;
                     $scope.isRunningDiagnostics = false;
                     $scope.diagnostics = result.data;
+                    $timeout(function () {
+						$scope.success = result.data.length == 0;
+					}, 2000);
                 }, function(error) {
-                    console.log(JSON.stringify(error));
                     $scope.hasDiagnosticsError = true;
                     $scope.diagnosticsError = error.data.error + ": " + error.data.message
                     $scope.isRunningDiagnostics = false;

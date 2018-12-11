@@ -46,10 +46,8 @@ class DefaultGeneratorConfigUI implements IGeneratorConfigUITemplate{
 									<p><input type="radio" ng-model="configParams.«item.key»" value="«choice.value»">&nbsp;«choice.label»</p>
 								«ENDFOR»
 								«ELSEIF item instanceof BinaryConfigurationItem»
-									<label>«item.label»</label>
 									<input type="checkbox" ng-model="configParams.«item.key»"><i>&nbsp;Include</i>
 								«ELSEIF item instanceof TextConfigurationItem»
-									<label>«item.label»</label>
 									<input type="input" ng-model="configParams.«item.key»" «IF (item as TextConfigurationItem).defaultValue.isPresent»value="«(item as TextConfigurationItem).defaultValue.get»"«ENDIF»>
 							«ENDIF»
 						</div><!-- /.box-body -->

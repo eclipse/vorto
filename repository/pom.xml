@@ -72,6 +72,11 @@
     				<version>4.3.20.RELEASE</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-actuator</artifactId>
+				<version>${spring.boot.version}</version>
+			</dependency>
 			<!-- https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-core -->
 			<dependency>
 				<groupId>org.apache.tomcat.embed</groupId>
@@ -322,26 +327,26 @@
 						<execution>
 							<id>tag-latest</id>
 							<phase>deploy</phase>
-						<goals>
-							<goal>build</goal>
-							<goal>tag</goal>
-							<goal>push</goal>
-						</goals>
-						<configuration>
-							<tag>latest</tag>
-						</configuration>
+							<goals>
+								<goal>build</goal>
+								<goal>tag</goal>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<tag>latest</tag>
+							</configuration>
 						</execution>
 						<execution>
-						<id>tag-version</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>build</goal>
-							<goal>tag</goal>
-							<goal>push</goal>
-						</goals>
-						<configuration>
-							<tag>${project.version}</tag>
-						</configuration>
+							<id>tag-version</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>build</goal>
+								<goal>tag</goal>
+								<goal>push</goal>
+							</goals>
+							<configuration>
+								<tag>${project.version}</tag>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>

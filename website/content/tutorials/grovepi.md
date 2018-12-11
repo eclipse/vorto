@@ -1,4 +1,7 @@
 ---
+menu:
+  main:
+    parent: 'Tutorials'
 date: 2018-03-09T20:08:11+01:00
 title: Connecting a GrovePi to Eclipse Hono
 weight: 32
