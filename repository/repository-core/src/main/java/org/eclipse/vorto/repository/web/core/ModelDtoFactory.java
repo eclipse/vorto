@@ -28,8 +28,14 @@ import org.eclipse.vorto.core.api.model.datatype.PrimitiveType;
 import org.eclipse.vorto.core.api.model.datatype.Property;
 import org.eclipse.vorto.core.api.model.datatype.PropertyAttribute;
 import org.eclipse.vorto.core.api.model.datatype.PropertyType;
-import org.eclipse.vorto.core.api.model.functionblock.*;
+import org.eclipse.vorto.core.api.model.functionblock.DictonaryParam;
+import org.eclipse.vorto.core.api.model.functionblock.Event;
 import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
+import org.eclipse.vorto.core.api.model.functionblock.PrimitiveParam;
+import org.eclipse.vorto.core.api.model.functionblock.RefParam;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnDictonaryType;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 import org.eclipse.vorto.core.api.model.mapping.Attribute;
@@ -50,10 +56,28 @@ import org.eclipse.vorto.core.api.model.mapping.StatusSource;
 import org.eclipse.vorto.core.api.model.mapping.StereoTypeTarget;
 import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
-import org.eclipse.vorto.model.*;
+import org.eclipse.vorto.model.AbstractModel;
+import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.BooleanAttributePropertyType;
+import org.eclipse.vorto.model.Constraint;
+import org.eclipse.vorto.model.ConstraintType;
+import org.eclipse.vorto.model.DictionaryType;
+import org.eclipse.vorto.model.EntityModel;
+import org.eclipse.vorto.model.EnumAttributeProperty;
+import org.eclipse.vorto.model.EnumAttributePropertyType;
+import org.eclipse.vorto.model.EnumLiteral;
+import org.eclipse.vorto.model.EnumModel;
+import org.eclipse.vorto.model.IPropertyAttribute;
+import org.eclipse.vorto.model.IReferenceType;
+import org.eclipse.vorto.model.Infomodel;
+import org.eclipse.vorto.model.ModelEvent;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
+import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.Operation;
 import org.eclipse.vorto.model.Param;
 import org.eclipse.vorto.model.ReturnType;
+import org.eclipse.vorto.model.Stereotype;
 import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -165,10 +189,10 @@ public class ModelDtoFactory {
         return new ModelId(modelId.getName(), modelId.getNamespace(), modelId.getVersion());
     }
 
-    public static FunctionblockModel createResource(
+    public static org.eclipse.vorto.model.FunctionblockModel createResource(
         FunctionblockModel model, Optional<MappingModel> mappingModel) {
-        FunctionblockModel resource =
-            new FunctionblockModel(
+        org.eclipse.vorto.model.FunctionblockModel resource =
+            new org.eclipse.vorto.model.FunctionblockModel(
                 new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
                 ModelType.Functionblock);
         resource.setDescription(model.getDescription());
@@ -225,7 +249,7 @@ public class ModelDtoFactory {
     }
 
     private static Operation createOperation(
-        Operation o,
+        org.eclipse.vorto.core.api.model.functionblock.Operation o,
         Optional<MappingModel> mappingModel) {
         Operation operation = new Operation();
         operation.setBreakable(o.isBreakable());
@@ -273,7 +297,7 @@ public class ModelDtoFactory {
         return operation;
     }
 
-    private static Param createParam(Param p,
+    private static Param createParam(org.eclipse.vorto.core.api.model.functionblock.Param p,
         Optional<MappingModel> mappingModel) {
         Param param = new Param();
         param.setDescription(p.getDescription());
@@ -299,7 +323,7 @@ public class ModelDtoFactory {
         if (mappingModel.isPresent()) {
             param.setTargetPlatformKey(mappingModel.get().getTargetPlatform());
             for (MappingRule rule : getParamRule(
-                ((Operation) p.eContainer())
+                ((org.eclipse.vorto.core.api.model.functionblock.Operation) p.eContainer())
                     .getName(), param.getName(), mappingModel.get().getRules())) {
                 if (rule.getTarget() instanceof StereoTypeTarget) {
                     StereoTypeTarget target = (StereoTypeTarget) rule.getTarget();
