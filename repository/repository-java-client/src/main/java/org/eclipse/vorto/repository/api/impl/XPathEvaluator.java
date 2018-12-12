@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.api.impl;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathException;
 
+@Deprecated
 public class XPathEvaluator {
 
     public Object eval(String expression, Object ctx) {

@@ -12,12 +12,21 @@
  */
 package org.eclipse.vorto.repository.client;
 
-public class RepositoryClientException extends RuntimeException {
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
+public class ModelNotFoundException extends RuntimeException {
 
-	private static final long serialVersionUID = -5425741247121181918L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	public RepositoryClientException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
+  public ModelNotFoundException(String msg, Throwable t) {
+    super(msg, t);
+  }
+
+  public ModelNotFoundException(String msg) {
+    super(msg);
+  }
 }

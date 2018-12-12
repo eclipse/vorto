@@ -10,14 +10,23 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.client;
+package org.eclipse.vorto.repository.client.generation;
 
-public class RepositoryClientException extends RuntimeException {
+/**
+ * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
+ */
+public class GenerationException extends RuntimeException {
 
-	private static final long serialVersionUID = -5425741247121181918L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	public RepositoryClientException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
+  public GenerationException(String msg, Throwable t) {
+    super(msg, t);
+  }
+
+  public GenerationException(String msg) {
+    super(msg);
+  }
 }
