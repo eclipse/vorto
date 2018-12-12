@@ -10,14 +10,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.client;
+package org.eclipse.vorto.repository.client.generation;
 
-public class RepositoryClientException extends RuntimeException {
+public class GeneratorNotFoundException extends RuntimeException {
 
-	private static final long serialVersionUID = -5425741247121181918L;
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	public RepositoryClientException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
+  public GeneratorNotFoundException(String msg, Throwable t) {
+    super(msg, t);
+  }
+
+  public GeneratorNotFoundException(String msg) {
+    super(msg);
+  }
 }
+

@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.api.impl;
 
 import org.apache.commons.jxpath.JXPathContext;
-
+@Deprecated
 public class JxPathContextFactory {
 		
 	private static JxPathContextFactory inst = new JxPathContextFactory();
