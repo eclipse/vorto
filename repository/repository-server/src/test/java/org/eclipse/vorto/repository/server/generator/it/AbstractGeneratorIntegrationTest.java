@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.generators.runner.GeneratorRunner;
 import org.eclipse.vorto.repository.web.VortoRepository;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -26,6 +27,10 @@ public abstract class AbstractGeneratorIntegrationTest {
 
   protected static MockMvc generatorMockMvc;
 
+  private static ConfigurableApplicationContext vortoContext;
+
+  private static ConfigurableApplicationContext generatorContext;
+
   protected Gson gson = new Gson();
 
   @BeforeClass
@@ -36,9 +41,8 @@ public abstract class AbstractGeneratorIntegrationTest {
     vortoRepoProps.put("eidp_clientid", "foo");
     vortoRepoProps.put("eidp_clientSecret", "foo");
 
-    ConfigurableApplicationContext vortoContext =
-        new SpringApplicationBuilder(VortoRepository.class).properties(vortoRepoProps)
-            .run(new String[] {"--spring.jmx.enabled=false"});
+    vortoContext = new SpringApplicationBuilder(VortoRepository.class).properties(vortoRepoProps)
+        .run(new String[] {"--spring.jmx.enabled=false"});
 
     vortoMockMvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) vortoContext)
         .apply(springSecurity()).build();
@@ -48,7 +52,7 @@ public abstract class AbstractGeneratorIntegrationTest {
     generatorProps.put("vorto.tenantId", "default");
     generatorProps.put("server.serviceUrl", "http://localhost:8081/generatorgateway");
 
-    ConfigurableApplicationContext generatorContext =
+    generatorContext =
         new SpringApplicationBuilder(GeneratorRunner.class).properties(generatorProps)
             .run(new String[] {"--server.port=8081", "--spring.jmx.enabled=false",
                 "--spring.security.enabled=false", "--management.security.enabled=false",
@@ -57,7 +61,13 @@ public abstract class AbstractGeneratorIntegrationTest {
     generatorMockMvc = MockMvcBuilders.webAppContextSetup((WebApplicationContext) generatorContext)
         .apply(springSecurity()).build();
   }
-  
+
+  @AfterClass
+  public static void close() {
+    generatorContext.close();
+    vortoContext.close();
+  }
+
   protected String loadModel(String type, String filename) {
     ModelContent modelContent = new ModelContent();
     modelContent.setType(type);
@@ -69,7 +79,7 @@ public abstract class AbstractGeneratorIntegrationTest {
     }
     return gson.toJson(modelContent);
   }
-  
+
   protected byte[] loadResource(String filename) throws IOException {
     return IOUtils.toByteArray(new ClassPathResource(filename).getInputStream());
   }
