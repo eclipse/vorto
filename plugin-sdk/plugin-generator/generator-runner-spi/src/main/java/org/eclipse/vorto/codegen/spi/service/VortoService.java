@@ -18,6 +18,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.zip.ZipInputStream;
 import javax.annotation.PostConstruct;
@@ -42,7 +45,6 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.repository.api.IModelRepository;
 import org.eclipse.vorto.repository.api.ModelId;
 import org.eclipse.vorto.repository.api.attachment.Attachment;
