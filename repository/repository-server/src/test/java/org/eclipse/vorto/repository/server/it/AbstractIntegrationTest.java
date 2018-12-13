@@ -15,6 +15,8 @@ package org.eclipse.vorto.repository.server.it;
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
 import static org.eclipse.vorto.repository.account.Role.USER;
+import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
+import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -33,14 +35,17 @@ import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,6 +64,10 @@ public abstract class AbstractIntegrationTest {
   @LocalServerPort
   protected int port;
   
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
+  protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
+  
   @BeforeClass
   public static void configureOAuthConfiguration() {
     System.setProperty("github_clientid", "foo");
@@ -70,6 +79,12 @@ public abstract class AbstractIntegrationTest {
   @Before
   public void startUpServer() throws Exception {
     mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+    userAdmin = user("user1").password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, ADMIN, MODEL_CREATOR,MODEL_PROMOTER,MODEL_REVIEWER)));
+    userStandard = user("user2").password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
+    userCreator = user("user3").password("pass")
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER,MODEL_CREATOR)));
     setUpTest();
   }
   
@@ -86,11 +101,11 @@ public abstract class AbstractIntegrationTest {
   
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
     mockMvc.perform(put("/rest/default/models/" + modelId).with(user)
-        .contentType(MediaType.APPLICATION_JSON).content(createContent(modelId,fileName))).andExpect(status().isCreated());
+        .contentType(MediaType.APPLICATION_JSON).content(createContent(modelId,fileName))).andExpect(status().is(200));
   }
 
   private String createContent(String modelId, String fileName) throws Exception {
-    String dslContent = IOUtils.toString(new ClassPathResource(fileName).getInputStream());
+    String dslContent = IOUtils.toString(new ClassPathResource("models/"+fileName).getInputStream());
     
     Map<String,Object> content = new HashMap<>();
     content.put("contentDsl", dslContent);
@@ -98,4 +113,18 @@ public abstract class AbstractIntegrationTest {
 
     return new GsonBuilder().create().toJson(content);
   }
+  
+  public ResultActions addAttachment(String modelId,
+      SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
+      MediaType mediaType) throws Exception {
+    MockMultipartFile file =
+        new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
+    MockMultipartHttpServletRequestBuilder builder =
+        MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
+    return mockMvc.perform(builder.file(file).with(request -> {
+      request.setMethod("PUT");
+      return request;
+    }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
+  }
+
 }
