@@ -1,13 +1,20 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
+ *
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.client;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.vorto.model.EntityModel;
-import org.eclipse.vorto.model.EnumModel;
-import org.eclipse.vorto.model.FunctionblockModel;
-import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.repository.client.generation.GeneratedOutput;
@@ -49,11 +56,10 @@ public interface IRepositoryClient {
    */
   GeneratedOutput generate(ModelId modelId, String generatorKey,
       Map<String, String> invocationParams);
-  
-  
+
+
   /**
-   * Searches the repository by a query expression. Use {@link IModelRepository#newQuery()} as a
-   * helper to formulate your query
+   * Searches the repository by a free text query expression.
    * 
    * @param query expression containing the criteria for the search
    * @return a list of model info objects, never null
@@ -70,34 +76,28 @@ public interface IRepositoryClient {
   ModelInfo getById(ModelId modelId);
 
   /**
-   * Gets the actual information model content for a given model id.
+   * Gets the actual information model content including all its dependencies for a given model id.
    * 
    * @param modelId model id to get its content for
-   * @param resultClass expected model class, either {@link Infomodel}, {@link FunctionblockModel},
-   *        {@link EntityModel} or {@link EnumModel}
    * @return model content
    */
   ModelContent getContent(ModelId modelId);
 
   /**
-   * Gets the actual model content for a given model id including the meta data for the given target
-   * platform.
+   * Gets the model content for a given model id and its dependencies, including the meta data for
+   * the given target platform.
    * 
    * @param modelId model id to get its content for
-   * @param resultClass expected model class, either {@link Infomodel}, {@link FunctionblockModel},
-   *        {@link EntityModel} or {@link EnumModel}
    * @param key of the target platform
    * @return model content
    */
   ModelContent getContent(ModelId modelId, String targetPlatformKey);
 
   /**
-   * Gets the actual model content for a given model id including the meta data for the given
-   * mapping model ID
+   * Gets the model content for a given model id including the meta data for the given mapping model
+   * ID
    * 
    * @param modelId model id to get its content for
-   * @param resultClass expected model class, either {@link Infomodel}, {@link FunctionblockModel},
-   *        {@link EntityModel} or {@link EnumModel}
    * @param mappingModelId model id of the mapping to look up
    * @return model content
    */
@@ -119,7 +119,11 @@ public interface IRepositoryClient {
    * @return content The contents of the file
    */
   byte[] downloadAttachment(ModelId modelId, String attachmentFileName);
-  
+
+  /**
+   * 
+   * @return RepositoryClient Builder
+   */
   static RepositoryClientBuilder newBuilder() {
     return RepositoryClientBuilder.newBuilder();
   }
