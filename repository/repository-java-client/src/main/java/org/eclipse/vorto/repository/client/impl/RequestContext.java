@@ -10,20 +10,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.api.impl;
+package org.eclipse.vorto.repository.client.impl;
 
 import org.apache.http.client.config.RequestConfig;
 
-@Deprecated
 public class RequestContext {
 	private String baseUrl;
 	private RequestConfig requestConfig;
-	private String tenantId;
 
-	public RequestContext(String baseUrl, RequestConfig requestConfig, String tenantId) {
+	public RequestContext(String baseUrl, RequestConfig requestConfig) {
 		this.baseUrl = baseUrl;
 		this.requestConfig = requestConfig;
-		this.tenantId = tenantId;
 	}
 
 	public String getBaseUrl() {
@@ -40,10 +37,6 @@ public class RequestContext {
 
 	public void setRequestConfig(RequestConfig requestConfig) {
 		this.requestConfig = requestConfig;
-	}
-	
-	public String getTenantId() {
-		return this.tenantId;
 	}
 
 }

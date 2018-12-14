@@ -42,10 +42,9 @@ import org.eclipse.vorto.core.api.model.informationmodel.InformationModelFactory
 import org.eclipse.vorto.core.api.model.informationmodel.impl.InformationModelPackageImpl;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.core.api.model.model.Model;
-import org.eclipse.vorto.model.Infomodel;
-import org.eclipse.vorto.repository.api.IModelRepository;
-import org.eclipse.vorto.repository.api.ModelId;
-import org.eclipse.vorto.repository.api.attachment.Attachment;
+import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.client.IRepositoryClient;
+import org.eclipse.vorto.repository.client.attachment.Attachment;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +75,7 @@ public class VortoService {
   private RestTemplate restTemplate;
 
   @Autowired
-  private IModelRepository modelRepository;
+  private IRepositoryClient modelRepository;
 
   @Value("${server.config.generatorUser:#{null}}")
   private String generatorUsername;
@@ -102,13 +101,13 @@ public class VortoService {
         new InvocationContext(mappings, repo.newGeneratorLookup(), parameters);
     try {
       final ModelId modelId = new ModelId(name, namespace, version);
-      List<Attachment> attachments = modelRepository.getAttachments(modelId).get();
+      List<Attachment> attachments = modelRepository.getAttachments(modelId);
       Optional<Attachment> importedFile = attachments.stream()
           .filter(attachment -> attachment.getTagById(Attachment.TAG_IMPORTED.getLabel()) != null)
           .findAny();
       if (importedFile.isPresent()) {
         byte[] importedFileContent =
-            modelRepository.getAttachment(modelId, importedFile.get().getFilename()).get();
+            modelRepository.downloadAttachment(modelId, importedFile.get().getFilename());
         invocationContext.setImportedFile(
             new FileContent(importedFile.get().getFilename(), importedFileContent));
       }
