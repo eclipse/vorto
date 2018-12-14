@@ -29,21 +29,10 @@ public class Attachment {
   public static final Tag TAG_IMAGE = new Tag("org.eclipse.vorto.tag.image", "Image");
 
   public static Attachment newInstance(ModelId modelId, String filename) {
-    return new Attachment(modelId, filename, getLink(modelId, filename));
+    return new Attachment(modelId, filename);
   }
 
-  public static String getLink(ModelId modelId, String filename) {
-    StringBuffer link = new StringBuffer("/api/v1/attachments");
-
-    link.append("/");
-    link.append(modelId.getPrettyFormat());
-    link.append("/files/");
-    link.append(filename);
-
-    return link.toString();
-  }
-
-  private Attachment(ModelId modelId, String filename, String downloadLink) {
+  private Attachment(ModelId modelId, String filename) {
     this.modelId = modelId;
     this.filename = filename;
   }

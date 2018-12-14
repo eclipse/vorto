@@ -101,10 +101,10 @@ public abstract class AbstractIntegrationTest {
   
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
     mockMvc.perform(put("/rest/default/models/" + modelId).with(user)
-        .contentType(MediaType.APPLICATION_JSON).content(createContent(modelId,fileName))).andExpect(status().is(200));
+        .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().is(200));
   }
 
-  private String createContent(String modelId, String fileName) throws Exception {
+  private String createContent(String fileName) throws Exception {
     String dslContent = IOUtils.toString(new ClassPathResource("models/"+fileName).getInputStream());
     
     Map<String,Object> content = new HashMap<>();

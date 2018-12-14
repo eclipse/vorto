@@ -131,16 +131,12 @@ public class DefaultRepositoryClient extends ImplementationBase implements IRepo
   @Override
   public Collection<ModelInfo> search(String expression) {
     try {
-      expression = URLEncoder.encode(expression, "utf-8");
+      String url = String.format("%s/%s?expression=%s", getRequestContext().getBaseUrl(),
+          String.format(REST_SEARCH_BASE), URLEncoder.encode(expression, "utf-8"));
+      return requestAndTransform(url, transformToType(new TypeToken<ArrayList<ModelInfo>>() {}.getType()));
     } catch (UnsupportedEncodingException e) {
       throw new ModelQueryException("Error encoding the query", e);
-    }
-
-    String url = String.format("%s/%s?expression=%s", getRequestContext().getBaseUrl(),
-        String.format(REST_SEARCH_BASE), expression);
-    return
-
-    requestAndTransform(url, transformToType(new TypeToken<ArrayList<ModelInfo>>() {}.getType()));
+    } 
   }
 
   @Override

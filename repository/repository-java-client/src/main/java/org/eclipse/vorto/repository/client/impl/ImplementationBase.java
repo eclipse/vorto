@@ -74,7 +74,7 @@ public class ImplementationBase {
         }
       })
       .registerTypeAdapter(Map.class, new JsonDeserializer<HashMap<ModelId, AbstractModel>>() {
-        public HashMap<ModelId, AbstractModel> deserialize(JsonElement jsonElement, java.lang.reflect.Type type, JsonDeserializationContext context)
+        public HashMap<ModelId, AbstractModel> deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
                 throws JsonParseException {
             
             if (!jsonElement.isJsonObject()) {
