@@ -1,0 +1,29 @@
+<div class="modal-body">
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+	<label>Specify the ID of the {{modelType}}</label>
+	<form name="createModelForm" novalidate>
+		<div class="form-group">
+		    	<label>Name</label>
+		        <input type="text" class="form-control" name="modelName" ng-model="modelName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
+		        <div ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
+		</div>
+		<div class="form-group">
+		    	<label>Namespace</label>
+		        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" required>
+				<div ng-show="createModelForm.modelNamespace.$error.pattern">Please enter a valid model namespace. Example: com.mycompany</div>
+		</div>
+		<div class="form-group">
+		    	<label>Version</label>
+		        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
+				<div ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<div class="align-right">
+		<button ng-if="modelType === 'InformationModel'" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="next('step3',modelType,modelNamespace,modelName,modelVersion)">Next</button>
+	    <button ng-if="modelType !== 'InformationModel' && !isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)">Create</button>
+	    <button ng-if="modelType !== 'InformationModel' && isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>
