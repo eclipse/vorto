@@ -1,9 +1,11 @@
 <div class="modal-body">
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-	<label>Describe the device capabilities</label>
+	<p>
+		Almost there. Choose what type of semantic abstraction the device should communicate with the IoT backend. You can select from a list of existing abstract Function Block Properties.  
+	</p>
 		<form name="infomodelForm" class="form-horizontal">
 			<div class="form-group">
-				<label for="property" class="col-sm-3 control-label">Abstraction Compliance</label>
+				<label for="property" class="col-sm-3 control-label">Semantic Abstraction</label>
 				<div class="col-md-4 col-xs-12 form-group">
 					<input type="radio" name="modelType" ng-change="loadFunctionblocks('org.eclipse.vorto')" value="org.eclipse.vorto" ng-model="fbType">
 					org.eclipse.vorto &nbsp;&nbsp;
