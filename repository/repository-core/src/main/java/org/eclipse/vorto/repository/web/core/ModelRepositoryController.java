@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
@@ -166,7 +165,6 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   }
 
-  @SuppressWarnings("unchecked")
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
   @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
   @RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/{modelType}",
