@@ -173,7 +173,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   public ResponseEntity<ModelInfo> createModel(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType,
-      @RequestBody List<ModelProperty> properties) throws WorkflowException {
+      @RequestBody(required=false) List<ModelProperty> properties) throws WorkflowException {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     if (this.modelRepository.getById(modelID) != null) {
@@ -184,7 +184,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
       String modelTemplate = null;
 
-      if (modelType == ModelType.InformationModel) {
+      if (modelType == ModelType.InformationModel && properties != null) {
         modelTemplate = new InfomodelTemplate().createModelTemplate(modelID, properties);
       } else {
         modelTemplate = new ModelTemplate().createModelTemplate(modelID, modelType);
