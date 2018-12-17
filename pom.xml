@@ -134,7 +134,7 @@
 					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>UTF-8</encoding>
 					<inputEncoding>UTF-8</inputEncoding>
-					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=128m -ea
+					<argLine>-Xms256m -Xmx512m -ea
 						-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
