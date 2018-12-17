@@ -15,7 +15,6 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import javax.jcr.Binary;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.Node;
