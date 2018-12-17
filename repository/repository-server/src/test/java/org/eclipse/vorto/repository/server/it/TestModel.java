@@ -74,7 +74,7 @@ public class TestModel {
   public void createModel(MockMvc mockMvc,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1) throws Exception {
     mockMvc.perform(post("/rest/default/models/" + prettyName + "/InformationModel").with(user1)
-        .contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isCreated());
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
   }
 
 

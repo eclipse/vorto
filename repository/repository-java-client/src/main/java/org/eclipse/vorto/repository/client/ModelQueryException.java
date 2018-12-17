@@ -12,12 +12,14 @@
  */
 package org.eclipse.vorto.repository.client;
 
-public class RepositoryClientException extends RuntimeException {
+public class ModelQueryException extends RuntimeException {
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = -5425741247121181918L;
+  public ModelQueryException(String description, Throwable arg0) {
+    super(description, arg0);
+  }
 
-	public RepositoryClientException(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
 }

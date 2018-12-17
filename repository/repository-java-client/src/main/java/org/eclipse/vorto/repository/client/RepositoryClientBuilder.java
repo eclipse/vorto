@@ -23,8 +23,8 @@ import org.eclipse.vorto.repository.api.impl.DefaultModelGeneration;
 import org.eclipse.vorto.repository.api.impl.DefaultModelRepository;
 import org.eclipse.vorto.repository.api.impl.RequestContext;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
+import org.eclipse.vorto.repository.client.impl.DefaultRepositoryClient;
 
-@Deprecated
 public class RepositoryClientBuilder {
 	private String baseUrl = "http://vorto.eclipse.org";
 	private String proxyHost;
@@ -57,14 +57,25 @@ public class RepositoryClientBuilder {
 		return this;
 	}
 	
+	@Deprecated
+	/**
+	 * Please use {@link RepositoryClientBuilder#build()} instead
+	 * @return
+	 */
 	public IModelGeneration buildModelGenerationClient() {
 		return new DefaultModelGeneration(buildHttpClient(), buildRequestContext());
 	}
 
+	@Deprecated
+	/**
+     * Please use {@link RepositoryClientBuilder#build()} instead
+     * @return
+     */
 	public IModelRepository buildModelRepositoryClient() {
 		return new DefaultModelRepository(buildHttpClient(), buildRequestContext());
 	}
 	
+	@Deprecated
 	public IMapping buildIMappingClient() {
 		return new DefaultMappingClient();
 	}
@@ -84,4 +95,16 @@ public class RepositoryClientBuilder {
 	private boolean hasProxy() {
 		return (proxyHost != null) && !(proxyHost.trim().isEmpty());
 	}
+	
+	public IRepositoryClient build() {
+	  return new DefaultRepositoryClient(buildHttpClient(), buildRequestContext2());
+	}
+	
+	private org.eclipse.vorto.repository.client.impl.RequestContext buildRequestContext2() {
+      if (hasProxy()) {
+          return new org.eclipse.vorto.repository.client.impl.RequestContext(baseUrl, RequestConfig.custom().setProxy(new HttpHost(proxyHost, proxyPort)).build());
+      } else {
+          return new org.eclipse.vorto.repository.client.impl.RequestContext(baseUrl, RequestConfig.DEFAULT);
+      }
+  }
 }

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
@@ -39,6 +40,7 @@ import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
+import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -170,18 +172,25 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       produces = "application/json")
   public ResponseEntity<ModelInfo> createModel(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
-      @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType)
-      throws WorkflowException {
+      @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType,
+      @RequestBody(required=false) List<ModelProperty> properties) throws WorkflowException {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
     if (this.modelRepository.getById(modelID) != null) {
       throw new ModelAlreadyExistsException();
     } else {
-      ModelTemplate template = new ModelTemplate();
       IUserContext userContext =
           UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-      ModelInfo savedModel = this.modelRepository.save(modelID,
-          template.createModelTemplate(modelID, modelType).getBytes(),
+
+      String modelTemplate = null;
+
+      if (modelType == ModelType.InformationModel && properties != null) {
+        modelTemplate = new InfomodelTemplate().createModelTemplate(modelID, properties);
+      } else {
+        modelTemplate = new ModelTemplate().createModelTemplate(modelID, modelType);
+      }
+
+      ModelInfo savedModel = this.modelRepository.save(modelID, modelTemplate.getBytes(),
           modelID.getName() + modelType.getExtension(), userContext);
       this.workflowService.start(modelID);
       return new ResponseEntity<>(savedModel, HttpStatus.CREATED);

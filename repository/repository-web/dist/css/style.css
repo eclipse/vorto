@@ -1640,3 +1640,10 @@ input[type=file]::-webkit-file-upload-button {
 .pagination-item {
     cursor: pointer;
 }
+
+.modelcreator-result {
+    height: auto;
+    border: none;
+    padding: 20px 3px 0;
+}
+}
