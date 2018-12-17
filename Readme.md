@@ -38,6 +38,17 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
  - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
+# Follow us
+
+| Channel | Releases           | Features                 | Tutorials                |
+|:--------|:------------------:|:-------------------------|--------------------------|
+| Twitter | :heavy_check_mark: | :heavy_check_mark:       | :heavy_check_mark:       |
+| Email   | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+
+We favor Twitter for feature and tutorial news, because the nature of twitter allows for shorter and faster news. 
+Also such a flood of information via Email would be considered spam. 
+If you have suggestions on how and what news we should provide let us know in the issues.
+
 # Contribute to the Project
 
 When you create a Pull Request, make sure:
