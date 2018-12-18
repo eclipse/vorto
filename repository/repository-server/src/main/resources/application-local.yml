@@ -8,6 +8,9 @@ server:
     generatorUser: generator
     generatorPassword: 123
     
+repo:
+  configFile:vorto-repository-config-h2.json
+    
 github:
   oauth2:
     enabled: true

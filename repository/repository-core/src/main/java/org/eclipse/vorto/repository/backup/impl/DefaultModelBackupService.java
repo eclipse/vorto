@@ -1,16 +1,13 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.backup.impl;
 
@@ -18,102 +15,120 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidSerializedDataException;
 import javax.jcr.ItemExistsException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-
 import org.eclipse.vorto.repository.backup.IModelBackupService;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
-import org.modeshape.jcr.api.Session;
+import org.eclipse.vorto.repository.core.security.SpringSecurityCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultModelBackupService implements IModelBackupService {
 
-	@Autowired
-	private IModelRepository modelRepository;
+  @Autowired
+  private IModelRepository modelRepository;
 
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+  @Autowired
+  private Repository repository;
 
-	public final String EXCEPTION_MESSAGE_CURRENT_CONTENT = "Not able to create a backup of the current content";
-	public final String EXCEPTION_MESSAGE_RESTORABLE_CONTENT = "Not able to restore the imported backup";
+  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-	@Override
-	public byte[] backup() throws Exception {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Session session = getSession();
-		session.exportDocumentView("/", baos, false, false);
-		baos.close();
-		return baos.toByteArray();
-	}
-	
-	private org.modeshape.jcr.api.Session getSession() {
-		return (Session) ((JcrModelRepository)modelRepository).getSession();
-	}
+  public final String EXCEPTION_MESSAGE_CURRENT_CONTENT =
+      "Not able to create a backup of the current content";
+  public final String EXCEPTION_MESSAGE_RESTORABLE_CONTENT =
+      "Not able to restore the imported backup";
 
-	
-	@Override
-	public void restore(byte[] restorableContent) throws Exception {
-		byte[] currentContent = backup();
+  @Override
+  public byte[] backup() throws Exception {
+    org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      session.exportSystemView("/", baos, false, false);
+      baos.close();
+      return baos.toByteArray();
+    } finally {
+      session.logout();
+    }
+  }
 
-		try {
-			LOGGER.info("attempting to import backup of current content");
-			doRestore(currentContent);
-		} catch (Exception invalidCurrentContent) {
-			throw new Exception(this.EXCEPTION_MESSAGE_CURRENT_CONTENT,invalidCurrentContent);
-		}
+  protected Session getSession() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    try {
+      return repository.login(new SpringSecurityCredentials(authentication));
+    } catch (RepositoryException ex) {
+      throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
+    }
+  }
 
-		removeAll();
+  @Override
+  public void restore(byte[] restorableContent) throws Exception {
+    byte[] currentContent = backup();
 
-		try {
-			LOGGER.info("attempting to import imported backup");
-			doRestore(restorableContent);
-		} catch (Exception invalidContent) {
-			doRestore(currentContent);
-			throw new Exception(this.EXCEPTION_MESSAGE_RESTORABLE_CONTENT,invalidContent);
-		}
-	}
+    org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();
+    try {
+      try {
+        LOGGER.info("attempting to import backup of current content");
+        doRestore(currentContent, session);
+      } catch (Exception invalidCurrentContent) {
+        throw new Exception(this.EXCEPTION_MESSAGE_CURRENT_CONTENT, invalidCurrentContent);
+      } 
+      
+      removeAll(session);
+  
+      try {
+        LOGGER.info("attempting to import imported backup");
+        doRestore(restorableContent,session);
+      } catch (Exception invalidContent) {
+        doRestore(currentContent,session);
+        throw new Exception(this.EXCEPTION_MESSAGE_RESTORABLE_CONTENT, invalidContent);
+      }
+    } finally {
+      session.logout();
+    }
+  }
 
-	private void doRestore(byte[] backup) throws AccessDeniedException, VersionException, PathNotFoundException,
-			ItemExistsException, ConstraintViolationException, InvalidSerializedDataException, LockException,
-			IOException, RepositoryException {
-		Session session = getSession();
+  private void doRestore(byte[] backup,org.modeshape.jcr.api.Session session) throws AccessDeniedException, VersionException,
+      PathNotFoundException, ItemExistsException, ConstraintViolationException,
+      InvalidSerializedDataException, LockException, IOException, RepositoryException {
+   
+    session.getWorkspace().importXML("/",
+        new ByteArrayInputStream(backup),
+        ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
+    LOGGER.info("created backup succesfully");
+  }
 
-		session.getWorkspace().importXML("/", new ByteArrayInputStream(backup),
-				ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-		LOGGER.info("created backup succesfully");
-	}
+  public IModelRepository getModelRepository() {
+    return modelRepository;
+  }
 
-	public IModelRepository getModelRepository() {
-		return modelRepository;
-	}
+  public void setModelRepository(IModelRepository modelRepository) {
+    this.modelRepository = modelRepository;
+  }
 
-	public void setModelRepository(IModelRepository modelRepository) {
-		this.modelRepository = modelRepository;
-	}
-
-	private void removeAll() throws Exception {
-		Session session = getSession();
-
-		NodeIterator iter = session.getRootNode().getNodes();
-		while(iter.hasNext()) {
-			Node node = iter.nextNode();
-			if (!node.getName().equals("jcr:system")) {
-				session.removeItem(node.getPath());
-			}
-		}
-		session.save();
-	}
+  private void removeAll(org.modeshape.jcr.api.Session session) throws Exception {
+    NodeIterator iter = session.getRootNode().getNodes();
+    while (iter.hasNext()) {
+      Node node = iter.nextNode();
+      if (!node.getName().equals("jcr:system")) {
+        ((org.modeshape.jcr.api.Session) session).removeItem(node.getPath());
+      }
+    }
+    session.save();
+  }
 }

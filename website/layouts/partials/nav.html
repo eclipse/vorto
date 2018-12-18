@@ -3,15 +3,20 @@
 {{ range .Site.Menus.main.ByWeight }}
 
 {{ $.Scratch.Set "currentMenuEntry" . }}
+{{ $isCurrent := in $currentNode.Permalink (.URL | absURL | printf "%s") }}
 <li>
   {{ if .HasChildren }}
-    <span class="section">{{ .Name | title }}</span>
+    {{ partial "nav_link_children" $currentNode }}
+    {{ if $isCurrent }}
     <ul>
       {{ range .Children }}
+        <li class="anchor">
         {{ $.Scratch.Set "currentMenuEntry" . }}
-        {{ partial "nav_link" $currentNode }}
+        {{ partial "nav_link_children" $currentNode }}
+        </li>
       {{ end }}
     </ul>
+    {{ end }}
   {{ else }}
     {{ partial "nav_link" $currentNode }}
   {{ end }}

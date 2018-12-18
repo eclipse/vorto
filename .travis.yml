@@ -9,33 +9,41 @@ services:
 jdk: oraclejdk8
 
 addons:
-  sonarqube:
+  sonarcloud:
     organization: "vorto"
     token:
       secure: $SONAR_TOKEN
     branches:
       - development
 
-before_install: 
-  - echo "MAVEN_OPTS='-Xms1g -Xmx2g -XX:PermSize=512m -XX:MaxPermSize=1g'" > ~/.mavenrc
-
-install: 
-  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
-script:
-  - remark -i .remark_ignore -f -u validate-links .
-  - remark -i .remark_ignore -u lint-no-dead-urls .
-  - mvn clean install -f pom.xml
-
 cache:
   directories:
     - '$HOME/.m2/repository'
     - '$HOME/.sonar/cache'
 
-after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker build -f repository/repository-web/Dockerfile -t eclipsevorto/vorto-repo:latest .repository/repository-web;
-    docker build -f repository/generator-gateway/Dockerfile -t eclipsevorto/vorto-generator-gateway:latest ./repository/generator-gateway;
-    docker push eclipsevorto/vorto-repo;
-    docker push eclipsevorto/vorto-generator-gateway;
-    fi
+before_install: 
+  - echo "MAVEN_OPTS='-Xms1g -Xmx2g'" > ~/.mavenrc
+
+install: 
+  - git clone https://github.com/digitalcraftsman/hugo-material-docs.git website/themes/hugo-material-docs
+  - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.deb -O /tmp/hugo.deb && sudo dpkg -i /tmp/hugo.deb
+  - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
+script:
+  - hugo -s website/
+  - remark -i .remark_ignore -f -u validate-links .
+  - remark -i .remark_ignore -u lint-no-dead-urls .
+  - mvn -q clean install -P checkstyle
+  - docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:nightly ./repository/repository-server;
+  - docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:nightly ./generators/generator-runner;
+  - if [ -n "$TRAVIS_TAG" ]; then
+    docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:latest ./repository/repository-server;
+    docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:latest ./generators/generator-runner;
+    docker build --build-arg JAR_FILE=./infomodelrepository.jar -f repository/repository-server/Dockerfile -t eclipsevorto/vorto-repo:$TRAVIS_TAG ./repository/repository-server;
+    docker build --build-arg JAR_FILE=./generator-runner-exec.jar -f generators/generator-runner/Dockerfile -t eclipsevorto/vorto-generators:$TRAVIS_TAG ./generators/generator-runner;
+    fi;
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master

@@ -8,7 +8,7 @@
 		<artifactId>repository</artifactId>
 		<version>0.10.0-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>repository-importer</artifactId>
 	<name>Vorto Repository Importer</name>
 	<packaging>pom</packaging>

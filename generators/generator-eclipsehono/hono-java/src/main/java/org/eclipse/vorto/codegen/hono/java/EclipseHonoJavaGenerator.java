@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.java;
 
@@ -40,76 +38,82 @@ import org.eclipse.vorto.core.api.model.informationmodel.FunctionblockProperty;
 import org.eclipse.vorto.core.api.model.informationmodel.InformationModel;
 
 /**
- * Generates source code for various device platforms that sends a JSON to the
- * Hono MQTT Connector. The data is compliant to a Vorto & Ditto format.
+ * Generates source code for various device platforms that sends a JSON to the Hono MQTT Connector.
+ * The data is compliant to a Vorto & Ditto format.
  *
  */
 public class EclipseHonoJavaGenerator implements IVortoCodeGenerator {
 
-	@Override
-	public IGenerationResult generate(InformationModel model, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
-		GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
+  @Override
+  public IGenerationResult generate(InformationModel model, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) throws VortoCodeGeneratorException {
+    GenerationResultZip output = new GenerationResultZip(model, getServiceKey());
 
-		GenerationResultBuilder result = GenerationResultBuilder.from(output);
-		result.append(generateJava(model, context, monitor));
+    GenerationResultBuilder result = GenerationResultBuilder.from(output);
+    result.append(generateJava(model, context, monitor));
 
 
-		return output;
-	}
+    return output;
+  }
 
-	private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
-			IVortoCodeGenProgressMonitor monitor) {
-		GenerationResultZip output = new GenerationResultZip(infomodel, getServiceKey());
-		ChainedCodeGeneratorTask<InformationModel> generator = new ChainedCodeGeneratorTask<InformationModel>();
+  private IGenerationResult generateJava(InformationModel infomodel, InvocationContext context,
+      IVortoCodeGenProgressMonitor monitor) {
+    GenerationResultZip output = new GenerationResultZip(infomodel, getServiceKey());
+    ChainedCodeGeneratorTask<InformationModel> generator =
+        new ChainedCodeGeneratorTask<InformationModel>();
 
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new Log4jTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CertificateTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new PomFileTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new Log4jTemplate()));
+    generator
+        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new CertificateTemplate()));
 
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AppTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IDataServiceTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoDataService()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoMqttClientTemplate()));
-		generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new InformationModelTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new AppTemplate()));
+    generator
+        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new IDataServiceTemplate()));
+    generator.addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoDataService()));
+    generator
+        .addTask(new GeneratorTaskFromFileTemplate<InformationModel>(new HonoMqttClientTemplate()));
+    generator.addTask(
+        new GeneratorTaskFromFileTemplate<InformationModel>(new InformationModelTemplate()));
 
-		generator.generate(infomodel, context, output);
+    generator.generate(infomodel, context, output);
 
-		for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
-			new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(infomodel)).generate(fbProperty.getType(),
-					context, output);
+    for (FunctionblockProperty fbProperty : infomodel.getProperties()) {
+      new GeneratorTaskFromFileTemplate<>(new FunctionblockTemplate(infomodel))
+          .generate(fbProperty.getType(), context, output);
 
-			FunctionBlock fb = fbProperty.getType().getFunctionblock();
+      FunctionBlock fb = fbProperty.getType().getFunctionblock();
 
-			for (Entity entity : Utils.getReferencedEntities(fb)) {
-				generateForEntity(infomodel, entity, output);
-			}
-			for (Enum en : Utils.getReferencedEnums(fb)) {
-				generateForEnum(infomodel, en, output);
-			}
-		}
+      for (Entity entity : Utils.getReferencedEntities(fb)) {
+        generateForEntity(infomodel, entity, output);
+      }
+      for (Enum en : Utils.getReferencedEnums(fb)) {
+        generateForEnum(infomodel, en, output);
+      }
+    }
 
-		return output;
-	}
+    return output;
+  }
 
-	private void generateForEntity(InformationModel infomodel, Entity entity, IGeneratedWriter outputter) {
-		new JavaClassGeneratorTask(infomodel).generate(entity, null, outputter);
-	}
+  private void generateForEntity(InformationModel infomodel, Entity entity,
+      IGeneratedWriter outputter) {
+    new JavaClassGeneratorTask(infomodel).generate(entity, null, outputter);
+  }
 
-	private void generateForEnum(InformationModel infomodel, Enum en, IGeneratedWriter outputter) {
-		new JavaEnumGeneratorTask(infomodel).generate(en, null, outputter);
+  private void generateForEnum(InformationModel infomodel, Enum en, IGeneratedWriter outputter) {
+    new JavaEnumGeneratorTask(infomodel).generate(en, null, outputter);
 
-	}
+  }
 
-	@Override
-	public String getServiceKey() {
-		return "hono-java";
-	}
+  @Override
+  public String getServiceKey() {
+    return "hono-java";
+  }
 
-	@Override
-	public GeneratorInfo getInfo() {
-		return GeneratorInfo.basicInfo("Eclipse Hono Java Generator",
-				"Generates device java source code that integrates with Eclipse Hono and Eclipse Ditto.",
-				"Eclipse Vorto Team");
-	}
+  @Override
+  public GeneratorInfo getInfo() {
+    return GeneratorInfo.basicInfo("Eclipse Hono Java Generator",
+        "Generates device java source code that integrates with Eclipse Hono and Eclipse Ditto.",
+        "Eclipse Vorto Team");
+  }
 }

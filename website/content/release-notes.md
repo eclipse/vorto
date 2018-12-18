@@ -4,6 +4,13 @@ title: Release Notes
 weight: 60
 ---
 
+## 0.10.0 milestone 10
+
+**Fixes and Enhancements**
+
+* Various Bug-fixes
+* Various Stabilization fixes
+
 ## 0.10.0 milestone 9
 
 **Fixes and Enhancements**

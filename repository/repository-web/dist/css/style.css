@@ -1636,3 +1636,14 @@ input[type=file]::-webkit-file-upload-button {
   font-size: 15px;
   font-weight: 400;
 }
+
+.pagination-item {
+    cursor: pointer;
+}
+
+.modelcreator-result {
+    height: auto;
+    border: none;
+    padding: 20px 3px 0;
+}
+}

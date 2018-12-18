@@ -20,12 +20,11 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
@@ -38,6 +37,7 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
@@ -45,6 +45,7 @@ import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.importer.ValidationReport;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
+import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
@@ -60,7 +61,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -164,28 +164,37 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 
 	}
 
-	@ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
-	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-	@RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/{modelType}", produces = "application/json")
-	public ResponseEntity<ModelInfo> createModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
-			@ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType)
-			throws WorkflowException {
+	 @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
+	  @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
+	  @RequestMapping(method = RequestMethod.POST, value = "/{modelId:.+}/{modelType}",
+	      produces = "application/json")
+	  public ResponseEntity<ModelInfo> createModel(
+	      @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
+	      @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType,
+	      @RequestBody(required=false) List<ModelProperty> properties) throws WorkflowException {
 
-		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-		if (this.modelRepository.exists(modelID)) {
-			throw new ModelAlreadyExistsException();
-		} else {
-			ModelTemplate template = new ModelTemplate();
-			IUserContext userContext = UserContext
-					.user(SecurityContextHolder.getContext().getAuthentication().getName());
-			ModelInfo savedModel = this.modelRepository.save(modelID,
-					template.createModelTemplate(modelID, modelType).getBytes(),
-					modelID.getName() + modelType.getExtension(), userContext);
-			this.workflowService.start(modelID,userContext);
-			return new ResponseEntity<>(savedModel,HttpStatus.CREATED);
+	    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+	    if (this.modelRepository.exists(modelID)) {
+	      throw new ModelAlreadyExistsException();
+	    } else {
+	      IUserContext userContext =
+	          UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
 
-		}
-	}
+	      String modelTemplate = null;
+
+	      if (modelType == ModelType.InformationModel && properties != null) {
+	        modelTemplate = new InfomodelTemplate().createModelTemplate(modelID, properties);
+	      } else {
+	        modelTemplate = new ModelTemplate().createModelTemplate(modelID, modelType);
+	      }
+
+	      ModelInfo savedModel = this.modelRepository.save(modelID, modelTemplate.getBytes(),
+	          modelID.getName() + modelType.getExtension(), userContext);
+	      this.workflowService.start(modelID,userContext);
+	      return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
+
+	    }
+	  }
 	
 	@ApiOperation(value = "Creates a new version for the given model in the specified version")
 	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
@@ -267,4 +276,13 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		Objects.requireNonNull(entry, "entry must not be null");
 		policyManager.addPolicyEntry(ModelId.fromPrettyFormat(modelId),entry);
 	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}", method = RequestMethod.DELETE)
+    public void removePolicyEntry(final @PathVariable String modelId, final @PathVariable String principalId,final @PathVariable String principalType) {
+        Objects.requireNonNull(modelId, "modelID must not be null");
+        Objects.requireNonNull(principalId, "principalID must not be null");
+        
+        policyManager.removePolicyEntry(ModelId.fromPrettyFormat(modelId),PolicyEntry.of(principalId, PrincipalType.valueOf(principalType), null));
+    }
 }

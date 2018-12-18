@@ -1,7 +1,8 @@
 package org.eclipse.vorto.repository;
 
 import static org.mockito.Mockito.when;
-
+import java.util.concurrent.TimeUnit;
+import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -22,6 +23,7 @@ import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
+import org.eclipse.vorto.repository.utils.DummySecurityCredentials;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
@@ -31,6 +33,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.modeshape.jcr.JcrRepository;
+import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.test.ModeShapeSingleUseTest;
 import org.springframework.core.io.ClassPathResource;
 
@@ -75,7 +79,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 			@Override
 			public Session getSession() {
 				try {
-					return newSession();
+					return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
 				} catch (RepositoryException e) {
 					throw new RuntimeException(e);
 				}
@@ -100,10 +104,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		
 		
 		this.workflow = new DefaultWorkflowService(this.modelRepository,accountService,notificationService);
-
-
 	}
-
+	
 	@Before
 	public void initMocks() {
 		MockitoAnnotations.initMocks(this);

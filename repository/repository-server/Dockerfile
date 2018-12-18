@@ -1,9 +1,10 @@
 FROM java:8
 # Add folder to hold jar file
-ARG JAR_FILE
+RUN mkdir /code
 WORKDIR /code
-VOLUME /root/.vorto
+ARG JAR_FILE
 VOLUME /code
+VOLUME /root/.vorto
 RUN apt-get update && apt-get install -y jq sed
 ADD ./target/${JAR_FILE} /code/infomodelrepository.jar
 ADD ./docker/run.sh /code

@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
@@ -34,6 +35,7 @@ import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ModelValidationDiagnostic;
 import org.eclipse.vorto.repository.core.impl.diagnostics.NodeDiagnosticUtils;
 import org.eclipse.vorto.repository.core.impl.diagnostics.ReferenceIntegrityDiagnostic;
+import org.eclipse.vorto.repository.utils.DummySecurityCredentials;
 import org.junit.Test;
 import org.modeshape.jcr.api.observation.Event.Sequencing;
 import org.springframework.core.io.ClassPathResource;
@@ -45,7 +47,16 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 	@Override
 	public void beforeEach() throws Exception {
 		super.beforeEach();
-		repositoryManager = new DefaultModelBackupService();
+		repositoryManager = new DefaultModelBackupService() {
+		  @Override
+          protected Session getSession() {
+              try {
+                  return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
+              } catch (RepositoryException e) {
+                  throw new RuntimeException(e);
+              }
+          }   
+		};
 		repositoryManager.setModelRepository(this.modelRepository);
 	}
 	
@@ -61,6 +72,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		try {
 			repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-baseline.xml").getInputStream()));
 		} catch (Exception e) {
+		    e.printStackTrace();
 			fail("Failed to load backup file.");
 		}
 		
@@ -80,6 +92,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		try {
 			repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-validation-error.xml").getInputStream()));
 		} catch (Exception e) {
+		    e.printStackTrace();
 			fail("Failed to load backup file.");
 		}
 		

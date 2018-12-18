@@ -21,4 +21,18 @@ public interface IModelPolicyManager {
 	 */
 	void addPolicyEntry(ModelId modelId, PolicyEntry entry); 
 	
+	/**
+     * Removes the policy entry for the given model
+     * @param modelId
+     * @param entryToRemove
+     */
+	void removePolicyEntry(ModelId modelId, PolicyEntry entryToRemove);
+	
+	/**
+	 * checks if the current user has access to the given model
+	 * @param modelId
+	 * @param user
+	 * @return true if he/she has access, false otherwise
+	 */
+	boolean isAccessAllowed(ModelId modelId);
 }

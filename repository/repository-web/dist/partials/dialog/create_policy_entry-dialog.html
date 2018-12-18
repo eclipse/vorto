@@ -6,16 +6,19 @@
 		<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 		<div class="form-group">
 	    	<label>User ID</label>
-	        <input type="text" class="form-control" name="principalId" ng-model="entry.principalId">
-	    </div>
-    	<input type="checkbox" name="grantRead" ng-model="entry.grantRead">&nbsp;Read  
-    	<input type="checkbox" name="grantWrite" ng-model="entry.grantWrite">&nbsp;Write
+	        <input ng-if="!editMode" type="text" class="form-control" name="principalId" ng-model="entry.principalId">
+	        <input ng-if="editMode" disabled="disabled" type="text" class="form-control" name="principalId" ng-model="entry.principalId">
+	    </div>  
+    	<input type="radio" name="grantWrite" value="READ" ng-model="entry.permission">&nbsp;Read&nbsp;
+    	<input type="radio" name="grantWrite" value="MODIFY" ng-model="entry.permission">&nbsp;Read/Write
   </div>
 </form>
 <div class="modal-footer">
 	<div class="align-right">
-	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)">Create</button>
-	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button ng-if="!isLoading && !editMode" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)">Create</button>
+	    <button ng-if="isLoading && !editMode" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button ng-if="!isLoading && editMode" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)">Change</button>
+	    <button ng-if="isLoading && editMode" class="btn btn-primary" type="button" ng-disabled="isLoading || createEntryForm.$invalid" ng-click="createEntry(entry)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Change</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 </div>
 </div>

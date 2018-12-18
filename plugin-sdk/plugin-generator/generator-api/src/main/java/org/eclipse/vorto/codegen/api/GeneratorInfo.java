@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.api;
 
@@ -24,184 +22,187 @@ import java.util.Set;
 
 public class GeneratorInfo {
 
-	private String name;
-	
-	private String description;
-	
-	private String organisation;
-	
-	private Set<String> tags = new HashSet<String>();
-	
-	private List<ConfigurationItem> configurationItems = new ArrayList<GeneratorInfo.ConfigurationItem>();
-	
-	public static final String TAG_DEMO = "demo";
-	public static final String TAG_PROD = "production";
-	public static final String TAG_INFRA = "infra";
-	
-	public static GeneratorInfo basicInfo(String name, String description, String organisation) {
-		GeneratorInfo info = new GeneratorInfo();
-		info.name = name;
-		info.description = description;
-		info.organisation = organisation;
-		info.tags.add(TAG_DEMO);
-		return info;
-	}
-	
-	public GeneratorInfo() {
-		
-	}
-	
-	public GeneratorInfo tags(String...tags) {
-		this.tags = new HashSet<String>(Arrays.asList(tags));
-		return this;
-	}
-	
-	public GeneratorInfo infra() {
-		this.tags.clear();
-		this.tags.add(TAG_INFRA);
-		return this;
-	}
+  private String name;
 
-	public GeneratorInfo demo() {
-		this.tags.add(TAG_DEMO);
-		return this;
-	}
-	
-	public GeneratorInfo production() {
-		this.tags.remove(TAG_DEMO);
-		this.tags.add(TAG_PROD);
-		return this;
-	}
-	
-	public String getName() {
-		return name;
-	}
+  private String description;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  private String organisation;
 
-	public String getDescription() {
-		return description;
-	}
+  private Set<String> tags = new HashSet<String>();
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+  private List<ConfigurationItem> configurationItems =
+      new ArrayList<GeneratorInfo.ConfigurationItem>();
 
-	public String getOrganisation() {
-		return organisation;
-	}
+  public static final String TAG_DEMO = "demo";
+  public static final String TAG_PROD = "production";
+  public static final String TAG_INFRA = "infra";
 
-	public void setOrganisation(String organisation) {
-		this.organisation = organisation;
-	}
+  public static GeneratorInfo basicInfo(String name, String description, String organisation) {
+    GeneratorInfo info = new GeneratorInfo();
+    info.name = name;
+    info.description = description;
+    info.organisation = organisation;
+    info.tags.add(TAG_DEMO);
+    return info;
+  }
 
-	public Set<String> getTags() {
-		return Collections.unmodifiableSet(tags);
-	}
-	 
-	public GeneratorInfo withBinaryConfigurationItem(String key, String label) {
-		this.configurationItems.add(new BinaryConfigurationItem(key,label));
-		return this;
-	}
-	
-	public GeneratorInfo withChoiceConfigurationItem(String key, String label, ChoiceItem...choices) {
-		this.configurationItems.add(new ChoiceConfigurationItem(key,label, choices));
-		return this;
-	}
-	
-	public GeneratorInfo withTextConfigurationItem(String key, String label, Optional<String> defaultValue) {
-		this.configurationItems.add(new TextConfigurationItem(key,label, defaultValue));
-		return this;
-	}
-	
-	public List<ConfigurationItem> getConfigurationItems() {
-		return this.configurationItems;
-	}
-	
-	public boolean isConfigurable() {
-		return !this.configurationItems.isEmpty();
-	}
-	
-	public static class ChoiceItem {
-		private String label;
-		private String value;
-		
-		private ChoiceItem(String label, String value) {
-			super();
-			this.label = label;
-			this.value = value;
-		}
-		
-		public static ChoiceItem of(String label, String value) {
-			return new ChoiceItem(label,value);
-		}
+  public GeneratorInfo() {
 
-		public String getLabel() {
-			return label;
-		}
+  }
 
-		public String getValue() {
-			return value;
-		}
-	}
-	
-	public abstract static class ConfigurationItem {
-		private String key;
-		private String label;
-		
-		public ConfigurationItem(String key, String label) {
-			this.key = key;
-			this.label = label;
-		}
+  public GeneratorInfo tags(String... tags) {
+    this.tags = new HashSet<String>(Arrays.asList(tags));
+    return this;
+  }
 
-		public String getKey() {
-			return key;
-		}
+  public GeneratorInfo infra() {
+    this.tags.clear();
+    this.tags.add(TAG_INFRA);
+    return this;
+  }
 
-		public String getLabel() {
-			return this.label;
-		}
+  public GeneratorInfo demo() {
+    this.tags.add(TAG_DEMO);
+    return this;
+  }
 
-		
+  public GeneratorInfo production() {
+    this.tags.remove(TAG_DEMO);
+    this.tags.add(TAG_PROD);
+    return this;
+  }
 
-	}
-	
-	public static class ChoiceConfigurationItem extends ConfigurationItem {
-		
-		private Set<ChoiceItem> choices = new HashSet<ChoiceItem>();
-		
-		
-		public ChoiceConfigurationItem(String key, String label, ChoiceItem...choices) {
-			super(key,label);
-			this.choices.addAll(Arrays.asList(choices));
-		}
+  public String getName() {
+    return name;
+  }
 
-		
-		public Set<ChoiceItem> getChoices() {
-			return choices;
-		}
-	}
-	
-	public static class BinaryConfigurationItem extends ConfigurationItem {
+  public void setName(String name) {
+    this.name = name;
+  }
 
-		public BinaryConfigurationItem(String key, String label) {
-			super(key,label);
-		}	
-	}
-	
-	public static class TextConfigurationItem extends ConfigurationItem {
+  public String getDescription() {
+    return description;
+  }
 
-		private Optional<String> defaultValue;
-		
-		public TextConfigurationItem(String key, String label, Optional<String> defaultValue) {
-			super(key,label);
-			this.defaultValue = defaultValue;
-		}	
-		
-		public Optional<String> getDefaultValue() {
-			return defaultValue;
-		}
-	}
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getOrganisation() {
+    return organisation;
+  }
+
+  public void setOrganisation(String organisation) {
+    this.organisation = organisation;
+  }
+
+  public Set<String> getTags() {
+    return Collections.unmodifiableSet(tags);
+  }
+
+  public GeneratorInfo withBinaryConfigurationItem(String key, String label) {
+    this.configurationItems.add(new BinaryConfigurationItem(key, label));
+    return this;
+  }
+
+  public GeneratorInfo withChoiceConfigurationItem(String key, String label,
+      ChoiceItem... choices) {
+    this.configurationItems.add(new ChoiceConfigurationItem(key, label, choices));
+    return this;
+  }
+
+  public GeneratorInfo withTextConfigurationItem(String key, String label,
+      Optional<String> defaultValue) {
+    this.configurationItems.add(new TextConfigurationItem(key, label, defaultValue));
+    return this;
+  }
+
+  public List<ConfigurationItem> getConfigurationItems() {
+    return this.configurationItems;
+  }
+
+  public boolean isConfigurable() {
+    return !this.configurationItems.isEmpty();
+  }
+
+  public static class ChoiceItem {
+    private String label;
+    private String value;
+
+    private ChoiceItem(String label, String value) {
+      super();
+      this.label = label;
+      this.value = value;
+    }
+
+    public static ChoiceItem of(String label, String value) {
+      return new ChoiceItem(label, value);
+    }
+
+    public String getLabel() {
+      return label;
+    }
+
+    public String getValue() {
+      return value;
+    }
+  }
+
+  public abstract static class ConfigurationItem {
+    private String key;
+    private String label;
+
+    public ConfigurationItem(String key, String label) {
+      this.key = key;
+      this.label = label;
+    }
+
+    public String getKey() {
+      return key;
+    }
+
+    public String getLabel() {
+      return this.label;
+    }
+
+
+
+  }
+
+  public static class ChoiceConfigurationItem extends ConfigurationItem {
+
+    private Set<ChoiceItem> choices = new HashSet<ChoiceItem>();
+
+
+    public ChoiceConfigurationItem(String key, String label, ChoiceItem... choices) {
+      super(key, label);
+      this.choices.addAll(Arrays.asList(choices));
+    }
+
+
+    public Set<ChoiceItem> getChoices() {
+      return choices;
+    }
+  }
+
+  public static class BinaryConfigurationItem extends ConfigurationItem {
+
+    public BinaryConfigurationItem(String key, String label) {
+      super(key, label);
+    }
+  }
+
+  public static class TextConfigurationItem extends ConfigurationItem {
+
+    private Optional<String> defaultValue;
+
+    public TextConfigurationItem(String key, String label, Optional<String> defaultValue) {
+      super(key, label);
+      this.defaultValue = defaultValue;
+    }
+
+    public Optional<String> getDefaultValue() {
+      return defaultValue;
+    }
+  }
 }

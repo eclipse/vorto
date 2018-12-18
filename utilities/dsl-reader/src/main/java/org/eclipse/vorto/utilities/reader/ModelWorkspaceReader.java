@@ -1,16 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.utilities.reader;
 
@@ -24,7 +22,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -39,130 +36,132 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.xtext.EcoreUtil2;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-
 import com.google.inject.Injector;
 
 public class ModelWorkspaceReader {
 
-	private WorkspaceFileReader fileReader;
+  private WorkspaceFileReader fileReader;
 
-	private List<WorkspaceZipReader> zipReaders = new ArrayList<ModelWorkspaceReader.WorkspaceZipReader>();
+  private List<WorkspaceZipReader> zipReaders =
+      new ArrayList<ModelWorkspaceReader.WorkspaceZipReader>();
 
-	public ModelWorkspaceReader() {
-		this.fileReader = new WorkspaceFileReader();
-	}
-	
-	public static void init() {
-		FunctionblockPackage.eINSTANCE.eClass();
-		InformationModelPackage.eINSTANCE.eClass();
-		MappingPackage.eINSTANCE.eClass();
+  public ModelWorkspaceReader() {
+    this.fileReader = new WorkspaceFileReader();
+  }
 
-		FunctionblockStandaloneSetup.doSetup();
-		InformationModelStandaloneSetup.doSetup();
-		MappingStandaloneSetup.doSetup();
-	}
+  public static void init() {
+    FunctionblockPackage.eINSTANCE.eClass();
+    InformationModelPackage.eINSTANCE.eClass();
+    MappingPackage.eINSTANCE.eClass();
 
-	public ModelWorkspaceReader addFile(InputStream input, ModelType type) {
-		fileReader.addFile(input, type);
-		return this;
-	}
+    FunctionblockStandaloneSetup.doSetup();
+    InformationModelStandaloneSetup.doSetup();
+    MappingStandaloneSetup.doSetup();
+  }
 
-	public ModelWorkspaceReader addZip(ZipInputStream zis) {
-		zipReaders.add(new WorkspaceZipReader(zis));
-		return this;
-	}
+  public ModelWorkspaceReader addFile(InputStream input, ModelType type) {
+    fileReader.addFile(input, type);
+    return this;
+  }
 
-	public IModelWorkspace read() {
-		DefaultModelWorkspace workspace = new DefaultModelWorkspace();
-		workspace.addModels(fileReader.read());
-		zipReaders.stream().forEach(x -> workspace.addModels(x.read()));
-		return workspace;
-	}
+  public ModelWorkspaceReader addZip(ZipInputStream zis) {
+    zipReaders.add(new WorkspaceZipReader(zis));
+    return this;
+  }
 
-	private static class WorkspaceZipReader {
-		private ZipInputStream zis;
+  public IModelWorkspace read() {
+    DefaultModelWorkspace workspace = new DefaultModelWorkspace();
+    workspace.addModels(fileReader.read());
+    zipReaders.stream().forEach(x -> workspace.addModels(x.read()));
+    return workspace;
+  }
 
-		public WorkspaceZipReader(ZipInputStream zis) {
-			this.zis = zis;
-		}
+  private static class WorkspaceZipReader {
+    private ZipInputStream zis;
 
-		public List<Model> read() {
-			ZipEntry entry = null;
+    public WorkspaceZipReader(ZipInputStream zis) {
+      this.zis = zis;
+    }
 
-			Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
-			XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-			resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-			resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
+    public List<Model> read() {
+      ZipEntry entry = null;
 
-			List<Resource> infoModelResources = new ArrayList<>();
-			try {
-				while ((entry = zis.getNextEntry()) != null) {
-					Resource resource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					IOUtils.copy(zis, baos);
-					resource.load(new ByteArrayInputStream(baos.toByteArray()), resourceSet.getLoadOptions());
-					infoModelResources.add(resource);
-				}
-			} catch (Exception ex) {
-				throw new RuntimeException("Problem reading zip file", ex);
-			}
+      Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
+      XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+      resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
 
-			EcoreUtil2.resolveAll(resourceSet);
-			return infoModelResources.stream().map(r -> (Model) r.getContents().get(0)).collect(Collectors.toList());
-		}
-	}
+      List<Resource> infoModelResources = new ArrayList<>();
+      try {
+        while ((entry = zis.getNextEntry()) != null) {
+          Resource resource = resourceSet.createResource(URI.createURI("fake:/" + entry.getName()));
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          IOUtils.copy(zis, baos);
+          resource.load(new ByteArrayInputStream(baos.toByteArray()), resourceSet.getLoadOptions());
+          infoModelResources.add(resource);
+        }
+      } catch (Exception ex) {
+        throw new RuntimeException("Problem reading zip file", ex);
+      }
 
-	private static class WorkspaceFileReader {
+      EcoreUtil2.resolveAll(resourceSet);
+      return infoModelResources.stream().map(r -> (Model) r.getContents().get(0))
+          .collect(Collectors.toList());
+    }
+  }
 
-		private List<ModelFile> files = new ArrayList<>();
+  private static class WorkspaceFileReader {
 
-		public void addFile(InputStream input, ModelType type) {
-			files.add(new ModelFile(input, type));
-		}
+    private List<ModelFile> files = new ArrayList<>();
 
-		public List<Model> read() {
-			Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
-			XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
-			resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
-			resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
+    public void addFile(InputStream input, ModelType type) {
+      files.add(new ModelFile(input, type));
+    }
 
-			List<Resource> infoModelResources = new ArrayList<>();
+    public List<Model> read() {
+      Injector injector = new MappingStandaloneSetup().createInjectorAndDoEMFRegistration();
+      XtextResourceSet resourceSet = injector.getInstance(XtextResourceSet.class);
+      resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+      resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
 
-			try {
-				for (ModelFile modelFile : files) {
-					Resource resource = resourceSet.createResource(URI
-							.createURI("fake:/" + UUID.randomUUID().toString() + modelFile.getType().getExtension()));
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					IOUtils.copy(modelFile.getIs(), baos);
-					resource.load(new ByteArrayInputStream(baos.toByteArray()), resourceSet.getLoadOptions());
-					infoModelResources.add(resource);
-				}
-			} catch (IOException ex) {
-				throw new RuntimeException("Problem reading zip file", ex);
-			}
+      List<Resource> infoModelResources = new ArrayList<>();
 
-			EcoreUtil2.resolveAll(resourceSet);
-			return infoModelResources.stream().map(r -> (Model) r.getContents().get(0)).collect(Collectors.toList());
-		}
-	}
+      try {
+        for (ModelFile modelFile : files) {
+          Resource resource = resourceSet.createResource(URI.createURI(
+              "fake:/" + UUID.randomUUID().toString() + modelFile.getType().getExtension()));
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          IOUtils.copy(modelFile.getIs(), baos);
+          resource.load(new ByteArrayInputStream(baos.toByteArray()), resourceSet.getLoadOptions());
+          infoModelResources.add(resource);
+        }
+      } catch (IOException ex) {
+        throw new RuntimeException("Problem reading zip file", ex);
+      }
 
-	private static class ModelFile {
-		private InputStream is;
-		private ModelType type;
+      EcoreUtil2.resolveAll(resourceSet);
+      return infoModelResources.stream().map(r -> (Model) r.getContents().get(0))
+          .collect(Collectors.toList());
+    }
+  }
 
-		public ModelFile(InputStream is, ModelType type) {
-			super();
-			this.is = is;
-			this.type = type;
-		}
+  private static class ModelFile {
+    private InputStream is;
+    private ModelType type;
 
-		public InputStream getIs() {
-			return is;
-		}
+    public ModelFile(InputStream is, ModelType type) {
+      super();
+      this.is = is;
+      this.type = type;
+    }
 
-		public ModelType getType() {
-			return type;
-		}
-	}
+    public InputStream getIs() {
+      return is;
+    }
+
+    public ModelType getType() {
+      return type;
+    }
+  }
 
 }

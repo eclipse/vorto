@@ -1,10 +1,11 @@
-# Vorto Repository Client API for Java
+# Getting Started with Repository Java Client
 
-The Vorto Repository Client API for Java provides various services to interact with the Vorto Repository and use its models. 
+The Vorto Repository Client for Java provides an easy way to interact with the Vorto Repository. 
 
 Use the Client API to
 - search for models by full-text search 
 - read model content
+- download model attachments, such as images etc.
 - generate code for IoT platforms that have been registered as [Vorto Repository Code Generators](http://vorto.eclipse.org/#/generators)
 
 ### Maven dependency
@@ -25,44 +26,18 @@ Use the Client API to
 ### Search by free text
 The following code snippet searches for all devices that have 'sensors'
 
-```
-RepositoryClientBuilder builder = RepositoryClientBuilder.newBuilder()
-	.setBaseUrl("http://vorto.eclipse.org");	
-IModelRepository repository = builder.buildModelRepositoryClient();
-Collection<ModelInfo> models = modelRepo.search(new ModelQueryBuilder().type(ModelType.InformationModel).freeText("sensors").build()).get();
-
+```java
+IRepositoryClient repositoryClient = IRepositoryClient.newBuilder().build();	
+Collection<ModelInfo> models = repositoryClient.search("sensor");
 ```
 
 ### Fetch a specific model 
 
 The following code snippet shows how to fetch the [Bosch GLM100C Information Model](http://vorto.eclipse.org/#/details/com.bosch/BoschGLM100C/1.0.0)
 
-```
+```java
 ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
-InformationModel boschGlmModelContent = modelRepo.getContent(boschGlm, InformationModel.class).get();
-```
-
-### Fetch a model containing platform attributes 
-
-The following code snippet illustrates how to get a Vorto functionblock model that contains LWM2M attributes [LWM2M/IPSO TemperatureSensor](http://www.openmobilealliance.org/tech/profiles/lwm2m/3303.xml):
-
-```
-IModelRepository modelRepository = builder.buildModelRepositoryClient();	
-FunctionBlockModel temperatureSensorContent = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Temperature:0.0.1"), FunctionblockModel.class,"lwm2m").get();
-String lwM2MObjectId = temperatureSensorContent.getMappedAttributes("ObjectID");
-```
-
-### Search model properties by platform attributes
-
-```
-IModelRepository modelRepository = builder.buildModelRepositoryClient();
-			
-FunctionBlockModel temperatureSensorContent = modelRepo.getContent(ModelId.fromPrettyFormat("com.ipso.smartobjects.Temperature:0.0.1"), FunctionblockModel.class,"lwm2m").get();
-
-IMapping mapping = builder.buildMappingClient();
-
-List<ModelProperty> properties = mapping.newPropertyQuery(temperatureSensorContent).stereotype("Resource").attribute("ID", "5602").list();
-
+ModelContent boschGlmModelContent = repositoryClient.getContent(boschGlm);
 ```
 
 ## Code Generation
@@ -72,12 +47,10 @@ List<ModelProperty> properties = mapping.newPropertyQuery(temperatureSensorConte
 The following snippet shows how to generate a Eclipse Hono Java Client for a Bosch GLM 100C information model. 
 The generated bundle contains source code that sends GLM specific sensor data to Eclipse Hono in a Eclipse Vorto compliant format.
 
-```
-IModelGeneration modelGen = builder.buildModelGenerationClient();
-
+```java
 ModelId boschGlm = new ModelId("BoschGLM100C", "com.bosch", "1.0.0");
 Map<String,String> invocationConfig = new HashMap<String,String>();
 invocationConfig.put("language","java");
 
-GeneratedOutput generatedKuraApplication = modelGen.generate(boschGlm, "eclipsehono", invocationConfig).get();
+GeneratedOutput generatedKuraApplication = repositoryClient.generate(boschGlm, "eclipsehono", invocationConfig);
 ```

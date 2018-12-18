@@ -41,7 +41,7 @@ public interface IModelRepository {
 	 * @throws NotAuthorizedException if current user is not allowed to access the given model
 	 */
 	ModelInfo getById(ModelId modelId) throws NotAuthorizedException;
-	
+		
 	/**
 	 * Returns the actual model content for the given model id
 	 * @param modelId

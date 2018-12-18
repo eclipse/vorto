@@ -16,6 +16,11 @@ public class NotAuthorizedException extends RuntimeException {
 		this.secureResource = modelId;
 	}
 	
+	public NotAuthorizedException(ModelId modelId) {
+	  super();
+	  this.secureResource = modelId;
+	}
+	
 	public ModelId getModelId() {
 		return this.secureResource;
 	}

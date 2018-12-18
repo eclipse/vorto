@@ -40,8 +40,4 @@ public abstract class AbstractUpgradeTask implements IUpgradeTask {
 	protected ModelResource getModel(ModelId modelId) {
 		return modelRepository.getEMFResource(modelId);
 	}
-	
-	protected void saveModel(ModelResource resource) {
-		modelRepository.saveModel(resource);
-	}
 }

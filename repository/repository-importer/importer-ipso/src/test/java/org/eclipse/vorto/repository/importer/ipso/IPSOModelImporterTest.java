@@ -34,7 +34,7 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 		this.ipsoImporter.setModelParserFactory(modelParserFactory);
 	}
 	
-	@Test (expected=ModelImporterException.class)
+	@Test (expected=ModelImporterException.class) 
 	public void testPreventXXEAttack() throws Exception {
 		IUserContext alex = UserContext.user("alex");
 		importIPSO("3310_xxe.xml", alex);

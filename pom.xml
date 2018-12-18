@@ -21,11 +21,11 @@
 	</organization>
 
 	<licenses>
-    	<license>
-      		<name>Eclipse Public License - Version 2.0</name>
-      		<url>http://www.eclipse.org/legal/epl-2.0</url>
-    	</license>
-  	</licenses>
+		<license>
+			<name>Eclipse Public License - Version 2.0</name>
+			<url>http://www.eclipse.org/legal/epl-2.0</url>
+		</license>
+	</licenses>
 
 	<scm>
 		<developerConnection>scm:git:https://github.com/eclipse/vorto.git</developerConnection>
@@ -86,18 +86,18 @@
 			<id>eclipse</id>
 			<url>https://repo.eclipse.org/content/repositories/snapshots/</url>
 		</repository>
-        <repository>
-          <id>oss-sonatype</id>
-          <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-          </snapshots>
-        </repository>
+		<repository>
+			<id>oss-sonatype</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<modules>
@@ -117,7 +117,7 @@
 			<plugin>
 				<groupId>org.eclipse.xtend</groupId>
 				<artifactId>xtend-maven-plugin</artifactId>
-                <version>${xtext.version}</version>
+				<version>${xtext.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.eclipse.platform</groupId>
@@ -134,7 +134,8 @@
 					<junitArtifactName>junit:junit</junitArtifactName>
 					<encoding>UTF-8</encoding>
 					<inputEncoding>UTF-8</inputEncoding>
-					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=128m -ea -Dfile.encoding=UTF-8</argLine>
+					<argLine>-Xms256m -Xmx512m -XX:MaxPermSize=128m -ea
+						-Dfile.encoding=UTF-8</argLine>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -249,6 +250,68 @@
 							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 							<autoReleaseAfterClose>false</autoReleaseAfterClose>
 						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>checkstyle</id>
+			<build>
+				<plugins>
+                    <plugin>
+                        <groupId>com.mycila</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <version>3.0</version>
+                        <configuration>
+                            <header>license-header.txt</header>
+                            <properties>
+                                <owner>Bosch Software Innovations GmbH</owner>
+                            </properties>
+                            <includes>
+								<include>**/*.java</include>
+								<include>**/*.xtext</include>
+								<include>**/*.xtend</include>
+                            </includes>
+							<excludes>
+								<exclude>**/codegen/</exclude>
+								<exclude>**/src-gen/</exclude>
+								<exclude>**/xtend-gen/</exclude>
+							</excludes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<version>2.17</version>
+						<dependencies>
+							<dependency>
+								<groupId>com.puppycrawl.tools</groupId>
+								<artifactId>checkstyle</artifactId>
+								<version>8.5</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>validate</id>
+								<phase>validate</phase>
+								<configuration>
+									<configLocation>google_checks.xml</configLocation>
+									<encoding>UTF-8</encoding>
+									<consoleOutput>true</consoleOutput>
+									<failsOnError>true</failsOnError>
+								</configuration>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
