@@ -8,11 +8,11 @@
 <img src="website/static/images/vorto_cover.png"/>
 
 
-# Getting started with Vorto 
+## Getting started with Vorto 
 
 The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
 
-# Repository Plugin SDK
+## Repository Plugin SDK
 
 <table>
 	<tr>
@@ -27,18 +27,18 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
 	</tr>
 </table>
 
-# Documentation
+## Documentation
 
 - Read our [tutorials](https://www.eclipse.org/vorto/tutorials/)
 - Read our [Vorto Documentation](https://www.eclipse.org/vorto/documentation)
 
-# Contact us
+## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  - You have problems with Vorto ? Open a [GitHub issue](https://github.com/eclipse/vorto/issues)
  - Find out more about the project on our [Vorto Homepage](http://www.eclipse.org/vorto)
  - Reach out to our developers on our [Discussion Forum](http://eclipse.org/forums/eclipse.vorto) 
 
-# Follow us
+## Follow us
 
 | Channel | Releases           | Features                 | Tutorials                |
 |:--------|:------------------:|:-------------------------|--------------------------|
@@ -49,7 +49,7 @@ We favor Twitter for feature and tutorial news, because the nature of twitter al
 Also such a flood of information via Email would be considered spam. 
 If you have suggestions on how and what news we should provide let us know in the issues.
 
-# Contribute to the Project
+## Contribute to the Project
 
 When you create a Pull Request, make sure:
 
