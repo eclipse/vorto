@@ -23,6 +23,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -53,8 +54,9 @@ public class ModelSequencer extends Sequencer {
     
     Binary binaryValue = inputProperty.getBinary();
     CheckArg.isNotNull(binaryValue, "binary");
-    ModelInfo modelResource = ModelParserFactory.instance().getParser(fileNode.getPath())
-        .parse(binaryValue.getStream());
+    IModelParser parser = ModelParserFactory.instance().getParser(fileNode.getPath());
+    parser.setValidate(false);
+    ModelInfo modelResource = parser.parse(binaryValue.getStream());
 
     fileNode.setProperty("vorto:description",
         modelResource.getDescription() != null ? modelResource.getDescription() : "");
@@ -64,9 +66,12 @@ public class ModelSequencer extends Sequencer {
     fileNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
     fileNode.setProperty("vorto:name", modelResource.getId().getName());
     
+    folderNode.addMixin("mix:referenceable");
+    folderNode.addMixin("vorto:meta");
     folderNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
     folderNode.setProperty("vorto:type", modelResource.getType().name());
     folderNode.setProperty("vorto:name", modelResource.getId().getName());
+
 
     if (folderNode.hasProperty("vorto:references")) { // first remove any previous references of the node.
       folderNode.getProperty("vorto:references").remove();
@@ -80,6 +85,7 @@ public class ModelSequencer extends Sequencer {
       for (ModelId modelId : referencesHelper.getReferences()) {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node referencedFolder = folderNode.getSession().getNode(modelIdHelper.getFullPath());
+        referencedFolder.addMixin("mix:referenceable");
         references.add(context.valueFactory().createValue(referencedFolder));
       }
       folderNode.setProperty("vorto:references", references.toArray(new Value[references.size()]));

@@ -881,7 +881,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			}
 			
 			for (AccessControlEntry entry : acl.getAccessControlEntries()) {
-			  policyEntries.add(PolicyEntry.of(entry));
+			  PolicyEntry policy = PolicyEntry.of(entry);
+			  if (!policy.getPrincipalId().equalsIgnoreCase("admin")) {
+			    policyEntries.add(policy);
+			  }
 			}
 
 		} catch(RepositoryException ex) {

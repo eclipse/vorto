@@ -9,7 +9,7 @@ server:
     generatorPassword: 123
     
 repo:
-  configFile: vorto-repository-config-h2.json
+  configFile: vorto-repository-config-file.json
     
 github:
   oauth2:
