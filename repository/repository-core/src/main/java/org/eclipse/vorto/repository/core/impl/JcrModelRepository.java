@@ -904,6 +904,11 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
 			final Node folderNode = session.getNode(modelIdHelper.getFullPath());
+			if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+			  logger.warn("Cannot add policy entry " + newEntry + " to model " + modelId);
+			  session.logout();
+			  return;
+			}
             Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
 			AccessControlManager acm = session.getAccessControlManager();

@@ -99,5 +99,12 @@ public class PolicyEntry {
     }
   }
 
+  @Override
+  public String toString() {
+    return "PolicyEntry [principalId=" + principalId + ", principalType=" + principalType
+        + ", permission=" + permission + "]";
+  }
+
+  
 
 }
