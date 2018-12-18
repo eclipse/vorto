@@ -1,6 +1,6 @@
 server:
   port: 8080
-  contextPath: /infomodelrepository
+  contextPath: /
   use-forward-headers: true
   admin: aedelmann
   config:
