@@ -18,6 +18,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
@@ -42,6 +43,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
     final String callerId = authentication.getName();
 
     if (targetDomainObject instanceof ModelId) {
+      try {
       ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
       if (modelInfo != null) {
         if ("model:delete".equalsIgnoreCase((String) permission)) {
@@ -66,6 +68,9 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
               || modelInfo.getAuthor().equals(user.getUsername());
         }
 
+      }
+      } catch(NotAuthorizedException ex) {
+        return false;
       }
     } else if (targetDomainObject instanceof String) {
       return callerId.equalsIgnoreCase((String) targetDomainObject);

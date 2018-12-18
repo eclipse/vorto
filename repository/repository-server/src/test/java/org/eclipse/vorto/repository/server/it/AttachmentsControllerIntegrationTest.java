@@ -26,14 +26,14 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Override
   protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc);
+    testModel.createModel(mockMvc,userCreator);
   }
   
   @Test
   public void testRandomModelAttachmentController() throws Exception {
     String nonExistingNamespace = TestUtils.createRandomString(10).toLowerCase();
     mockMvc.perform(get(
-        "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0"))
+        "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userCreator))
         .andExpect(status().isNotFound());
     assertTrue(true);
   }
@@ -41,7 +41,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Test
   public void testAttachmentUpload() throws Exception {
     TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(mockMvc, userAdmin);
+    test.createModel(mockMvc, userCreator);
     addAttachment(test.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
     assertTrue(true);
@@ -87,7 +87,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     String fileName = "test.json";
     TestModel deleteModel = TestModel.TestModelBuilder.aTestModel().build();
     // Create Model with extra user
-    deleteModel.createModel(mockMvc, userAdmin);
+    deleteModel.createModel(mockMvc, userCreator);
 
     // Add Attachment to Model
 

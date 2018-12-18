@@ -23,12 +23,12 @@ public class ModelSearchControllerIntegrationTest extends AbstractIntegrationTes
 
   public void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc);
+    testModel.createModel(mockMvc,userCreator);
   }
 
   @Test
   public void testModelSearch() throws Exception {
-    mockMvc.perform(get("/api/v1/search/models?expression=")).andExpect(status().isOk());
+    mockMvc.perform(get("/api/v1/search/models?expression=").with(userCreator)).andExpect(status().isOk());
     assertTrue(true);
   }
 }

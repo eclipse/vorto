@@ -92,11 +92,11 @@ public abstract class AbstractIntegrationTest {
   
   
   public void createModel(String fileName, String modelId) throws Exception {
-    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user =
-        user("admin").password("pass").authorities(
-            SpringUserUtils.toAuthorityList(Sets.newHashSet(ADMIN, MODEL_CREATOR, USER)));
+//    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user =
+//        user("admin").password("pass").authorities(
+//            SpringUserUtils.toAuthorityList(Sets.newHashSet(ADMIN, MODEL_CREATOR, USER)));
     
-    createModel(user, modelId,fileName);
+    createModel(userAdmin, modelId,fileName);
   }
   
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {

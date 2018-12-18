@@ -685,7 +685,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			}
 			return Collections.emptyList();
 		} catch (PathNotFoundException e) {
-			return Collections.emptyList();
+			throw new ModelNotFoundException("Could not find model with specified ID",e);
 		} catch (RepositoryException e) {
 			if (e instanceof AccessDeniedException) {
 				throw new NotAuthorizedException(modelId, e);
