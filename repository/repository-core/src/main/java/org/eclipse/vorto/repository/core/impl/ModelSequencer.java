@@ -80,7 +80,6 @@ public class ModelSequencer extends Sequencer {
       for (ModelId modelId : referencesHelper.getReferences()) {
         ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
         Node referencedFolder = folderNode.getSession().getNode(modelIdHelper.getFullPath());
-//        Node reference = referencedFolder.getNodes().nextNode();
         references.add(context.valueFactory().createValue(referencedFolder));
       }
       folderNode.setProperty("vorto:references", references.toArray(new Value[references.size()]));

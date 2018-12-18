@@ -1,15 +1,12 @@
 server:
   port: 8080
-  contextPath: /infomodelrepository
+  contextPath: /
   use-forward-headers: true
   admin: aedelmann
   config:
     authenticatedSearchMode: false
     generatorUser: generator
     generatorPassword: 123
-    
-repo:
-  configFile: vorto-repository-config-h2.json
     
 github:
   oauth2:
@@ -29,8 +26,8 @@ eidp:
   oauth2:
     enabled: false
     client:
-      clientId: ${eidp_clientid}
-      clientSecret: ${eidp_clientSecret}
+      clientId: 123
+      clientSecret: 123
       accessTokenUri: https://identity.bosch.com/connect/token
       userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
       clientAuthenticationScheme: form

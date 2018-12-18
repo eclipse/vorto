@@ -34,7 +34,7 @@ class RepositoryConfigTemplate implements IFileTemplate<InformationModel> {
 },
 "repository": {
 "github_clientid":"your_client_id",
-"github_secret":"your_github_secret",
+"github_clientSecret":"your_github_secret",
 "server": {
   "port": 8080,
   "contextPath": "/infomodelrepository",

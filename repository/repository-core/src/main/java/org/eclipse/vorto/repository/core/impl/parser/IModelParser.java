@@ -37,4 +37,10 @@ public interface IModelParser {
    * @param fileReferences
    */
   void setReferences(Collection<FileContent> fileReferences);
+
+  /**
+   * instructs the parser to perform validation or not during parsing. Default is 'enabled' = true
+   * @param validate
+   */
+  void setValidate(boolean enable);
 }
