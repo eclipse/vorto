@@ -18,16 +18,13 @@ org.eclipse.vorto.editor.functionblock
 
 import com.google.inject.Binder
 import com.google.inject.Provides
-import com.google.inject.Singleton
 import org.eclipse.vorto.editor.datatype.QualifiedNameWithVersionProvider
 import org.eclipse.vorto.editor.datatype.converter.DatatypeValueConverter
 import org.eclipse.vorto.editor.functionblock.formatting.FunctionblockFormatter
-import org.eclipse.vorto.editor.functionblock.generator.FbOutputConfigurationProvider
 import org.eclipse.vorto.editor.functionblock.scoping.FunctionblockScopeProvider
 import org.eclipse.vorto.editor.functionblock.validation.TypeFileAccessingHelper
 import org.eclipse.vorto.editor.functionblock.validation.TypeHelper
 import org.eclipse.xtext.conversion.IValueConverterService
-import org.eclipse.xtext.generator.IOutputConfigurationProvider
 import org.eclipse.xtext.naming.IQualifiedNameProvider
 import org.eclipse.xtext.scoping.IScopeProvider
 import org.eclipse.xtext.serializer.tokens.SerializerScopeProviderBinding
@@ -39,7 +36,7 @@ import org.eclipse.xtext.serializer.tokens.SerializerScopeProviderBinding
 class FunctionblockRuntimeModule extends AbstractFunctionblockRuntimeModule {
 	override void configure(Binder binder) {
 		super.configure(binder)
-		binder.bind(IOutputConfigurationProvider).to(FbOutputConfigurationProvider).in(Singleton)
+//		binder.bind(IOutputConfigurationProvider).to(FbOutputConfigurationProvider).in(Singleton)
 	}
 
 	override Class<? extends IScopeProvider> bindIScopeProvider() {
