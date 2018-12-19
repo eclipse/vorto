@@ -23,9 +23,9 @@ public class GrantModelOwnerPolicy implements IWorkflowFunction {
 	
 	@Override
 	public void execute(ModelInfo model, IUserContext user) {
-		logger.info("Restricting permission of model " + model.getId() + " to user '"+user.getUsername()+"'");
+		logger.info("Restricting permission of model " + model.getId() + " to user '"+user.getUsername()+"' and role 'admin'");
         policyManager.addPolicyEntry(model.getId(), PolicyEntry.of(model.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS));	
-        policyManager.addPolicyEntry(model.getId(), PolicyEntry.of("ADMIN", PrincipalType.Role, Permission.FULL_ACCESS)); 
+        policyManager.addPolicyEntry(model.getId(), PolicyEntry.of("admin", PrincipalType.Role, Permission.FULL_ACCESS)); 
 
 	}
 }

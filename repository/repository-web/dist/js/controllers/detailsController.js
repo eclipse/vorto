@@ -186,7 +186,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.modelReferencedBy[tmpIdx] = {
 						"modelId" : referencedBy[index].prettyFormat,
 						"state" : null,
-						"hasAccess" : true
+						"hasAccess" : false
 					};
 					$scope.modelReferencedBy.show = true;
 					tmpIdx++;

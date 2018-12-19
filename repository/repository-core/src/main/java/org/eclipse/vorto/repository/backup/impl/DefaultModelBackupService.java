@@ -18,8 +18,6 @@ import java.nio.file.AccessDeniedException;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidSerializedDataException;
 import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -82,20 +80,12 @@ public class DefaultModelBackupService implements IModelBackupService {
 
     org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();
     try {
-      try {
-        LOGGER.info("attempting to import backup of current content");
-        doRestore(currentContent, session);
-      } catch (Exception invalidCurrentContent) {
-        throw new Exception(this.EXCEPTION_MESSAGE_CURRENT_CONTENT, invalidCurrentContent);
-      } 
-      
-      removeAll(session);
-  
+
       try {
         LOGGER.info("attempting to import imported backup");
-        doRestore(restorableContent,session);
+        doRestore(restorableContent, session);
       } catch (Exception invalidContent) {
-        doRestore(currentContent,session);
+        doRestore(currentContent, session);
         throw new Exception(this.EXCEPTION_MESSAGE_RESTORABLE_CONTENT, invalidContent);
       }
     } finally {
@@ -103,12 +93,12 @@ public class DefaultModelBackupService implements IModelBackupService {
     }
   }
 
-  private void doRestore(byte[] backup,org.modeshape.jcr.api.Session session) throws AccessDeniedException, VersionException,
-      PathNotFoundException, ItemExistsException, ConstraintViolationException,
-      InvalidSerializedDataException, LockException, IOException, RepositoryException {
-   
-    session.getWorkspace().importXML("/",
-        new ByteArrayInputStream(backup),
+  private void doRestore(byte[] backup, org.modeshape.jcr.api.Session session)
+      throws AccessDeniedException, VersionException, PathNotFoundException, ItemExistsException,
+      ConstraintViolationException, InvalidSerializedDataException, LockException, IOException,
+      RepositoryException {
+
+    session.getWorkspace().importXML("/", new ByteArrayInputStream(backup),
         ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
     LOGGER.info("created backup succesfully");
   }
@@ -119,16 +109,5 @@ public class DefaultModelBackupService implements IModelBackupService {
 
   public void setModelRepository(IModelRepository modelRepository) {
     this.modelRepository = modelRepository;
-  }
-
-  private void removeAll(org.modeshape.jcr.api.Session session) throws Exception {
-    NodeIterator iter = session.getRootNode().getNodes();
-    while (iter.hasNext()) {
-      Node node = iter.nextNode();
-      if (!node.getName().equals("jcr:system")) {
-        ((org.modeshape.jcr.api.Session) session).removeItem(node.getPath());
-      }
-    }
-    session.save();
   }
 }
