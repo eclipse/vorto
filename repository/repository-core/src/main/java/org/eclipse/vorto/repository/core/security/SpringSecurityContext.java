@@ -1,11 +1,14 @@
 package org.eclipse.vorto.repository.core.security;
 
+import java.util.Set;
+import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.modeshape.jcr.security.SecurityContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 
 public class SpringSecurityContext implements SecurityContext {
 
@@ -29,25 +32,36 @@ public class SpringSecurityContext implements SecurityContext {
 
 	@Override
 	public boolean hasRole(String roleName) {
-	    if (roleName.equals(authentication.getName())) {
+	    if (roleName.equals(authentication.getName()) || roleName.equals(UserContext.user(authentication.getName()).getHashedUsername())) {
 	      return true;
 	    }
-		for (GrantedAuthority authority : authentication.getAuthorities()) {
-			if (roleName.equals("readonly") && (authority.getAuthority().equalsIgnoreCase("role_user") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
-				return true;
-			} else if (roleName.equals("readwrite") && (authority.getAuthority().equalsIgnoreCase("role_model_creator") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
-				return true;
-			} else if (roleName.equals("ROLE_ADMIN") && authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN")) {
-				return true;
-			}
-		}
-
-		return false;
+	    
+	    Set<Role> userRoles = SpringUserUtils.authorityListToSet(authentication.getAuthorities());
+	   
+	    for (Role userRole : userRoles) {
+	      if (userRole.hasPermission(roleName) || (Role.isValid(roleName) && Role.of(roleName) == userRole)) {
+	        return true;
+	      }
+	    }
+	    
+	    return false;
+	    
+//		for (GrantedAuthority authority : authentication.getAuthorities()) {
+//			if (roleName.equals("readonly") && (authority.getAuthority().equalsIgnoreCase("role_user") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
+//				return true;
+//			} else if (roleName.equals("readwrite") && (authority.getAuthority().equalsIgnoreCase("role_model_creator") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
+//				return true;
+//			} else if (roleName.equals("ROLE_ADMIN") && authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN")) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
 	}
 
 	@Override
 	public void logout() {
-		logger.info("logout");
+		logger.debug("logout of Vorto Repository");
 	}
 
 }

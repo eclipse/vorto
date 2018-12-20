@@ -26,9 +26,9 @@ public interface IModelPolicyManager {
 	/**
 	 * Adds a policy entry for the given model
 	 * @param modelId
-	 * @param entry
+	 * @param entries
 	 */
-	void addPolicyEntry(ModelId modelId, PolicyEntry entry); 
+	void addPolicyEntry(ModelId modelId, PolicyEntry... entries); 
 	
 	/**
      * Removes the policy entry for the given model

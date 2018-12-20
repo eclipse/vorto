@@ -77,61 +77,57 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 
     List<ModelInfo> modelInfos = getModelRepository().search("*");
 
-//    JcrSession session = (JcrSession) ((JcrModelRepository) modelRepository).getSession();
+    JcrSession session = (JcrSession) ((JcrModelRepository) modelRepository).getSession();
     
-//    for (ModelInfo modelInfo : modelInfos) { 
-//      ModelIdHelper helper = new ModelIdHelper(modelInfo.getId());
-//      
-//      try {
-//        Node folderNode = session.getNode(helper.getFullPath());
-//        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-//          logger.warn("folder "+folderNode.getName()+" has no files. Skipping ...");
-//          continue;
-//        }
-//        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-//
-//        folderNode.addMixin("mix:referenceable");
-//        folderNode.addMixin("vorto:meta");
-//        folderNode.addMixin("mix:lastModified");
-//        folderNode.setProperty("vorto:name", fileNode.getProperty("vorto:name").getString());
-//        folderNode.setProperty("vorto:namespace",
-//            fileNode.getProperty("vorto:namespace").getString());
-//        folderNode.setProperty("vorto:type", fileNode.getProperty("vorto:type").getString());
-//
-//        if (fileNode.hasProperty("vorto:references")) {
-//          List<javax.jcr.Value> newReferences = new ArrayList<javax.jcr.Value>();
-//          try {
-//            javax.jcr.Value[] referenceValues =
-//                fileNode.getProperty("vorto:references").getValues();
-//            for (javax.jcr.Value value : referenceValues) {
-//              Node referencedNode = session.getNodeByIdentifier(value.getString());
-//              
-//              Node referencedFolder = referencedNode.getParent();
-//              referencedFolder.addMixin("mix:referenceable");
-//              referencedFolder.addMixin("vorto:meta");
-//              newReferences.add(session.getValueFactory().createValue(referencedFolder));
-//            }
-//            folderNode.setProperty("vorto:references",
-//                newReferences.toArray(new javax.jcr.Value[newReferences.size()]));
-//            fileNode.getProperty("vorto:references").remove();
-//            session.save();
-//          } catch (Exception ex) {
-//            logger.error("problem with model "+modelInfo.getId().getPrettyFormat(),ex);
-//          }
-//        }
-//      } catch (PathNotFoundException e) {
-//        logger.error("problem in permission upgrade task",e);
-//      } catch (RepositoryException e) {
-//        logger.error("problem in permission upgrade task",e);
-//      }
-//    }
-//    
-//    session.logout();
-//    try {
-//      session.save();
-//    } catch (Exception e) {
-//      logger.error("problem in permission upgrade task",e);
-//    }
+    for (ModelInfo modelInfo : modelInfos) { 
+      ModelIdHelper helper = new ModelIdHelper(modelInfo.getId());
+      
+      try {
+        Node folderNode = session.getNode(helper.getFullPath());
+        if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+          logger.warn("folder "+folderNode.getName()+" has no files. Skipping ...");
+          continue;
+        }
+        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
+        fileNode.addMixin("mode:accessControllable");
+
+        folderNode.addMixin("mix:referenceable");
+        folderNode.addMixin("vorto:meta");
+        folderNode.addMixin("mix:lastModified");
+        folderNode.setProperty("vorto:name", fileNode.hasProperty("vorto:name")?fileNode.getProperty("vorto:name").getString() : "");
+        folderNode.setProperty("vorto:namespace", fileNode.getProperty("vorto:namespace").getString() );
+        folderNode.setProperty("vorto:type", fileNode.getProperty("vorto:type").getString() );
+
+        if (fileNode.hasProperty("vorto:references")) {
+          List<javax.jcr.Value> newReferences = new ArrayList<javax.jcr.Value>();
+          try {
+            javax.jcr.Value[] referenceValues =
+                fileNode.getProperty("vorto:references").getValues();
+            for (javax.jcr.Value value : referenceValues) {
+              Node referencedNode = session.getNodeByIdentifier(value.getString());
+              
+              Node referencedFolder = referencedNode.getParent();
+              referencedFolder.addMixin("mix:referenceable");
+              referencedFolder.addMixin("vorto:meta");
+              newReferences.add(session.getValueFactory().createValue(referencedFolder));
+            }
+            folderNode.setProperty("vorto:references",
+                newReferences.toArray(new javax.jcr.Value[newReferences.size()]));
+            fileNode.getProperty("vorto:references").remove();
+            session.save();
+          } catch (Exception ex) {
+            logger.error("problem with model "+modelInfo.getId().getPrettyFormat(),ex);
+          }
+        }
+      } catch (PathNotFoundException e) {
+        logger.error("problem in permission upgrade task",e);
+      } catch (RepositoryException e) {
+        logger.error("problem in permission upgrade task",e);
+      }
+    }
+    
+    session.logout();
+    
     for (ModelInfo modelInfo : modelInfos) {
       setPermissions(modelInfo);
     }
@@ -142,10 +138,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
         && modelInfo.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName())) {
       logger.info("Setting permissions for model " + modelInfo.toString());
       policyManager.addPolicyEntry(modelInfo.getId(),
-          PolicyEntry.of(modelInfo.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS));
-      policyManager.addPolicyEntry(modelInfo.getId(),
-          PolicyEntry.of(Role.ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
-
+          PolicyEntry.of(modelInfo.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS),PolicyEntry.of(Role.ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
     }
   }
 

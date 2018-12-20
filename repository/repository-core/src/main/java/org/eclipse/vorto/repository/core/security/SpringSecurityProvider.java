@@ -22,7 +22,7 @@ public class SpringSecurityProvider implements AuthenticationProvider {
 			SpringSecurityCredentials creds = (SpringSecurityCredentials) credentials;
 			Authentication auth = creds.getAuthentication();
 			if (auth != null) {
-				logger.info("[{}] Successfully authenticated.", auth.getName());
+				logger.debug("[{}] Successfully authenticated.", auth.getName());
 				return repositoryContext.with(new SpringSecurityContext(auth));
 			}
 		}
