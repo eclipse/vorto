@@ -882,7 +882,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 			
 			for (AccessControlEntry entry : acl.getAccessControlEntries()) {
 			  PolicyEntry policy = PolicyEntry.of(entry);
-			  if (!policy.getPrincipalId().equalsIgnoreCase("admin")) {
+			  if (!policy.isAdminPolicy()) {
 			    policyEntries.add(policy);
 			  }
 			}
@@ -896,6 +896,41 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 		
 		return policyEntries;
 	}
+	
+	@Override
+    public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
+        List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
+        final Session session = getSession();
+        try {           
+            ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+            final Node folderNode = session.getNode(modelIdHelper.getFullPath());
+            Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
+            
+            AccessControlManager acm = session.getAccessControlManager();
+            
+            AccessControlList acl = null;
+            AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
+            if (it.hasNext()) {
+                acl = (AccessControlList) it.nextAccessControlPolicy();
+            } else {
+                acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
+            }
+            
+            for (AccessControlEntry entry : acl.getAccessControlEntries()) {
+              PolicyEntry policy = PolicyEntry.of(entry);
+              policyEntries.add(policy);
+            }
+
+        } catch(RepositoryException ex) {
+            logger.error("Could not read policies entries of model", ex);
+            throw new FatalModelRepositoryException("Problem reading model policy entries", ex);
+        } finally {
+            session.logout();
+        }
+        
+        return policyEntries;
+    }
 
 	@Override
 	public void addPolicyEntry(ModelId modelId, PolicyEntry newEntry) {
@@ -939,7 +974,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 				permissions[i] = acm.privilegeFromName(privileges[i]);
 			}
 			if (privileges.length > 0) {
-				acl.addAccessControlEntry(SimplePrincipal.newInstance(newEntry.getPrincipalId()), permissions);
+				acl.addAccessControlEntry(SimplePrincipal.newInstance(newEntry.toACEPrincipal()), permissions);
 			}
 			
 			acm.setPolicy(fileNode.getPath(), acl);

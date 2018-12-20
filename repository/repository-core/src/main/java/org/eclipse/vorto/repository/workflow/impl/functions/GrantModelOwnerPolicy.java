@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -25,7 +26,7 @@ public class GrantModelOwnerPolicy implements IWorkflowFunction {
 	public void execute(ModelInfo model, IUserContext user) {
 		logger.info("Restricting permission of model " + model.getId() + " to user '"+user.getUsername()+"' and role 'admin'");
         policyManager.addPolicyEntry(model.getId(), PolicyEntry.of(model.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS));	
-        policyManager.addPolicyEntry(model.getId(), PolicyEntry.of("admin", PrincipalType.Role, Permission.FULL_ACCESS)); 
+        policyManager.addPolicyEntry(model.getId(), PolicyEntry.of(Role.ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS)); 
 
 	}
 }

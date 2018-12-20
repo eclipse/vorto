@@ -274,15 +274,28 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	public void addOrUpdatePolicyEntry(final @PathVariable String modelId, final @RequestBody PolicyEntry entry) {
 		Objects.requireNonNull(modelId, "modelID must not be null");
 		Objects.requireNonNull(entry, "entry must not be null");
+		
+		if (attemptChangePolicyOfCurrentUser(entry)) {
+		  throw new IllegalArgumentException("Cannot change policy of current user");
+		}
+		
 		policyManager.addPolicyEntry(ModelId.fromPrettyFormat(modelId),entry);
 	}
 	
-	@PreAuthorize("hasRole('ROLE_USER')")
+	private boolean attemptChangePolicyOfCurrentUser(PolicyEntry entry) {
+      return SecurityContextHolder.getContext().getAuthentication().getName().equals(entry.getPrincipalId());
+  }
+
+  @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}", method = RequestMethod.DELETE)
     public void removePolicyEntry(final @PathVariable String modelId, final @PathVariable String principalId,final @PathVariable String principalType) {
         Objects.requireNonNull(modelId, "modelID must not be null");
         Objects.requireNonNull(principalId, "principalID must not be null");
+        final PolicyEntry entry = PolicyEntry.of(principalId, PrincipalType.valueOf(principalType), null);
         
-        policyManager.removePolicyEntry(ModelId.fromPrettyFormat(modelId),PolicyEntry.of(principalId, PrincipalType.valueOf(principalType), null));
+        if (attemptChangePolicyOfCurrentUser(entry)) {
+          throw new IllegalArgumentException("Cannot change policy of current user");
+        }
+        policyManager.removePolicyEntry(ModelId.fromPrettyFormat(modelId),entry);
     }
 }

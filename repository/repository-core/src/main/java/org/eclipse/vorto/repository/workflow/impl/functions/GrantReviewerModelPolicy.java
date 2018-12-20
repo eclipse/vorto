@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
+import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -24,7 +25,7 @@ public class GrantReviewerModelPolicy implements IWorkflowFunction {
 	@Override
 	public void execute(ModelInfo model, IUserContext caller) {
 		logger.info("Granting permission of model " + model.getId() + " to reviewer role");
-		policyManager.addPolicyEntry(model.getId(), PolicyEntry.of("ROLE_MODEL_REVIEWER",PrincipalType.Role,Permission.READ));
+		policyManager.addPolicyEntry(model.getId(), PolicyEntry.of(Role.MODEL_REVIEWER.name(),PrincipalType.Role,Permission.READ));
 		
 	}
 }

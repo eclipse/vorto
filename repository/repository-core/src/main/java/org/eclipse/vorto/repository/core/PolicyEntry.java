@@ -105,6 +105,18 @@ public class PolicyEntry {
         + ", permission=" + permission + "]";
   }
 
+  public String toACEPrincipal() {
+    if (this.principalType == PrincipalType.Role) {
+      return "ROLE_"+this.principalId;
+    } else {
+      return this.principalId;
+    }
+  }
+
+  public boolean isAdminPolicy() {
+    return this.principalId.equalsIgnoreCase(Role.ADMIN.name()) && this.principalType == PrincipalType.Role;
+  }
+
   
 
 }

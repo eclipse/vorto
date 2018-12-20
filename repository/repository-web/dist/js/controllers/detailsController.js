@@ -156,7 +156,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					tmpIdx++;
 				}).error(function (result) {
 					$scope.modelReferences[tmpIdx] = {
-						"modelId" : references[index].prettyFormat,
+						"modelId" : references[tmpIdx].prettyFormat,
 						"state" : null,
 						"hasAccess" : false
 					};
@@ -184,7 +184,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					tmpIdx++;
 				}).error(function (result) {
 					$scope.modelReferencedBy[tmpIdx] = {
-						"modelId" : referencedBy[index].prettyFormat,
+						"modelId" : referencedBy[tmpIdx].prettyFormat,
 						"state" : null,
 						"hasAccess" : false
 					};
@@ -207,7 +207,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
-					if ($scope.model.author === $rootScope.user) { // load policies only if user is model owner
+					if ($scope.model.author === $rootScope.user || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
 						$scope.getPolicies();
 					}
 
@@ -963,12 +963,19 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 						"principalType" : "User"
 					};
 					$scope.createEntry = function (entry) {
+						if (entry.principalId === $rootScope.user) {
+							$scope.errorMessage = "You cannot create policy for yourself!";
+							return;
+						}
 						$scope.isLoading = true;
 						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close();
-						});
+						}).error(function (data, status, headers, config) {
+								$scope.isLoading = false;
+								$scope.errorMessage = status.message;
+							});
 					};
 
 					$scope.cancel = function () {

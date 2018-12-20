@@ -29,12 +29,15 @@ public class SpringSecurityContext implements SecurityContext {
 
 	@Override
 	public boolean hasRole(String roleName) {
+	    if (roleName.equals(authentication.getName())) {
+	      return true;
+	    }
 		for (GrantedAuthority authority : authentication.getAuthorities()) {
 			if (roleName.equals("readonly") && (authority.getAuthority().equalsIgnoreCase("role_user") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
 				return true;
 			} else if (roleName.equals("readwrite") && (authority.getAuthority().equalsIgnoreCase("role_model_creator") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
 				return true;
-			} else if (roleName.equals("admin") && authority.getAuthority().equalsIgnoreCase("role_admin")) {
+			} else if (roleName.equals("ROLE_ADMIN") && authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN")) {
 				return true;
 			}
 		}

@@ -144,7 +144,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
       policyManager.addPolicyEntry(modelInfo.getId(),
           PolicyEntry.of(modelInfo.getAuthor(), PrincipalType.User, Permission.FULL_ACCESS));
       policyManager.addPolicyEntry(modelInfo.getId(),
-          PolicyEntry.of("admin", PrincipalType.Role, Permission.FULL_ACCESS));
+          PolicyEntry.of(Role.ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
 
     }
   }

@@ -3,6 +3,7 @@ package org.eclipse.vorto.repository.core;
 import java.util.Collection;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 public interface IModelPolicyManager {
 	
@@ -13,6 +14,14 @@ public interface IModelPolicyManager {
 	 * @return
 	 */
 	Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user);
+	
+	/**
+	 * Gets a list of all policies for the given model
+	 * @param modelId
+	 * @return
+	 * @throws NotAuthorizedException
+	 */
+	Collection<PolicyEntry> getPolicyEntries(ModelId modelId) throws NotAuthorizedException;
 
 	/**
 	 * Adds a policy entry for the given model

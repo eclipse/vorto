@@ -286,7 +286,7 @@
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 												
-												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview' || (model.author !== user && authority !== 'ROLE_ADMIN')"
+												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview' || (model.author !== user && !hasAuthority('ROLE_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
 												

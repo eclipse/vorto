@@ -29,6 +29,7 @@ import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantModelOwnerPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
+import org.eclipse.vorto.repository.workflow.impl.functions.RemovePolicies;
 import org.eclipse.vorto.repository.workflow.impl.validators.CheckStatesOfDependenciesValidator;
 import org.eclipse.vorto.repository.workflow.model.IAction;
 import org.eclipse.vorto.repository.workflow.model.IState;
@@ -73,6 +74,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy((IModelPolicyManager)repository);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy((IModelPolicyManager)repository);
+		final IWorkflowFunction removePolicies = new RemovePolicies((IModelPolicyManager)repository);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
@@ -85,6 +87,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		ACTION_APPROVE.setTo(STATE_RELEASED);
 		ACTION_APPROVE.setConditions(isAdminCondition,isReviewerCondition);
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
+		ACTION_APPROVE.setFunctions(removePolicies);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
 		ACTION_REJECT.setConditions(isAdminCondition, isReviewerCondition);
