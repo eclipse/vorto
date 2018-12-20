@@ -63,7 +63,7 @@ public class ReferenceIntegrityDiagnostic implements NodeDiagnostic {
         }
       }
     } catch (RepositoryException e) {
-      throw new NodeDiagnosticException("Error in accessing some properties of node", e);
+        throw new NodeDiagnosticException("Error in accessing some properties of node", e);
     }
     return diagnostics;
   }

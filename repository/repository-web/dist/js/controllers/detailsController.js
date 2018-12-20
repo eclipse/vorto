@@ -2,6 +2,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 	function ($rootScope, $scope, $http, $routeParams, $location, $route, $uibModal, $timeout, $window, $timeout) {
 
 		$scope.model = [];
+		$scope.aclEntries = [];
 		$scope.platformGeneratorMatrix = null;
 		$scope.platformDemoGeneratorMatrix = null;
 		$scope.workflowActions = [];
@@ -145,7 +146,20 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			for( var index in references){
 		        $http.get('./api/v1/models/' + references[index].prettyFormat)
 				.success(function (result) {
-					$scope.modelReferences[tmpIdx] = result;
+					$scope.modelReferences[tmpIdx] = {
+						"modelId" : result.id.prettyFormat,
+						"state" : result.state,
+						"type" : result.type,
+						"hasAccess" : true
+					};
+					$scope.modelReferences.show = true;
+					tmpIdx++;
+				}).error(function (result) {
+					$scope.modelReferences[tmpIdx] = {
+						"modelId" : references[tmpIdx].prettyFormat,
+						"state" : null,
+						"hasAccess" : false
+					};
 					$scope.modelReferences.show = true;
 					tmpIdx++;
 				});
@@ -160,7 +174,20 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			for( var index in referencedBy){
 		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
 				.success(function (result) {
-					$scope.modelReferencedBy[tmpIdx] = result;
+					$scope.modelReferencedBy[tmpIdx] = {
+						"modelId" : result.id.prettyFormat,
+						"type" : result.type,
+						"state" : result.state,
+						"hasAccess" : true
+					};
+					$scope.modelReferencedBy.show = true;
+					tmpIdx++;
+				}).error(function (result) {
+					$scope.modelReferencedBy[tmpIdx] = {
+						"modelId" : referencedBy[tmpIdx].prettyFormat,
+						"state" : null,
+						"hasAccess" : false
+					};
 					$scope.modelReferencedBy.show = true;
 					tmpIdx++;
 				});
@@ -179,6 +206,10 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.getReferences();
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
+					
+					if ($scope.model.author === $rootScope.user || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
+						$scope.getPolicies();
+					}
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
@@ -858,6 +889,113 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				});
 		};
 		
-		$scope.diagnoseModel();
+		if ($rootScope.hasAuthority("ROLE_ADMIN")) { 
+			$scope.diagnoseModel();
+		}
+		
+		$scope.getPolicies = function() {
+			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies')
+				.success(function (result) {
+					$scope.aclEntries = result;
+				});
+		};
+		
+		$scope.modifyPermission = function(entry) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope, model) {
+					$scope.model = model;
+					$scope.isLoading = false;
+					$scope.editMode = true;
+					$scope.applyOnDependencies = false;
+					$scope.entry = {
+						"permission" : entry.permission,
+						"principalId" : entry.principalId,
+						"principalType" : entry.principalType
+					};
+					
+					$scope.createEntry = function (entry) {
+						$scope.isLoading = true;
+						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close();
+						});
+					};
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
+				size: "sm",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+			
+			modalInstance.result.then(
+				function (data) {
+					$scope.getPolicies();
+				});
+		};
+		
+		$scope.removePermission = function(entry) {
+			$http.delete('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies/'+entry.principalId+'/'+entry.principalType)
+				.success(function (result) {
+					$scope.getPolicies();
+				});
+		};
+		
+		$scope.openCreatePolicyEntryDialog = function (model) {
+			var modalInstance = $uibModal.open({
+				animation: true,
+				controller: function ($scope, model) {
+					$scope.model = model;
+					$scope.isLoading = false;
+					$scope.editMode = false;
+					$scope.applyOnDependencies = false;
+					$scope.entry = {
+						"permission" : "READ",
+						"principalId" : "",
+						"principalType" : "User"
+					};
+					$scope.createEntry = function (entry) {
+						if (entry.principalId === $rootScope.user) {
+							$scope.errorMessage = "You cannot create policy for yourself!";
+							return;
+						}
+						$scope.isLoading = true;
+						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
+							.success(function (result) {
+								$scope.isLoading = false;
+								modalInstance.close();
+						}).error(function (data, status, headers, config) {
+								$scope.isLoading = false;
+								$scope.errorMessage = status.message;
+							});
+					};
+
+					$scope.cancel = function () {
+						modalInstance.dismiss();
+					};
+				},
+				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
+				size: "sm",
+				resolve: {
+					model: function () {
+						return $scope.model;
+					}
+				}
+			});
+			
+			modalInstance.result.then(
+				function (data) {
+					$scope.getPolicies();
+				});
+		};
 	}
+	
 ]);

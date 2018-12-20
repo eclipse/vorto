@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.upgrade.AbstractUpgradeTask;
@@ -31,57 +32,56 @@ import org.springframework.stereotype.Component;
 @Component
 public class WorkflowUpgradeTask extends AbstractUpgradeTask implements IUpgradeTask {
 
-  private static final Logger logger = LoggerFactory.getLogger(WorkflowUpgradeTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowUpgradeTask.class);
+	
+	@Value("${server.upgrade.workflow:false}")
+	private boolean shouldUpgrade;
 
-  @Value("${server.upgrade.workflow:false}")
-  private boolean shouldUpgrade;
+	private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
+		
+		@Override
+		public boolean shouldExecuteTask() {
+			return shouldUpgrade;
+		}
+	};
 
-  private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
+	@Autowired
+	private IWorkflowService workflowService;
+	
+	public WorkflowUpgradeTask(@Autowired IModelRepository repository, @Autowired IWorkflowService workflowService) {
+		super(repository);
+		this.workflowService = workflowService;
+	}
 
-    @Override
-    public boolean shouldExecuteTask() {
-      return shouldUpgrade;
-    }
-  };
+	@Override
+	public void doUpgrade() throws UpgradeProblem {
+		List<ModelInfo> modelInfos = getModelRepository().search("*");
+		for(ModelInfo modelInfo : modelInfos) {
+			if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
+				logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
+				try {
+					workflowService.start(modelInfo.getId(),null);
+				} catch (WorkflowException e) {
+					throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
+				}
+			}
+		}
+	}
+	
+	public Optional<IUpgradeTaskCondition> condition() {
+		return Optional.of(upgradeTaskCondition);
+	}
 
-  @Autowired
-  private IWorkflowService workflowService;
+	@Override
+	public String getShortDescription() {
+		return "Task for setting model states to be controlled by the workflow management.";
+	}
+	
+	public IUpgradeTaskCondition getUpgradeTaskCondition() {
+		return upgradeTaskCondition;
+	}
 
-  public WorkflowUpgradeTask(@Autowired IModelRepository repository,
-      @Autowired IWorkflowService workflowService) {
-    super(repository);
-    this.workflowService = workflowService;
-  }
-
-  @Override
-  public void doUpgrade() throws UpgradeProblem {
-    List<ModelInfo> modelInfos = getModelRepository().search("*");
-    for (ModelInfo modelInfo : modelInfos) {
-      if (modelInfo.getState() == null || modelInfo.getState().equals("")) {
-        logger.info("Upgrading " + modelInfo.toString() + " for workflow state management.");
-        try {
-          workflowService.start(modelInfo.getId());
-        } catch (WorkflowException e) {
-          throw new UpgradeProblem("Upgrade failed because workflow cannot be started ", e);
-        }
-      }
-    }
-  }
-
-  public Optional<IUpgradeTaskCondition> condition() {
-    return Optional.of(upgradeTaskCondition);
-  }
-
-  @Override
-  public String getShortDescription() {
-    return "Task for setting model states to be controlled by the workflow management.";
-  }
-
-  public IUpgradeTaskCondition getUpgradeTaskCondition() {
-    return upgradeTaskCondition;
-  }
-
-  public void setUpgradeTaskCondition(IUpgradeTaskCondition upgradeTaskCondition) {
-    this.upgradeTaskCondition = upgradeTaskCondition;
-  }
+	public void setUpgradeTaskCondition(IUpgradeTaskCondition upgradeTaskCondition) {
+		this.upgradeTaskCondition = upgradeTaskCondition;
+	}
 }

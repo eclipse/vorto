@@ -65,7 +65,7 @@ public class ModelController extends AbstractRepositoryController {
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
-	@ApiOperation(value = "Returns a model by its full qualified model ID")
+	@ApiOperation(value = "Returns a full model by its model ID")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found"),
 			@ApiResponse(code = 403, message = "Not Authorized to view model") })
@@ -84,7 +84,7 @@ public class ModelController extends AbstractRepositoryController {
 		return ModelDtoFactory.createDto(resource,
 				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
-
+	
 	@ApiOperation(value = "Returns the complete model content")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 404, message = "Model not found") })
@@ -94,7 +94,7 @@ public class ModelController extends AbstractRepositoryController {
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
 
 		final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-		if (this.modelRepository.getById(modelID) == null) {
+		if (!this.modelRepository.exists(modelID)) {
 			throw new ModelNotFoundException("Model does not exist", null);
 		}
 

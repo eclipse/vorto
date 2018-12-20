@@ -22,14 +22,14 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc);
+    testModel.createModel(mockMvc,userCreator);
     sleep(1000);
     // Creating a model takes a while
   }
 
   @Test
   public void testModelAccess() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName))
+    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName).with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -39,7 +39,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetModelContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/content"))
+    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -49,7 +49,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testModelFileDownloadContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/file"))
+    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userCreator))
         .andExpect(status().isOk());
     
     assertTrue(true);

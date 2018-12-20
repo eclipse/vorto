@@ -21,7 +21,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
@@ -31,8 +30,6 @@ import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.modeshape.common.util.CheckArg;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.modeshape.jcr.api.sequencer.Sequencer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -42,9 +39,6 @@ import org.springframework.core.io.ClassPathResource;
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
 public class ModelSequencer extends Sequencer {
-  
-  private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-
 
   @Override
   public void initialize(NamespaceRegistry registry, NodeTypeManager nodeTypeManager)
@@ -54,53 +48,48 @@ public class ModelSequencer extends Sequencer {
   }
 
   @Override
-  public boolean execute(Property inputProperty, Node outputNode, Context context)
+  public boolean execute(Property inputProperty, Node fileNode, Context context)
       throws Exception {
-
+    final Node folderNode = fileNode.getParent();
+    
     Binary binaryValue = inputProperty.getBinary();
     CheckArg.isNotNull(binaryValue, "binary");
-    ModelInfo modelResource = null;
-    try {
-      IModelParser parser = ModelParserFactory.instance().getParser(outputNode.getPath());
-      parser.setValidate(false);
-      
-       modelResource = parser.parse(binaryValue.getStream());
-       outputNode.setProperty("vorto:description",
-           modelResource.getDescription() != null ? modelResource.getDescription() : "");
-       outputNode.setProperty("vorto:type", modelResource.getType().name());
+    IModelParser parser = ModelParserFactory.instance().getParser(fileNode.getPath());
+    parser.setValidate(false);
+    ModelInfo modelResource = parser.parse(binaryValue.getStream());
 
-       outputNode.setProperty("vorto:displayname", modelResource.getDisplayName());
-       outputNode.setProperty("vorto:version", modelResource.getId().getVersion());
-       outputNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
-       outputNode.setProperty("vorto:name", modelResource.getId().getName());
+    fileNode.setProperty("vorto:description",
+        modelResource.getDescription() != null ? modelResource.getDescription() : "");
+    fileNode.setProperty("vorto:type", modelResource.getType().name());
+    fileNode.setProperty("vorto:displayname", modelResource.getDisplayName());
+    fileNode.setProperty("vorto:version", modelResource.getId().getVersion());
+    fileNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
+    fileNode.setProperty("vorto:name", modelResource.getId().getName());
+    
+    folderNode.addMixin("mix:referenceable");
+    folderNode.addMixin("vorto:meta");
+    folderNode.setProperty("vorto:namespace", modelResource.getId().getNamespace());
+    folderNode.setProperty("vorto:type", modelResource.getType().name());
+    folderNode.setProperty("vorto:name", modelResource.getId().getName());
 
-       if (outputNode.hasProperty("vorto:references")) { // first remove any previous references of the node.
-         outputNode.getProperty("vorto:references").remove();
-         outputNode.getSession().save();
-       }
-       
-       ModelReferencesHelper referencesHelper =
-           new ModelReferencesHelper(modelResource.getReferences());
-       if (referencesHelper.hasReferences()) {
-         List<Value> references = new ArrayList<Value>();
-         for (ModelId modelId : referencesHelper.getReferences()) {
-           ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-           Node referencedFolder = outputNode.getSession().getNode(modelIdHelper.getFullPath());
-           Node reference = referencedFolder.getNodes().nextNode();
-           references.add(context.valueFactory().createValue(reference));
-         }
-         outputNode.setProperty("vorto:references", references.toArray(new Value[references.size()]));
-       }
-    } catch(Throwable couldNotParse) {
-      LOGGER.error("Problem parsing model in Sequencer",couldNotParse);
-      outputNode.setProperty("vorto:description","Erronous Model !!!!");
-      outputNode.setProperty("vorto:type", ModelType.create(outputNode.getPath()).name());
-      outputNode.setProperty("vorto:displayname", "");
-      outputNode.setProperty("vorto:version", "1.0.0");
-      outputNode.setProperty("vorto:namespace", "erronous");
-      outputNode.setProperty("vorto:name", outputNode.getName());
+
+    if (folderNode.hasProperty("vorto:references")) { // first remove any previous references of the node.
+      folderNode.getProperty("vorto:references").remove();
+      folderNode.getSession().save();
     }
-   
+    
+    ModelReferencesHelper referencesHelper =
+        new ModelReferencesHelper(modelResource.getReferences());
+    if (referencesHelper.hasReferences()) {
+      List<Value> references = new ArrayList<Value>();
+      for (ModelId modelId : referencesHelper.getReferences()) {
+        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+        Node referencedFolder = folderNode.getSession().getNode(modelIdHelper.getFullPath());
+        referencedFolder.addMixin("mix:referenceable");
+        references.add(context.valueFactory().createValue(referencedFolder));
+      }
+      folderNode.setProperty("vorto:references", references.toArray(new Value[references.size()]));
+    }
     return true;
   }
 }

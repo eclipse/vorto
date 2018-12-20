@@ -38,7 +38,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="(hasAuthority('ROLE_ADMIN')) && model.author === 'anonymousUser'">
+			<div ng-show="model.author === 'anonymousUser'">
 				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
@@ -75,6 +75,11 @@
 						<a href="" role="tab" data-target="#discussion" data-toggle="tab">
 							<i class="fa fa-comment"></i> Review Discussions
 							<span class="badge">{{comments.length}}</span>
+						</a>
+					</li>
+					<li ng-show="!model.released && (model.author === user || hasAuthority('ROLE_ADMIN'))">
+						<a href="" role="tab" data-target="#policies" data-toggle="tab">
+							<i class="fa fa-lock"></i> Permissions
 						</a>
 					</li>
 				</ul>
@@ -150,7 +155,7 @@
 														</a>
 														<div uib-collapse="!showReferences">
 															<ul>
-																<li ng-repeat="reference in modelReferences" class="ng-scope">															
+																<li ng-repeat="reference in modelReferences" class="ng-scope">														
 																	<span ng-show="reference.type === 'InformationModel'">
 																		<img src="webjars/repository-web/dist/images/im.png" />
 																	</span>
@@ -163,8 +168,9 @@
 																	<span ng-show="reference.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>	
-																	<a ng-href="./#/details/{{reference.id.prettyFormat}}" class="ng-binding">{{reference.id.name}}:{{reference.id.version}}</a>
-																	 (State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>)																																				
+																	<div ng-if="!reference.hasAccess">{{reference.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>
+																	<a ng-if="reference.hasAccess" ng-href="./#/details/{{reference.modelId}}" class="ng-binding">{{reference.modelId}}</a>
+																	 <span ng-if="reference.state">(State: <span class="state state-{{reference.state}}">{{ reference.state }}</span>) </span>																																			
 																</li>
 															</ul>
 														</div>
@@ -194,9 +200,10 @@
 																	</span>
 																	<span ng-show="usage.type === 'Mapping'">
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
-																	</span>	
-																	<a ng-href="./#/details/{{usage.id.prettyFormat}}" class="ng-binding">{{usage.id.name}}:{{usage.id.version}}</a>
-																	(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)																
+																	</span>
+																	<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>	
+																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																	 <span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>														
 																</li>
 															</ul>
 														</div>
@@ -279,7 +286,7 @@
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 												
-												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview' || (model.author !== user && authority !== 'ROLE_ADMIN')"
+												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview' || (model.author !== user && !hasAuthority('ROLE_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
 												
@@ -360,6 +367,41 @@
 								</div>
 								<!-- /.box (chat box) -->
 
+							</section>
+						</div>
+
+					</div>
+					
+					<div class="tab-pane" id="policies">
+						<div class="row ">
+							<!-- Left col -->
+							<section class="col-md-12">
+								<div class="pull-right">
+  									<button type="button" class="btn btn-default btn-lg" ng-click="openCreatePolicyEntryDialog()">
+    									<i class="fa fa-plus"></i></span> Add Entry
+  									</button>
+								</div>
+								<table class="table table-bordered table-condensed" ng-show="aclEntries.length > 0">
+									<tr>
+										<th style="text-align:center">Principal ID</th>
+										<th style="text-align:center">Principal Type</th>
+										<th style="text-align:center">Permission</th>
+										<th style="text-align:center">Actions</th>
+									</tr>
+									<tr ng-repeat="entry in aclEntries">
+										<td ng-show="user === entry.principalId" style="text-align:center"><b>You</b></td>
+										<td ng-show="user !== entry.principalId" style="text-align:center">{{entry.principalId}}</td>
+										<td style="text-align:center">{{entry.principalType}}</td>
+										<td style="text-align:center">{{entry.permission}}</td>
+										<td style="text-align:center">
+											<a ng-click="modifyPermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-primary" role="button">
+											<span class="glyphicon glyphicon-edit"></span> Edit</a>
+											<a ng-click="removePermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-danger" role="button">
+											<span class="glyphicon glyphicon-trash"></span> Remove</a>
+										</td>
+									</tr>
+								</table>
+								<p ng-show="aclEntries.length === 0">No policies defined</p>
 							</section>
 						</div>
 

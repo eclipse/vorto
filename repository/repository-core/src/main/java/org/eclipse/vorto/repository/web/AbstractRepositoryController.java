@@ -101,21 +101,26 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   }
 
   protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-    FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
-    ModelInfo modelResource = modelRepository.getById(modelId);
-
     try {
-      ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
-      zipOutputStream.putNextEntry(zipEntry);
-      zipOutputStream.write(modelFile.getContent());
-      zipOutputStream.closeEntry();
-    } catch (Exception ex) {
-      // entry possible exists already, so skipping TODO: ugly hack!!
-    }
+      FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
+      ModelInfo modelResource = modelRepository.getById(modelId);
 
-    for (ModelId reference : modelResource.getReferences()) {
-      addModelToZip(zipOutputStream, reference);
+      try {
+        ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
+        zipOutputStream.putNextEntry(zipEntry);
+        zipOutputStream.write(modelFile.getContent());
+        zipOutputStream.closeEntry();
+      } catch (Exception ex) {
+        // entry possible exists already, so skipping TODO: ugly hack!!
+      }
+
+      for (ModelId reference : modelResource.getReferences()) {
+        addModelToZip(zipOutputStream, reference);
+      }
+    } catch(NotAuthorizedException notAuthorized) {
+        return;
     }
+    
   }
 
   protected void sendAsZipFile(final HttpServletResponse response, final String fileName,

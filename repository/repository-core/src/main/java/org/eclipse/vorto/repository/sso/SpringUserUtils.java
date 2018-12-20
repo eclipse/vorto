@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.sso;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,5 +52,9 @@ public class SpringUserUtils {
     Set<String> roleStrings =
         roles.stream().map(role -> "ROLE_" + role.toString()).collect(Collectors.toSet());
     return AuthorityUtils.createAuthorityList(roleStrings.toArray(new String[roleStrings.size()]));
+  }
+  
+  public static Set<Role> authorityListToSet(Collection<? extends GrantedAuthority> authorities) {
+    return AuthorityUtils.authorityListToSet(authorities).stream().map(a -> Role.of(a)).collect(Collectors.toSet());
   }
 }

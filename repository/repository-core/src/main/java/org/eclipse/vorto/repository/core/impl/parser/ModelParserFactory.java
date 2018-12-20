@@ -47,7 +47,7 @@ public class ModelParserFactory {
     if (!isInit) {
       initDSLPackages();
     }
-    ModelParserFactory.instance = this;
+   ModelParserFactory.instance = this;
   }
 
   public void initDSLPackages() {

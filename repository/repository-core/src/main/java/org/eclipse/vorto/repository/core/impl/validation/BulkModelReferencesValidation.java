@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -23,61 +24,57 @@ import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
 /**
  * Validation class for multiple file model upload/checkin.
- * 
  * @author Nagavijay Sivakumar - Robert Bosch (SEA) Pte. Ltd.
  *
  */
 public class BulkModelReferencesValidation extends ModelReferencesValidation {
+	
+	private List<ModelId> zipModelIds;
+	
+	public BulkModelReferencesValidation(IModelRepository modelRepository, Set<ModelInfo> modelResources) {
+		super(modelRepository);
+		zipModelIds = modelResources.stream().map(new java.util.function.Function<ModelInfo, ModelId>() {
+			@Override
+			public ModelId apply(ModelInfo resource) {
+				return resource.getId();
+			}
 
-  private List<ModelId> zipModelIds;
+		}).collect(Collectors.toList());
+	}
 
-  public BulkModelReferencesValidation(IModelRepository modelRepository,
-      Set<ModelInfo> modelResources) {
-    super(modelRepository);
-    zipModelIds =
-        modelResources.stream().map(new java.util.function.Function<ModelInfo, ModelId>() {
-          @Override
-          public ModelId apply(ModelInfo resource) {
-            return resource.getId();
-          }
+	@Override
+	public void validate(ModelInfo modelResource, InvocationContext context) throws ValidationException {
+		validateInRepository(modelResource,context);
+		//Validate other references in zip files.
+		validateInZipFiles(modelResource);
+	}
 
-        }).collect(Collectors.toList());
-  }
+	private List<ModelId> validateInRepository(ModelInfo modelResource, InvocationContext context) {
+		List<ModelId> missingReferences = new ArrayList<ModelId>();
+		try {
+			super.validate(modelResource,context);
+		} catch (CouldNotResolveReferenceException e) {
+			return e.getMissingReferences();
+		}
+		return missingReferences;
+	}
 
-  @Override
-  public void validate(ModelInfo modelResource, InvocationContext context)
-      throws ValidationException {
-    validateInRepository(modelResource, context);
-    // Validate other references in zip files.
-    validateInZipFiles(modelResource);
-  }
+	private boolean isNotInRepository(ModelId modelId) {
+		return !getModelRepository().exists(modelId);
+		
+	}
 
-  private List<ModelId> validateInRepository(ModelInfo modelResource, InvocationContext context) {
-    List<ModelId> missingReferences = new ArrayList<ModelId>();
-    try {
-      super.validate(modelResource, context);
-    } catch (CouldNotResolveReferenceException e) {
-      return e.getMissingReferences();
-    }
-    return missingReferences;
-  }
-
-  private boolean isNotInRepository(ModelId modelId) {
-    return getModelRepository().getById(modelId) == null;
-
-  }
-
-  private void validateInZipFiles(ModelInfo modelResource) {
-    List<ModelId> references = modelResource.getReferences();
-    List<ModelId> missingReferences = new ArrayList<ModelId>();
-    for (ModelId modelId : references) {
-      if (!zipModelIds.contains(modelId)) {
-        if (isNotInRepository(modelId)) {
-          missingReferences.add(modelId);
-        }
-      }
-    }
-    if (missingReferences.size() > 0)
-      throw new CouldNotResolveReferenceException(modelResource, missingReferences);
-  }
+	private void validateInZipFiles(ModelInfo modelResource) {
+		List<ModelId> references = modelResource.getReferences();
+		List<ModelId> missingReferences = new ArrayList<ModelId>();
+		for (ModelId modelId : references) {
+			if(!zipModelIds.contains(modelId)) {
+				if(isNotInRepository(modelId)) {
+					missingReferences.add(modelId);
+				}	
+			}
+		}
+		if(missingReferences.size() > 0)
+			throw new CouldNotResolveReferenceException(modelResource, missingReferences);
+	}	
 }

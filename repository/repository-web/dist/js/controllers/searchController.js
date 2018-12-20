@@ -139,7 +139,7 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 		    	$scope.propertyName = generateVariableName(selectedFb);
 		    	
 		    	function generateVariableName(fb) {
-		    		var variableName = fb.name.toLowerCase();	    		
+		    		var variableName = fb.name.toLowerCase();
 		    		var i = 0;
 		    		while (contains(variableName,$scope.selected.properties)) {
 		    			variableName += ++i;
@@ -163,6 +163,8 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 				property["name"] = $scope.propertyName;
 				property["type"] = $scope.selectedFb;
 			    $scope.selected.properties.push(property);
+			    console.log($scope.propertyName);
+			    console.log($scope.selectedFb);
 			    $scope.propertyName = "";
 			    $scope.selectedFb = null;	
 	    	};

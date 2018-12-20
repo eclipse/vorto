@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelResource;
@@ -20,25 +21,21 @@ import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
-  private IModelRepository modelRepository;
+	protected JcrModelRepository modelRepository;
+	
+	public AbstractUpgradeTask(IModelRepository repository) {
+		this.modelRepository = (JcrModelRepository)repository;
+	}
+	
+	public Optional<IUpgradeTaskCondition> condition() {
+		return Optional.empty();
+	}
 
-  public AbstractUpgradeTask(IModelRepository repository) {
-    this.modelRepository = repository;
-  }
-
-  public Optional<IUpgradeTaskCondition> condition() {
-    return Optional.empty();
-  }
-
-  protected IModelRepository getModelRepository() {
-    return modelRepository;
-  }
-
-  protected ModelResource getModel(ModelId modelId) {
-    return ((JcrModelRepository) modelRepository).getEMFResource(modelId);
-  }
-
-  protected void saveModel(ModelResource resource) {
-    ((JcrModelRepository) modelRepository).saveModel(resource);
-  }
+	protected IModelRepository getModelRepository() {
+		return modelRepository;
+	}
+	
+	protected ModelResource getModel(ModelId modelId) {
+		return modelRepository.getEMFResource(modelId);
+	}
 }

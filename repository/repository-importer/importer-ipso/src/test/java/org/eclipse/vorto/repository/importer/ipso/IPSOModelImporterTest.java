@@ -16,7 +16,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
 import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -33,127 +35,113 @@ import org.springframework.core.io.ClassPathResource;
 
 public class IPSOModelImporterTest extends AbstractIntegrationTest {
 
-  private ModelImporterIPSO ipsoImporter = null;
+	private ModelImporterIPSO ipsoImporter = null;
 
-  public void beforeEach() throws Exception {
-    super.beforeEach();
-    this.ipsoImporter = new ModelImporterIPSO();
-    this.ipsoImporter.setModelRepository(modelRepository);
-    this.ipsoImporter.setUploadStorage(new InMemoryTemporaryStorage());
-    this.ipsoImporter.setUserRepository(userRepository);
-    this.ipsoImporter.setModelParserFactory(modelParserFactory);
-  }
+	public void beforeEach() throws Exception {
+		super.beforeEach();
+		this.ipsoImporter = new ModelImporterIPSO();
+		this.ipsoImporter.setModelRepository(modelRepository);
+		this.ipsoImporter.setUploadStorage(new InMemoryTemporaryStorage());
+		this.ipsoImporter.setUserRepository(userRepository);
+		this.ipsoImporter.setModelParserFactory(modelParserFactory);
+	}
+	
+	@Test (expected=ModelImporterException.class) 
+	public void testPreventXXEAttack() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		importIPSO("3310_xxe.xml", alex);
+	}
 
-  @Test(expected = ModelImporterException.class)
-  public void testPreventXXEAttack() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    importIPSO("3310_xxe.xml", alex);
-  }
+	@Test
+	public void testUploadNonExistingIPSOModel() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/lwm2m/3310.xml",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
+				alex);
 
-  @Test
-  public void testUploadNonExistingIPSOModel() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    UploadModelResult uploadResult =
-        this.ipsoImporter
-            .upload(
-                FileUpload.create("sample_models/lwm2m/3310.xml",
-                    IOUtils.toByteArray(
-                        new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-                alex);
+		assertTrue(uploadResult.isValid());
+	}
 
-    assertTrue(uploadResult.isValid());
-  }
+	@Test
+	public void testImportModel() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		assertTrue(models.get(0).getImported());
+		assertTrue(this.modelRepository.getById(models.get(0).getId()).getImported());
 
-  @Test
-  public void testImportModel() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    List<ModelInfo> models = importIPSO("3310.xml", alex);
-    assertTrue(models.get(0).getImported());
-    assertTrue(this.modelRepository.getById(models.get(0).getId()).getImported());
+	}
+	
+	@Test
+	public void testUploadExistingIPSOModelBySameUser() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		workflow.start(models.get(0).getId(),alex);
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/lwm2m/3310.xml",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
+				alex);
 
-  }
+		assertTrue(uploadResult.isValid());
+		assertTrue(uploadResult.hasWarnings());
+		assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
+		assertTrue(uploadResult.getReport().get(0).isValid());
+	}
 
-  @Test
-  public void testUploadExistingIPSOModelBySameUser() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    List<ModelInfo> models = importIPSO("3310.xml", alex);
-    workflow.start(models.get(0).getId());
-    UploadModelResult uploadResult =
-        this.ipsoImporter
-            .upload(
-                FileUpload.create("sample_models/lwm2m/3310.xml",
-                    IOUtils.toByteArray(
-                        new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-                alex);
+	@Test
+	public void testUploadExistingIPSOModelByDifferentUser() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		importIPSO("3310.xml", alex);
 
-    assertTrue(uploadResult.isValid());
-    assertTrue(uploadResult.hasWarnings());
-    assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS,
-        uploadResult.getReport().get(0).getMessage());
-    assertTrue(uploadResult.getReport().get(0).isValid());
-  }
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/lwm2m/3310.xml",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
+				UserContext.user("stefan"));
 
-  @Test
-  public void testUploadExistingIPSOModelByDifferentUser() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    importIPSO("3310.xml", alex);
+		assertFalse(uploadResult.isValid());
+		assertFalse(uploadResult.hasWarnings());
+		assertFalse(uploadResult.isValid());
+		assertEquals(ValidationReport.ERROR_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
+	}
 
-    UploadModelResult uploadResult = this.ipsoImporter.upload(
-        FileUpload.create("sample_models/lwm2m/3310.xml",
-            IOUtils.toByteArray(
-                new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-        UserContext.user("stefan"));
+	@Test
+	public void testUploadExistingIPSOModelInDraftStateByAdmin() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		List<ModelInfo> models = importIPSO("3310.xml", alex);
+		workflow.start(models.get(0).getId(),alex);
 
-    assertFalse(uploadResult.isValid());
-    assertFalse(uploadResult.hasWarnings());
-    assertFalse(uploadResult.isValid());
-    assertEquals(ValidationReport.ERROR_MODEL_ALREADY_EXISTS,
-        uploadResult.getReport().get(0).getMessage());
-  }
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/lwm2m/3310.xml",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
+				UserContext.user("admin"));
 
-  @Test
-  public void testUploadExistingIPSOModelInDraftStateByAdmin() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    List<ModelInfo> models = importIPSO("3310.xml", alex);
-    workflow.start(models.get(0).getId());
+		assertTrue(uploadResult.hasWarnings());
+		assertTrue(uploadResult.isValid());
+		assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS, uploadResult.getReport().get(0).getMessage());
+		assertTrue(uploadResult.getReport().get(0).isValid());
+	}
 
-    UploadModelResult uploadResult = this.ipsoImporter.upload(
-        FileUpload.create("sample_models/lwm2m/3310.xml",
-            IOUtils.toByteArray(
-                new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-        UserContext.user("admin"));
+	private List<ModelInfo> importIPSO(String modelName, IUserContext user) throws Exception {
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload
+						.create(modelName,
+								IOUtils.toByteArray(
+										new ClassPathResource("sample_models/lwm2m/" + modelName).getInputStream())),
+				user);
+		return this.ipsoImporter.doImport(uploadResult.getHandleId(), user);
+	}
 
-    assertTrue(uploadResult.hasWarnings());
-    assertTrue(uploadResult.isValid());
-    assertEquals(ValidationReport.WARNING_MODEL_ALREADY_EXISTS,
-        uploadResult.getReport().get(0).getMessage());
-    assertTrue(uploadResult.getReport().get(0).isValid());
-  }
-
-  private List<ModelInfo> importIPSO(String modelName, IUserContext user) throws Exception {
-    UploadModelResult uploadResult =
-        this.ipsoImporter.upload(
-            FileUpload.create(modelName,
-                IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/lwm2m/" + modelName).getInputStream())),
-            user);
-    return this.ipsoImporter.doImport(uploadResult.getHandleId(), user);
-  }
-
-  @Test
-  public void testUploadZipContainingNonIPSOFiles() throws Exception {
-    IUserContext alex = UserContext.user("alex");
-    UploadModelResult uploadResult =
-        this.ipsoImporter.upload(
-            FileUpload.create("sample_models/valid-models.zip",
-                IOUtils.toByteArray(
-                    new ClassPathResource("sample_models/valid-models.zip").getInputStream())),
-            alex);
-    assertEquals(false, uploadResult.isValid());
-    assertEquals(1, uploadResult.getReport().size());
-    assertEquals(MessageSeverity.ERROR, uploadResult.getReport().get(0).getMessage().getSeverity());
-    assertNotNull(uploadResult.getReport().get(0).getMessage().getMessage());
-    System.out.println(uploadResult.getReport().get(0).getMessage().getMessage());
-  }
-
+	@Test
+	public void testUploadZipContainingNonIPSOFiles() throws Exception {
+		IUserContext alex = UserContext.user("alex");
+		UploadModelResult uploadResult = this.ipsoImporter.upload(
+				FileUpload.create("sample_models/valid-models.zip",
+						IOUtils.toByteArray(new ClassPathResource("sample_models/valid-models.zip").getInputStream())),alex);
+		assertEquals(false, uploadResult.isValid());
+		assertEquals(1, uploadResult.getReport().size());
+		assertEquals(MessageSeverity.ERROR, uploadResult.getReport().get(0).getMessage().getSeverity());
+		assertNotNull(uploadResult.getReport().get(0).getMessage().getMessage());
+		System.out.println(uploadResult.getReport().get(0).getMessage().getMessage());
+	}
+	
 }
