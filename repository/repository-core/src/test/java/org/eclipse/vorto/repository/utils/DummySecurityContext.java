@@ -39,6 +39,7 @@ public class DummySecurityContext implements SecurityContext {
 
 	@Override
 	public void logout() {
+	  //should do nothing as it is a dummy context
 	}
 
 }

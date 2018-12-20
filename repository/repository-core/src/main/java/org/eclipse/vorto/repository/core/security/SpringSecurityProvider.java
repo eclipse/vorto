@@ -24,7 +24,7 @@ import org.springframework.security.core.Authentication;
 
 public class SpringSecurityProvider implements AuthenticationProvider {
 
-	final static Logger logger = LoggerFactory.getLogger(SpringSecurityProvider.class);
+	private final static Logger logger = LoggerFactory.getLogger(SpringSecurityProvider.class);
 
 	@Override
 	public ExecutionContext authenticate(Credentials credentials, String repositoryName, String workspaceName,

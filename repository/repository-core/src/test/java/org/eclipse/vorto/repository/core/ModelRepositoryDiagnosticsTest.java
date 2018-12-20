@@ -51,7 +51,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
               try {
                   return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
               } catch (RepositoryException e) {
-                  throw new RuntimeException(e);
+                  throw new FatalModelRepositoryException("Cannot create session", e);
               }
           }   
 		};

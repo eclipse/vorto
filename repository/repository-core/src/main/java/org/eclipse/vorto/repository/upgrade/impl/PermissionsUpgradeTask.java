@@ -184,7 +184,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 
       @Override
       public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-
+        //is not invoked since it is a dummy provider
       }
 
     };

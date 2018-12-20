@@ -20,6 +20,7 @@ import javax.jcr.Session;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.upgrade.impl.WorkflowUpgradeTask;
 import org.eclipse.vorto.repository.utils.DummySecurityCredentials;
@@ -44,7 +45,7 @@ public class WorkflowUpgradeTaskTest extends AbstractIntegrationTest {
               try {
                   return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
               } catch (RepositoryException e) {
-                  throw new RuntimeException(e);
+                throw new FatalModelRepositoryException("Cannot create session", e);
               }
           }   
 		};

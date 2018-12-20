@@ -20,6 +20,7 @@ import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
@@ -88,7 +89,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 				try {
 					return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
 				} catch (RepositoryException e) {
-					throw new RuntimeException(e);
+					throw new FatalModelRepositoryException("Cannot create session",e);
 				}
 			}		
 		};

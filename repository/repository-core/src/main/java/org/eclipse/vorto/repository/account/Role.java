@@ -35,13 +35,7 @@ public enum Role {
 	}
 	
 	public static boolean isValid(String name) {
-		if (name.equalsIgnoreCase("admin")) {
-			return true;
-		} else if (name.startsWith(rolePrefix)) {
-			return true;
-		} else {
-			return false;
-		}
+	  return name.equalsIgnoreCase("admin") || name.startsWith(rolePrefix);
 	}
 
 	public static Role of(String value) {
