@@ -1,11 +1,20 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository;
 
 import static org.mockito.Mockito.when;
-import java.util.concurrent.TimeUnit;
-import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.account.User;
@@ -33,8 +42,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.modeshape.jcr.JcrRepository;
-import org.modeshape.jcr.RepositoryConfiguration;
 import org.modeshape.test.ModeShapeSingleUseTest;
 import org.springframework.core.io.ClassPathResource;
 
