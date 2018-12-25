@@ -38,6 +38,7 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -53,6 +54,7 @@ import com.google.gson.GsonBuilder;
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 //https://github.com/spring-projects/spring-boot/issues/12280
+@TestPropertySource(properties = { "repo.configFile = vorto-repository-config-h2.json" })
 public abstract class AbstractIntegrationTest {
 
   protected MockMvc mockMvc;
