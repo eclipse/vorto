@@ -1027,7 +1027,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
         }
 
-        acm.setPolicy(fileNode.getPath(), acl);
+        acm.removePolicy(fileNode.getPath(), acl);
         session.save();
       } catch (AccessDeniedException ex) {
         throw new NotAuthorizedException(modelId);

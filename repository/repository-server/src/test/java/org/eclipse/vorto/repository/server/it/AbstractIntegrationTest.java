@@ -14,13 +14,14 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.account.Role.USER;
 import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
 import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
+import static org.eclipse.vorto.repository.account.Role.USER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.HashMap;
 import java.util.Map;
@@ -90,6 +91,11 @@ public abstract class AbstractIntegrationTest {
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER,MODEL_CREATOR)));
     
     setUpTest();
+  }
+  
+  public void deleteModel(String modelId) throws Exception {
+    mockMvc.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
   }
   
   protected abstract void setUpTest() throws Exception;
