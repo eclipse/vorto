@@ -31,6 +31,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -51,10 +52,13 @@ public class BulkUploadHelper {
   private IModelRepository repositoryService;
 
   private IUserRepository userRepository;
+  
+  private IModelPolicyManager policyManager;
 
-  public BulkUploadHelper(IModelRepository modelRepository,
+  public BulkUploadHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, 
       IUserRepository userRepository) {
     this.repositoryService = modelRepository;
+    this.policyManager = policyManager;
     this.userRepository = userRepository;
   }
 
@@ -176,7 +180,7 @@ public class BulkUploadHelper {
   private List<IModelValidator> constructBulkUploadValidators(Set<ModelInfo> modelResources) {
     List<IModelValidator> bulkUploadValidators = new LinkedList<IModelValidator>();
     bulkUploadValidators
-        .add(new DuplicateModelValidation(this.repositoryService, this.userRepository));
+        .add(new DuplicateModelValidation(this.repositoryService, this.policyManager, this.userRepository));
     bulkUploadValidators
         .add(new BulkModelDuplicateIdValidation(this.repositoryService, modelResources));
     bulkUploadValidators
