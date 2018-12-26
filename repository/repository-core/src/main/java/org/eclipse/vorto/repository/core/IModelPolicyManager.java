@@ -15,17 +15,10 @@ package org.eclipse.vorto.repository.core;
 import java.util.Collection;
 
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 
 public interface IModelPolicyManager {
-	
-	/**
-	 * Gets a list of all policy entries for the given model ID
-	 * @param modelID
-	 * @param user caller userID requesting the policyentries
-	 * @return
-	 */
-	Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user);
 	
 	/**
 	 * Gets a list of all policies for the given model
@@ -50,10 +43,10 @@ public interface IModelPolicyManager {
 	void removePolicyEntry(ModelId modelId, PolicyEntry entryToRemove);
 	
 	/**
-	 * checks if the current user has access to the given model
+	 * checks if the current user has the given permission for the given model ID
 	 * @param modelId
-	 * @param user
+	 * @param permission 
 	 * @return true if he/she has access, false otherwise
 	 */
-	boolean isAccessAllowed(ModelId modelId);
+	boolean hasPermission(ModelId modelId, Permission permission);
 }

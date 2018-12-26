@@ -349,7 +349,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           try {
             Node referencedNode = getSession().getNodeByIdentifier(nodeUuid);
             ModelId referenceModelId = ModelIdHelper.fromPath(referencedNode.getPath());
-            if (isAccessAllowed(referenceModelId)) {
+            if (hasPermission(referenceModelId,Permission.READ)) {
               referenceHelper.addModelReference(referenceModelId.getPrettyFormat());
             }
           } catch (ItemNotFoundException itemNotFound) {
@@ -370,7 +370,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         try {
           Node referencedFolder = prop.getParent();
           final ModelId referencedById = ModelIdHelper.fromPath(referencedFolder.getPath());
-          if (isAccessAllowed(referencedById)) {
+          if (hasPermission(referencedById,Permission.READ)) {
             resource.getReferencedBy().add(referencedById);
 
             if (referencedFolder.getProperty("vorto:type").getString()
@@ -882,13 +882,17 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   }
 
   @Override
-  public Collection<PolicyEntry> getPolicyEntries(ModelId modelId, IUserContext user) {
+  public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
     List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
     final Session session = getSession();
     try {
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
       final Node folderNode = session.getNode(modelIdHelper.getFullPath());
+      
+      if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+        throw new ModelNotFoundException("Could not find model with ID "+modelId);
+      }
       Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
 
       AccessControlManager acm = session.getAccessControlManager();
@@ -908,41 +912,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         }
       }
 
-    } catch (RepositoryException ex) {
-      logger.error("Could not read policies entries of model", ex);
-      throw new FatalModelRepositoryException("Problem reading model policy entries", ex);
-    } finally {
-      session.logout();
-    }
-
-    return policyEntries;
-  }
-
-  @Override
-  public Collection<PolicyEntry> getPolicyEntries(ModelId modelId) {
-    List<PolicyEntry> policyEntries = new ArrayList<PolicyEntry>();
-    final Session session = getSession();
-    try {
-      ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-
-      final Node folderNode = session.getNode(modelIdHelper.getFullPath());
-      Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-
-      AccessControlManager acm = session.getAccessControlManager();
-
-      AccessControlList acl = null;
-      AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
-      if (it.hasNext()) {
-        acl = (AccessControlList) it.nextAccessControlPolicy();
-      } else {
-        acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
-      }
-
-      for (AccessControlEntry entry : acl.getAccessControlEntries()) {
-        PolicyEntry policy = PolicyEntry.of(entry);
-        policyEntries.add(policy);
-      }
-
+    } catch (AccessDeniedException ex) {
+      throw new NotAuthorizedException(modelId);
     } catch (RepositoryException ex) {
       logger.error("Could not read policies entries of model", ex);
       throw new FatalModelRepositoryException("Problem reading model policy entries", ex);
@@ -1003,11 +974,12 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
               permissions);
         }
       }
-     
 
       acm.setPolicy(fileNode.getPath(), _acl);
 
       session.save();
+    } catch (AccessDeniedException ex) {
+      throw new NotAuthorizedException(modelId);
     } catch (RepositoryException ex) {
       logger.error("Could not grant user readd permissions for model", ex);
       throw new FatalModelRepositoryException("Problem to grant user read permissions for model",
@@ -1021,8 +993,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     Set<String> result = new HashSet<>();
     if (newEntry.getPermission() == Permission.READ) {
       result.add(Privilege.JCR_READ);
+      result.add(Privilege.JCR_READ_ACCESS_CONTROL);
     } else if (newEntry.getPermission() == Permission.MODIFY) {
       result.add(Privilege.JCR_READ);
+      result.add(Privilege.JCR_READ_ACCESS_CONTROL);
       result.add(Privilege.JCR_WRITE);
     } else if (newEntry.getPermission() == Permission.FULL_ACCESS) {
       result.add(Privilege.JCR_ALL);
@@ -1038,15 +1012,18 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   }
 
   @Override
-  public boolean isAccessAllowed(ModelId modelId) {
+  public boolean hasPermission(final ModelId modelId, final Permission permission) {
     Session session = getSession();
     try {
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
 
       Node folderNode = session.getNode(modelIdHelper.getFullPath());
 
-      return folderNode.getNodes(FILE_NODES).hasNext();
-
+      if (permission == Permission.READ) {
+        return folderNode.getNodes(FILE_NODES).hasNext(); 
+      } else {
+        return this.getPolicyEntries(modelId).stream().filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID())).filter(p -> p.getPermission() == permission).findAny().isPresent();        
+      } 
     } catch (PathNotFoundException e) {
       throw new ModelNotFoundException("Could not find model with given ID", e);
     } catch (AccessDeniedException e) {

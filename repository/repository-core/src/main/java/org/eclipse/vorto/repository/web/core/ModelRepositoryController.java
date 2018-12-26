@@ -115,7 +115,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}/images", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') || && policyManager.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),org.eclipse.vorto.repository.core.PolicyEntry.Permission.MODIFY)")
 	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
 									@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
 		
@@ -132,7 +132,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 		
 	@ApiOperation(value = "Saves a model to the repository.")
-	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
+	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR') && policyManager.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),org.eclipse.vorto.repository.core.PolicyEntry.Permission.MODIFY)")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
 	public ValidationReport saveModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@RequestBody ModelContent content) {
@@ -260,12 +260,19 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		return diagnosticsService.diagnoseModel(ModelId.fromPrettyFormat(modelId));
 	}
 	
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("hasRole('ROLE_USER') && hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
 	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.GET)
-	public Collection<PolicyEntry> getPolicies(final @PathVariable String modelId, Principal user) {
+	public Collection<PolicyEntry> getPolicies(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "model ID must not be null");
-		return policyManager.getPolicyEntries(ModelId.fromPrettyFormat(modelId),UserContext.user(user.getName()));
+		return policyManager.getPolicyEntries(ModelId.fromPrettyFormat(modelId));
 	}
+	
+	@PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/{modelId:.+}/policy", method = RequestMethod.GET)
+    public PolicyEntry getUserPolicy(final @PathVariable String modelId, Principal user) {
+        Objects.requireNonNull(modelId, "model ID must not be null");
+        return policyManager.getPolicyEntries(ModelId.fromPrettyFormat(modelId)).stream().filter(p -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName())).findFirst().get();
+    }
 	
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.PUT)
