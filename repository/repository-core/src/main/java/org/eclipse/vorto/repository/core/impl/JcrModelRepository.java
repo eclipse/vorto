@@ -94,7 +94,7 @@ import org.springframework.stereotype.Service;
  * @author Alexander Edelmann
  *
  */
-@Service
+@Service("modelRepository")
 public class JcrModelRepository implements IModelRepository, IDiagnostics, IModelPolicyManager {
 
   private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
@@ -976,7 +976,6 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       }
 
       acm.setPolicy(fileNode.getPath(), _acl);
-
       session.save();
     } catch (AccessDeniedException ex) {
       throw new NotAuthorizedException(modelId);
@@ -1009,6 +1008,37 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   public void removePolicyEntry(ModelId modelId, PolicyEntry entryToRemove) {
     entryToRemove.setPermission(null);
     this.addPolicyEntry(modelId, entryToRemove);
+    
+    if (this.getPolicyEntries(modelId).isEmpty()) {
+      final Session session = getSession();
+      try {
+        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
+
+        final Node folderNode = session.getNode(modelIdHelper.getFullPath());
+        Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
+
+        AccessControlManager acm = session.getAccessControlManager();
+
+        AccessControlList acl = null;
+        AccessControlPolicyIterator it = acm.getApplicablePolicies(fileNode.getPath());
+        if (it.hasNext()) {
+          acl = (AccessControlList) it.nextAccessControlPolicy();
+        } else {
+          acl = (AccessControlList) acm.getPolicies(fileNode.getPath())[0];
+        }
+
+        acm.setPolicy(fileNode.getPath(), acl);
+        session.save();
+      } catch (AccessDeniedException ex) {
+        throw new NotAuthorizedException(modelId);
+      } catch (RepositoryException ex) {
+        logger.error("Could not remove policy from model", ex);
+        throw new FatalModelRepositoryException("Problem to grant user read permissions for model",
+            ex);
+      } finally {
+        session.logout();
+      }
+    }
   }
 
   @Override
@@ -1022,7 +1052,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       if (permission == Permission.READ) {
         return folderNode.getNodes(FILE_NODES).hasNext(); 
       } else {
-        return this.getPolicyEntries(modelId).stream().filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID())).filter(p -> p.getPermission() == permission).findAny().isPresent();        
+        return this.getPolicyEntries(modelId).stream().filter(p -> p.getPrincipalId().equalsIgnoreCase(session.getUserID())).filter(p -> hasPermission(p.getPermission(),permission)).findAny().isPresent();        
       } 
     } catch (PathNotFoundException e) {
       throw new ModelNotFoundException("Could not find model with given ID", e);
@@ -1033,5 +1063,9 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     } finally {
       session.logout();
     }
+  }
+
+  private boolean hasPermission(Permission userPermission, Permission permission) {
+    return userPermission.includes(permission);
   }
 }

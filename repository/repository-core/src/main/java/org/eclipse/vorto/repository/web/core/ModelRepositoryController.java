@@ -115,7 +115,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}/images", method = RequestMethod.POST)
-	@PreAuthorize("hasRole('ROLE_ADMIN') || && policyManager.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),org.eclipse.vorto.repository.core.PolicyEntry.Permission.MODIFY)")
+	@PreAuthorize("hasRole('ROLE_ADMIN') || @modelRepository.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
 	public void uploadModelImage(	@ApiParam(value = "The image to upload", required = true)	@RequestParam("file") MultipartFile file,
 									@ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0", required = true) final @PathVariable String modelId) {
 		
@@ -132,7 +132,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 		
 	@ApiOperation(value = "Saves a model to the repository.")
-	@PreAuthorize("hasRole('ROLE_MODEL_CREATOR') && policyManager.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),org.eclipse.vorto.repository.core.PolicyEntry.Permission.MODIFY)")
+	@PreAuthorize("@modelRepository.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
 	@RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}", produces = "application/json")
 	public ValidationReport saveModel(@ApiParam(value = "modelId", required = true) @PathVariable String modelId,
 			@RequestBody ModelContent content) {
@@ -149,7 +149,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 				return ValidationReport.invalid(modelInfo,
 						"You may not change the model ID (name, namespace, version). For this please create a new model.");
 			}
-			ModelValidationHelper validationHelper = new ModelValidationHelper(modelRepository, userRepository);
+			ModelValidationHelper validationHelper = new ModelValidationHelper(modelRepository, policyManager, userRepository);
 			ValidationReport validationReport = validationHelper.validate(modelInfo, userContext);
 			if (validationReport.isValid()) {
 				this.modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
@@ -212,7 +212,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 	}
 	
 	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.DELETE)
-	@PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:delete')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or @modelRepository.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
 	public void deleteModelResource(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "modelId must not be null");
 		this.modelRepository.removeModel(ModelId.fromPrettyFormat(modelId));
@@ -260,7 +260,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
 		return diagnosticsService.diagnoseModel(ModelId.fromPrettyFormat(modelId));
 	}
 	
-	@PreAuthorize("hasRole('ROLE_USER') && hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+	@PreAuthorize("@modelRepository.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
 	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.GET)
 	public Collection<PolicyEntry> getPolicies(final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "model ID must not be null");
@@ -274,7 +274,7 @@ public class ModelRepositoryController extends AbstractRepositoryController  {
         return policyManager.getPolicyEntries(ModelId.fromPrettyFormat(modelId)).stream().filter(p -> p.getPrincipalType() == PrincipalType.User && p.getPrincipalId().equals(user.getName())).findFirst().get();
     }
 	
-	@PreAuthorize("hasRole('ROLE_USER')")
+	@PreAuthorize("@modelRepository.hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
 	@RequestMapping(value = "/{modelId:.+}/policies", method = RequestMethod.PUT)
 	public void addOrUpdatePolicyEntry(final @PathVariable String modelId, final @RequestBody PolicyEntry entry) {
 		Objects.requireNonNull(modelId, "modelID must not be null");

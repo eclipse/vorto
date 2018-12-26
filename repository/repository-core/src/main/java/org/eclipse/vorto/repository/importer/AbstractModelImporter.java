@@ -32,6 +32,7 @@ import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -60,6 +61,9 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   @Autowired
   private IModelRepository modelRepository;
+  
+  @Autowired
+  private IModelPolicyManager policyManager;
 
   @Autowired
   private IUserRepository userRepository;
@@ -353,5 +357,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   public ModelParserFactory getModelParserFactory() {
     return modelParserFactory;
+  }
+  
+  public void setPolicyManager(IModelPolicyManager policyManager) {
+    this.policyManager = policyManager;
+  }
+  
+  public IModelPolicyManager getPolicyManager() {
+    return policyManager;
   }
 }

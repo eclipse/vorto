@@ -37,6 +37,7 @@ public class RemovePolicies implements IWorkflowFunction {
 		logger.info("Removing permission from model " + model.getId());
 		Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
 		for (PolicyEntry entry : policies) {
+		  logger.info("removing "+entry);
 		  policyManager.removePolicyEntry(model.getId(), entry);
 		}
 	}

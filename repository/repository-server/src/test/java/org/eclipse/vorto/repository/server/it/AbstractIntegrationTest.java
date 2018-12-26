@@ -20,6 +20,7 @@ import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +88,7 @@ public abstract class AbstractIntegrationTest {
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
     userCreator = user("user3").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER,MODEL_CREATOR)));
+    
     setUpTest();
   }
   
@@ -94,14 +96,20 @@ public abstract class AbstractIntegrationTest {
   
   
   public void createModel(String fileName, String modelId) throws Exception {
-//    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user =
-//        user("admin").password("pass").authorities(
-//            SpringUserUtils.toAuthorityList(Sets.newHashSet(ADMIN, MODEL_CREATOR, USER)));
-    
     createModel(userAdmin, modelId,fileName);
   }
   
+  public void releaseModel(String modelId) throws Exception {
+    mockMvc.perform(put("/rest/default/workflows/" + modelId + "/actions/Release").with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
+    
+    mockMvc.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
+  }
+  
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
+    mockMvc.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201));
     mockMvc.perform(put("/rest/default/models/" + modelId).with(user)
         .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().is(200));
   }

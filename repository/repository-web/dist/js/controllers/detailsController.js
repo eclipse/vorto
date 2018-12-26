@@ -17,6 +17,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 		$scope.modelFileNames = [];
 		$scope.modelEditor = null;
 		$scope.attachments = [];
+		$scope.permission = "READ";
 		$scope.encodeURIComponent = encodeURIComponent;
 		$scope.newComment = {value: ""}
 
@@ -207,9 +208,7 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 					$scope.getReferencedBy();
 					$scope.getAttachments(result);
 					
-					if ($scope.model.author === $rootScope.user || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
-						$scope.getPolicies();
-					}
+					$scope.getUserPolicy();
 
 					if ($scope.model.references.length < 2) $scope.showReferences = true;
 					if ($scope.model.referencedBy.length < 2) $scope.showUsages = true;
@@ -230,15 +229,12 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
-							if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.hasWritePermission === false) {
-								$scope.modelEditor.setReadOnly(true);
-							}
 						}, 1000);
 				}).error(function (data, status, headers, config) {
 					$scope.error = data.message;
 				});
 		};
-
+		
 		$scope.getPlatformGenerators = function () {
 			$scope.isLoadingGenerators = true;
 			$http.get('./api/v1/generators')
@@ -897,6 +893,25 @@ repositoryControllers.controller('DetailsController', ['$rootScope', '$scope', '
 			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies')
 				.success(function (result) {
 					$scope.aclEntries = result;
+				});
+		};
+		
+		$scope.getUserPolicy = function() {
+			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policy')
+				.success(function (result) {
+					$scope.permission = result.permission;
+					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+						$scope.modelEditor.setReadOnly(true);
+					}
+					
+					if ($scope.permission === "FULL_ACCESS" || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
+						$scope.getPolicies();
+					}
+				}).error(function (data, status, headers, config) {
+					$scope.permission = "READ";
+					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+						$scope.modelEditor.setReadOnly(true);
+					}
 				});
 		};
 		

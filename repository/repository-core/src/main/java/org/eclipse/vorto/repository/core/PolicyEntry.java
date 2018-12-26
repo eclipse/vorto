@@ -100,7 +100,19 @@ public class PolicyEntry {
   }
 
   public static enum Permission {
-    FULL_ACCESS, READ, MODIFY
+    FULL_ACCESS, READ, MODIFY;
+
+    public boolean includes(Permission permission) {
+      if (this.name().equals("FULL_ACCESS")) {
+        return true;
+      } else if (this.name().equals("MODIFY") && (permission == Permission.READ || permission == Permission.MODIFY)) {
+        return true;
+      } else if (this.name().equals("READ") && permission == Permission.READ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
   }
 
   public boolean isSame(AccessControlEntry entry) {
