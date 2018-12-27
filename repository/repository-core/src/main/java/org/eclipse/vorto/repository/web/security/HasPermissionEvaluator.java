@@ -66,8 +66,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
           // migration has taken place
           return modelInfo.getAuthor().equals(user.getHashedUsername())
               || modelInfo.getAuthor().equals(user.getUsername());
-        }
-
+        } 
       }
       } catch(NotAuthorizedException ex) {
         return false;

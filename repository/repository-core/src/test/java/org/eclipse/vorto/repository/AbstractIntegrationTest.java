@@ -21,6 +21,7 @@ import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.DefaultUserAccountService;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
@@ -50,6 +51,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 
 	@InjectMocks
 	protected JcrModelRepository modelRepository;
+	
+	protected IModelPolicyManager policyManager;
 	
 	@InjectMocks
 	protected ModelSearchUtil modelSearchUtil = new ModelSearchUtil();
@@ -97,6 +100,8 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		modelRepository.setModelSearchUtil(modelSearchUtil);
 		modelRepository.setModelParserFactory(modelParserFactory);
 		
+		this.policyManager = modelRepository;
+		
 		modelParserFactory.setRepository(modelRepository);
 		
 		this.importer = new VortoModelImporter();
@@ -104,6 +109,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		this.importer.setUploadStorage(new InMemoryTemporaryStorage());
 		this.importer.setUserRepository(userRepository);
 		this.importer.setModelParserFactory(modelParserFactory);
+		this.importer.setPolicyManager(policyManager);
 		
 		this.accountService = new DefaultUserAccountService();
 		this.accountService.setModelRepository(modelRepository);

@@ -34,7 +34,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    bulkUploadHelper = new BulkUploadHelper(this.modelRepository, this.userRepository);
+    bulkUploadHelper = new BulkUploadHelper(this.modelRepository,policyManager, this.userRepository);
   }
 
   @Test

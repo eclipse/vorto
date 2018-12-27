@@ -27,7 +27,7 @@ public class PolicyEntry {
   private PrincipalType principalType;
 
   private Permission permission = null;
-  
+
   public static PolicyEntry of(String principalId, PrincipalType type, Permission permission) {
     PolicyEntry entry = new PolicyEntry();
     entry.principalId = principalId;
@@ -56,7 +56,7 @@ public class PolicyEntry {
     } else if (privileges.contains("jcr:read")) {
       entry.permission = Permission.READ;
     }
-     
+
     return entry;
   }
 
@@ -94,18 +94,25 @@ public class PolicyEntry {
   public void setPermission(Permission permission) {
     this.permission = permission;
   }
-  
+
   public static enum PrincipalType {
     User, Role
   }
 
   public static enum Permission {
-    FULL_ACCESS, READ, MODIFY
+    FULL_ACCESS, READ, MODIFY;
+
+    public boolean includes(Permission permission) {
+      return this.name().equals("FULL_ACCESS")
+          || this.name().equals("MODIFY")
+              && (permission == Permission.READ || permission == Permission.MODIFY)
+          || this.name().equals("READ") && permission == Permission.READ;
+    }
   }
 
   public boolean isSame(AccessControlEntry entry) {
     if (this.principalType == PrincipalType.Role) {
-      return entry.getPrincipal().getName().equals("ROLE_"+this.principalId);
+      return entry.getPrincipal().getName().equals("ROLE_" + this.principalId);
     } else {
       return entry.getPrincipal().getName().equals(this.principalId);
     }
@@ -119,16 +126,17 @@ public class PolicyEntry {
 
   public String toACEPrincipal() {
     if (this.principalType == PrincipalType.Role) {
-      return "ROLE_"+this.principalId;
+      return "ROLE_" + this.principalId;
     } else {
       return this.principalId;
     }
   }
 
   public boolean isAdminPolicy() {
-    return this.principalId.equalsIgnoreCase(Role.ADMIN.name()) && this.principalType == PrincipalType.Role;
+    return this.principalId.equalsIgnoreCase(Role.ADMIN.name())
+        && this.principalType == PrincipalType.Role;
   }
 
-  
+
 
 }

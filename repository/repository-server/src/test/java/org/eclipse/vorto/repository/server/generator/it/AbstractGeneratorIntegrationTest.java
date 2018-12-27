@@ -12,40 +12,32 @@
  */
 package org.eclipse.vorto.repository.server.generator.it;
 
-import com.google.gson.Gson;
+import static org.junit.Assert.fail;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Random;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.generators.runner.GeneratorRunner;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
-import org.junit.runner.RunWith;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import com.google.gson.Gson;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Random;
-
-import static org.junit.Assert.fail;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-
-@RunWith(SpringJUnit4ClassRunner.class)
 public abstract class AbstractGeneratorIntegrationTest extends AbstractIntegrationTest {
 
-    protected MockMvc vortoMockMvc;
-
-    protected MockMvc generatorMockMvc;
+    protected MockMvc generatorServer;
 
     protected int generator_port;
 
     protected Gson gson = new Gson();
 
     @Override protected void setUpTest() throws Exception {
-        vortoMockMvc = mockMvc;
         Random ran = new Random();
         generator_port = ran.nextInt(65535);
         while((generator_port == port || generator_port <= 10000)){
@@ -66,7 +58,7 @@ public abstract class AbstractGeneratorIntegrationTest extends AbstractIntegrati
                     "--management.security.enabled=false", "--security.basic.enabled=false",
                     "--server.contextPath=/generatorgateway"});
 
-        generatorMockMvc =
+        generatorServer =
             MockMvcBuilders.webAppContextSetup((WebApplicationContext) generatorContext)
                 .apply(springSecurity()).build();
     }

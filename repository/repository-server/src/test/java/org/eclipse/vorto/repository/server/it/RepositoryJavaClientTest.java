@@ -18,6 +18,7 @@ import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
+import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -28,7 +29,13 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   @Override
   protected void setUpTest() throws Exception {
     createModel("Color.type", "org.eclipse.vorto.examples.type:Color:1.0.0");
+    releaseModel("org.eclipse.vorto.examples.type:Color:1.0.0");
     this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/infomodelrepository").build();
+  }
+  
+  @After
+  public void cleanup() throws Exception {
+    deleteModel("org.eclipse.vorto.examples.type:Color:1.0.0");
   }
   
   @Test

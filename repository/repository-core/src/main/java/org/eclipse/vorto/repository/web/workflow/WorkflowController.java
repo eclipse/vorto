@@ -47,7 +47,7 @@ public class WorkflowController {
   @ApiOperation(value = "Returns the list of possible actions for a the specific model state")
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/actions",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_MODEL_PROMOTER')")
+  @PreAuthorize("hasRole('ROLE_USER')")
   public List<String> getPossibleActions(
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId) {
     return workflowService.getPossibleActions(ModelId.fromPrettyFormat(modelId),

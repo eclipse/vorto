@@ -31,7 +31,7 @@
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 
-			<div ng-show="((hasAuthority('ROLE_ADMIN')) || model.author === user) && (model.state !== 'Released' && model.state !== 'Deprecated') && workflowActions">
+			<div ng-show="((hasAuthority('ROLE_ADMIN')) || permission === 'FULL_ACCESS') && !model.released && workflowActions">
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
@@ -77,7 +77,7 @@
 							<span class="badge">{{comments.length}}</span>
 						</a>
 					</li>
-					<li ng-show="!model.released && (model.author === user || hasAuthority('ROLE_ADMIN'))">
+					<li ng-show="!model.released && (permission === 'FULL_ACCESS' || hasAuthority('ROLE_ADMIN'))">
 						<a href="" role="tab" data-target="#policies" data-toggle="tab">
 							<i class="fa fa-lock"></i> Permissions
 						</a>
@@ -102,7 +102,7 @@
 													<div class="noimg" ng-show="!model.hasImage">No Image Yet
 													</div>
 													<img ng-if="model.hasImage" ng-src="rest/{{tenant}}/models/{{model.id.prettyFormat}}/images" width="200" height="200" />
-													<div class="upload" ng-show="(hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_MODEL_CREATOR'))  && model.type === 'InformationModel'">
+													<div class="upload" ng-show="(hasAuthority('ROLE_ADMIN') || permission === 'FULL_ACCESS' || permission === 'MODIFY')  && model.type === 'InformationModel'">
 														<a href="" ng-click="chooseImageFile()">
 															<i class="fa fa-upload"></i> Click to change image</a>
 													</div>
@@ -142,7 +142,7 @@
 													Created On:
 												</dt>
 												<dd class="ng-binding">{{model.creationDate | date:'yyyy-MM-dd HH:mm'}}</dd>
-												<dt>Created By:</dt>
+												<dt>Modified By:</dt>
 												<dd class="ng-binding">{{ model.author }}</dd>
 												<dt>References:</dt>
 												<dd>
@@ -270,29 +270,29 @@
 												<label ng-show="model.state === 'Draft'" class="ng-binding">Model Editor</label>
 												<label ng-show="model.state != 'Draft'" class="ng-binding">Model Preview</label>
 											</div>
-											<div ng-hide="model.imported && !(hasAuthority('ROLE_ADMIN'))  && (model.state != 'Released' && model.state != 'Deprecated')"
+											<div ng-hide="model.imported && !(hasAuthority('ROLE_ADMIN'))  && !model.released"
 											    class="col-sm-9">
 											    <a class= "helpBtn pull-right" target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
 												
-												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_MODEL_CREATOR') && model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (permission !== 'READ' && !model.released)"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released'  || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<i class="fa fa-refresh fa-spin"></i>&nbsp;Save</a>
-												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (hasAuthority('ROLE_MODEL_CREATOR') && model.author == user) && (model.state != 'Released' && model.state != 'Deprecated')"
+												<a ng-if="!isLoading" ng-show="hasAuthority('ROLE_ADMIN') || (permission !== 'READ' && !model.released)"
 												    class="btn btn-sm btn-primary pull-right" ng-disabled="isLoading || model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview'"
 												    ng-click="saveModel()" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>
 													</i>&nbsp;Save</a>
 												
-												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.state === 'Released' || model.state === 'Deprecated' || model.state === 'InReview' || (model.author !== user && !hasAuthority('ROLE_ADMIN'))"
+												<a class="btn btn-sm btn-primary pull-right" ng-hide="model.released || model.state === 'InReview' || (permission === 'READ' && !hasAuthority('ROLE_ADMIN'))"
 												    ng-click="openSearchDialog()" role="button">
 													<span class="fa fa-search" aria-hidden="true"></span>&nbsp;Lookup Model References</a>
 												
 
 											</div>
-											<div ng-show="model.imported && !(hasAuthority('ROLE_ADMIN'))  && (model.state != 'Released' && model.state != 'Deprecated')"
+											<div ng-show="model.imported && !(hasAuthority('ROLE_ADMIN'))  && !model.released"
 											    class="col-sm-1 col-sm-offset-8" uib-tooltip-template="'userEditWarningTooltip'" tooltip-append-to-body="true">
 												<a class="btn btn-sm btn-primary pull-right" ng-disabled="true" role="button">
 													<span class="fa fa-save" aria-hidden="true"></span>

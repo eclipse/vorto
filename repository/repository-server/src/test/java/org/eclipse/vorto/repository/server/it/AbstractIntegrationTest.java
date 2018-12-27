@@ -14,11 +14,13 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.account.Role.USER;
 import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
 import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
+import static org.eclipse.vorto.repository.account.Role.USER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.HashMap;
@@ -57,7 +59,7 @@ import com.google.gson.GsonBuilder;
 @TestPropertySource(properties = { "repo.configFile = vorto-repository-config-h2.json" })
 public abstract class AbstractIntegrationTest {
 
-  protected MockMvc mockMvc;
+  protected MockMvc repositoryServer;
   protected TestModel testModel;
   
   @Autowired
@@ -80,29 +82,41 @@ public abstract class AbstractIntegrationTest {
   
   @Before
   public void startUpServer() throws Exception {
-    mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+    repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     userAdmin = user("user1").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, ADMIN, MODEL_CREATOR,MODEL_PROMOTER,MODEL_REVIEWER)));
     userStandard = user("user2").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
     userCreator = user("user3").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER,MODEL_CREATOR)));
+    
     setUpTest();
+  }
+  
+  public void deleteModel(String modelId) throws Exception {
+    repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
   }
   
   protected abstract void setUpTest() throws Exception;
   
   
   public void createModel(String fileName, String modelId) throws Exception {
-//    SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user =
-//        user("admin").password("pass").authorities(
-//            SpringUserUtils.toAuthorityList(Sets.newHashSet(ADMIN, MODEL_CREATOR, USER)));
-    
     createModel(userAdmin, modelId,fileName);
   }
   
+  public void releaseModel(String modelId) throws Exception {
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Release").with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
+    
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
+        .contentType(MediaType.APPLICATION_JSON));
+  }
+  
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
-    mockMvc.perform(put("/rest/default/models/" + modelId).with(user)
+    repositoryServer.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201));
+    repositoryServer.perform(put("/rest/default/models/" + modelId).with(user)
         .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().is(200));
   }
 
@@ -123,7 +137,7 @@ public abstract class AbstractIntegrationTest {
         new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
     MockMultipartHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
-    return mockMvc.perform(builder.file(file).with(request -> {
+    return repositoryServer.perform(builder.file(file).with(request -> {
       request.setMethod("PUT");
       return request;
     }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
