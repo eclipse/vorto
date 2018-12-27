@@ -43,12 +43,12 @@ public abstract class AbstractGeneratorIntegrationTest extends AbstractIntegrati
       generator_port = ran.nextInt(65535); // Max number of ports
     }
 
-    HashMap<String, Object> generatorProps = new HashMap<>();
-    generatorProps.put("vorto.serverUrl",
-        "http://localhost:" + Integer.toString(port) + "/infomodelrepository");
-    generatorProps.put("vorto.tenantId", "default");
-    generatorProps.put("server.serviceUrl",
-        "http://localhost:" + Integer.toString(generator_port) + "/generatorgateway");
+        HashMap<String, Object> generatorProps = new HashMap<>();
+        generatorProps.put("vorto.serverUrl",
+            "http://localhost:" + Integer.toString(port) + "/");
+        generatorProps.put("vorto.tenantId", "default");
+        generatorProps.put("server.serviceUrl",
+            "http://localhost:" + Integer.toString(generator_port) + "/generatorgateway");
 
     ConfigurableApplicationContext generatorContext =
         new SpringApplicationBuilder(GeneratorRunner.class).properties(generatorProps)

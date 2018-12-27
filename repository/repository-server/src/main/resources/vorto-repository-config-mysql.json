@@ -1,8 +1,21 @@
 {
-    "name" : "vorto",
+    "name" : "vorto modeshape",
+    "clustering" : {
+        "clusterName" : "vorto-cluster",
+        "configuration" : "jgroups-config.xml",
+        "locking" : "db"
+    },
     "workspaces" : {
         "default" : "default",
         "allowCreation" : true
+    },
+    "storage" : {
+        "persistence" : {
+            "type" : "db",
+            "connectionUrl": "jdbc:mysql://127.0.0.1:3306/vorto",
+            "driver": "org.mariadb.jdbc.Driver",
+            "username" : "${db.username}"
+        }
     },
     "security" : {
         "anonymous" : {
@@ -12,14 +25,12 @@
         "providers" : [
             {
                 "name" : "Spring Security",
-                "classname" : "org.eclipse.vorto.repository.utils.DummySecurityProvider"
+                "classname" : "org.eclipse.vorto.repository.core.security.SpringSecurityProvider"
             }
         ]
     },
-    "storage" : {
-    },
     "sequencing" : {
-    	"removeDerivedContentWithOriginal" : false,
+        "removeDerivedContentWithOriginal" : false,
         "sequencers" : {
             "Vorto Sequencer" : {
                 "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",

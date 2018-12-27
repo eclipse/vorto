@@ -7,7 +7,7 @@ spring:
     testWhileIdle: true
     timeBetweenEvictionRunsMillis: 60000
     validationQuery: SELECT 1
-    driverClassName: com.mysql.jdbc.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mysql://localhost:3306/vorto
     username: <<database username>>
     password: <<database password>>

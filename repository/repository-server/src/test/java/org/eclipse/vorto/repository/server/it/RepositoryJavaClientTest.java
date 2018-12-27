@@ -30,7 +30,7 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   protected void setUpTest() throws Exception {
     createModel("Color.type", "org.eclipse.vorto.examples.type:Color:1.0.0");
     releaseModel("org.eclipse.vorto.examples.type:Color:1.0.0");
-    this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/infomodelrepository").build();
+    this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/").build();
   }
   
   @After

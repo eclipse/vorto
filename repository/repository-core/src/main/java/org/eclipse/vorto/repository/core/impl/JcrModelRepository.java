@@ -133,7 +133,6 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       List<ModelInfo> modelResources = new ArrayList<>();
 
       Session session = getSession();
-
       Query query = modelSearchUtil.createQueryFromExpression(session, queryExpression);
 
       logger.debug("Searching repository with expression " + query.getStatement());
@@ -195,9 +194,10 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
   @Override
   public ModelFileContent getModelContent(ModelId modelId) {
+    Session session = getSession();
     try {
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-      Node folderNode = getSession().getNode(modelIdHelper.getFullPath());
+      Node folderNode = session.getNode(modelIdHelper.getFullPath());
       Node fileNode = (Node) folderNode.getNodes(FILE_NODES).next();
       Node fileItem = (Node) fileNode.getPrimaryItem();
       InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
@@ -211,6 +211,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       throw new ModelNotFoundException("Could not find model with the given model id", e);
     } catch (Exception e) {
       throw new FatalModelRepositoryException("Something went wrong accessing the repository", e);
+    }finally {
+      session.logout();
     }
   }
 
@@ -284,6 +286,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       }
 
       session.save();
+      session.logout();
       logger.info("Model was saved successful");
       return modelInfo;
     } catch (Exception e) {
@@ -350,13 +353,18 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         ModelReferencesHelper referenceHelper = new ModelReferencesHelper();
         for (Value referValue : referenceValues) {
           String nodeUuid = referValue.getString();
+          Session session = getSession();
           try {
-            Node referencedNode = getSession().getNodeByIdentifier(nodeUuid);
+            Node referencedNode = session.getNodeByIdentifier(nodeUuid);
             ModelId referenceModelId = ModelIdHelper.fromPath(referencedNode.getPath());
             referenceHelper.addModelReference(referenceModelId.getPrettyFormat());
           } catch (ItemNotFoundException itemNotFound) {
             logger.error("Referential Integrity Problem ----->>>>>>> Broken reference of model "
                 + resource.getId(), itemNotFound);
+          }finally {
+            if (session != null){
+              session.logout();
+            }
           }
         }
         resource.setReferences(referenceHelper.getReferences());
