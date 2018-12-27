@@ -26,13 +26,13 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Override
   protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc,userCreator);
+    testModel.createModel(repositoryServer,userCreator);
   }
   
   @Test
   public void testRandomModelAttachmentController() throws Exception {
     String nonExistingNamespace = TestUtils.createRandomString(10).toLowerCase();
-    mockMvc.perform(get(
+    repositoryServer.perform(get(
         "/api/v1/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userCreator))
         .andExpect(status().isNotFound());
     assertTrue(true);
@@ -41,7 +41,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Test
   public void testAttachmentUpload() throws Exception {
     TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(mockMvc, userCreator);
+    test.createModel(repositoryServer, userCreator);
     addAttachment(test.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
     assertTrue(true);
@@ -50,7 +50,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   @Test
   public void testInvalidAttachmentFileTypeUpload() throws Exception {
     TestModel test = TestModel.TestModelBuilder.aTestModel().build();
-    test.createModel(mockMvc, userAdmin);
+    test.createModel(repositoryServer, userAdmin);
 
     addAttachment(test.prettyName, userAdmin, "test.bin", MediaType.APPLICATION_JSON)
         .andExpect(result -> {
@@ -68,14 +68,14 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     String fileName = "test.json";
     TestModel deleteModel = TestModel.TestModelBuilder.aTestModel().build();
     // Create Model with extra user
-    deleteModel.createModel(mockMvc, userAdmin);
+    deleteModel.createModel(repositoryServer, userAdmin);
 
     // Add Attachment to Model
     addAttachment(deleteModel.prettyName, userAdmin, fileName, MediaType.APPLICATION_JSON)
         .andExpect(status().isOk());
 
     // Delete Attachment from model
-    mockMvc.perform(
+    repositoryServer.perform(
         delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userAdmin))
         .andExpect(status().isOk());
     
@@ -87,12 +87,12 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     String fileName = "test.json";
     TestModel deleteModel = TestModel.TestModelBuilder.aTestModel().build();
     // Create Model with extra user
-    deleteModel.createModel(mockMvc, userCreator);
+    deleteModel.createModel(repositoryServer, userCreator);
 
     // Add Attachment to Model
 
     // Try to delete model
-    mockMvc.perform(
+    repositoryServer.perform(
         delete("/api/v1/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userStandard))
         .andExpect(status().isForbidden());
     
@@ -101,7 +101,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
 
   @Test
   public void testAttachmentGetWithPermissions() throws Exception {
-    mockMvc.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userAdmin))
+    repositoryServer.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userAdmin))
         .andExpect(status().isOk());
     
     assertTrue(true);

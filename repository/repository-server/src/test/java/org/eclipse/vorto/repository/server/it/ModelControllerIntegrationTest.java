@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,14 +21,12 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   protected void setUpTest() throws Exception {
     testModel = TestModel.TestModelBuilder.aTestModel().build();
-    testModel.createModel(mockMvc,userCreator);
-    sleep(1000);
-    // Creating a model takes a while
+    testModel.createModel(repositoryServer,userCreator);
   }
 
   @Test
   public void testModelAccess() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName).with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName).with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -39,7 +36,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testGetModelContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/content").with(userCreator))
         .andDo(result -> System.out.println(result.getResponse().getContentAsString()))
         .andDo(result -> System.out.println(result.getResponse().getErrorMessage()))
         .andExpect(status().isOk());
@@ -49,7 +46,7 @@ public class ModelControllerIntegrationTest extends AbstractIntegrationTest {
 
   @Test
   public void testModelFileDownloadContent() throws Exception {
-    mockMvc.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userCreator))
+    repositoryServer.perform(get("/api/v1/models/" + testModel.prettyName + "/file").with(userCreator))
         .andExpect(status().isOk());
     
     assertTrue(true);

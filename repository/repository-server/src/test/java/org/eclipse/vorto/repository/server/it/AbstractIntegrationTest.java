@@ -20,7 +20,6 @@ import static org.eclipse.vorto.repository.account.Role.USER;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +59,7 @@ import com.google.gson.GsonBuilder;
 @TestPropertySource(properties = { "repo.configFile = vorto-repository-config-h2.json" })
 public abstract class AbstractIntegrationTest {
 
-  protected MockMvc mockMvc;
+  protected MockMvc repositoryServer;
   protected TestModel testModel;
   
   @Autowired
@@ -83,7 +82,7 @@ public abstract class AbstractIntegrationTest {
   
   @Before
   public void startUpServer() throws Exception {
-    mockMvc = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
+    repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
     userAdmin = user("user1").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, ADMIN, MODEL_CREATOR,MODEL_PROMOTER,MODEL_REVIEWER)));
     userStandard = user("user2").password("pass")
@@ -95,7 +94,7 @@ public abstract class AbstractIntegrationTest {
   }
   
   public void deleteModel(String modelId) throws Exception {
-    mockMvc.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
+    repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
   
@@ -107,17 +106,17 @@ public abstract class AbstractIntegrationTest {
   }
   
   public void releaseModel(String modelId) throws Exception {
-    mockMvc.perform(put("/rest/default/workflows/" + modelId + "/actions/Release").with(userAdmin)
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Release").with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
     
-    mockMvc.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
   
   private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
-    mockMvc.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
+    repositoryServer.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201));
-    mockMvc.perform(put("/rest/default/models/" + modelId).with(user)
+    repositoryServer.perform(put("/rest/default/models/" + modelId).with(user)
         .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().is(200));
   }
 
@@ -138,7 +137,7 @@ public abstract class AbstractIntegrationTest {
         new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
     MockMultipartHttpServletRequestBuilder builder =
         MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
-    return mockMvc.perform(builder.file(file).with(request -> {
+    return repositoryServer.perform(builder.file(file).with(request -> {
       request.setMethod("PUT");
       return request;
     }).contentType(MediaType.MULTIPART_FORM_DATA).with(user));
