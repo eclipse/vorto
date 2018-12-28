@@ -12,6 +12,9 @@ spring:
     show-sql: true
     generate-ddl: true
     database: mysql
+  session:
+    store-type: jdbc
+
 
 repo:
   configFile: vorto-repository-config-mysql.json
