@@ -17,7 +17,7 @@ So, let's get started with this, by splitting up our work into several steps:
 
 ## Step 1: Creating TI Sensor Tag Information Model
 
-[Click here]({{< relref "tutorials/tisensor.md" >}}) that walks you through the process of creating an Information Model.
+[Click here](tutorials/tisensor.md) that walks you through the process of creating an Information Model.
 
 ## Step 2: Generating Device Code
 
@@ -111,5 +111,5 @@ Now let's go back to our generated project and update the `src/main/java/device/
 
 	> The JSON data, sent by the device is already compliant to the Eclipse Ditto protocol. Therefore, you can directly modify the thing in Eclipse Ditto by sending the device JSON data via Websockets. Please take a look at the [Eclipse Ditto Sandbox](https://ditto.eclipse.org) for more information. 
 	
-- [Connect an ESP8266 - based device to Eclipse Hono](../tutorials/#connecting-a-esp8266-arduino)
-- [Connect a GrovePi to Eclipse Hono](../tutorials/#connecting-a-grovepi)
+- [Connect an ESP8266 - based device to Eclipse Hono](tutorials/arduino.md)
+- [Connect a GrovePi to Eclipse Hono](tutorials/grovepi.md)
