@@ -89,36 +89,94 @@ JSONObject dittoPayload = TwinPayloadFactory.toDittoProtocol(mappedData, dittoNa
 sendToDitto(dittoPayload);
 ```
 
-## Advanced Usage
+# Advanced Usage
 
 The Vorto Mapping Engine has extension points in order to plug-in converter functions that can be used as part of your mapping rules.
 
-### Custom functions
+## Custom functions
 
-Custom functions, like one would expect, add the power to write your own converter functions that can be used in an xpath context.
-A function always belongs to a namespace.
+Custom functions adds the power to write your own converter functions that can be used in your mapping rules. Each function belongs to a specific namespace.
 
-#### Java
+You have two options to add custom converter functions:
 
-To add a custom Java function call on your IDataMapperBuilder
+* As a native Java Function 
+* As a Javascript Function 
+
+#### Java Converter Functions
+
+First, create a class containing static converter functions
+
 ```Java
-IDataMapper.newBuilder().registerConverterFunction(IFunction [])
+public class MyStringConverterFunctions {
+	
+	public static String concatStrings(String s1, String s2) {
+		return s1 + s2;
+	}
+	...
+}
 ```
-An element of such an array could look like
-```Java
-private static final IFunction FUNC_BASE64 = new ClassFunction("vorto_base64", Base64.class);
-```
-where **vorto_base64** would be the namespace that’s added and the functions contained in the Base64 Class the added functions.
-So this Class would add 
-```
-vorto_base64:decodeString()
-vorto_base64:decodeByteArray()
-```
-to the xpath workspace.
 
-#### Javascript
-To add a custom function for JavaScript use the web editor. The function will be register in the namespace of the function block and can be any JavaScript function, but you cannot side load libs. 
-![custom function](./docs/custom_js_function.png)
+Then, register your functions in the mapping engine:
+
+```Java
+private static final IFunction FUNC_STRINGS = new ClassFunction("org_mycompany_strings", MyStringConverterFunctions.class);
+
+IDataMapper.newBuilder().registerConverterFunction(FUNC_STRINGS);
+```
+
+### Javascript Converter function
+
+The Vorto Mapping engine uses [Nashorn](http://www.oracle.com/technetwork/articles/java/jf14-nashorn-2126515.html) as a Javascript engine to execute custom JS converter functions. These functions are stored and versioned in the Vorto Repository and are executed by the Mapping Engine. 
+
+#### Security
+
+For security reasons, the following restrictions apply when processing these converters:
+
+* access to Java packages and classes is not possible
+* using exit, quit, is not possible
+* file access is not possible
+* using loops are not allowed
+* no JS libraries can be loaded
+
+#### Example
+
+In the following example, a custom (Javascript) converter is defined in a Function Block mapping, that converts a click amount as a **String** to an **Integer** value:
+
+		namespace devices.aws.button.mapping
+		version 1.0.0
+		displayname "buttonPayloadMapping"
+		description "Payload Mapping for the button property of the AWS IoT Button"
+		category payloadmapping
+		
+		using com.ipso.smartobjects.Push_button;0.0.1
+		
+		functionblockmapping ButtonPayloadMapping {
+			targetplatform aws_ipso
+
+			// Definition of Converter functions which can be used from within the function block mapping
+			from Push_button to functions with 
+				{convertClickType: "function convertClickType(clickType) { if (clickType === 'SINGLE') return 1; else if (clickType === 'DOUBLE') return 2; else return -1;}"}
+			
+			// Usage of the converter function in the mapping rule expression
+			from Push_button.status.digital_input_count to source with {xpath: "button:convertClickType(/clickType)"}
+		}
+
+
+## Mapping Conditions
+
+If you want to specify a condition, when mapping rules should be applied, you can do this easily with mapping conditions.
+
+Here is an example of using conditions to map to either temperature or illuminance based on the device payload header:
+
+Function Block Temperature Mapping
+
+	...
+	from Temperature.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'T'"}
+
+Function Block Illuminance Mapping
+
+	...
+	from Illuminance.status.sensorValue to source with {xpath:"/value", condition:"xpath:eval('/header/type', this) == 'I'"}
 
 
 

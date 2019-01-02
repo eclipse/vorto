@@ -3,7 +3,7 @@
 
 The Vorto Repository lets you
 
- * **Describe** device capabilities and functionality as Information Models using built-in Web Editors
+ * **Describe** device capabilities and functionality as Information Models using built-in Web Editors.
  * **Search** Information Models via different criteria
  * **Generate** Code for Information Models to integrate a device with IoT platforms
  * **Import** other (standardized) device descriptions, e.g. LwM2M/IPSO, in order to manage them in the Vorto Repository and use Vorto Code Generators
@@ -12,4 +12,4 @@ The Vorto Repository lets you
 
 ## Further links
 
-* [Repository Importer API](repository-importer/Readme.md)
+* [Tutorial](../docs/tutorials/tisensor.md) about how to describe device with the Vorto DSL
