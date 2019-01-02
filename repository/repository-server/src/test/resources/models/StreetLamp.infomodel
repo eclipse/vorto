@@ -1,0 +1,12 @@
+namespace com.test
+version 1.0.0
+displayname "Street Lamp"
+description "InformationModel for a Street Lamp"
+
+using com.test.Lamp;1.0.0
+
+infomodel SteetLamp {
+	functionblocks {
+		mandatory lamp as Lamp
+	}
+}
