@@ -29,7 +29,7 @@ install:
   - wget https://github.com/gohugoio/hugo/releases/download/v0.52/hugo_0.52_Linux-64bit.deb -O /tmp/hugo.deb && sudo dpkg -i /tmp/hugo.deb
   - npm install -g --save remark-cli remark-preset-lint-recommended remark-validate-links remark-lint-no-dead-urls remark-message-control remark-preset-lint-markdown-style-guide remark-lint
 script:
-  - hugo -s website/
+#  - hugo -s website/
   - remark -i .remark_ignore -f -u validate-links .
   - remark -i .remark_ignore -u lint-no-dead-urls .
   - mvn -q clean install -P checkstyle
