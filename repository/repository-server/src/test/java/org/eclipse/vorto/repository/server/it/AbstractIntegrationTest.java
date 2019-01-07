@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
+import static java.lang.Thread.sleep;
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
 import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
@@ -29,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.web.VortoRepository;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -47,6 +49,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
@@ -64,7 +67,7 @@ public abstract class AbstractIntegrationTest {
   
   @Autowired
   protected WebApplicationContext wac;
-  
+
   @LocalServerPort
   protected int port;
   
@@ -79,7 +82,7 @@ public abstract class AbstractIntegrationTest {
     System.setProperty("eidp_clientid", "foo");
     System.setProperty("eidp_clientSecret", "foo");
   }
-  
+
   @Before
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
@@ -92,7 +95,7 @@ public abstract class AbstractIntegrationTest {
     
     setUpTest();
   }
-  
+
   public void deleteModel(String modelId) throws Exception {
     repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
