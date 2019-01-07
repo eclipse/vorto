@@ -49,7 +49,12 @@ public class AccountController {
   public ResponseEntity<UserDto> getUser(
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
     User user = accountService.getUser(username);
-    return new ResponseEntity<UserDto>(UserDto.fromUser(user), HttpStatus.OK);
+    if (user!=null){
+      return new ResponseEntity<>(UserDto.fromUser(user), HttpStatus.OK);
+    }else{
+
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
   }
 
   @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
@@ -58,14 +63,14 @@ public class AccountController {
     OAuth2Authentication oauth2User = (OAuth2Authentication) user;
 
     if (accountService.getUser(oauth2User.getName()) != null) {
-      return new ResponseEntity<Boolean>(false, HttpStatus.CREATED);
+      return new ResponseEntity<>(false, HttpStatus.CREATED);
     }
     LOGGER.info("User: '{}' accepted the terms and conditions.", oauth2User.getName());
 
     User createdUser = accountService.create(oauth2User.getName());
     SpringUserUtils.refreshSpringSecurityUser(createdUser);
 
-    return new ResponseEntity<Boolean>(true, HttpStatus.CREATED);
+    return new ResponseEntity<>(true, HttpStatus.CREATED);
   }
 
   @RequestMapping(method = RequestMethod.POST, value = "/{username:.+}/updateTask")
@@ -75,7 +80,7 @@ public class AccountController {
 
     User userAccount = accountService.getUser(username);
     if (userAccount == null) {
-      return new ResponseEntity<Boolean>(true, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<Boolean>(true, HttpStatus.NOT_FOUND);
     }
 
     updateService.installUserUpgrade(userAccount, () -> user);
@@ -89,18 +94,18 @@ public class AccountController {
       HttpEntity<String> httpEntity) {
     User account = accountService.getUser(username);
     if (account == null) {
-      return new ResponseEntity<UserDto>((UserDto) null, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity<UserDto>((UserDto) null, HttpStatus.NOT_FOUND);
     }
     account.setEmailAddress(httpEntity.getBody());
     accountService.saveUser(account);
 
-    return new ResponseEntity<UserDto>(UserDto.fromUser(account), HttpStatus.CREATED);
+    return new ResponseEntity<UserDto>(UserDto.fromUser(account), HttpStatus.OK);
   }
 
   @RequestMapping(value = "/{username:.+}", method = RequestMethod.DELETE)
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(#username,'user:delete')")
   public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
     accountService.delete(username);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

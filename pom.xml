@@ -58,6 +58,9 @@
         <spring.boot.version>1.5.13.RELEASE</spring.boot.version>
         <modeshape.version>4.3.0.Final</modeshape.version>
         <argLine>-Xms256m -Xmx512m -ea -Dfile.encoding=UTF-8</argLine>
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
     </properties>
 
     <distributionManagement>
@@ -260,6 +263,10 @@
                     <plugin>
                         <version>0.8.2</version>
                         <groupId>org.jacoco</groupId>
+                        <configuration>
+                           <destFile>${sonar.jacoco.reportPath}</destFile>
+                           <append>true</append>
+                        </configuration>
                         <artifactId>jacoco-maven-plugin</artifactId>
                         <executions>
                                 <execution>
