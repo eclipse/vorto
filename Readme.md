@@ -10,7 +10,7 @@
 
 ## Getting started with Vorto 
 
-The easiest to get started, is to take a look at our [Getting Started Guide](https://www.eclipse.org/vorto/gettingstarted/)
+The easiest to get started, is to take a look at our [Getting Started Guide](docs/gettingstarted.md)
 
 ## Repository Plugin SDK
 
@@ -22,15 +22,17 @@ The easiest to get started, is to take a look at our [Getting Started Guide](htt
 	</tr>
 	<tr>
 		<th>Importer Plugin</th>
-		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it as a (micro)service into the Vorto Repository.</td>
-		<td><i>Coming soon</i></td>
+		<td>Importers convert device descriptions from other formats to the Vorto language. Learn how to write such an importer plugin and run and hook it into the Vorto Repository.</td>
+		<td><a href="repository/repository-importer/Readme.md">Read more</a></td>
 	</tr>
 </table>
 
 ## Documentation
 
-- Read our [tutorials](https://www.eclipse.org/vorto/tutorials/)
-- Read our [Vorto Documentation](https://www.eclipse.org/vorto/documentation)
+- [Vorto DSL](core-bundles/docs/quickhelp_dsl.md)
+- [Code Generators](generators/Readme.md)
+- [Payload Mapping Engine](mapping-engine/Readme.md)
+- [Tutorials](docs/tutorials/Readme.md)
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
