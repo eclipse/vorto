@@ -4,30 +4,13 @@ displayname "Lamp"
 description "A lamp makes the environment bright"  
 functionblock Lamp {  
 
-  configuration{  
-    mandatory blinking as boolean "if the lamp is currently blinking or not"  
-    mandatory on as boolean "if the lamp is currently switched on"  
-  }  
+  configuration{}  
 
   status {
-    mandatory powerConsumption as int
-      "the amount of power the lamp is consuming" 
+    blinking as boolean "if the lamp is currently blinking or not"
   }
 
-  fault{  
-    mandatory bulbDefect as boolean
-        "true if the light bulb of the lamp is defect"  
-  }  
+  events {}  
 
-  operations{  
-    blink(blinkType as int <MIN 0, MAX 5> "The type of blink") "sets the blinking type for the lamp"  
-    getPowerConsumption() returns int <MIN 0, MAX 5> "gets the amount of power being consumed by the lamp"  
-    isOn() returns boolean "checks if the lamp is switched on"  
-    breakable off() "turns the lamp off"  
-    breakable on() "turns the lamp on"  
-    stopBlinking() "stops the blinking of the lamp"  
-    toggle() "switches the lamp on or off"  
-    toggleWithDelay(delayInSeconds as int)
-      "switches the lamp on or off with a delay of the specified seconds"  
-    }  
-  } 
+  operations{}  
+} 
