@@ -102,7 +102,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
   private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
-  private static String VORTO_NODE_TYPE = "vorto:type";
+  private static final String VORTO_NODE_TYPE = "vorto:type";
 
   @Autowired
   private IUserRepository userRepository;

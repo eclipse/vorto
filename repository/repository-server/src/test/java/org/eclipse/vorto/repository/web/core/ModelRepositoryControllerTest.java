@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.web.core;
 
 import org.eclipse.vorto.model.ModelType;
@@ -20,9 +32,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
-
-
-    @Autowired private ApplicationContext context;
 
 
     @Override protected void setUpTest() throws Exception {
@@ -95,6 +104,8 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             put("/rest/default/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
                 .content(json.replace("TrackingDevice", "RackingDevice")).with(userAdmin))
             .andExpect(status().isBadRequest());
+        repositoryServer.perform(delete("/rest/default/models/" + testModelId).with(userAdmin));
+        repositoryServer.perform(delete("/rest/default/models/" + locationModelId).with(userAdmin));
     }
 
     @Test public void createModelWithAPI() throws Exception {
@@ -108,6 +119,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             post("/rest/default/models/" + modelId + "/" + ModelType.fromFileName(fileName))
                 .with(userAdmin).contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isConflict());
+        repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin));
     }
 
     @Test public void createVersionOfModel() throws Exception {
@@ -119,6 +131,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         repositoryServer.perform(
             post("/rest/default/models/com.test1:Location:1.0.0/versions/1.0.1").with(userAdmin)
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound());
+        repositoryServer.perform(delete("/rest/default/models/" + testModel.prettyName).with(userAdmin));
 
     }
 
