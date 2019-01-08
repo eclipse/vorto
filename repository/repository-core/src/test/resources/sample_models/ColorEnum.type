@@ -1,0 +1,8 @@
+namespace org.eclipse.vorto.examples.type
+version 1.0.0
+displayname "ColorEnum"
+description "Datatype for ColorEnum"
+
+enum ColorEnum {
+  RED, GREEN, BLUE
+}

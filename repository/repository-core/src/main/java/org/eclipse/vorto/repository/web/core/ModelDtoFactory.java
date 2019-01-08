@@ -96,10 +96,10 @@ public class ModelDtoFactory {
         dto.setDescription(resource.getDescription());
         dto.setDisplayName(resource.getDisplayName());
         dto.setHasImage(resource.isHasImage());
-        dto.setReferencedBy(resource.getReferencedBy().stream().map(r -> createDto(r))
+        dto.setReferencedBy(resource.getReferencedBy().stream().map(ModelDtoFactory::createDto)
             .collect(Collectors.toList()));
         dto.setReferences(
-            resource.getReferences().stream().map(r -> createDto(r)).collect(Collectors.toList()));
+            resource.getReferences().stream().map(ModelDtoFactory::createDto).collect(Collectors.toList()));
         dto.setPlatformMappings(resource.getPlatformMappings());
         dto.setState(resource.getState());
         dto.setFileName(resource.getFileName());
@@ -141,7 +141,7 @@ public class ModelDtoFactory {
         }
     }
 
-    public static Infomodel createResource(InformationModel model,
+    private static Infomodel createResource(InformationModel model,
         Optional<MappingModel> mappingModel) {
         Infomodel infoResource =
             new Infomodel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
@@ -495,7 +495,7 @@ public class ModelDtoFactory {
         return modelEvent;
     }
 
-    public static EntityModel createResource(Entity model, Optional<MappingModel> mappingModel) {
+    private static EntityModel createResource(Entity model, Optional<MappingModel> mappingModel) {
         EntityModel resource =
             new EntityModel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
                 ModelType.Datatype);
@@ -525,7 +525,7 @@ public class ModelDtoFactory {
             .collect(Collectors.toList());
     }
 
-    public static EnumModel createResource(Enum model, Optional<MappingModel> mappingModel) {
+    private static EnumModel createResource(Enum model, Optional<MappingModel> mappingModel) {
         EnumModel resource =
             new EnumModel(new ModelId(model.getName(), model.getNamespace(), model.getVersion()),
                 ModelType.Datatype);
