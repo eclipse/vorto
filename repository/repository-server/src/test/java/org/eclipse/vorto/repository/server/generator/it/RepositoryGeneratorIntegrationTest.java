@@ -16,13 +16,15 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.springframework.core.annotation.Order;
 import org.springframework.test.web.servlet.MvcResult;
+
 import com.google.gson.reflect.TypeToken;
 
 
