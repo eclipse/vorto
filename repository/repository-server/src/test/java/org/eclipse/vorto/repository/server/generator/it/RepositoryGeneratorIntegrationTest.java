@@ -16,12 +16,15 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
+
 import com.google.gson.reflect.TypeToken;
 
 
@@ -44,7 +47,7 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
   }
 
   @Test
-  public void testGenerateBoschIoTSuite() throws Exception {
+  public void testGenerateBoschIoTSuiteForJava() throws Exception {
     createModel("Location.fbmodel", "com.test:Location:1.0.0");
     createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
 
@@ -58,9 +61,167 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
             get("/api/v1/generators/boschiotsuite/models/com.test:TrackingDevice:1.0.0?language=java")
                 .with(userAdmin))
         .andExpect(status().isOk())
-        .andExpect(ZipFileCompare.equals(loadResource("generated-boschiotsuite.zip")));
+        .andExpect(ZipFileCompare.equals(loadResource("generated-boschiotsuite-java.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateBoschIoTSuiteForPython() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/boschiotsuite/models/com.test:TrackingDevice:1.0.0?language=python")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-boschiotsuite-python.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateBoschIoTSuiteForArduino() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/boschiotsuite/models/com.test:TrackingDevice:1.0.0?language=arduino")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-boschiotsuite-arduino.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateBoschIoTSuiteForGatewaySoftware() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/boschiotsuite/models/com.test:TrackingDevice:1.0.0?language=gateway")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-boschiotsuite-gatewaySoftware.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateEclipseDitto() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/eclipseditto/models/com.test:TrackingDevice:1.0.0")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipseditto.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
   }
 
+  @Test
+  public void testGenerateEclipseHonoForArduino() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/eclipsehono/models/com.test:TrackingDevice:1.0.0/?language=Arduino")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipsehono-arduino.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateEclipseHonoForPython() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/eclipsehono/models/com.test:TrackingDevice:1.0.0/?language=python")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipsehono-python.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
+  @Test
+  public void testGenerateEclipseHonoForJava() throws Exception {
+    createModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Location:1.0.0");
+    releaseModel("com.test:TrackingDevice:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/eclipsehono/models/com.test:TrackingDevice:1.0.0/?language=java")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipsehono-java.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:TrackingDevice:1.0.0");
+    deleteModel("com.test:Location:1.0.0");
+  }
+  
   private Collection<GeneratorServiceInfo> getGenerators() throws Exception {
     MvcResult result = generatorServer.perform(get("/rest/generators")).andReturn();
     return gson.fromJson(new String(result.getResponse().getContentAsByteArray()),
