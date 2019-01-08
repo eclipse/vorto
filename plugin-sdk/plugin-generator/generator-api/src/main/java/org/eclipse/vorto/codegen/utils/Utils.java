@@ -34,6 +34,7 @@ import org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel;
 import org.eclipse.vorto.core.api.model.functionblock.Operation;
 import org.eclipse.vorto.core.api.model.functionblock.Param;
 import org.eclipse.vorto.core.api.model.functionblock.RefParam;
+import org.eclipse.vorto.core.api.model.functionblock.ReturnDictonaryType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnObjectType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnPrimitiveType;
 import org.eclipse.vorto.core.api.model.functionblock.ReturnType;
@@ -44,26 +45,6 @@ import org.eclipse.vorto.core.api.model.model.ModelFactory;
 import org.eclipse.vorto.core.api.model.model.ModelReference;
 
 public class Utils {
-  public static String getReturnType(ReturnType type) {
-    if (type instanceof ReturnPrimitiveType) {
-      return ((ReturnPrimitiveType) type).getReturnType().getName();
-    } else if (type instanceof ReturnObjectType) {
-      return ((ReturnObjectType) type).getReturnType().getName();
-    } else {
-      return null;
-    }
-  }
-
-  public static String getPropertyType(Property property) {
-    if (property.getType() instanceof PrimitivePropertyType) {
-      return ((PrimitivePropertyType) property.getType()).getType().getName();
-    } else if (property.getType() instanceof ObjectPropertyType) {
-      return ((ObjectPropertyType) property.getType()).getType().getName();
-    } else {
-      return null;
-    }
-  }
-
   public static InformationModel wrapFunctionBlock(FunctionblockModel fbModel) {
     InformationModel infomodel = InformationModelFactory.eINSTANCE.createInformationModel();
     infomodel.setCategory(fbModel.getCategory());
@@ -84,105 +65,6 @@ public class Utils {
     reference.setVersion(fbModel.getVersion());
     infomodel.getReferences().add(reference);
     return infomodel;
-  }
-
-  public static boolean isSimpleNumeric(Property property) {
-    if (property.getType() instanceof PrimitivePropertyType) {
-      PrimitiveType primitiveType = ((PrimitivePropertyType) property.getType()).getType();
-      if (primitiveType == PrimitiveType.INT) {
-        return true;
-      } else if (primitiveType == PrimitiveType.FLOAT) {
-        return true;
-      } else if (primitiveType == PrimitiveType.DOUBLE) {
-        return true;
-      } else if (primitiveType == PrimitiveType.LONG) {
-        return true;
-      } else if (primitiveType == PrimitiveType.SHORT) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  public static String getMinConstraint(Property property) {
-    if ((property.getConstraintRule() != null
-        && property.getConstraintRule().getConstraints() != null)
-        && (property.getConstraintRule() != null
-            && property.getConstraintRule().getConstraints().size() > 0)) {
-      for (Constraint constraint : property.getConstraintRule().getConstraints()) {
-        if (constraint.getType() == ConstraintIntervalType.MIN) {
-          return constraint.getConstraintValues();
-        }
-      }
-    }
-    return "";
-  }
-
-  public static String getMaxConstraint(Property property) {
-    if ((property.getConstraintRule() != null
-        && property.getConstraintRule().getConstraints() != null)
-        && (property.getConstraintRule() != null
-            && property.getConstraintRule().getConstraints().size() > 0)) {
-      for (Constraint constraint : property.getConstraintRule().getConstraints()) {
-        if (constraint.getType() == ConstraintIntervalType.MAX) {
-          return constraint.getConstraintValues();
-        }
-      }
-    }
-    return "";
-  }
-
-  public static String getMeasurementUnit(Property property) {
-    EnumLiteral literal = getEnumLiteralPropertyAttribute(property,
-        EnumLiteralPropertyAttributeType.MEASUREMENT_UNIT);
-    if (literal != null) {
-      return literal.getName();
-    }
-    return "";
-  }
-
-  public static boolean isReadable(Property property) {
-    return getBooleanPropertyAttribute(property, BooleanPropertyAttributeType.READABLE);
-  }
-
-  public static boolean isWritable(Property property) {
-    return getBooleanPropertyAttribute(property, BooleanPropertyAttributeType.WRITABLE);
-  }
-
-  public static boolean isEventable(Property property) {
-    return getBooleanPropertyAttribute(property, BooleanPropertyAttributeType.EVENTABLE);
-  }
-
-  public static boolean getBooleanPropertyAttribute(Property property,
-      BooleanPropertyAttributeType type) {
-    if ((property.getPropertyAttributes() != null)
-        && (property.getPropertyAttributes().size() > 0)) {
-      for (PropertyAttribute pA : property.getPropertyAttributes()) {
-        if (pA instanceof BooleanPropertyAttribute) {
-          BooleanPropertyAttribute bPA = (BooleanPropertyAttribute) pA;
-          if (bPA.getType() == type && bPA.isValue()) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  public static EnumLiteral getEnumLiteralPropertyAttribute(Property property,
-      EnumLiteralPropertyAttributeType type) {
-    if ((property.getPropertyAttributes() != null)
-        && (property.getPropertyAttributes().size() > 0)) {
-      for (PropertyAttribute pA : property.getPropertyAttributes()) {
-        if (pA instanceof EnumLiteralPropertyAttribute) {
-          EnumLiteralPropertyAttribute bPA = (EnumLiteralPropertyAttribute) pA;
-          if (bPA.getType() == type) {
-            return bPA.getValue();
-          }
-        }
-      }
-    }
-    return null;
   }
 
   public static EList<Entity> getReferencedEntities(FunctionBlock fb) {

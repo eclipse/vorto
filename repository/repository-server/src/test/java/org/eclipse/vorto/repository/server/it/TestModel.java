@@ -25,7 +25,7 @@ public class TestModel {
   public String version = "1.0.0";
   public String prettyName = namespace + ":" + modelName + ":" + version;
   public String targetPlatform = "target";
-  public String json = "{" + "\"targetPlatformKey\":" + targetPlatform + "," + "\"stereotypes\":[],"
+  public String json = "{" + "\"targetPlatformKey\":\"" + targetPlatform + "\"," + "\"stereotypes\":[],"
       + "\"mappingReference\":null," + "\"id\":{" + "\"name\":\"" + modelName
       + "\",\"namespace\":\"" + namespace + "\",\"version\":\"1.0.0\"," + "\"prettyFormat\":\""
       + prettyName + "\"}," + "\"type\":\"InformationModel\"," + "\"displayName\":\"" + modelName

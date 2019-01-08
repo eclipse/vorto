@@ -24,13 +24,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.web.VortoRepository;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -49,7 +51,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Sets;
 import com.google.gson.GsonBuilder;
@@ -74,7 +75,9 @@ public abstract class AbstractIntegrationTest {
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
-  
+
+  protected Gson gson = new Gson();
+
   @BeforeClass
   public static void configureOAuthConfiguration() {
     System.setProperty("github_clientid", "foo");
@@ -105,7 +108,7 @@ public abstract class AbstractIntegrationTest {
   
   
   public void createModel(String fileName, String modelId) throws Exception {
-    createModel(userAdmin, modelId,fileName);
+    createModel(userAdmin, fileName, modelId);
   }
   
   public void releaseModel(String modelId) throws Exception {
@@ -116,14 +119,15 @@ public abstract class AbstractIntegrationTest {
         .contentType(MediaType.APPLICATION_JSON));
   }
   
-  private void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String modelId, String fileName) throws Exception {
+  protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
+      String fileName, String modelId) throws Exception {
     repositoryServer.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().is(201));
+        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
     repositoryServer.perform(put("/rest/default/models/" + modelId).with(user)
-        .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().is(200));
+        .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().isOk());
   }
 
-  private String createContent(String fileName) throws Exception {
+  protected String createContent(String fileName) throws Exception {
     String dslContent = IOUtils.toString(new ClassPathResource("models/"+fileName).getInputStream());
     
     Map<String,Object> content = new HashMap<>();
