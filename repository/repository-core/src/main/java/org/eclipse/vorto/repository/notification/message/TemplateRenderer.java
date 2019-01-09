@@ -18,7 +18,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 public class TemplateRenderer {
-  private static Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
+  private static Configuration configuration = new Configuration(Configuration.VERSION_2_3_22);
 
   static {
     configuration.setClassForTemplateLoading(TemplateRenderer.class, "/emailtemplates");
