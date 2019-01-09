@@ -5,7 +5,7 @@
 
 [Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to convert Device Information Models to source code that runs on the device or gateway, easing the **integration with IoT Platforms**.
 
-<img src="website/static/images/vorto_cover.png"/>
+<img src="docs/images/vorto_cover.png"/>
 
 
 ## Getting started with Vorto 

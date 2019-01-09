@@ -155,7 +155,7 @@ and
 ```      
 `example output:`
 
-![grovePi Screenshot](/images/tutorials/grovepi/output_screenhot_grovepi.png)
+![grovePi Screenshot](../images/tutorials/grovepi/output_screenhot_grovepi.png)
 
 - Follow [Consuming Messages from Java for Hono] (https://www.eclipse.org/hono/dev-guide/java_client_consumer/) to receive the device data in Eclipse Hono.
 
