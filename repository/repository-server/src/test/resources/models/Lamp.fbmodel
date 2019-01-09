@@ -2,15 +2,21 @@ namespace com.test
 version 1.0.0
 displayname "Lamp"
 description "A lamp makes the environment bright"  
+
+using com.test.Colour;1.0.0
+
 functionblock Lamp {  
 
-  configuration{}  
+  configuration{
+    defaultColour as Colour "The default colour of the lamp"
+  }  
 
   status {
     blinking as boolean "if the lamp is currently blinking or not"
+    onOff as int "if the lamp is currently off a zero (0) is set, otherwise any positive value"
   }
 
   events {}  
 
   operations{}  
-} 
+}

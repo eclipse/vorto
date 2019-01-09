@@ -3,7 +3,7 @@ version 1.0.0
 displayname "StreetLamp"
 description "Information Model for StreetLamp"
 
-	using com.test.Lamp;1.0.0
+using com.test.Lamp;1.0.0
 	
 infomodel StreetLamp {
 

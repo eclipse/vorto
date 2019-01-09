@@ -222,34 +222,39 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     deleteModel("com.test:Location:1.0.0");
   }
   
-//  @Test
-//  public void testGenerateEclipseDittoLampFb() throws Exception {
-//    createModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-//    createModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
-//
-//    // releasing the test models, otherwise anonymous user cannot generate code
-//    releaseModel("com.test:Lamp:1.0.0");
-//    releaseModel("com.test:StreetLamp:1.0.0");
-//
-//
-//    repositoryServer
-//        .perform(
-//            get("/api/v1/generators/eclipseditto/models/com.test:StreetLamp:1.0.0")
-//                .with(userAdmin))
-//        .andExpect(status().isOk())
-//        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipseditto-lampfb.zip")));
-//    
-//    // deleting the test models, otherwise anonymous user cannot generate code
-//    deleteModel("com.test:StreetLamp:1.0.0");
-//    deleteModel("com.test:Lamp:1.0.0");
-//  }
-
   @Test
-  public void testGenerateBoschIoTSuiteForJavaForLampFb() throws Exception {
+  public void testGenerateEclipseDittoLampFb() throws Exception {
+	createModel("Colour.type", "com.test:Colour:1.0.0");
     createModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
     createModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
 
     // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Colour:1.0.0");
+    releaseModel("com.test:Lamp:1.0.0");
+    releaseModel("com.test:StreetLamp:1.0.0");
+
+
+    repositoryServer
+        .perform(
+            get("/api/v1/generators/eclipseditto/models/com.test:StreetLamp:1.0.0")
+                .with(userAdmin))
+        .andExpect(status().isOk())
+        .andExpect(ZipFileCompare.equals(loadResource("generated-eclipseditto-lampfb.zip")));
+    
+    // deleting the test models, otherwise anonymous user cannot generate code
+    deleteModel("com.test:StreetLamp:1.0.0");
+    deleteModel("com.test:Lamp:1.0.0");
+    deleteModel("com.test:Colour:1.0.0");
+  }
+
+  @Test
+  public void testGenerateBoschIoTSuiteForJavaForLampFb() throws Exception {
+	createModel("Colour.type", "com.test:Colour:1.0.0");
+    createModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
+    createModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
+
+    // releasing the test models, otherwise anonymous user cannot generate code
+    releaseModel("com.test:Colour:1.0.0");
     releaseModel("com.test:Lamp:1.0.0");
     releaseModel("com.test:StreetLamp:1.0.0");
 
@@ -264,6 +269,7 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     // deleting the test models, otherwise anonymous user cannot generate code
     deleteModel("com.test:StreetLamp:1.0.0");
     deleteModel("com.test:Lamp:1.0.0");
+    deleteModel("com.test:Colour:1.0.0");
   }
   
   private Collection<GeneratorServiceInfo> getGenerators() throws Exception {
