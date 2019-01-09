@@ -16,7 +16,7 @@
 			<div class="form-group">
   				<label for="property" class="col-sm-3 control-label">Properties:</label>
 					<div class="col-md-4 col-xs-12 form-group">
-						<select class="form-control" ng-change="generatePropertyName(selectedFb)" ng-model="selectedFb" ng-options="fb.id as fb.id.name for fb in functionblocks | orderBy: 'id.name' track by fb.id.name">
+						<select class="form-control" ng-change="generatePropertyName(selectedProperty.selectedFb)" ng-model="selectedProperty.selectedFb" ng-options="fb.id as fb.id.name for fb in functionblocks | orderBy: 'id.name' track by fb.id.name">
 							<option value="">-- Select a property--</option>
 						</select>
 						<ui-select class="modelcreator-result" on-remove="removeProperty($item, $model)" multiple tagging search-enabled="false" tagging-label="(custom 'new' label)" ng-model="selected.properties" theme="bootstrap" sortable="true">
@@ -27,10 +27,10 @@
 	  					</ui-select>
         			</div>
         			<div class="col-md-4 col-xs-12">
-        				<input type="text" class="form-control" name="propertyName" id="propertyName" placeholder="Specify a name for the property" ng-pattern="rePropertyName" ng-model="propertyName">
+        				<input type="text" class="form-control" name="propertyName" id="propertyName" placeholder="Specify a name for the property" ng-model="selectedProperty.propertyName">
         			</div>
         			<div class="col-md-1 col-xs-12">
-        				<a href class="btn btn-primary" ng-disabled="!propertyName || !selectedFb"  ng-click="addProperty()">Add</a>
+        				<a href class="btn btn-primary" ng-disabled="!selectedProperty.propertyName || !selectedProperty.selectedFb"  ng-click="addProperty()">Add</a>
         			</div>   
         			<div class="col-md-12">
         				<span ng-show="infomodelForm.$error.pattern" style="color:red">Please enter valid property name.</br>

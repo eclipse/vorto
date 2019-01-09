@@ -113,8 +113,10 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 		
 			$scope.properties = [];
 			$scope.rePropertyName = /^[A-Za-z][A-Za-z0-9_]{1,30}$/;
-			$scope.propertyName = "";
-			$scope.selectedFb = null;
+			
+			$scope.selectedProperty = {};
+			$scope.selectedProperty["propertyName"] = "";
+			$scope.selectedProperty["selectedFb"] = null;
 			
 			$scope.selectFunctionBlock = function(fb){
 		   		$scope.selectedFb = fb;
@@ -135,8 +137,8 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 	   		 $scope.loadFunctionblocks('org.eclipse.vorto');
 	    
 		    $scope.generatePropertyName = function(selectedFb) {
-		    	$scope.selectedFb = selectedFb;
-		    	$scope.propertyName = generateVariableName(selectedFb);
+		    	$scope.selectedProperty["selectedFb"] = selectedFb;
+		    	$scope.selectedProperty["propertyName"] = generateVariableName(selectedFb);
 		    	
 		    	function generateVariableName(fb) {
 		    		var variableName = fb.name.toLowerCase();
@@ -160,13 +162,13 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 			
 			$scope.addProperty = function() {
 		    	var property = {};
-				property["name"] = $scope.propertyName;
-				property["type"] = $scope.selectedFb;
+				property["name"] = $scope.selectedProperty["propertyName"];
+				property["type"] = $scope.selectedProperty["selectedFb"];
 			    $scope.selected.properties.push(property);
-			    console.log($scope.propertyName);
-			    console.log($scope.selectedFb);
-			    $scope.propertyName = "";
-			    $scope.selectedFb = null;	
+			    console.log($scope.selectedProperty["propertyName"]);
+			    console.log($scope.selectedProperty["selectedFb"]);
+			    $scope.selectedProperty["propertyName"] = "";
+			    $scope.selectedProperty["selectedFb"] = null;	
 	    	};
 	    
 		    $scope.removeProperty = function(item,model) {
