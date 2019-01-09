@@ -114,9 +114,9 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 			$scope.properties = [];
 			$scope.rePropertyName = /^[A-Za-z][A-Za-z0-9_]{1,30}$/;
 			
-            $scope.selectedProperty = {};
-            $scope.selectedProperty["propertyName"] = "";
-            $scope.selectedProperty["selectedFb"] = null;
+			$scope.selectedProperty = {};
+			$scope.selectedProperty["propertyName"] = "";
+			$scope.selectedProperty["selectedFb"] = null;
 			
 			$scope.selectFunctionBlock = function(fb){
                 $scope.selectedProperty["selectedFb"] = fb;
@@ -137,8 +137,8 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 	   		 $scope.loadFunctionblocks('org.eclipse.vorto');
 	    
 		    $scope.generatePropertyName = function(selectedFb) {
-                $scope.selectedProperty["selectedFb"] = selectedFb;
-                $scope.selectedProperty["propertyName"] = generateVariableName(selectedFb);
+		    	$scope.selectedProperty["selectedFb"] = selectedFb;
+		    	$scope.selectedProperty["propertyName"] = generateVariableName(selectedFb);
 		    	
 		    	function generateVariableName(fb) {
 		    		var variableName = fb.name.toLowerCase();
@@ -162,13 +162,13 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
 			
 			$scope.addProperty = function() {
 		    	var property = {};
-                property["name"] = $scope.selectedProperty["propertyName"];
-                property["type"] = $scope.selectedProperty["selectedFb"];
+				property["name"] = $scope.selectedProperty["propertyName"];
+				property["type"] = $scope.selectedProperty["selectedFb"];
 			    $scope.selected.properties.push(property);
-                console.log($scope.selectedProperty["propertyName"]);
-                console.log($scope.selectedProperty["selectedFb"]);
-                $scope.selectedProperty["propertyName"] = "";
-                $scope.selectedProperty["selectedFb"] = null;	
+			    console.log($scope.selectedProperty["propertyName"]);
+			    console.log($scope.selectedProperty["selectedFb"]);
+			    $scope.selectedProperty["propertyName"] = "";
+			    $scope.selectedProperty["selectedFb"] = null;	
 	    	};
 	    
 		    $scope.removeProperty = function(item,model) {
