@@ -1,0 +1,5 @@
+server:
+  contextPath: /
+
+repo:
+  configFile: vorto-repository-config-file.json
