@@ -1,0 +1,15 @@
+server:
+  host: vorto.eclipse.org
+  contextPath: /
+  config:
+    generatorUser: ${generator_user_name}
+    generatorPassword: ${generator_user_password}
+
+spring:
+  profiles.active: eclipse
+  config.location: config
+  datasource:
+    url: jdbc:mysql://${database:port}/vorto
+    username: ${datasource_user_name}
+    password: ${datasource_user_password}
+
