@@ -63,17 +63,6 @@ public abstract class AbstractGeneratorIntegrationTest extends AbstractIntegrati
                 .apply(springSecurity()).build();
     }
 
-    protected String loadModel(String type, String filename) {
-        ModelContent modelContent = new ModelContent();
-        modelContent.setType(type);
-        try {
-            modelContent.setContentDsl(
-                IOUtils.toString(new ClassPathResource(filename).getInputStream(), "utf-8"));
-        } catch (IOException e) {
-            fail("Cannot load test model");
-        }
-        return gson.toJson(modelContent);
-    }
 
     protected byte[] loadResource(String filename) throws IOException {
         return IOUtils.toByteArray(new ClassPathResource(filename).getInputStream());
