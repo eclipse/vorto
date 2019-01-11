@@ -1,24 +1,38 @@
++++
+tags = []
+categories = []
+date = "2017-12-18T12:00:00+08:00"
+title = "Creating a Device-specific Web Application"
+parent = "Resources >"
+parentlink = "/resources/"
+sibling = "Tutorials >"
+siblinglink = "/tutorials/"
+child = " Creating a Device-specific Web Application" 
++++
+
 # Creating a Device-specific Web Application
 
-This tutorial explains how to build a small Spring-boot AngularJS Web application that is able to consume device values from the Bosch IoT Suite Cloud Services and display the data in a dashboard. In this example, a web application specific to the XDK functionality is created using the XDK Information Model (refer to [XDK Information Model](http://vorto.eclipse.org/#/details/com.bosch.bcds:XDK:1.0.0)).
+This tutorial explains how to build a small Spring-boot AngularJS Web application that is able to consume device values from the Bosch IoT Suite Cloud Services and display the data in a dashboard. In this example, a web application specific to the XDK functionality is created using the XDK Information Model (refer to [XDK Information Model](http://vorto.eclipse.org/#/details/com.bosch.devices/XDK/1.0.0)).
 
 
 ## Prerequisites
 
-* Bosch ID User Account
+* You have successfully booked the Bosch IoT Hub Service (refer to [https://www.bosch-iot-suite.com/hub/](https://www.bosch-iot-suite.com/hub/)).
 
-* You have booked an asset communication package of the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have successfully booked the Bosch IoT Things Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/things/)).
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](tisensor.md)).
+* You have successfully booked the Bosch IoT Permissions Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/permissions/)).
 
-* You have registered the device using the Vorto Information Model in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
+* You have created a thing type for the device (refer to [Creating a New Thing Type](../dx_create_thingtype)).
+
+* You have registered the device with the thing type (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
 
 
 ## Proceed as follows
 
 1. Generate a Web application.
 
-	- In the [Thing Browser](https://console-bcx.bosch-iot-suite.com/#/thingbrowser), browse for the registered XDK information model.
+	- In the [Thing Browser](https://console.bosch-iot-suite.com/#/thingbrowser), browse for the registered XDK information model.
 
 	- From the list of generators on the **Source Code Templates** tab, choose **AngularJS Spring-boot Application** and click **Download**.
 	
@@ -30,7 +44,7 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 
 2. Configure the application for Bosch IoT Suite.
 
-	- Download [bosch-iot-cloud.jks](../sample_code/bosch-iot-cloud.jks) and store it in a *secure* folder of the project under `/src/main/resources`.
+	- Download [bosch-iot-cloud.jks](../sample_code/bosch-iot-cloud.jks) and store it in a `secure` folder of the project under `/src/main/resources`.
 
 	- From the secure folder, open a command prompt to create a public and private key pair for your solution. Store the CRClient in the *secure* folder as well:
 	
@@ -115,7 +129,7 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 
 5. Update policy of the created thing.
 
-	- In the [Thing Browser](https://console-bcx.bosch-iot-suite.com/#/thingbrowser) of the Developer Console, browse for your thing.
+	- In the [Thing Browser](https://console.bosch-iot-suite.com/#/thingbrowser) of the Developer Console, browse for your thing.
 
 	- Select the **Policy** tab and add a new policy, to share the thing with the Google user:
 
@@ -177,3 +191,30 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 	- Observe the updated temperature widget value in the dashboard of your web application.
 	
 	      <img src="../img/springbootApp/web_app.png" width="40%"/>
+
+7. Automatic update of Thing's Features.
+
+	- Open the **LocalConfiguration.java** class and update the `clientId` with an approprieate suffix for this application. In this case, we want to name it as **xdkapp**.
+	
+		```
+			PublicKeyAuthenticationConfiguration.newBuilder()
+			  .clientId(thingsSolutionId+":"+"xdkapp")
+			  .keyStoreLocation(LocalConfiguration.class.getResource(keystoreLocation))
+			  .keyStorePassword(keystorePassword)
+			  .alias(alias)
+			  .aliasPassword(aliasPassword)
+			  .build();
+		```
+	
+	- Please refer to the below picture to configure the new policy for the technical user defined in the above code snippet. 
+	
+		<img src="../img/springbootApp/create_policy_for_tech_user.png" width="50%"/>
+		
+	- Provide a **label** in the label textfield, select `Bosch Iot Things Client Id` in the **type** drop-down list, enter the `clientId` (what you have given in the Java code) as the **subject ID** and grant only `read` permission on the **things** resource, as this user only needs to read the things feature values.
+	
+		<img src="../img/springbootApp/view_policy_for_tech_user.png" width="50%"/>
+		
+	- Now you will be able to see your web page updates the things features without you refreshing the browser. 
+	
+
+	

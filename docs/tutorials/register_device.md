@@ -1,6 +1,6 @@
-# Registering a Device in the Bosch IoT Suite
+# Registering a Device in the Bosch IoT Suite from a Vorto Information Model
 
-This tutorial explains how to register a device to the Bosch IoT Suite that was described as a Vorto Information Model.
+This tutorial explains how to register a device in the Bosch IoT Suite that was described as a Vorto Information Model.
 
 As an example, the [Octopus board](http://vorto.eclipse.org/#/details/com.bosch.iot.suite:OctopusSuiteEdition:1.0.0) based on ESP 8266 is used. 
 

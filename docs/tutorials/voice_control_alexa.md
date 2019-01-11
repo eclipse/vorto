@@ -1,22 +1,35 @@
++++
+tags = []
+categories = []
+date = "2017-12-18T12:00:00+08:00"
+title = "Voice - Control the XDK with Amazon Alexas"
+parent = "Resources >"
+parentlink = "/resources/"
+sibling = "Tutorials >"
+siblinglink = "/tutorials/"
+child = " Voice - Control the XDK with Amazon Alexa" 
++++
+
+
 # Voice - Control the XDK with Amazon Alexa
 
 This tutorial explains how to build an Amazon Alexa skillset that reads device data from Bosch IoT Suite.
 
 ## Prerequisites
 
-* Bosch ID User Account
+* You have successfully booked the Bosch IoT Things Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/things/)).
 
-* You have booked an asset communication package of the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have successfully booked the Bosch IoT Permissions Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/permissions/)).
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](tisensor.md)).
+* You have registered the Bosch XDK providing various sensors in the Bosch IoT Suite ([Registering a Device in the Bosch IoT Suite](../dx_register_device)).
 
-* You have registered the device using the Vorto Information Model in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
+	<img width="50%" src="../img/connect_alexa/browse_xdk.png">
 
 ## Proceed as follows
 
 1. Generate an Amazon Alexa skillset with Vorto.
 
-	- Log in to the [Thing Browser](https://console-bcx.bosch-iot-suite.com/#/thingbrowser).
+	- Log in to the [Thing Browser](https://console.bosch-iot-suite.com/#/thingbrowser).
 
 	- Select your registered XDK device.
 

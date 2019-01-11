@@ -1,16 +1,28 @@
-# Connecting a GrovePi Sensor to the Bosch IoT Suite via MQTT
++++
+tags = []
+categories = []
+date = "2017-12-18T12:00:00+08:00"
+title = "Connecting a GrovePi to Bosch IoT Hub via MQTT"
+parent = "Resources >"
+parentlink = "/resources/"
+sibling = "Tutorials >"
+siblinglink = "/tutorials/"
+child = " Connect GrovePi sensor" 
++++
 
-This tutorial explains how to connect a GrovePi sensor to Bosch IoT Suite using MQTT using Vorto.
+# Connecting a GrovePi Sensor to the Bosch IoT Hub via MQTT
+
+This tutorial explains how to connect a GrovePi sensor to Bosch IoT Suite using MQTT.
 
 ## Prerequisites
 
-* Bosch ID User Account
+* You have successfully booked the Bosch IoT Hub Service (refer to [https://www.bosch-iot-suite.com/hub/](https://www.bosch-iot-suite.com/hub/)).
 
-* You have booked an asset communication package of the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have successfully booked the Bosch IoT Things Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/things/)).
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](tisensor.md)).
+* You have created the GrovePi sensor as a thing type (refer to [Creating a New Thing Type](../dx_create_thingtype)).  
 
-* You have registered the device using the Vorto Information Model in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
+* You have registered the GrovePi in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
 
 ## Tools
 
@@ -46,9 +58,17 @@ This tutorial explains how to connect a GrovePi sensor to Bosch IoT Suite using 
 
 	**Download the python source code template**
 
-	- Open the Information Model in the [Vorto Repository](http://vorto.eclipse.org)
+	- Log in to the [Bosch IoT Developer Console](https://console.bosch-iot-suite.com) with your Bosch ID.
+	
+	- Click **Browse my things**.
 
-	- Select the **Bosch IoT Suite Generator** on the right handside.
+		> Note: You can also directly open the [Thing Browser](https://console.bosch-iot-suite.com/#/thingbrowser). If not yet done, you will be asked for logging in.
+
+	- Navigate to your thing and click on it.
+
+	- lick on the **Source Code Templates** tab.
+
+	- At the **Integrate device with Python** template, click **Download**.
 
 		<img width="300" src="../img/connect_grovepi/python-generator.png" style="border:3px !important;">
 
@@ -123,12 +143,13 @@ This tutorial explains how to connect a GrovePi sensor to Bosch IoT Suite using 
 
 8. Verify incoming sensor data.
 
-	- Execute the following curl command to fetch the device payload data from Bosch IoT Things:
-		
-			curl GET ....
+	- Log in to the [Bosch IoT Developer Console](https://console.bosch-iot-suite.com) with your Bosch ID.
+
+	- Click **Browse my things** to open the **Thing Browser**.
 
 	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
 ## What's next?
 
-Learn how to easily create a Spring-boot Web application that can consume the device data from Bosch IoT Things and display the data in a UI. Click [here](dx_create_webapp_dashboard) for the tutorial.
+* [Visualize device data with a Spring Boot App](../dx_create_webapp_dashboard) 
+* [Build an Alexa Skillset that reads device data](../dx_create_webapp_dashboard) 

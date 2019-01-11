@@ -1,17 +1,14 @@
+# Connecting an ESP8266-Based Device with Vorto
 
-# Connecting an ESP8266-Based Device with Arduino to Bosch IoT Suite
-
-This tutorial explains how to use connect an ESP8266 based device to the Bosch IoT Suite via MQTT, by generating an Arduino sketch for a given thing type and send the device data to the Bosch IoT Suite via MQTT.
+This tutorial explains how to use Developer Console to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.
 
 ## Prerequisites
 
 * Bosch ID User Account
 
-* You have booked an asset communication package of the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have booked the Asset Communication package of the Bosch IoT Suite (refer to [https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](tisensor.md)).
-
-* You have registered the device using the Vorto Information Model in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](../dx_register_device)).
+* You have registered the device in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](register_device.md)).
 
 ## Tools
 
@@ -55,13 +52,17 @@ This tutorial explains how to use connect an ESP8266 based device to the Bosch I
 
 	**Invoke the generator from the Repository**
 
-	- Open the Information Model in the [Vorto Repository](http://vorto.eclipse.org)
+	- Log in to the [Vorto Console](https://vorto.eclipse.org/demo) with your Bosch ID.
 
-	- Select the **Bosch IoT Suite Generator** on the right handside.
+	- Click **Browse my things** to open the Thing Browser.
 
-		<img width="800" src="../img/connect_esp8266/arduino-generator.png">
-		
-	- Choose **Arduino** as Device Platform and click **Generate**
+		> Note: You can also directly open the [Thing Browser](https://vorto.eclipse.org/demo/thingbrowser). If not yet done, you will be asked for logging in. 
+
+	- Navigate to your model using the search functionality of the repository, select the tab **Source Code Templates** and look for **Integrate device with Arduino C** in the screen.
+
+	- Click on the **Download** button.
+
+		<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
 
 	- Store the ZIP file and extract the source code.
 
@@ -119,9 +120,9 @@ This tutorial explains how to use connect an ESP8266 based device to the Bosch I
 
 4. Verify incoming sensor data.
 
-	- Execute the following curl command to fetch the device payload data from Bosch IoT Things:
-		
-			curl GET ....
+	- Log in to the [Vorto Console](https://vorto.eclipse.org/demo) with your Bosch ID.
+
+	- Click **Browse my things** to open the **Thing Browser**.
 
 	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
@@ -137,4 +138,4 @@ You have followed all the steps above but the Hub does not receive any data? Her
 
 ## What's next?
 
-Learn how to easily create a Spring-boot Web application that can consume the device data from Bosch IoT Things and display the data in a UI. Click [here](dx_create_webapp_dashboard) for the tutorial.
+Learn how to easily create a Spring-boot Web application that can consume the device data from Bosch IoT Things and display the data in a UI. Click [here](create_webapp_dashboard) for the tutorial.
