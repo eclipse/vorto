@@ -4,10 +4,13 @@ displayname "StreetLamp"
 description "Information Model for StreetLamp"
 
 using com.test.Lamp;1.0.0
+using com.test.Address;1.0.0
 	
 infomodel StreetLamp {
 
 	functionblocks {
-	  lamp as Lamp
+	  lamp as Lamp "main lamp"
+	  spareLamp as Lamp "spare lamp"
+	  location as Address "address of the street lamp"
 	}
 }
