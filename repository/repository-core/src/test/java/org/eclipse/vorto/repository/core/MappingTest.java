@@ -148,41 +148,4 @@ public class MappingTest extends AbstractIntegrationTest {
     assertEquals(1, colorInfo.getPlatformMappings().size());
     assertEquals("ios", colorInfo.getPlatformMappings().keySet().iterator().next());
   }
-
-  private Gson gsonWithDeserializer() {
-    return new GsonBuilder()
-        .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
-          @Override
-          public IReferenceType deserialize(JsonElement json, Type arg1,
-              JsonDeserializationContext arg2) throws JsonParseException {
-            if (json.isJsonObject()) {
-              final JsonObject jsonObject = json.getAsJsonObject();
-              return new ModelId(jsonObject.get("name").getAsString(),
-                  jsonObject.get("namespace").getAsString(),
-                  jsonObject.get("version").getAsString());
-            } else if (json.isJsonPrimitive()) {
-              return PrimitiveType.valueOf(json.getAsString());
-            }
-
-            return null;
-          }
-        }).create();
-  }
-
-  @Ignore
-  public void testMappingEngineJsonIntegerProblem() {
-    try {
-      TestMappingRequest mappingRequest = gsonWithDeserializer().fromJson(
-          new InputStreamReader(new ClassPathResource("mappingRequest.json").getInputStream()),
-          TestMappingRequest.class);
-      TestMappingResponse response = new PayloadMappingController().testMapping(mappingRequest);
-      response.getReport().getItems().forEach(item -> {
-        assertFalse(item.getMessage().matches("Field intfb/status/\\S+ must be of type 'Integer'"));
-      });
-    } catch (JsonSyntaxException | JsonIOException | IOException e) {
-      fail("Can't load test file.");
-    } catch (Exception e) {
-      fail("Got exception." + e.getMessage());
-    }
-  }
 }
