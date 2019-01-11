@@ -37,10 +37,6 @@
 
 		<!-- Spring Boot dependencies -->
 		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -189,6 +185,12 @@
             <artifactId>generator-runner</artifactId>
 			<version>${project.version}</version>
             <scope>test</scope>
+        </dependency>
+         <dependency>
+            <groupId>org.eclipse.vorto</groupId>
+            <artifactId>generator-api</artifactId>
+			<version>${project.version}</version>
+            <type>test-jar</type>
         </dependency>
 	</dependencies>
 
