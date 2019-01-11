@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -66,233 +67,252 @@ import com.google.gson.GsonBuilder;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-@RestController @RequestMapping(value = "/rest/{tenant}/mappings")
+@RestController
+@RequestMapping(value = "/rest/{tenant}/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
 
-    private static Gson gson = new GsonBuilder().create();
+  private static Gson gson = new GsonBuilder().create();
 
-    @Autowired private ModelController modelController;
+  private Supplier<IUserContext> userContextSupplier =
+      () -> UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
+  
+  @Autowired
+  private ModelController modelController;
 
-    @Autowired private IModelRepository repository;
+  @Autowired
+  private IModelRepository repository;
 
-    @Autowired private IWorkflowService workflowService;
+  @Autowired
+  private IWorkflowService workflowService;
 
-    private static Logger logger = Logger.getLogger(PayloadMappingController.class);
+  private static Logger logger = Logger.getLogger(PayloadMappingController.class);
 
-    private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
-    private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
-    private static final String CONTENT_DISPOSITION = "content-disposition";
+  private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
+  private static final String APPLICATION_OCTET_STREAM = "application/octet-stream";
+  private static final String CONTENT_DISPOSITION = "content-disposition";
 
-    @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}") @PreAuthorize("hasRole('ROLE_USER')")
-    public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,
-        @PathVariable String targetPlatform) throws Exception {
-        org.eclipse.vorto.repository.core.ModelContent infoModelContent =
-            modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
-        Infomodel infomodel =
-            (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
+  @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,
+      @PathVariable String targetPlatform) throws Exception {
+    org.eclipse.vorto.repository.core.ModelContent infoModelContent =
+        modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+    Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
-        if (infomodel == null) {
-            org.eclipse.vorto.repository.core.ModelContent infomodelContent =
-                modelController.getModelContent(modelId);
-            infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
-        }
-        MappingSpecification specification = new MappingSpecification();
+    if (infomodel == null) {
+      org.eclipse.vorto.repository.core.ModelContent infomodelContent =
+          modelController.getModelContent(modelId);
+      infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
+    }
+    MappingSpecification specification = new MappingSpecification();
 
-        specification.setInfoModel(infomodel);
+    specification.setInfoModel(infomodel);
 
-        for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
-            ModelId fbModelId = (ModelId) fbProperty.getType();
+    for (ModelProperty fbProperty : infomodel.getFunctionblocks()) {
+      ModelId fbModelId = (ModelId) fbProperty.getType();
 
-            ModelId mappingId = fbProperty.getMappingReference();
+      ModelId mappingId = fbProperty.getMappingReference();
 
-            FunctionblockModel fbm = null;
-            if (mappingId != null) {
-                fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
-                    mappingId.getPrettyFormat());
-            } else {
-                org.eclipse.vorto.repository.core.ModelContent fbmContent =
-                    modelController.getModelContent(fbModelId.getPrettyFormat());
-                fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
-            }
+      FunctionblockModel fbm = null;
+      if (mappingId != null) {
+        fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
+            mappingId.getPrettyFormat());
+      } else {
+        org.eclipse.vorto.repository.core.ModelContent fbmContent =
+            modelController.getModelContent(fbModelId.getPrettyFormat());
+        fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
+      }
 
-            specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
-        }
-        return specification;
+      specification.getProperties().put(fbProperty.getName(), initEmptyProperties(fbm));
+    }
+    return specification;
+  }
+
+  @PostMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
+  @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
+  public Map<String, Object> createMappingSpecification(@PathVariable final String modelId,
+      @PathVariable String targetPlatform) throws Exception {
+    logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
+    if (!this.repository
+        .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
+        .isEmpty()) {
+      throw new ModelAlreadyExistsException();
+    } else {
+      org.eclipse.vorto.repository.core.ModelContent modelContent =
+          this.modelController.getModelContent(modelId);
+      MappingSpecification spec = new MappingSpecification();
+      spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
+      for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
+        spec.getProperties().put(property.getName(),
+            (FunctionblockModel) modelContent.getModels().get(property.getType()));
+      }
+      final ModelId createdId = this.saveMappingSpecification(spec, modelId, targetPlatform);
+      Map<String, Object> response = new HashMap<String, Object>();
+      response.put("mappingId", createdId.getPrettyFormat());
+      response.put("spec", spec);
+      return response;
+    }
+  }
+
+
+  @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public List<ModelInfo> getMappingModels(@PathVariable final String modelId,
+      @PathVariable String targetPlatform) {
+    return this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
+        targetPlatform);
+  }
+
+  @PutMapping(value = "/test")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest)
+      throws Exception {
+    MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
+
+    InfomodelValue mappedOutput =
+        engine.mapSource(new ObjectMapper().readValue(testRequest.getSourceJson(), Object.class));
+
+    TestMappingResponse response = new TestMappingResponse();
+    response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
+    response.setReport(mappedOutput.validate());
+    return response;
+  }
+
+  @PutMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
+  @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
+  public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
+      @PathVariable String modelId, @PathVariable String targetPlatform) {
+    logger.info("Saving mapping specification " + modelId + " with key " + targetPlatform);
+
+    IUserContext userContext = userContextSupplier.get();
+
+    final List<ModelId> publishedModelIds = new ArrayList<>();
+
+    MappingSpecificationSerializer.create(mappingSpecification, targetPlatform).iterator()
+        .forEachRemaining(m -> publishedModelIds.add(serializeAndSave(m, userContext)));
+
+    return publishedModelIds.get(publishedModelIds.size() - 1);
+  }
+
+  @ApiResponses(
+      value = {@ApiResponse(code = 200, message = "Successful download of mapping specification"),
+          @ApiResponse(code = 400, message = "Wrong input"),
+          @ApiResponse(code = 404, message = "Model not found")})
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file")
+  public void downloadModelById(@PathVariable final String modelId,
+      @PathVariable String targetPlatform, final HttpServletResponse response) {
+
+    Objects.requireNonNull(modelId, "modelId must not be null");
+
+    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + modelID.getNamespace() + "_"
+        + modelID.getName() + "_" + modelID.getVersion() + "-mappingspec.json");
+    response.setContentType(APPLICATION_OCTET_STREAM);
+    try {
+      MappingSpecification spec =
+          (MappingSpecification) this.getMappingSpecification(modelId, targetPlatform);
+      ObjectMapper mapper = new ObjectMapper();
+      IOUtils.copy(
+          new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
+          response.getOutputStream());
+      response.flushBuffer();
+    } catch (Exception e) {
+      throw new RuntimeException("Error copying file.", e);
+    }
+  }
+
+  @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Mapping Specification already exists.")
+  // 409
+  @ExceptionHandler(ModelAlreadyExistsException.class)
+  public void modelExists(final ModelAlreadyExistsException ex) {
+    // do logging
+  }
+
+  public FunctionblockModel getModelContentByModelAndMappingId(final @PathVariable String modelId,
+      final @PathVariable String mappingId) {
+
+    ModelInfo vortoModelInfo = this.repository.getById(ModelId.fromPrettyFormat(modelId));
+    ModelInfo mappingModelInfo = this.repository.getById(ModelId.fromPrettyFormat(mappingId));
+
+    if (vortoModelInfo == null) {
+      throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
+    } else if (mappingModelInfo == null) {
+      throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
+
     }
 
-    @PostMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
-    @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-    public Map<String, Object> createMappingSpecification(@PathVariable final String modelId,
-        @PathVariable String targetPlatform) throws Exception {
-        logger
-            .info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
-        if (!this.repository
-            .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
-            .isEmpty()) {
-            throw new ModelAlreadyExistsException();
-        } else {
-            org.eclipse.vorto.repository.core.ModelContent modelContent =
-                this.modelController.getModelContent(modelId);
-            MappingSpecification spec = new MappingSpecification();
-            spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
-            for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
-                spec.getProperties().put(property.getName(),
-                    (FunctionblockModel) modelContent.getModels().get(property.getType()));
-            }
-            final ModelId createdId = this.saveMappingSpecification(spec, modelId, targetPlatform);
-            Map<String, Object> response = new HashMap<String, Object>();
-            response.put("mappingId", createdId.getPrettyFormat());
-            response.put("spec", spec);
-            return response;
-        }
+    IModelWorkspace mappingWorkspace = getWorkspaceForModel(mappingModelInfo.getId());
+
+    org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
+        (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace.get()
+            .stream()
+            .filter(
+                model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)
+            .findFirst().get();
+
+    return ModelDtoFactory.createResource(fbm, Optional.of((MappingModel) mappingWorkspace.get()
+        .stream().filter(model -> model instanceof MappingModel).findFirst().get()));
+  }
+
+  private FunctionblockModel initEmptyProperties(FunctionblockModel fbm) {
+
+    // adding empty stereotype for all status properties, if necessary
+    fbm.getStatusProperties().stream().filter(p -> !p.getStereotype("source").isPresent())
+        .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
+
+    // adding empty stereotype for all configuration properties, if necessary
+    fbm.getConfigurationProperties().stream().filter(p -> !p.getStereotype("source").isPresent())
+        .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
+
+    unescapeMappingAttributesForStereotype(fbm, "functions");
+    unescapeMappingAttributesForStereotype(fbm, "source");
+
+    return fbm;
+  }
+
+
+  private void unescapeMappingAttributesForStereotype(FunctionblockModel fbm, String stereotype) {
+    fbm.getStatusProperties().stream().filter(p -> p.getStereotype(stereotype).isPresent())
+        .forEach(p -> p.getStereotype(stereotype).get()
+            .setAttributes(unescapeExpression(p.getStereotype(stereotype).get().getAttributes())));
+  }
+
+  private Map<String, String> unescapeExpression(Map<String, String> attributes) {
+    Map<String, String> unescapedAttributes = new HashMap<String, String>(attributes.size());
+    for (String key : attributes.keySet()) {
+      String expression = attributes.get(key);
+      unescapedAttributes.put(key, StringEscapeUtils.unescapeJava(expression));
     }
+    return unescapedAttributes;
+  }
 
-
-    @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public List<ModelInfo> getMappingModels(@PathVariable final String modelId,
-        @PathVariable String targetPlatform) {
-        return this.repository
-            .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform);
+  public ModelId serializeAndSave(IMappingSerializer m, IUserContext user) {
+    final ModelId createdModelId = m.getModelId();
+    repository.save(createdModelId, m.serialize().getBytes(), createdModelId.getName() + ".mapping",
+        user);
+    try {
+      workflowService.start(createdModelId, user);
+    } catch (WorkflowException e) {
+      //
     }
+    return createdModelId;
+  }
 
-    @PutMapping(value = "/test") @PreAuthorize("hasRole('ROLE_USER')")
-    public TestMappingResponse testMapping(@RequestBody TestMappingRequest testRequest)
-        throws Exception {
-        MappingEngine engine = MappingEngine.create(testRequest.getSpecification());
+  public void setUserContextSupplier(Supplier<IUserContext> userContextSupplier) {
+    this.userContextSupplier = userContextSupplier;
+  }
 
-        InfomodelValue mappedOutput =
-            engine.mapSource(gson.fromJson(testRequest.getSourceJson(), Object.class));
+  public void setModelController(ModelController modelController) {
+    this.modelController = modelController;
+  }
 
-        TestMappingResponse response = new TestMappingResponse();
-        response.setMappedOutput(new ObjectMapper().writeValueAsString(mappedOutput.serialize()));
-        response.setReport(mappedOutput.validate());
-        return response;
-    }
+  public void setRepository(IModelRepository repository) {
+    this.repository = repository;
+  }
 
-    @PutMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
-    @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-    public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
-        @PathVariable String modelId, @PathVariable String targetPlatform) {
-        logger.info("Saving mapping specification " + modelId + " with key " + targetPlatform);
-
-        IUserContext userContext =
-            UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-
-        final List<ModelId> publishedModelIds = new ArrayList<>();
-
-        MappingSpecificationSerializer.create(mappingSpecification, targetPlatform).iterator()
-            .forEachRemaining(m -> publishedModelIds.add(serializeAndSave(m, userContext)));
-
-        return publishedModelIds.get(publishedModelIds.size() - 1);
-    }
-
-    @ApiResponses(value = {
-        @ApiResponse(code = 200, message = "Successful download of mapping specification"),
-        @ApiResponse(code = 400, message = "Wrong input"),
-        @ApiResponse(code = 404, message = "Model not found")})
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file")
-    public void downloadModelById(@PathVariable final String modelId,
-        @PathVariable String targetPlatform, final HttpServletResponse response) {
-
-        Objects.requireNonNull(modelId, "modelId must not be null");
-
-        final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-
-        response.setHeader(CONTENT_DISPOSITION,
-            ATTACHMENT_FILENAME + modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID
-                .getVersion() + "-mappingspec.json");
-        response.setContentType(APPLICATION_OCTET_STREAM);
-        try {
-            MappingSpecification spec =
-                (MappingSpecification) this.getMappingSpecification(modelId, targetPlatform);
-            ObjectMapper mapper = new ObjectMapper();
-            IOUtils.copy(new ByteArrayInputStream(
-                    mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
-                response.getOutputStream());
-            response.flushBuffer();
-        } catch (Exception e) {
-            throw new RuntimeException("Error copying file.", e);
-        }
-    }
-
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Mapping Specification already exists.")
-    // 409
-    @ExceptionHandler(ModelAlreadyExistsException.class)
-    public void modelExists(final ModelAlreadyExistsException ex) {
-        // do logging
-    }
-
-    public FunctionblockModel getModelContentByModelAndMappingId(final @PathVariable String modelId,
-        final @PathVariable String mappingId) {
-
-        ModelInfo vortoModelInfo = this.repository.getById(ModelId.fromPrettyFormat(modelId));
-        ModelInfo mappingModelInfo = this.repository.getById(ModelId.fromPrettyFormat(mappingId));
-
-        if (vortoModelInfo == null) {
-            throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
-        } else if (mappingModelInfo == null) {
-            throw new ModelNotFoundException("Could not find mapping with ID: " + mappingId);
-
-        }
-
-        IModelWorkspace mappingWorkspace = getWorkspaceForModel(mappingModelInfo.getId());
-
-        org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
-            (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace
-                .get().stream().filter(
-                    model -> model instanceof org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel)
-                .findFirst().get();
-
-        return ModelDtoFactory.createResource(fbm, Optional
-            .of((MappingModel) mappingWorkspace.get().stream()
-                .filter(model -> model instanceof MappingModel).findFirst().get()));
-    }
-
-    private FunctionblockModel initEmptyProperties(FunctionblockModel fbm) {
-
-        // adding empty stereotype for all status properties, if necessary
-        fbm.getStatusProperties().stream().filter(p -> !p.getStereotype("source").isPresent())
-            .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
-
-        // adding empty stereotype for all configuration properties, if necessary
-        fbm.getConfigurationProperties().stream()
-            .filter(p -> !p.getStereotype("source").isPresent())
-            .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
-
-        unescapeMappingAttributesForStereotype(fbm, "functions");
-        unescapeMappingAttributesForStereotype(fbm, "source");
-
-        return fbm;
-    }
-
-
-    private void unescapeMappingAttributesForStereotype(FunctionblockModel fbm, String stereotype) {
-        fbm.getStatusProperties().stream().filter(p -> p.getStereotype(stereotype).isPresent())
-            .forEach(p -> p.getStereotype(stereotype).get().setAttributes(
-                unescapeExpression(p.getStereotype(stereotype).get().getAttributes())));
-    }
-
-    private Map<String, String> unescapeExpression(Map<String, String> attributes) {
-        Map<String, String> unescapedAttributes = new HashMap<String, String>(attributes.size());
-        for (String key : attributes.keySet()) {
-            String expression = attributes.get(key);
-            unescapedAttributes.put(key, StringEscapeUtils.unescapeJava(expression));
-        }
-        return unescapedAttributes;
-    }
-
-    public ModelId serializeAndSave(IMappingSerializer m, IUserContext user) {
-        final ModelId createdModelId = m.getModelId();
-        repository
-            .save(createdModelId, m.serialize().getBytes(), createdModelId.getName() + ".mapping",
-                user);
-        try {
-            workflowService.start(createdModelId, user);
-        } catch (WorkflowException e) {
-            //
-        }
-        return createdModelId;
-    }
+  public void setWorkflowService(IWorkflowService workflowService) {
+    this.workflowService = workflowService;
+  }
 }
