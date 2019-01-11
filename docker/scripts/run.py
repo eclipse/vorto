@@ -36,7 +36,7 @@ def main():
 
 
     config_yaml_file = Path("./config/application.yml")
-    java_args = ["java"]
+    java_args = ["java","-cp","/code/lib"]
     args = {}
     datasource = getenv("DATASOURCE", "mysql")
     authprovider = getenv("AUTH_PROVIDER", "github")
