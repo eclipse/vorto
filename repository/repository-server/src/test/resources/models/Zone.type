@@ -1,0 +1,12 @@
+namespace com.test
+version 1.0.0
+displayname "Zone"
+description "Datatype for Zone"
+
+enum Zone {
+    NORTH,
+    SOUTH,
+    EAST,
+    WEST,
+    CENTER
+}

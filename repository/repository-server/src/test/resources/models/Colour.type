@@ -1,0 +1,10 @@
+namespace com.test
+version 1.0.0
+displayname "Colour"
+description "Datatype for Colour"
+
+entity Colour {
+    mandatory red as int <MIN 0, MAX 255, DEFAULT 150>
+    mandatory green as int <MIN 0, MAX 255, DEFAULT 150>
+    mandatory blue as int <MIN 0, MAX 255 , DEFAULT 150>
+}
