@@ -77,7 +77,7 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 	- At the **Integrate device with Java** template, click **Download**.
 
-		<img width="300" src="images/dx_tutorial_java_generate.png" style="border:3px !important;">
+		<img width="300" src="../images/tutorials/connect_java/code_template.png" style="border:3px !important;">
 
 	- Store the ZIP file and extract the source code.
 
