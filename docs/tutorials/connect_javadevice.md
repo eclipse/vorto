@@ -111,7 +111,7 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
-		<img width="500" src="images/dx_tutorial_java_verifydata.png" style="border:3px !important;">
+		<img width="500" src="../images/tutorials/connect_java/verifydata.png" style="border:3px !important;">
 
 
 **Great!** You just sent device payload complying to the Bosch IoT Suite using Vorto. Feel free to create another Vorto Information Model for your device.
