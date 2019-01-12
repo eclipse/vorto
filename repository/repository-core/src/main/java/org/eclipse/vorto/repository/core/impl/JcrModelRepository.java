@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -50,6 +51,7 @@ import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicyIterator;
 import javax.jcr.security.Privilege;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -70,7 +72,6 @@ import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelReferentialIntegrityException;
-import org.eclipse.vorto.repository.core.ModelRepositoryException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;

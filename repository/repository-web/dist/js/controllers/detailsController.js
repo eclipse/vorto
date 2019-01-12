@@ -794,6 +794,10 @@ repositoryControllers.controller('DetailsController',
 					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
 						$scope.modelEditor.setReadOnly(true);
 					}
+					
+					if ($scope.hasAuthority("ROLE_ADMIN")) {
+						$scope.getPolicies();
+					}
 				});
 		};
 		

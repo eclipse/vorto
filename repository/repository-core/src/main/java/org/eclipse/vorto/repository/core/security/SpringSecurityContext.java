@@ -57,18 +57,6 @@ public class SpringSecurityContext implements SecurityContext {
 	    }
 	    
 	    return false;
-	    
-//		for (GrantedAuthority authority : authentication.getAuthorities()) {
-//			if (roleName.equals("readonly") && (authority.getAuthority().equalsIgnoreCase("role_user") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
-//				return true;
-//			} else if (roleName.equals("readwrite") && (authority.getAuthority().equalsIgnoreCase("role_model_creator") || authority.getAuthority().equalsIgnoreCase("role_admin"))) {
-//				return true;
-//			} else if (roleName.equals("ROLE_ADMIN") && authority.getAuthority().equalsIgnoreCase("ROLE_ADMIN")) {
-//				return true;
-//			}
-//		}
-//
-//		return false;
 	}
 
 	@Override
