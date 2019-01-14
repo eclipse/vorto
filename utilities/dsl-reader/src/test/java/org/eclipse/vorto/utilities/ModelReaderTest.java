@@ -206,5 +206,20 @@ public class ModelReaderTest {
     assertEquals("iot.ColorLight",
         infomodel.getProperties().get(0).getType().getReferences().get(0).getImportedNamespace());
   }
+  
+  @Test
+  public void testTuple() {
+    final String deviceId = "org.eclipse.vorto.aedelmann:1234:56";
+    String[] tuple = extractTuple(deviceId);
+    System.out.println(tuple[0]);
+    System.out.println(tuple[1]);
+  }
+
+  private static String[] extractTuple(String deviceId) {
+    int indexOfFirstColon = deviceId.indexOf(":");
+    final String namespace = deviceId.substring(0,indexOfFirstColon);
+    final String id = deviceId.substring(indexOfFirstColon+1);
+    return new String[] {namespace,id};
+  }
 
 }
