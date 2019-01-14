@@ -28,6 +28,17 @@ import com.google.gson.reflect.TypeToken;
 
 public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegrationTest {
 
+  protected void setUpTest() throws Exception {
+    super.setUpTest();
+    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
+    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
+    createAndReleaseModel("Zone.type", "com.test:Zone:1.0.0");
+    createAndReleaseModel("Colour.type", "com.test:Colour:1.0.0");
+    createAndReleaseModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
+    createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
+    createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
+  }
+  
   /** +++++++++++++    GENERAL GENERATOR INFO ENDPOINT TEST CASES ++++++++++++++++++++++++*/
   
   @Test
@@ -56,13 +67,10 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
 
   @Test
   public void testGenerateBoschIoTSuiteForJava() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
   }
   
-  private void assertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
+  private void invokeAndAssertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
     repositoryServer
         .perform(
             get("/api/v1/generators/boschiotsuite/models/"+modelId+(paramUrl.isPresent()?paramUrl.get():""))
@@ -73,59 +81,35 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
   
   @Test
   public void testGenerateBoschIoTSuiteForJavaForStreetLamp() throws Exception {
-    createAndReleaseModel("Zone.type", "com.test:Zone:1.0.0");
-    createAndReleaseModel("Colour.type", "com.test:Colour:1.0.0");
-    createAndReleaseModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-    createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
-    createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
    
   }
   
   @Test
   public void testGenerateBoschIoTSuiteForPython() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
   }
   
   @Test
   public void testGenerateBoschIoTSuiteForPythonForStreetLamp() throws Exception {
-    createAndReleaseModel("Zone.type", "com.test:Zone:1.0.0");
-    createAndReleaseModel("Colour.type", "com.test:Colour:1.0.0");
-    createAndReleaseModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-    createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
-    createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-python-lampFb.zip", Optional.of("?language=python"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-python-lampFb.zip", Optional.of("?language=python"));
 
   }
   
   @Test
   public void testGenerateBoschIoTSuiteForArduino() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-arduino.zip", Optional.of("?language=arduino"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-arduino.zip", Optional.of("?language=arduino"));
 
   }
   
   @Test
   public void testGenerateBoschIoTSuiteForArduinoForStreetLamp() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-arduino-lampFb.zip", Optional.of("?language=arduino"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-arduino-lampFb.zip", Optional.of("?language=arduino"));
   }
   
   @Test
   public void testGenerateBoschIoTSuiteForGatewaySoftware() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-gatewaySoftware.zip", Optional.of("?language=gateway"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-gatewaySoftware.zip", Optional.of("?language=gateway"));
 
   }
   
@@ -134,14 +118,11 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
   
   @Test
   public void testGenerateEclipseDitto() throws Exception {
-    createAndReleaseModel("Location.fbmodel", "com.test:Location:1.0.0");
-    createAndReleaseModel("TrackingDevice.infomodel", "com.test:TrackingDevice:1.0.0");
-
-    assertDittoGenerator("com.test:TrackingDevice:1.0.0", "generated-eclipseditto.zip", Optional.empty());
+    invokeAndAssertEclipseDittoGenerator("com.test:TrackingDevice:1.0.0", "generated-eclipseditto.zip", Optional.empty());
 
   }
   
-  private void assertDittoGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
+  private void invokeAndAssertEclipseDittoGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
     repositoryServer
         .perform(
             get("/api/v1/generators/eclipseditto/models/"+modelId+(paramUrl.isPresent()?paramUrl.get():""))
@@ -152,12 +133,6 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
   
   @Test
   public void testGenerateEclipseDittoForStreetLamp() throws Exception {
-    createAndReleaseModel("Zone.type", "com.test:Zone:1.0.0");
-    createAndReleaseModel("Colour.type", "com.test:Colour:1.0.0");
-    createAndReleaseModel("Lamp.fbmodel", "com.test:Lamp:1.0.0");
-    createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
-    createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
-
-    assertDittoGenerator("com.test:StreetLamp:1.0.0", "generated-eclipseditto-lampfb.zip", Optional.empty());
+    invokeAndAssertEclipseDittoGenerator("com.test:StreetLamp:1.0.0", "generated-eclipseditto-lampfb.zip", Optional.empty());
   }
 }
