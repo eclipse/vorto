@@ -62,8 +62,8 @@ class ArduinoFbSourceTemplate extends ArduinoTemplate<FunctionblockModel> {
 			«ENDFOR»
 		«ENDIF»		
 		
-		String «fb.name»::serialize(String ditto_namespace, String hono_deviceId, String fbName) {
-		    String result = "{\"topic\":\""+ ditto_namespace + "/" + hono_deviceId +"/things/twin/commands/modify\",";
+		String «fb.name»::serialize(String ditto_topic, String hono_deviceId, String fbName) {
+		    String result = "{\"topic\":\""+ ditto_topic +"/things/twin/commands/modify\",";
 		    result += "\"headers\":{\"response-required\": false},";
 		    result += "\"path\":\"/features/" + fbName + "\",\"value\": { \"properties\": {";
 		    «IF fb.functionblock.status !== null»

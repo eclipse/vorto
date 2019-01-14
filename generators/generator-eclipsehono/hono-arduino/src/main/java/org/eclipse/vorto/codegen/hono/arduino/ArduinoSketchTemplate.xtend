@@ -56,7 +56,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		
 		/* Device Configuration */
 		String hono_deviceId = "«context.configurationProperties.getOrDefault("hono_deviceId","nodemcu-")»";
-		String ditto_namespace = "«context.configurationProperties.getOrDefault("ditto_namespace","com.mycompany")»";
+		String ditto_topic = "«context.configurationProperties.getOrDefault("ditto_topic","com.mycompany/4711")»";
 		
 		/* MQTT broker endpoint */
 		const char* hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","<ENTER YOUR MQTT BROKER DNS NAME>")»";
@@ -180,7 +180,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		
 		«FOR fb : model.properties»
 		boolean publish«fb.name.toFirstUpper»() {			
-				String mqttPayload = infoModel.«fb.name».serialize(ditto_namespace ,hono_deviceId, "«fb.name»");
+				String mqttPayload = infoModel.«fb.name».serialize(ditto_topic ,hono_deviceId, "«fb.name»");
 			
 				/* Debug output on console */
 				Serial.print("Publishing Payload for «fb.name»: "); 
