@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.server.generator.it;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,15 +39,16 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     createAndReleaseModel("Address.fbmodel", "com.test:Address:1.0.0");
     createAndReleaseModel("StreetLamp.infomodel", "com.test:StreetLamp:1.0.0");
   }
-  
-  /** +++++++++++++    GENERAL GENERATOR INFO ENDPOINT TEST CASES ++++++++++++++++++++++++*/
-  
+
+  /** +++++++++++++ GENERAL GENERATOR INFO ENDPOINT TEST CASES ++++++++++++++++++++++++ */
+
   @Test
   public void testGetRegisteredGeneratorServices() throws Exception {
     repositoryServer.perform(get("/api/v1/generators").with(userAdmin)).andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(getGenerators().size())));
+    assertTrue(true);
   }
-  
+
   private Collection<GeneratorServiceInfo> getGenerators() throws Exception {
     MvcResult result = generatorServer.perform(get("/rest/generators")).andReturn();
     return gson.fromJson(new String(result.getResponse().getContentAsByteArray()),
@@ -56,83 +58,96 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
   @Test
   public void testGetGeneratorInfo() throws Exception {
     for (GeneratorServiceInfo genInfo : getGenerators()) {
-      System.out.println("Checking for [" + genInfo.getKey() + "]");
       repositoryServer.perform(get("/api/v1/generators/" + genInfo.getKey()))
           .andExpect(status().isOk()).andExpect(jsonPath("$.name", Matchers.is(genInfo.getName())))
           .andExpect(jsonPath("$.description", Matchers.is(genInfo.getDescription())));
     }
+    assertTrue(true);
   }
-  
-  /** +++++++++++++    Bosch IoT SUITE TEST CASES ++++++++++++++++++++++++*/
+
+  /** +++++++++++++ Bosch IoT SUITE TEST CASES ++++++++++++++++++++++++ */
 
   @Test
   public void testGenerateBoschIoTSuiteForJava() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
+        "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
+    assertTrue(true);
   }
-  
-  private void invokeAndAssertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
+
+  private void invokeAndAssertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare,
+      Optional<String> paramUrl) throws Exception {
     repositoryServer
-        .perform(
-            get("/api/v1/generators/boschiotsuite/models/"+modelId+(paramUrl.isPresent()?paramUrl.get():""))
-                .with(userAdmin))
+        .perform(get("/api/v1/generators/boschiotsuite/models/" + modelId
+            + (paramUrl.isPresent() ? paramUrl.get() : "")).with(userAdmin))
         .andExpect(status().isOk())
         .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForJavaForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
-   
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
+        "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
+    assertTrue(true);
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForPython() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
+        "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
+    assertTrue(true);
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForPythonForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-python-lampFb.zip", Optional.of("?language=python"));
-
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
+        "generated-boschiotsuite-python-lampFb.zip", Optional.of("?language=python"));
+    assertTrue(true);
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForArduino() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-arduino.zip", Optional.of("?language=arduino"));
-
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
+        "generated-boschiotsuite-arduino.zip", Optional.of("?language=arduino"));
+    assertTrue(true);
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForArduinoForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0", "generated-boschiotsuite-arduino-lampFb.zip", Optional.of("?language=arduino"));
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
+        "generated-boschiotsuite-arduino-lampFb.zip", Optional.of("?language=arduino"));
+    assertTrue(true);
   }
-  
+
   @Test
   public void testGenerateBoschIoTSuiteForGatewaySoftware() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0", "generated-boschiotsuite-gatewaySoftware.zip", Optional.of("?language=gateway"));
-
+    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
+        "generated-boschiotsuite-gatewaySoftware.zip", Optional.of("?language=gateway"));
+    assertTrue(true);
   }
-  
-  
-  /** +++++++++++++    ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++*/
-  
+
+
+  /** +++++++++++++ ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++ */
+
   @Test
   public void testGenerateEclipseDitto() throws Exception {
-    invokeAndAssertEclipseDittoGenerator("com.test:TrackingDevice:1.0.0", "generated-eclipseditto.zip", Optional.empty());
-
+    invokeAndAssertEclipseDittoGenerator("com.test:TrackingDevice:1.0.0",
+        "generated-eclipseditto.zip", Optional.empty());
+    assertTrue(true);
   }
-  
-  private void invokeAndAssertEclipseDittoGenerator(String modelId, String fileNameToCompare, Optional<String> paramUrl) throws Exception {
+
+  private void invokeAndAssertEclipseDittoGenerator(String modelId, String fileNameToCompare,
+      Optional<String> paramUrl) throws Exception {
     repositoryServer
-        .perform(
-            get("/api/v1/generators/eclipseditto/models/"+modelId+(paramUrl.isPresent()?paramUrl.get():""))
-                .with(userAdmin))
+        .perform(get("/api/v1/generators/eclipseditto/models/" + modelId
+            + (paramUrl.isPresent() ? paramUrl.get() : "")).with(userAdmin))
         .andExpect(status().isOk())
         .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
   }
-  
+
   @Test
   public void testGenerateEclipseDittoForStreetLamp() throws Exception {
-    invokeAndAssertEclipseDittoGenerator("com.test:StreetLamp:1.0.0", "generated-eclipseditto-lampfb.zip", Optional.empty());
+    invokeAndAssertEclipseDittoGenerator("com.test:StreetLamp:1.0.0",
+        "generated-eclipseditto-lampfb.zip", Optional.empty());
+    assertTrue(true);
   }
 }

@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.io.IOUtils;
@@ -104,17 +105,28 @@ public abstract class AbstractIntegrationTest {
   
   @After
   public void cleanData() {
-    this.createdModels.forEach(modelId -> deleteModel(modelId.getPrettyFormat()));
-    this.createdModels.clear();
+    removeTestDataRecursive();
   }
-
-  public void deleteModel(String modelId) {
-    try {
+  
+  private void removeTestDataRecursive() {
+    
+    for (Iterator<ModelId> iter = createdModels.iterator();iter.hasNext();) {
+      try {
+        deleteModel(iter.next().getPrettyFormat());
+        iter.remove();
+      } catch(Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    
+    if (!this.createdModels.isEmpty()) {
+      removeTestDataRecursive();
+    }
+  }
+  
+  public void deleteModel(String modelId) throws Exception {
     repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
-    } catch(Exception ex) {
-      ex.printStackTrace();
-    }
   }
   
   protected abstract void setUpTest() throws Exception;
