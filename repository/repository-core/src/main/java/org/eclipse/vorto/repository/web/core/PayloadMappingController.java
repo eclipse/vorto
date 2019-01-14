@@ -62,16 +62,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
 @RequestMapping(value = "/rest/{tenant}/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
-
-  private static Gson gson = new GsonBuilder().create();
 
   private Supplier<IUserContext> userContextSupplier =
       () -> UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
