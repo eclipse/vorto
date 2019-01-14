@@ -12,23 +12,17 @@
  */
 package org.eclipse.vorto.repository.web.account;
 
-import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.ApplicationContext;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.eclipse.vorto.repository.account.IUserAccountService;
+import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 public class AccountControllerTest extends AbstractIntegrationTest {
 
