@@ -36,8 +36,8 @@ class PythonDittoSerializerTemplate implements IFileTemplate<Model> {
 	        self.payload = ""
 	        self.first_prop = True
 	
-	    def serialize_functionblock(self, name, object, ditto_nameSpace, hono_clientId):
-	        self.payload += "{\"topic\": \"" + ditto_nameSpace + "/" + hono_clientId + "/things/twin/commands/modify\","
+	    def serialize_functionblock(self, name, object, ditto_topic, hono_clientId):
+	        self.payload += "{\"topic\": \"" + ditto_topic + "/things/twin/commands/modify\","
 	        self.payload += "\"headers\": {\"response-required\": false},"
 	        self.payload += "\"path\": \"/features/"+name+"\",\"value\" : { \"properties\":{\"status\" : {"
 	        object.serializeStatus(self)

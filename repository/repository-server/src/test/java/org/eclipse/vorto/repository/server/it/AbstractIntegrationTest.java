@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static java.lang.Thread.sleep;
 import static org.eclipse.vorto.repository.account.Role.ADMIN;
 import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
 import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
@@ -24,16 +23,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
-import com.google.gson.Gson;
 import org.apache.commons.io.IOUtils;
+import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.eclipse.vorto.repository.web.VortoRepository;
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -52,9 +52,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.ConfigurableWebApplicationContext;
 import org.springframework.web.context.WebApplicationContext;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -67,6 +67,8 @@ public abstract class AbstractIntegrationTest {
 
   protected MockMvc repositoryServer;
   protected TestModel testModel;
+  
+  private List<ModelId> createdModels = new ArrayList<>();
   
   @Autowired
   protected WebApplicationContext wac;
@@ -100,7 +102,27 @@ public abstract class AbstractIntegrationTest {
     
     setUpTest();
   }
-
+  
+  @After
+  public void cleanData() {
+    removeTestDataRecursive();
+  }
+  
+  private void removeTestDataRecursive() {
+    
+    for (Iterator<ModelId> iter = createdModels.iterator();iter.hasNext();) {
+      try {
+        deleteModel(iter.next().getPrettyFormat());
+        iter.remove();
+      } catch(Exception ex) {
+      }
+    }
+    
+    if (!this.createdModels.isEmpty()) {
+      removeTestDataRecursive();
+    }
+  }
+  
   public void deleteModel(String modelId) throws Exception {
     repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
@@ -111,6 +133,7 @@ public abstract class AbstractIntegrationTest {
   
   public void createModel(String fileName, String modelId) throws Exception {
     createModel(userAdmin, fileName, modelId);
+    createdModels.add(ModelId.fromPrettyFormat(modelId));
   }
   
   public void releaseModel(String modelId) throws Exception {
@@ -119,6 +142,11 @@ public abstract class AbstractIntegrationTest {
     
     repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
+  }
+  
+  public void createAndReleaseModel(String fileName, String modelId) throws Exception {
+    createModel(fileName,modelId);
+    releaseModel(modelId);
   }
   
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,

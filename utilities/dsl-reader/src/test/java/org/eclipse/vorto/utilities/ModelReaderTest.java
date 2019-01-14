@@ -206,5 +206,4 @@ public class ModelReaderTest {
     assertEquals("iot.ColorLight",
         infomodel.getProperties().get(0).getType().getReferences().get(0).getImportedNamespace());
   }
-
 }
