@@ -118,14 +118,6 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     assertTrue(true);
   }
 
-  @Test
-  public void testGenerateBoschIoTSuiteForGatewaySoftware() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-boschiotsuite-gatewaySoftware.zip", Optional.of("?language=gateway"));
-    assertTrue(true);
-  }
-
-
   /** +++++++++++++ ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++ */
 
   @Test

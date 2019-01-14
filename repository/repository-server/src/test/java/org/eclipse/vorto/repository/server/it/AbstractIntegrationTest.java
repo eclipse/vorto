@@ -115,7 +115,6 @@ public abstract class AbstractIntegrationTest {
         deleteModel(iter.next().getPrettyFormat());
         iter.remove();
       } catch(Exception ex) {
-        ex.printStackTrace();
       }
     }
     
