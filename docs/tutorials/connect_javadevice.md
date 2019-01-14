@@ -1,4 +1,4 @@
-# Integrating a Java - based Device with the Bosch IoT Suite with Vorto
+# Integrating a Java - based Device with the Bosch IoT Suite using Vorto
 
 This tutorial explains how Vorto is used to create a simple Java application that sends device telemetry data to the Bosch IoT Suite. 
 
@@ -6,7 +6,9 @@ This tutorial explains how Vorto is used to create a simple Java application tha
 
 * Bosch ID User Account
 
-* You have booked the Asset Communication package of the Bosch IoT Suite (refer to [https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+
+* You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
 ## Tools
 
@@ -18,13 +20,13 @@ This tutorial explains how Vorto is used to create a simple Java application tha
 
 In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT Suite. This sensor is already described as a [Vorto Information Model](https://vorto.eclipse.org/#/details/org.eclipse.vorto.tutorial:DistanceSensor:1.0.0).
 
-1. Register a distance sensor thing instance for the Vorto Information Model in the Bosch IoT Suite device registry:
+1. Create a distance sensor thing instance for the Vorto Information Model in the Bosch IoT Suite device registry:
 
-	- Login to the [Vorto Demo Console](https://vorto.eclipse.org/demo).
+	- Login to the [Vorto Console](https://vorto.eclipse.org/console).
 
-	- Click **Register a new thing**.
+	- Click **Create thing**.
 	
-	- In the **Vorto Models** table, select a Vorto Model to specify the type of thing you want to register in the Suite.
+	- In the **Vorto Models** table, select a Vorto Model to specify the type of thing you want to create.
 	
 		For the example, select the **DistanceSensor** Vorto Information Model.
 	
@@ -43,35 +45,23 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 	- Click **Next**.
 	
-	- Select the protocol connector you would like to connect the device to the Suite with.
-	
-		For the example, choose **MQTT**. 
-	
-	- Click **Next**.
-	
-	- Specify the **Auth-ID**.
-	
 	- Specify the value for the **Password**. For the example, use `s3cr3t`
 	
 	- Click **Next**.
 
 	- Review the changes that are going to be made to the Suite.
 	
-	- Click **Register**.
+	- Click **Create**.
 	
-		The device is registered in the Bosch IoT Suite.
+		A new thing is created based on the Vorto Information Model in the Bosch IoT Suite.
 
 	- In the summary page, click **View thing details** to have a look at the digital twin representation of your device.
 		
 3. Generate and Download a Java Source Code Template for the device.
 	
-	- Go back to the [Vorto Demo Console](https://vorto.eclipse.org/demo).
+	- Go back to the [Vorto Console](https://vorto.eclipse.org/console).
 
-	- Click **Browse my things** to open the Thing Browser.
-
-		> Note: You can also directly open the [Thing Browser](https://vorto.eclipse.org/demo/thingbrowser). If not yet done, you will be asked for logging in.
-
-	- Navigate to your thing and click on it.
+	- Navigate to your thing in the Thing Browser and click on it.
 
 	- Click on the **Source Code Templates** tab.
 
@@ -87,9 +77,7 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 	- Open the class **DistanceSensorApp**.
 
-	- Set the **MQTT Endpoint** to `ssl://mqtt.bosch-iot-hub.com:8883`.
-
-	- Set the **Password**, you have specified during the registration process (refer to above).
+	- Set the **Password**, you have specified during the thing creation process (refer to above).
 
 	- Click **Save** to save the changes.
 
@@ -101,13 +89,11 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 	
 	> The running application prints out the logs to the IDE console.
 
-	- Go back to the [Vorto Demo Console](https://vorto.eclipse.org/demo).
+	- Go back to the [Vorto Console](https://vorto.eclipse.org/console).
 
-	- Click **Browse my things** to open the Thing Browser.
+	- Navigate to your thing in the Thing Browser and click on it.
 
-		> Note: You can also directly open the [Thing Browser](https://vorto.eclipse.org/demo/thingbrowser). If not yet done, you will be asked for logging in.
-
-	- Navigate to your thing and click on it.
+	- Click on Refresh to fetch the latest digital twin data
 
 	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
@@ -116,3 +102,6 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 
 **Great!** You just sent device payload complying to the Bosch IoT Suite using Vorto. Feel free to create another Vorto Information Model for your device.
  
+## What's next ?
+
+ - [Create an Alexa Skillset](voice_control_alexa.md) that outputs the device data from Bosch IoT Suite via Alexa - based voice service.

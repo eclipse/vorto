@@ -8,9 +8,9 @@
 <img src="docs/images/vorto_cover.png"/>
 
 
-## Getting started with Vorto 
+## Getting Started with Vorto
 
-The easiest to get started, is to take a look at our [Getting Started Guide](docs/gettingstarted.md)
+Take a look at the following demo showcasing how Vorto Models are used to simplify the integration of devices with the Bosch IoT Suite Platform: [Click here](https://vorto.eclipse.org/console) for the Demo.
 
 ## Repository Plugin SDK
 

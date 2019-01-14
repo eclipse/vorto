@@ -1,0 +1,23 @@
+namespace com.test
+version 1.0.0
+displayname "Address"
+description "Functionblock for Address"
+
+using com.test.Zone;1.0.0
+
+functionblock Address {
+	
+	configuration {
+	  	mandatory text as string with { readable: true, writable: true} "A string of text."
+	  	optional zone as Zone "the zone value is optional"
+	  	mandatory id as int with { readable: true, writable: true} "id of the address"
+	  	optional identifier as string <STRLEN 20>
+	}
+
+	status {
+	    mandatory deviceName as string <REGEX '[a-zA-Z][a-zA-Z][0-9]'> "Only allow 2 uppercase or lowercase characters and 1 digit for device name"
+	}
+	
+	events {}
+	operations {}
+}

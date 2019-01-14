@@ -14,31 +14,27 @@ package org.eclipse.vorto.repository.web.api;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@RestController
-@RequestMapping(value = "/api")
-public class ApidocController {
+@RestController @RequestMapping(value = "/api") public class ApidocController {
 
-  @Value("${server.contextPath}")
-  private String contextPath;
+    @Value("${server.contextPath}") private String contextPath;
 
-  @RequestMapping(value = "/context", method = RequestMethod.GET,
-      produces = MediaType.TEXT_PLAIN_VALUE)
-  public String getContext() {
+    @GetMapping(value = "/context", produces = MediaType.TEXT_PLAIN_VALUE)
+    public String getContext() {
 
-    if (contextPath == "/")
-      contextPath = "";
+        if (contextPath == "/")
+            contextPath = "";
 
-    if (contextPath.startsWith("/"))
-      contextPath = contextPath.substring(1);
+        if (contextPath.startsWith("/"))
+            contextPath = contextPath.substring(1);
 
-    return contextPath;
-  }
+        return contextPath;
+    }
 
 }

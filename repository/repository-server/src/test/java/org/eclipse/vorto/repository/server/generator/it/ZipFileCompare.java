@@ -39,6 +39,18 @@ public class ZipFileCompare implements ResultMatcher {
 
     ZipDiff.Result diffResult = new ZipDiff().diff(baselineZip, generatedZip);
     
+    diffResult.getAdded().forEach(item -> {
+        System.out.println("Added:" + item);
+    });
+    
+    diffResult.getRemoved().forEach(item -> {
+        System.out.println("Removed:" + item);
+    });
+    
+    diffResult.getChanged().forEach(item -> {
+        System.out.println("Changed:" + item);
+    });
+    
     assertEquals("Zip Diff Result: Added", 0, diffResult.getAdded().size());
     assertEquals("Zip Diff Result: Removed", 0, diffResult.getRemoved().size());
     assertEquals("Zip Diff Result: Changed", 0, diffResult.getChanged().size());

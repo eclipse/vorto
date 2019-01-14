@@ -1,0 +1,67 @@
+server:
+  port: 8080
+  contextPath: /infomodelrepository
+  use-forward-headers: true
+  admin: aedelmann
+  config:
+    authenticatedSearchMode: false
+    generatorUser: generator
+    generatorPassword: 123
+
+spring:
+  profiles.active: local
+  jackson.serialization.write-dates-as-timestamps: false
+  http.multipart.max-file-size: 20MB
+  http.multipart.max-request-size: 15MB
+
+repo:
+  config:
+    maxModelImageSize: 32000
+    maxModelSize: 2000000
+    maxBackupSize: 20000000
+  attachment.allowed:
+    extension: ext, pdf, doc, zip, jpg, png, svg, html, json
+    fileSize: 5
+
+github:
+  oauth2:
+    enabled: true
+    client:
+      clientId: ${github_clientid}
+      clientSecret: ${github_clientSecret}
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      clientAuthenticationScheme: form
+      scope:
+         - user:email
+    resource:
+      userInfoUri: https://api.github.com/user
+
+eidp:
+  oauth2:
+    enabled: false
+    client:
+      clientId: ${eidp_clientid}
+      clientSecret: ${eidp_clientSecret}
+      accessTokenUri: https://identity.bosch.com/connect/token
+      userAuthorizationUri: https://accounts.bosch.com/adfs/oauth2/authorize
+      clientAuthenticationScheme: form
+      resource: https://vorto.eclipse.org
+      scope:
+        - openid
+        - email
+        - profile
+    resource:
+      userInfoUri: https://accounts.bosch.com/adfs/userinfo
+      logoutRedirectUrl:
+      preferTokenInfo: true
+
+mail:
+  smtp:
+    host: localhost
+    port: 25
+    auth: false
+  from: vorto-dev@eclipse.org
+  login:
+    username:
+    password: 

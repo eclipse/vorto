@@ -1,14 +1,14 @@
-# Connecting an ESP8266-Based Device with Vorto
+# Integrating an ESP8266 - based Device with the Bosch IoT Suite using Vorto
 
-This tutorial explains how to use Developer Console to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.
+This tutorial explains how to generate an Arduino sketch for a given Vorto Information Model and send the device data to the Bosch IoT Suite via MQTT.
 
 ## Prerequisites
 
 * Bosch ID User Account
 
-* You have booked the Asset Communication package of the Bosch IoT Suite (refer to [https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://preview.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* You have booked the Asset Communication package for the Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 
-* You have registered the device in the Bosch IoT Suite (refer to [Registering a Device in the Bosch IoT Suite](register_device.md)).
+* You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
 ## Tools
 
@@ -50,17 +50,13 @@ This tutorial explains how to use Developer Console to generate an Arduino sketc
 
 2. Generating an arduino sketch using the Arduino Generator (Arduino project).
 
-	**Invoke the generator from the Repository**
+	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/demo) with your Bosch ID.
+	- Navigate to your thing in the Thing Browser and click on it.
 
-	- Click **Browse my things** to open the Thing Browser.
+	- Click on the **Source Code Templates** tab.
 
-		> Note: You can also directly open the [Thing Browser](https://vorto.eclipse.org/demo/thingbrowser). If not yet done, you will be asked for logging in. 
-
-	- Navigate to your model using the search functionality of the repository, select the tab **Source Code Templates** and look for **Integrate device with Arduino C** in the screen.
-
-	- Click on the **Download** button.
+	- At the **Integrate device with Arduino C** template, click **Download**.
 
 		<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
 
@@ -72,11 +68,7 @@ This tutorial explains how to use Developer Console to generate an Arduino sketc
 
 	The following important changes have to be made:
 
-	* Change the following for MQTT broker endpoint.
-
-		**passwordDevice**: the password you had entered while registering the thing
-	
-		> Note: These details are available in **End Point Configuration** tab of the thing details in the Developer Console.
+	* Change the passwordDevice, the password you had entered while creating the thing
 	  
 	* WLAN configuration.
 
@@ -108,7 +100,7 @@ This tutorial explains how to use Developer Console to generate an Arduino sketc
 
 		* Add the fingerprint to the Arduino sketch by setting the constant `mqttServerFingerprint`, replacing the colons with spaces.
 
-			<img width="800" src="../img/connect_esp8266/mqtt-cert.png">
+			<img width="800" src="../images/tutorials/connect_esp8266/mqtt-cert.png">
 
 	* Finally you can adapt the code in the loop function to read the sensors of your device and filling in the corresponding values to the Information Model API.
 
@@ -120,9 +112,9 @@ This tutorial explains how to use Developer Console to generate an Arduino sketc
 
 4. Verify incoming sensor data.
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/demo) with your Bosch ID.
+	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
 
-	- Click **Browse my things** to open the **Thing Browser**.
+	- Open the thing details
 
 	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
@@ -136,6 +128,6 @@ You have followed all the steps above but the Hub does not receive any data? Her
 
 	This means that if the length of your topic and payload plus 5 bytes overhead is longer than those 128 bytes the library will not transmit your data. However there is a solution: you can increase the buffer size by setting the variable `MQTT_MAX_PACKET_SIZE` in `PubSubClient.h` to a larger value, e.g. 256 or 384.
 
-## What's next?
+## What's next ?
 
-Learn how to easily create a Spring-boot Web application that can consume the device data from Bosch IoT Things and display the data in a UI. Click [here](create_webapp_dashboard) for the tutorial.
+ - [Create an Alexa Skillset](voice_control_alexa.md) that outputs the device data from Bosch IoT Suite via Alexa - based voice service.

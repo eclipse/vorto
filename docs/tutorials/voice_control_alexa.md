@@ -1,43 +1,29 @@
-+++
-tags = []
-categories = []
-date = "2017-12-18T12:00:00+08:00"
-title = "Voice - Control the XDK with Amazon Alexas"
-parent = "Resources >"
-parentlink = "/resources/"
-sibling = "Tutorials >"
-siblinglink = "/tutorials/"
-child = " Voice - Control the XDK with Amazon Alexa" 
-+++
 
-
-# Voice - Control the XDK with Amazon Alexa
+# Voice - Control a device with Amazon Alexa
 
 This tutorial explains how to build an Amazon Alexa skillset that reads device data from Bosch IoT Suite.
 
 ## Prerequisites
 
-* You have successfully booked the Bosch IoT Things Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/things/)).
+* Bosch ID User Account
 
-* You have successfully booked the Bosch IoT Permissions Service (refer to [https://www.bosch-iot-suite.com/things/](https://www.bosch-iot-suite.com/permissions/)).
+* You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 
-* You have registered the Bosch XDK providing various sensors in the Bosch IoT Suite ([Registering a Device in the Bosch IoT Suite](../dx_register_device)).
-
-	<img width="50%" src="../img/connect_alexa/browse_xdk.png">
+* You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
 ## Proceed as follows
 
 1. Generate an Amazon Alexa skillset with Vorto.
 
-	- Log in to the [Thing Browser](https://console.bosch-iot-suite.com/#/thingbrowser).
+	- Log in to the [Vorto Console](https://vorto.eclipse.org/console).
 
-	- Select your registered XDK device.
+	- Select your created XDK thing
 
 	- Select the **Source Code Templates** tab.
 
 	- From the list of templates, select **Amazon Alexa skillset**.
 	
-		<img width="400" src="../img/connect_alexa/alexa-generator.png">
+		<img width="400" src="../images/tutorials/connect_alexa/alexa-generator.png">
 	
 	- Download and unzip the generated bundle.
 
@@ -57,7 +43,7 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 	
 		The **Create function** page opens.
 
-		<img width="60%" src="../img/connect_alexa/alexa-create-function.png">
+		<img width="60%" src="../images/tutorials/connect_alexa/alexa-create-function.png">
 		
 		> Note: Ensure that your location is _N.Virginia_.
 	
@@ -71,19 +57,19 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 	- Click **Create function**.
 	
-		<img width="60%" src="../img/connect_alexa/alexa-function-details.png">
+		<img width="60%" src="../images/tutorials/connect_alexa/alexa-function-details.png">
 	
 	- Copy and Paste the generated `alexa-skillset-lambda.js` content into the online editor.
 	
 	- Modify the code and add your _api token_, _thingID_, _username_ and _password_. Beware, that the username must be formatted like _tenant\username_. The _username_ and _password_ are from [Bosch IoT Permissions](https://permissions.s-apps.de1.bosch-iot-cloud.com/fusion/).
 	
-		<img width="80%" src="../img/connect_alexa/alexa-add-lambdajs.png">
+		<img width="80%" src="../images/tutorials/connect_alexa/alexa-add-lambdajs.png">
 	
 	- In the Execution code area, select **Choose an existing role** from the first drop-down list.
 
 	- In the Execution code area, select an existing role from the first **Existing role** drop-down list.
 
-		<img width="70%" src="../img/connect_alexa/alexa-add-lambdajs-role.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-lambdajs-role.png">
 
 3. Set-up Your Alexa Skill in the Developer Portal.
 
@@ -91,25 +77,25 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 	- On **Alexa Skills Kit**, click **Get Started**.
 	
-		<img width="30%" src="../img/connect_alexa/alexa-getStarted.png">
+		<img width="30%" src="../images/tutorials/connect_alexa/alexa-getStarted.png">
 
 		A page opens where you can define and manage your skills.
 	
 	- Click **Add a New Skill**:
 	
-		<img width="50%" src="../img/connect_alexa/alexa-add-skill.png">
+		<img width="50%" src="../images/tutorials/connect_alexa/alexa-add-skill.png">
 	
 	- In the **Name** entry field, enter a name for your skill.
 
 	- In the **Invocation Name** entry field, enter an invocation name for your skill.
 
-		<img width="70%" src="../img/connect_alexa/alexa-skill-config.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-skill-config.png">
 	
 	- Click **Next**.
 
 	- Copy the Skill **ID** for the next step:
 	
-		<img width="50%" src="../img/connect_alexa/alexa-skillset-id.png">
+		<img width="50%" src="../images/tutorials/connect_alexa/alexa-skillset-id.png">
 
 4. Add Alexa skillset trigger.
 
@@ -117,11 +103,11 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 	- In the **Designer** area, click **Alexa Skills Kit** from the list of triggers to add an Alexa skillset trigger to the new function:
 	
-		<img width="70%" src="../img/connect_alexa/alexa-add-skillsetTrigger.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-skillsetTrigger.png">
 	
 	- In the **Configure triggers** area, paste the skill ID copied from the previous step into the **Skill ID** entry field.
 
-		<img width="70%" src="../img/connect_alexa/alexa-add-triggerConfig.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-triggerConfig.png">
 
 	- Click **Add**.
 
@@ -129,7 +115,7 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 	
 		Your Alexa skills kit will appear as shown below:
 	
-		<img width="70%" src="../img/connect_alexa/alexa-add-SkillID.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-SkillID.png">
 
 5. Build the skillset.
  
@@ -141,9 +127,9 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 		You can modify the utterances to more human friendly commands:
 
-		<img width="70%" src="../img/connect_alexa/alexa-add-intent.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-intent.png">
 
-		<img width="70%" src="../img/connect_alexa/alexa-add-utterences.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-utterences.png">
 
 	- Confirm with **Next**
 	
@@ -151,13 +137,13 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 	- Add the **AWS Lambda ARN (Amazon Resource Name)** of the skillset lambda function that you created in step 2. 
 		
-		<img width="70%" src="../img/connect_alexa/alexa-add-configuration.png">
+		<img width="70%" src="../images/tutorials/connect_alexa/alexa-add-configuration.png">
 
 6. Test the skillset.
 
 	You can easily test your skillset with the AWS Alexa Skillset Builder.  
 	
-	- First, update the temperature feature of your XDK thing from Bosch IoT Things (refer [Update the features of a thing from Things API](./dx_create_webapp_dashboard/#update_the_features_of_a_thing_from_things_api)).
+	- First, update the temperature feature of your XDK using the Bosch IoT Suite REST - API.
 	
 	-  Enter the following utterance to ask Alexa about the temperature and submit:
 	
@@ -169,6 +155,6 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 	
 		Alexa outputs `57.8`:
 	
-		<img width="50%" src="../img/connect_alexa/alexa-test.png">
+		<img width="50%" src="../images/tutorials/connect_alexa/alexa-test.png">
 
 7. Publish your skillset and test it with Echo.

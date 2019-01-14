@@ -27,6 +27,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import javax.jcr.AccessDeniedException;
 import javax.jcr.Binary;
 import javax.jcr.Item;
@@ -50,6 +51,7 @@ import javax.jcr.security.AccessControlList;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.AccessControlPolicyIterator;
 import javax.jcr.security.Privilege;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.core.api.model.model.Model;
@@ -101,6 +103,8 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
   private static Logger logger = Logger.getLogger(JcrModelRepository.class);
 
+  private static final String VORTO_NODE_TYPE = "vorto:type";
+
   @Autowired
   private IUserRepository userRepository;
 
@@ -138,7 +142,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       while (rowIterator.hasNext()) {
         Row row = rowIterator.nextRow();
         Node currentNode = row.getNode();
-        if (currentNode.hasProperty("vorto:type")) {
+        if (currentNode.hasProperty(VORTO_NODE_TYPE)) {
           try {
             modelResources.add(createMinimalModelInfo(currentNode));
           } catch (Exception ex) {
@@ -150,7 +154,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       session.logout();
       return modelResources;
     } catch (RepositoryException e) {
-      throw new RuntimeException("Could not create query manager", e);
+      throw new FatalModelRepositoryException("Could not create query manager", e);
     }
   }
 
@@ -166,7 +170,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   private ModelInfo createMinimalModelInfo(Node fileNode) throws RepositoryException {
     Node folderNode = fileNode.getParent();
     ModelInfo resource = new ModelInfo(ModelIdHelper.fromPath(folderNode.getPath()),
-        fileNode.getProperty("vorto:type").getString());
+        fileNode.getProperty(VORTO_NODE_TYPE).getString());
     resource.setDescription(fileNode.getProperty("vorto:description").getString());
     resource.setDisplayName(fileNode.getProperty("vorto:displayname").getString());
     resource.setCreationDate(fileNode.getProperty("jcr:created").getDate().getTime());
@@ -373,7 +377,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           if (hasPermission(referencedById,Permission.READ)) {
             resource.getReferencedBy().add(referencedById);
 
-            if (referencedFolder.getProperty("vorto:type").getString()
+            if (referencedFolder.getProperty(VORTO_NODE_TYPE).getString()
                 .equals(ModelType.Mapping.name())) {
               try {
                 ModelResource emfResource = getEMFResource(referencedById);
