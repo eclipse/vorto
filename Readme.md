@@ -32,7 +32,7 @@ Take a look at the following demo showcasing how Vorto Models are used to simpli
 - [Vorto DSL](core-bundles/docs/quickhelp_dsl.md)
 - [Code Generators](generators/Readme.md)
 - [Payload Mapping Engine](mapping-engine/Readme.md)
-- [Tutorials](docs/tutorials/Readme.md)
+- [Tutorials](docs/gettingstarted.md)
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

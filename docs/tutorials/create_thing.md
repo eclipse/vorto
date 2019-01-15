@@ -11,7 +11,7 @@ As an example, the [Octopus board](http://vorto.eclipse.org/#/details/com.bosch.
 
 * You have booked an asset communication package for the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 
-* You have created a Vorto Information Model for the device (refer to [Describing a device](tisensor.md)).
+* You have created a Vorto Information Model for the device (refer to [Describing a device](describe_tisensor.md)).
 
 
 ## Proceed as follows
