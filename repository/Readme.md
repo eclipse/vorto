@@ -12,4 +12,4 @@ The Vorto Repository lets you
 
 ## Further links
 
-* [Tutorial](../docs/tutorials/tisensor.md) about how to describe device with the Vorto DSL
+* [Tutorial](../docs/tutorials/describe_tisensor.md) about how to describe device with the Vorto DSL
