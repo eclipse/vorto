@@ -23,6 +23,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.permission = "READ";
 		$scope.encodeURIComponent = encodeURIComponent;
 		$scope.newComment = {value: ""}
+		$scope.canGenerate = true;
 
 		$scope.modelEditorLoaded = function (_editor) {
 			$scope.modelEditor = _editor;
@@ -164,6 +165,7 @@ repositoryControllers.controller('DetailsController',
 						"state" : null,
 						"hasAccess" : false
 					};
+					$scope.canGenerate = false;
 					$scope.modelReferences.show = true;
 					tmpIdx++;
 				});
