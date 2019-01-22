@@ -11,6 +11,17 @@ node {
 				}
 			}
 	}
-	stage("BlackDuck"){
+	stage("CLMScan"){
+		withMaven(
+			maven: 'maven-latest',
+			mavenLocalRepo: '.repository') {
+				sh 'mvn -P coverage clean install'
+				withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+					sh 'mvn clean package tina:analyze -Denv.clmusername=$USERNAME -Denv.clmpassword=$PASSWORD -DskipTests'
+					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
+					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
+
+				}
+			}
 	}
 }
