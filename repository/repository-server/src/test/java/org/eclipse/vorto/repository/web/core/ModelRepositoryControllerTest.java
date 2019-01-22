@@ -86,7 +86,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         // test with existing Model but user has no read permission
         this.repositoryServer.perform(
             put("/rest/default/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userStandard)).andExpect(status().isNotFound());
+                .content(json).with(userCreator)).andExpect(status().isNotFound());
         // test save with non existitng modelid
         this.repositoryServer.perform(put("/rest/default/models/com.test1:TrackinDevice:0.0.1")
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
