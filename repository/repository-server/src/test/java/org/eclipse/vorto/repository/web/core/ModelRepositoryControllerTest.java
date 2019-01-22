@@ -12,6 +12,7 @@
  */
 package org.eclipse.vorto.repository.web.core;
 
+import static java.lang.Thread.sleep;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -84,9 +85,10 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             put("/rest/default/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
                 .content(json).with(userCreator)).andExpect(status().isOk());
         // test with existing Model but user has no read permission
+        sleep(1000); //
         this.repositoryServer.perform(
             put("/rest/default/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userStandard)).andExpect(status().isUnauthorized());
+                .content(json).with(userStandard)).andExpect(status().isNotFound());
         // test save with non existitng modelid
         this.repositoryServer.perform(put("/rest/default/models/com.test1:TrackinDevice:0.0.1")
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))
