@@ -16,7 +16,9 @@ node {
 			maven: 'maven-latest',
 			mavenLocalRepo: '.repository') {
 				withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					sh 'mvn clean package tina:analyze -Denv.clmusername=$USERNAME -Denv.clmpassword=$PASSWORD -DskipTests'
+					nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+					//sh 'mvn clean package tina:analyze -Denv.clmusername=$USERNAME -Denv.clmpassword=$PASSWORD -DskipTests'
+
 					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
 					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
 
