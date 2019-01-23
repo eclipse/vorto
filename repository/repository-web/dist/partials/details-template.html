@@ -423,7 +423,17 @@
 					<div class="row" ng-repeat="row in platformGeneratorMatrix">
 						<!--genbox -->
 						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
-							<a ng-click="openGeneratorConfig(generator)">
+							<a ng-show="!canGenerate" uib-tooltip-template="'cannotGenerateWarningTooltip'" tooltip-append-to-body="true">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}">
+									<span class="tiny-box-icon">
+										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
+									</span>
+									<div class="tiny-box-name">
+										<span>{{generator.name}}</span>
+									</div>
+								</div>
+							</a>
+							<a ng-show="canGenerate" ng-click="openGeneratorConfig(generator)">
 								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
@@ -725,4 +735,9 @@
 <script type="text/ng-template" id="userEditWarningTooltip">
 	<span class="glyphicon glyphicon-exclamation-sign"></span>
 	<span> An imported model cannot be modified!</span>
+</script>
+
+<script type="text/ng-template" id="cannotGenerateWarningTooltip">
+	<span class="glyphicon glyphicon-exclamation-sign"></span>
+	<span> You need access to the complete model to generate code!</span>
 </script>

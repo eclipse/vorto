@@ -353,9 +353,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
           try {
             Node referencedNode = getSession().getNodeByIdentifier(nodeUuid);
             ModelId referenceModelId = ModelIdHelper.fromPath(referencedNode.getPath());
-            if (hasPermission(referenceModelId,Permission.READ)) {
-              referenceHelper.addModelReference(referenceModelId.getPrettyFormat());
-            }
+            referenceHelper.addModelReference(referenceModelId.getPrettyFormat());
           } catch (ItemNotFoundException itemNotFound) {
             logger.error("Referential Integrity Problem ----->>>>>>> Broken reference of model "
                 + resource.getId(), itemNotFound);
