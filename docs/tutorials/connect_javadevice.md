@@ -4,11 +4,9 @@ This tutorial explains how Vorto is used to create a simple Java application tha
 
 ## Prerequisites
 
-* Bosch ID User Account
+* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
-
-* You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
 ## Tools
 

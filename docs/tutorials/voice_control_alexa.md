@@ -5,7 +5,7 @@ This tutorial explains how to build an Amazon Alexa skillset that reads device d
 
 ## Prerequisites
 
-* Bosch ID User Account
+* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 

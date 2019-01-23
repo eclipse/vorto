@@ -4,7 +4,7 @@ This tutorial explains how to generate an Arduino sketch for a given Vorto Infor
 
 ## Prerequisites
 
-* Bosch ID User Account
+* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * You have booked the Asset Communication package for the Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 

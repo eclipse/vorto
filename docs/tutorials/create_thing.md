@@ -7,7 +7,7 @@ As an example, the [Octopus board](http://vorto.eclipse.org/#/details/com.bosch.
 
 ## Prerequisites
 
-* Bosch ID User Account
+* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
 * You have booked an asset communication package for the Bosch IoT Suite (refer to [Getting Started Guide](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
 
