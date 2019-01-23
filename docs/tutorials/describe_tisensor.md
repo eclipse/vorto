@@ -6,7 +6,7 @@ Read more about the benefits of Vorto in this [blog post](https://blog.bosch-si.
 ### Prerequisite
 * [Github](https://github.com/) account
 * Device you want to describe
-* Decice Related specifications
+* Device Related specifications
 
 
 ### Let's get started
@@ -146,9 +146,11 @@ For more information on *Model States* click [here](https://www.eclipse.org/vort
 ![](/images/tutorials/tisensor/tisensor_lifecycle.jpg)
 </figure>
 
-### Next steps
-* Now it is time to specify how the arbitrary data stream from and to your device is adjusted to the abstract framework of the Vorto model. This is done with the [mapping feature](https://github.com/eclipse/vorto/blob/development/mapping-engine/Readme.md) and will be explained in a follow-up tutorial we are currently working on. 
-* To further leverage the work you can convert your *Information Model* with the help of [Code Generators](https://github.com/eclipse/vorto/blob/development/generators/) into a platform-specific source code, that runs on the device and integrates with the specific IoT backend.
+## What's next?
+
+- [Generate Arduino sketch](connect_esp8266.md) that connects an ESP8266 based device to the Bosch IoT Suite via MQTT
+- [Generate Python Code](mqtt-python.md) that connects the device to the Bosch IoT Suite via MQTT.
+- [Generate Java Code](mqtt-python.md) that connects the device to the Bosch IoT Suite via MQTT.
 
 
 
