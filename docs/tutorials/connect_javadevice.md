@@ -6,7 +6,7 @@ This tutorial explains how Vorto is used to create a simple Java application tha
 
 * [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
-* You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
 
 ## Tools
 

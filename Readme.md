@@ -3,14 +3,14 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
-[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to convert Device Information Models to source code that runs on the device or gateway, easing the **integration with IoT Platforms**.
+[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
 
 <img src="docs/images/vorto_cover.png"/>
 
 
 ## Getting Started with Vorto
 
-Take a look at the following demo showcasing how Vorto Models are used to simplify the integration of devices with the Bosch IoT Suite Platform: [Click here](https://vorto.eclipse.org/console) for the Demo.
+[Read more](docs/gettingstarted.md)
 
 ## Repository Plugin SDK
 
