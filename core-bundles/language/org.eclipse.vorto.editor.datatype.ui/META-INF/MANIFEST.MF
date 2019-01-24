@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Datatype Editor UI (Incubation)
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-Version: 0.10.0.qualifier
+Bundle-SymbolicName: org.eclipse.vorto.editor.datatype.ui; singleton:=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.xtext.ui,
+ org.eclipse.ui.editors;bundle-version="3.5.0",
+ org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.ui,
+ org.eclipse.xtext.builder,
+ org.antlr.runtime,
+ org.eclipse.xtext.common.types.ui,
+ org.eclipse.xtext.ui.codetemplates.ui,
+ org.eclipse.compare,
+ org.eclipse.vorto.editor.datatype,
+ org.eclipse.vorto.editor.datatype.ide,
+ org.eclipse.vorto.core,
+ org.eclipse.xtext.xbase.lib,
+ org.eclipse.xtend.lib;resolution:=optional
+Import-Package: org.apache.log4j
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.vorto.editor.datatype.ui,org.eclipse.vorto
+ .editor.datatype.ui.contentassist,org.eclipse.vorto.editor.datatype.u
+ i.internal,org.eclipse.vorto.editor.datatype.ui.quickfix,org.eclipse.
+ vorto.editor.datatype.ui.typecreator
+Bundle-Activator: org.eclipse.vorto.editor.datatype.ui.internal.DatatypeActivator
