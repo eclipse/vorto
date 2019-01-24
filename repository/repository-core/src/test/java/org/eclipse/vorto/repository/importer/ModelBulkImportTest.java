@@ -34,7 +34,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    bulkUploadHelper = new BulkUploadHelper(this.modelRepository,policyManager, this.userRepository);
+    bulkUploadHelper = new BulkUploadHelper(this.modelRepository,policyManager, this.accountService);
   }
 
   @Test
@@ -105,7 +105,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     VortoModelImporter vortoImporter = new VortoModelImporter();
     vortoImporter.setModelRepository(modelRepository);
     vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
-    vortoImporter.setUserRepository(userRepository);
+    vortoImporter.setUserRepository(accountService);
 
     UploadModelResult uploadResult =
         vortoImporter.upload(
