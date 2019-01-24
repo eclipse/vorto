@@ -21,11 +21,9 @@ Some artifacts (eclipse plugins) are not on the main tree of Vorto. You need to 
 
 [Eclipse Neon IDE for Java and DSL Developers - Windows](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-dsl-neon-3-win32-x86_64.zip)
 
-[Eclipse Neon IDE for Java and DSL Developers - Linux]
-(https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-dsl-neon-3-linux-gtk-x86_64.tar.gz)
+[Eclipse Neon IDE for Java and DSL Developers - Linux](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-dsl-neon-3-linux-gtk-x86_64.tar.gz)
 
-[Eclipse Neon IDE for Java and DSL Developers - Mac]
-(https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-dsl-neon-3-macosx-cocoa-x86_64.tar.gz)
+[Eclipse Neon IDE for Java and DSL Developers - Mac](https://www.eclipse.org/downloads/download.php?file=/technology/epp/downloads/release/neon/3/eclipse-dsl-neon-3-macosx-cocoa-x86_64.tar.gz)
 
 ### Import projects to Eclipse
 
