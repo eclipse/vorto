@@ -35,11 +35,11 @@ Before we import the Vorto projects to Eclipse, let us do a full maven build.
 Remember to set your network connection (if you have proxies) in Eclipse
 >Window > Preferences > General > Network Connection
 
-** Import all Vorto projects in Eclipse **
+**Import all Vorto projects in Eclipse**
 
 >File > Import > Maven > Existing Maven Project
 
-** Set the target environment **
+**Set the target environment**
 
 >Window > Preferences > Plug-in Development > Target Platform
 
@@ -47,15 +47,15 @@ and uncheck all except for
 
 >target definitions- core- bundles/targetplatform/vorto.target
 
-** Refresh the projects **
+**Refresh the projects**
 
 Select all projects, right click and click *Refresh*
 
-** Update project maven dependencies **
+**Update project maven dependencies**
 
 Select all projects, right click and click *Maven > Update Project ...*
 
-** Build All **
+**Build All**
 
 Select all projects and 
 
@@ -63,7 +63,7 @@ Select all projects and
 
 #### Checkpoint! No error? Continue.
 
-** Test current installation **
+**Test current installation**
 
 Right now, it would be a good idea to test the current vorto plugins if they are functioning correctly, before we add our own plugins.
 
