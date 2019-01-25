@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+	<template autoinsert="true"
+		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
+		description="Mandatory property" enabled="true" name="mandatory property"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_1">mandatory ${name} as ${type} "description"</template>
+	<template autoinsert="true"
+		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
+		description="Optional property" enabled="true" name="optional property"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_10">optional ${name} as ${type} "description"</template>
+	<template autoinsert="true"
+		context="org.eclipse.vorto.editor.datatype.Datatype.Property" deleted="false"
+		description="measurementUnit, readable, writable and eventable flags." enabled="true" name="with"
+		id="org.eclipse.vorto.editor.datatype.Datatype.Property_21">with { measurementUnit: ${enumValue}, readable: true, writable: true, eventable: true }</template>
+</templates>
