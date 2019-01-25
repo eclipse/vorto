@@ -136,13 +136,13 @@ The DSL that we would like to create would allow us to aggregate several Vorto i
     namespace org.test
     version 1.0.0
     aggregate MyRoomba {
-        BatterySensor as my.infomodel.Battery
-        LeftMotor as my.infomodel.Motor
-        RightMotor as my.infomodel.Motor
-        Vacuum as my.infomodel.Vacuum
+        BatterySensor as my.testmodel.Battery
+        LeftMotor as my.testmodel.Motor
+        RightMotor as my.testmodel.Motor
+        Vacuum as my.testmodel.Vacuum
     }
 
-Where *my.infomodel.Battery*, *my.infomodel.Motor*, and *my.infomodel.Vacuum* are Vorto information models.
+Where *my.testmodel.Battery*, *my.testmodel.Motor*, and *my.testmodel.Vacuum* are Vorto information models.
 
 The first thing we have to do is to add a dependency on *org.system.model* to the following plugins
 
