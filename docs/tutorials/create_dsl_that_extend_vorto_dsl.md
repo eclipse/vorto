@@ -127,9 +127,9 @@ Refer to *Aggregate.xtext* in *org.system.model* project for the grammar of your
 
 If everything is working, continue.
 
-###Linking the new DSL to the Vorto DSL
+### Linking the new DSL to the Vorto DSL
 
-####The System Model DSL
+#### The System Model DSL
 
 The DSL that we would like to create would allow us to aggregate several Vorto information models into one *aggregate* entity. It would allow for source code like this
 
@@ -230,7 +230,7 @@ Go to the *AggregateRuntimeModule.xtend* class in the *src* folder of *org.syste
         return new TypeFileAccessingHelper()
     }
 
-##Finally, let's run our new DSL
+## Finally, let's run our new DSL
 
 Right click on the *org.system.model* plugin and
 
