@@ -13,10 +13,6 @@
 	<name>Data Type Language</name>
 	<description>Contains the DSL for datatypes</description>
 
-	<properties>
-		<test.project>org.eclipse.vorto.editor.datatype.tests</test.project>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -42,6 +38,7 @@
 						<argument>
 							rootPath=/${project.basedir}/..
 						</argument>
+						
 					</arguments>
 				</configuration>
 				<dependencies>
@@ -59,12 +56,6 @@
 						<groupId>org.eclipse.vorto</groupId>
 						<artifactId>org.eclipse.vorto.core</artifactId>
 						<version>${project.version}</version>
-						<exclusions>
-							<exclusion>
-								<groupId>p2.eclipse-plugin</groupId>
-								<artifactId>*</artifactId>
-							</exclusion>
-						</exclusions>
 					</dependency>
 				</dependencies>
 			</plugin>
@@ -78,37 +69,16 @@
 				<configuration>
 					<filesets combine.children="append">
 						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype/src-gen/</directory>
+							<directory>${project.basedir}/../org.eclipse.vorto.editor.datatype.ide/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ide/src-gen/</directory>
+							<directory>${project.basedir}/../org.eclipse.vorto.editor.datatype.ui/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ui/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.web/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.tests/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/model/generated/</directory>
 						</fileset>
 					</filesets>
 				</configuration>

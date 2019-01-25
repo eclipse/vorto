@@ -33,5 +33,4 @@ Export-Package: org.eclipse.vorto.editor.datatype,org.eclipse.vorto.ed
  .editor.datatype.scoping,org.eclipse.vorto.editor.datatype.serializer
  ,org.eclipse.vorto.editor.datatype.services,org.eclipse.vorto.editor.
  datatype.validation
-Automatic-Module-Name: org.eclipse.vorto.editor.datatype
 

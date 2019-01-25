@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vorto Mapping Editor IDE (Incubation)
+Bundle-Version: 0.10.0.qualifier
+Bundle-SymbolicName: org.eclipse.vorto.editor.mapping.ide; singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.vorto.editor.mapping.ide.contentassist.antlr.internal,
+ org.eclipse.vorto.editor.mapping.ide.contentassist.antlr
+Bundle-Vendor: Eclipse.org/Vorto
+Bundle-ClassPath: .
+Require-Bundle: org.eclipse.vorto.editor.mapping;bundle-version="0.10.0",
+ org.eclipse.xtext.ide,
+ org.eclipse.xtext.xbase.ide
+Import-Package: org.eclipse.vorto.editor.mapping.ide.contentassist.antlr,
+ org.eclipse.vorto.editor.mapping.ide.contentassist.antlr.internal
