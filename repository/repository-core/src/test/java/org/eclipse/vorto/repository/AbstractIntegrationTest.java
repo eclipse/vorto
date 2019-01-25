@@ -104,6 +104,11 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		
 		modelParserFactory.setRepository(modelRepository);
 		
+	    this.accountService = new DefaultUserAccountService();
+	    this.accountService.setModelRepository(modelRepository);
+	    this.accountService.setNotificationService(notificationService);
+	    this.accountService.setUserRepository(userRepository);
+		
 		this.importer = new VortoModelImporter();
 		this.importer.setModelRepository(modelRepository);
 		this.importer.setUploadStorage(new InMemoryTemporaryStorage());
@@ -111,10 +116,7 @@ public abstract class AbstractIntegrationTest extends ModeShapeSingleUseTest {
 		this.importer.setModelParserFactory(modelParserFactory);
 		this.importer.setPolicyManager(policyManager);
 		
-		this.accountService = new DefaultUserAccountService();
-		this.accountService.setModelRepository(modelRepository);
-		this.accountService.setNotificationService(notificationService);
-		this.accountService.setUserRepository(userRepository);
+
 		
 		
 		this.workflow = new DefaultWorkflowService(this.modelRepository,accountService,notificationService);
