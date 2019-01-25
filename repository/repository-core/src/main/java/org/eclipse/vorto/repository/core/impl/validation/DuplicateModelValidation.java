@@ -12,8 +12,8 @@
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -29,9 +29,9 @@ public class DuplicateModelValidation implements IModelValidator {
   
   private IModelPolicyManager policyManager;
 
-  private IUserRepository userRepository;
+  private IUserAccountService userRepository;
 
-  public DuplicateModelValidation(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserRepository userRepo) {
+  public DuplicateModelValidation(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserAccountService userRepo) {
     this.modelRepository = modelRepository;
     this.policyManager = policyManager;
     this.userRepository = userRepo;
@@ -51,7 +51,7 @@ public class DuplicateModelValidation implements IModelValidator {
     assert (context.getUserContext().getUsername() != null);
     assert (userRepository != null);
 
-    User user = userRepository.findByUsername(context.getUserContext().getUsername());
+    User user = userRepository.getUser(context.getUserContext().getUsername());
     if (user == null) {
       return false;
     }

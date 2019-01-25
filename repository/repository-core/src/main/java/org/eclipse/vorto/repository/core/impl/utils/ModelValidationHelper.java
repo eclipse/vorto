@@ -14,7 +14,8 @@ package org.eclipse.vorto.repository.core.impl.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -32,7 +33,7 @@ public class ModelValidationHelper {
 
   private List<IModelValidator> validators = new ArrayList<IModelValidator>();
 
-  public ModelValidationHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserRepository userRepository) {
+  public ModelValidationHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserAccountService userRepository) {
     this.validators.add(new DuplicateModelValidation(modelRepository, policyManager, userRepository));
     this.validators.add(new ModelReferencesValidation(modelRepository));
     this.validators.add(new TypeImportValidation());

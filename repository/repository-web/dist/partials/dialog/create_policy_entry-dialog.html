@@ -1,7 +1,16 @@
 <div class="modal-header">
-	<h3 class="modal-title"><center>Add Policy Entry</center></h3>
+	<h3 class="modal-title"><center>Granting Model Permission</center></h3>
 </div>
 <div class="modal-body">
+	<p>
+		Granting users READ permission for the model, would allow them to
+		<ul>
+			<li>Search for the model</li>
+			<li>Access the model details</li>
+			<li>Generate code for the model (requires also READ permission to all dependent models!)</li>
+			<li>Comment on the model, e.g. for review feedback</li>
+		</ul>
+	</p>
 	<form name="createEntryForm" novalidate>
 		<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
 		<div class="form-group">
@@ -10,7 +19,7 @@
 	        <input ng-if="editMode" disabled="disabled" type="text" class="form-control" name="principalId" ng-model="entry.principalId">
 	    </div>  
     	<input type="radio" name="grantWrite" value="READ" ng-model="entry.permission">&nbsp;Read&nbsp;
-    	<input type="radio" name="grantWrite" value="MODIFY" ng-model="entry.permission">&nbsp;Read/Write
+    	<input type="radio" disabled="disabled" name="grantWrite" value="MODIFY" ng-model="entry.permission">&nbsp;Read/Write (coming soon)
   </div>
 </form>
 <div class="modal-footer">

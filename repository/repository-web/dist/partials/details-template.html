@@ -308,6 +308,9 @@
 													<i class="fa fa-fw fa-exclamation-triangle"></i>Line {{ issue.lineNumber }} - {{ issue.msg}}
 												</p>
 											</div>
+											<div ng-if="error" class="alert alert-danger">
+												<span><i class="fa fa-fw fa-exclamation-triangle"></i> {{error.message}}</span>
+											</div>
 											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
 											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
 										</div>

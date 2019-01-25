@@ -70,7 +70,12 @@ repositoryControllers.controller('DetailsController',
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.isLoading = false;
-					$scope.error = data;
+					if (status === 400) {
+						$scope.message = data.message;
+						$scope.validationIssues = data.validationIssues;
+					} else {
+						$scope.error = data;
+					}
 				});
 		};
 
@@ -831,7 +836,7 @@ repositoryControllers.controller('DetailsController',
 					};
 				},
 				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "sm",
+				size: "lg",
 				resolve: {
 					model: function () {
 						return $scope.model;
@@ -876,8 +881,9 @@ repositoryControllers.controller('DetailsController',
 								$scope.isLoading = false;
 								modalInstance.close();
 						}).error(function (data, status, headers, config) {
+								console.log(status);
 								$scope.isLoading = false;
-								$scope.errorMessage = status.message;
+								$scope.errorMessage = data.message;
 							});
 					};
 
@@ -886,7 +892,7 @@ repositoryControllers.controller('DetailsController',
 					};
 				},
 				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "sm",
+				size: "lg",
 				resolve: {
 					model: function () {
 						return $scope.model;
