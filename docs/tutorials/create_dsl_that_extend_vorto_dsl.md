@@ -59,7 +59,7 @@ Select all projects and
 
 #### Checkpoint! No error? Continue.
 
-**Modify Vorto MWE2 files to generate files for Eclipse UI plugins
+**Modify Vorto MWE2 files to generate files for Eclipse UI plugins**
 
 Modify *GenerateDatatype.mwe2* in *org.eclipse.vorto.editor.datatype* to enable code generation for eclipsePlugin and the IDE
 
@@ -74,7 +74,7 @@ Do the same thing for *GenerateFunctionblock.mwe2* in *org.eclipse.vorto.editor.
 
 Now, go to <root>/core-bundles/language/pom.xml and uncomment the commented-out modules.
 
-**Import the UI plugins
+**Import the UI plugins**
 
 Now, import the UI plugins
 
@@ -82,7 +82,7 @@ Now, import the UI plugins
 
 Point the *Root Directory* to <root>/core-bundles/language, and choose the remaining unimported projects.
 
-**Generate the Xtext UI artifacts
+**Generate the Xtext UI artifacts**
 
 Now, go to *GenerateDatatype.mwe2* in *org.eclipse.vorto.editor.datatype* and right click
 
