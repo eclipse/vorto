@@ -59,6 +59,37 @@ Select all projects and
 
 #### Checkpoint! No error? Continue.
 
+**Modify Vorto MWE2 files to generate files for Eclipse UI plugins
+
+Modify *GenerateDatatype.mwe2* in *org.eclipse.vorto.editor.datatype* to enable code generation for eclipsePlugin and the IDE
+
+    eclipsePlugin = {
+        enabled = true
+	}	
+	genericIde = {
+        enabled = true
+    }
+	
+Do the same thing for *GenerateFunctionblock.mwe2* in *org.eclipse.vorto.editor.functionblock*, *GenerateInformationModel.mwe2* in *org.eclipse.vorto.editor.infomodel*, and *GenerateMapping.mwe2* in *org.eclipse.vorto.editor.mapping*
+
+Now, go to <root>/core-bundles/language/pom.xml and uncomment the commented-out modules.
+
+**Import the UI plugins
+
+Now, import the UI plugins
+
+>File > Maven > Existing Maven Projects
+
+Point the *Root Directory* to <root>/core-bundles/language, and choose the remaining unimported projects.
+
+**Generate the Xtext UI artifacts
+
+Now, go to *GenerateDatatype.mwe2* in *org.eclipse.vorto.editor.datatype* and right click
+
+>Run As > MWE2 Workflow
+
+Do the same thing for *GenerateFunctionblock.mwe2* in *org.eclipse.vorto.editor.functionblock*, *GenerateInformationModel.mwe2* in *org.eclipse.vorto.editor.infomodel*, and *GenerateMapping.mwe2* in *org.eclipse.vorto.editor.mapping*
+
 **Test current installation**
 
 Right now, it would be a good idea to test the current vorto plugins if they are functioning correctly, before we add our own plugins.
