@@ -2,13 +2,6 @@
 
 This tutorial gives a step by step instruction on how to create a DSL that references the Vorto DSL. We are going to use an example DSL called "System Model" that is going to aggregate several information models in one place.
 
-## General Steps
-* Clone special branch of Vorto repository
-* Install Eclipse Neon for Java and DSL Developers (last neon release)
-* Import the projects in the cloned repository to Eclipse
-* Use Xtext wizard to create a new DSL project
-* Link the new DSL to the Vorto to be able to reference it.
-
 ### Clone special branch of Vorto repository
 
 Some artifacts (eclipse plugins) are not on the main tree of Vorto. You need to checkout a special branch.
