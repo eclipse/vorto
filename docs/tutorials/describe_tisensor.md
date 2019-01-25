@@ -34,7 +34,7 @@ functionblock Humidity {
 ```
 As we can see, it only consists of a single *status property*. This value is defined as *entity*, at which we can have a closer look when clicking on *SensorValuePercentage:1.0.0* under *References*.
 <figure class="screenshot">
-![](../images/tutorials/tisensor/tisensor_model_overview.jpg)
+    <img width="800" src="../images/tutorials/tisensor/tisensor_model_overview.jpg">
 </figure>
 
 This entity specifies the sensor data in three values:
@@ -52,18 +52,18 @@ For now, we only focus on the abstract description of the device.
 
 But as we can see in the [listed specifications](http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User's_Guide#Humidity_Sensor), the sensor has four different characteristics that need to be described in the *Function Block*: Data, Notification, Configuration and Period. 
 <figure class="screenshot">
-![](../images/tutorials/tisensor/tisensor_model_specs.png)
+    <img width="800" src="../images/tutorials/tisensor/tisensor_model_specs.png">
 </figure>
 
 As of now, we only have the measured value as a *status property*. In order to describe the sensor completely, we simply extend the existing *Humidity Function Block* by adding more functions. To do so, we create a new model by clicking on <img height="30" src="../images/tutorials/tisensor/tisensor_create_model_button.png"/>, select *Function Block*, decide on a name (e.g. *Humidity*) and store it in the corresponding namespace, in this case *org.eclipse.vorto.tutorial.tisensortag*. 
 <figure class="screenshot">
-![](../images/tutorials/tisensor/tisensor_create_model.png)
+    <img width="800" src="../images/tutorials/tisensor/tisensor_create_model.png">
 </figure>
 
 
 Add *extends Humidity* after the name of your *Function Block* and reference to the model you want to inherit from. Use the ![](../images/tutorials/tisensor/tisensor_lookup_button.png) button to search for the model and copy the *namespace* to the clipboard.
 <figure class="screenshot">
-![](../images/tutorials/tisensor/tisensor_lookup_models.jpg)
+    <img width="800" src="../images/tutorials/tisensor/tisensor_lookup_models.jpg">
 </figure>
 
 
@@ -148,7 +148,7 @@ Careful readers surely noted that we used the key word *optional* for the temper
 Once you are satisfied with your created model, you can request a review by the Vorto Team. After the revision the model might be released and made accessible for other users.
 For more information on *Model States* click [here](../../repository/docs/model_states.md).
 <figure class="screenshot">
-![](../images/tutorials/tisensor/tisensor_lifecycle.jpg)
+    <img width="800" src="../images/tutorials/tisensor/tisensor_lifecycle.jpg">
 </figure>
 
 ## What's next?
