@@ -31,10 +31,10 @@ Workflow {
 				baseName = "org.eclipse.vorto.editor.infomodel"
 				rootPath = rootPath
 				eclipsePlugin = {
-					enabled = true
+					enabled = false
 				}	
 				genericIde = {
-        			enabled = true
+        			enabled = false
 		        }
 		        web = {
 		        	enabled = false

@@ -28,5 +28,6 @@ Export-Package: org.eclipse.vorto.editor.functionblock.ui,org.eclipse.
  functionblock.ui.internal,org.eclipse.vorto.editor.functionblock.ui.q
  uickfix
 Bundle-ClassPath: templates/,.,icons/
-Import-Package: org.apache.log4j
+Import-Package: org.apache.log4j,
+ org.eclipse.emf.mwe2.language.mwe2
 Bundle-Activator: org.eclipse.vorto.editor.functionblock.ui.internal.FunctionblockActivator
