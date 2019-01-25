@@ -1,6 +1,6 @@
 # Extending the Vorto DSL
 
-This tutorial gives a step by step instruction on how to create a DSL that uses the Vorto DSL.
+This tutorial gives a step by step instruction on how to create a DSL that references the Vorto DSL. We are going to use an example DSL called "System Model" that is going to aggregate several information models in one place.
 
 ## General Steps
 * Clone special branch of Vorto repository
@@ -90,4 +90,193 @@ your installation is working correctly and you can proceed to making your own DS
 
 ### Use the Xtext wizard to create a new DSL project
 
+**Create our System Model DSL**
+>File > New > Other > Xtext > Xtext Project
 
+and go through the wizard with the following values:
+
+>Project name: *org.system.model*
+
+>Name: *org.system.model.Aggregate*
+
+>Extensions: .agg
+
+Click *Next*. In the next window, Check *Eclipse Plugin* and *Generic IDE Support*. Uncheck everything else. Select *Maven* for the preferred build system. Leave the rest to default values.
+
+Click on *Finish*.
+
+After the wizard is finished, it will create five projects for you. The most important to us is the core project (org.system.model) and the projects that end with .ui and .ide.
+
+#### Running the generated project
+
+You can try running the generated project first and see if they are working.
+
+First, due to a weird bug in Xtext, download the file at [antlr-generator-3.2.0-patch.jar](http://download.itemis.com/antlr-generator-3.2.0-patch.jar), rename it to *.antlr-generator-3.2.0-patch.jar* (don't miss the dot (.) at the beginning of the filename), and move it to the root of *org.system.model* project.
+
+Second, generate the rest of the artifact. Right click on the generated .mwe2 file in org.system.model and
+
+>Run as > MWE2 Workflow
+
+Refresh the generated projects just for good measure. Click on the generated project and
+
+>Run as > Eclipse Application
+
+Now, on the new Eclipse window, try creating a file with the *.agg* extension and see if syntax highlighting is working and if error highlighting works if you deviate from your specified grammar.
+
+Refer to *Aggregate.xtext* in *org.system.model* project for the grammar of your newly generated DSL.
+
+If everything is working, continue.
+
+###Linking the new DSL to the Vorto DSL
+
+####The System Model DSL
+
+The DSL that we would like to create would allow us to aggregate several Vorto information models into one *aggregate* entity. It would allow for source code like this
+
+    namespace org.test
+    version 1.0.0
+    aggregate MyRoomba {
+        BatterySensor as my.infomodel.Battery
+        LeftMotor as my.infomodel.Motor
+        RightMotor as my.infomodel.Motor
+        Vacuum as my.infomodel.Vacuum
+    }
+
+Where *my.infomodel.Battery*, *my.infomodel.Motor*, and *my.infomodel.Vacuum* are Vorto information models.
+
+The first thing we have to do is to add a dependency on *org.system.model* to the following plugins
+
+>org.eclipse.vorto.core
+>org.eclipse.vorto.editor
+>org.eclipse.vorto.editor.datatype
+>org.eclipse.vorto.editor.datatype.ide
+>org.eclipse.vorto.editor.datatype.ui
+>org.eclipse.vorto.editor.functionblock
+>org.eclipse.vorto.editor.functionblock.ide
+>org.eclipse.vorto.editor.functionblock.ui
+>org.eclipse.vorto.editor.infomodel
+>org.eclipse.vorto.editor.infomodel.ide
+>org.eclipse.vorto.editor.infomodel.ui
+
+Click on the *Manifest.mf* of *org.system.model*, go to the *Dependencies* section and add the plugins above to the *Required Plug-ins*.
+
+Secondly, we now replace the xtext grammar in *Aggregate.xtext* with the *org.system.model* grammar that we want.
+
+    grammar org.system.model.Aggregate with org.eclipse.vorto.editor.infomodel.InformationModel
+
+    import "http://www.eclipse.org/vorto/metamodel/InformationModel" as im
+
+    generate aggregate "http://www.system.org/model/Aggregate"
+
+    Aggregate:
+        'namespace' namespace = QualifiedName
+        'version' version = VERSION
+        'aggregate' aggregateName = ID '{'
+            model += Model*
+        '}';
+	
+    Model:
+        name = ID 'as' informationModel = [im::InformationModel|QualifiedName];
+
+Notice that we replaced the parent of our DSL to the *Vorto Information Model* DSL. Then we created an import to the information model. The rest that followed is standard Xtext.
+
+Next, we change the MWE workflow file. Let's add the *Vorto Information Model* as a *referencedResource* to the *StandardLanguage* section
+
+    language = StandardLanguage {
+        name = "com.bosch.ProdLine"
+        fileExtensions = "prodline"
+        referencedResource = "platform:/resource/org.eclipse.vorto.core/model/InformationModel.genmodel"
+        referencedResource = "platform:/resource/org.eclipse.vorto.core/model/Model.genmodel"
+        serializer = {
+            generateStub = false
+        }
+        validator = {
+            // composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
+        }
+    }
+
+Next, we run the workflow process once again to regenerate the artifacts (you should do this after every change on the *.xtext* file). 
+
+Right click on the *.mwe2* file and
+
+>Run As > MWE2 Workflow
+
+Next, we need to import several packages to the *org.system.model.ide* plugin.
+
+Go to the *MANIFEST.MF* file of *org.system.model.ide*. In the *Dependencies* section, add the packages below to the *Imported Packages*.
+
+>org.eclipse.vorto.editor.datatype.services
+>org.eclipse.vorto.editor.functionblock.services
+>org.eclipse.vorto.editor.infomodel.services
+
+Next, we need to add several plugins as dependencies of *org.system.model.ui* plugin.
+
+Go to the *MANIFEST.MF* file of *org.system.model.ui*. In the *Dependencies* section, add the plugins below to the *Required Plug-ins*
+
+>org.eclipse.vorto.core
+>org.eclipse.vorto.editor
+>org.eclipse.vorto.editor.datatype
+>org.eclipse.vorto.editor.datatype.ui
+>org.eclipse.vorto.editor.functionblock
+>org.eclipse.vorto.editor.functionblock.ui
+>org.eclipse.vorto.editor.infomodel
+>org.eclipse.vorto.editor.infomodel.ui
+
+Next, we need to instantiate a needed object in *org.system.model*.
+
+Go to the *AggregateRuntimeModule.xtend* class in the *src* folder of *org.system.model* plugin, and add the following
+
+    @Provides def TypeHelper getTypeHelper() {
+        return new TypeFileAccessingHelper()
+    }
+
+##Finally, let's run our new DSL
+
+Right click on the *org.system.model* plugin and
+
+>Run As > Eclipse Application
+
+On the new Eclipse application, let's first create the information models we are dependent on.
+
+Create three files with the *.infomodel* extension with the following content
+
+*Battery.infomodel*
+
+    namespace my.testmodel
+    version 1.0.0
+    displayname "Information model for battery"
+    infomodel Battery {
+    }
+
+*Motor.infomodel*
+
+    namespace my.testmodel
+    version 1.0.0
+    displayname "Information model for motor"
+    infomodel Motor {
+    }
+
+*Vacuum.infomodel*
+
+    namespace my.testmodel
+    version 1.0.0
+    displayname "Information model for vacuum"
+    infomodel Vacuum {
+    }
+
+Now, create a file called *DifferentialRobot.agg*, and type your new DSL there
+
+*DifferentialRobot.agg*
+
+    namespace org.test
+    version 1.0.0
+    aggregate DifferentialRobot {
+        BatterySensor as my.testmodel.Battery
+        LeftMotor as my.testmodel.Motor
+        RightMotor as my.testmodel.Motor
+        Vacuum as my.testmodel.Vacuum
+    }
+
+There should be no syntax highlighting error and Ctrl-clicking on *my.testmodel.Battery* should open the *Battery.infomodel*.
+
+Congratulations, you have just created a DSL that linked to the Vorto Information Model DSL.
