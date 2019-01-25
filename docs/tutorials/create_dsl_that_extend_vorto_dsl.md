@@ -299,3 +299,5 @@ Now, create a file called *DifferentialRobot.agg*, and type your new DSL there
 There should be no syntax highlighting error and Ctrl-clicking on *my.testmodel.Battery* should open the *Battery.infomodel*.
 
 Congratulations, you have just created a DSL that linked to the Vorto Information Model DSL.
+
+A full copy of the org.system.model project is in [link](https://github.com/bsinno/vorto/tree/feature/extend-vorto-dsl/core-bundles/language/sample-extension/org.system.model.parent)
