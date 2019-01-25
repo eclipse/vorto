@@ -35,6 +35,9 @@ Before we import the Vorto projects to Eclipse, let us do a full maven build.
 Remember to set your network connection (if you have proxies) in Eclipse
 >Window > Preferences > General > Network Connection
 
+Remember to set your Maven settings file if you need special Maven configuration to reach external Maven repositories.
+>Window > Preferences > Maven > User Settings
+
 **Import all Vorto projects in Eclipse**
 
 >File > Import > Maven > Existing Maven Project
