@@ -1,0 +1,15 @@
+grammar org.system.model.Aggregate with org.eclipse.vorto.editor.infomodel.InformationModel
+
+import "http://www.eclipse.org/vorto/metamodel/InformationModel" as im
+
+generate aggregate "http://www.system.org/model/Aggregate"
+
+Aggregate:
+	'namespace' namespace = QualifiedName
+    'version' version = VERSION
+	'aggregate' aggregateName = ID '{'
+		model += Model*
+	'}';
+	
+Model:
+	name = ID 'as' informationModel = [im::InformationModel|QualifiedName];

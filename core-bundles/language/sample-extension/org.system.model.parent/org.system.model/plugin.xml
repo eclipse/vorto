@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<?eclipse version="3.0"?>
+<plugin>
+	<extension point="org.eclipse.emf.ecore.generated_package">
+		<package 
+			uri = "http://www.system.org/model/Aggregate"
+			class = "org.system.model.aggregate.AggregatePackage"
+			genModel = "model/generated/Aggregate.genmodel" />
+	</extension>
+</plugin>
