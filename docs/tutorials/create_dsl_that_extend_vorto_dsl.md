@@ -147,15 +147,25 @@ Where *my.testmodel.Battery*, *my.testmodel.Motor*, and *my.testmodel.Vacuum* ar
 The first thing we have to do is to add a dependency on *org.system.model* to the following plugins
 
 >org.eclipse.vorto.core
+
 >org.eclipse.vorto.editor
+
 >org.eclipse.vorto.editor.datatype
+
 >org.eclipse.vorto.editor.datatype.ide
+
 >org.eclipse.vorto.editor.datatype.ui
+
 >org.eclipse.vorto.editor.functionblock
+
 >org.eclipse.vorto.editor.functionblock.ide
+
 >org.eclipse.vorto.editor.functionblock.ui
+
 >org.eclipse.vorto.editor.infomodel
+
 >org.eclipse.vorto.editor.infomodel.ide
+
 >org.eclipse.vorto.editor.infomodel.ui
 
 Click on the *Manifest.mf* of *org.system.model*, go to the *Dependencies* section and add the plugins above to the *Required Plug-ins*.
@@ -206,7 +216,9 @@ Next, we need to import several packages to the *org.system.model.ide* plugin.
 Go to the *MANIFEST.MF* file of *org.system.model.ide*. In the *Dependencies* section, add the packages below to the *Imported Packages*.
 
 >org.eclipse.vorto.editor.datatype.services
+
 >org.eclipse.vorto.editor.functionblock.services
+
 >org.eclipse.vorto.editor.infomodel.services
 
 Next, we need to add several plugins as dependencies of *org.system.model.ui* plugin.
@@ -214,12 +226,19 @@ Next, we need to add several plugins as dependencies of *org.system.model.ui* pl
 Go to the *MANIFEST.MF* file of *org.system.model.ui*. In the *Dependencies* section, add the plugins below to the *Required Plug-ins*
 
 >org.eclipse.vorto.core
+
 >org.eclipse.vorto.editor
+
 >org.eclipse.vorto.editor.datatype
+
 >org.eclipse.vorto.editor.datatype.ui
+
 >org.eclipse.vorto.editor.functionblock
+
 >org.eclipse.vorto.editor.functionblock.ui
+
 >org.eclipse.vorto.editor.infomodel
+
 >org.eclipse.vorto.editor.infomodel.ui
 
 Next, we need to instantiate a needed object in *org.system.model*.
