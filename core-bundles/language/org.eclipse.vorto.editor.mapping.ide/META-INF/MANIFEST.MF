@@ -10,6 +10,8 @@ Export-Package: org.eclipse.vorto.editor.mapping.ide.contentassist.antlr.interna
 Bundle-Vendor: Eclipse.org/Vorto
 Bundle-ClassPath: .
 Require-Bundle: org.eclipse.vorto.editor.mapping;bundle-version="0.10.0",
+ org.antlr.runtime;bundle-version="[3.2.0,3.2.1)",
+ org.eclipse.xtext.xbase.lib,
  org.eclipse.xtext.ide,
  org.eclipse.xtext.xbase.ide
 Import-Package: org.eclipse.vorto.editor.mapping.ide.contentassist.antlr,

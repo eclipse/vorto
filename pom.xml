@@ -51,7 +51,7 @@
     </developers>
 
     <properties>
-        <xtext.version>2.10.0</xtext.version>
+        <xtext.version>2.16.0</xtext.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -87,7 +87,7 @@
 
     <repositories>
         <repository>
-            <id>eclipse</id>
+            <id>eclipserepo</id>
             <url>https://repo.eclipse.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
@@ -102,6 +102,16 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+			<id>eclipse</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/2018-12/</url>
+		</repository>
+        <repository>
+			<id>Xtext Update Site</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/modeling/tmf/xtext/updates/releases/${xtext.version}/</url>
+		</repository>
     </repositories>
 
     <modules>
@@ -122,13 +132,19 @@
                 <groupId>org.eclipse.xtend</groupId>
                 <artifactId>xtend-maven-plugin</artifactId>
                 <version>${xtext.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.common</artifactId>
-                        <version>3.10.0</version>
-                    </dependency>
-                </dependencies>
+                <executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>xtend-install-debug-info</goal>
+								<goal>testCompile</goal>
+								<goal>xtend-test-install-debug-info</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<outputDirectory>xtend-gen</outputDirectory>
+					</configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -12,12 +12,14 @@ Require-Bundle: org.eclipse.vorto.editor.mapping;visibility:=reexport,
  org.eclipse.xtext.ui.shared,
  org.eclipse.ui,
  org.eclipse.xtext.builder,
- org.eclipse.xtext.xbase.lib,
  org.antlr.runtime,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare,
- org.eclipse.xtend.lib;resolution:=optional,
+ org.eclipse.xtext.xbase.ui,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.13.0",
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.xtend.lib;bundle-version="2.14.0";resolution:=optional,
  org.eclipse.vorto.editor.mapping.ide;bundle-version="0.10.0"
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

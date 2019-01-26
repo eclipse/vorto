@@ -42,7 +42,7 @@ Workflow {
 		        runtimeTest = {
 		        	enabled = false
 		        }
-				createEclipseMetaData = true
+				createEclipseMetaData = false
 			}
 			code = {
 				encoding = "UTF-8"

@@ -15,13 +15,14 @@ Require-Bundle: org.eclipse.xtext.ui,
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare,
+ org.eclipse.xtext.xbase.ui,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.13.0",
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.xtend.lib;bundle-version="2.14.0";resolution:=optional,
  org.eclipse.vorto.editor.datatype,
  org.eclipse.vorto.editor.datatype.ui,
  org.eclipse.vorto.editor.functionblock,
- org.eclipse.vorto.editor.functionblock.ide,
- org.eclipse.vorto.core,
- org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend.lib;resolution:=optional
+ org.eclipse.vorto.editor.functionblock.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.vorto.editor.functionblock.ui,org.eclipse.
  vorto.editor.functionblock.ui.contentassist,org.eclipse.vorto.editor.

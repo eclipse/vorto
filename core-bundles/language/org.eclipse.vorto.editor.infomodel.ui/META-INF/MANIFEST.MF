@@ -5,7 +5,7 @@ Bundle-Vendor: Eclipse.org/Vorto
 Bundle-Version: 0.10.0.qualifier
 Bundle-SymbolicName: org.eclipse.vorto.editor.infomodel.ui;singleton:=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.vorto.editor.infomodel.ide;bundle-version="0.10.0",
+Require-Bundle: 
  org.eclipse.xtext.ui,
  org.eclipse.ui.editors;bundle-version="3.5.0",
  org.eclipse.ui.ide;bundle-version="3.5.0",
@@ -16,8 +16,11 @@ Require-Bundle: org.eclipse.vorto.editor.infomodel.ide;bundle-version="0.10.0",
  org.eclipse.xtext.common.types.ui,
  org.eclipse.xtext.ui.codetemplates.ui,
  org.eclipse.compare,
- org.eclipse.xtext.xbase.lib,
- org.eclipse.xtend.lib;resolution:=optional,
+ org.eclipse.xtext.xbase.ui,
+ org.eclipse.xtext.xbase.lib;bundle-version="2.13.0",
+ org.eclipse.jdt.debug.ui,
+ org.eclipse.xtend.lib;bundle-version="2.14.0";resolution:=optional,
+ org.eclipse.vorto.editor.infomodel.ide;bundle-version="0.10.0",
  org.eclipse.vorto.core,
  org.eclipse.vorto.editor,
  org.eclipse.vorto.editor.datatype.ui;bundle-version="0.10.0",
