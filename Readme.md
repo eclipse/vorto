@@ -5,6 +5,10 @@
 
 [Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
 
+The Bosch IoT Suite uses Vorto to define their entire device semantic abstraction layer and thus allows IoT Solution Developers to easily build device - agnostic IoT solutions. 
+
+Check out the [Vorto Console](https://vorto.eclipse.org/console) that demonstrates the easy integration of devices with the Bosch IoT Suite.
+
 <img src="docs/images/vorto_cover.png"/>
 
 
