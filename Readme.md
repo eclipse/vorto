@@ -10,9 +10,15 @@
 
 ## Getting Started with Vorto
 
-[Read more](docs/gettingstarted.md)
+[Read here](docs/gettingstarted.md)
+
+## Vorto Examples
+
+Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
 
 ## Repository Plugin SDK
+
+The Repository Plugin SDK helps you build and deploy various extensions to the Vorto Repository:
 
 <table>
 	<tr>
