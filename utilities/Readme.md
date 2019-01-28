@@ -38,7 +38,7 @@ Add the following maven dependency to your project:
 
 1. Create a new Workspace referencing the ZIP archive containing Vorto DSL files:
 
-	IModelWorkspace workspace = IModelWorkspace.newReader()
+		IModelWorkspace workspace = IModelWorkspace.newReader()
 	        .addZip(new ZipInputStream(getClass().getClassLoader().getResourceAsStream("models.zip")))
 	        .read();
 
