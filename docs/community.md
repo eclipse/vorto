@@ -7,6 +7,10 @@
 * Author: [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
 * [Click to read](https://blog.bosch-si.com/developer/avoid-tight-coupling-of-devices-in-iot-solutions/) 
 
+### "Eclipse Vorto: Interoperability for the Internet of Things" 
+* Author: Jeroen Laverman, Jochen Scheib, Marco Wagner, Olaf Weinmann
+* [Click to read](https://jaxenter.com/eclipse-vorto-interoperability-for-the-internet-of-things-125748.html) 
+
 ## Presentations
 
 Here you can find links to arbitrary material covering Eclipse Vorto which has been presented at events, conferences and meet-ups.
@@ -25,6 +29,10 @@ Here you can find links to arbitrary material covering Eclipse Vorto which has b
 
 * Speaker : [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations)
 * [Video](https://www.youtube.com/watch?v=_N2UWvq3Cuc)
+
+### "Make IoT Childs Play" (Eclipse Conference, Ludwigsburg, Oct 2015)
+* Speaker: [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations), Luca Daci (Eurotech, Eclipse Kura)
+* [Slides](https://www.eclipsecon.org/europe2015/sites/default/files/slides/Make_IoT_Childs_Play.PDF)
 
 ## Mailing List
 A great way to stay up to date with Vorto activity is to subscribe to the Mailing list provided by Eclipse. Sign up for the mailing list [here](https://dev.eclipse.org/mailman/listinfo/vorto-dev).
