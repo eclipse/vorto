@@ -32,7 +32,7 @@ Here you can find links to arbitrary material covering Eclipse Vorto which has b
 
 ### "Make IoT Childs Play" (Eclipse Conference, Ludwigsburg, Oct 2015)
 * Speaker: [Alexander Edelmann](https://github.com/aedelmann) (Bosch Software Innovations), Luca Daci (Eurotech, Eclipse Kura)
-* [Slides](https://www.eclipsecon.org/europe2015/sites/default/files/slides/Make_IoT_Childs_Play.PDF)
+* [Slides](https://www.eclipsecon.org/europe2015/sites/default/files/slides/Make_IoT_Childs_Play.pdf)
 
 ## Mailing List
 A great way to stay up to date with Vorto activity is to subscribe to the Mailing list provided by Eclipse. Sign up for the mailing list [here](https://dev.eclipse.org/mailman/listinfo/vorto-dev).
