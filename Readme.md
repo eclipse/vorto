@@ -43,6 +43,7 @@ The Repository Plugin SDK helps you build and deploy various extensions to the V
 - [Code Generators](generators/Readme.md)
 - [Payload Mapping Engine](mapping-engine/Readme.md)
 - [Tutorials](docs/gettingstarted.md)
+- [Vorto DSL Utilities](utilities/Readme.md)
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
