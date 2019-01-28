@@ -166,10 +166,10 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 				  }
 				}
 	   
-			<img src="../images/tutorials/springbootApp/thing_features.png" width="40%"/>
+	<img src="../images/tutorials/springbootApp/thing_features.png" width="40%"/>
 	
-			<img src="../images/tutorials/springbootApp/thing_put_param.png" width="40%"/>
+	<img src="../images/tutorials/springbootApp/thing_put_param.png" width="40%"/>
 	  
 	- Observe the updated temperature widget value in the dashboard of your web application.
 	
-	      <img src="../images/tutorials/springbootApp/web_app.png" width="40%"/>
+	<img src="../images/tutorials/springbootApp/web_app.png" width="40%"/>
