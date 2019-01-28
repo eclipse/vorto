@@ -793,16 +793,16 @@ repositoryControllers.controller('DetailsController',
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($scope.permission === "FULL_ACCESS" || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
+					if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
 						$scope.getPolicies();
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.permission = "READ";
-					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_ADMIN")) {
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($scope.hasAuthority("ROLE_ADMIN")) {
+					if ($rootScope.hasAuthority("ROLE_ADMIN")) {
 						$scope.getPolicies();
 					}
 				});
