@@ -15,7 +15,11 @@ Add the following maven dependency to your project:
 
 ## Parsing individual Vorto files
 
-1. Create a new Workspace with the models
+1. Initialize the workspace reader
+
+        ModelWorkspaceReader.init();
+
+2. Create a new Workspace with the models
 
 		IModelWorkspace workspace =
 	        IModelWorkspace.newReader()
@@ -27,7 +31,7 @@ Add the following maven dependency to your project:
 	                ModelType.Functionblock)
 			.read();
 
-2. Read the model, that you are interested in:
+3. Read the model, that you are interested in:
 
 
 		InformationModel model = (InformationModel) workspace.get().stream()
