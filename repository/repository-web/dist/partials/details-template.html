@@ -663,11 +663,16 @@
 	<h3 class="modal-title"><center>Create Payload Mapping Specification</center></h3>
 </div>
 <div class="modal-body">
+	<p>
+		Mapping Specifications define mapping rules that map arbitrary device data to the Vorto Function Blocks (semantic abstraction).
+	<p>
+	<img align="center" src="webjars/repository-web/dist/images/mappingspec.png" width="50%" />
 	<form id="createPayloadMappingForm" name="createPayloadMappingForm" novalidate>
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
     <div class="form-group">
-    	<label>Specify Target Platform Key:</label>
+    	<label>Specify Mapping Key:</label>
         <input type="text" class="form-control" name="targetPlatform" ng-model="targetPlatform" ng-pattern="/^[a-zA-Z]*$/" required>
+        <small style="color:grey;font-size:10px">Unique key for this device payload mapping, e.g. tisensor</small>
         <div ng-show="createPayloadMappingForm.targetPlatform.$error.pattern">Please enter a valid target platform key. Example: blegatt</div>
     </div>
   </div>
