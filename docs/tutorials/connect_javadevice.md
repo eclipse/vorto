@@ -76,10 +76,14 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
 	- Open the class **DistanceSensorApp**.
 
 	- Set the **Password**, you have specified during the thing creation process (refer to above).
+	
+	- Go to the **AUTH_ID** and remove the **<namespace>:** in the **AUTH_ID**. This should make your AUTH_ID have the form of **<Technical Device ID>@<HONO_TENANT>**.
+	
+	- Change the **DITTO_TOPIC** to **<namespace>/<Technical Device ID>**. (e.g com.test.vorto/47-11-00)
 
 	- Click **Save** to save the changes.
 
-	- Download the [Hub Server Certificate](http://docs.bosch-iot-hub.com/cert/iothub.crt) and save the file under `<project>/src/main/resources/certificates/iot-hub.crt`.
+	- Download the [Hub Server Certificate](http://docs.bosch-iot-hub.com/cert/iothub.crt) and save the file under `<project>/src/main/resources/certificates/hono.crt`.
 
 6. Run and verify incoming sensor data.
 
