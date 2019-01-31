@@ -137,7 +137,7 @@ A `functionblock` element describes the properties and behavior of a function bl
 
 **Syntax**
 
-Refer to `FunctionBlock` in [Function Block DSL Syntax](#function-block-bodel-dsl-grammar-reference).
+Refer to `FunctionBlock` in [Function Block DSL Syntax](#function-block-model-dsl-grammar-reference).
 
 **Usage**
 
