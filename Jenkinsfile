@@ -21,16 +21,16 @@ node {
 			}
 	}
 	stage("CLMScan"){
-		withMaven(
-			maven: 'maven-latest',
-			mavenLocalRepo: '.repository') {
-				withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-					nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+//		withMaven(
+//			maven: 'maven-latest',
+//			mavenLocalRepo: '.repository') {
+//				withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+//					nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqStage: 'build', jobCredentialsId: 'CLMScanUser'
 //					//ToDo test amazon upload
 //					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
 //					//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
-				}
-			}
+//				}
+//			}
 	}
 	stage("AVScan"){
 		// Get Bosch pom files to run extra
