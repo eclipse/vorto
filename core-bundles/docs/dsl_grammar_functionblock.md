@@ -90,7 +90,7 @@ A function block model describes a function block with its properties and behavi
 
 **Syntax**
 
-Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-bodel-dsl-grammar-reference).
+Refer to functionblockmodel in [Function Block DSL Syntax](#function-block-model-dsl-grammar-reference).
 
 **Example**
 
@@ -329,7 +329,7 @@ An operation can be seen as a function the function block can perform. Function 
 
 **Syntax**
 
-Refer to operation in [Function Block DSL Syntax](#function-block-bodel-dsl-grammar-reference).
+Refer to operation in [Function Block DSL Syntax](#function-block-model-dsl-grammar-reference).
 
 **Usage**
 
@@ -403,7 +403,7 @@ An event can be seen as a combination of zero or more properties. The events ele
 
 **Syntax**
 
-Refer to event in [Function Block DSL Syntax](#function-block-bodel-dsl-grammar-reference).
+Refer to event in [Function Block DSL Syntax](#function-block-model-dsl-grammar-reference).
 
 **Usage**
 
