@@ -1,6 +1,8 @@
 node {
-	stage("SonarCloud"){
+	stage("GitHub Checkout"){
 		checkout scm
+	}
+	stage("SonarCloud"){
 //		withMaven(
 //			// Maven installation declared in the Jenkins "Global Tool Configuration"
 //			maven: 'maven-latest',
