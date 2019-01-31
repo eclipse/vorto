@@ -2,9 +2,10 @@
 
 This section provides you many tutorials to get you started with Vorto. 
 
-## General
+## Vorto DSL
 
 - [Describe a TI SensorTag with Vorto](tutorials/describe_tisensor.md)
+- [Vorto DSL Grammar Reference](../core-bundles/docs/quickhelp_dsl.md)
 	
 	
 ## Connectivity
