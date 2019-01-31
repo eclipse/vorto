@@ -6,7 +6,7 @@ This section gets you started with using the Vorto DSL to describe devices as we
 ## Overview
 
 <figure class="screenshot">
-	<img src="/images/documentation/help_dsl_elements.png">
+	<img src="images/help_dsl_elements.png">
 </figure> 
 
 ### 1. Information Models
@@ -30,7 +30,7 @@ Information Models describe a specific device type by grouping abstract and re-u
 		}
 	}
     
-[Complete DSL Reference]({{< ref "appendix/infomodel_dsl.md" >}}) for Information Models
+[Complete DSL Reference](dsl_grammar_infomodel.md) for Information Models
 
 ### 2. Function Blocks
 
@@ -92,7 +92,7 @@ The properties that a Function Block may define are classified as follows:
 
 	}
     
-[Complete DSL Reference]({{< ref "appendix/function_block_dsl.md" >}}) for Function Blocks
+[Complete DSL Reference](dsl_grammar_functionblock.md) for Function Blocks
 
 
 ### 3. Datatypes (Entity and Enums)
@@ -120,7 +120,7 @@ Data types and Enums are reusable components that describe specific data and are
 		mandatory blue as int <MIN 0, MAX 255>
 	}
 
-[Complete DSL Reference]({{< ref "appendix/datatype_dsl.md" >}}) for Datatypes
+[Complete DSL Reference](dsl_grammar_datatype.md) for Datatypes
 
 
 ### 4. Mappings
@@ -162,11 +162,11 @@ The following example defines a mapping that references another mapping for re-u
 
 	}
 
-[Complete DSL Reference]({{< ref "appendix/mappings_dsl.md" >}}) for Mapping Models
+[Complete DSL Reference](dsl_grammar_mapping.md) for Mapping Models
 
 ### 4.1 Device Payload Mappings
 
 Device Payload Mappings use Vorto Mappings expressing mapping rules in order to map arbitrary device data to Vorto Models.
 
-For more information about payload mappings, please read the [Payload Mapping Documentation]({{< ref "userguide/mappingengine.md" >}})
+For more information about payload mappings, please read the [Payload Mapping Documentation](../../mapping-engine/Readme.md)
 
