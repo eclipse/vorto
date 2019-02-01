@@ -7,7 +7,7 @@ node {
 			// Maven installation declared in the Jenkins "Global Tool Configuration"
 			maven: 'maven-latest',
 			mavenLocalRepo: '.repository') {
-				//sh 'mvn -P coverage clean install'
+				sh 'mvn -P coverage clean install'
 			}
 	}
 	stage("SonarCloud"){
