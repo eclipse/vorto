@@ -13,34 +13,46 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import java.util.Collection;
+
+import org.eclipse.vorto.repository.account.Role;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
+import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemovePolicies implements IWorkflowFunction {
+public class ClaimOwnership implements IWorkflowFunction {
 
 	private IModelPolicyManager policyManager;
 	
-	private static final Logger logger = LoggerFactory.getLogger(RemovePolicies.class);
+	private IModelRepository modelRepository;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ClaimOwnership.class);
 
 	
-	public RemovePolicies(IModelPolicyManager policyManager) {
+	public ClaimOwnership(IModelPolicyManager policyManager, IModelRepository modelRepository) {
 		this.policyManager = policyManager;
+		this.modelRepository = modelRepository;
 	}
 	
 	@Override
 	public void execute(ModelInfo model, IUserContext user) {
-		logger.info("Removing permission from model " + model.getId());
+		logger.info("Claiming model " + model.getId() + " of user '"+user.getUsername()+"' and role 'admin'");
+		
 		Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
 		for (PolicyEntry entry : policies) {
 		  logger.info("removing "+entry);
 		  policyManager.removePolicyEntry(model.getId(), entry);
 		}
 		
-		logger.info(policyManager.getPolicyEntries(model.getId()).toString());
+        policyManager.addPolicyEntry(model.getId(), PolicyEntry.of(user.getUsername(), PrincipalType.User, Permission.FULL_ACCESS),PolicyEntry.of(Role.ADMIN.name(), PrincipalType.Role, Permission.FULL_ACCESS));
+        
+        model.setAuthor(user.getUsername());  
+        modelRepository.updateMeta(model);
 	}
 }

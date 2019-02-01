@@ -49,7 +49,7 @@ public class WorkflowTest extends AbstractIntegrationTest {
 		assertEquals(1,workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).size());
 		assertEquals(SimpleWorkflowModel.ACTION_RELEASE.getName(),workflow.getPossibleActions(model.getId(),UserContext.user(getCallerId())).get(0));
 	}
-	
+		
 	@Test
 	public void testStartReviewProcessForModel() throws Exception  {
 		ModelInfo model = importModel("Color.type");	
