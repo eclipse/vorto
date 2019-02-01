@@ -36,7 +36,7 @@ node {
 		// Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
 		dir('tmp') {
 			//copy files over to the new maven folder to run AntiVirus Scans
-			fileOperations([fileCopyOperation(excludes: '', flattenFiles: false, includes: '../repository/repository-server/target/infomodelrepository.jar', targetLocation: './')])
+			sh 'cp ../repository/repository-server/target/infomodelrepository.jar ./'
 			git url: "https://github.com/Scriptkiddi/vorto_bosch_jenkins.git"
 		}
 		withMaven(
