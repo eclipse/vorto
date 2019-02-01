@@ -33,14 +33,17 @@ node {
 //			}
 	}
 	stage("AVScan"){
-		// Get Bosch pom files to run extra
+		// Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
 		dir('tmp') {
+			//copy files over to the new maven folder to run AntiVirus Scans
+			fileOperations([fileCopyOperation(excludes: '', flattenFiles: false, includes: '../repository/repository-server/target/infomodelrepository.jar', targetLocation: './')])
 			git url: "https://github.com/Scriptkiddi/vorto_bosch_jenkins.git"
 		}
 		withMaven(
 			maven: 'maven-latest',
 			mavenLocalRepo: '.repository') {
-				sh 'mvn clean verify -Dbosch.avpath=repository/repository-server/target/infomodelrepository.jar -f tmp/pom_bosch.xml'
+				sh 'mvn clean verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f tmp/pom_bosch.xml'
+				sh 'mvn clean verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f tmp/pom_bosch.xml'
 				//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
 				//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
 			}
