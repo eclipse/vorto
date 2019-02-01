@@ -23,6 +23,7 @@
 			<div ng-repeat="action in workflowActions">
 				<button class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog(action)">
 					<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
+					<span ng-if="action ==='Claim'" class="fa fa-cube" aria-hidden="true"></span>
 					<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
 					<span ng-if="action ==='Approve'" class="fa fa-thumbs-up" aria-hidden="true"></span>
 					<span ng-if="action ==='Reject'" class="fa fa-thumbs-down" aria-hidden="true"></span>
@@ -35,11 +36,6 @@
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
-				<div class="pull-left">&nbsp;&nbsp;</div>
-			</div>
-
-			<div ng-show="model.author === 'anonymousUser'">
-				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
@@ -397,8 +393,6 @@
 										<td style="text-align:center">{{entry.principalType}}</td>
 										<td style="text-align:center">{{entry.permission}}</td>
 										<td style="text-align:center">
-											<a ng-click="modifyPermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-primary" role="button">
-											<span class="glyphicon glyphicon-edit"></span> Edit</a>
 											<a ng-click="removePermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-danger" role="button">
 											<span class="glyphicon glyphicon-trash"></span> Remove</a>
 										</td>

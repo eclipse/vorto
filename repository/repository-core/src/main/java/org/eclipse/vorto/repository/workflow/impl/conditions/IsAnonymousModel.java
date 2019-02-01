@@ -14,14 +14,14 @@ package org.eclipse.vorto.repository.workflow.impl.conditions;
 
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
-public class IsOwnerCondition implements IWorkflowCondition {
+public class IsAnonymousModel implements IWorkflowCondition {
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
-    return (model.getAuthor().equals(user.getHashedUsername())
-        || model.getAuthor().equals(user.getUsername())) && !user.isAnonymous();
+	return UserContext.user(model.getAuthor()).isAnonymous();
   }
 
 }

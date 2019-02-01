@@ -413,8 +413,7 @@ repositoryControllers.controller('DetailsController',
 					};
 
 					$scope.getModel = function () {
-						if ($scope.action != 'Claim') {
-							$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
+						$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -423,7 +422,6 @@ repositoryControllers.controller('DetailsController',
 										}
 									}
 								});
-						}
 					};
 
 					$scope.getModel();

@@ -95,11 +95,11 @@ public class DefaultWorkflowService implements IWorkflowService {
 	
 	private boolean passesConditions(List<IWorkflowCondition> conditions,ModelInfo model, IUserContext user) {
 		for (IWorkflowCondition condition : conditions) {
-			if (condition.passesCondition(model, user)) {
-				return true;
+			if (!condition.passesCondition(model, user)) {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	@Override

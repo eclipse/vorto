@@ -10,14 +10,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.core;
+package org.eclipse.vorto.repository.workflow.impl.conditions;
 
-public interface IUserContext {
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.workflow.model.IWorkflowCondition;
 
-  String getUsername();
+public class IsLoggedIn implements IWorkflowCondition {
 
-  String getHashedUsername();
-
-  boolean isAnonymous();
+  @Override
+  public boolean passesCondition(ModelInfo model, IUserContext user) {
+    return !user.isAnonymous();
+  }
 
 }
