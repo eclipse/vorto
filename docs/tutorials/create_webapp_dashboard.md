@@ -14,60 +14,58 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 
 ## Proceed as follows
 
-1. Generate a Web application.
+### Step 1: Generate the SpringBoot App from Vorto Model
 
-	- In the [Thing Browser](https://vorto.eclipse.org/console/#/thingbrowser), browse for the registered XDK information model.
+- In the [Thing Browser](https://vorto.eclipse.org/console/#/thingbrowser), browse for the registered XDK information model.
 
-	- From the list of generators on the **Source Code Templates** tab, choose **AngularJS Spring-boot Application** and click **Download**.
+- From the list of generators on the **Source Code Templates** tab, choose **AngularJS Spring-boot Application** and click **Download**.
 	
-		<img src="../images/tutorials/springbootApp/angularJS_gen.png"/>
+	<img src="../images/tutorials/springbootApp/angularJS_gen.png"/>
 	 
-		This will generate a ZIP archive containing a maven project of the XDK dashboard spring-boot application.
+	This will generate a ZIP archive containing a maven project of the XDK dashboard spring-boot application.
 
-	- **Unzip** the archive and **Import** the project as a Maven Project into your Eclipse IDE.
+- **Unzip** the archive and **Import** the project as a Maven Project into your Eclipse IDE.
 
-2. Configure the application for Bosch IoT Suite.
+### Step 2: Configure the App for Bosch IoT Suite
 
-	- Download [bosch-iot-cloud.jks](bosch-iot-cloud.jks) and store it in a *secure* folder of the project under `/src/main/resources`.
+- Create a *certs* folder of the project under `/src/main/resources`.
 
-	- From the secure folder, open a command prompt to create a public and private key pair for your solution. Store the CRClient in the *secure* folder as well:
+- Generate a public/private keypair using the Java keytool and store the *jks* file in the src/main/resources/certs folder:
 	
-			keytool -genkeypair -noprompt -dname "CN=-, OU=-, O=-, L=-, S=-, C=-" -keyalg EC -alias CR -sigalg SHA512withECDSA -validity 365 -keystore CRClient.jks
+		keytool -genkeypair -noprompt -dname "CN=-, OU=-, O=-, L=-, S=-, C=-" -keyalg EC -alias things -sigalg SHA512withECDSA -validity 365 -keystore thing-client.jks
 
-
-	- Extract the public key information into a separate file:
+- Extract the public key information into a separate file:
 	
-			keytool -export -keystore CRClient.jks -alias CR -rfc -file CRClient_key.cer
+		keytool -export -keystore thing-client.jks -alias things -rfc -file thingclient_publickey.cer
 
-	- Print the public key to the command prompt:
+- Print the public key to the command prompt:
 	  
-			keytool -printcert -rfc -file CRClient_key.cer
+		keytool -printcert -rfc -file Cthingclient_publickey.cer
 
-	-  Open the Things Administration Dashboard for your solution and submit your public key by pasting the key from the command prompt (refer to previous step).
+-  Open the Things Administration Dashboard for your solution and submit your public key by pasting the key from the command prompt (refer to previous step).
 	
-	- Open the file `src/main/resources/application.yml`.
+- Open the file `src/main/resources/application.yml`.
 
-		- Insert the Bosch IoT Permissions and Bosch IoT Things credentials:
+	- Insert the Bosch IoT Things credentials:
 	
-				spring:
-				  jackson:
-				    serialization:
-				      write-dates-as-timestamps: false
-				bosch:
-				  things:
-				    alias: CR
-				    alias.password: [enter keystore password]
-				    endpointUrl: https://things.apps.bosch-iot-cloud.com
-				    wsEndpointUrl: wss://events.apps.bosch-iot-cloud.com
-				    apiToken: [enter Bosch IoT Things API Token here ]
-				    keystoreLocation: /secure/CRClient.jks
-				    trustStoreLocation: /secure/bosch-iot-cloud.jks
-				    trustStorePassword: jks
-				    solutionid: [enter Bosch IoT Things solution ID here ]
-				    keystore:
-				    password: [enter keystore password]
+			spring:
+			  jackson:
+			    serialization:
+				   write-dates-as-timestamps: false
+			bosch:
+		     things:
+			    alias: things
+				 alias.password: [enter keystore password]
+				 endpointUrl: https://things.eu-1.bosch-iot-suite.com
+				 wsEndpointUrl: wss://things.eu-1.bosch-iot-suite.com
+				 apiToken: [enter Bosch IoT Things API Token here ]
+				 keystoreLocation: /secure/CRClient.jks
+				 solutionid: [enter Bosch IoT Things solution ID here ]
+				 keystore:
+				   password: [enter keystore password]
+				
 	
-		- If you are behind a proxy, add proxy information:
+	- If you are behind a proxy, add proxy information:
 	  
 				  http:
 				    proxyUser: [enter proxy user]
@@ -75,7 +73,7 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 				    proxyHost: [enter proxy host]
 				    proxyPort: 8080
 	
-		- Include google OAuth2 client details:
+	- Include google OAuth2 client details:
 
 				google:
 				  oauth2:
@@ -83,75 +81,82 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 				      clientId: [enter google client ID]
 				      clientSecret: [enter google client secret]
 
-			Refer to [Guide to create google Client ID for web applications](https://developers.google.com/identity/sign-in/web/devconsole-project).
+		Refer to [Guide to create google Client ID for web applications](https://developers.google.com/identity/sign-in/web/devconsole-project).
 
-	- Open the Java class `com.example.iot.xdk.config.LocalConfiguration` and uncomment the proxy authentication configuration.
+### Step 3: Build and Run the App
 
-3. Build and run the application.
-
-	- You can build the application from the command-line using:
+- You can build the application from the command-line using:
 	
-			$ mvn clean package
+		$ mvn clean package
 	
-	- You can easily run the Web application from the command-line using:
+- You can easily run the Web application from the command-line using:
 	
 			$ mvn spring-boot:run
 
-4. Test the application.
+- Open your browser under [http://localhost:8080](http://localhost:8080).
 
-	- Open your browser under [http://localhost:8080](http://localhost:8080).
-
-	- Log in with Google:
+- Log in with Google:
 	
-		<img src="../images/tutorials/springbootApp/login_page.png" width="50%" />
+	<img src="../images/tutorials/springbootApp/login_page.png" width="50%" />
+		
+At this point, you should not see any devices yet. For you need to grant the logged-in (Google) user permission to view the thing. 
+
+### Step 4: Grant permissions to user and application
+
+#### Grant (Google user) access to XDK:
+
+- In the [Thing Browser](https://vorto.eclipse.org/console/#/thingbrowser) of the Vorto Console, browse for your thing.
+
+- Select the **Policy** tab and add a new policy, to share the thing with the Google user:
+
+	- Enter a unique **Label** for your policy, e.g. google.
+
+	- Choose **Google** as subject type.
+
+	- Paste the **Subject** ID (Google Open ID) copied from the login screen into the **Subject ID** field:
 	
-	- Copy the **Subject** ID from the left menu (highlighted in red).
+- Refresh your Web application [http://localhost:8080](http://localhost:8080) to view the created thing:
 	
-		<img src="../images/tutorials/springbootApp/copy_SubjectId.png" width="20%" />
-
-5. Update policy of the created thing.
-
-	- In the [Thing Browser](https://vorto.eclipse.org/console/#/thingbrowser) of the Vorto Console, browse for your thing.
-
-	- Select the **Policy** tab and add a new policy, to share the thing with the Google user:
-
-	  - Enter a unique **Label** for your policy.
-
-	  - Choose **Google JWT Token** as subject type.
-
-	  - Paste the **Subject** ID copied from the login screen into the **Subject ID** field:
+	<img src="../images/tutorials/springbootApp/xdk_thing.png" width="40%"/>
 	
-			<img src="../images/tutorials/springbootApp/create_policy.png" width="50%" />
-	
-	- Refresh your Web application [http://localhost:8080](http://localhost:8080) to view the created thing:
-	
-		<img src="../images/tutorials/springbootApp/xdk_thing.png" width="40%"/>
-	
-	- Click on the device to see the details containing UI widgets for the individual function blocks:
+#### Grant application access to XDK
 
-		<img src="../images/tutorials/springbootApp/thing_details.png" width="50%"/>
+- Again, select the **Policy** tab and add a new policy, to share the thing with the application as a technical user:
 
-6. Update the features of a thing from Things API.
+	- Enter a unique **Label** for your policy, e.g. mywebapplication.
 
-	- Open [Bosch IoT Suite API](https://apidocs.bosch-iot-suite.com).
+	- Choose **Bosch IoT Things Client** as subject type.
+
+	- As **Subject ID**, put in <solutionId>:mywebapp
+	
+	- Save the policy entry.
+
+- Click on the device to see the details containing UI widgets for the individual function blocks:
+
+	<img src="../images/tutorials/springbootApp/thing_details.png" width="50%"/>
+
+### Step 5: Verify device data in web app
+
+- Open [Bosch IoT Suite API](https://apidocs.bosch-iot-suite.com).
+
+- Choose **Bosch IoT Things - API v2** as spec
 	  
-		- Copy the bosch:things:**apiToken:** value from the file `/src/main/resources/application.yml` and paste it in the **Solution API Token** field.
+- Click **Authorize**.
+	  
+- Enter your thingsApiKey 
 
-		- Click **Authorize**.
-	  
-			<img src="../images/tutorials/springbootApp/thing_rest_api.png" width="40%"/>
-	  
-	  - Select **openID** and **Authorize**.
-	  
-			<img src="../images/tutorials/springbootApp/authorize_bosch_id.png" width="40%"/>
+- Choose Bosch ID to log in with your Bosch ID User ID
+
+- Click 'Close' for the Authorization dialog to return back to the Swagger Documentation
 	
-	- Send some test temperature values to the Bosch IoT Suite, that get displayed in the dashboard.
+Now let us send some test temperature values to the Bosch IoT Suite, that get displayed in the dashboard:
 	
-	  - Copy **ThingID** from **Endpoint Configuration** of your thing in the Developer Console and paste it into the **thingId** field.
+- Copy **ThingID** from **Endpoint Configuration** of your thing in the Vorto Console and paste it into the **thingId** field.
 
-	  - Enter `temperature` in the **featureId** field.
+- Enter `temperature` in the **featureId** field.
 
-	  - Copy the raw JSON string (within **temperature{ }**) from the JSON tab or use the updated JSON as given below, and paste it in **featureObject** field and **Try It**.
+- Copy the raw JSON string (within **temperature{ }**) from the JSON tab or use the updated JSON as given below, and paste it in **featureObject** field and 
+**Execute**.
 	    
 				{
 				  "properties": {
@@ -170,6 +175,9 @@ This tutorial explains how to build a small Spring-boot AngularJS Web applicatio
 	
 	<img src="../images/tutorials/springbootApp/thing_put_param.png" width="40%"/>
 	  
-	- Observe the updated temperature widget value in the dashboard of your web application.
+- Observe the updated temperature widget value in the dashboard of your web application.
 	
 	<img src="../images/tutorials/springbootApp/web_app.png" width="40%"/>
+
+
+**Way to go!!** You have just created a simple Spring Boot App that consumes device telemetry data from Bosch IoT Suite and displays its data in a UI. It all works together nicely because the API between the web app and Bosch IoT Suite is defined with Vorto. Feel free to customize the app. 

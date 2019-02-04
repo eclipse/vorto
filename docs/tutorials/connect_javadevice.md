@@ -106,4 +106,4 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
  
 ## What's next ?
 
- - [Create an Alexa Skillset](voice_control_alexa.md) that outputs the device data from Bosch IoT Suite via Alexa - based voice service.
+ - [Generate a SpringBoot App](voice_control_alexa.md) that visualizes the device data in UI widgets.
