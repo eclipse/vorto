@@ -23,6 +23,5 @@ With the following tutorials, you are going to learn to connect devices that are
 Tutorials that show you what you can do with Vorto Information Models in IoT Solution development:
 
 - [Map arbitrary device data](../mapping-engine/Readme.md) to semantic Vorto Function Blocks
-- [Generate an Alexa Skillset](tutorials/voice_control_alexa.md) that reads device data from Bosch IoT Things.
 - [Generate a SpringBoot Web Application](tutorials/create_webapp_dashboard.md) that reads device data from Bosch IoT Things and visualizes it in pre-defined Vorto UI Widgets.
 - [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
