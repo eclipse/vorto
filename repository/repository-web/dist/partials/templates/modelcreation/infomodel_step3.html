@@ -1,0 +1,50 @@
+<div class="modal-body">
+	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
+	<p>
+		Almost there. Choose what type of semantic abstraction the device should communicate with the IoT backend. You can select from a list of existing abstract Function Block Properties.  
+	</p>
+		<form name="infomodelForm" class="form-horizontal">
+			<div class="form-group">
+				<label for="property" class="col-sm-3 control-label">Semantic Abstraction</label>
+				<div class="col-md-4 col-xs-12 form-group">
+					<input type="radio" name="modelType" ng-disabled="selected.properties.length > 0" ng-change="loadFunctionblocks('org.eclipse.vorto')" value="org.eclipse.vorto" ng-model="fbType">
+					org.eclipse.vorto &nbsp;&nbsp;
+					<input type="radio" name="modelType" ng-disabled="selected.properties.length > 0" ng-change="loadFunctionblocks('com.ipso.smartobjects')" value="org.smartobjects.ipso" ng-model="fbType">
+					LwM2M
+				</div>
+			</div>
+			<div class="form-group">
+  				<label for="property" class="col-sm-3 control-label">Properties:</label>
+					<div class="col-md-4 col-xs-12 form-group">
+						<select class="form-control" ng-change="generatePropertyName(selectedProperty.selectedFb)" ng-model="selectedProperty.selectedFb" ng-options="fb.id as fb.id.name for fb in functionblocks | orderBy: 'id.name' track by fb.id.name">
+							<option value="">-- Select a property--</option>
+						</select>
+						<ui-select class="modelcreator-result" on-remove="removeProperty($item, $model)" multiple tagging search-enabled="false" tagging-label="(custom 'new' label)" ng-model="selected.properties" theme="bootstrap" sortable="true">
+	    					<ui-select-match>{{$item.name}} (<a href="./#/details/{{$item.type.namespace}}:{{$item.type.name}}:{{$item.type.version}}" target="_blank">{{$item.type.name}}</a>)</ui-select-match>
+	    						<ui-select-choices repeat="property in properties | filter:$select.search">
+	      							{{property.name}}
+	    					</ui-select-choices>
+	  					</ui-select>
+        			</div>
+        			<div class="col-md-4 col-xs-12">
+        				<input type="text" class="form-control" name="propertyName" id="propertyName" placeholder="Specify a name for the property" ng-pattern="rePropertyName" ng-model="selectedProperty.propertyName">
+        			</div>
+        			<div class="col-md-1 col-xs-12">
+        				<a href class="btn btn-primary" ng-disabled="!selectedProperty.propertyName || !selectedProperty.selectedFb"  ng-click="addProperty()">Add</a>
+        			</div>   
+        			<div class="col-md-12">
+        				<span ng-show="infomodelForm.$error.pattern" style="color:red">Please enter valid property name.</br>
+            				- No special characters</br>
+            				- No white spaces</br></br>
+            			</span>  
+            		</div>      					
+			</div>
+		</form>
+</div>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)">Create</button>
+	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>

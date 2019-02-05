@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.core;
 
@@ -34,6 +36,7 @@ import org.eclipse.vorto.repository.importer.UploadModelResult;
 import org.eclipse.vorto.repository.web.core.PayloadMappingController;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
 import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 import com.google.gson.Gson;
@@ -91,8 +94,6 @@ public class MappingTest extends AbstractIntegrationTest {
     when(userRepository.findAll()).thenReturn(users);
 
     this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    Thread.sleep(2000); // hack coz it might take awhile until index is
-                        // updated to do a search
     assertEquals(1, modelRepository.search("*").size());
 
     uploadResult = this.importer.upload(
@@ -102,7 +103,7 @@ public class MappingTest extends AbstractIntegrationTest {
         UserContext.user("admin"));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
     this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    assertEquals(1, modelRepository.search("-Mapping").size());
+    assertEquals(1, modelRepository.search("Mapping").size());
   }
 
   @Test
@@ -146,42 +147,5 @@ public class MappingTest extends AbstractIntegrationTest {
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     assertEquals(1, colorInfo.getPlatformMappings().size());
     assertEquals("ios", colorInfo.getPlatformMappings().keySet().iterator().next());
-  }
-
-  private Gson gsonWithDeserializer() {
-    return new GsonBuilder()
-        .registerTypeAdapter(IReferenceType.class, new JsonDeserializer<IReferenceType>() {
-          @Override
-          public IReferenceType deserialize(JsonElement json, Type arg1,
-              JsonDeserializationContext arg2) throws JsonParseException {
-            if (json.isJsonObject()) {
-              final JsonObject jsonObject = json.getAsJsonObject();
-              return new ModelId(jsonObject.get("name").getAsString(),
-                  jsonObject.get("namespace").getAsString(),
-                  jsonObject.get("version").getAsString());
-            } else if (json.isJsonPrimitive()) {
-              return PrimitiveType.valueOf(json.getAsString());
-            }
-
-            return null;
-          }
-        }).create();
-  }
-
-  @Test
-  public void testMappingEngineJsonIntegerProblem() {
-    try {
-      TestMappingRequest mappingRequest = gsonWithDeserializer().fromJson(
-          new InputStreamReader(new ClassPathResource("mappingRequest.json").getInputStream()),
-          TestMappingRequest.class);
-      TestMappingResponse response = new PayloadMappingController().testMapping(mappingRequest);
-      response.getReport().getItems().forEach(item -> {
-        assertFalse(item.getMessage().matches("Field intfb/status/\\S+ must be of type 'Integer'"));
-      });
-    } catch (JsonSyntaxException | JsonIOException | IOException e) {
-      fail("Can't load test file.");
-    } catch (Exception e) {
-      fail("Got exception." + e.getMessage());
-    }
   }
 }

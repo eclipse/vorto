@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.web.security;
 
@@ -16,6 +18,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.PermissionEvaluator;
@@ -40,6 +43,7 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
     final String callerId = authentication.getName();
 
     if (targetDomainObject instanceof ModelId) {
+      try {
       ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
       if (modelInfo != null) {
         if ("model:delete".equalsIgnoreCase((String) permission)) {
@@ -62,8 +66,10 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
           // migration has taken place
           return modelInfo.getAuthor().equals(user.getHashedUsername())
               || modelInfo.getAuthor().equals(user.getUsername());
-        }
-
+        } 
+      }
+      } catch(NotAuthorizedException ex) {
+        return false;
       }
     } else if (targetDomainObject instanceof String) {
       return callerId.equalsIgnoreCase((String) targetDomainObject);

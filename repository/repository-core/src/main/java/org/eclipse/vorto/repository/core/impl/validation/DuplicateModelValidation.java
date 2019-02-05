@@ -1,19 +1,23 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.core.impl.validation;
 
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
 
 /**
@@ -22,19 +26,21 @@ import org.eclipse.vorto.repository.core.impl.InvocationContext;
 public class DuplicateModelValidation implements IModelValidator {
 
   private IModelRepository modelRepository;
+  
+  private IModelPolicyManager policyManager;
 
-  private IUserRepository userRepository;
+  private IUserAccountService userRepository;
 
-  public DuplicateModelValidation(IModelRepository modelRepository, IUserRepository userRepo) {
+  public DuplicateModelValidation(IModelRepository modelRepository, IModelPolicyManager policyManager, IUserAccountService userRepo) {
     this.modelRepository = modelRepository;
+    this.policyManager = policyManager;
     this.userRepository = userRepo;
   }
 
   @Override
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
-    ModelInfo existingModel = modelRepository.getById(modelResource.getId());
-    if (existingModel != null && (!isAdmin(context) && !isAuthor(existingModel, context))) {
+    if (modelRepository.exists(modelResource.getId()) && (!isAdmin(context) && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
       throw new ValidationException("Model already exists", modelResource);
     }
   }
@@ -45,20 +51,10 @@ public class DuplicateModelValidation implements IModelValidator {
     assert (context.getUserContext().getUsername() != null);
     assert (userRepository != null);
 
-    User user = userRepository.findByUsername(context.getUserContext().getUsername());
+    User user = userRepository.getUser(context.getUserContext().getUsername());
     if (user == null) {
       return false;
     }
     return user.isAdmin();
-  }
-
-  private boolean isAuthor(ModelInfo model, InvocationContext context) {
-    assert (context != null);
-    assert (context.getUserContext() != null);
-
-    // TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has
-    // taken place
-    return model.getAuthor().equalsIgnoreCase(context.getUserContext().getHashedUsername())
-        || model.getAuthor().equalsIgnoreCase(context.getUserContext().getUsername());
   }
 }

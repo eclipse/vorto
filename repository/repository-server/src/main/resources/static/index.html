@@ -46,6 +46,10 @@
 <script type="text/javascript" src="webjars/ace/src-min-noconflict/ace.js"></script>
 <script type="text/javascript" src="webjars/angular-ui-ace/ui-ace.min.js"></script>
 
+<!-- AngularJS Multi Select UI -->
+<script src="webjars/angular-ui-select/select.min.js"></script>
+<link rel="stylesheet" href="webjars/angular-ui-select/select.min.css">
+
 
 <script type="text/javascript" src="webjars/repository-web/dist/js/ace-modes/mode-vorto.js"></script>
 
@@ -66,6 +70,7 @@
 
 <!-- Service -->
 <script src="webjars/repository-web/dist/js/service/modelDetailsService.js"></script>
+<script src="webjars/repository-web/dist/js/service/modelCreationService.js"></script>
 
 <script type="text/javascript" src="webjars/repository-web/dist/js/directives.js"></script>
 
@@ -99,15 +104,8 @@
 					<li ng-show="hasAuthority('ROLE_ADMIN')"><a href="./#/manage">Manage</a></li>
 					<li><a href="./#/generators">Plugins</a></li>
 					<li><a href="./#/api">HTTP API</a></li>
-					<li class="dropdown">
-        				<a class="dropdown-toggle" data-toggle="dropdown" href="">Documentation<span class="caret"></span></a>
-        				<ul class="dropdown-menu subnav">
-					       <li><a target="_blank" href="https://www.eclipse.org/vorto/gettingstarted/">Getting Started</a></li>
-					       <li><a target="_blank" href="https://www.eclipse.org/vorto/userguide/">User Guide</a></li>
-					       <li><a target="_blank" href="https://www.eclipse.org/vorto/developerguide/">Developer Guide</a></li>
-					       <li><a target="_blank" href="https://www.eclipse.org/vorto/tutorials/">Tutorials</a></li>
-        				</ul>
-     				</li>
+					<li><a href="http://www.eclipse.org/vorto">What is Vorto?</a></li>
+					
 				</ul>
 				<div id="navbar-right" class="navbar-right">					
 					<ul class="nav navbar-nav">
@@ -129,10 +127,10 @@
 	<footer class="navbar navbar-fixed-bottom">
 		<div class="row">
 			<div class="col-md-3">
-				<span class="copyright">© 2018 Eclipse Vorto Project</span>
+				<span class="copyright">© 2018 Eclipse Vorto Project ($project_version)</span>
 			</div>
-			<div class="col-md-5">
-				<ul class="list-inline quicklinks">
+			<div class="col-md-9">
+				<ul class="list-inline quicklinks pull-right">
 
 					<li><a target="_blank"
 						href="https://www.eclipse.org/legal/copyright.php">Copyright

@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.web;
 
@@ -14,12 +16,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.FileContent;
@@ -28,12 +34,14 @@ import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
+import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.generation.GenerationException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -61,10 +69,12 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     // do logging
   }
 
-  @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Wrong Input") // 405
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST) // 405
   @ExceptionHandler(IllegalArgumentException.class)
-  public void wrongInput(final IllegalArgumentException ex) {
-    // do logging
+  public Object wrongInput(final IllegalArgumentException ex) {
+	  Map<String, Object> error = new HashMap<String, Object>();
+	  error.put("message", ex.getMessage());
+	  return new ResponseEntity<Object>(error, HttpStatus.BAD_REQUEST);
   }
 
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Not authorized to view the model") // 403
@@ -77,6 +87,15 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   @ExceptionHandler(GenerationException.class)
   public void generatorProblem(final GenerationException ex) {
     // do logging
+  }
+  
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(ValidationException.class)
+  public ResponseEntity<Object> cannotLoadSpecification(final ValidationException ex) {
+    Map<String, Object> validationError = new HashMap<String, Object>();
+    validationError.put("message", ex.getMessage());
+    validationError.put("modelId", ex.getModelResource().getId().getPrettyFormat());
+    return new ResponseEntity<Object>(validationError, HttpStatus.BAD_REQUEST);
   }
 
   protected void createSingleModelContent(ModelId modelId, HttpServletResponse response) {
@@ -99,21 +118,26 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   }
 
   protected void addModelToZip(ZipOutputStream zipOutputStream, ModelId modelId) throws Exception {
-    FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
-    ModelInfo modelResource = modelRepository.getById(modelId);
-
     try {
-      ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
-      zipOutputStream.putNextEntry(zipEntry);
-      zipOutputStream.write(modelFile.getContent());
-      zipOutputStream.closeEntry();
-    } catch (Exception ex) {
-      // entry possible exists already, so skipping TODO: ugly hack!!
-    }
+      FileContent modelFile = modelRepository.getFileContent(modelId, Optional.empty()).get();
+      ModelInfo modelResource = modelRepository.getById(modelId);
 
-    for (ModelId reference : modelResource.getReferences()) {
-      addModelToZip(zipOutputStream, reference);
+      try {
+        ZipEntry zipEntry = new ZipEntry(modelResource.getId().getPrettyFormat()+modelResource.getType().getExtension());
+        zipOutputStream.putNextEntry(zipEntry);
+        zipOutputStream.write(modelFile.getContent());
+        zipOutputStream.closeEntry();
+      } catch (Exception ex) {
+        // entry possible exists already, so skipping TODO: ugly hack!!
+      }
+
+      for (ModelId reference : modelResource.getReferences()) {
+        addModelToZip(zipOutputStream, reference);
+      }
+    } catch(NotAuthorizedException notAuthorized) {
+        return;
     }
+    
   }
 
   protected void sendAsZipFile(final HttpServletResponse response, final String fileName,

@@ -1,13 +1,31 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.repository.core.impl;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.vorto.repository.core.IUserContext;
 
 public class UserContext implements IUserContext {
+	
+  
   private String username;
-
+  private static final List<String> ANONYMOUS_USERS = Arrays.asList("anonymous","anonymousUser",getHash("anonymous"),getHash("anonymousUser"));
+  
   public static UserContext user(String username) {
     return new UserContext(username);
   }
@@ -22,13 +40,11 @@ public class UserContext implements IUserContext {
     return username;
   }
 
-  // TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has
-  // taken place
   public String getHashedUsername() {
     return getHash(username);
   }
 
-  private String getHash(String username) {
+  private static String getHash(String username) {
     MessageDigest digest;
     try {
       digest = MessageDigest.getInstance("SHA-256");
@@ -38,7 +54,7 @@ public class UserContext implements IUserContext {
     }
   }
 
-  private String bytesToHex(byte[] hash) {
+  private static String bytesToHex(byte[] hash) {
     StringBuffer hexString = new StringBuffer();
     for (int i = 0; i < hash.length; i++) {
       String hex = Integer.toHexString(0xff & hash[i]);
@@ -51,6 +67,6 @@ public class UserContext implements IUserContext {
 
   @Override
   public boolean isAnonymous() {
-    return this.username.equalsIgnoreCase("anonymous");
+	return ANONYMOUS_USERS.contains(this.username);
   }
 }

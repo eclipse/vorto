@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.eclipse.vorto.codegen.spi.config;
 
 import java.security.KeyManagementException;
@@ -14,7 +26,7 @@ import org.eclipse.vorto.codegen.spi.model.Generator;
 import org.eclipse.vorto.codegen.spi.repository.GeneratorRepository;
 import org.eclipse.vorto.codegen.spi.service.VortoService;
 import org.eclipse.vorto.codegen.spi.utils.GatewayUtils;
-import org.eclipse.vorto.repository.api.IModelRepository;
+import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.RepositoryClientBuilder;
 import org.eclipse.vorto.utilities.reader.ModelWorkspaceReader;
 import org.slf4j.Logger;
@@ -145,8 +157,7 @@ public abstract class AbstractGeneratorConfiguration
 
 
   @Bean
-  public IModelRepository modelRepository() {
-    return RepositoryClientBuilder.newBuilder().setBaseUrl(getVortoRepoUrl())
-        .setTenant(env.getProperty("vorto.tenantId")).buildModelRepositoryClient();
+  public IRepositoryClient modelRepository() {
+    return RepositoryClientBuilder.newBuilder().setBaseUrl(getVortoRepoUrl()).build();
   }
 }

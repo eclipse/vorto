@@ -1,16 +1,19 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.sso;
 
 import java.util.Arrays;
+
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -29,53 +32,77 @@ import org.springframework.security.oauth2.client.token.grant.implicit.ImplicitA
 import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordAccessTokenProvider;
 
 public class TokenUtils {
-  public static AccessTokenProvider proxiedAccessTokenProvider(String proxyHost, int proxyPort,
-      String proxyUser, String proxyPassword) {
-    ClientHttpRequestFactory requestFactory =
-        proxyAuthenticatedRequestFactory(proxyHost, proxyPort, proxyUser, proxyPassword);
+    public static AccessTokenProvider proxiedAccessTokenProvider(String proxyHost, int proxyPort,
+        String proxyUser, String proxyPassword) {
+        ClientHttpRequestFactory requestFactory =
+            proxyAuthenticatedRequestFactory(proxyHost, proxyPort, proxyUser, proxyPassword);
+        return buildAccessTokenProvider(requestFactory);
+    }
 
-    AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
-        new AuthorizationCodeAccessTokenProvider();
-    authorizationCodeAccessTokenProvider.setRequestFactory(requestFactory);
+    public static AccessTokenProvider proxiedAccessTokenProvider(String proxyHost, int proxyPort) {
+        ClientHttpRequestFactory requestFactory =
+            proxyAuthenticatedRequestFactory(proxyHost, proxyPort);
+        return buildAccessTokenProvider(requestFactory);
+    }
 
-    ImplicitAccessTokenProvider implicitAccessTokenProvider = new ImplicitAccessTokenProvider();
-    implicitAccessTokenProvider.setRequestFactory(requestFactory);
+    private static AccessTokenProvider buildAccessTokenProvider(
+        ClientHttpRequestFactory requestFactory) {
+        AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
+            new AuthorizationCodeAccessTokenProvider();
+        authorizationCodeAccessTokenProvider.setRequestFactory(requestFactory);
 
-    return new AccessTokenProviderChain(
-        Arrays.<AccessTokenProvider>asList(authorizationCodeAccessTokenProvider,
-            implicitAccessTokenProvider, new ResourceOwnerPasswordAccessTokenProvider(),
-            new ClientCredentialsAccessTokenProvider()));
-  }
+        ImplicitAccessTokenProvider implicitAccessTokenProvider = new ImplicitAccessTokenProvider();
+        implicitAccessTokenProvider.setRequestFactory(requestFactory);
 
-  public static AccessTokenProvider accessTokenProvider() {
-    AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
-        new AuthorizationCodeAccessTokenProvider();
+        return new AccessTokenProviderChain(
+            Arrays.<AccessTokenProvider>asList(authorizationCodeAccessTokenProvider,
+                implicitAccessTokenProvider, new ResourceOwnerPasswordAccessTokenProvider(),
+                new ClientCredentialsAccessTokenProvider()));
+    }
 
-    ImplicitAccessTokenProvider implicitAccessTokenProvider = new ImplicitAccessTokenProvider();
+    public static AccessTokenProvider accessTokenProvider() {
+        AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
+            new AuthorizationCodeAccessTokenProvider();
 
-    return new AccessTokenProviderChain(
-        Arrays.<AccessTokenProvider>asList(authorizationCodeAccessTokenProvider,
-            implicitAccessTokenProvider, new ResourceOwnerPasswordAccessTokenProvider(),
-            new ClientCredentialsAccessTokenProvider()));
-  }
+        ImplicitAccessTokenProvider implicitAccessTokenProvider = new ImplicitAccessTokenProvider();
 
-  public static ClientHttpRequestFactory proxyAuthenticatedRequestFactory(String proxyHost,
-      int proxyPort, String proxyUser, String proxyPassword) {
-    CredentialsProvider credsProvider = new BasicCredentialsProvider();
-    credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
-        new UsernamePasswordCredentials(proxyUser, proxyPassword));
-    HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        return new AccessTokenProviderChain(
+            Arrays.<AccessTokenProvider>asList(authorizationCodeAccessTokenProvider,
+                implicitAccessTokenProvider, new ResourceOwnerPasswordAccessTokenProvider(),
+                new ClientCredentialsAccessTokenProvider()));
+    }
 
-    clientBuilder.useSystemProperties();
-    clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort));
-    clientBuilder.setDefaultCredentialsProvider(credsProvider);
-    clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
+    public static ClientHttpRequestFactory proxyAuthenticatedRequestFactory(String proxyHost,
+        int proxyPort, String proxyUser, String proxyPassword) {
+        CredentialsProvider credsProvider = new BasicCredentialsProvider();
+        credsProvider.setCredentials(new AuthScope(proxyHost, proxyPort),
+            new UsernamePasswordCredentials(proxyUser, proxyPassword));
+        return getClientBuilder(proxyHost, proxyPort, credsProvider);
+    }
 
-    CloseableHttpClient client = clientBuilder.build();
+    private static ClientHttpRequestFactory proxyAuthenticatedRequestFactory(String proxyHost,
+        int proxyPort) {
+        return getClientBuilder(proxyHost, proxyPort, null);
+    }
 
-    HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-    factory.setHttpClient(client);
+    private static ClientHttpRequestFactory getClientBuilder(String proxyHost, int proxyPort,
+        CredentialsProvider credsProvider) {
+        HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        clientBuilder.useSystemProperties();
+        clientBuilder.setProxy(new HttpHost(proxyHost, proxyPort));
+        if (credsProvider != null){
+            clientBuilder.setDefaultCredentialsProvider(credsProvider);
+        }
+        clientBuilder.setProxyAuthenticationStrategy(new ProxyAuthenticationStrategy());
 
-    return factory;
-  }
+        CloseableHttpClient client = clientBuilder.build();
+
+        HttpComponentsClientHttpRequestFactory factory =
+            new HttpComponentsClientHttpRequestFactory();
+        factory.setHttpClient(client);
+
+        return factory;
+    }
+
+
 }

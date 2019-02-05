@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.core.impl.parser;
 
@@ -49,6 +51,7 @@ import com.google.inject.Injector;
 public abstract class AbstractModelParser implements IModelParser {
 
   private String fileName;
+  private boolean enableValidation = true;
   private IModelRepository repository;
   private Collection<FileContent> dependencies = Collections.emptyList();
   private ErrorMessageProvider errorMessageProvider;
@@ -68,9 +71,6 @@ public abstract class AbstractModelParser implements IModelParser {
     resourceSet.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
     resourceSet.addLoadOption(XtextResource.OPTION_ENCODING, "UTF-8");
 
-    Collection<ModelId> importedDependencies =
-        importExternallySpecifiedDependencies(dependencies, resourceSet);
-
     Resource resource = createResource(fileName, getContent(is), resourceSet)
         .orElseThrow(() -> new ValidationException(
             "Xtext is not able to create a resource for this model. Check if you are using the correct parser.",
@@ -84,28 +84,34 @@ public abstract class AbstractModelParser implements IModelParser {
 
     Model model = (Model) resource.getContents().get(0);
 
-    /* Import the rest of the dependencies (those that were not loaded above) from the repository */
-    importDependenciesFromRepository(resourceSet, importedDependencies, model);
+    if (enableValidation) {
+      Collection<ModelId> importedDependencies =
+          importExternallySpecifiedDependencies(dependencies, resourceSet);
+      
+      /* Import the rest of the dependencies (those that were not loaded above) from the repository */
+      importDependenciesFromRepository(resourceSet, importedDependencies, model);
 
-    /* Execute validators */
-    IResourceValidator validator = injector.getInstance(IResourceValidator.class);
-    List<Issue> issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
-    if (issues.size() > 0) {
-      List<ModelId> missingReferences = getMissingReferences(model, issues);
-      if (missingReferences.size() > 0) {
-        throw new CouldNotResolveReferenceException(
-            getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
-      } else {
-        Set<ValidationIssue> validationIssues = convertIssues(issues);
-        throw new ValidationException(collate(validationIssues), validationIssues,
+      /* Execute validators */
+      IResourceValidator validator = injector.getInstance(IResourceValidator.class);
+      List<Issue> issues = validator.validate(resource, CheckMode.ALL, CancelIndicator.NullImpl);
+      if (issues.size() > 0) {
+        List<ModelId> missingReferences = getMissingReferences(model, issues);
+        if (missingReferences.size() > 0) {
+          throw new CouldNotResolveReferenceException(
+              getModelInfo(model).orElse(getModelInfoFromFilename()), missingReferences);
+        } else {
+          Set<ValidationIssue> validationIssues = convertIssues(issues);
+          throw new ValidationException(collate(validationIssues), validationIssues,
+              getModelInfo(model).orElse(getModelInfoFromFilename()));
+        }
+      }
+
+      if (!resource.getErrors().isEmpty()) {
+        throw new ValidationException(resource.getErrors().get(0).getMessage(),
             getModelInfo(model).orElse(getModelInfoFromFilename()));
       }
     }
-
-    if (!resource.getErrors().isEmpty()) {
-      throw new ValidationException(resource.getErrors().get(0).getMessage(),
-          getModelInfo(model).orElse(getModelInfoFromFilename()));
-    }
+    
 
     return new ModelResource((Model) resource.getContents().get(0));
   }
@@ -257,4 +263,8 @@ public abstract class AbstractModelParser implements IModelParser {
   }
 
   protected abstract Injector getInjector();
+  
+  public void setValidate(boolean enable) {
+    this.enableValidation = enable;
+  }
 }

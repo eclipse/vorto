@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.10.0.M10</version>
+		<version>0.10.0.M11</version>
 	</parent>
 	<artifactId>core-bundles</artifactId>
 	<packaging>pom</packaging>
@@ -14,13 +14,14 @@
 	<url>http://www.eclipse.org/vorto</url>
 	
 	<modules>	
-		<module>targetplatform</module>
 		<module>language</module>
 		<module>meta-model</module>
+		<module>feature</module>
+		<module>updatesite</module>
 	</modules>
 
 	<properties>
-		<tycho-version>1.2.0</tycho-version>
+		<tycho-version>1.3.0</tycho-version>
 		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
 	</properties>
 
@@ -102,23 +103,15 @@
 						<execution>
 							<goals>
 								<goal>compile</goal>
+								<goal>xtend-install-debug-info</goal>
 								<goal>testCompile</goal>
+								<goal>xtend-test-install-debug-info</goal>
 							</goals>
 						</execution>
 					</executions>
 					<configuration>
 						<outputDirectory>xtend-gen</outputDirectory>
 					</configuration>
-					<dependencies>
-						<!-- these dependencies are contributed in Eclipse by the "Xtend Library" 
-							classpath container -->
-						<dependency>
-							<groupId>org.eclipse.xtend</groupId>
-							<artifactId>org.eclipse.xtend.lib</artifactId>
-							<version>${xtext.version}</version>
-							<type>pom</type>
-						</dependency>
-					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -176,52 +169,6 @@
 				</plugin>
 				<plugin>
 					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>target-platform-configuration</artifactId>
-					<version>${tycho-version}</version>
-					<configuration>
-						<resolver>p2</resolver>
-						<ignoreTychoRepositories>true</ignoreTychoRepositories>
-						<pomDependencies>consider</pomDependencies>
-						<target>
-							<artifact>
-								<groupId>org.eclipse.vorto</groupId>
-								<artifactId>org.eclipse.vorto.targetplatform</artifactId>
-								<version>${project.version}</version>
-								<classifier>vorto</classifier>
-							</artifact>
-						</target>
-						<environments>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>linux</os>
-								<ws>gtk</ws>
-								<arch>x86_64</arch>
-							</environment>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86</arch>
-							</environment>
-							<environment>
-								<os>win32</os>
-								<ws>win32</ws>
-								<arch>x86_64</arch>
-							</environment>
-							<environment>
-								<os>macosx</os>
-								<ws>cocoa</ws>
-								<arch>x86_64</arch>
-							</environment>
-						</environments>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
 					<artifactId>tycho-surefire-plugin</artifactId>
 					<version>${tycho-version}</version>
 					<configuration>
@@ -249,7 +196,7 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>exec-maven-plugin</artifactId>
-					<version>1.2.1</version>
+					<version>1.4.0</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -295,10 +242,6 @@
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-versions-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>

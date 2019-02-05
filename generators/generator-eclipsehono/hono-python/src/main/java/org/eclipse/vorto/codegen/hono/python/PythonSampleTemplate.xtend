@@ -46,7 +46,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	hono_clientId = hono_deviceId
 	hono_authId = hono_deviceId + "@" + hono_tenant
 	hono_certificatePath = "<ADD PATH TO CERTIFICATE HERE>"
-	ditto_namespace = "«context.configurationProperties.getOrDefault("ditto_namespace","com.mycompany")»"
+	ditto_topic = "«context.configurationProperties.getOrDefault("ditto_topic","com.mycompany/4711")»"
 
 
 	# The callback for when the client receives a CONNACK response from the server.
@@ -82,7 +82,7 @@ class PythonSampleTemplate implements IFileTemplate<InformationModel> {
 	# The functions to publish the functionblocks data
 	«FOR fb : model.properties»
 	def publish«fb.name.toFirstUpper»():
-	    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_namespace, hono_deviceId)
+	    payload = ser.serialize_functionblock("«fb.name»", infomodel.«fb.name», ditto_topic, hono_deviceId)
 	    print("Publish Payload: ", payload, " to Topic: ", publishTopic)
 	    client.publish(publishTopic, payload)
 	    

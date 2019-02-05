@@ -1,18 +1,15 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at
- * http://www.eclipse.org/legal/epl-v10.html
- * The Eclipse Distribution License is available at
- * http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors:
- * Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
-
 package org.eclipse.vorto.repository.client;
 
 import org.apache.http.HttpHost;
@@ -26,8 +23,8 @@ import org.eclipse.vorto.repository.api.impl.DefaultModelGeneration;
 import org.eclipse.vorto.repository.api.impl.DefaultModelRepository;
 import org.eclipse.vorto.repository.api.impl.RequestContext;
 import org.eclipse.vorto.repository.api.mapping.IMapping;
+import org.eclipse.vorto.repository.client.impl.DefaultRepositoryClient;
 
-@Deprecated
 public class RepositoryClientBuilder {
 	private String baseUrl = "http://vorto.eclipse.org";
 	private String proxyHost;
@@ -60,14 +57,25 @@ public class RepositoryClientBuilder {
 		return this;
 	}
 	
+	@Deprecated
+	/**
+	 * Please use {@link RepositoryClientBuilder#build()} instead
+	 * @return
+	 */
 	public IModelGeneration buildModelGenerationClient() {
 		return new DefaultModelGeneration(buildHttpClient(), buildRequestContext());
 	}
 
+	@Deprecated
+	/**
+     * Please use {@link RepositoryClientBuilder#build()} instead
+     * @return
+     */
 	public IModelRepository buildModelRepositoryClient() {
 		return new DefaultModelRepository(buildHttpClient(), buildRequestContext());
 	}
 	
+	@Deprecated
 	public IMapping buildIMappingClient() {
 		return new DefaultMappingClient();
 	}
@@ -87,4 +95,16 @@ public class RepositoryClientBuilder {
 	private boolean hasProxy() {
 		return (proxyHost != null) && !(proxyHost.trim().isEmpty());
 	}
+	
+	public IRepositoryClient build() {
+	  return new DefaultRepositoryClient(buildHttpClient(), buildRequestContext2());
+	}
+	
+	private org.eclipse.vorto.repository.client.impl.RequestContext buildRequestContext2() {
+      if (hasProxy()) {
+          return new org.eclipse.vorto.repository.client.impl.RequestContext(baseUrl, RequestConfig.custom().setProxy(new HttpHost(proxyHost, proxyPort)).build());
+      } else {
+          return new org.eclipse.vorto.repository.client.impl.RequestContext(baseUrl, RequestConfig.DEFAULT);
+      }
+  }
 }

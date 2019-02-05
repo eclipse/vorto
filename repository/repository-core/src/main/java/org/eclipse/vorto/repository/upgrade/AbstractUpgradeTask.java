@@ -1,16 +1,19 @@
 /**
- * Copyright (c) 2015-2018 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelResource;
@@ -18,25 +21,21 @@ import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
-  private IModelRepository modelRepository;
+	protected JcrModelRepository modelRepository;
+	
+	public AbstractUpgradeTask(IModelRepository repository) {
+		this.modelRepository = (JcrModelRepository)repository;
+	}
+	
+	public Optional<IUpgradeTaskCondition> condition() {
+		return Optional.empty();
+	}
 
-  public AbstractUpgradeTask(IModelRepository repository) {
-    this.modelRepository = repository;
-  }
-
-  public Optional<IUpgradeTaskCondition> condition() {
-    return Optional.empty();
-  }
-
-  protected IModelRepository getModelRepository() {
-    return modelRepository;
-  }
-
-  protected ModelResource getModel(ModelId modelId) {
-    return ((JcrModelRepository) modelRepository).getEMFResource(modelId);
-  }
-
-  protected void saveModel(ModelResource resource) {
-    ((JcrModelRepository) modelRepository).saveModel(resource);
-  }
+	protected IModelRepository getModelRepository() {
+		return modelRepository;
+	}
+	
+	protected ModelResource getModel(ModelId modelId) {
+		return modelRepository.getEMFResource(modelId);
+	}
 }

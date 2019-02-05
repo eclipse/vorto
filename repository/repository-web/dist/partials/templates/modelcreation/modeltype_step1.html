@@ -1,0 +1,46 @@
+<div class="modal-body">
+	<label>Please choose, what type of model you want to create.</label> 
+	<div class="alert alert-info">
+		<p>
+			<i class="fa fa-bell"></i> Once created, the model can only be viewed and modified by you. 
+			You can grant other users view permissions later, under model details - permissions.
+		</p>
+	</div>
+	<br/><br/>
+	<form name="createModelForm" novalidate>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="col-sm-5">
+					<div class="form-group">
+					    <input type="radio" name="modelType" value="InformationModel" ng-model="modelType">
+					    Information Model
+					</div>
+					<div class="form-group">
+						<input type="radio" name="modelType" value="Functionblock" ng-model="modelType">
+					    Function Block
+					</div>
+					<div class="form-group">
+						<input type="radio" name="modelType" value="Datatype" ng-model="modelType">
+						Datatype
+					</div>
+					<div class="form-group">
+						<input type="radio" name="modelType" value="Mapping" ng-model="modelType">
+						Mapping
+					</div>
+				</div>
+				<div class="col-sm-7">
+					<div ng-if="modelType === 'InformationModel'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/description_infomodel.html'"></div>
+					<div ng-if="modelType === 'Functionblock'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/description_functionblock.html'"></div>
+					<div ng-if="modelType === 'Datatype'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/description_datatype.html'"></div>
+					<div ng-if="modelType === 'Mapping'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/description_mapping.html'"></div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="modal-footer">
+	<div class="align-right">
+	    <button class="btn btn-primary" type="button" ng-click="next('step2',modelType,'','','1.0.0')">Next</button>
+	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+</div>

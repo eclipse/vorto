@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.0.M10</version>
+		<version>0.10.0.M11</version>
 	</parent>
 	<artifactId>repository-server</artifactId>
 	<packaging>jar</packaging>
@@ -36,6 +36,11 @@
 		</dependency>
 
 		<!-- Spring Boot dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -144,10 +149,49 @@
 			<version>0.2.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>angular-ui-select</artifactId>
+			<version>0.19.6</version>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse.vorto</groupId>
 			<artifactId>repository-web</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>5.1.1.RELEASE</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>repository-java-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.vorto</groupId>
+			<artifactId>generator-api</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+        <dependency>
+            <groupId>org.eclipse.vorto</groupId>
+            <artifactId>generator-runner</artifactId>
+			<version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+         <dependency>
+            <groupId>org.eclipse.vorto</groupId>
+            <artifactId>generator-api</artifactId>
+			<version>${project.version}</version>
+            <type>test-jar</type>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -189,25 +233,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>include-docker</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>com.spotify</groupId>
-						<artifactId>dockerfile-maven-plugin</artifactId>
-						<configuration>
-							<repository>eclipsevorto/vorto-repo</repository>
-							<buildArgs>
-								<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
-								<https_proxy>${env.https_proxy}</https_proxy>
-								<http_proxy>${env.http_proxy}</http_proxy>
-							</buildArgs>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>exclude-h2</id>
 			<build>

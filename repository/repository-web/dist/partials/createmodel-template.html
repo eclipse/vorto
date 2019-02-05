@@ -1,57 +1,7 @@
 <div class="modal-header">
 	<h3 class="modal-title"><center>Creating Model</center></h3>
 </div>
-<div class="modal-body">
-	<form name="createModelForm" novalidate>
-	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
-	<label>What type of model would you like to create ?</label>
-	<a class="align-right" target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
-		<i class="fa fa-question fa-2x"></i>
-	</a>
-    <div class="form-group">
-        <table>
-           <tr>
-                <td>                    
-                    <input type="radio" name="modelType" value="InformationModel" ng-model="modelType">
-                    Information Model &nbsp;                       
-                </td>
-                <td>                    
-                    <input type="radio" name="modelType" value="Functionblock" ng-model="modelType">
-                    Function Block &nbsp;                       
-                </td>
-                <td>                   
-                    <input type="radio" name="modelType" value="Datatype" ng-model="modelType">
-                    Datatype &nbsp;                    
-                </td>
-                <td>                   
-                    <input type="radio" name="modelType" value="Mapping" ng-model="modelType">
-                    Mapping &nbsp;                   
-                </td>
-           </tr> 
-        </table>
-    </div>
-    <div class="form-group">
-    	<label>Name</label>
-        <input type="text" class="form-control" name="modelName" ng-model="modelName" ng-pattern="/^[A-Z][a-zA-Z0-9]*$/" required>
-        <div ng-show="createModelForm.modelName.$error.pattern">Please enter a valid model name. Example: DistanceSensor</div>
-    </div>
-    <div class="form-group">
-    	<label>Namespace</label>
-        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" required>
-		<div ng-show="createModelForm.modelNamespace.$error.pattern">Please enter a valid model namespace. Example: com.mycompany</div>
-    </div>
-    <div class="form-group">
-    	<label>Version</label>
-        <input type="text" class="form-control" name="modelVersion" ng-model="modelVersion" ng-pattern="/^\d+\.\d+\.\d+(-\\w+)*$/" required>
-		<div ng-show="createModelForm.modelVersion.$error.pattern">Please enter a valid model version. Example: 1.0.0</div>
-    </div>
-  </div>
-</form>
-<div class="modal-footer">
-	<div class="align-right">
-	    <button ng-if="!isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create()">Create</button>
-	    <button ng-if="isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create()"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
-	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
-</div>
-</div>
+<div ng-if="currentStep === 'step1'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/modeltype_step1.html'"></div>
+<div ng-if="currentStep === 'step2'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/modelname_step2.html'"></div>
+<div ng-if="currentStep === 'step3'" ng-include src="'webjars/repository-web/dist/partials/templates/modelcreation/infomodel_step3.html'"></div>
 

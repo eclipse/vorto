@@ -1,5 +1,6 @@
-repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal',
-	function ($scope,$filter,$rootScope,$http,$location,$uibModal) {
+repositoryControllers.controller('SearchController', 
+    ['$scope', '$filter', '$rootScope', '$http', '$location', '$uibModal', 'openCreateModelDialog',
+    function ($scope,$filter,$rootScope,$http,$location,$uibModal, openCreateModelDialog) {
 
     $scope.models = [];
     $scope.filteredModels = [];
@@ -96,50 +97,5 @@ repositoryControllers.controller('SearchController', [ '$scope', '$filter', '$ro
         });
     };
 
-    $scope.openCreateModelDialog = function(action) {
-      var modalInstance = $uibModal.open({
-        animation: true,
-        controller: function($scope) {
-        	$scope.errorMessage = null;
-        	$scope.modelType = "InformationModel";
-        	$scope.modelName = "";
-        	$scope.modelNamespace = "";
-        	$scope.modelVersion = "1.0.0";
-        	
-			$scope.create = function() {
-				$scope.isLoading = true;
-		    	$http.post('./rest/' + $rootScope.tenant + '/models/'+$rootScope.modelId($scope.modelNamespace,$scope.modelName,$scope.modelVersion)+'/'+$scope.modelType,null)
-			        .success(function(result){
-			        	$scope.isLoading = false;
-			        	if (result.status === 409) {
-			        		$scope.errorMessage = "Model with this name and namespace already exists.";
-			        	} else {
-			        		modalInstance.close(result);
-			        	}
-			        }).error(function(data, status, header, config) {
-			        	$scope.isLoading = false;
-			        	if (status === 409) {
-			        		$scope.errorMessage = "Model with this name and namespace already exists.";
-			        	}
-			        });
-		    };
-		 	    
-		    $scope.cancel = function() {
-				modalInstance.dismiss();
-			};
-        },
-        templateUrl: "webjars/repository-web/dist/partials/createmodel-template.html",
-        size: "lg",
-        resolve: {
-        	model: function() {
-    			return $scope.model;
-    		}
-    	}
-      });
-      
-      modalInstance.result.then(
-        function(model) {
-            $location.path("/details/"+model.id.prettyFormat);
-        });
-};
+    $scope.openCreateModelDialog = openCreateModelDialog($scope);
 } ]);

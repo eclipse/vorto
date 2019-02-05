@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.10.0.M10</version>
+		<version>0.10.0.M11</version>
 	</parent>
 
 
@@ -49,13 +49,6 @@
 					<groupId>org.eclipse.xtend</groupId>
 					<artifactId>xtend-maven-plugin</artifactId>
 					<version>${xtext.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.eclipse.platform</groupId>
-							<artifactId>org.eclipse.equinox.common</artifactId>
-							<version>3.10.0</version>
-						</dependency>
-					</dependencies>
 					<executions>
 						<execution>
 							<goals>
@@ -83,37 +76,6 @@
 					<configuration>
 						<failOnMissingWebXml>false</failOnMissingWebXml>
 					</configuration>
-				</plugin>
-				<plugin>
-    					<groupId>com.spotify</groupId>
-				    	<artifactId>dockerfile-maven-plugin</artifactId>
-    					<version>1.4.4</version>
-    					<executions>
-        					<execution>
-            						<id>tag-latest</id>
-            						<phase>deploy</phase>
-						        <goals>
-						            <goal>build</goal>
-						            <goal>tag</goal>
-						            <goal>push</goal>
-						        </goals>
-						        <configuration>
-						            <tag>latest</tag>
-						        </configuration>
-					        </execution>
-					        <execution>
-						        <id>tag-version</id>
-						        <phase>deploy</phase>
-						        <goals>
-						            <goal>build</goal>
-						            <goal>tag</goal>
-						            <goal>push</goal>
-						        </goals>
-						        <configuration>
-						            <tag>${project.version}</tag>
-						        </configuration>
-					        </execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

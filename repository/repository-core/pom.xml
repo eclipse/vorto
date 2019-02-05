@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.0.M10</version>
+		<version>0.10.0.M11</version>
 	</parent>
 	<artifactId>repository-core</artifactId>
 	<packaging>jar</packaging>
@@ -104,10 +104,6 @@
 		<dependency>
 			<groupId>javax.jcr</groupId>
 			<artifactId>jcr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.modeshape</groupId>
-			<artifactId>modeshape-sequencer-xml</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.modeshape</groupId>
@@ -229,6 +225,13 @@
 			<artifactId>modeshape-unit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-contract-stub-runner</artifactId>
+            <version>2.0.2.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

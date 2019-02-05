@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.importer;
 
@@ -24,12 +26,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -58,9 +62,12 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   @Autowired
   private IModelRepository modelRepository;
+  
+  @Autowired
+  private IModelPolicyManager policyManager;
 
   @Autowired
-  private IUserRepository userRepository;
+  private IUserAccountService userRepository;
 
   @Autowired
   private ModelParserFactory modelParserFactory;
@@ -161,7 +168,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   private boolean isAdmin(IUserContext userContext) {
-    User user = getUserRepository().findByUsername(userContext.getUsername());
+    User user = getUserRepository().getUser(userContext.getUsername());
     return user != null && (user.isAdmin());
   }
 
@@ -329,7 +336,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.modelRepository = modelRepository;
   }
 
-  public void setUserRepository(IUserRepository userRepository) {
+  public void setUserRepository(IUserAccountService userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -345,11 +352,19 @@ public abstract class AbstractModelImporter implements IModelImporter {
     return modelRepository;
   }
 
-  public IUserRepository getUserRepository() {
+  public IUserAccountService getUserRepository() {
     return userRepository;
   }
 
   public ModelParserFactory getModelParserFactory() {
     return modelParserFactory;
+  }
+  
+  public void setPolicyManager(IModelPolicyManager policyManager) {
+    this.policyManager = policyManager;
+  }
+  
+  public IModelPolicyManager getPolicyManager() {
+    return policyManager;
   }
 }

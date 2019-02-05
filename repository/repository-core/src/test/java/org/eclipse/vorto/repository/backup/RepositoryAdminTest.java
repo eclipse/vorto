@@ -1,27 +1,31 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.backup;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.backup.impl.DefaultModelBackupService;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
-import org.junit.Ignore;
+import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.utils.DummySecurityCredentials;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-@Ignore
+
 public class RepositoryAdminTest extends AbstractIntegrationTest {
 
   private DefaultModelBackupService repositoryManager = null;
@@ -29,9 +33,17 @@ public class RepositoryAdminTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    repositoryManager = new DefaultModelBackupService();
+    repositoryManager = new DefaultModelBackupService() {
+      @Override
+      public Session getSession() {
+        try {
+          return repository.login(new DummySecurityCredentials("admin", "ROLE_ADMIN"));
+        } catch (RepositoryException e) {
+          throw new FatalModelRepositoryException("Cannot create session", e);
+        }
+      }
+    };
     repositoryManager.setModelRepository(this.modelRepository);
-    repositoryManager.setSession(((JcrModelRepository) this.modelRepository).getSession());
   }
 
   @Test

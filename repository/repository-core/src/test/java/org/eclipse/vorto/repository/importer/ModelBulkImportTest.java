@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2015-2016 Bosch Software Innovations GmbH and others. All rights reserved. This
- * program and the accompanying materials are made available under the terms of the Eclipse Public
- * License v1.0 and Eclipse Distribution License v1.0 which accompany this distribution.
+ * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * The Eclipse Public License is available at http://www.eclipse.org/legal/epl-v10.html The Eclipse
- * Distribution License is available at http://www.eclipse.org/org/documents/edl-v10.php.
+ * See the NOTICE file(s) distributed with this work for additional
+ * information regarding copyright ownership.
  *
- * Contributors: Bosch Software Innovations GmbH - Please refer to git log
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * https://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.importer;
 
@@ -32,7 +34,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
   @Override
   public void beforeEach() throws Exception {
     super.beforeEach();
-    bulkUploadHelper = new BulkUploadHelper(this.modelRepository, this.userRepository);
+    bulkUploadHelper = new BulkUploadHelper(this.modelRepository,policyManager, this.accountService);
   }
 
   @Test
@@ -103,7 +105,7 @@ public class ModelBulkImportTest extends AbstractIntegrationTest {
     VortoModelImporter vortoImporter = new VortoModelImporter();
     vortoImporter.setModelRepository(modelRepository);
     vortoImporter.setUploadStorage(new InMemoryTemporaryStorage());
-    vortoImporter.setUserRepository(userRepository);
+    vortoImporter.setUserRepository(accountService);
 
     UploadModelResult uploadResult =
         vortoImporter.upload(

@@ -1,0 +1,20 @@
+namespace com.test
+version 1.0.0
+displayname "Location"
+description "Functionblock for Location"
+
+functionblock Location {
+	
+	configuration {
+	
+	}
+	
+	status {
+	  mandatory x as float "Tracks the x axis"
+	  mandatory y as float "Tracks the y axis"
+	  mandatory z as float "Tracks the z axis"	
+	}
+	
+	events {}
+	operations {}
+}
