@@ -106,4 +106,4 @@ In this tutorial, we are going to use connect a Distance Sensor to the Bosch IoT
  
 ## What's next ?
 
- - [Generate a SpringBoot App](voice_control_alexa.md) that visualizes the device data in UI widgets.
+ - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.
