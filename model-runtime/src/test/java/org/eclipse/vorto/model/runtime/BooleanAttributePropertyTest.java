@@ -10,12 +10,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.model;
+package org.eclipse.vorto.model.runtime;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.vorto.model.BooleanAttributeProperty;
+import org.eclipse.vorto.model.BooleanAttributePropertyType;
 import org.junit.Test;
 
 public class BooleanAttributePropertyTest {
