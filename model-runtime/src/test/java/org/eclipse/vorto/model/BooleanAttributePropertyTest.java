@@ -12,21 +12,23 @@
  */
 package org.eclipse.vorto.model;
 
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class BooleanAttributePropertyTest {
 
     @Test public void testBooleanAttributePropertyType() {
         BooleanAttributeProperty property =
             new BooleanAttributeProperty(BooleanAttributePropertyType.READABLE, false);
-        assert (property.getType() == BooleanAttributePropertyType.READABLE);
-        assert (property.isValue() == false);
+        assertEquals(property.getType(),BooleanAttributePropertyType.READABLE);
+        assertFalse(property.isValue());
         property.setType(BooleanAttributePropertyType.WRITABLE);
-        assert (property.getType() == BooleanAttributePropertyType.WRITABLE);
+        assertEquals(property.getType(),BooleanAttributePropertyType.WRITABLE);
         property.setValue(true);
-        assert (property.isValue());
-        assert (property.toString().equals("BooleanAttributeProperty [type=WRITABLE, value=true]"));
+        assertTrue(property.isValue());
+        assertTrue(property.toString().equals("BooleanAttributeProperty [type=WRITABLE, value=true]"));
     }
 }
