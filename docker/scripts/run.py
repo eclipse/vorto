@@ -36,8 +36,10 @@ def main():
 
 
     config_yaml_file = Path("./config/application.yml")
-    java_args = ["java","-cp","/code/lib"]
+    java_args = ["java","-cp",".:lib/*:infomodelrepository.jar"]
     args = {}
+    profile = getenv("PROFILE", "local")
+    args.update({"spring.profiles.active": profile})
     datasource = getenv("DATASOURCE", "mysql")
     authprovider = getenv("AUTH_PROVIDER", "github")
     spring_application = {}
@@ -51,9 +53,9 @@ def main():
         #Things that can be defaulted
         args.update({"server.port": getenv("VORTO_PORT", 8080)})
         args.update({"server.contextPath": getenv("CONTEXT_PATH", "/")})
-        args.update({"generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
+        args.update({"server.config.generatorUser": getenv("GENERATOR_USER", "vorto_generators")})
         if getenv("GENERATOR_PASSWORD"):
-            args.update({"generatorPassword": getenv("GENERATOR_PASSWORD")})
+            args.update({"server.config.generatorPassword": getenv("GENERATOR_PASSWORD")})
         else:
             print("No Generator Password set, generators won't work")
 
@@ -142,11 +144,12 @@ def main():
     args.update({"spring.application.json": json.dumps(spring_application)})
     for key, item in args.items():
         java_args.append("-D{}={}".format(key,item))
-    java_args.append("-jar")
     if is_generator:
+        java_args.append("-jar")
         java_args.append("generators.jar")
     else:
-        java_args.append("infomodelrepository.jar")
+        #java_args.append("infomodelrepository.jar")
+        java_args.append("org.springframework.boot.loader.JarLauncher")
     print(java_args)
     check_call(java_args)
 

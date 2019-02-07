@@ -2,8 +2,11 @@ server:
   host: vorto.eclipse.org
   contextPath: /
   config:
-    generatorUser: ${generator_user_name}
-    generatorPassword: ${generator_user_password}
+    generatorUser: ${generatorUser}
+    generatorPassword: ${generatorPassword}
+
+repo:
+  configFile: vorto-repository-config-file.json
 
 spring:
   profiles.active: eclipse
