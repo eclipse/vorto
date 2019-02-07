@@ -143,7 +143,10 @@ def main():
     for key, item in args.items():
         java_args.append("-D{}={}".format(key,item))
     java_args.append("-jar")
-    java_args.append("infomodelrepository.jar")
+    if is_generator:
+        java_args.append("generators.jar")
+    else:
+        java_args.append("infomodelrepository.jar")
     print(java_args)
     check_call(java_args)
 
