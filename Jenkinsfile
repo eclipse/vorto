@@ -37,13 +37,15 @@ node {
 		dir('tmp') {
 			//copy files over to the new maven folder to run AntiVirus Scans
 			sh 'cp ../repository/repository-server/target/infomodelrepository.jar ./'
+			sh 'cp ../generators/generator-runner/target/generator-runner-exec.jar ./'
 			git url: "https://github.com/Scriptkiddi/vorto_bosch_jenkins.git"
 		}
 		withMaven(
 			maven: 'maven-latest',
 			mavenLocalRepo: '.repository') {
 				sh 'mvn clean verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f tmp/pom_bosch.xml'
-				sh 'mvn clean verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f tmp/pom_bosch.xml'
+					s3Upload(file:'tmp/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:'avscans/$CHANGE_ID/$BUILD_NUMBER/infomodelrepository_report.html')
+				sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f tmp/pom_bosch.xml'
 				//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
 				//s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
 			}
