@@ -61,21 +61,21 @@ import com.google.gson.GsonBuilder;
 @ContextConfiguration
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//https://github.com/spring-projects/spring-boot/issues/12280
-@TestPropertySource(properties = { "repo.configFile = vorto-repository-config-h2.json" })
+// https://github.com/spring-projects/spring-boot/issues/12280
+@TestPropertySource(properties = {"repo.configFile = vorto-repository-config-h2.json"})
 public abstract class AbstractIntegrationTest {
 
   protected MockMvc repositoryServer;
   protected TestModel testModel;
-  
+
   private List<ModelId> createdModels = new ArrayList<>();
-  
+
   @Autowired
   protected WebApplicationContext wac;
 
   @LocalServerPort
   protected int port;
-  
+
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userAdmin;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userStandard;
   protected SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor userCreator;
@@ -88,85 +88,91 @@ public abstract class AbstractIntegrationTest {
     System.setProperty("github_clientSecret", "foo");
     System.setProperty("eidp_clientid", "foo");
     System.setProperty("eidp_clientSecret", "foo");
+    System.setProperty("line.separator", "\n");
   }
 
   @Before
   public void startUpServer() throws Exception {
     repositoryServer = MockMvcBuilders.webAppContextSetup(wac).apply(springSecurity()).build();
-    userAdmin = user("user1").password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, ADMIN, MODEL_CREATOR,MODEL_PROMOTER,MODEL_REVIEWER)));
+    userAdmin = user("user1").password("pass").authorities(SpringUserUtils.toAuthorityList(
+        Sets.newHashSet(USER, ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER)));
     userStandard = user("user2").password("pass")
         .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER)));
     userCreator = user("user3").password("pass")
-        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER,MODEL_CREATOR)));
-    
+        .authorities(SpringUserUtils.toAuthorityList(Sets.newHashSet(USER, MODEL_CREATOR)));
+
     setUpTest();
   }
-  
+
   @After
   public void cleanData() {
     removeTestDataRecursive();
   }
-  
+
   private void removeTestDataRecursive() {
-    
-    for (Iterator<ModelId> iter = createdModels.iterator();iter.hasNext();) {
+
+    for (Iterator<ModelId> iter = createdModels.iterator(); iter.hasNext();) {
       try {
         deleteModel(iter.next().getPrettyFormat());
         iter.remove();
-      } catch(Exception ex) {
+      } catch (Exception ex) {
       }
     }
-    
+
     if (!this.createdModels.isEmpty()) {
       removeTestDataRecursive();
     }
   }
-  
+
   public void deleteModel(String modelId) throws Exception {
     repositoryServer.perform(delete("/rest/default/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
-  
+
   protected abstract void setUpTest() throws Exception;
-  
-  
+
+
   public void createModel(String fileName, String modelId) throws Exception {
     createModel(userAdmin, fileName, modelId);
     createdModels.add(ModelId.fromPrettyFormat(modelId));
   }
-  
+
   public void releaseModel(String modelId) throws Exception {
-    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Release").with(userAdmin)
-        .contentType(MediaType.APPLICATION_JSON));
-    
-    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve").with(userAdmin)
-        .contentType(MediaType.APPLICATION_JSON));
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Release")
+        .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
+
+    repositoryServer.perform(put("/rest/default/workflows/" + modelId + "/actions/Approve")
+        .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
   }
-  
+
   public void createAndReleaseModel(String fileName, String modelId) throws Exception {
-    createModel(fileName,modelId);
+    createModel(fileName, modelId);
     releaseModel(modelId);
   }
-  
+
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
       String fileName, String modelId) throws Exception {
-    repositoryServer.perform(post("/rest/default/models/" + modelId + "/"+ModelType.fromFileName(fileName)).with(user)
-        .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
-    repositoryServer.perform(put("/rest/default/models/" + modelId).with(user)
-        .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName))).andExpect(status().isOk());
+    repositoryServer
+        .perform(post("/rest/default/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+            .with(user).contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isCreated());
+    repositoryServer
+        .perform(put("/rest/default/models/" + modelId).with(user)
+            .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
+        .andExpect(status().isOk());
   }
 
   protected String createContent(String fileName) throws Exception {
-    String dslContent = IOUtils.toString(new ClassPathResource("models/"+fileName).getInputStream());
-    
-    Map<String,Object> content = new HashMap<>();
+    String dslContent =
+        IOUtils.toString(new ClassPathResource("models/" + fileName).getInputStream());
+
+    Map<String, Object> content = new HashMap<>();
     content.put("contentDsl", dslContent);
-    content.put("type",ModelType.fromFileName(fileName));
+    content.put("type", ModelType.fromFileName(fileName));
 
     return new GsonBuilder().create().toJson(content);
   }
-  
+
   public ResultActions addAttachment(String modelId,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user, String fileName,
       MediaType mediaType) throws Exception {

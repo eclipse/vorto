@@ -26,10 +26,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -66,7 +67,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   private IModelPolicyManager policyManager;
 
   @Autowired
-  private IUserRepository userRepository;
+  private IUserAccountService userRepository;
 
   @Autowired
   private ModelParserFactory modelParserFactory;
@@ -167,7 +168,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
   }
 
   private boolean isAdmin(IUserContext userContext) {
-    User user = getUserRepository().findByUsername(userContext.getUsername());
+    User user = getUserRepository().getUser(userContext.getUsername());
     return user != null && (user.isAdmin());
   }
 
@@ -335,7 +336,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.modelRepository = modelRepository;
   }
 
-  public void setUserRepository(IUserRepository userRepository) {
+  public void setUserRepository(IUserAccountService userRepository) {
     this.userRepository = userRepository;
   }
 
@@ -351,7 +352,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     return modelRepository;
   }
 
-  public IUserRepository getUserRepository() {
+  public IUserAccountService getUserRepository() {
     return userRepository;
   }
 

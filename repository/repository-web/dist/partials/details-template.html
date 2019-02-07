@@ -23,6 +23,7 @@
 			<div ng-repeat="action in workflowActions">
 				<button class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog(action)">
 					<span ng-if="action ==='Release' || action === 'Deprecate'" class="fa fa-cube" aria-hidden="true"></span>
+					<span ng-if="action ==='Claim'" class="fa fa-cube" aria-hidden="true"></span>
 					<span ng-if="action ==='Withdraw'" class="fa fa-undo" aria-hidden="true"></span>
 					<span ng-if="action ==='Approve'" class="fa fa-thumbs-up" aria-hidden="true"></span>
 					<span ng-if="action ==='Reject'" class="fa fa-thumbs-down" aria-hidden="true"></span>
@@ -35,11 +36,6 @@
 				<button class="btn btn-primary pull-left"  role="button"
 				    ng-click="openDeleteDialog(model)">
 					<span class="fa fa-trash" aria-hidden="true"></span>&nbsp;Delete</button>
-				<div class="pull-left">&nbsp;&nbsp;</div>
-			</div>
-
-			<div ng-show="model.author === 'anonymousUser'">
-				<a class="btn btn-primary pull-left" ng-click="openWorkflowActionDialog('Claim')" role="button">Claim</a>
 				<div class="pull-left">&nbsp;&nbsp;</div>
 			</div>
 			
@@ -272,7 +268,7 @@
 											</div>
 											<div ng-hide="model.imported && !(hasAuthority('ROLE_ADMIN'))  && !model.released"
 											    class="col-sm-9">
-											    <a class= "helpBtn pull-right" target="_blank" href="https://www.eclipse.org/vorto/userguide/quickhelp_dsl/">
+											    <a class= "helpBtn pull-right" target="_blank" href="https://github.com/eclipse/vorto/blob/development/core-bundles/docs/quickhelp_dsl.md">
 													<i class="fa fa-question fa-2x"></i>
 												</a>
 												
@@ -307,6 +303,9 @@
 												<p ng-if="validationIssues != null && validationIssues.length > 0" ng-repeat="issue in validationIssues">
 													<i class="fa fa-fw fa-exclamation-triangle"></i>Line {{ issue.lineNumber }} - {{ issue.msg}}
 												</p>
+											</div>
+											<div ng-if="error" class="alert alert-danger">
+												<span><i class="fa fa-fw fa-exclamation-triangle"></i> {{error.message}}</span>
 											</div>
 											<div ng-if="message.severity === 'WARNING'" class="alert alert-warning"><i class="fa fa-fw fa-warning"></i> {{message.message}}</div>
 											<div ng-if="success" class="alert alert-success"><i class="fa fa-fw fa-check"></i> {{success}}</div>
@@ -394,8 +393,6 @@
 										<td style="text-align:center">{{entry.principalType}}</td>
 										<td style="text-align:center">{{entry.permission}}</td>
 										<td style="text-align:center">
-											<a ng-click="modifyPermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-primary" role="button">
-											<span class="glyphicon glyphicon-edit"></span> Edit</a>
 											<a ng-click="removePermission(entry)" ng-disabled="user === entry.principalId" class="btn btn-danger" role="button">
 											<span class="glyphicon glyphicon-trash"></span> Remove</a>
 										</td>
@@ -423,7 +420,17 @@
 					<div class="row" ng-repeat="row in platformGeneratorMatrix">
 						<!--genbox -->
 						<div class="col-lg-6 col-md-6 col-xs-12" ng-repeat="generator in row">
-							<a ng-click="openGeneratorConfig(generator)">
+							<a ng-show="!canGenerate" uib-tooltip-template="'cannotGenerateWarningTooltip'" tooltip-append-to-body="true">
+								<div class="tiny-box" id="tinyBox:{{generator.key}}">
+									<span class="tiny-box-icon">
+										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
+									</span>
+									<div class="tiny-box-name">
+										<span>{{generator.name}}</span>
+									</div>
+								</div>
+							</a>
+							<a ng-show="canGenerate" ng-click="openGeneratorConfig(generator)">
 								<div class="tiny-box" id="tinyBox:{{generator.key}}" title="Click to generate code">
 									<span class="tiny-box-icon">
 										<img width="32px" height="32px" ng-src="data:image/png;base64,{{generator.image32x32}}" />
@@ -650,11 +657,16 @@
 	<h3 class="modal-title"><center>Create Payload Mapping Specification</center></h3>
 </div>
 <div class="modal-body">
+	<p>
+		Mapping Specifications define mapping rules that map arbitrary device data to the Vorto Function Blocks (semantic abstraction).
+	<p>
+	<img align="center" src="webjars/repository-web/dist/images/mappingspec.png" width="50%" />
 	<form id="createPayloadMappingForm" name="createPayloadMappingForm" novalidate>
 	<div ng-if="errorMessage != null" class="alert alert-danger"><i class="fa fa-exclamation-triangle"></i> {{errorMessage}}</div>
     <div class="form-group">
-    	<label>Specify Target Platform Key:</label>
+    	<label>Specify Mapping Key:</label>
         <input type="text" class="form-control" name="targetPlatform" ng-model="targetPlatform" ng-pattern="/^[a-zA-Z]*$/" required>
+        <small style="color:grey;font-size:10px">Unique key for this device payload mapping, e.g. tisensor</small>
         <div ng-show="createPayloadMappingForm.targetPlatform.$error.pattern">Please enter a valid target platform key. Example: blegatt</div>
     </div>
   </div>
@@ -725,4 +737,9 @@
 <script type="text/ng-template" id="userEditWarningTooltip">
 	<span class="glyphicon glyphicon-exclamation-sign"></span>
 	<span> An imported model cannot be modified!</span>
+</script>
+
+<script type="text/ng-template" id="cannotGenerateWarningTooltip">
+	<span class="glyphicon glyphicon-exclamation-sign"></span>
+	<span> You need access to the complete model to generate code!</span>
 </script>

@@ -1,5 +1,14 @@
 # Release Notes
 
+## 0.10.0 milestone 11
+
+**Fixes and Enhancements**
+
+* Model Confidentiality & Permission Enhancement: By default, all models are private and only visible & modifiable by the respective model owner. However, model owners can grant READ permissions to other users, so that they can review give feedback.
+* Simplified Java Repository Client, deprecating the old Java Client. 
+* Simplified Eclipse Vorto Plugins, allowing to create Vorto Models using the Eclipse IDE.  
+* Various Bug-fixes
+ 
 ## 0.10.0 milestone 10
 
 **Fixes and Enhancements**

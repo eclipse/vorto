@@ -40,5 +40,7 @@ public class RemovePolicies implements IWorkflowFunction {
 		  logger.info("removing "+entry);
 		  policyManager.removePolicyEntry(model.getId(), entry);
 		}
+		
+		logger.info(policyManager.getPolicyEntries(model.getId()).toString());
 	}
 }

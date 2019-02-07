@@ -23,6 +23,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.permission = "READ";
 		$scope.encodeURIComponent = encodeURIComponent;
 		$scope.newComment = {value: ""}
+		$scope.canGenerate = true;
 
 		$scope.modelEditorLoaded = function (_editor) {
 			$scope.modelEditor = _editor;
@@ -69,7 +70,12 @@ repositoryControllers.controller('DetailsController',
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.isLoading = false;
-					$scope.error = data;
+					if (status === 400) {
+						$scope.message = data.message;
+						$scope.validationIssues = data.validationIssues;
+					} else {
+						$scope.error = data;
+					}
 				});
 		};
 
@@ -164,6 +170,7 @@ repositoryControllers.controller('DetailsController',
 						"state" : null,
 						"hasAccess" : false
 					};
+					$scope.canGenerate = false;
 					$scope.modelReferences.show = true;
 					tmpIdx++;
 				});
@@ -406,8 +413,7 @@ repositoryControllers.controller('DetailsController',
 					};
 
 					$scope.getModel = function () {
-						if ($scope.action != 'Claim') {
-							$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
+						$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -416,7 +422,6 @@ repositoryControllers.controller('DetailsController',
 										}
 									}
 								});
-						}
 					};
 
 					$scope.getModel();
@@ -786,16 +791,16 @@ repositoryControllers.controller('DetailsController',
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($scope.permission === "FULL_ACCESS" || $scope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
+					if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
 						$scope.getPolicies();
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.permission = "READ";
-					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
+					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_ADMIN")) {
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($scope.hasAuthority("ROLE_ADMIN")) {
+					if ($rootScope.hasAuthority("ROLE_ADMIN")) {
 						$scope.getPolicies();
 					}
 				});
@@ -829,7 +834,7 @@ repositoryControllers.controller('DetailsController',
 					};
 				},
 				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "sm",
+				size: "lg",
 				resolve: {
 					model: function () {
 						return $scope.model;
@@ -874,8 +879,9 @@ repositoryControllers.controller('DetailsController',
 								$scope.isLoading = false;
 								modalInstance.close();
 						}).error(function (data, status, headers, config) {
+								console.log(status);
 								$scope.isLoading = false;
-								$scope.errorMessage = status.message;
+								$scope.errorMessage = data.message;
 							});
 					};
 
@@ -884,7 +890,7 @@ repositoryControllers.controller('DetailsController',
 					};
 				},
 				templateUrl: "webjars/repository-web/dist/partials/dialog/create_policy_entry-dialog.html",
-				size: "sm",
+				size: "lg",
 				resolve: {
 					model: function () {
 						return $scope.model;

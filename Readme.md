@@ -3,16 +3,26 @@
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=org.eclipse.vorto%3Aparent&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.eclipse.vorto%3Aparent)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.eclipse.vorto/parent)
 
-[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient tools for IoT Device Developers to convert Device Information Models to source code that runs on the device or gateway, easing the **integration with IoT Platforms**.
+[Eclipse Vorto](http://www.eclipse.org/vorto) allows device manufacturers to easily **describe device functionality** and characteristics as Device Information Models and **share & manage** them in a central [Vorto Repository](http://vorto.eclipse.org). Vorto provides convenient SDKs for IoT Device Developers to easily **integrate devices** into IoT solutions. 
+
+The Bosch IoT Suite uses Vorto to define their entire device semantic abstraction layer and thus allows IoT Solution Developers to easily build device - agnostic IoT solutions. 
+
+Check out the [Vorto Console](https://vorto.eclipse.org/console) that demonstrates the easy integration of devices with the Bosch IoT Suite.
 
 <img src="docs/images/vorto_cover.png"/>
 
 
 ## Getting Started with Vorto
 
-Take a look at the following demo showcasing how Vorto Models are used to simplify the integration of devices with the Bosch IoT Suite Platform: [Click here](https://vorto.eclipse.org/console) for the Demo.
+[Read here](docs/gettingstarted.md)
+
+## Vorto Examples
+
+Check out a the [Vorto Example Code](https://www.github.com/eclipse/vorto-examples) that leverages Vorto Models and Vorto libraries.
 
 ## Repository Plugin SDK
+
+The Repository Plugin SDK helps you build and deploy various extensions to the Vorto Repository:
 
 <table>
 	<tr>
@@ -33,6 +43,7 @@ Take a look at the following demo showcasing how Vorto Models are used to simpli
 - [Code Generators](generators/Readme.md)
 - [Payload Mapping Engine](mapping-engine/Readme.md)
 - [Tutorials](docs/gettingstarted.md)
+- [Vorto DSL Utilities](utilities/Readme.md)
 
 ## Contact us
  - You want to chat with us ? [![Join the chat at https://gitter.im/eclipse/vorto](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/eclipse/vorto?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

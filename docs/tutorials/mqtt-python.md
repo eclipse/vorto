@@ -4,9 +4,9 @@ This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch
 
 ## Prerequisites
 
-* Bosch ID User Account
+* [Bosch ID User Account](https://accounts.bosch-iot-suite.com)
 
-* You have booked the Asset Communication package for Bosch IoT Suite (refer to [https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/](https://www.bosch-iot-suite.com/tutorials/getting-started-asset-communication/)).
+* Subscription to [Asset Communication for Bosch IoT Suite](https://www.bosch-iot-suite.com/asset-communication/) (Free plan, no credit card required)
 
 * You have created a thing in the Bosch IoT Suite (refer to [Creating a Thing in the Bosch IoT Suite](create_thing.md)).
 
@@ -133,4 +133,4 @@ This tutorial explains how to use Vorto to connect a GrovePi sensor to the Bosch
 
 ## What's next ?
 
- - [Create an Alexa Skillset](voice_control_alexa.md) that outputs the device data from Bosch IoT Suite via Alexa - based voice service.
+ - [Generate a SpringBoot App](create_webapp_dashboard.md) that visualizes the device data in UI widgets.

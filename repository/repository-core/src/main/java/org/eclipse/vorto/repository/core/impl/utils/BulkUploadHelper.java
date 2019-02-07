@@ -26,9 +26,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
 import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
@@ -51,12 +52,12 @@ public class BulkUploadHelper {
 
   private IModelRepository repositoryService;
 
-  private IUserRepository userRepository;
+  private IUserAccountService userRepository;
   
   private IModelPolicyManager policyManager;
 
   public BulkUploadHelper(IModelRepository modelRepository, IModelPolicyManager policyManager, 
-      IUserRepository userRepository) {
+		  IUserAccountService userRepository) {
     this.repositoryService = modelRepository;
     this.policyManager = policyManager;
     this.userRepository = userRepository;

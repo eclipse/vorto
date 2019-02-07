@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelProperty;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.Diagnostic;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
@@ -79,7 +79,7 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/rest/{tenant}/models") public class ModelRepositoryController
     extends AbstractRepositoryController {
 
-    @Autowired private IUserRepository userRepository;
+    @Autowired private IUserAccountService accountService;
 
     @Autowired private IWorkflowService workflowService;
 
@@ -170,7 +170,7 @@ import io.swagger.annotations.ApiResponses;
                     HttpStatus.BAD_REQUEST);
             }
             ModelValidationHelper validationHelper =
-                new ModelValidationHelper(modelRepository, policyManager, userRepository);
+                new ModelValidationHelper(modelRepository, policyManager, this.accountService);
             ValidationReport validationReport = validationHelper.validate(modelInfo, userContext);
             if (validationReport.isValid()) {
                 this.modelRepository.save(modelInfo.getId(), content.getContentDsl().getBytes(),
@@ -349,6 +349,8 @@ import io.swagger.annotations.ApiResponses;
 
         if (attemptChangePolicyOfCurrentUser(entry)) {
             throw new IllegalArgumentException("Cannot change policy of current user");
+        } else if (!this.accountService.exists(entry.getPrincipalId())) {
+        	throw new IllegalArgumentException("User is not a registered Vorto user");
         }
 
         policyManager.addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);

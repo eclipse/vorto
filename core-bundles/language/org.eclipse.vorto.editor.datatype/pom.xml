@@ -13,10 +13,6 @@
 	<name>Data Type Language</name>
 	<description>Contains the DSL for datatypes</description>
 
-	<properties>
-		<test.project>org.eclipse.vorto.editor.datatype.tests</test.project>
-	</properties>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -32,6 +28,7 @@
 				</executions>
 				<configuration>
 					<includeProjectDependencies>false</includeProjectDependencies>
+					<cleanupDaemonThreads>false</cleanupDaemonThreads>
 					<includePluginDependencies>true</includePluginDependencies>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
@@ -42,18 +39,34 @@
 						<argument>
 							rootPath=/${project.basedir}/..
 						</argument>
+						
 					</arguments>
 				</configuration>
 				<dependencies>
 					<dependency>
+						<groupId>org.eclipse.emf</groupId>
+						<artifactId>org.eclipse.emf.mwe2.launch</artifactId>
+						<version>2.9.1.201705291010</version>
+					</dependency>
+					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
-						<artifactId>org.eclipse.xtext.xtext</artifactId>
+						<artifactId>org.eclipse.xtext.common.types</artifactId>
+						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>org.eclipse.xtext.xtext.generator</artifactId>
 						<version>${xtext.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.xtext</groupId>
 						<artifactId>org.eclipse.xtext.xbase</artifactId>
 						<version>${xtext.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.eclipse.xtext</groupId>
+						<artifactId>xtext-antlr-generator</artifactId>
+						<version>[2.1.1, 3)</version>
 					</dependency>
 					<dependency>
 						<groupId>org.eclipse.vorto</groupId>
@@ -78,37 +91,16 @@
 				<configuration>
 					<filesets combine.children="append">
 						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype/src-gen/</directory>
+							<directory>${project.basedir}/../org.eclipse.vorto.editor.datatype.ide/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
 						</fileset>
 						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ide/src-gen/</directory>
+							<directory>${project.basedir}/../org.eclipse.vorto.editor.datatype.ui/src-gen/</directory>
 							<includes>
 								<include>**/*</include>
 							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.ui/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.web/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/../org.eclipse.vorto.editor.datatype.tests/src-gen/</directory>
-							<includes>
-								<include>**/*</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>${basedir}/model/generated/</directory>
 						</fileset>
 					</filesets>
 				</configuration>

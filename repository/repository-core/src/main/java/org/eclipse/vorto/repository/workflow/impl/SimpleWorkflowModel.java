@@ -21,9 +21,12 @@ import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsAdminCondition;
+import org.eclipse.vorto.repository.workflow.impl.conditions.IsAnonymousModel;
+import org.eclipse.vorto.repository.workflow.impl.conditions.IsLoggedIn;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsOwnerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.IsReviewerCondition;
 import org.eclipse.vorto.repository.workflow.impl.conditions.OrCondition;
+import org.eclipse.vorto.repository.workflow.impl.functions.ClaimOwnership;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantModelOwnerPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.GrantReviewerModelPolicy;
 import org.eclipse.vorto.repository.workflow.impl.functions.PendingApprovalNotification;
@@ -48,6 +51,7 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	
 	private static DefaultAction ACTION_INITAL = new DefaultAction("start");
 	public static DefaultAction ACTION_RELEASE = new DefaultAction("Release","Releasing a model will trigger an internal review process, done by the Vorto Team. Once approved, your model will be released.");
+	public static DefaultAction ACTION_CLAIM = new DefaultAction("Claim","Claiming the model makes you owner and responsible for the model having full access.");
 	public static DefaultAction ACTION_APPROVE = new DefaultAction("Approve","You agree to the model and its content and confirm the model release.");
 	public static DefaultAction ACTION_REJECT = new DefaultAction("Reject", "You do not agree to the model and its content. Please use comments to give feedback to author.");
 	public static DefaultAction ACTION_WITHDRAW = new DefaultAction("Withdraw","When you withdraw, the review process is stopped and your model returns to Draft state where you can make changes.");
@@ -60,7 +64,9 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 	public static DefaultState STATE_DEPRECATED = new DefaultState("Deprecated","A deprecated model indicates that the model is obsolete and shall not be used any more.");
 
 	
-	private static final IWorkflowCondition ONLY_OWNER = new IsOwnerCondition();
+	private static final IWorkflowCondition ONLY_OWNER_EXCLUDING_ANONYMOUS = new IsOwnerCondition();
+	private static final IWorkflowCondition IS_ANONYMOUS_MODEL = new IsAnonymousModel();
+	private static final IWorkflowCondition IS_LOGGED_IN = new IsLoggedIn();
 		
 	private static final List<IState> ALL_STATES = Arrays.asList(STATE_DRAFT,STATE_IN_REVIEW,STATE_RELEASED, STATE_DEPRECATED);
 	
@@ -73,31 +79,36 @@ public class SimpleWorkflowModel implements IWorkflowModel {
 		final IWorkflowFunction grantModelOwnerPolicy = new GrantModelOwnerPolicy((IModelPolicyManager)repository);
 		final IWorkflowFunction grantReviewerModelAccess = new GrantReviewerModelPolicy((IModelPolicyManager)repository);
 		final IWorkflowFunction removePolicies = new RemovePolicies((IModelPolicyManager)repository);
+		final IWorkflowFunction claimOwnership = new ClaimOwnership((IModelPolicyManager)repository,repository);
 		
 		ACTION_INITAL.setTo(STATE_DRAFT);
 		ACTION_INITAL.setFunctions(grantModelOwnerPolicy);
 		
+		ACTION_CLAIM.setTo(STATE_DRAFT);
+		ACTION_CLAIM.setConditions(IS_LOGGED_IN,IS_ANONYMOUS_MODEL);
+		ACTION_CLAIM.setFunctions(claimOwnership);
+		
 		ACTION_RELEASE.setTo(STATE_IN_REVIEW);
-		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER,isAdminCondition));
+		ACTION_RELEASE.setConditions(new OrCondition(ONLY_OWNER_EXCLUDING_ANONYMOUS,isAdminCondition));
 		ACTION_RELEASE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_IN_REVIEW.getName(),STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		ACTION_RELEASE.setFunctions(pendingWorkItemNotification,grantReviewerModelAccess);
 		
 		ACTION_APPROVE.setTo(STATE_RELEASED);
-		ACTION_APPROVE.setConditions(isAdminCondition,isReviewerCondition);
+		ACTION_APPROVE.setConditions(new OrCondition(isAdminCondition,isReviewerCondition));
 		ACTION_APPROVE.setValidators(new CheckStatesOfDependenciesValidator(repository,STATE_RELEASED.getName(),STATE_DEPRECATED.getName()));
 		ACTION_APPROVE.setFunctions(removePolicies);
 		
 		ACTION_REJECT.setTo(STATE_DRAFT);
-		ACTION_REJECT.setConditions(isAdminCondition, isReviewerCondition);
+		ACTION_REJECT.setConditions(new OrCondition(isAdminCondition, isReviewerCondition));
 
 		
 		ACTION_WITHDRAW.setTo(STATE_DRAFT);
-		ACTION_WITHDRAW.setConditions(ONLY_OWNER);
+		ACTION_WITHDRAW.setConditions(ONLY_OWNER_EXCLUDING_ANONYMOUS);
 		
 		ACTION_DEPRECATE.setTo(STATE_DEPRECATED);
 		ACTION_DEPRECATE.setConditions(isAdminCondition);
 		
-		STATE_DRAFT.setActions(ACTION_RELEASE);
+		STATE_DRAFT.setActions(ACTION_RELEASE,ACTION_CLAIM);
 		STATE_IN_REVIEW.setActions(ACTION_APPROVE,ACTION_REJECT,ACTION_WITHDRAW);
 		
 		STATE_RELEASED.setActions(ACTION_DEPRECATE);
