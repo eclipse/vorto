@@ -10,5 +10,5 @@ ADD ./docker/scripts/run.py /code
 ADD ./docker/mysql_spring.yml /code
 ADD ./docker/scripts/wait-for-it.sh /code
 RUN chmod +x wait-for-it.sh
-CMD ["/bin/bash", "/code/wait-for-it.sh", "-t", "40", "db:3306",  "--", "/usr/bin/python3", "/code/run.py"]
+CMD ["/bin/bash", "/code/wait-for-it.sh", "-t", "120", "db:3306",  "--", "/usr/bin/python3", "/code/run.py"]
 EXPOSE 8080
