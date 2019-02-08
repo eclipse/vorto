@@ -1,0 +1,11 @@
+vorto:
+  service:
+    boschiotsuite:
+      image32x32: config/img/bosch-32x32.png
+      image144x144: config/img/bosch-144x144.png
+    eclipseditto:
+      image32x32: config/img/ditto-32x32.png
+      image144x144: config/img/ditto-144x144.png
+    eclipsehono:
+      image32x32: config/img/hono-32x32.png
+      image144x144: config/img/hono-144x144.png

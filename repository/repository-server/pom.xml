@@ -195,6 +195,18 @@
 	</dependencies>
 
 	<build>
+		<resources>
+		   <resource>
+			  <directory>src/main/resources</directory>
+		   </resource>
+		   <resource>
+			  <directory>src/main/resources</directory>
+			  <filtering>true</filtering>
+			  <includes>
+				  <include>static/index.html</include>
+			  </includes>
+		   </resource>
+		</resources>
 		<finalName>infomodelrepository</finalName>
 		<plugins>
 			<plugin>

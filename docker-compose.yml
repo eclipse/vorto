@@ -16,6 +16,8 @@ services:
     depends_on:
       - "repository"
     image: eclipsevorto/vorto-generators:nightly
+    volumes:
+      - ./docker/config/generators/:/code/config
     env_file:
       - docker/vorto-variables.env
     networks:
@@ -24,6 +26,8 @@ services:
     depends_on:
       - "repository"
     image: eclipsevorto/vorto-generators-3rd-party:nightly
+    volumes:
+      - ./docker/config/3rd-party-generators/:/code/config
     env_file:
       - docker/vorto-variables.env
     networks:
