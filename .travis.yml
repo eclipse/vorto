@@ -6,7 +6,7 @@ language: java
 services:
   - docker
 
-jdk: oraclejdk8
+jdk: oraclejdk9
 
 addons:
   sonarcloud:
