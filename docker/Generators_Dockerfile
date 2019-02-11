@@ -5,7 +5,7 @@ WORKDIR /code
 ARG JAR_FILE
 VOLUME /root/.vorto
 RUN apt-get update && apt-get install -y python3 python3-yaml
-ADD ./${JAR_FILE} /code/infomodelrepository.jar
+ADD ./${JAR_FILE} /code/generators.jar
 ADD ./docker/scripts/wait-for-it.sh /code
 RUN chmod +x wait-for-it.sh
 ADD ./docker/scripts/run.py /code
