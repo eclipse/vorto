@@ -1,4 +1,7 @@
+---
 spring:
+  session:
+    store-type: none
   profiles:
     active: local
   jackson:
@@ -10,6 +13,7 @@ spring:
       max-request-size: 15MB
 
 repo:
+  configFile: vorto-repository-config-file.json
   config:
     maxModelImageSize: 32000
     maxModelSize: 2000000
@@ -61,8 +65,6 @@ eidp:
       logoutRedirectUrl:
       preferTokenInfo: true
 
-repo:
-  configFile: vorto-repository-config-file.json
 mail:
   smtp:
     host: localhost
