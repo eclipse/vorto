@@ -1,12 +1,12 @@
 sudo: required
-dist: xenial
+dist: trusty
 
 language: java
 
 services:
   - docker
 
-jdk: oraclejdk9
+jdk: oraclejdk8
 
 addons:
   sonarcloud:
