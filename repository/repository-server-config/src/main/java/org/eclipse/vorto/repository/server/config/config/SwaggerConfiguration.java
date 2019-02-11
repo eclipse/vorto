@@ -32,19 +32,21 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @Configuration
 public class SwaggerConfiguration {
-	
-	@Value("${spring.profiles.active}")
+
+	@Value("${spring.profiles.active:#{null}}")
 	private String activeProfile;
 
 	@Bean
 	public Docket vortoApi() {
 		Docket docket =  new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build();
-		
-		if (!activeProfile.contains("local") && !activeProfile.contains("local-https")) {
-			docket.pathProvider(new BasePathAwareRelativePathProvider(""));
+
+		if (activeProfile != null){
+			if (!activeProfile.contains("local") && !activeProfile.contains("local-https")) {
+				docket.pathProvider(new BasePathAwareRelativePathProvider(""));
+			}
 		}
-		
+
 		return docket;
 
 	}
@@ -62,7 +64,7 @@ public class SwaggerConfiguration {
 		return new ApiInfo("Vorto","",
 				"", "", "Eclipse Vorto Team", "EPL", "https://www.eclipse.org/legal/epl-2.0");
 	}
-	
+
 	class BasePathAwareRelativePathProvider extends AbstractPathProvider {
         private String basePath;
 
