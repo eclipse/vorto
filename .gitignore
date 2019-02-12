@@ -5,6 +5,7 @@ bin/
 .antlr*
 .metadata/
 */plugin.xml_gen
+gen-external-apklibs/
 .DS_Store
 
 /.ssh

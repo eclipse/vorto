@@ -102,6 +102,14 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>http://jitpack.io</url>
+		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>http://jcenter.bintray.com/</url>
+		</repository>
         <repository>
 			<id>eclipse</id>
 			<layout>p2</layout>

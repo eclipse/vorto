@@ -18,13 +18,16 @@
 
 	<modules>
 		<module>mapping-core</module>
+		<module>mapping-core-android</module>
 		<module>mapping-converter-javascript</module>
+		<module>mapping-converter-javascript-android</module>
 		<module>mapping-converter-string</module>
 		<module>mapping-converter-types</module>
 		<module>mapping-converter-date</module>
 		<module>mapping-converter-binary</module>
 		<module>mapping-serializer</module>
 		<module>mapping-engine-all</module>
+		<module>mapping-engine-android</module>
 	</modules>
 
 	<dependencyManagement>
@@ -36,6 +39,18 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.simpligility.maven.plugins</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>4.0.0</version>
+					<extensions>true</extensions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 </project>
 
