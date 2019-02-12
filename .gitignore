@@ -19,6 +19,7 @@ generated-sources
 devtool-project-repository/
 website/themes
 website/public
+docker/vorto-variables.env
 
 ######################
 # Intellij
