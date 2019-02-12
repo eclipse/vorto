@@ -18,16 +18,13 @@
 
 	<modules>
 		<module>mapping-core</module>
-		<module>mapping-core-android</module>
 		<module>mapping-converter-javascript</module>
-		<module>mapping-converter-javascript-android</module>
 		<module>mapping-converter-string</module>
 		<module>mapping-converter-types</module>
 		<module>mapping-converter-date</module>
 		<module>mapping-converter-binary</module>
 		<module>mapping-serializer</module>
 		<module>mapping-engine-all</module>
-		<module>mapping-engine-android</module>
 	</modules>
 
 	<dependencyManagement>
@@ -51,6 +48,16 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	<profiles>
+        <profile>
+            <id>android</id>
+			<modules>
+				<module>mapping-converter-javascript-android</module>
+				<module>mapping-core-android</module>
+				<module>mapping-engine-android</module>
+         </modules>
+        </profile>
+	</profiles>
 
 </project>
 
