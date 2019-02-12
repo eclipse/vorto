@@ -41,10 +41,8 @@ public class SwaggerConfiguration {
 		Docket docket =  new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).useDefaultResponseMessages(false)
 				.select().paths(paths()).build();
 
-		if (activeProfile != null){
-			if (!activeProfile.contains("local") && !activeProfile.contains("local-https")) {
-				docket.pathProvider(new BasePathAwareRelativePathProvider(""));
-			}
+		if (activeProfile != null && !activeProfile.contains("local") && !activeProfile.contains("local-https")) {
+			docket.pathProvider(new BasePathAwareRelativePathProvider(""));
 		}
 
 		return docket;
