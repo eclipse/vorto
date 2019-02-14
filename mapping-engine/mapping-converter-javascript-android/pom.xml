@@ -11,8 +11,6 @@
     <properties>
         <!--suppress UnresolvedMavenProperty -->
         <android.sdk.path>${ANDROID_HOME}</android.sdk.path>
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -31,7 +29,7 @@
         <dependency>
             <groupId>com.github.LiquidPlayer</groupId>
             <artifactId>LiquidCore</artifactId>
-            <version>0.5.0</version>
+            <version>0.6.0</version>
             <type>aar</type>
         </dependency>
 
