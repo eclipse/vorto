@@ -3,7 +3,7 @@ services:
   repository:
     depends_on:
       - "db"
-    image: eclipsevorto/vorto-repo:nightly
+    image: eclipsevorto/vorto-repo
     volumes:
       - ~/.vorto:/root/.vorto
     ports:
@@ -15,7 +15,7 @@ services:
   generators:
     depends_on:
       - "repository"
-    image: eclipsevorto/vorto-generators:nightly
+    image: eclipsevorto/vorto-generators
     volumes:
       - ./docker/config/generators/:/code/config
     env_file:
@@ -25,7 +25,7 @@ services:
   3rd-party-generators:
     depends_on:
       - "repository"
-    image: eclipsevorto/vorto-generators-3rd-party:nightly
+    image: eclipsevorto/vorto-generators-3rd-party
     volumes:
       - ./docker/config/3rd-party-generators/:/code/config
     env_file:
