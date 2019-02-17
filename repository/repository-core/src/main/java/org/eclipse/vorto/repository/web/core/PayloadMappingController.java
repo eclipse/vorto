@@ -264,6 +264,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
         .forEach(p -> p.addStereotype(Stereotype.createWithXpath("")));
 
     unescapeMappingAttributesForStereotype(fbm, "functions");
+    unescapeMappingAttributesForStereotype(fbm, "condition");
     unescapeMappingAttributesForStereotype(fbm, "source");
 
     return fbm;

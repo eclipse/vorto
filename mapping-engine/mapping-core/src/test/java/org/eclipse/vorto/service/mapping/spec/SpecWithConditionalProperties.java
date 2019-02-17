@@ -20,7 +20,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.model.Stereotype;
 
-public class SpecWithConditionXpath extends AbstractTestSpec {
+public class SpecWithConditionalProperties extends AbstractTestSpec {
 
   @Override
   protected void createFBSpec() {
@@ -31,11 +31,21 @@ public class SpecWithConditionXpath extends AbstractTestSpec {
     digitalInputStateProperty.setName("sensor_value");
     digitalInputStateProperty.setType(PrimitiveType.FLOAT);
 
-    digitalInputStateProperty.setTargetPlatformKey("iotbutton");
-    digitalInputStateProperty.addStereotype(Stereotype
-        .createWithConditionalXpath("xpath:eval('data[@id = 100]/value',this) == 'x'", "100"));
+    ModelProperty digitalInputStateProperty2 = new ModelProperty();
+    digitalInputStateProperty2.setMandatory(true);
+    digitalInputStateProperty2.setName("sensor_value2");
+    digitalInputStateProperty2.setType(PrimitiveType.FLOAT);
 
-    buttonModel.setStatusProperties(Arrays.asList(new ModelProperty[] {digitalInputStateProperty}));
+    digitalInputStateProperty.setTargetPlatformKey("iotbutton");
+    digitalInputStateProperty
+        .addStereotype(Stereotype.createWithConditionalXpath("count == 0", "/count"));
+
+    digitalInputStateProperty2.setTargetPlatformKey("iotbutton");
+    digitalInputStateProperty2
+        .addStereotype(Stereotype.createWithConditionalXpath("count > 1", "/count"));
+
+    buttonModel.setStatusProperties(
+        Arrays.asList(new ModelProperty[] {digitalInputStateProperty, digitalInputStateProperty2}));
 
     addFunctionblockProperty("button", buttonModel);
   }
