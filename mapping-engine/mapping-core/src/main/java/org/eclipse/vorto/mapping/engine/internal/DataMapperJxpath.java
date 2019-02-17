@@ -53,7 +53,7 @@ public class DataMapperJxpath implements IDataMapper {
   private static final String STEREOTYPE_SOURCE = "source";
   private static final String STEREOTYPE_TARGET = "target";
   private static final String ATTRIBUTE_XPATH = "xpath";
-  private static final Object ATTRIBUTE_CONDITION = "condition";
+  private static final String ATTRIBUTE_CONDITION = "condition";
 
   public DataMapperJxpath(IMappingSpecification mappingSpecification,
       CustomFunctionsLibrary functionLibrary) {
@@ -89,6 +89,10 @@ public class DataMapperJxpath implements IDataMapper {
   private FunctionblockValue mapFunctionBlock(ModelProperty fbProperty, JXPathContext context) {
 
     FunctionblockModel fbModel = specification.getFunctionBlock(fbProperty.getName());
+    
+    if (!matchesCondition(fbModel,context)) {
+    	return null;
+    }
 
     FunctionblockValue fbData = new FunctionblockValue(fbModel);
 
@@ -138,7 +142,20 @@ public class DataMapperJxpath implements IDataMapper {
     return onlyReturnIfPopulated(fbData);
   }
 
-  private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
+  private boolean matchesCondition(FunctionblockModel fbModel, JXPathContext context) {
+	Optional<Stereotype> conditionStereotype = fbModel.getStereotype("condition");
+    if (conditionStereotype.isPresent() && conditionStereotype.get().hasAttribute("value")) {
+    	Expression e =
+  	          jexlEngine.createExpression(normalizeCondition(conditionStereotype.get().getAttributes().get("value")));
+  	      JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
+  	      jc.set("this", context.getContextBean());
+  	      return (boolean) e.evaluate(jc);
+    } else {
+    	return true;
+    }
+  }
+
+private FunctionblockValue onlyReturnIfPopulated(FunctionblockValue fbData) {
     if (!fbData.getConfiguration().isEmpty() || !fbData.getStatus().isEmpty()) {
       return fbData;
     } else {
@@ -153,7 +170,7 @@ public class DataMapperJxpath implements IDataMapper {
           replacePlaceHolders(sourceStereotype.get().getAttributes().get(ATTRIBUTE_XPATH),
               sourceStereotype.get().getAttributes());
 
-      if (matchesCondition(sourceStereotype.get().getAttributes(), input)) {
+      if (matchesPropertyCondition(sourceStereotype.get(), input)) {
         return input.getValue(expression);
       }
     }
@@ -162,11 +179,10 @@ public class DataMapperJxpath implements IDataMapper {
 
   }
 
-  private boolean matchesCondition(Map<String, String> attributes, JXPathContext context) {
-    if (attributes.containsKey(ATTRIBUTE_CONDITION)
-        && !attributes.get(ATTRIBUTE_CONDITION).equals("")) {
+  private boolean matchesPropertyCondition(Stereotype stereotype, JXPathContext context) {
+    if (stereotype.hasAttribute(ATTRIBUTE_CONDITION)) {
       Expression e =
-          jexlEngine.createExpression(normalizeCondition(attributes.get(ATTRIBUTE_CONDITION)));
+          jexlEngine.createExpression(normalizeCondition(stereotype.getAttributes().get(ATTRIBUTE_CONDITION)));
       JexlContext jc = new ObjectContext<Object>(jexlEngine, context.getContextBean());
       jc.set("this", context.getContextBean());
       return (boolean) e.evaluate(jc);
