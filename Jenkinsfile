@@ -76,7 +76,7 @@ pipeline {
                   mavenLocalRepo: '.repository') {
                   sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                    sh "sed -i -e 's/http:\/\/sgpvmc0309.apac.bosch.com:8080//g' avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e 's/http://sgpvmc0309.apac.bosch.com:8080//g' avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
                     s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
                   }
               }
@@ -102,7 +102,7 @@ pipeline {
                   mavenLocalRepo: '.repository') {
                 sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f avscan_generator/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                    sh "sed -i -e 's/http:\/\/sgpvmc0309.apac.bosch.com:8080//g' avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e 's/http://sgpvmc0309.apac.bosch.com:8080//g' avscan_generator/target/inl-releng-avsupport/avscan_report.html"
                     s3Upload(file:'avscan_generator/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html")
                   }
               }
