@@ -32,7 +32,7 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 		super(spec,targetPlatform)
 	}
 	
-	def override String serialize() {
+	override String serialize() {
 		'''
 		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
