@@ -212,7 +212,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    
 		    setup_wifi();
 		  
-		    /* Create a the MQTT client and the Hono authID*/
+		   /* Create a MQTT client ID */
 		    hono_clientId = hono_deviceId;
 		    
 		    Serial.print("Device ID: ");
