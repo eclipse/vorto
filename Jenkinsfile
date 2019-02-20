@@ -123,8 +123,7 @@ pipeline {
 
               if ("${env.BRANCH_NAME}" == "PR-18"){
                 // build docker containers
-				sh "printenv"
-                sh "docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$http_proxy ./"
+                sh "docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=${env.http_proxy} ./"
                 sh "/usr/local/bin/docker-compose -f docker-compose-build.yml build"
                 // push docker containers
                 sh "/usr/local/bin/docker-compose -f docker-compose-build.yml push"
