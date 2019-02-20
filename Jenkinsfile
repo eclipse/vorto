@@ -124,9 +124,9 @@ pipeline {
               if ("${env.BRANCH_NAME}" == "PR-18"){
                 // build docker containers
 
-                withCredentials([string(credentialsId: 'http-proxy-url', variable: 'URL')]) {
-                sh "docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$URL ./"
-                sh "docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$URL ./"
+                withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
+                sh "docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$TOKEN ./"
+                sh "docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./"
 				}
                 // push docker containers
                 //sh "/usr/local/bin/docker-compose -f docker-compose-build.yml push"
