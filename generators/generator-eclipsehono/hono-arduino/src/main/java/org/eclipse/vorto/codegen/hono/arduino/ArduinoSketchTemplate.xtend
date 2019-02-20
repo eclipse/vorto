@@ -48,6 +48,14 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		/* Your tenant in Eclipse Hono / Bosch IoT Hub */
 		#define hono_tenant "«context.configurationProperties.getOrDefault("hono_tenant","DEFAULT_TENANT")»"
 		
+		/* MQTT broker endpoint */
+		const char* hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","<ENTER YOUR MQTT BROKER DNS NAME>")»";
+		
+		#if (USE_SECURE_CONNECTION == 1)
+			/* SHA-1 fingerprint of the server certificate of the MQTT broker, UPPERCASE and spacing */
+			const char* mqttServerFingerprint = "<XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX XX>";
+		#endif
+		
 		/* Define the period of data transmission in ms */
 		#define MQTT_DATA_PERIOD 10000
 		
@@ -56,18 +64,12 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		
 		/* Device Configuration */
 		String hono_deviceId = "«context.configurationProperties.getOrDefault("hono_deviceId","nodemcu-")»";
+		String hono_authId = String(hono_deviceId) + "@" + String(hono_tenant);
+		const char* hono_password = "«context.configurationProperties.getOrDefault("hono_password","<ENTER THE DEVICE PASSWORD HERE>")»";
+		
+		/* Payload Configuration*/
 		String ditto_topic = "«context.configurationProperties.getOrDefault("ditto_topic","com.mycompany/4711")»";
 		
-		/* MQTT broker endpoint */
-		const char* hono_endpoint = "«context.configurationProperties.getOrDefault("hono_endpoint","<ENTER YOUR MQTT BROKER DNS NAME>")»";
-		const char* hono_password = "«context.configurationProperties.getOrDefault("hono_password","<ENTER THE DEVICE PASSWORD HERE>")»";
-		String hono_authId;
-		
-		#if (USE_SECURE_CONNECTION == 1)
-		    /* SHA-1 fingerprint of the server certificate of the MQTT broker, UPPERCASE and spacing */
-		    const char* mqttServerFingerprint = "<xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx>";
-		#endif
-
 		/* WiFi Configuration */
 		const char* ssid = "<ENTER YOUR WIFI SSID>";
 		const char* password = "<ENTER YOUR WIFI PASSWORD>";
@@ -119,15 +121,19 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    delay(10);
 		  
 		    /* We start by connecting to a WiFi network */
+		    Serial.print("Connecting to WiFi with SSID: ");
+		    Serial.println(ssid);
 		    WiFi.begin(ssid, password);
 		
 		    /* Wait for succesful connection, hang if there is none? */
 		    while (WiFi.status() != WL_CONNECTED) {
+		    	Serial.print(".");
 		        delay(500);
 		    }
 		
 		    randomSeed(micros());
 		
+		    Serial.println("");
 		    Serial.println("WiFi connected");
 		    Serial.print("IP address: ");
 		    Serial.println(WiFi.localIP());
@@ -208,13 +214,12 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		  
 		    /* Create a the MQTT client and the Hono authID*/
 		    hono_clientId = hono_deviceId;
-		    hono_authId = String(hono_clientId) + "@" + String(hono_tenant);
 		    
 		    Serial.print("Device ID: ");
 		    Serial.println(hono_clientId);
 		    
 		    /* Add the client ID to the telemetry topic as the final element */
-		    telemetryTopic += hono_clientId;
+		    telemetryTopic += hono_deviceId;
 		  
 		    /* Configure the MQTT client with the server and callback data */
 		    mqttClient.setServer(hono_endpoint, MQTT_SERVER_PORT);
