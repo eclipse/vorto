@@ -60,7 +60,14 @@ public class AttachmentController extends AbstractRepositoryController {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-  @ApiOperation(value = "Upload a file to be attached to a model")
+  @ApiOperation(value = "Upload a file to be attached to a model",
+		  notes = "This method is used to get 'UPLOAD' a single file attached to the specific modelId."
+			  		+ "<br/>"
+			  		+ "<pre>"
+			  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+			  		+ "* file : This is the file to be attached to the above model."
+			  		+ "</pre>")
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
       produces = "application/json")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
@@ -98,7 +105,13 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Get the list of file attachments for a model")
+  @ApiOperation(value = "Get the list of file attachments for a model", 
+		  notes = "This method is used to get 'ALL' files attached to the specific modelId. Only 1 input is required."
+			  		+ "<br/>"
+			  		+ "<pre>"
+			  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+			  		+ "</pre>")
   @ApiResponses(
       value = {@ApiResponse(code = 200, message = "Successfully retrieved list of attachments"),
           @ApiResponse(code = 404, message = "The resource could not be found")})
@@ -117,11 +130,19 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Get a specific file attachment for a model")
+  @ApiOperation(value = "Get a specific file attachment for a model", 
+		  notes = "This method is used to get the specified file attached to the specific modelId. It requires two inputs for proper response"
+		  		+ "<br/>"
+		  		+ "<pre>"
+		  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+		  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+		  		+ "* filename : It is the name of the file you might want to 'GET' for this model<br/>"
+		  		+ "</pre>")
   @ApiResponses(
       value = {@ApiResponse(code = 200, message = "Successfully retrieved the attachment"),
           @ApiResponse(code = 404, message = "The resource could not be found")})
-  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
+  @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}",
+		  produces = "application/json")
   public void getAttachment(
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
@@ -151,9 +172,16 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  @ApiOperation(value = "Delete a file attachment for a model")
+  @ApiOperation(value = "Delete a file attachment for a model", 
+		  notes = "This API call would allow to delete a specific file that is attached to a specific model"
+		  		+ "<br/><pre>"
+		  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+		  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
+		  		+ "* filename : It is the name of the file you might want to 'DELETE' for this model<br/>"
+		  		+ "</pre>")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully deleted the attachment"),
-      @ApiResponse(code = 404, message = "The resource could not be found")})
+		  @ApiResponse(code = 401, message = "Unauthorized, Only users with 'ADMIN' role or is the 'Owner' of the model can delete an attachment."),
+		  @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
   @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public ResponseEntity<Void> deleteAttachment(
