@@ -125,8 +125,8 @@ pipeline {
                 // build docker containers
 
                 withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
-                sh "docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$TOKEN ./"
-                sh "docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./"
+                sh "set +x; docker build -f docker/Generators_Dockerfile --tag eclipsevorto/vorto-generators:${env.BRANCH_NAME} --build-arg JAR_FILE=generators/generator-runner/target/generator-runner-exec.jar --build-arg http_proxy=$TOKEN ./"
+                sh "docker build -f docker/Repository_Dockerfile --tag eclipsevorto/vorto-repo:${env.BRANCH_NAME} --build-arg JAR_FILE=repository/repository-server/target/infomodelrepository.jar --build-arg http_proxy=$TOKEN ./; set -x"
 				}
                 // push docker containers
                 //sh "/usr/local/bin/docker-compose -f docker-compose-build.yml push"
