@@ -218,7 +218,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		    Serial.print("Device ID: ");
 		    Serial.println(hono_clientId);
 		    
-		    /* Add the client ID to the telemetry topic as the final element */
+		    /* Add the device ID to the telemetry topic as the final element */
 		    telemetryTopic += hono_deviceId;
 		  
 		    /* Configure the MQTT client with the server and callback data */
