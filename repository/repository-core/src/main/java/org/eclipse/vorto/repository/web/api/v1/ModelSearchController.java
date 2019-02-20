@@ -42,11 +42,19 @@ import io.swagger.annotations.ApiResponses;
 @RequestMapping(value = "/api/v1/search")
 public class ModelSearchController extends AbstractRepositoryController {
 
-  @ApiOperation(value = "Finds models by free-text search expressions")
+  @ApiOperation(value = "Finds models by free-text search expressions",
+		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
+		  		+ "* Please note that this search works on the model 'displayname' or 'name' and NOT on the 'namespace' or"
+		  		+ " 'version' properties. It also work on model's 'description' property. This value can be set through"
+		  		+ " the Model Editor in the Model Details page.<br/>"
+		  		+ "		Example: If there are models with names: 'Light' and 'Lightbulp'<br/>"
+		  		+ "Searching for 'light' will fetch both the models<br/>"
+		  		+ "	* If you want to search the non-released models, you need to login.")
   @ApiResponses(
       value = {@ApiResponse(code = 200, message = "Successful retrieval of search result"),
           @ApiResponse(code = 400, message = "Malformed search expression")})
-  @RequestMapping(value = "/models", method = RequestMethod.GET)
+  @RequestMapping(value = "/models", method = RequestMethod.GET,
+	      produces = "application/json")
   @PreAuthorize("hasRole('ROLE_USER')")
   public List<ModelInfo> searchByExpression(
       @ApiParam(value = "a free-text search expression",
