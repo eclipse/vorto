@@ -43,7 +43,6 @@ import org.eclipse.vorto.repository.web.core.ModelRepositoryController;
 import org.eclipse.vorto.utilities.reader.IModelWorkspace;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -90,7 +89,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 	
 	@ApiOperation(value = "Returns the complete model content",
-			notes = "This method call return the complete model content of the specific 'modelId' provided in the query.<br/>")
+			notes = "This method call returns the complete model content of the specific 'modelId' provided in the query.<br/>")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
 			@ApiResponse(code = 404, message = "Model not found") })
@@ -117,7 +116,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Returns the complete model content including target platform specific attributes",
-			notes = "This method call help to get the complete content of the model and its attributes defined "
+			notes = "This method call retrieves the complete content of the model "
 					+ "for the specific platform. If there are no platform specific attributes or mappings, the "
 					+ "method call will return 404.")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
@@ -176,7 +175,7 @@ public class ModelController extends AbstractRepositoryController {
 	}
 
 	@ApiOperation(value = "Downloads the model file",
-			notes = "This method call helps to get the model file download for the 'modelId' provided. "
+			notes = "This method call downloads the model file for the 'modelId' provided. "
 					+ "If you need to get the model dependencies, you need to set 'includeDependencies' flag to 'true'")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
 			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),

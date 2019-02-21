@@ -44,8 +44,8 @@ public class ModelSearchController extends AbstractRepositoryController {
 
   @ApiOperation(value = "Finds models by free-text search expressions",
 		  notes = "This method call allows the user to do free-text search on the existing models in this repository.<br/>"
-		  		+ "* Please note that this search works on the model 'displayname' or 'name' and NOT on the 'namespace' or"
-		  		+ " 'version' properties. It also work on model's 'description' property. This value can be set through"
+		  		+ "* Please note that this search works on the model's 'displayname' or 'name' and NOT on the 'namespace' or"
+		  		+ " 'version' properties. It also works on model's 'description' property. This value can be set through"
 		  		+ " the Model Editor in the Model Details page.<br/>"
 		  		+ "		Example: If there are models with names: 'Light' and 'Lightbulp'<br/>"
 		  		+ "Searching for 'light' will fetch both the models<br/>"

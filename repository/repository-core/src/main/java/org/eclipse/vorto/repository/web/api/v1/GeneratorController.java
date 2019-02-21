@@ -73,12 +73,12 @@ public class GeneratorController extends AbstractRepositoryController {
   private IGeneratorService generatorService;
 
   @ApiOperation(value = "Generate code for a specified platform, and extract specified path",
-		  notes = "This method allows to get code generated for a specified platform using the 'service key' value along with the 'modelId'."
+		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."
 				    + "<br/>"
 			  		+ "<pre>"
-			  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
 			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-			  		+ "* serviceKey : It is the key value of the specific generator.<br/>"
+			  		+ "* serviceKey : The key value of the specific generator.<br/>"
 			  		+ "</pre>")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
@@ -155,12 +155,12 @@ public class GeneratorController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Generate code for a specified platform",
-		  notes = "This method allows to get code generated for a specified platform using the 'service key' value along with the 'modelId'."
+		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."
 				    + "<br/>"
 			  		+ "<pre>"
-			  		+ "* modelId : It is the combined value of 'namespace:name:version' of the model<br/>"
+			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
 			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-			  		+ "* serviceKey : It is the key value of the specific generator.<br/>"
+			  		+ "* serviceKey : The key value of the specific generator.<br/>"
 			  		+ "</pre>")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
@@ -205,7 +205,7 @@ public class GeneratorController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Returns all currently registered Code Generator",
-		  notes = "This method call allows to get all registered code genertors currently in the repository."
+		  notes = "This method call retrieves all registered code generators currently in the repository."
 				    + "<br/>The generators are grouped under 'production', 'infra' and 'demo' tags.")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Retrieved generators successfully")})
   @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -252,7 +252,7 @@ public class GeneratorController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Returns a specific generator info", 
-		  notes = "This method allows to get information of a specific generator. Here the input that needs to be passed is the 'servicekey' of the generator.")
+		  notes = "This method retrieves information of a specific generator. The input that needs to be passed is the 'servicekey' of the generator.")
   @RequestMapping(value = "/{serviceKey}", method = RequestMethod.GET,
       produces = MediaType.APPLICATION_JSON_VALUE)
   public GeneratorInfo getGeneratorInfo(
