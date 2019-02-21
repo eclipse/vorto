@@ -59,8 +59,8 @@ public class SwaggerConfiguration {
 
 	@SuppressWarnings("deprecation")
 	private ApiInfo apiInfo() {
-		return new ApiInfo("Vorto","",
-				"", "", "Eclipse Vorto Team", "EPL", "https://www.eclipse.org/legal/epl-2.0");
+		return new ApiInfo("Swagger Vorto API","Documentation of public API (JSON Model Request/Response, Examples, ...)",
+				"V1", "https://www.eclipse.org/legal/termsofuse.php", "Eclipse Vorto Team", "EPL", "https://www.eclipse.org/legal/epl-2.0");
 	}
 
 	class BasePathAwareRelativePathProvider extends AbstractPathProvider {
