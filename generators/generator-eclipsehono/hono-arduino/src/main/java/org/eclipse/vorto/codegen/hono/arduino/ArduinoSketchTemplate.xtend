@@ -75,8 +75,8 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		const char* password = "<ENTER YOUR WIFI PASSWORD>";
 		
 		/* BEGIN SAMPLE CODE */
-		/* Sample numeric */
-		long value = 0;
+		/* dummy numeric */
+		long dummy_value = 0;
 		
 		/* Sample text value */
 		char msg[MQTT_MAX_SIZE];
@@ -181,7 +181,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		}
 		
 		/**************************************************************************/
-		/* Funtions for publishing data using MQTT					              */
+		/* Functions for publishing data using MQTT					              */
 		/**************************************************************************/
 		
 		«FOR fb : model.properties»
@@ -261,15 +261,15 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        lastMqttMsg = now;
 		        
 		        /* SAMPLE CODE */
-		        value++;
-		        snprintf(msg, MQTT_MAX_SIZE - 1, "hello world #%ld", value);
+		        dummy_value++;
+		        snprintf(msg, MQTT_MAX_SIZE - 1, "hello world #%ld", dummy_value);
 		        
 		        «FOR fb : model.properties»
 		        	«IF fb.type.functionblock.status !== null»
 		        	//Status Properties
 		        		«FOR status : fb.type.functionblock.status.properties»
 		        			«IF isNumericType(status.type)»
-		        			infoModel.«fb.name».set«status.name»(value);
+		        			infoModel.«fb.name».set«status.name»(dummy_value);
 		        			«ELSEIF isAlphabetical(status.type)»
 		        			infoModel.«fb.name».set«status.name»(msg);
 		        			«ELSEIF isEnum(fb.type.functionblock, status.type)»
@@ -278,7 +278,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        			«type(status.type)» «status.name»;
 		        			«FOR Entity : getEntity(fb.type.functionblock, status.type)»
 		        			    «IF isNumericType(Entity.type)»
-		        			        «status.name».set«Entity.name»(value);
+		        			        «status.name».set«Entity.name»(dummy_value);
 		        			    «ELSEIF isAlphabetical(Entity.type)»
 		        			        «status.name».set«Entity.name»(msg);
 		        			    «ENDIF»
@@ -291,7 +291,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        	//Configuration Properties
 		        		«FOR configuration : fb.type.functionblock.configuration.properties»
 		        			«IF isNumericType(configuration.type)»
-		        			infoModel.«fb.name».set«configuration.name»(value);
+		        			infoModel.«fb.name».set«configuration.name»(dummy_value);
 		        			«ELSEIF isAlphabetical(configuration.type)»
 		        			infoModel.«fb.name».set«configuration.name»(msg);
 		        			«ELSEIF isEnum(fb.type.functionblock, configuration.type)»
@@ -300,7 +300,7 @@ class ArduinoSketchTemplate extends ArduinoTemplate<InformationModel> {
 		        			«type(configuration.type)» «configuration.name»;
 		        			«FOR Entity : getEntity(fb.type.functionblock, configuration.type)»
 		        			    «IF isNumericType(Entity.type)»
-		        			        «configuration.name».set«Entity.name»(value);
+		        			        «configuration.name».set«Entity.name»(dummy_value);
 		        			    «ELSEIF isAlphabetical(Entity.type)»
 		        			        «configuration.name».set«Entity.name»(msg);
 		        			    «ENDIF»
