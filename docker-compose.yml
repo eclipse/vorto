@@ -33,6 +33,8 @@ services:
     networks:
       - backend
   db:
+    volumes:
+       - /opt/mysql_data:/var/lib/mysql
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
