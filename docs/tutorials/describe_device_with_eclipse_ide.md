@@ -74,6 +74,6 @@ The imported model will now be in *Draft* state and can only be viewed and modif
 
 ## What's Next?
 
-- [Connect the device to Bosch IoT Suite](tutorials/connect_javadevice.md) by a given Vorto Information Model
+- [Connect the device to Bosch IoT Suite](connect_javadevice.md) by a given Vorto Information Model
 - [Reference Vorto Models files from your custom DSL](https://github.com/eclipse/vorto-examples/blob/master/vorto-dsl-integration/Readme.md) with [Eclipse Xtext](https://www.eclipse.org/xtext)
 - [Other tutorials](../gettingstarted.md)
