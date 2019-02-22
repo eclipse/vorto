@@ -3,18 +3,18 @@ pipeline {
     stages{
       stage("Build"){
         steps{
-          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'PENDING'
+          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'PENDING', targetUrl: ""
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
               sh 'mvn -P coverage clean install'
             }
-          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'SUCCESS'
+          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'SUCCESS', targetUrl: ""
         }
         post{
           failure{
-            githubNotify context: 'Building PR', description: 'Building pull request',  status: 'FAILURE'
+            githubNotify context: 'Building PR', description: 'Building pull request',  status: 'FAILURE', targetUrl: ""
           }
         }
       }
@@ -41,7 +41,7 @@ pipeline {
           }
           stage("CLMScan"){
             steps{
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING'
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
@@ -54,11 +54,11 @@ pipeline {
                     }
                   }
                 }
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS'
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
             }
             post{
               failure{
-                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE'
+                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: ""
               }
             }
           }
@@ -76,7 +76,9 @@ pipeline {
                   mavenLocalRepo: '.repository') {
                 sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                    sh "sed -i -e \"s/http://sgpvmc0309.apac.bosch.com:8080//g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
+                  withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
+                    sh "sed -i -e \"s/$TOKEN//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                  }
                       s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
                   }
               }
@@ -102,7 +104,9 @@ pipeline {
                   mavenLocalRepo: '.repository') {
                 sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f avscan_generator/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
-                    sh "sed -i -e \"s/http://sgpvmc0309.apac.bosch.com:8080//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                  withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
+                    sh "sed -i -e \"s/$TOKEN//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                  }
                       s3Upload(file:'avscan_generator/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html")
                   }
               }
@@ -118,9 +122,10 @@ pipeline {
       }
       stage('Deploy'){
         steps{
-          input message: "Continue with deployment?"
             script {
-              if ("${env.BRANCH_NAME}" == "PR-18"){
+              //todo add developmetn branch for deployment to aws
+              if ("${env.BRANCH_NAME}" == "master"){
+                input message: "Continue with deployment?"
                 // build docker containers and load http proxy
                 withCredentials([string(credentialsId: 'http-proxy-url', variable: 'TOKEN')]) {
                   // set +x because the url contains $@ which is otherwise parsed by bash so its escaped but jenkins will only to string matching to censor secrets
