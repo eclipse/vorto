@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.server.it.TestModel;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -66,6 +67,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
             .andExpect(status().isCreated());
     }
 
+    @Ignore
     @Test public void saveModel() throws Exception {
         //Test normal save
         String testModelId = "com.test:TrackingDevice:1.0.0";
