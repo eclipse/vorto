@@ -67,7 +67,7 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
 
   /** +++++++++++++ Bosch IoT SUITE TEST CASES ++++++++++++++++++++++++ */
 
-  @Test
+  @Ignore
   public void testGenerateBoschIoTSuiteForJava() throws Exception {
     invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
         "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
@@ -83,7 +83,7 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
         .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
   }
 
-  @Test
+  @Ignore
   public void testGenerateBoschIoTSuiteForJavaForStreetLamp() throws Exception {
     invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
         "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
