@@ -105,7 +105,7 @@ pipeline {
                 sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f avscan_generator/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
                   withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s/$TOKEN//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
                   }
                       s3Upload(file:'avscan_generator/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html")
                   }
