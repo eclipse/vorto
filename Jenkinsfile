@@ -77,7 +77,7 @@ pipeline {
                 sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
                   withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s/$TOKEN//g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
                   }
                       s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
                   }
