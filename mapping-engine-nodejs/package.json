@@ -1,0 +1,29 @@
+{
+  "name": "vorto-mapper",
+  "version": "0.1.0",
+  "description": "Maps arbitrary device json payload to vorto compliant json using mapping specification.",
+  "main": "vortoMappingEngine.js",
+  "dependencies": {
+    "fontoxpath": "^3.3.0",
+    "loglevel": "^1.6.1",
+    "slimdom-sax-parser": "^1.1.3",
+    "xml-js": "^1.6.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/someshku/vorto-mapping-javascript.git"
+  },
+  "keywords": [
+    "vorto"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/someshku/vorto-mapping-javascript/issues"
+  },
+  "homepage": "https://github.com/someshku/vorto-mapping-javascript#readme"
+}
