@@ -44,7 +44,7 @@ pipeline {
               }
             }
           }
-          stage("CLMScan"){
+          stage("CLMScan Vorto-repository"){
             steps{
               githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
                 withMaven(
@@ -52,12 +52,30 @@ pipeline {
                     mavenLocalRepo: '.repository') {
                   catchError { //Todo remove as soon as nexus is fixed
                     withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
                         // add s3upload of nexus reports
                         //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
-                        //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
                     }
                   }
+                }
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
+            }
+            post{
+              failure{
+                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: ""
+              }
+            }
+          }
+          stage("CLMScan Vorto-generators"){
+            steps{
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
+                withMaven(
+                  maven: 'maven-latest',
+                  mavenLocalRepo: '.repository') {
+                    withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-generators'), iqScanPatterns: [[scanPattern: 'generators/generator-runner/target/**/*exec.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                        //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
+                    }
                 }
               githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
             }
