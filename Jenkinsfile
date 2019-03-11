@@ -21,6 +21,11 @@ pipeline {
       stage('Run compliance checks') {
         parallel {
           stage("SonarCloud"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'SonarCloud', description: 'Running SonarCloud Scan',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
                 withMaven(
@@ -63,6 +68,11 @@ pipeline {
             }
           }
           stage("AVScan infomodelrepository"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'AVScan Infomodel', description: 'Running AntiVirus Scan on infomodelrepository.jar',  status: 'PENDING', targetUrl: ""
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
@@ -91,6 +101,11 @@ pipeline {
             }
           }
           stage("AVScan generator-runner"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'AVScan Generators', description: 'Running AntiVirus Scan on generator-runner-exec.jar',  status: 'PENDING', targetUrl: ""
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
