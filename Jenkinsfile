@@ -21,6 +21,11 @@ pipeline {
       stage('Run compliance checks') {
         parallel {
           stage("SonarCloud"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'SonarCloud', description: 'Running SonarCloud Scan',  status: 'PENDING', targetUrl: "https://sonarcloud.io/project/issues?id=org.eclipse.vorto%3Aparent&pullRequest=${CHANGE_ID}&resolved=false"
                 withMaven(
@@ -39,7 +44,7 @@ pipeline {
               }
             }
           }
-          stage("CLMScan"){
+          stage("CLMScan Vorto-repository"){
             steps{
               githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
                 withMaven(
@@ -47,10 +52,9 @@ pipeline {
                     mavenLocalRepo: '.repository') {
                   catchError { //Todo remove as soon as nexus is fixed
                     withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-repository'), iqScanPatterns: [[scanPattern: 'repository/repository-server/target/**/*.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
                         // add s3upload of nexus reports
                         //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'repository/repository-server/target/**/*.pdf')
-                        //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
                     }
                   }
                 }
@@ -62,7 +66,31 @@ pipeline {
               }
             }
           }
+          stage("CLMScan Vorto-generators"){
+            steps{
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
+                withMaven(
+                  maven: 'maven-latest',
+                  mavenLocalRepo: '.repository') {
+                    withCredentials([usernamePassword(credentialsId: 'CLMScanUser', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                      nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: selectedApplication('vorto-generators'), iqScanPatterns: [[scanPattern: 'generators/generator-runner/target/**/*exec.jar']], iqStage: 'build', jobCredentialsId: 'CLMScanUser'
+                        //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
+                    }
+                }
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
+            }
+            post{
+              failure{
+                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: ""
+              }
+            }
+          }
           stage("AVScan infomodelrepository"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'AVScan Infomodel', description: 'Running AntiVirus Scan on infomodelrepository.jar',  status: 'PENDING', targetUrl: ""
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
@@ -77,7 +105,7 @@ pipeline {
                 sh 'mvn verify -Dbosch.avscan.fileToScan=infomodelrepository.jar -f avscan_infomodel/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
                   withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s/$TOKEN//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_infomodel/target/inl-releng-avsupport/avscan_report.html"
                   }
                       s3Upload(file:'avscan_infomodel/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/infomodelrepository_report.html")
                   }
@@ -91,6 +119,11 @@ pipeline {
             }
           }
           stage("AVScan generator-runner"){
+            when {
+              allOf {
+                expression { env.CHANGE_ID != null }
+              }
+            }
             steps{
               githubNotify context: 'AVScan Generators', description: 'Running AntiVirus Scan on generator-runner-exec.jar',  status: 'PENDING', targetUrl: ""
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
@@ -105,7 +138,7 @@ pipeline {
                 sh 'mvn clean verify -Dbosch.avscan.fileToScan=generator-runner-exec.jar -f avscan_generator/pom_bosch.xml'
                   withAWS(region:'eu-central-1',credentials:'aws-s3-vorto-jenkins-technical-user') {
                   withCredentials([string(credentialsId: 'hide-server-url', variable: 'TOKEN')]) {
-                    sh "sed -i -e \"s/$TOKEN//g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
+                    sh "sed -i -e \"s,$TOKEN,,g\" avscan_generator/target/inl-releng-avsupport/avscan_report.html"
                   }
                       s3Upload(file:'avscan_generator/target/inl-releng-avsupport/avscan_report.html', bucket:'pr-vorto-documents', path:"avscans/${CHANGE_ID}/${BUILD_NUMBER}/generator-runner_report.html")
                   }
