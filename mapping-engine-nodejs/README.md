@@ -6,28 +6,27 @@ Sounds interesting, check out the Eclipse Vorto project [here](https://www.eclip
 
 The package is an effort to making it easier for developers to map arbitrary device json into vorto compliant json structure.
 
-# Installation
+## Installation
 ```bash
 npm install vorto-mapper
 ```
 
-
-# Example Scenario
+## Example Scenario
 I want to create a cool mobile app which shows room temperature. The challenge is there are a wide range of connectable temperature sensors available in the market and my app should be able to work with most of them. A perfect scenario for using Vorto. 
 
 To test my setup I bought a connectable temperature sensor, unfortunately it only reads in Fahrenheit. I am not going to change my application code to adjust to this json format, I will just map it to the desired json format.
 
 Device JSON:
 
-````js
+```javascript
 {
   "temperature" : "82.4f"
 }
-````
+```
 
 Desired Vorto compliant JSON structure:
 
-````js
+```javascript
 {
   "temperature": {
     "status": {
@@ -35,7 +34,7 @@ Desired Vorto compliant JSON structure:
     }
   }
 }
-````
+```
 
 ## Prerequisite
 To work through this tutorial, you will need:
@@ -43,7 +42,7 @@ To work through this tutorial, you will need:
 - A Github account to log in to Vorto Repository
 - A [Vorto Information Model](https://github.com/eclipse/vorto/blob/master/docs/tutorials/describe_tisensor.md), for your IoT device
 
-## Step 1: Create Mapping Specification
+### Step 1: Create Mapping Specification
 
 Mapping adds device specific information to an Information Model. Since the representation of data can vary from one device to another, we will create a mapping specification to standardize the data.
 
@@ -64,7 +63,7 @@ Custom function to convert Fahrenheit to Celsius and round-off to two decimal pl
 
 ![xpath](./images/custom_function.png)
 
-## Step 2: Test the Mapping Specification
+### Step 2: Test the Mapping Specification
 
 On the right hand-side, define the device payload(in JSON format) and click **Map**: 
 
@@ -72,15 +71,14 @@ On the right hand-side, define the device payload(in JSON format) and click **Ma
 
 Satisfied with the results, save it.
 
-## Step 3: Download & Execute Mapping Specification
+### Step 3: Download & Execute Mapping Specification
 
 Download it to use with our nodejs library:
 
 ![download json spec](./images/download_spec.png)
 
-
-# Usage
-```js
+## Usage
+```javascript
 const VortoMapper = require("vorto-mapper")
 
 const vortoMapper = new VortoMapper();
@@ -95,11 +93,11 @@ vortoMapper.setMappingSpec(mappingSpec);
 vortoMapper.transform(rawPayload);
 ```
 
-### Registering Custom Functions
+## Registering Custom Functions
 
 To register user defined functions for the mapping, we will leverage on the functionality provided by [fontoxpath](https://www.npmjs.com/package/fontoxpath). Note the additional parameter 'dynamicContext' which needs to be added as the first parameter of the function.
 
-```js
+```javascript
 vortoMapper.registerCustomXPathFunction(
     'temperature:fToC',
     ['xs:string'], 'xs:string',
@@ -112,10 +110,10 @@ vortoMapper.registerCustomXPathFunction(
 );
 ```
 
-### Debug Logs
+## Debug Logs
 
 The library internally uses [loglevel](https://www.npmjs.com/package/loglevel) npm package. 
 To enable debug level logs set the corresponding log level.
-```js
+```javascript
 vortoMapper.setLogLevel("debug");
 ```
