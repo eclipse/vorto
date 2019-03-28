@@ -14,10 +14,11 @@ package org.eclipse.vorto.codegen.hono.arduino
 
 import org.eclipse.vorto.codegen.api.InvocationContext
 import org.eclipse.vorto.core.api.model.datatype.PrimitiveType
-import org.junit.Assert
-import org.junit.Test
 import org.eclipse.vorto.core.api.model.model.ModelId
 import org.eclipse.vorto.core.api.model.model.ModelType
+import org.eclipse.vorto.codegen.testutils.GeneratorTestUtils
+import org.junit.Assert
+import org.junit.Test
 
 class EntitySourceTemplateTest {
 	

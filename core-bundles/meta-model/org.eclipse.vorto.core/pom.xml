@@ -31,7 +31,7 @@
 					<includePluginDependencies>true</includePluginDependencies>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
-						<argument>file://${project.basedir}/model/GenerateModels.mwe2</argument>
+						<argument>file://${project.basedir}/src/org/eclipse/vorto/core/api/model/GenerateModels.mwe2</argument>
 						<argument>
 							-p
 						</argument>
