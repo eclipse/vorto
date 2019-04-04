@@ -67,23 +67,6 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     assertTrue(true);
   }
 
-  /** +++++++++++++ Bosch IoT SUITE TEST CASES ++++++++++++++++++++++++ */
-
-  private void invokeAndAssertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare,
-      Optional<String> paramUrl) throws Exception {
-    repositoryServer
-        .perform(get("/api/v1/generators/boschiotsuite/models/" + modelId
-            + (paramUrl.isPresent() ? paramUrl.get() : "")).with(userAdmin))
-        .andExpect(status().isOk())
-        .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForPython() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
-    assertTrue(true);
-  }
 
   /** +++++++++++++ ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++ */
 

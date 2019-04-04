@@ -11,19 +11,26 @@
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.codegen.hono.python
-import org.eclipse.vorto.core.api.model.model.Model
+
+import org.eclipse.vorto.codegen.api.IFileTemplate
+import org.eclipse.vorto.core.api.model.informationmodel.InformationModel
 import org.eclipse.vorto.codegen.api.InvocationContext
 
-class PythonInitTemplate extends PythonTemplate <Model> {
-	override getFileName(Model model) {
-		return "__init__.py";
+class PythonRequirementsTemplate implements IFileTemplate<InformationModel> {
+	
+	override getFileName(InformationModel context) {
+		'''requirement.txt'''
 	}
 	
-	override getPath(Model model) {
-		return rootPath;
-	}
-	
-	override getContent(Model element, InvocationContext context) {
+	override getPath(InformationModel context) {
 		return ""
 	}
+	
+	override getContent(InformationModel element, InvocationContext context) {
+		'''
+		netifaces
+		paho-mqtt
+		'''
+	}
+	
 }
