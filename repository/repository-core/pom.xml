@@ -108,18 +108,6 @@
 		<dependency>
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-jcr</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.tika</groupId>
-          <artifactId>tika-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-      <version>1.20</version>
     </dependency>
 		<dependency>
 			<groupId>org.modeshape</groupId>
@@ -166,18 +154,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.hibernate</groupId>
-          <artifactId>hibernate-core</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <version>5.1.17.Final</version>
     </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
