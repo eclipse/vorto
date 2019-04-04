@@ -17,6 +17,8 @@ import java.util.List;
 
 public abstract class AbstractModel extends DefaultMappedElement implements IModel {
 
+  
+  protected String vortolang;
   protected ModelId id;
   protected ModelType type;
   protected String displayName;
@@ -24,14 +26,25 @@ public abstract class AbstractModel extends DefaultMappedElement implements IMod
   protected String fileName;
 
   protected List<ModelId> references = new ArrayList<>();
+  
+  private static final String VERSION = "1.0";
 
   public AbstractModel(ModelId modelId, ModelType modelType) {
+	this.vortolang = VERSION;
     this.id = modelId;
     this.type = modelType;
+    this.fileName = modelId.getName()+modelType.getExtension();
   }
 
   public AbstractModel() {
-
+  }
+  
+  public String getVortolang() {
+	  return vortolang;
+  }
+  
+  public void setVortolang(String vortolang) {
+	  this.vortolang = vortolang;
   }
 
   public ModelId getId() {

@@ -76,6 +76,7 @@ import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.Tag;
+import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
@@ -194,7 +195,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
 
   @Override
-  public ModelFileContent getModelContent(ModelId modelId) {
+  public ModelFileContent getModelContent(ModelId modelId, boolean validate) {
     try {
       ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
       Node folderNode = getSession().getNode(modelIdHelper.getFullPath());
@@ -203,8 +204,11 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
       InputStream is = fileItem.getProperty("jcr:data").getBinary().getStream();
 
       final String fileContent = IOUtils.toString(is);
-      ModelResource resource = (ModelResource) modelParserFactory.getParser(fileNode.getName())
-          .parse(IOUtils.toInputStream(fileContent));
+      
+      IModelParser parser = modelParserFactory.getParser(fileNode.getName());
+      parser.setValidate(false);
+      
+      ModelResource resource = (ModelResource) parser.parse(IOUtils.toInputStream(fileContent));
       return new ModelFileContent(resource.getModel(), fileNode.getName(), fileContent.getBytes());
 
     } catch (PathNotFoundException e) {
@@ -232,66 +236,72 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
 
     return rootNode.getNode(modelIdHelper.getFullPath().substring(1));
   }
+  
+  public ModelInfo save(ModelId modelId, byte[] content, String fileName, IUserContext userContext, boolean validate) {
+	  Objects.requireNonNull(content);
+	    Objects.requireNonNull(modelId);
+
+	    IModelParser parser = modelParserFactory
+        .getParser("model" + ModelType.fromFileName(fileName).getExtension());
+	    parser.setValidate(validate);
+	    
+	    ModelResource modelInfo = (ModelResource) parser.parse(new ByteArrayInputStream(content));
+
+	    logger.info("Saving " + modelId.toString() + " as " + fileName + " in Repository");
+
+	    org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();
+	    try {
+	      Node folderNode = createNodeForModelId(session, modelId);
+	      folderNode.addMixin("mix:referenceable");
+	      folderNode.addMixin("vorto:meta");
+	      folderNode.addMixin("mix:lastModified");
+
+	      NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
+	      if (!nodeIt.hasNext()) { // new node
+	        Node fileNode = folderNode.addNode(fileName, "nt:file");
+	        fileNode.addMixin("vorto:meta");
+	        fileNode.setProperty("vorto:author", userContext.getUsername());
+	        fileNode.addMixin("mode:accessControllable");
+	        folderNode.addMixin("mix:lastModified");
+	        Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
+	        Binary binary =
+	            session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
+	        Property input = contentNode.setProperty("jcr:data", binary);
+	        boolean success = session.sequence("Vorto Sequencer", input, fileNode);
+	        if (!success) {
+	          throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
+	              null);
+	        }
+	      } else { // node already exists, so just update it.
+	        Node fileNode = nodeIt.nextNode();
+	        fileNode.addMixin("vorto:meta");
+	        fileNode.setProperty("vorto:author", userContext.getUsername());
+	        fileNode.addMixin("mix:lastModified");
+	        Node contentNode = fileNode.getNode("jcr:content");
+	        Binary binary =
+	            session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
+	        Property input = contentNode.setProperty("jcr:data", binary);
+	        boolean success = session.sequence("Vorto Sequencer", input, fileNode);
+	        if (!success) {
+	          throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
+	              null);
+	        }
+	      }
+
+	      session.save();
+	      logger.info("Model was saved successful");
+	      return modelInfo;
+	    } catch (Exception e) {
+	      logger.error("Error checking in model", e);
+	      throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
+	    } finally {
+	      session.logout();
+	    }
+  }
 
   public ModelInfo save(ModelId modelId, byte[] content, String fileName,
       IUserContext userContext) {
-    Objects.requireNonNull(content);
-    Objects.requireNonNull(modelId);
-
-    ModelResource modelInfo = (ModelResource) modelParserFactory
-        .getParser("model" + ModelType.fromFileName(fileName).getExtension())
-        .parse(new ByteArrayInputStream(content));
-
-    logger.info("Saving " + modelId.toString() + " as " + fileName + " in Repository");
-
-    org.modeshape.jcr.api.Session session = (org.modeshape.jcr.api.Session) getSession();
-    try {
-      Node folderNode = createNodeForModelId(session, modelId);
-      folderNode.addMixin("mix:referenceable");
-      folderNode.addMixin("vorto:meta");
-      folderNode.addMixin("mix:lastModified");
-
-      NodeIterator nodeIt = folderNode.getNodes(FILE_NODES);
-      if (!nodeIt.hasNext()) { // new node
-        Node fileNode = folderNode.addNode(fileName, "nt:file");
-        fileNode.addMixin("vorto:meta");
-        fileNode.setProperty("vorto:author", userContext.getUsername());
-        fileNode.addMixin("mode:accessControllable");
-        folderNode.addMixin("mix:lastModified");
-        Node contentNode = fileNode.addNode("jcr:content", "nt:resource");
-        Binary binary =
-            session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
-        Property input = contentNode.setProperty("jcr:data", binary);
-        boolean success = session.sequence("Vorto Sequencer", input, fileNode);
-        if (!success) {
-          throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
-              null);
-        }
-      } else { // node already exists, so just update it.
-        Node fileNode = nodeIt.nextNode();
-        fileNode.addMixin("vorto:meta");
-        fileNode.setProperty("vorto:author", userContext.getUsername());
-        fileNode.addMixin("mix:lastModified");
-        Node contentNode = fileNode.getNode("jcr:content");
-        Binary binary =
-            session.getValueFactory().createBinary(new ByteArrayInputStream(modelInfo.toDSL()));
-        Property input = contentNode.setProperty("jcr:data", binary);
-        boolean success = session.sequence("Vorto Sequencer", input, fileNode);
-        if (!success) {
-          throw new FatalModelRepositoryException("Problem indexing new node for search" + modelId,
-              null);
-        }
-      }
-
-      session.save();
-      logger.info("Model was saved successful");
-      return modelInfo;
-    } catch (Exception e) {
-      logger.error("Error checking in model", e);
-      throw new FatalModelRepositoryException("Problem checking in uploaded model" + modelId, e);
-    } finally {
-      session.logout();
-    }
+	  return save(modelId,content,fileName,userContext,true);
   }
 
   @Override
@@ -813,7 +823,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
         throw new ModelAlreadyExistsException();
       }
 
-      ModelFileContent existingModelContent = this.getModelContent(existingId);
+      ModelFileContent existingModelContent = this.getModelContent(existingId,false);
       Model model = existingModelContent.getModel();
       model.setVersion(newVersion);
       ModelResource resource = new ModelResource(model);

@@ -17,9 +17,11 @@ grammar org.eclipse.vorto.editor.infomodel.InformationModel with org.eclipse.vor
 
 import "http://www.eclipse.org/vorto/metamodel/InformationModel"
 import "http://www.eclipse.org/vorto/metamodel/Functionblock" as fb
+import "http://www.eclipse.org/vorto/metamodel/Model" as model 
 
 InformationModel:
 	{InformationModel}
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     'displayname' displayname=STRING      
