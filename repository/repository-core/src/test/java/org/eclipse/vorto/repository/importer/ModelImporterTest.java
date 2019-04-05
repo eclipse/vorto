@@ -105,7 +105,7 @@ public class ModelImporterTest extends AbstractIntegrationTest {
 				admin);
 
 		this.importer.doImport(uploadResult.getHandleId(), admin);
-		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReports().get(0).getModel().getId());
+		ModelFileContent content = modelRepository.getModelContent(uploadResult.getReports().get(0).getModel().getId(),true);
 
 		assertTrue(uploadResult.hasWarnings());
 		assertTrue(new String(content.getContent(), "utf-8").contains("mandatory b as int"));

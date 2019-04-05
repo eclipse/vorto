@@ -1,3 +1,5 @@
+vortolang 1.0
+
 namespace com.ipso.smartobjects
 version 0.0.3
 displayname "Accelerometer"

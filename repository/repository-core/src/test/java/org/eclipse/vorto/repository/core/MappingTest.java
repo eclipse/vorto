@@ -13,41 +13,24 @@
 package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
-import org.eclipse.vorto.repository.web.core.PayloadMappingController;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 
 public class MappingTest extends AbstractIntegrationTest {
 

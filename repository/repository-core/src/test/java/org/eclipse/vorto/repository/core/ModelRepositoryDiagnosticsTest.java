@@ -59,7 +59,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void baseline() {
+	public void testDiagnosisAllValidModels() {
 		ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
 		modelValidationTest.setModelParserFactory(modelParserFactory);
 		
@@ -79,7 +79,7 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 	}
 	
 	@Test
-	public void withValidationProblems() {
+	public void testDiagnosisMissingReference() {
 		ModelValidationDiagnostic modelValidationTest = new ModelValidationDiagnostic();
 		modelValidationTest.setModelParserFactory(modelParserFactory);
 		
@@ -88,14 +88,13 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		modelRepository.setRepositoryDiagnostics(modelDiagnostics);
 		
 		try {
-			repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-validation-error.xml").getInputStream()));
+			repositoryManager.restore(IOUtils.toByteArray(new ClassPathResource("sample_models/diagnosis/vorto-test-diagnosis-missingreference.xml").getInputStream()));
 		} catch (Exception e) {
 		    e.printStackTrace();
 			fail("Failed to load backup file.");
 		}
 		
 		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
-		diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
 		assertEquals(1, diagnostics.size());
 	}
 	
@@ -152,7 +151,6 @@ public class ModelRepositoryDiagnosticsTest extends AbstractIntegrationTest {
 		}
 		
 		Collection<Diagnostic> diagnostics = modelRepository.diagnoseAllModels();
-		diagnostics.forEach(diagnostic -> System.out.println("-erle- : " + diagnostic.toString()));
 		assertEquals(0, diagnostics.size());
 	}
 	

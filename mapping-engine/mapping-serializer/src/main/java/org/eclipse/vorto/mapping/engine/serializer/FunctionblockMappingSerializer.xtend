@@ -40,6 +40,8 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 	
 	override String serialize() {
 		'''
+		vortolang 1.0
+		
 		namespace «specification.infoModel.id.namespace».mapping.fbs
 		version 1.0.0
 		displayname "«propertyName»PayloadMapping"

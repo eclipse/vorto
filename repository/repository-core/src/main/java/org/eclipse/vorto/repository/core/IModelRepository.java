@@ -47,7 +47,7 @@ public interface IModelRepository {
 	 * @throws NotAuthorizedException if current user is not allowed to access the given model
 	 * @return
 	 */
-	ModelFileContent getModelContent(ModelId modelId) throws NotAuthorizedException;
+	ModelFileContent getModelContent(ModelId modelId, boolean validate) throws NotAuthorizedException;
 	
 	/**
 	 * Creates a new version of an existing model
