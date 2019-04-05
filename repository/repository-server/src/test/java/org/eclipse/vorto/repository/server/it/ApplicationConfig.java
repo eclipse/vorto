@@ -12,11 +12,11 @@
  */
 package org.eclipse.vorto.repository.server.it;
 
-import static org.eclipse.vorto.repository.account.Role.ADMIN;
-import static org.eclipse.vorto.repository.account.Role.MODEL_CREATOR;
-import static org.eclipse.vorto.repository.account.Role.MODEL_PROMOTER;
-import static org.eclipse.vorto.repository.account.Role.MODEL_REVIEWER;
-import static org.eclipse.vorto.repository.account.Role.USER;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_CREATOR;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_PROMOTER;
+import static org.eclipse.vorto.repository.domain.Role.MODEL_REVIEWER;
+import static org.eclipse.vorto.repository.domain.Role.SYS_ADMIN;
+import static org.eclipse.vorto.repository.domain.Role.USER;
 import javax.annotation.PostConstruct;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,8 @@ public class ApplicationConfig {
   
   @PostConstruct
   public void createUsers() {
-    accountService.create(USER_ADMIN,USER,ADMIN,MODEL_CREATOR,MODEL_PROMOTER,MODEL_REVIEWER);
-    accountService.create(USER_STANDARD,USER);
-    accountService.create(USER_CREATOR,USER,MODEL_CREATOR);
+    accountService.create(USER_ADMIN, "playground", USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);
+    accountService.create(USER_STANDARD, "playground", USER);
+    accountService.create(USER_CREATOR, "playground", USER, MODEL_CREATOR);
   }
 }
