@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.Role;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.server.it.AbstractIntegrationTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void getUser() throws Exception {
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(get("/rest/default/accounts/"+testUser).with(userAdmin))
             .andExpect(status().isOk());
@@ -58,7 +58,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void upgradeUserAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(post("/rest/default/accounts/testUser/updateTask").with(userAdmin))
             .andExpect(status().isCreated());
@@ -68,7 +68,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void updateAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(
             put("/rest/default/accounts/"+testUser)
@@ -83,7 +83,7 @@ public class AccountControllerTest extends AbstractIntegrationTest {
 
     @Test public void deleteUserAccount() throws Exception{
         if(accountService.getUser(testUser) == null){
-            accountService.create(testUser, Role.USER);
+            accountService.create(testUser, "playground", Role.USER);
         }
         this.repositoryServer.perform(
             delete("/rest/default/accounts/"+testUser)

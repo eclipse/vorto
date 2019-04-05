@@ -21,11 +21,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.upgrade.impl.ModelAuthorUnhashUpgradeTask;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +49,7 @@ public class ModelAuthorUnhashUpgradeTaskTest {
   private UsernamePasswordAuthenticationToken mockedAuthToken =
       Mockito.mock(UsernamePasswordAuthenticationToken.class);
 
-  private UserContext userContext = UserContext.user("erleczars.mantos");
+  private UserContext userContext = UserContext.user("erleczars.mantos", "playground");
 
   private List<ModelInfo> models = getModelList();
 
@@ -89,7 +91,7 @@ public class ModelAuthorUnhashUpgradeTaskTest {
       assertEquals(userContext.getHashedUsername(), model.getAuthor());
     });
 
-    upgradeTask.doUpgrade(User.create("erle"), () -> mockUser);
+    upgradeTask.doUpgrade(User.create("erle", new Tenant("playground"), Role.USER), () -> mockUser);
 
     ArgumentCaptor<ModelInfo> argument = ArgumentCaptor.forClass(ModelInfo.class);
     Mockito.verify(modelRepository, Mockito.times(models.size())).updateMeta(argument.capture());

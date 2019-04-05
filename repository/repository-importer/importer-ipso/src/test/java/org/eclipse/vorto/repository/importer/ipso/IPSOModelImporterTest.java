@@ -16,15 +16,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
 import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.InMemoryTemporaryStorage;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.MessageSeverity;
 import org.eclipse.vorto.repository.importer.ModelImporterException;
@@ -40,7 +37,8 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 	public void beforeEach() throws Exception {
 		super.beforeEach();
 		this.ipsoImporter = new ModelImporterIPSO();
-		this.ipsoImporter.setModelRepository(modelRepository);
+		this.ipsoImporter.setModelRepoFactory(repositoryFactory);
+		this.ipsoImporter.setTenantUserService(tenantUserService);
 		this.ipsoImporter.setUploadStorage(new InMemoryTemporaryStorage());
 		this.ipsoImporter.setUserRepository(accountService);
 		this.ipsoImporter.setModelParserFactory(modelParserFactory);
@@ -48,13 +46,13 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 	
 	@Test (expected=ModelImporterException.class) 
 	public void testPreventXXEAttack() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		importIPSO("3310_xxe.xml", alex);
 	}
 
 	@Test
 	public void testUploadNonExistingIPSOModel() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
@@ -65,16 +63,15 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testImportModel() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		List<ModelInfo> models = importIPSO("3310.xml", alex);
 		assertTrue(models.get(0).getImported());
-		assertTrue(this.modelRepository.getById(models.get(0).getId()).getImported());
-
+		assertTrue(repositoryFactory.getRepository(alex).getById(models.get(0).getId()).getImported());
 	}
 	
 	@Test
 	public void testUploadExistingIPSOModelBySameUser() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		List<ModelInfo> models = importIPSO("3310.xml", alex);
 		workflow.start(models.get(0).getId(),alex);
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
@@ -90,13 +87,13 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUploadExistingIPSOModelByDifferentUser() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		importIPSO("3310.xml", alex);
 
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-				UserContext.user("stefan"));
+				createUserContext("creator", "playground"));
 
 		assertFalse(uploadResult.isValid());
 		assertFalse(uploadResult.hasWarnings());
@@ -106,14 +103,14 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUploadExistingIPSOModelInDraftStateByAdmin() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		List<ModelInfo> models = importIPSO("3310.xml", alex);
 		workflow.start(models.get(0).getId(),alex);
 
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/lwm2m/3310.xml",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/lwm2m/3310.xml").getInputStream())),
-				UserContext.user("admin"));
+				createUserContext("admin", "playground"));
 
 		assertTrue(uploadResult.hasWarnings());
 		assertTrue(uploadResult.isValid());
@@ -133,7 +130,7 @@ public class IPSOModelImporterTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testUploadZipContainingNonIPSOFiles() throws Exception {
-		IUserContext alex = UserContext.user("alex");
+		IUserContext alex = createUserContext("alex", "playground");
 		UploadModelResult uploadResult = this.ipsoImporter.upload(
 				FileUpload.create("sample_models/valid-models.zip",
 						IOUtils.toByteArray(new ClassPathResource("sample_models/valid-models.zip").getInputStream())),alex);

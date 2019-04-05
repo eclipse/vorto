@@ -84,7 +84,7 @@ public class PayloadMappingControllerTest {
     controller.setRepository(repo);
 
     thrown.expect(ModelAlreadyExistsException.class);
-    controller.createMappingSpecification("com.test:Device:1.0.0", "test");
+    controller.createMappingSpecification("playground", "com.test:Device:1.0.0", "test");
   }
 
   @Test
@@ -99,7 +99,7 @@ public class PayloadMappingControllerTest {
     when(repo.save(Matchers.any(), Matchers.any(), Matchers.any(), Matchers.any()))
         .thenReturn(null);
 
-    when(modelController.getModelContent(Matchers.eq("com.mycompany:ColorLightIM:1.0.0")))
+    when(modelController.getModelContent(Matchers.eq("playground"), Matchers.eq("com.mycompany:ColorLightIM:1.0.0")))
         .thenReturn(getModelContent());
 
     when(workflowService.start(Matchers.any(), Matchers.any())).thenReturn(null);
@@ -107,11 +107,11 @@ public class PayloadMappingControllerTest {
     PayloadMappingController controller = new PayloadMappingController();
     controller.setRepository(repo);
     controller.setModelController(modelController);
-    controller.setUserContextSupplier(() -> UserContext.user("erle"));
+    controller.setUserContextFn((tenantId) -> UserContext.user("erle", tenantId));
     controller.setWorkflowService(workflowService);
 
     Map<String, Object> returnValue =
-        controller.createMappingSpecification("com.mycompany:ColorLightIM:1.0.0", "test");
+        controller.createMappingSpecification("playground", "com.mycompany:ColorLightIM:1.0.0", "test");
 
     assertTrue(returnValue.get("mappingId") != null);
     assertTrue(returnValue.get("spec") != null);
@@ -139,19 +139,19 @@ public class PayloadMappingControllerTest {
     ModelController modelController = Mockito.mock(ModelController.class);
 
     try {
-      when(modelController.getModelContentForTargetPlatform(
+      when(modelController.getModelContentForTargetPlatform(Matchers.eq("playground"),
           Matchers.eq("com.mycompany:ColorLightIM:1.0.0"), Matchers.any()))
               .thenReturn(modelContentForSample1());
 
       when(modelController
-          .getModelContent(Matchers.eq("org.eclipse.vorto.examples.fb:ColorLight:1.0.0")))
+          .getModelContent(Matchers.eq("playground"), Matchers.eq("org.eclipse.vorto.examples.fb:ColorLight:1.0.0")))
               .thenReturn(modelContentForSample2());
 
       PayloadMappingController controller = new PayloadMappingController();
       controller.setModelController(modelController);
 
       IMappingSpecification mappingSpec =
-          controller.getMappingSpecification("com.mycompany:ColorLightIM:1.0.0", "test");
+          controller.getMappingSpecification("playground", "com.mycompany:ColorLightIM:1.0.0", "test");
 
       assertTrue(mappingSpec != null);
 
