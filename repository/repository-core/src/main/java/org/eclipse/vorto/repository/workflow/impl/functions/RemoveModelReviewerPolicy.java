@@ -12,38 +12,39 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import java.util.Collection;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemovePolicies implements IWorkflowFunction {
+public class RemoveModelReviewerPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(RemovePolicies.class);
+  private static final Logger logger = LoggerFactory.getLogger(RemoveModelReviewerPolicy.class);
 
 
-  public RemovePolicies(IModelRepositoryFactory repositoryFactory) {
+  public RemoveModelReviewerPolicy(IModelRepositoryFactory repositoryFactory) {
     this.repositoryFactory = repositoryFactory;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user) {
-    logger.info("Removing permission from model " + model.getId());
-    Collection<PolicyEntry> policies =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-            .getPolicyEntries(model.getId());
-    for (PolicyEntry entry : policies) {
-      logger.info("removing " + entry);
-      repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-          .removePolicyEntry(model.getId(), entry);
+    IModelPolicyManager policyManager =
+        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
+    
+    logger.info("Removing full access of model to ROLE_MODEL_REVIEWER for " + model.getId());
+    Collection<PolicyEntry> policies = policyManager.getPolicyEntries(model.getId());
+    for (PolicyEntry policy : policies) {
+      if (policy.getPrincipalId().equals(Role.MODEL_REVIEWER.name())) {
+        policyManager.removePolicyEntry(model.getId(), policy);
+        break;
+      }
     }
-
-    logger.info(repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-        .getPolicyEntries(model.getId()).toString());
   }
 }

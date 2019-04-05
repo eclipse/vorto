@@ -13,9 +13,9 @@
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.WorkItemPendingMessage;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
