@@ -1,0 +1,67 @@
+<form class="form-horizontal" name="tenantForm">
+	<div class="modal-header">
+		<button ng-disabled="isCurrentlyAddingOrUpdating" type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">{{ mode }} User</h4>
+	</div>
+	<div class="modal-body">
+		
+		<div class="row" ng-show="errorMessage !== ''">
+			<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+		</div>
+		
+		<div class="form-group">
+		    <label for="userId" class="col-sm-2 control-label">User ID</label>
+		    <div class="col-sm-10">
+		    	<input type="text" class="form-control" id="userId" placeholder="userId" ng-model="user.username" ng-readonly="user.edit">
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleUser"> ROLE_USER
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelCreator"> ROLE_MODEL_CREATOR
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelPromoter"> ROLE_MODEL_PROMOTER
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-offset-2 col-sm-10">
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" ng-model="user.roleModelReviewer"> ROLE_MODEL_REVIEWER
+			        </label>
+		      	</div>
+		    </div>
+		</div>
+		
+		<div class="form-group">
+			<div class="col-sm-12">
+				<button type="button" class="btn btn-primary pull-right" ng-click="addOrUpdateUser()" ng-disabled="isCurrentlyAddingOrUpdating">
+					<i class="fa fa-refresh fa-spin" ng-show="isCurrentlyAddingOrUpdating"></i>{{ mode }} User
+				</button>
+			</div>
+		</div>
+	</div>
+</form>

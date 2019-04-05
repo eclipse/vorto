@@ -252,7 +252,7 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
         $http.get("./rest/" + $rootScope.tenant + "/mappings/"+$scope.modelId+"/"+$scope.targetPlatform+"/info").success(
                 function(data, status, headers, config) {
                     if (data.length > 0) {
-                        $http.get("./rest/" + $rootScope.tenant + "/workflows/"+data[0].id.prettyFormat).success(
+                        $http.get("./rest/tenants/" + $rootScope.tenant + "/workflows/"+data[0].id.prettyFormat).success(
                                 function(result, status, headers, config) {
                                     $scope.state = result.name;
                                 });

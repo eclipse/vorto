@@ -35,14 +35,6 @@ repositoryControllers.controller('DetailsController',
 			_editor.getSession().setUseWrapMode(true);
 		};
 
-		$scope.getFileNames = function (model) {
-			$http.get('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/files')
-				.success(function (result) {
-					$scope.modelFileNames = result;
-				});
-		};
-
-
 		$scope.modelEditorChanged = function (e) {
 			$scope.newModelCode = $scope.modelEditorSession.getDocument().getValue();
 		};
@@ -56,7 +48,7 @@ repositoryControllers.controller('DetailsController',
 
 			};
 
-			$http.put('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat, newContent)
+			$http.put('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat, newContent)
 				.success(function (result) {
 					$scope.isLoading = false;
 					$scope.message = result.message;
@@ -82,7 +74,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.uploadImage = function () {
 			var fd = new FormData();
 			fd.append('file', document.getElementById('imageFile').files[0]);
-			$http.post('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
+			$http.post('./rest/tenants' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
 					transformRequest: angular.identity,
 					headers: {
 						'Content-Type': undefined
@@ -120,7 +112,7 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get('./api/v1/attachments/' + model.id.prettyFormat)
+			$http.get("./api/v1/tenants/" + $scope.tenantId + "/attachments/" + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
 				})
@@ -131,7 +123,7 @@ repositoryControllers.controller('DetailsController',
 			$scope.modelMappings = [];
 			for(var i = 0; i < Object.keys($scope.model.platformMappings).length;i++){
 				var key = Object.keys($scope.model.platformMappings)[i];
-				$http.get('./api/v1/models/' + $scope.model.platformMappings[key].prettyFormat+'?key=key').then(
+				$http.get("./api/v1/tenants/" + $scope.tenantId + "/models/" + $scope.model.platformMappings[key].prettyFormat + "?key=key").then(
 				    (function(key) {
 				        return function(result) {
 				        	var mapping = {
@@ -154,7 +146,7 @@ repositoryControllers.controller('DetailsController',
 			$scope.modelReferences.show = false;
 			var tmpIdx = 0;
 			for( var index in references){
-		        $http.get('./api/v1/models/' + references[index].prettyFormat)
+		        $http.get("./api/v1/tenants/" + $scope.tenantId + "/models/" + references[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferences[tmpIdx] = {
 						"modelId" : result.id.prettyFormat,
@@ -183,7 +175,7 @@ repositoryControllers.controller('DetailsController',
 			$scope.modelReferencedBy.show = false;
 			var tmpIdx = 0;
 			for( var index in referencedBy){
-		        $http.get('./api/v1/models/' + referencedBy[index].prettyFormat)
+		        $http.get("./api/v1/tenants/" + $scope.tenantId + "/models/" + referencedBy[index].prettyFormat)
 				.success(function (result) {
 					$scope.modelReferencedBy[tmpIdx] = {
 						"modelId" : result.id.prettyFormat,
@@ -207,7 +199,7 @@ repositoryControllers.controller('DetailsController',
 
 		$scope.getDetails = function (modelId) {
 			$scope.modelIsLoading = true;
-			$http.get('./api/v1/models/' + modelId)
+			$http.get("./api/v1/tenants/" + $scope.tenantId + "/models/" + modelId)
 				.success(function (result) {
 					$scope.model = result;
 					if($scope.model.author.length === 64) {
@@ -235,7 +227,7 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getContent = function (modelId) {
-			$http.get('./api/v1/models/' + modelId + '/file')
+			$http.get("./api/v1/tenants/" + $scope.tenantId + "/models/" + modelId + "/file")
 				.success(function (result) {
 					$timeout(function () {
 							$scope.modelEditorSession.getDocument().setValue(result);
@@ -290,6 +282,7 @@ repositoryControllers.controller('DetailsController',
 
 
 		$scope.modelId = $routeParams.modelId;
+		$scope.tenantId = $routeParams.tenantId;
 		
 		$scope.getDetails($scope.modelId);
 		$scope.getContent($scope.modelId);
@@ -304,7 +297,7 @@ repositoryControllers.controller('DetailsController',
 
 		$scope.getCommentsForModelId = function (modelId) {
 
-			$http.get('./rest/' + $rootScope.tenant + '/comments/' + modelId)
+			$http.get('./rest/' + $scope.tenantId + '/comments/' + modelId)
 				.success(function (result) {
                     $scope.comments = result;
 					$scope.comments.reverse();
@@ -337,7 +330,7 @@ repositoryControllers.controller('DetailsController',
 				"content": $scope.newComment.value
 			};
 			
-			$http.post('./rest/' + $rootScope.tenant + '/comments', comment)
+			$http.post('./rest/' + $scope.tenantId + '/comments', comment)
 				.success(function (result) {
                     $scope.getCommentsForModelId($scope.modelId);
 				}).error(function (data, status, headers, config) {
@@ -381,7 +374,7 @@ repositoryControllers.controller('DetailsController',
 		 * Start - Workflow
 		 */
 		$scope.getWorkflowActions = function () {
-			$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.modelId + '/actions')
+			$http.get('./rest/tenants/' + $scope.tenantId + '/workflows/' + $scope.modelId + '/actions')
 				.success(function (result) {
 					$scope.workflowActions = result;
 				});
@@ -392,7 +385,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.openWorkflowActionDialog = function (action) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model) {
+				controller: function ($scope, model, tenantId) {
 					$scope.action = action;
 					$scope.actionModel = null;
 					$scope.model = model;
@@ -400,7 +393,7 @@ repositoryControllers.controller('DetailsController',
 					$scope.hasError = false;
 					
 					$scope.takeWorkflowAction = function () {
-						$http.put('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
+						$http.put('./rest/tenants/' + tenantId + '/workflows/' + $scope.model.id.prettyFormat + '/actions/' + $scope.action)
 							.success(function (result) {
 								if (result.hasErrors) {
 									$scope.hasErrors = true;
@@ -413,7 +406,7 @@ repositoryControllers.controller('DetailsController',
 					};
 
 					$scope.getModel = function () {
-						$http.get('./rest/' + $rootScope.tenant + '/workflows/' + $scope.model.id.prettyFormat)
+						$http.get('./rest/tenants/' + tenantId + '/workflows/' + $scope.model.id.prettyFormat)
 								.success(function (result) {
 									for (var i = 0; i < result.actions.length; i++) {
 										if (result.actions[i].name === $scope.action) {
@@ -438,6 +431,9 @@ repositoryControllers.controller('DetailsController',
 					},
 					model: function () {
 						return $scope.model;
+					},
+					tenantId: function() {
+					    return $scope.tenantId;
 					}
 				}
 			});
@@ -457,7 +453,7 @@ repositoryControllers.controller('DetailsController',
 					$scope.model = model;
 
 					$scope.delete = function () {
-						$http.delete('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat)
+						$http.delete('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat)
 							.success(function (result) {
 								modalInstance.close();
 							});
@@ -494,7 +490,7 @@ repositoryControllers.controller('DetailsController',
 
 					$scope.createVersion = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/' + $rootScope.tenant + '/models/' + $scope.model.id.prettyFormat + '/versions/' + $scope.modelVersion, null)
+						$http.post("./rest/tenants/" + tenantId + "/models/" + $scope.model.id.prettyFormat + "/versions/" + $scope.modelVersion, null)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close(result);
@@ -523,21 +519,21 @@ repositoryControllers.controller('DetailsController',
 
 			modalInstance.result.then(
 				function (model) {
-					$location.path("/details/" + model.id.prettyFormat);
+					$location.path("/details/" + $scope.tenantId + "/" + model.id.prettyFormat);
 				});
 		};
 		
 		$scope.openPayloadMappingDialog = function () {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope,model) {
+				controller: function ($scope, model, tenantId) {
 					$scope.model = model;
 					$scope.errorMessage = null;
 					$scope.targetPlatform = "";
 	
 					$scope.create = function () {
 						$scope.isLoading = true;
-						$http.post('./rest/' + $rootScope.tenant + '/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
+						$http.post('./rest/' + tenantId + '/mappings/' + $scope.model.id.prettyFormat + '/' + $scope.targetPlatform)
 							.success(function (result) {
 								$scope.isLoading = false;
 								var data = {"targetPlatform" : $scope.targetPlatform, 
@@ -562,7 +558,10 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
-					}
+					},
+				    tenantId: function() {
+				        return $scope.tenantId;
+				    }
 				}
 			});
 
@@ -766,41 +765,41 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.diagnoseModel = function () {
-			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/diagnostics')
+			$http.get('./rest/' + $scope.tenantId + '/models/' + $scope.modelId + '/diagnostics')
 				.success(function (result) {
 					$scope.diagnostics = result;
 				});
 		};
 		
-		if ($rootScope.hasAuthority("ROLE_ADMIN")) { 
+		if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) { 
 			$scope.diagnoseModel();
 		}
 		
 		$scope.getPolicies = function() {
-			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies')
+			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies')
 				.success(function (result) {
 					$scope.aclEntries = result;
 				});
 		};
 		
 		$scope.getUserPolicy = function() {
-			$http.get('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policy')
+			$http.get('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policy')
 				.success(function (result) {
 					$scope.permission = result.permission;
 					if ($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") {
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_ADMIN")) { // load policies only if user is model owner
+					if ($scope.permission === "FULL_ACCESS" || $rootScope.hasAuthority("ROLE_SYS_ADMIN")) { // load policies only if user is model owner
 						$scope.getPolicies();
 					}
 				}).error(function (data, status, headers, config) {
 					$scope.permission = "READ";
-					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_ADMIN")) {
+					if (($scope.model.state === 'InReview' || $scope.model.released === true || $rootScope.authenticated === false || $scope.permission === "READ") && !$rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
 						$scope.modelEditor.setReadOnly(true);
 					}
 					
-					if ($rootScope.hasAuthority("ROLE_ADMIN")) {
+					if ($rootScope.hasAuthority("ROLE_SYS_ADMIN")) {
 						$scope.getPolicies();
 					}
 				});
@@ -809,7 +808,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.modifyPermission = function(entry) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model) {
+				controller: function ($scope, model, tenantId) {
 					$scope.model = model;
 					$scope.isLoading = false;
 					$scope.editMode = true;
@@ -822,7 +821,7 @@ repositoryControllers.controller('DetailsController',
 					
 					$scope.createEntry = function (entry) {
 						$scope.isLoading = true;
-						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
+						$http.put('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat + '/policies',entry)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close();
@@ -838,7 +837,10 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
-					}
+					},
+				    tenantId: function () {
+                        return $scope.tenantId;
+                    } 
 				}
 			});
 			
@@ -849,7 +851,7 @@ repositoryControllers.controller('DetailsController',
 		};
 		
 		$scope.removePermission = function(entry) {
-			$http.delete('./rest/' + $rootScope.tenant + '/models/' + $scope.modelId + '/policies/'+entry.principalId+'/'+entry.principalType)
+			$http.delete('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.modelId + '/policies/'+entry.principalId+'/'+entry.principalType)
 				.success(function (result) {
 					$scope.getPolicies();
 				});
@@ -858,7 +860,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.openCreatePolicyEntryDialog = function (model) {
 			var modalInstance = $uibModal.open({
 				animation: true,
-				controller: function ($scope, model) {
+				controller: function ($scope, model, tenantId) {
 					$scope.model = model;
 					$scope.isLoading = false;
 					$scope.editMode = false;
@@ -874,7 +876,7 @@ repositoryControllers.controller('DetailsController',
 							return;
 						}
 						$scope.isLoading = true;
-						$http.put('./rest/' + $rootScope.tenant + '/models/' + model.id.prettyFormat + '/policies',entry)
+						$http.put('./rest/tenants/' + tenantId + '/models/' + model.id.prettyFormat + '/policies',entry)
 							.success(function (result) {
 								$scope.isLoading = false;
 								modalInstance.close();
@@ -894,6 +896,9 @@ repositoryControllers.controller('DetailsController',
 				resolve: {
 					model: function () {
 						return $scope.model;
+					},
+					tenantId: function() {
+					    return $scope.tenantId;
 					}
 				}
 			});

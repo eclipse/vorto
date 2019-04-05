@@ -1,0 +1,52 @@
+<div class="row">
+	<div class="col-sm-8">
+		<div class="row" ng-show="isRetrievingTenants">
+			<i class="fa fa-refresh fa-spin"></i>&nbsp;Retrieving ...
+		</div>
+	</div>
+	<div class="col-sm-4">
+		<button type="button" class="btn btn-primary pull-right"
+			ng-disabled="isRetrievingTenants" ng-click="createOrUpdateTenant(newTenant())">
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Add
+			New
+		</button>
+	</div>
+</div>
+<div class="col-xs-12" style="height: 10px;"></div>
+<div>
+	<table class="table table-bordered table-striped table-condensed">
+		<thead>
+			<tr>
+				<th>TenantId</th>
+				<th>Admins</th>
+				<th>Authentication Provider</th>
+				<th>Authorization Provider</th>
+				<th>Namespaces</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody ng-repeat="tenant in tenants">
+			<tr>
+				<td>{{ tenant.tenantId }}</td>
+				<td>
+					<div ng-repeat="admin in tenant.admins">{{admin}}</div>
+				</td>
+				<td>{{ tenant.authenticationProvider }}</td>
+				<td>{{ tenant.authorizationProvider }}</td>
+				<td>
+					<div ng-repeat="namespace in tenant.namespaces">
+						{{namespace}}&nbsp;<span
+							ng-show="namespace === tenant.defaultNamespace"
+							class="label label-primary">default</span>
+					</div>
+				</td>
+				<td>
+					<div class="btn-group" role="group">
+						<button type="button" class="btn btn-info" ng-click="createOrUpdateTenant(editableTenant(tenant))">Edit</button>
+						<button type="button" class="btn btn-danger" ng-click="deleteTenant(tenant)">Delete</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
