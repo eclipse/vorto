@@ -17,23 +17,37 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.vorto.repository.core.IUserContext;
+import org.springframework.security.core.Authentication;
 
 public class UserContext implements IUserContext {
 	
-  
   private String username;
+  private String tenant;
+  private Authentication authentication;
+  
   private static final List<String> ANONYMOUS_USERS = Arrays.asList("anonymous","anonymousUser",getHash("anonymous"),getHash("anonymousUser"));
   
-  public static UserContext user(String username) {
-    return new UserContext(username);
+  public static UserContext user(String username, String tenant) {
+    return new UserContext(username, tenant);
   }
-
+  
+  public static UserContext user(Authentication authentication, String tenant) {
+    return new UserContext(authentication, tenant);
+  }
+  
   private UserContext() {}
 
-  private UserContext(String username) {
+  private UserContext(Authentication authentication, String tenant) {
+    this.authentication = authentication;
+    this.username = authentication.getName();
+    this.tenant = tenant;
+  }
+  
+  private UserContext(String username, String tenant) {
+    this.authentication = null;
     this.username = username;
+    this.tenant = tenant;
   }
 
   public String getUsername() {
@@ -43,8 +57,16 @@ public class UserContext implements IUserContext {
   public String getHashedUsername() {
     return getHash(username);
   }
+  
+  public String getTenant() {
+    return tenant;
+  }
+  
+  public Authentication getAuthentication() {
+    return authentication;
+  }
 
-  private static String getHash(String username) {
+  public static String getHash(String username) {
     MessageDigest digest;
     try {
       digest = MessageDigest.getInstance("SHA-256");
@@ -68,5 +90,9 @@ public class UserContext implements IUserContext {
   @Override
   public boolean isAnonymous() {
 	return ANONYMOUS_USERS.contains(this.username);
+  }
+  
+  public static boolean isAnonymous(String username) {
+    return ANONYMOUS_USERS.contains(username);
   }
 }

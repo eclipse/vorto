@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -32,7 +31,7 @@ import org.eclipse.vorto.core.api.model.model.Model;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.impl.validation.CouldNotResolveReferenceException;
@@ -52,14 +51,14 @@ public abstract class AbstractModelParser implements IModelParser {
 
   private String fileName;
   private boolean enableValidation = true;
-  private IModelRepository repository;
+  private IModelRetrievalService modelRetrievalService;
   private Collection<FileContent> dependencies = Collections.emptyList();
   private ErrorMessageProvider errorMessageProvider;
 
-  public AbstractModelParser(String fileName, IModelRepository repository,
+  public AbstractModelParser(String fileName, IModelRetrievalService modelRetrievalService,
       ErrorMessageProvider errorMessageProvider) {
     this.fileName = fileName;
-    this.repository = Objects.requireNonNull(repository);
+    this.modelRetrievalService = Objects.requireNonNull(modelRetrievalService);
     this.errorMessageProvider = errorMessageProvider;
   }
 
@@ -87,8 +86,10 @@ public abstract class AbstractModelParser implements IModelParser {
     if (enableValidation) {
       Collection<ModelId> importedDependencies =
           importExternallySpecifiedDependencies(dependencies, resourceSet);
-      
-      /* Import the rest of the dependencies (those that were not loaded above) from the repository */
+
+      /*
+       * Import the rest of the dependencies (those that were not loaded above) from the repository
+       */
       importDependenciesFromRepository(resourceSet, importedDependencies, model);
 
       /* Execute validators */
@@ -111,7 +112,7 @@ public abstract class AbstractModelParser implements IModelParser {
             getModelInfo(model).orElse(getModelInfoFromFilename()));
       }
     }
-    
+
 
     return new ModelResource((Model) resource.getContents().get(0));
   }
@@ -139,9 +140,8 @@ public abstract class AbstractModelParser implements IModelParser {
   }
 
   private Optional<ModelId> getModelId(Model model, String name) {
-    return model
-        .getReferences().stream().map(modelRef -> ModelId
-            .fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
+    return model.getReferences().stream().map(
+        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
         .filter(modelId -> modelId.getName().equals(name)).findFirst();
   }
 
@@ -158,7 +158,8 @@ public abstract class AbstractModelParser implements IModelParser {
     Collection<ModelId> allReferences = getReferences(model);
     allReferences.removeAll(alreadyImportedDependencies);
     allReferences.forEach(refModelId -> {
-      repository.getFileContent(refModelId, Optional.empty()).ifPresent(refFile -> {
+      modelRetrievalService.getContent(refModelId).ifPresent(entry -> {
+        FileContent refFile = entry.getValue();
         createResource(refFile.getFileName(), refFile.getContent(), resourceSet);
       });
     });
@@ -183,9 +184,8 @@ public abstract class AbstractModelParser implements IModelParser {
   }
 
   private Collection<ModelId> getReferences(Model model) {
-    return model
-        .getReferences().stream().map(modelRef -> ModelId
-            .fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
+    return model.getReferences().stream().map(
+        modelRef -> ModelId.fromReference(modelRef.getImportedNamespace(), modelRef.getVersion()))
         .collect(Collectors.toList());
   }
 
@@ -263,7 +263,7 @@ public abstract class AbstractModelParser implements IModelParser {
   }
 
   protected abstract Injector getInjector();
-  
+
   public void setValidate(boolean enable) {
     this.enableValidation = enable;
   }

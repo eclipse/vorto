@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -19,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.function.Function;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -63,16 +62,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 @RestController
-@RequestMapping(value = "/rest/{tenant}/mappings")
+@RequestMapping(value = "/rest/{tenantId}/mappings")
 public class PayloadMappingController extends AbstractRepositoryController {
 
-  private Supplier<IUserContext> userContextSupplier =
-      () -> UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-  
+  private Function<String, IUserContext> userContextFn = (tenantId) -> UserContext
+      .user(SecurityContextHolder.getContext().getAuthentication().getName(), tenantId);
+
   @Autowired
   private ModelController modelController;
 
@@ -90,15 +90,17 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_USER')")
-  public IMappingSpecification getMappingSpecification(@PathVariable final String modelId,
-      @PathVariable String targetPlatform) throws Exception {
+  public IMappingSpecification getMappingSpecification(
+      @ApiParam(value = "The id of the tenant",
+          required = true) final @PathVariable String tenantId,
+      @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
     org.eclipse.vorto.repository.core.ModelContent infoModelContent =
-        modelController.getModelContentForTargetPlatform(modelId, targetPlatform);
+        modelController.getModelContentForTargetPlatform(tenantId, modelId, targetPlatform);
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
       org.eclipse.vorto.repository.core.ModelContent infomodelContent =
-          modelController.getModelContent(modelId);
+          modelController.getModelContent(tenantId, modelId);
       infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
     }
     MappingSpecification specification = new MappingSpecification();
@@ -112,11 +114,11 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
       FunctionblockModel fbm = null;
       if (mappingId != null) {
-        fbm = getModelContentByModelAndMappingId(fbModelId.getPrettyFormat(),
+        fbm = getModelContentByModelAndMappingId(tenantId, fbModelId.getPrettyFormat(),
             mappingId.getPrettyFormat());
       } else {
         org.eclipse.vorto.repository.core.ModelContent fbmContent =
-            modelController.getModelContent(fbModelId.getPrettyFormat());
+            modelController.getModelContent(tenantId, fbModelId.getPrettyFormat());
         fbm = (FunctionblockModel) fbmContent.getModels().get(fbmContent.getRoot());
       }
 
@@ -127,8 +129,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   @PostMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
-  public Map<String, Object> createMappingSpecification(@PathVariable final String modelId,
-      @PathVariable String targetPlatform) throws Exception {
+  public Map<String, Object> createMappingSpecification(@PathVariable final String tenantId,
+      @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
     logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
     if (!this.repository
         .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
@@ -136,14 +138,15 @@ public class PayloadMappingController extends AbstractRepositoryController {
       throw new ModelAlreadyExistsException();
     } else {
       org.eclipse.vorto.repository.core.ModelContent modelContent =
-          this.modelController.getModelContent(modelId);
+          this.modelController.getModelContent(tenantId, modelId);
       MappingSpecification spec = new MappingSpecification();
       spec.setInfoModel((Infomodel) modelContent.getModels().get(modelContent.getRoot()));
       for (ModelProperty property : spec.getInfoModel().getFunctionblocks()) {
         spec.getProperties().put(property.getName(),
             (FunctionblockModel) modelContent.getModels().get(property.getType()));
       }
-      final ModelId createdId = this.saveMappingSpecification(spec, modelId, targetPlatform);
+      final ModelId createdId =
+          this.saveMappingSpecification(spec, tenantId, modelId, targetPlatform);
       Map<String, Object> response = new HashMap<String, Object>();
       response.put("mappingId", createdId.getPrettyFormat());
       response.put("spec", spec);
@@ -178,10 +181,11 @@ public class PayloadMappingController extends AbstractRepositoryController {
   @PutMapping(value = "/{modelId:.+}/{targetPlatform:.+}")
   @PreAuthorize("hasRole('ROLE_MODEL_CREATOR')")
   public ModelId saveMappingSpecification(@RequestBody MappingSpecification mappingSpecification,
-      @PathVariable String modelId, @PathVariable String targetPlatform) {
+      @PathVariable String tenant, @PathVariable String modelId,
+      @PathVariable String targetPlatform) {
     logger.info("Saving mapping specification " + modelId + " with key " + targetPlatform);
 
-    IUserContext userContext = userContextSupplier.get();
+    IUserContext userContext = userContextFn.apply(tenant);
 
     final List<ModelId> publishedModelIds = new ArrayList<>();
 
@@ -197,8 +201,9 @@ public class PayloadMappingController extends AbstractRepositoryController {
           @ApiResponse(code = 404, message = "Model not found")})
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/file")
-  public void downloadModelById(@PathVariable final String modelId,
-      @PathVariable String targetPlatform, final HttpServletResponse response) {
+  public void downloadModelById(@PathVariable final String tenantId,
+      @PathVariable final String modelId, @PathVariable String targetPlatform,
+      final HttpServletResponse response) {
 
     Objects.requireNonNull(modelId, "modelId must not be null");
 
@@ -209,7 +214,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
     response.setContentType(APPLICATION_OCTET_STREAM);
     try {
       MappingSpecification spec =
-          (MappingSpecification) this.getMappingSpecification(modelId, targetPlatform);
+          (MappingSpecification) this.getMappingSpecification(tenantId, modelId, targetPlatform);
       ObjectMapper mapper = new ObjectMapper();
       IOUtils.copy(
           new ByteArrayInputStream(mapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(spec)),
@@ -227,7 +232,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
     // do logging
   }
 
-  public FunctionblockModel getModelContentByModelAndMappingId(final @PathVariable String modelId,
+  public FunctionblockModel getModelContentByModelAndMappingId(final String tenantId, final String modelId,
       final @PathVariable String mappingId) {
 
     ModelInfo vortoModelInfo = this.repository.getById(ModelId.fromPrettyFormat(modelId));
@@ -240,7 +245,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
     }
 
-    IModelWorkspace mappingWorkspace = getWorkspaceForModel(mappingModelInfo.getId());
+    IModelWorkspace mappingWorkspace = getWorkspaceForModel(tenantId, mappingModelInfo.getId());
 
     org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel fbm =
         (org.eclipse.vorto.core.api.model.functionblock.FunctionblockModel) mappingWorkspace.get()
@@ -297,8 +302,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
     return createdModelId;
   }
 
-  public void setUserContextSupplier(Supplier<IUserContext> userContextSupplier) {
-    this.userContextSupplier = userContextSupplier;
+  public void setUserContextFn(Function<String, IUserContext> userContextFn) {
+    this.userContextFn = userContextFn;
   }
 
   public void setModelController(ModelController modelController) {

@@ -1,53 +1,32 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.core;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.vorto.model.IReferenceType;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.FileUpload;
 import org.eclipse.vorto.repository.importer.UploadModelResult;
-import org.eclipse.vorto.repository.web.core.PayloadMappingController;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingRequest;
-import org.eclipse.vorto.repository.web.core.dto.mapping.TestMappingResponse;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 
 public class MappingTest extends AbstractIntegrationTest {
 
@@ -59,7 +38,7 @@ public class MappingTest extends AbstractIntegrationTest {
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color.type").getInputStream())),
-            UserContext.user("admin"));
+            createUserContext("admin", "playground"));
     assertEquals(true, uploadResult.isValid());
     assertNotNull(uploadResult.getHandleId());
     ModelInfo resource = uploadResult.getReports().get(0).getModel();
@@ -70,20 +49,22 @@ public class MappingTest extends AbstractIntegrationTest {
     assertEquals(0, resource.getReferences().size());
     assertEquals("Color", resource.getDisplayName());
     assertNull(resource.getDescription());
-    assertEquals(0, modelRepository.search("*").size());
+    assertEquals(0, repositoryFactory.getRepository(createUserContext("admin", "playground")).search("*").size());
   }
 
 
   @Test
   public void testCheckinValidMapping() throws Exception {
+    IUserContext userContext = createUserContext("admin", "playground"); 
+    
     UploadModelResult uploadResult =
         this.importer.upload(
             FileUpload.create("Color.type",
                 IOUtils.toByteArray(
                     new ClassPathResource("sample_models/Color.type").getInputStream())),
-            UserContext.user("admin"));
+            userContext);
     assertEquals(true, uploadResult.isValid());
-    assertEquals(0, modelRepository.search("*").size());
+    assertEquals(0, repositoryFactory.getRepository(userContext).search("*").size());
 
     User user = new User();
     user.setUsername("alex");
@@ -93,17 +74,17 @@ public class MappingTest extends AbstractIntegrationTest {
 
     when(userRepository.findAll()).thenReturn(users);
 
-    this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    assertEquals(1, modelRepository.search("*").size());
+    this.importer.doImport(uploadResult.getHandleId(), createUserContext("alex", "playground"));
+    assertEquals(1, repositoryFactory.getRepository(userContext).search("*").size());
 
     uploadResult = this.importer.upload(
         FileUpload.create("sample.mapping",
             IOUtils.toByteArray(
                 new ClassPathResource("sample_models/sample.mapping").getInputStream())),
-        UserContext.user("admin"));
+        createUserContext("admin", "playground"));
     assertEquals(true, uploadResult.getReports().get(0).isValid());
-    this.importer.doImport(uploadResult.getHandleId(), UserContext.user("alex"));
-    assertEquals(1, modelRepository.search("Mapping").size());
+    this.importer.doImport(uploadResult.getHandleId(), createUserContext("alex", "playground"));
+    assertEquals(1, repositoryFactory.getRepository(userContext).search("Mapping").size());
   }
 
   @Test
@@ -112,7 +93,7 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("sample.mapping");
     Thread.sleep(2000);
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getMappingModelsForTargetPlatform(
                 ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "ios")
             .size());
@@ -124,16 +105,16 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("sample.mapping");
     Thread.sleep(2000);
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().size());
     assertEquals("org.eclipse.vorto.examples.type:Color_ios:1.0.0",
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getReferencedBy().get(0).getPrettyFormat());
 
     assertEquals(1,
-        modelRepository
+        repositoryFactory.getRepository(createUserContext("admin", "playground"))
             .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"))
             .getPlatformMappings().size());
   }
@@ -143,7 +124,7 @@ public class MappingTest extends AbstractIntegrationTest {
     importModel("Color.type");
     importModel("sample.mapping");
     Thread.sleep(2000);
-    ModelInfo colorInfo = modelRepository
+    ModelInfo colorInfo = repositoryFactory.getRepository(createUserContext("admin", "playground"))
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     assertEquals(1, colorInfo.getPlatformMappings().size());
     assertEquals("ios", colorInfo.getPlatformMappings().keySet().iterator().next());
