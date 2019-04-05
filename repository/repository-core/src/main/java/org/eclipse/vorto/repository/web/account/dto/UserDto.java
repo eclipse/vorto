@@ -1,28 +1,26 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
 package org.eclipse.vorto.repository.web.account.dto;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.UserRole;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
 
 public class UserDto {
   private String username;
 
-  private List<Role> roles;
+  private Map<String, Set<Role>> roles;
 
   private Timestamp dateCreated;
 
@@ -32,7 +30,7 @@ public class UserDto {
 
   public static UserDto fromUser(User user) {
     UserDto dto = new UserDto(user.getUsername(), user.getDateCreated(), user.getLastUpdated());
-    dto.addRoles(new ArrayList<>(user.getRoles()));
+    dto.setRoles(user.getTenantRoles());
     dto.setEmail(user.getEmailAddress());
     return dto;
   }
@@ -47,21 +45,12 @@ public class UserDto {
     this.lastUpdated = lastUpdated;
   }
 
-  public List<Role> getRoles() {
+  public Map<String, Set<Role>> getRoles() {
     return roles;
   }
 
-  public void setRoles(List<Role> roles) {
+  public void setRoles(Map<String, Set<Role>> roles) {
     this.roles = roles;
-  }
-
-  public void addRoles(List<UserRole> userRoles) {
-    userRoles.forEach(e -> {
-      if (roles == null) {
-        roles = new ArrayList<>();
-      }
-      roles.add(e.getRole());
-    });
   }
 
   public String getUsername() {
