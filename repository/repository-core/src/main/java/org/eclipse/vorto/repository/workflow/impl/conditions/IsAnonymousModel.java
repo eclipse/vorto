@@ -21,7 +21,7 @@ public class IsAnonymousModel implements IWorkflowCondition {
 
   @Override
   public boolean passesCondition(ModelInfo model, IUserContext user) {
-	return UserContext.user(model.getAuthor()).isAnonymous();
+	return UserContext.isAnonymous(model.getAuthor());
   }
 
 }

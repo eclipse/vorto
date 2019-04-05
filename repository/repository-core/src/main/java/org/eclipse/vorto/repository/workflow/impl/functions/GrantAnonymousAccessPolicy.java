@@ -11,39 +11,35 @@
  */
 package org.eclipse.vorto.repository.workflow.impl.functions;
 
-import java.util.Collection;
+import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
+import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
 import org.eclipse.vorto.repository.workflow.model.IWorkflowFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RemovePolicies implements IWorkflowFunction {
+public class GrantAnonymousAccessPolicy implements IWorkflowFunction {
 
   private IModelRepositoryFactory repositoryFactory;
 
-  private static final Logger logger = LoggerFactory.getLogger(RemovePolicies.class);
+  private static final Logger logger = LoggerFactory.getLogger(GrantAnonymousAccessPolicy.class);
 
 
-  public RemovePolicies(IModelRepositoryFactory repositoryFactory) {
+  public GrantAnonymousAccessPolicy(IModelRepositoryFactory repositoryFactory) {
     this.repositoryFactory = repositoryFactory;
   }
 
   @Override
   public void execute(ModelInfo model, IUserContext user) {
-    logger.info("Removing permission from model " + model.getId());
-    Collection<PolicyEntry> policies =
-        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-            .getPolicyEntries(model.getId());
-    for (PolicyEntry entry : policies) {
-      logger.info("removing " + entry);
-      repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-          .removePolicyEntry(model.getId(), entry);
-    }
+    IModelPolicyManager policyManager =
+        repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication());
 
-    logger.info(repositoryFactory.getPolicyManager(user.getTenant(), user.getAuthentication())
-        .getPolicyEntries(model.getId()).toString());
+    logger.info("Adding access of model " + model.getId() + " to non-tenant member users");
+    policyManager.addPolicyEntry(model.getId(),
+        PolicyEntry.of("ANONYMOUS", PrincipalType.User, Permission.READ));
   }
 }
