@@ -34,6 +34,8 @@ class InformationModelMappingSerializer extends AbstractSerializer {
 	
 	override String serialize() {
 		'''
+		vortolang 1.0
+		
 		namespace «specification.infoModel.id.namespace».mapping
 		version 1.0.0
 		displayname "«specification.infoModel.id.name»PayloadMapping"
