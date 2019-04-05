@@ -2,7 +2,7 @@ server:
   port: 8080
   contextPath: /infomodelrepository
   use-forward-headers: true
-  admin: aedelmann
+  admin: aedelmann, erlemantos
   config:
     authenticatedSearchMode: false
     generatorUser: generator
@@ -16,8 +16,15 @@ spring:
 repo:
   config:
     maxModelImageSize: 32000
-    maxModelSize: 90000000
-    maxBackupSize: 900000000
+    maxModelSize: 2000000
+    maxBackupSize: 20000000
+    predefinedTenants:
+      -
+        tenantId: standardization
+        defaultNamespace: org.eclipse.vorto
+        namespaces:
+        authenticationProvider: GITHUB
+        authorizationProvider: DB
   attachment.allowed:
     extension: ext, pdf, doc, zip, jpg, png, svg, html, json
     fileSize: 5
