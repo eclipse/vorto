@@ -21,20 +21,19 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import org.apache.log4j.Logger;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.Attachment;
 import org.eclipse.vorto.repository.core.FileContent;
-import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelResource;
@@ -43,6 +42,9 @@ import org.eclipse.vorto.repository.core.impl.StorageItem;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.DependencyManager;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.tenant.ITenantUserService;
 import org.eclipse.vorto.repository.web.core.exceptions.BulkUploadException;
 import org.modeshape.common.collection.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,11 +63,11 @@ public abstract class AbstractModelImporter implements IModelImporter {
   private ITemporaryStorage uploadStorage;
 
   @Autowired
-  private IModelRepository modelRepository;
-  
-  @Autowired
-  private IModelPolicyManager policyManager;
+  private IModelRepositoryFactory modelRepoFactory;
 
+  @Autowired
+  private ITenantUserService tenantUserService;
+  
   @Autowired
   private IUserAccountService userRepository;
 
@@ -91,32 +93,24 @@ public abstract class AbstractModelImporter implements IModelImporter {
           "File type is invalid. Must be " + this.supportedFileExtensions)));
     }
     List<ValidationReport> reports = new ArrayList<ValidationReport>();
-    if (handleZipUploads() && fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
-
-      ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(fileUpload.getContent()));
-      ZipEntry entry = null;
-
-      try {
-        while ((entry = zis.getNextEntry()) != null) {
-          if (!entry.isDirectory()
-              && !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
-            final FileUpload extractedFile =
-                FileUpload.create(entry.getName(), copyStream(zis, entry));
-            if (getSupportedFileExtensions().contains(extractedFile.getFileExtension())) {
-              List<ValidationReport> validationResult = validate(extractedFile, user);
-              postValidate(validationResult, user);
-              reports.addAll(validationResult);
-            }
-          }
-        }
-      } catch (IOException e) {
-        throw new BulkUploadException("Problem while reading zip file during validation", e);
-      }
+    if (handleZipUploads() && isZipFile(fileUpload)) {
+      
+      getUploadedFilesFromZip(fileUpload.getContent()).stream()
+        .filter(this::isSupported)
+        .forEach(extractedFile -> {
+          List<ValidationReport> validationResult = validate(extractedFile, user);
+          postValidate(validationResult, user);
+          reports.addAll(validationResult);
+        });
+      
     } else if (getSupportedFileExtensions().contains(fileUpload.getFileExtension())) {
+    
       List<ValidationReport> validationResult = this.validate(fileUpload, user);
       postValidate(validationResult, user);
       reports.addAll(validationResult);
+      
     }
+    
     if (reports.size() == 0) {
       return new UploadModelResult(null, Arrays.asList(
           ValidationReport.invalid("Uploaded File does not contain any " + getKey() + " files.")));
@@ -125,6 +119,34 @@ public abstract class AbstractModelImporter implements IModelImporter {
     } else {
       return new UploadModelResult(createUploadHandle(fileUpload), reports);
     }
+  }
+  
+  private boolean isZipFile(FileUpload fileUpload) {
+    return fileUpload.getFileExtension().equalsIgnoreCase(EXTENSION_ZIP);
+  }
+  
+  private boolean isSupported(FileUpload fileUpload) {
+    return getSupportedFileExtensions().contains(fileUpload.getFileExtension());
+  }
+  
+  private Collection<FileUpload> getUploadedFilesFromZip(byte[] uploadedFile) {
+    Collection<FileUpload> fileUploads = new ArrayList<FileUpload>();
+    
+    ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(uploadedFile));
+    ZipEntry entry = null;
+
+    try {
+      while ((entry = zis.getNextEntry()) != null) {
+        if (!entry.isDirectory()
+            && !entry.getName().substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
+          fileUploads.add(FileUpload.create(entry.getName(), copyStream(zis, entry)));
+        }
+      }
+    } catch (IOException e) {
+      throw new BulkUploadException("Problem while reading zip file during validation", e);
+    }
+    
+    return fileUploads;
   }
 
   /**
@@ -137,23 +159,30 @@ public abstract class AbstractModelImporter implements IModelImporter {
     reports.forEach(report -> {
       if (report.getModel() != null) {
         try {
-          ModelInfo m = this.modelRepository.getById(report.getModel().getId());
-          if (m != null) {
-            if (m.isReleased()) {
-              report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
-              report.setValid(false);
-            } else {
-              // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-              // migration has taken place
-              if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername())
-                  || m.getAuthor().equals(user.getUsername())) {
-                report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
-                report.setValid(true);
-              } else {
-                report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
+          Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(user.getUsername(), report.getModel().getId().getNamespace());
+          if (tenant.isPresent()) {
+            IModelRepository modelRepository = modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
+            ModelInfo m = modelRepository.getById(report.getModel().getId());
+            if (m != null) {
+              if (m.isReleased()) {
+                report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_RELEASED);
                 report.setValid(false);
+              } else {
+                // TODO : Checking for hashedUsername is legacy and needs to be removed once full
+                // migration has taken place
+                if (isAdmin(user) || m.getAuthor().equals(user.getHashedUsername())
+                    || m.getAuthor().equals(user.getUsername())) {
+                  report.setMessage(ValidationReport.WARNING_MODEL_ALREADY_EXISTS);
+                  report.setValid(true);
+                } else {
+                  report.setMessage(ValidationReport.ERROR_MODEL_ALREADY_EXISTS);
+                  report.setValid(false);
+                }
               }
             }
+          } else {
+            report.setMessage(ValidationReport.ERROR_USER_NOT_AUTHORIZED_IN_TENANT);
+            report.setValid(false);
           }
         } catch (Exception e) {
           logger.error("Error while validating the model " + report.getModel().getId(), e);
@@ -169,7 +198,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   private boolean isAdmin(IUserContext userContext) {
     User user = getUserRepository().getUser(userContext.getUsername());
-    return user != null && (user.isAdmin());
+    return user != null && (user.isSysAdmin(userContext.getTenant()));
   }
 
   private static byte[] copyStream(ZipInputStream in, ZipEntry entry) {
@@ -197,7 +226,7 @@ public abstract class AbstractModelImporter implements IModelImporter {
     final String handleId = UUID.randomUUID().toString();
     return this.uploadStorage.store(handleId, fileUpload, TTL_TEMP_STORAGE_INSECONDS).getKey();
   }
-
+  
   @Override
   public List<ModelInfo> doImport(String uploadHandleId, IUserContext user) {
     StorageItem uploadedItem = this.uploadStorage.get(uploadHandleId);
@@ -211,27 +240,14 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
     try {
 
-      if (handleZipUploads()
-          && uploadedItem.getValue().getFileExtension().equalsIgnoreCase(EXTENSION_ZIP)) {
-        ZipInputStream zis =
-            new ZipInputStream(new ByteArrayInputStream(uploadedItem.getValue().getContent()));
-        ZipEntry entry = null;
-
-        try {
-          while ((entry = zis.getNextEntry()) != null) {
-            if (!entry.isDirectory() && !entry.getName()
-                .substring(entry.getName().lastIndexOf("/") + 1).startsWith(".")) {
-              final FileUpload extractedFile =
-                  FileUpload.create(entry.getName(), copyStream(zis, entry));
-              List<ModelResource> resources = this.convert(extractedFile, user);
-
-              importedModels.addAll(sortAndSaveToRepository(resources, extractedFile, user));
-
-            }
-          }
-        } catch (IOException e) {
-          throw new BulkUploadException("Problem while reading zip file during validation", e);
-        }
+      if (handleZipUploads() && isZipFile(uploadedItem.getValue())) {
+        
+        getUploadedFilesFromZip(uploadedItem.getValue().getContent()).stream()
+          .forEach(extractedFile -> {
+            List<ModelResource> resources = this.convert(extractedFile, user);
+            importedModels.addAll(sortAndSaveToRepository(resources, extractedFile, user));
+          });
+        
       } else {
         List<ModelResource> resources = this.convert(uploadedItem.getValue(), user);
         importedModels.addAll(sortAndSaveToRepository(resources, uploadedItem.getValue(), user));
@@ -253,12 +269,19 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
     dm.getSorted().stream().forEach(resource -> {
       try {
-        ModelInfo importedModel = this.modelRepository.save(resource.getId(),
-            ((ModelResource) resource).toDSL(), createFileName(resource), user);
-        savedModels.add(importedModel);
-        postProcessImportedModel(importedModel,
-            new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
+        Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(user.getUsername(), resource.getId().getNamespace());
+        if (tenant.isPresent()) {
+          IModelRepository modelRepository = modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
+          ModelInfo importedModel = modelRepository.save(resource.getId(),
+              ((ModelResource) resource).toDSL(), createFileName(resource), user);
+          savedModels.add(importedModel);
+          postProcessImportedModel(importedModel,
+              new FileContent(extractedFile.getFileName(), extractedFile.getContent()), user);
+        } else {
+          throw new ModelImporterException("User not authorized in tenant ");
+        }
       } catch (Exception e) {
+        e.printStackTrace();
         throw new ModelImporterException("Problem importing model", e);
       }
     });
@@ -304,9 +327,13 @@ public abstract class AbstractModelImporter implements IModelImporter {
 
   protected void postProcessImportedModel(ModelInfo importedModel, FileContent originalFileContent,
       IUserContext user) {
-    getModelRepository().attachFile(importedModel.getId(), originalFileContent, user,
-        Attachment.TAG_IMPORTED);
-    importedModel.setImported(true);
+    Optional<Tenant> tenant = tenantUserService.getTenantOfUserAndNamespace(user.getUsername(), importedModel.getId().getNamespace());
+    if (tenant.isPresent()) {
+      IModelRepository modelRepository = modelRepoFactory.getRepository(tenant.get().getTenantId(), user.getAuthentication());
+      modelRepository.attachFile(importedModel.getId(), originalFileContent, user,
+          Attachment.TAG_IMPORTED);
+      importedModel.setImported(true);
+    }
   }
 
   /**
@@ -332,10 +359,6 @@ public abstract class AbstractModelImporter implements IModelImporter {
     this.uploadStorage = uploadStorage;
   }
 
-  public void setModelRepository(IModelRepository modelRepository) {
-    this.modelRepository = modelRepository;
-  }
-
   public void setUserRepository(IUserAccountService userRepository) {
     this.userRepository = userRepository;
   }
@@ -343,13 +366,17 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public void setModelParserFactory(ModelParserFactory modelParserFactory) {
     this.modelParserFactory = modelParserFactory;
   }
+  
+  public void setModelRepoFactory(IModelRepositoryFactory modelRepoFactory) {
+    this.modelRepoFactory = modelRepoFactory;
+  }
+  
+  public void setTenantUserService(ITenantUserService tenantUserService) {
+    this.tenantUserService = tenantUserService;
+  }
 
   public ITemporaryStorage getUploadStorage() {
     return uploadStorage;
-  }
-
-  public IModelRepository getModelRepository() {
-    return modelRepository;
   }
 
   public IUserAccountService getUserRepository() {
@@ -359,12 +386,12 @@ public abstract class AbstractModelImporter implements IModelImporter {
   public ModelParserFactory getModelParserFactory() {
     return modelParserFactory;
   }
-  
-  public void setPolicyManager(IModelPolicyManager policyManager) {
-    this.policyManager = policyManager;
+
+  public IModelRepositoryFactory getModelRepoFactory() {
+    return modelRepoFactory;
   }
-  
-  public IModelPolicyManager getPolicyManager() {
-    return policyManager;
+
+  public ITenantUserService getTenantUserService() {
+    return tenantUserService;
   }
 }

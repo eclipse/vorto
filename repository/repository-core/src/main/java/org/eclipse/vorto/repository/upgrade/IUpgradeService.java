@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.upgrade;
 
 import java.util.function.Supplier;
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 
 public interface IUpgradeService {
 

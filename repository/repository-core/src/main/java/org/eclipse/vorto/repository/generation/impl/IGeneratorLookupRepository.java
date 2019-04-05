@@ -13,6 +13,7 @@
 package org.eclipse.vorto.repository.generation.impl;
 
 import java.util.List;
+import org.eclipse.vorto.repository.domain.Generator;
 import org.springframework.data.repository.CrudRepository;
 
 /**

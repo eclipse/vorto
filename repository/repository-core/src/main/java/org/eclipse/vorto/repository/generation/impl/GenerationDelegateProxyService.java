@@ -26,6 +26,7 @@ import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.domain.Generator;
 import org.eclipse.vorto.repository.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.generation.GenerationException;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;

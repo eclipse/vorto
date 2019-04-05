@@ -14,8 +14,8 @@ package org.eclipse.vorto.repository.notification.message;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.notification.INotificationService.NotificationProblem;
 
 public class CommentReplyMessage extends AbstractMessage {
