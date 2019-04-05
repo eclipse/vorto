@@ -88,7 +88,7 @@ public class ModelRepositoryControllerTest extends AbstractIntegrationTest {
         sleep(1000); //
         this.repositoryServer.perform(
             put("/rest/default/models/" + testModelId).contentType(MediaType.APPLICATION_JSON)
-                .content(json).with(userStandard)).andExpect(status().isNotFound());
+                .content(json).with(userStandard)).andExpect(status().isUnauthorized());
         // test save with non existitng modelid
         this.repositoryServer.perform(put("/rest/default/models/com.test1:TrackinDevice:0.0.1")
             .contentType(MediaType.APPLICATION_JSON).content(json).with(userAdmin))

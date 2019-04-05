@@ -19,7 +19,7 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.eclipse.vorto.repository.TestConfig;
-import org.eclipse.vorto.repository.generation.impl.Generator;
+import org.eclipse.vorto.repository.domain.Generator;
 import org.eclipse.vorto.repository.generation.impl.IGeneratorLookupRepository;
 import org.junit.Before;
 import org.junit.Test;
