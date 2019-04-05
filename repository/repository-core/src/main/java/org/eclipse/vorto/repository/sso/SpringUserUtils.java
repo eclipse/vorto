@@ -16,9 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.account.Role;
-import org.eclipse.vorto.repository.account.User;
-import org.eclipse.vorto.repository.account.UserUtils;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -34,11 +33,10 @@ public class SpringUserUtils {
 
     UsernamePasswordAuthenticationToken oldAuth =
         (UsernamePasswordAuthenticationToken) oldAuthentication.getUserAuthentication();
-
+    
     UsernamePasswordAuthenticationToken newAuth =
         new UsernamePasswordAuthenticationToken(oldAuth.getPrincipal(), oldAuth.getCredentials(),
-            AuthorityUtils.commaSeparatedStringToAuthorityList(
-                UserUtils.getUserRolesAsCommaSeparatedString(user)));
+            SpringUserUtils.toAuthorityList(user.getAllRoles()));
     newAuth.setDetails(oldAuth.getDetails());
 
     OAuth2Authentication newAuthentication =

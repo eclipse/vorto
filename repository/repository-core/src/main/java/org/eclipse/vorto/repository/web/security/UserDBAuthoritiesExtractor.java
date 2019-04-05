@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -16,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.vorto.repository.account.IUserAccountService;
-import org.eclipse.vorto.repository.account.User;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.AuthoritiesExtractor;
@@ -40,7 +39,8 @@ public class UserDBAuthoritiesExtractor implements AuthoritiesExtractor {
     if (user == null) {
       return Collections.<GrantedAuthority>emptyList();
     }
-    return SpringUserUtils.toAuthorityList(user.getUserRoles());
+    
+    return SpringUserUtils.toAuthorityList(user.getAllRoles());
   }
 
 }
