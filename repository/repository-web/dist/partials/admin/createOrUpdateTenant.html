@@ -1,0 +1,130 @@
+<form class="form-horizontal" name="tenantForm">
+	<div class="modal-header">
+		<button ng-disabled="isCreatingOrUpdating" type="button" class="close"
+			ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">{{ mode }} Tenant</h4>
+	</div>
+	<div class="modal-body">
+		<div class="form-group">
+			<label for="tenantIdInput" class="col-sm-2 control-label">Tenant Key</label>
+			<div class="col-sm-10">
+				<input name="tenantId" type="text" class="form-control" id="tenantIdInput" placeholder="Tenant key" ng-model="tenant.tenantId" ng-readonly="tenant.edit">
+			</div>
+		</div>
+	
+		<div class="form-group">
+			<label for="authProvider" class="col-sm-2 control-label">OAuth Provider</label>
+			<div class="col-sm-10">
+				<select class="form-control" id="authProvider" class="form-control" ng-model="tenant.authenticationProvider">
+					<option>GITHUB</option>
+				</select>
+			</div>
+		</div>
+	
+		<div class="row">
+	
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-sm-10">Administrators</div>
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary pull-right" ng-click="addAdmin()">
+									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<ul class="list-group">
+							<li class="list-group-item" ng-repeat="admin in tenant.admins">
+								<div class="row">
+									<div class="col-sm-10">{{ admin }}</div>
+									<div class="col-sm-2">
+										<button type="button" class="btn btn-danger pull-right btn-xs" ng-click="removeAdmin(admin)">
+											<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+										</button>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+	
+			</div>
+	
+			<div class="col-sm-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="row">
+							<div class="col-sm-10">Namespaces</div>
+							<div class="col-sm-2">
+								<button type="button" class="btn btn-primary pull-right" ng-click="addNamespace()">
+									<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+								</button>
+							</div>
+						</div>
+					</div>
+					<div class="panel-body">
+						<ul class="list-group">
+							<li class="list-group-item" ng-repeat="namespace in tenant.namespaces">
+								<div class="row">
+									<div class="col-sm-8">
+										{{ namespace }}&nbsp;<span class="label label-primary" ng-show="namespace === tenant.defaultNamespace">default</span>
+									</div>
+									<div class="col-sm-3">
+										<button type="button"
+											class="btn btn-info pull-right btn-xs" ng-click="setDefault(namespace)">
+											<span class="glyphicon glyphicon-star" aria-hidden="true"></span>Set
+											Default
+										</button>
+									</div>
+									<div class="col-sm-1">
+										<button type="button" class="btn btn-danger pull-right btn-xs" ng-click="removeNamespace(namespace)" ng-hide="readonlyNamespace(namespace)">
+											<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+										</button>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+	
+		</div>
+	
+		<div class="form-group">
+			<div class="col-sm-12">
+				<button type="button" class="btn btn-primary pull-right" ng-disabled="isInvalid() || isCreatingOrUpdating" ng-click="createOrUpdateTenant()">
+					<i class="fa fa-refresh fa-spin" ng-show="isCreatingOrUpdating"></i>{{ mode }} Tenant
+				</button>
+			</div>
+		</div>
+	</div>
+</form>
+
+<script type="text/ng-template" id="addItem.html">  
+<form name="form">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="cancel()">&times;</button>
+		<h4 class="modal-title">{{ dialog.title }}</h4>
+	</div>
+	<div class="modal-body" id="modal-body">
+		<div class="row" ng-show="errorMessage !== ''">
+			<div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+		</div>
+		<div class="row" ng-show="form.value.$invalid && !form.value.$pristine">
+			<div class="alert alert-danger" role="alert">Value is required.</div>
+		</div>
+		<div class="form-group">
+			<label>{{ dialog.label }}</label><small ng-visible="dialog.info != null">{{ dialog.info }}</small>
+			<input name="value" type="text" ng-model="value" class="form-control" required>
+		</div>    
+	</div>
+	<div class="modal-footer">
+	    <button class="btn btn-primary" type="button" ng-click="add()" ng-disabled="form.$invalid || isAdding">
+			<i class="fa fa-refresh fa-spin" ng-show="isAdding"></i>Add
+		</button>
+	</div>
+</form>
+</script>

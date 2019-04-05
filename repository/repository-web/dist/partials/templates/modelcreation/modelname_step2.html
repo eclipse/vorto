@@ -6,7 +6,18 @@
 	<form name="createModelForm" novalidate>
 		<div class="form-group">
 		    	<label>Namespace</label>
-		        <input type="text" class="form-control" name="modelNamespace" ng-model="modelNamespace" ng-pattern="/^(?!namespace)(?:^\w+|\w+\.(?!namespace)\w+)+$/" required>
+		    	<div class="row">
+		    		<div class="col-sm-6">
+		    			<select class="form-control" id="namespaceRoot" ng-model="namespaceRoot" ng-options="item.namespace for item in userNamespaces">
+		    			</select>
+		    		</div>
+		    		<div class="col-sm-6">
+		    			<div class="input-group">
+							<span class="input-group-addon">.</span>
+							<input type="text" class="form-control" name="modelNamespace" ng-model="namespaceAppend" ng-pattern="/^[a-zA-Z_][\w]*(\.[a-zA-Z_][\w]*)*/">
+						</div>
+		    		</div>
+		    	</div>
 				<div ng-show="createModelForm.modelNamespace.$error.pattern">Please enter a valid model namespace. Example: com.mycompany</div>
 		</div>
 		<div class="form-group">
@@ -23,9 +34,9 @@
 </div>
 <div class="modal-footer">
 	<div class="align-right">
-		<button ng-if="modelType === 'InformationModel'" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="next('step3',modelType,modelNamespace,modelName,modelVersion)">Next</button>
-	    <button ng-if="modelType !== 'InformationModel' && !isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)">Create</button>
-	    <button ng-if="modelType !== 'InformationModel' && isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(modelType,modelNamespace,modelName,modelVersion)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
+		<button ng-if="modelType === 'InformationModel'" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="next('step3', modelType, namespaceRoot, namespaceAppend, modelName, modelVersion)">Next</button>
+	    <button ng-if="modelType !== 'InformationModel' && !isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)">Create</button>
+	    <button ng-if="modelType !== 'InformationModel' && isLoading" class="btn btn-primary" type="button" ng-disabled="isLoading || createModelForm.$invalid" ng-click="create(namespaceRoot, modelType, createNamespace(namespaceRoot, namespaceAppend), modelName, modelVersion)"><i class="fa fa-refresh fa-spin"></i>&nbsp;Create</button>
 	    <button class="btn btn-default" type="button" ng-click="cancel()">Cancel</button>
 	</div>
 </div>

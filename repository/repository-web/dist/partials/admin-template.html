@@ -1,62 +1,98 @@
 <section class="content">
-<ol class="breadcrumb">
+	<ol class="breadcrumb">
 		<li>
 			<a href="./#/">Home</a>
 		</li>
 		<li class="active">Manage</li>
 	</ol>
-	<h2>Manage Thing Types</h2>
-	<br/>
-	<div ng-if="error" class="alert alert-danger">{{error}}</div>
-	<h3>Restore</h3>
-	<p>Restore content using backup XML. With this restore, all previous content will be lost and replaced with content from the
-		backup XML uploaded.</p>
-	<form name="fileUploadForm" class="fileUploadForm form-inline">		
-		<table class="uploadTable">
-			<tr>
-				<td class= "uploadImportButtonSpacing">
-					<label for="file-upload" class="btn-primary btn uploadImportButton" id="browseBtn">
-						<i class="fa fa-folder-open"></i> Browse
-					</label>
-					<input type="file" ng-model="restoreFile" accept=".xml" name="file" id="file-upload" onchange="angular.element(this).scope().fileNameChanged(this)">				
-				</td>
-				<td> {{browsedFile}} </td>
-			</tr>
-		</table>		
-		<br/>
-		<div class="pull-right">
-			<button ng-disabled="!browsedFile" ng-click="restore()" class="btn btn-primary">Restore</button>
+	<div class="comment-tabs">
+	
+		<ul class="comment-tabs nav nav-tabs" role="tablist">
+			<li ng-show="hasAuthority('ROLE_SYS_ADMIN')" ng-class="{ 'active': hasAuthority('ROLE_SYS_ADMIN') }">
+				<a href="" role="tab" data-target="#utilities" data-toggle="tab">
+					<i class="fa fa-info-circle"></i> Admin Utilities
+				</a>
+			</li>
+			<li ng-show="authenticated" ng-class="{ 'active': !hasAuthority('ROLE_SYS_ADMIN') }">
+				<a href="" role="tab" data-target="#tenantManagement" data-toggle="tab">
+					<span class="glyphicon glyphicon-link" aria-hidden="true"></span>Manage Tenants 
+				</a>
+			</li>
+			<li ng-show="hasAuthority('ROLE_TENANT_ADMIN')">
+				<a href="" role="tab" data-target="#tenantUserManagement" data-toggle="tab">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"></span> Manage Users
+				</a>
+			</li>
+		</ul>
+		
+		<div class="tab-content">
+			<div ng-class="{ 'tab-pane': true, 'active': hasAuthority('ROLE_SYS_ADMIN') }" id="utilities">
+			
+				<h2>Admin Utilities</h2>
+				<br/>
+				<div ng-if="error" class="alert alert-danger">{{error}}</div>
+				<h3>Restore</h3>
+				<p>Restore content using backup XML. With this restore, all previous content will be lost and replaced with content from the
+					backup XML uploaded.</p>
+				<form name="fileUploadForm" class="fileUploadForm form-inline">		
+					<table class="uploadTable">
+						<tr>
+							<td class= "uploadImportButtonSpacing">
+								<label for="file-upload" class="btn-primary btn uploadImportButton" id="browseBtn">
+									<i class="fa fa-folder-open"></i> Browse
+								</label>
+								<input type="file" ng-model="restoreFile" accept=".xml" name="file" id="file-upload" onchange="angular.element(this).scope().fileNameChanged(this)">				
+							</td>
+							<td> {{browsedFile}} </td>
+						</tr>
+					</table>		
+					<br/>
+					<div class="pull-right">
+						<button ng-disabled="!browsedFile" ng-click="restore()" class="btn btn-primary">Restore</button>
+					</div>
+				</form>
+				</br>
+				<hr>
+				<h3>Backup</h3>
+				<p>Download the entire repository content (for backup).</p>
+				<a ng-href="rest/{{tenant}}/backups" class="btn btn-primary">
+					<i class="fa fa-fw fa-download"></i>Download Repository Content</a>
+				</br>
+				<hr>
+				<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
+				<h3>Diagnose</h3>
+				<p>Diagnose the entire repository for error.</p>
+				<a ng-click="diagnose()" class="btn btn-primary"><i ng-if="isRunningDiagnostics" class='fa fa-refresh fa-spin'></i>&nbsp;Diagnose</a>
+			    <table ng-if="diagnostics != null && diagnostics.length > 0" class="table table-striped table-sm">
+			        <thead>
+			            <tr>
+			                <th style="width: 20%" scope="col">Model ID</th>
+			                <th style="width: 20%" scope="col">NodeId</th>
+			                <th style="width: 50%" scope="col">Diagnosis</th>
+			                <th style="width: 10%" scope="col">Action</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            <tr ng-repeat="diagnostic in diagnostics">
+			                <td>{{ diagnostic.modelId.prettyFormat }}</td>
+			                <td>{{ diagnostic.nodeId }}</td>
+			                <td>{{ diagnostic.diagnosticMessage }}</td>
+			                <td><a class="btn btn-sm btn-primary" href="./#/details/{{diagnostic.modelId.prettyFormat}}" role="button">Go to Model</a></td>
+			            </tr>
+			        </tbody>
+			    </table>
+			    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>
+			    	
+			</div>
+			
+			<div ng-class="{ 'tab-pane': true, 'active': !hasAuthority('ROLE_SYS_ADMIN') }" id="tenantManagement" ng-controller="tenantManagementController">
+				<div tenant-management></div>
+			</div>
+			
+			<div class="tab-pane" id="tenantUserManagement" ng-controller="tenantUserManagementController">
+				<div tenant-user></div>
+			</div>
+			
 		</div>
-	</form>
-	</br>
-	<hr>
-	<h3>Backup</h3>
-	<p>Download the entire repository content (for backup).</p>
-	<a ng-href="rest/{{tenant}}/backups" class="btn btn-primary">
-		<i class="fa fa-fw fa-download"></i>Download Repository Content</a>
-	</br>
-	<hr>
-	<div ng-if="hasDiagnosticsError" class="alert alert-danger">{{ diagnosticsError }}</div>
-	<h3>Diagnose</h3>
-	<p>Diagnose the entire repository for error.</p>
-	<a ng-click="diagnose()" class="btn btn-primary"><i ng-if="isRunningDiagnostics" class='fa fa-refresh fa-spin'></i>&nbsp;Diagnose</a>
-    <table ng-if="diagnostics != null && diagnostics.length > 0" class="table table-striped table-sm">
-        <thead>
-            <tr>
-                <th style="width: 20%" scope="col">Model ID</th>
-                <th style="width: 20%" scope="col">NodeId</th>
-                <th style="width: 50%" scope="col">Diagnosis</th>
-                <th style="width: 10%" scope="col">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="diagnostic in diagnostics">
-                <td>{{ diagnostic.modelId.prettyFormat }}</td>
-                <td>{{ diagnostic.nodeId }}</td>
-                <td>{{ diagnostic.diagnosticMessage }}</td>
-                <td><a class="btn btn-sm btn-primary" href="./#/details/{{diagnostic.modelId.prettyFormat}}" role="button">Go to Model</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <div ng-if="success && !isRunningDiagnostics" class="alert alert-success"><i class="fa fa-fw fa-check"></i> Awesome. The repository seems to be clean!</div>
+	</div>
 </section>

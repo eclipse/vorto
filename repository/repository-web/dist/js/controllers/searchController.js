@@ -29,12 +29,14 @@ repositoryControllers.controller('SearchController',
             filter = $scope.queryFilter + " "+$scope.modelType;
         }
         $http.get('./api/v1/search/models?expression=' + filter).success(
-            function(data, status, headers, config) {            	
+            function(data, status, headers, config) {
+                console.log("" + JSON.stringify(data));
             	$scope.models = data;
                 $scope.isLoading = false;
                 filterModels();
             }).error(function(data, status, headers, config) {
                 $scope.models = [];
+                $scope.filteredModels = [];
                 $scope.isLoading = false;
             });
     };
@@ -69,7 +71,7 @@ repositoryControllers.controller('SearchController',
     };
 
     function filterModels() {    
-        $scope.filteredModels = $scope.models;    
+        $scope.filteredModels = $scope.models;
         if($scope.onlyYourModels) {
             $scope.filteredModels = $filter('filter')($scope.filteredModels, {author: $rootScope.user });        
         }
