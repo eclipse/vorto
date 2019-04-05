@@ -3,18 +3,18 @@ pipeline {
     stages{
       stage("Build"){
         steps{
-          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'PENDING', targetUrl: ""
+          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'PENDING', targetUrl: "https://github.com/eclipse/vorto"
             // Maven installation declared in the Jenkins "Global Tool Configuration"
             withMaven(
                 maven: 'maven-latest',
                 mavenLocalRepo: '.repository') {
               sh 'mvn -P coverage clean install'
             }
-          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'SUCCESS', targetUrl: ""
+          githubNotify context: 'Building PR', description: 'Building pull request',  status: 'SUCCESS', targetUrl: "https://github.com/eclipse/vorto"
         }
         post{
           failure{
-            githubNotify context: 'Building PR', description: 'Building pull request',  status: 'FAILURE', targetUrl: ""
+            githubNotify context: 'Building PR', description: 'Building pull request',  status: 'FAILURE', targetUrl: "https://github.com/eclipse/vorto"
           }
         }
       }
@@ -46,7 +46,7 @@ pipeline {
           }
           stage("CLMScan Vorto-repository"){
             steps{
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
@@ -58,17 +58,17 @@ pipeline {
                     }
                   }
                 }
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
             }
             post{
               failure{
-                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: ""
+                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
               }
             }
           }
           stage("CLMScan Vorto-generators"){
             steps{
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: ""
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
                 withMaven(
                   maven: 'maven-latest',
                   mavenLocalRepo: '.repository') {
@@ -77,11 +77,11 @@ pipeline {
                         //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
                     }
                 }
-              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: ""
+              githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
             }
             post{
               failure{
-                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: ""
+                githubNotify context: 'CLMScan', description: 'Running CLMScan',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
               }
             }
           }
