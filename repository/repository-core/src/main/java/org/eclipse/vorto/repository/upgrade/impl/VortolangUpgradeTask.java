@@ -12,7 +12,6 @@
  */
 package org.eclipse.vorto.repository.upgrade.impl;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
