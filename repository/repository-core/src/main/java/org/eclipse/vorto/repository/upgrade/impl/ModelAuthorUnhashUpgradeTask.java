@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -16,12 +15,11 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.upgrade.UpgradeProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,10 +44,10 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 
     try {
       if (emailPrefix.isPresent()) {
-        updateModelsFor(UserContext.user(emailPrefix.get()), user);
+        updateModelsFor(user.getUsername(), UserContext.getHash(emailPrefix.get()));
       }
 
-      updateModelsFor(UserContext.user(user.getUsername()), user);
+      updateModelsFor(user.getUsername(), UserContext.getHash(user.getUsername()));
     } catch (Exception e) {
       logger.error("error while updating user " + user.getUsername(), e);
     }
@@ -61,15 +59,13 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
     logger.info("Updating user: {} with emailPrefix: {}", user.getUsername(), emailPrefix);
   }
 
-  private void updateModelsFor(IUserContext userContext, User user) {
-    List<ModelInfo> models = modelRepository.search("author:" + userContext.getHashedUsername());
-    logger.info("Found {} models with author {} to update.", models.size(),
-        userContext.getHashedUsername());
+  private void updateModelsFor(String username, String hashedUsername) {
+    List<ModelInfo> models = modelRepository.search("author:" + hashedUsername);
+    logger.info("Found {} models with author {} to update.", models.size(), hashedUsername);
 
     for (ModelInfo model : models) {
-      logger
-          .info("Setting the author of " + model.getId().toString() + " to " + user.getUsername());
-      model.setAuthor(user.getUsername());
+      logger.info("Setting the author of " + model.getId().toString() + " to " + username);
+      model.setAuthor(username);
       modelRepository.updateMeta(model);
     }
   }

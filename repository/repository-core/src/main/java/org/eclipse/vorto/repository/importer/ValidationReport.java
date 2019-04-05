@@ -29,6 +29,9 @@ public class ValidationReport {
   public static final StatusMessage WARNING_MODEL_ALREADY_EXISTS = new StatusMessage(
       "A model with this version already exists, and will be overwritten upon import.",
       MessageSeverity.WARNING);
+  public static final StatusMessage ERROR_USER_NOT_AUTHORIZED_IN_TENANT = new StatusMessage(
+      "A model with this version already exists, and will be overwritten upon import.",
+      MessageSeverity.ERROR);
   public static final StatusMessage ERROR_MODEL_ALREADY_EXISTS = new StatusMessage(
       "A model with this version has already been created by another user.", MessageSeverity.ERROR);
 
