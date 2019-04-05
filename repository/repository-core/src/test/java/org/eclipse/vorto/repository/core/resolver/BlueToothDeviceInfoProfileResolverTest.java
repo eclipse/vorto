@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -29,11 +28,12 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
     importModel("bluetooth/ColorLight_bluetooth.mapping");
 
     DefaultResolver resolver = new DefaultResolver();
-    resolver.setRepository(this.modelRepository);
+    resolver.setRepository(repositoryFactory.getRepository(createUserContext("admin")));
     assertEquals(new ModelId("ColorLightIM", "com.mycompany", "1.0.0"),
         resolver.resolve(new BluetoothQuery("4810")));
 
-    assertNotNull(this.modelRepository.getById(resolver.resolve(new BluetoothQuery("4810"))));
+    assertNotNull(repositoryFactory.getRepository(createUserContext("admin"))
+        .getById(resolver.resolve(new BluetoothQuery("4810"))));
   }
 
 }

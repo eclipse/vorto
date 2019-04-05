@@ -12,9 +12,15 @@
  */
 package org.eclipse.vorto.repository.core;
 
+import org.springframework.security.core.Authentication;
+
 public interface IUserContext {
 
+  Authentication getAuthentication();
+  
   String getUsername();
+  
+  String getTenant();
 
   String getHashedUsername();
 

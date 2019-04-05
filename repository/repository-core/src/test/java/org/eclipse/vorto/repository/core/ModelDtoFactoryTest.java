@@ -22,8 +22,8 @@ import org.eclipse.vorto.model.FunctionblockModel;
 import org.eclipse.vorto.model.Infomodel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.AbstractIntegrationTest;
-import org.eclipse.vorto.repository.comment.Comment;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Comment;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -33,10 +33,10 @@ public class ModelDtoFactoryTest extends AbstractIntegrationTest {
   @Test
   public void testDtoCreation() {
     importModel("Color.type");
-    ModelInfo original = modelRepository
+    ModelInfo original = repositoryFactory.getRepository(createUserContext("admin", "playground"))
         .getById(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
     
-    ModelInfo dto = ModelDtoFactory.createDto(original, null);
+    ModelInfo dto = ModelDtoFactory.createDto(original);
     
     assertEquals(original.getCreationDate(), dto.getCreationDate());
     assertEquals(original.getId(), dto.getId());
@@ -48,7 +48,7 @@ public class ModelDtoFactoryTest extends AbstractIntegrationTest {
   public void testCreateComment() {
     Comment comment = new Comment(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"), "erle", "test comment");
     
-    Comment dto = ModelDtoFactory.createDto(comment, UserContext.user("anon"));
+    Comment dto = ModelDtoFactory.createDto(comment, UserContext.user("anon", "playground"));
     
     assertEquals("erle", dto.getAuthor());
   }

@@ -13,9 +13,9 @@
 package org.eclipse.vorto.repository.core.security;
 
 import java.util.Map;
-
+import java.util.Set;
 import javax.jcr.Credentials;
-
+import org.eclipse.vorto.repository.domain.Role;
 import org.modeshape.jcr.ExecutionContext;
 import org.modeshape.jcr.security.AuthenticationProvider;
 import org.slf4j.Logger;
@@ -33,9 +33,10 @@ public class SpringSecurityProvider implements AuthenticationProvider {
 		if (credentials instanceof SpringSecurityCredentials) {
 			SpringSecurityCredentials creds = (SpringSecurityCredentials) credentials;
 			Authentication auth = creds.getAuthentication();
+			Set<Role> rolesInTenant = creds.getRolesInTenant();
 			if (auth != null) {
 				logger.debug("[{}] Successfully authenticated.", auth.getName());
-				return repositoryContext.with(new SpringSecurityContext(auth));
+				return repositoryContext.with(new SpringSecurityContext(auth, rolesInTenant));
 			}
 		}
 		return null;

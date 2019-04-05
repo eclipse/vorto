@@ -13,7 +13,7 @@
 package org.eclipse.vorto.repository.core.impl.parser;
 
 import org.eclipse.vorto.editor.datatype.DatatypeStandaloneSetup;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import com.google.inject.Injector;
 
 /**
@@ -21,9 +21,9 @@ import com.google.inject.Injector;
  */
 public class DatatypeModelParser extends AbstractModelParser {
 
-  public DatatypeModelParser(String fileName, IModelRepository repository,
+  public DatatypeModelParser(String fileName, IModelRetrievalService modelRetrievalService,
       ErrorMessageProvider errorMessageProvider) {
-    super(fileName, repository, errorMessageProvider);
+    super(fileName, modelRetrievalService, errorMessageProvider);
   }
 
   @Override

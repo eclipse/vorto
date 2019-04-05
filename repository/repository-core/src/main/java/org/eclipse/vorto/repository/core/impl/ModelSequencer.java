@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.jcr.Binary;
 import javax.jcr.NamespaceRegistry;
 import javax.jcr.Node;
@@ -25,8 +26,6 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.parser.IModelParser;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
-import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
-import org.eclipse.vorto.repository.core.impl.utils.ModelReferencesHelper;
 import org.modeshape.common.util.CheckArg;
 import org.modeshape.jcr.api.nodetype.NodeTypeManager;
 import org.modeshape.jcr.api.sequencer.Sequencer;
@@ -78,18 +77,23 @@ public class ModelSequencer extends Sequencer {
       folderNode.getSession().save();
     }
     
-    ModelReferencesHelper referencesHelper =
-        new ModelReferencesHelper(modelResource.getReferences());
-    if (referencesHelper.hasReferences()) {
-      List<Value> references = new ArrayList<Value>();
-      for (ModelId modelId : referencesHelper.getReferences()) {
-        ModelIdHelper modelIdHelper = new ModelIdHelper(modelId);
-        Node referencedFolder = folderNode.getSession().getNode(modelIdHelper.getFullPath());
-        referencedFolder.addMixin("mix:referenceable");
-        references.add(context.valueFactory().createValue(referencedFolder));
-      }
-      folderNode.setProperty("vorto:references", references.toArray(new Value[references.size()]));
+    Optional<Value[]> referencesAsValues = getReferencesAsValues(folderNode, modelResource.getReferences());
+    if (referencesAsValues.isPresent()) {
+      folderNode.setProperty("vorto:references", referencesAsValues.get());
     }
+    
     return true;
+  }
+  
+  private Optional<Value[]> getReferencesAsValues(Node folderNode, List<ModelId> references) throws RepositoryException {
+    if (references != null && !references.isEmpty()) {
+      List<Value> valueReferences = new ArrayList<Value>();
+      for (ModelId modelId : references) {
+        valueReferences.add(folderNode.getSession().getValueFactory().createValue(modelId.getPrettyFormat()));
+      }
+      return Optional.of(valueReferences.toArray(new Value[valueReferences.size()])); 
+    }
+    
+    return Optional.empty();
   }
 }
