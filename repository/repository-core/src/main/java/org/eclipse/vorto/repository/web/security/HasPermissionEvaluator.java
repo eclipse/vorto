@@ -13,11 +13,14 @@
 package org.eclipse.vorto.repository.web.security;
 
 import java.io.Serializable;
+import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.workflow.impl.SimpleWorkflowModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,19 +31,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class HasPermissionEvaluator implements PermissionEvaluator {
 
-  @Autowired
   private IModelRepository repository;
+  
+  private ITenantService tenantService;
 
-  public HasPermissionEvaluator(IModelRepository repository) {
+  public HasPermissionEvaluator(@Autowired IModelRepository repository, @Autowired ITenantService tenantService) {
     this.repository = repository;
+    this.tenantService = tenantService;
   }
-
-  public HasPermissionEvaluator() {}
 
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
       Object permission) {
-    final String callerId = authentication.getName();
+    final String username = authentication.getName();
+    final String hashedUsername = UserContext.getHash(username);
 
     if (targetDomainObject instanceof ModelId) {
       try {
@@ -50,29 +54,27 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
           // TODO : Checking for hashedUsername is legacy and needs to be removed once full
           // migration has taken place
           return modelInfo.getAuthor()
-              .equalsIgnoreCase(UserContext.user(callerId).getHashedUsername())
-              || modelInfo.getAuthor().equalsIgnoreCase(UserContext.user(callerId).getUsername());
+              .equalsIgnoreCase(hashedUsername)
+              || modelInfo.getAuthor().equalsIgnoreCase(username);
         } else if ("model:get".equalsIgnoreCase((String) permission)) {
-          IUserContext user = UserContext.user(authentication.getName());
           return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName())
               || modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName()) ||
               // TODO : Checking for hashedUsername is legacy and needs to be removed once full
               // migration has taken place
-              modelInfo.getAuthor().equals(user.getHashedUsername())
-              || modelInfo.getAuthor().equals(user.getUsername());
+              modelInfo.getAuthor().equals(hashedUsername)
+              || modelInfo.getAuthor().equals(username);
         } else if ("model:owner".equalsIgnoreCase((String) permission)) {
-          IUserContext user = UserContext.user(authentication.getName());
           // TODO : Checking for hashedUsername is legacy and needs to be removed once full
           // migration has taken place
-          return modelInfo.getAuthor().equals(user.getHashedUsername())
-              || modelInfo.getAuthor().equals(user.getUsername());
+          return modelInfo.getAuthor().equals(hashedUsername)
+              || modelInfo.getAuthor().equals(username);
         } 
       }
       } catch(NotAuthorizedException ex) {
         return false;
       }
     } else if (targetDomainObject instanceof String) {
-      return callerId.equalsIgnoreCase((String) targetDomainObject);
+      return username.equalsIgnoreCase((String) targetDomainObject);
     }
     return false;
   }
@@ -80,6 +82,22 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
+    
+    if (targetType.equals(Tenant.class.getName())) {
+      final String username = authentication.getName();
+      final String role = (String) permission;
+      final String tenantId = (String) targetId;
+      
+      Optional<Tenant> _tenant = tenantService.getTenant(tenantId);
+      if (_tenant.isPresent()) {
+        Tenant tenant = _tenant.get();
+        return tenant.getUsers().stream().anyMatch(tenantUser ->
+          tenantUser.getUser().getUsername().equals(username) && 
+            tenantUser.hasRole(Role.valueOf(role.replace("ROLE_", "")))
+        );
+      }
+    }
+    
     return false;
   }
 

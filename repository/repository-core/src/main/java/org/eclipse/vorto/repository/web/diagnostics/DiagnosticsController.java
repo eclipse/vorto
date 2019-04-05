@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/rest/{tenant}/diagnostics")
+@RequestMapping(value = "/rest/{tenantId}/diagnostics")
 public class DiagnosticsController {
 
   @Autowired
   private IDiagnostics modelDiagnostics;
 
   @RequestMapping(method = RequestMethod.GET)
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN')")
   public Collection<Diagnostic> diagnose() {
     return modelDiagnostics.diagnoseAllModels();
   }

@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -16,18 +15,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
+import org.eclipse.vorto.repository.web.api.v1.dto.ModelInfoDto;
 import org.eclipse.vorto.repository.web.core.ModelDtoFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -48,21 +47,32 @@ public class ModelSearchController extends AbstractRepositoryController {
           @ApiResponse(code = 400, message = "Malformed search expression")})
   @RequestMapping(value = "/models", method = RequestMethod.GET)
   @PreAuthorize("hasRole('ROLE_USER')")
-  public List<ModelInfo> searchByExpression(
+  public List<ModelInfoDto> searchByExpression(
       @ApiParam(value = "a free-text search expression",
           required = true) @RequestParam("expression") String expression)
       throws UnsupportedEncodingException {
-    IUserContext userContext =
-        UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
-    List<ModelInfo> modelResources = modelRepository.search(URLDecoder.decode(expression, "utf-8"));
-    return modelResources.stream().map(resource -> ModelDtoFactory.createDto(resource, userContext))
-        .sorted(new Comparator<ModelInfo>() {
 
-          @Override
-          public int compare(ModelInfo o1, ModelInfo o2) {
-            return o1.getCreationDate().after(o2.getCreationDate()) ? -1 : +1;
-          }
+    Map<String, List<ModelInfo>> modelResourcesMap =
+        getModelSearchService().search(URLDecoder.decode(expression, "utf-8"));
 
-        }).collect(Collectors.toList());
+    List<ModelInfoDto> modelResources = concatenateAllResults(modelResourcesMap);
+
+    return modelResources.stream().sorted(new Comparator<ModelInfo>() {
+      public int compare(ModelInfo o1, ModelInfo o2) {
+        return o1.getCreationDate().after(o2.getCreationDate()) ? -1 : +1;
+      }
+    }).collect(Collectors.toList());
+  }
+
+  private List<ModelInfoDto> concatenateAllResults(Map<String, List<ModelInfo>> modelResourcesMap) {
+    List<ModelInfoDto> result = Lists.newArrayList();
+
+    modelResourcesMap.forEach((tenantId, modelInfos) -> {
+      result.addAll(
+          modelInfos.stream().map(modelInfo -> ModelDtoFactory.createDto(tenantId, modelInfo))
+              .collect(Collectors.toList()));
+    });
+
+    return result;
   }
 }

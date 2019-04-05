@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -51,7 +50,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Api(value = "/attachments")
 @RestController
-@RequestMapping(value = "/api/v1/attachments")
+@RequestMapping(value = "/api/v1/tenants/{tenantId}/attachments")
 public class AttachmentController extends AbstractRepositoryController {
 
   private static final String ATTACHMENT_FILENAME = "attachment; filename = ";
@@ -63,8 +62,10 @@ public class AttachmentController extends AbstractRepositoryController {
   @ApiOperation(value = "Upload a file to be attached to a model")
   @RequestMapping(method = RequestMethod.PUT, value = "/{modelId:.+}",
       produces = "application/json")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public AttachResult attach(
+      @ApiParam(value = "The tenantId of the tenant that owns the model",
+          required = true) final @PathVariable String tenantId,
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
           required = true) @PathVariable String modelId,
@@ -76,8 +77,8 @@ public class AttachmentController extends AbstractRepositoryController {
     try {
       String fileName = URLDecoder.decode(file.getOriginalFilename(), "UTF-8");
 
-      modelRepository.attachFile(modelID,
-          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(),
+      getModelRepository(tenantId).attachFile(modelID,
+          new FileContent(fileName, file.getBytes(), file.getSize()), getUserContext(tenantId),
           guessTagsFromFileExtension(fileName));
 
       return AttachResult.success(modelID, fileName);
@@ -104,14 +105,19 @@ public class AttachmentController extends AbstractRepositoryController {
           @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}",
       produces = "application/json")
-  public List<Attachment> getAttachments(@ApiParam(
-      value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
-      required = true) @PathVariable String modelId) {
+  // @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or
+  // hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+  public List<Attachment> getAttachments(
+      @ApiParam(value = "The tenantId of the tenant that owns the model",
+          required = true) final @PathVariable String tenantId,
+      @ApiParam(
+          value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
+          required = true) @PathVariable String modelId) {
 
     ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
     try {
-      return modelRepository.getAttachments(modelID);
+      return getModelRepository(tenantId).getAttachments(modelID);
     } catch (FatalModelRepositoryException e) {
       return Collections.emptyList();
     }
@@ -122,7 +128,11 @@ public class AttachmentController extends AbstractRepositoryController {
       value = {@ApiResponse(code = 200, message = "Successfully retrieved the attachment"),
           @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.GET, value = "/{modelId:.+}/files/{filename:.+}")
+  // @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or
+  // hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public void getAttachment(
+      @ApiParam(value = "The tenantId of the tenant that owns the model",
+          required = true) final @PathVariable String tenantId,
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
           required = true) @PathVariable String modelId,
@@ -134,7 +144,8 @@ public class AttachmentController extends AbstractRepositoryController {
 
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
-      Optional<FileContent> content = modelRepository.getAttachmentContent(modelID, fileName);
+      Optional<FileContent> content =
+          getModelRepository(tenantId).getAttachmentContent(modelID, fileName);
 
       if (content.isPresent()) {
         response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
@@ -155,8 +166,10 @@ public class AttachmentController extends AbstractRepositoryController {
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Successfully deleted the attachment"),
       @ApiResponse(code = 404, message = "The resource could not be found")})
   @RequestMapping(method = RequestMethod.DELETE, value = "/{modelId:.+}/files/{filename:.+}")
-  @PreAuthorize("hasRole('ROLE_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),'model:owner')")
   public ResponseEntity<Void> deleteAttachment(
+      @ApiParam(value = "The tenantId of the tenant that owns the model",
+          required = true) final @PathVariable String tenantId,
       @ApiParam(
           value = "The ID of the vorto model in namespace.name:version format, e.g. com.mycompany:MagneticSensor:1.0.0",
           required = true) @PathVariable String modelId,
@@ -168,7 +181,7 @@ public class AttachmentController extends AbstractRepositoryController {
     try {
       String fileName = URLDecoder.decode(filename, "UTF-8");
 
-      if (!modelRepository.deleteAttachment(modelIdObject, fileName)) {
+      if (!getModelRepository(tenantId).deleteAttachment(modelIdObject, fileName)) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
       }
 
@@ -178,7 +191,8 @@ public class AttachmentController extends AbstractRepositoryController {
     }
   }
 
-  private UserContext getUserContext() {
-    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName());
+  private UserContext getUserContext(String tenantId) {
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName(),
+        tenantId);
   }
 }
