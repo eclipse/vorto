@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.eclipse.vorto.repository.comment;
+package org.eclipse.vorto.repository.domain;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
