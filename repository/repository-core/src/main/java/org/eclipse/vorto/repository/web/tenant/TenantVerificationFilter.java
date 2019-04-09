@@ -42,7 +42,7 @@ public class TenantVerificationFilter extends GenericFilterBean {
 
   private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-  private Pattern releasedApiPrefixPattern = Pattern.compile("/api/v([^/]+)/([^/]+)/");
+  private Pattern releasedApiPrefixPattern = Pattern.compile("/api/v([^/]+)/tenants/([^/]+)/");
   private Pattern unreleasedApiPrefixPattern = Pattern.compile("/rest/([^/]+)/");
 
   @Value("${server.config.singleTenantMode:#{true}}")

@@ -45,6 +45,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -91,6 +92,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -400,6 +402,31 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
   }
 
   @Override
+  public List<ModelInfo> getModelsReferencing(ModelId modelId) {
+    return doInSession(session -> {
+      List<ModelInfo> referencingModels = Lists.newArrayList();
+      QueryManager queryManager = session.getWorkspace().getQueryManager();
+      Query query = queryManager.createQuery("SELECT * FROM [vorto:meta] WHERE [vorto:references] = '" + modelId.toString() + "'", Query.JCR_SQL2);
+      
+      QueryResult result = query.execute();
+      RowIterator rowIterator = result.getRows();
+      while (rowIterator.hasNext()) {
+        Row row = rowIterator.nextRow();
+        Node currentNode = row.getNode();
+        if (currentNode.hasProperty(VORTO_NODE_TYPE)) {
+          try {
+            referencingModels.add(createMinimalModelInfo(currentNode));
+          } catch (Exception ex) {
+            logger.debug("Error while converting node to a ModelId", ex);
+          }
+        }
+      }
+      
+      return referencingModels;
+    });
+  }
+  
+  @Override
   public List<ModelInfo> getMappingModelsForTargetPlatform(ModelId modelId, String targetPlatform) {
     logger.info("Fetching mapping models for model ID " + modelId.getPrettyFormat() + " and key "
         + targetPlatform);
@@ -430,6 +457,7 @@ public class JcrModelRepository implements IModelRepository, IDiagnostics, IMode
     }
   }
 
+  @Override
   public ModelResource getEMFResource(ModelId modelId) {
     return doInSession(session -> {
       try {

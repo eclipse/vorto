@@ -100,8 +100,7 @@ public class DefaultUserAccountService
     Optional<TenantUser> _user = tenant.getUser(userId);
     if (_user.isPresent()) {
       TenantUser user = _user.get();
-      // user.getRoles().removeIf(userRole -> userRole.getRole() != Role.TENANT_ADMIN
-      // && userRole.getRole() != Role.SYS_ADMIN);
+      
       Set<UserRole> oldUserRolesToRemove =
           user.getRoles().stream().filter(userRole -> 
             userRole.getRole() != Role.TENANT_ADMIN && userRole.getRole() != Role.SYS_ADMIN)
@@ -181,7 +180,16 @@ public class DefaultUserAccountService
   @Transactional
   public User create(String username, String tenantId, Role... userRoles)
       throws RoleNotSupportedException {
+    
+    PreConditions.notNullOrEmpty(username, "username");
+    PreConditions.notNullOrEmpty(tenantId, "username");
+    
+    Tenant tenant = tenantRepo.findByTenantId(tenantId);
+
+    PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
+    
     User existingUser = userRepository.findByUsername(username);
+    /*
     if (isUserAlreadyExistAndRoleNotProvided(existingUser, userRoles)) {
       throw new IllegalArgumentException("User with ID already exists");
     } else if (existingUser != null) {
@@ -189,17 +197,27 @@ public class DefaultUserAccountService
       return userRepository.save(existingUser);
     } else {
       User user = createUser(username);
-      user.addRoles(tenantId, userRoles);
+      user.addRolesIfExistingTenant(tenantId, userRoles);
+      return userRepository.save(user);
+    }*/
+    if (existingUser != null) {
+      addUserToTenant(tenantId, username, userRoles);
+      return existingUser;
+    } else {
+      User user = createUser(username);
+      TenantUser tenantUser = TenantUser.createTenantUser(tenant, userRoles);
+      user.addTenantUser(tenantUser);
       return userRepository.save(user);
     }
   }
 
+  /*
   private void updateRole(User existingUser, String tenantId, Role[] userRoles) {
     Set<UserRole> existingRoles = existingUser.getRoles(tenantId);
     removeDuplicateRoles(userRoles, existingRoles);
-    existingUser.addRoles(tenantId, userRoles);
+    existingUser.addRolesIfExistingTenant(tenantId, userRoles);
   }
-
+  
   private void removeDuplicateRoles(Role[] userRoles, Set<UserRole> existingRoles) {
     Arrays.asList(userRoles).forEach(role -> {
       existingRoles.removeIf(e -> e.getRole() == role);
@@ -209,6 +227,7 @@ public class DefaultUserAccountService
   private boolean isUserAlreadyExistAndRoleNotProvided(User existingUser, Role[] userRoles) {
     return existingUser != null && Objects.isNull(userRoles);
   }
+  */
 
   @Transactional
   public User removeUserRole(String userName, String tenantId, List<Role> roles) {

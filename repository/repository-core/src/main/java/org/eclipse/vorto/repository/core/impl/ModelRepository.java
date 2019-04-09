@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -36,13 +37,13 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.Workspace;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
@@ -65,6 +66,7 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelFileContent;
@@ -83,6 +85,7 @@ import org.eclipse.vorto.repository.core.impl.validation.AttachmentValidator;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
 import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.modeshape.jcr.security.SimplePrincipal;
+import com.google.common.collect.Lists;
 
 public class ModelRepository implements IModelRepository, IDiagnostics, IModelPolicyManager {
 
@@ -93,6 +96,8 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
   private static final String VORTO_NODE_TYPE = "vorto:type";
 
   private IUserRepository userRepository;
+  
+  private IModelRetrievalService modelRetrievalService;
 
   private ModelSearchUtil modelSearchUtil;
 
@@ -106,12 +111,14 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
   
   public ModelRepository(IUserRepository userRepository, ModelSearchUtil modelSearchUtil,
       AttachmentValidator attachmentValidator, ModelParserFactory modelParserFactory,
-      RepositoryDiagnostics repoDiagnostics) {
+      RepositoryDiagnostics repoDiagnostics,
+      IModelRetrievalService modelRetrievalService) {
     this.userRepository = userRepository;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
     this.modelParserFactory = modelParserFactory;
     this.repoDiagnostics = repoDiagnostics;
+    this.modelRetrievalService = modelRetrievalService;
   }
 
   @Override
@@ -329,9 +336,30 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
       }
     }
 
-    if (resource.getType() != ModelType.Mapping) { // only add platform
-                                                   // mapping info for
-                                                   // non-mapping models
+    // only add platform mapping info for non-mapping models
+    if (resource.getType() != ModelType.Mapping) { 
+      Map<String, List<ModelInfo>> referencingModels = 
+          modelRetrievalService.getModelsReferencing(resource.getId());
+      
+      for(Map.Entry<String, List<ModelInfo>> entry : referencingModels.entrySet()) {
+        for(ModelInfo modelInfo : entry.getValue()) {
+          resource.getReferencedBy().add(modelInfo.getId());
+          if (modelInfo.getType() == ModelType.Mapping) {
+            
+            try {
+              Optional<ModelResource> emfResource = modelRetrievalService.getEMFResource(entry.getKey(), modelInfo.getId());
+              if (emfResource.isPresent()) {
+                resource.addPlatformMapping(emfResource.get().getTargetPlatform(), modelInfo.getId());
+              }
+            } catch (ValidationException e) {
+              logger.warn("Stored Vorto Model is corrupt: " + modelInfo.getId().getPrettyFormat(), e);
+            } catch (Exception e) {
+              logger.warn("Error while getting a platform mapping", e);
+            }
+          }
+        }
+      }
+      /*
       PropertyIterator propIter = folderNode.getReferences();
       while (propIter.hasNext()) {
         Property prop = propIter.nextProperty();
@@ -359,7 +387,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
         } catch (Exception e) {
           logger.warn("A reference has gone stale. Please remove this reference. : ", e);
         }
-      }
+      }*/
     }
     return resource;
   }
@@ -379,6 +407,29 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
       } catch (AccessDeniedException e) {
         throw new NotAuthorizedException(modelId, e);
       }
+    });
+  }
+  
+  @Override
+  public List<ModelInfo> getModelsReferencing(ModelId modelId) {
+    return doInSession(session -> {
+      List<ModelInfo> referencingModels = Lists.newArrayList();
+      QueryManager queryManager = session.getWorkspace().getQueryManager();
+      Query query = queryManager.createQuery("SELECT * FROM [vorto:meta] WHERE [vorto:references] = '" + modelId.toString() + "'", Query.JCR_SQL2);
+      
+      QueryResult result = query.execute();
+      RowIterator rowIterator = result.getRows();
+      while (rowIterator.hasNext()) {
+        Row row = rowIterator.nextRow();
+        Node currentNode = row.getNode();
+        try {
+          referencingModels.add(createMinimalModelInfo(currentNode.getNodes(FILE_NODES).nextNode()));
+        } catch (Exception ex) {
+          logger.error("Error while converting node to a ModelId", ex);
+        }
+      }
+      
+      return referencingModels;
     });
   }
 
@@ -413,6 +464,7 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     }
   }
 
+  @Override
   public ModelResource getEMFResource(ModelId modelId) {
     return doInSession(session -> {
       try {
@@ -1035,6 +1087,8 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     } catch (RepositoryException ex) {
       logger.error(ex);
       throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
+    } catch (ModelReferentialIntegrityException e) {
+      throw e;
     } catch (Exception ex) {
       logger.error("Unexpected exception", ex);
       throw new FatalModelRepositoryException("Unexpected exception while operating on repository.", ex);

@@ -48,13 +48,13 @@ public class TestModel {
 
   public void createModel(MockMvc mockMvc,
       SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user1) throws Exception {
-    mockMvc.perform(post("/rest/default/models/" + prettyName + "/InformationModel").with(user1)
+    mockMvc.perform(post("/rest/tenants/playground/models/" + prettyName + "/InformationModel").with(user1)
         .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
   }
 
 
   public static final class TestModelBuilder {
-    String namespace = TestUtils.createRandomString(10).toLowerCase();
+    String namespace = "com.mycompany." + TestUtils.createRandomString(10).toLowerCase();
     String modelName = TestUtils.createRandomString(10).toUpperCase();
     String description = "InformationModel for " + modelName;
     String version = "1.0.0";

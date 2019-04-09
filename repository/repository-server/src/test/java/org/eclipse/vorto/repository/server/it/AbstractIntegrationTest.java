@@ -125,7 +125,7 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void deleteModel(String modelId) throws Exception {
-    repositoryServer.perform(delete("/rest/playground/models/" + modelId).with(userAdmin)
+    repositoryServer.perform(delete("/rest/tenants/playground/models/" + modelId).with(userAdmin)
         .contentType(MediaType.APPLICATION_JSON));
   }
 
@@ -138,10 +138,10 @@ public abstract class AbstractIntegrationTest {
   }
 
   public void releaseModel(String modelId) throws Exception {
-    repositoryServer.perform(put("/rest/playground/workflows/" + modelId + "/actions/Release")
+    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Release")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
 
-    repositoryServer.perform(put("/rest/playground/workflows/" + modelId + "/actions/Approve")
+    repositoryServer.perform(put("/rest/tenants/playground/workflows/" + modelId + "/actions/Approve")
         .with(userAdmin).contentType(MediaType.APPLICATION_JSON));
   }
 
@@ -153,11 +153,11 @@ public abstract class AbstractIntegrationTest {
   protected void createModel(SecurityMockMvcRequestPostProcessors.UserRequestPostProcessor user,
       String fileName, String modelId) throws Exception {
     repositoryServer
-        .perform(post("/rest/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
+        .perform(post("/rest/tenants/playground/models/" + modelId + "/" + ModelType.fromFileName(fileName))
             .with(user).contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
     repositoryServer
-        .perform(put("/rest/playground/models/" + modelId).with(user)
+        .perform(put("/rest/tenants/playground/models/" + modelId).with(user)
             .contentType(MediaType.APPLICATION_JSON).content(createContent(fileName)))
         .andExpect(status().isOk());
   }
@@ -179,7 +179,7 @@ public abstract class AbstractIntegrationTest {
     MockMultipartFile file =
         new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
     MockMultipartHttpServletRequestBuilder builder =
-        MockMvcRequestBuilders.fileUpload("/api/v1/playground/attachments/" + modelId);
+        MockMvcRequestBuilders.fileUpload("/api/v1/tenants/playground/attachments/" + modelId);
     return repositoryServer.perform(builder.file(file).with(request -> {
       request.setMethod("PUT");
       return request;

@@ -104,9 +104,9 @@ repository.factory('openCreateModelDialog',
                     
                     $scope.createNamespace = function(namespaceRoot, namespaceAppend) {
                         if (namespaceAppend == null || namespaceAppend === '') {
-                            return namespaceRoot;
+                            return namespaceRoot.namespace;
                         } else {
-                            return namespaceRoot + "." + namespaceAppend;
+                            return namespaceRoot.namespace + "." + namespaceAppend;
                         }
                     };
                     
@@ -138,7 +138,7 @@ repository.factory('openCreateModelDialog',
                     
                     $scope.getTenant = function(namespaceRoot) {
                         for(var i=0; i < $scope.userNamespaces.length; i++) {
-                            if ($scope.userNamespaces[i].namespace === namespaceRoot) {
+                            if ($scope.userNamespaces[i].namespace === namespaceRoot.namespace) {
                                 return $scope.userNamespaces[i].tenant; 
                             }
                         }
