@@ -99,7 +99,7 @@ public class User {
   }
 
   // TODO: Set better name that describes behavior
-  public void addRoles(String tenantId, Role... roles) {
+  public void addRolesIfExistingTenant(String tenantId, Role... roles) {
     getTenantUser(tenantId).ifPresent((tenantUser) -> {
       tenantUser.addRoles(roles);
     });

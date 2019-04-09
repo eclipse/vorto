@@ -61,6 +61,16 @@ public class TenantUser {
     return tenantUser;
   }
   
+  public static TenantUser createTenantUser(Tenant tenant, Role ... roles) {
+    TenantUser tenantUser = new TenantUser();
+    tenant.addUser(tenantUser);
+    Set<UserRole> userRoles = Arrays.asList(roles).stream()
+      .map(role -> new UserRole(role, tenantUser))
+      .collect(Collectors.toSet());
+    tenantUser.setRoles(userRoles);
+    return tenantUser;
+  }
+  
   public Long getId() {
     return id;
   }

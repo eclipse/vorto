@@ -1,5 +1,6 @@
 package org.eclipse.vorto.repository.core;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
@@ -26,4 +27,20 @@ public interface IModelRetrievalService {
    * @return
    */
   Optional<Map.Entry<String, FileContent>> getContent(ModelId modelId);
+  
+  /**
+   * Return the EMF resource of the requested modelId from tenantId
+   * @param tenantId
+   * @param modelId
+   * @return
+   */
+  Optional<ModelResource> getEMFResource(String tenantId, ModelId modelId);
+  
+  /**
+   * Get all models across all repositories who are referencing modelId
+   * @param modelId the modelId that is being referenced
+   * @return a map entry with the key being the tenantId and the value being the 
+   * list of models referencing modelId
+   */
+  Map<String, List<ModelInfo>> getModelsReferencing(ModelId modelId);
 }

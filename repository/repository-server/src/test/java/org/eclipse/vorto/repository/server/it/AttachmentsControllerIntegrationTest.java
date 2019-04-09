@@ -33,7 +33,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
   public void testRandomModelAttachmentController() throws Exception {
     String nonExistingNamespace = TestUtils.createRandomString(10).toLowerCase();
     repositoryServer.perform(get(
-        "/api/v1/playground/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userCreator))
+        "/api/v1/tenants/playground/attachments/" + nonExistingNamespace + ":" + testModel.modelName + ":5000.0.0").with(userCreator))
         .andExpect(status().isNotFound());
     assertTrue(true);
   }
@@ -76,7 +76,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
 
     // Delete Attachment from model
     repositoryServer.perform(
-        delete("/api/v1/playground/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userAdmin))
+        delete("/api/v1/tenants/playground/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userAdmin))
         .andExpect(status().isOk());
     
     assertTrue(true);
@@ -93,7 +93,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
 
     // Try to delete model
     repositoryServer.perform(
-        delete("/api/v1/playground/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userStandard))
+        delete("/api/v1/tenants/playground/attachments/" + deleteModel.prettyName + "/files/" + fileName).with(userStandard))
         .andExpect(status().isForbidden());
     
     assertTrue(true);
@@ -101,7 +101,7 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
 
   @Test
   public void testAttachmentGetWithPermissions() throws Exception {
-    repositoryServer.perform(get("/api/v1/playground/attachments/" + testModel.prettyName).with(userAdmin))
+    repositoryServer.perform(get("/api/v1/tenants/playground/attachments/" + testModel.prettyName).with(userAdmin))
         .andExpect(status().isOk());
     
     assertTrue(true);

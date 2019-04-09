@@ -248,7 +248,7 @@ public abstract class AbstractIntegrationTest {
     UserRole roleSysAdmin = new UserRole(Role.SYS_ADMIN);
     
     Tenant playground =
-        Tenant.newTenant("playground", "org.eclipse", Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso"));
+        Tenant.newTenant("playground", "org.eclipse", Sets.newHashSet("org.eclipse", "com.mycompany", "com.ipso", "examples.mappings"));
 
     playground.addUser(createTenantUser("alex", Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer)));
     playground.addUser(createTenantUser("erle", Sets.newHashSet(roleUser, roleCreator, rolePromoter, roleReviewer, roleTenantAdmin)));

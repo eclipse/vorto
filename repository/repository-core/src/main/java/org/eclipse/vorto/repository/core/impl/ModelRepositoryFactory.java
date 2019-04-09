@@ -184,7 +184,8 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   public ModelRepository _getRepository(String tenant, Authentication user) {
     ModelRepository modelRepository = new ModelRepository(this.userRepository, this.modelSearchUtil,
-        this.attachmentValidator, this.modelParserFactory, this.repoDiagnostics);
+        this.attachmentValidator, this.modelParserFactory, this.repoDiagnostics, 
+        getModelRetrievalService(user));
 
     modelRepository.setSessionSupplier(() -> {
       try {
