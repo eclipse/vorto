@@ -49,11 +49,15 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
     if (targetDomainObject instanceof ModelId) {
       if (targetPermission instanceof String) {
         try {
-          String[] modelContext = ((String) targetPermission).split("/");
-          String tenant = modelContext[0];
-          String permission = modelContext[1];
+          ModelId modelId = (ModelId) targetDomainObject;
+          
+          String tenant = tenantService.getTenantFromNamespace(modelId.getNamespace())
+              .map(_tenant -> _tenant.getTenantId())
+              .orElseThrow(() -> new ModelNotFoundException("Model '" + modelId.getPrettyFormat() + " can't be found in any tenant"));
+              
+          String permission = (String) targetPermission;
           ModelInfo modelInfo = repositoryFactory.getRepository(tenant, authentication)
-              .getById((ModelId) targetDomainObject);
+              .getById(modelId);
           if (modelInfo != null) {
             if ("model:delete".equalsIgnoreCase((String) permission)) {
               return modelInfo.getAuthor().equalsIgnoreCase(username);
