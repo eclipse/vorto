@@ -31,6 +31,8 @@ public interface ITenantService {
 
   Optional<Tenant> getTenant(String tenantId);
   
+  Optional<Tenant> getTenantFromNamespace(String namespace);
+  
   Collection<Tenant> getTenants();
 
   boolean updateTenantNamespaces(String tenantId, Set<String> namespaces);

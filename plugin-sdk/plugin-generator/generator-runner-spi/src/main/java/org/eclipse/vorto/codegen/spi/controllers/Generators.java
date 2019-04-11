@@ -67,7 +67,7 @@ public class Generators {
 
   @RequestMapping(value = "/generators/{key}/generate/{namespace}/{name}/{version:.+}",
       method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<InputStreamResource> generate(final @PathVariable String tenantId,
+  public ResponseEntity<InputStreamResource> generate(
       final @PathVariable String key, @PathVariable String namespace, @PathVariable String name,
       @PathVariable String version, final HttpServletRequest request) {
     return responseFromResult(vorto.generate(key, namespace, name, version,

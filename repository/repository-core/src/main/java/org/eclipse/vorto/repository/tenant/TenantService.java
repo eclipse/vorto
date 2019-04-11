@@ -182,6 +182,23 @@ public class TenantService implements ITenantService, ApplicationEventPublisherA
 
     return Optional.ofNullable(tenantRepo.findByTenantId(tenantId));
   }
+  
+  public Optional<Tenant> getTenantFromNamespace(String namespace) {
+    PreConditions.notNullOrEmpty(namespace, "namespace");
+    
+    for(Tenant tenant : getTenants()) {
+      if (tenant.getNamespaces() == null) {
+        continue;
+      }
+      for(Namespace ns : tenant.getNamespaces()) {
+        if (namespace.startsWith(ns.getName())) {
+          return Optional.of(tenant);
+        }
+      }
+    }
+    
+    return Optional.empty();
+  }
 
   public Collection<Tenant> getTenants() {
     return Lists.newArrayList(tenantRepo.findAll());

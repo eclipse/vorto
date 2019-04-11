@@ -18,7 +18,6 @@ import org.eclipse.vorto.model.EntityModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.client.IRepositoryClient;
 import org.eclipse.vorto.repository.client.ModelContent;
-import org.junit.After;
 import org.junit.Test;
 import org.springframework.http.MediaType;
 
@@ -28,14 +27,9 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   
   @Override
   protected void setUpTest() throws Exception {
-    createModel("Color.type", "org.eclipse.vorto.examples.type:Color:1.0.0");
-    releaseModel("org.eclipse.vorto.examples.type:Color:1.0.0");
+    createModel("Color2.type", "com.test:Color:1.0.0");
+    releaseModel("com.test:Color:1.0.0");
     this.repositoryClient = IRepositoryClient.newBuilder().setBaseUrl("http://localhost:" + port+"/infomodelrepository").build();
-  }
-  
-  @After
-  public void cleanup() throws Exception {
-    deleteModel("org.eclipse.vorto.examples.type:Color:1.0.0");
   }
   
   @Test
@@ -45,21 +39,21 @@ public class RepositoryJavaClientTest extends AbstractIntegrationTest  {
   
   @Test
   public void testGetContentOfModel() {
-    ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0"));
+    ModelContent content = repositoryClient.getContent(ModelId.fromPrettyFormat("com.test:Color:1.0.0"));
     assertEquals(1,((EntityModel)content.getModels().get(content.getRoot())).getProperties().size());
   }
   
   @Test
   public void testGetAttachmentsOfModel() throws Exception {
-    addAttachment("org.eclipse.vorto.examples.type:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
-    assertEquals(1,repositoryClient.getAttachments(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0")).size());
-    assertEquals("test.json",repositoryClient.getAttachments(ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0")).get(0).getFilename());
+    addAttachment("com.test:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
+    assertEquals(1,repositoryClient.getAttachments(ModelId.fromPrettyFormat("com.test:Color:1.0.0")).size());
+    assertEquals("test.json",repositoryClient.getAttachments(ModelId.fromPrettyFormat("com.test:Color:1.0.0")).get(0).getFilename());
   }
   
   @Test
   public void testDownloadAttachmentsOfModel() throws Exception {
-    addAttachment("org.eclipse.vorto.examples.type:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
-    assertTrue(repositoryClient.downloadAttachment((ModelId.fromPrettyFormat("org.eclipse.vorto.examples.type:Color:1.0.0")),"test.json").length > 0);
+    addAttachment("com.test:Color:1.0.0", userAdmin, "test.json", MediaType.APPLICATION_JSON);
+    assertTrue(repositoryClient.downloadAttachment((ModelId.fromPrettyFormat("com.test:Color:1.0.0")),"test.json").length > 0);
   }
 
 }

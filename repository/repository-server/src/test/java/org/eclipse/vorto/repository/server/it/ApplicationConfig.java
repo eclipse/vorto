@@ -44,7 +44,7 @@ public class ApplicationConfig {
     accountService.create(USER_ADMIN);
     
     tenantService.createOrUpdateTenant("playground", "com.mycompany", Sets.newHashSet(USER_ADMIN), 
-        Optional.of(Sets.newHashSet("com.mycompany", "com.ipso", "examples.mappings")), 
+        Optional.of(Sets.newHashSet("com.mycompany", "com.ipso", "examples.mappings", "com.test")), 
         Optional.of("GITHUB"), Optional.of("DB"), UserContext.user(USER_ADMIN, "playground"));
     
     accountService.create(USER_ADMIN, "playground", USER, SYS_ADMIN, MODEL_CREATOR, MODEL_PROMOTER, MODEL_REVIEWER);

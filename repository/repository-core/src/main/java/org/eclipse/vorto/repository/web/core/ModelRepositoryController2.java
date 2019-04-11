@@ -12,12 +12,20 @@
 package org.eclipse.vorto.repository.web.core;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -35,6 +43,7 @@ import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.core.ModelResource;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
@@ -42,9 +51,14 @@ import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelValidationHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.domain.Role;
+import org.eclipse.vorto.repository.domain.Tenant;
+import org.eclipse.vorto.repository.domain.User;
 import org.eclipse.vorto.repository.importer.ValidationReport;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.eclipse.vorto.repository.web.core.dto.ModelContent;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.eclipse.vorto.repository.web.core.templates.InfomodelTemplate;
 import org.eclipse.vorto.repository.web.core.templates.ModelTemplate;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
@@ -65,6 +79,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -75,9 +90,12 @@ import io.swagger.annotations.ApiResponses;
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
  */
-@RestController("internal.modelRepositoryController")
-@RequestMapping(value = "/rest/tenants/{tenantId}/models")
-public class ModelRepositoryController extends AbstractRepositoryController {
+@RestController("internal.modelRepositoryController2")
+@RequestMapping(value = "/rest/models")
+public class ModelRepositoryController2 extends AbstractRepositoryController {
+
+  @Autowired
+  private ITenantService tenantService;
 
   @Autowired
   private IUserAccountService accountService;
@@ -88,23 +106,25 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   @Autowired
   private ModelParserFactory modelParserFactory;
 
-  private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
+  private static Logger logger = Logger.getLogger(ModelRepositoryController2.class);
 
   @ApiOperation(value = "Returns the image of a vorto model")
   @ApiResponses(value = {@ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model not found")})
   @GetMapping(value = "/{modelId:.+}/images")
   public void getModelImage(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The modelId of vorto model, e.g. com.mycompany.Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "Response", required = true) final HttpServletResponse response) {
     Objects.requireNonNull(modelId, "modelId must not be null");
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
     List<Attachment> imageAttachments =
-        getModelRepository(tenantId).getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
+        getRepo(modelID).getAttachmentsByTag(modelID, Attachment.TAG_IMAGE);
     if (imageAttachments.isEmpty()) {
       response.setStatus(404);
       return;
@@ -123,13 +143,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PostMapping(value = "/{modelId:.+}/images")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') || "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   public ResponseEntity<Boolean> uploadModelImage(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The image to upload",
           required = true) @RequestParam("file") MultipartFile file,
       @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
@@ -137,14 +154,17 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
     logger.info("uploadImage: [" + file.getOriginalFilename() + ", " + file.getSize() + "]");
 
+    ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
     try {
       IUserContext user =
           UserContext.user(SecurityContextHolder.getContext().getAuthentication(), tenantId);
 
-      getModelRepository(tenantId, SecurityContextHolder.getContext().getAuthentication())
-          .attachFile(ModelId.fromPrettyFormat(modelId),
-              new FileContent(file.getOriginalFilename(), file.getBytes()), user,
-              Attachment.TAG_IMAGE);
+      getModelRepository(tenantId).attachFile(modelID,
+          new FileContent(file.getOriginalFilename(), file.getBytes()), user, Attachment.TAG_IMAGE);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -154,21 +174,22 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   // ToDo add Getter method
   @ApiOperation(value = "Saves a model to the repository.")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).MODIFY)")
   @PutMapping(value = "/{modelId:.+}", produces = "application/json")
   public ResponseEntity<ValidationReport> saveModel(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @RequestBody ModelContent content) {
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+      ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
       IModelRepository modelRepository = getModelRepository(tenantId, authentication);
 
-      ModelId modelID = ModelId.fromPrettyFormat(modelId);
       if (modelRepository.getById(modelID) == null) {
         return new ResponseEntity<>(ValidationReport.invalid(null, "Model was not found"),
             HttpStatus.NOT_FOUND);
@@ -203,24 +224,30 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Creates a model in the repository with the given model ID and model type.")
-  @PreAuthorize("@userAccountService.hasRole(#tenantId, authentication, 'ROLE_MODEL_CREATOR')")
   @PostMapping(value = "/{modelId:.+}/{modelType}", produces = "application/json")
   public ResponseEntity<ModelInfo> createModel(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "modelType", required = true) @PathVariable ModelType modelType,
       @RequestBody(required = false) List<ModelProperty> properties) throws WorkflowException {
-    // Todo Add Validation to this
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
-    if (getModelRepository(tenantId).exists(modelID)) {
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    
+    if (!accountService.hasRole(tenantId, authentication, Role.rolePrefix + Role.MODEL_CREATOR.name())) {
+      throw new NotAuthorizedException(modelID);
+    }
+
+    IUserContext userContext = UserContext.user(authentication, tenantId);
+
+    IModelRepository modelRepo = getModelRepository(userContext);
+
+    if (modelRepo.exists(modelID)) {
       throw new ModelAlreadyExistsException();
     } else {
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-      IUserContext userContext = UserContext.user(authentication, tenantId);
-
       String modelTemplate = null;
 
       if (modelType == ModelType.InformationModel && properties != null) {
@@ -229,8 +256,8 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         modelTemplate = new ModelTemplate().createModelTemplate(modelID, modelType);
       }
 
-      ModelInfo savedModel = getModelRepository(tenantId, authentication).save(modelID,
-          modelTemplate.getBytes(), modelID.getName() + modelType.getExtension(), userContext);
+      ModelInfo savedModel = modelRepo.save(modelID, modelTemplate.getBytes(),
+          modelID.getName() + modelType.getExtension(), userContext);
       this.workflowService.start(modelID, userContext);
       return new ResponseEntity<>(savedModel, HttpStatus.CREATED);
 
@@ -239,18 +266,18 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @ApiOperation(value = "Creates a new version for the given model in the specified version")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or (hasRole('ROLE_MODEL_CREATOR') and "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).READ))")
   @PostMapping(value = "/{modelId:.+}/versions/{modelVersion:.+}", produces = "application/json")
   public ResponseEntity<ModelInfo> createVersionOfModel(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "modelId", required = true) @PathVariable String modelId,
       @ApiParam(value = "modelVersion", required = true) @PathVariable String modelVersion)
       throws WorkflowException, IOException {
 
     final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
 
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     IUserContext userContext = UserContext.user(authentication, tenantId);
@@ -263,17 +290,20 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @DeleteMapping(value = "/{modelId:.+}")
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
-  public ResponseEntity<Boolean> deleteModelResource(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId) {
+  public ResponseEntity<Boolean> deleteModelResource(final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "modelId must not be null");
     try {
       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-      getModelRepository(tenantId, authentication).removeModel(ModelId.fromPrettyFormat(modelId));
+
+      ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+      getModelRepository(tenantId, authentication).removeModel(modelID);
       return new ResponseEntity<>(false, HttpStatus.OK);
     } catch (FatalModelRepositoryException | NullPointerException nullPointerException) {
       logger.error(nullPointerException);
@@ -287,33 +317,81 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   // TODO : this is probably wrong as this only downloads from one tenant
 
   @GetMapping(value = {"/mine/download"})
-  public void getUserModels(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      Principal user, final HttpServletResponse response) {
-    // TODO : Checking for hashedUsername is legacy and needs to be removed once full migration has
-    // taken place
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  public void getUserModels(Principal principal, final HttpServletResponse response) {
+    List<ModelId> userModels = Lists.newArrayList();
 
-    List<ModelInfo> userModels = getModelRepository(tenantId, authentication)
-        .search("author:" + UserContext.user(user.getName(), tenantId).getHashedUsername());
+    User user = accountService.getUser(principal.getName());
+    Set<Tenant> userTenants = user.getTenants();
 
-    userModels.addAll(getModelRepository(tenantId, authentication)
-        .search("author:" + UserContext.user(user.getName(), tenantId).getUsername()));
-    // TODO: end
+    for (Tenant tenant : userTenants) {
+      IModelRepository modelRepo = getModelRepository(tenant.getTenantId());
+      List<ModelInfo> modelInfos = modelRepo.search("author:" + user.getUsername());
+      List<ModelId> modelIds =
+          modelInfos.stream().map(modelInfo -> modelInfo.getId()).collect(Collectors.toList());
+      userModels.addAll(modelIds);
+    }
 
-    logger.info(
-        "Exporting information models for " + user.getName() + " results: " + userModels.size());
+    logger.info("Exporting information models for " + user.getUsername() + " results: "
+        + userModels.size());
 
-    sendAsZipFile(response, tenantId, user.getName() + "-models.zip", userModels);
+    sendAsZipFile(response, user.getUsername() + "-models.zip",
+        getModelsAndDependencies(userModels));
+  }
+
+  private Map<ModelInfo, FileContent> getModelsAndDependencies(Collection<ModelId> modelIds) {
+    Map<ModelInfo, FileContent> modelsMap = new HashMap<>();
+
+    if (modelIds != null && !modelIds.isEmpty()) {
+      for (ModelId modelId : modelIds) {
+        Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
+        if (tenant.isPresent()) {
+          IModelRepository modelRepo = getModelRepository(tenant.get().getTenantId());
+          ModelInfo modelInfo = modelRepo.getById(modelId);
+          FileContent modelContent = modelRepo.getFileContent(modelId, Optional.empty()).get();
+          modelsMap.put(modelInfo, modelContent);
+          modelsMap.putAll(getModelsAndDependencies(modelInfo.getReferences()));
+        }
+      }
+    }
+
+    return modelsMap;
+  }
+
+  private void sendAsZipFile(final HttpServletResponse response, final String fileName,
+      Map<ModelInfo, FileContent> models) {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    ZipOutputStream zos = new ZipOutputStream(baos);
+
+    try {
+      for (Map.Entry<ModelInfo, FileContent> model : models.entrySet()) {
+        ModelInfo modelResource = model.getKey();
+        ZipEntry zipEntry = new ZipEntry(
+            modelResource.getId().getPrettyFormat() + modelResource.getType().getExtension());
+        zos.putNextEntry(zipEntry);
+        zos.write(model.getValue().getContent());
+        zos.closeEntry();
+      }
+
+      zos.close();
+      baos.close();
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
+
+    response.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fileName);
+    response.setContentType(APPLICATION_OCTET_STREAM);
+    try {
+      IOUtils.copy(new ByteArrayInputStream(baos.toByteArray()), response.getOutputStream());
+      response.flushBuffer();
+    } catch (IOException e) {
+      throw new RuntimeException("Error copying file.", e);
+    }
   }
 
   @ApiOperation(value = "Getting all mapping resources for the given model")
-  @PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), #tenantId + '/model:get')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
   @GetMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}")
   public ResponseEntity<Boolean> downloadMappingsForPlatform(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
       @ApiParam(value = "The model ID of vorto model, e.g. com.mycompany.Car:1.0.0",
           required = true) final @PathVariable String modelId,
       @ApiParam(value = "The name of target platform, e.g. lwm2m",
@@ -325,9 +403,10 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
       final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
 
-      IModelRepository modelRepository = getModelRepository(tenantId, authentication);
+      IModelRepository modelRepository = getModelRepository(tenantId);
 
       if (modelRepository.getById(modelID) == null) {
         return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
@@ -336,10 +415,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       List<ModelInfo> mappingResources =
           modelRepository.getMappingModelsForTargetPlatform(modelID, targetPlatform);
 
+      List<ModelId> mappingModelIds = mappingResources.stream().map(modelInfo -> modelInfo.getId())
+          .collect(Collectors.toList());
+
       final String fileName =
           modelID.getNamespace() + "_" + modelID.getName() + "_" + modelID.getVersion() + ".zip";
 
-      sendAsZipFile(response, tenantId, fileName, mappingResources);
+      sendAsZipFile(response, fileName, getModelsAndDependencies(mappingModelIds));
       return new ResponseEntity<>(true, HttpStatus.OK);
 
     } catch (FatalModelRepositoryException ex) {
@@ -349,14 +431,15 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/diagnostics")
-  public ResponseEntity<Collection<Diagnostic>> runDiagnostics(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId) {
+  public ResponseEntity<Collection<Diagnostic>> runDiagnostics(final @PathVariable String modelId) {
     Objects.requireNonNull(modelId, "model ID must not be null");
     try {
-      return new ResponseEntity<>(
-          getDiagnosticService(tenantId).diagnoseModel(ModelId.fromPrettyFormat(modelId)),
+      final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+      return new ResponseEntity<>(getDiagnosticService(tenantId).diagnoseModel(modelID),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -364,18 +447,19 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
-      + "@modelRepositoryFactory.getRepository(#tenantId, authentication).hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @GetMapping(value = "/{modelId:.+}/policies")
-  public ResponseEntity<Collection<PolicyEntry>> getPolicies(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId) {
+  public ResponseEntity<Collection<PolicyEntry>> getPolicies(final @PathVariable String modelId) {
 
     Objects.requireNonNull(modelId, "model ID must not be null");
     try {
-      return new ResponseEntity<>(
-          getPolicyManager(tenantId).getPolicyEntries(ModelId.fromPrettyFormat(modelId)),
+      final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+      return new ResponseEntity<>(getPolicyManager(tenantId).getPolicyEntries(modelID),
           HttpStatus.OK);
     } catch (FatalModelRepositoryException ex) {
       ex.printStackTrace();
@@ -385,32 +469,30 @@ public class ModelRepositoryController extends AbstractRepositoryController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping(value = "/{modelId:.+}/policy")
-  public ResponseEntity<PolicyEntry> getUserPolicy(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId, Principal user) {
+  public ResponseEntity<PolicyEntry> getUserPolicy(final @PathVariable String modelId,
+      Principal user) {
     Objects.requireNonNull(modelId, "model ID must not be null");
     try {
+      final ModelId modelID = ModelId.fromPrettyFormat(modelId);
 
-      return new ResponseEntity<>(
-          getPolicyManager(tenantId).getPolicyEntries(ModelId.fromPrettyFormat(modelId)).stream()
-              .filter(p -> p.getPrincipalType() == PrincipalType.User
-                  && p.getPrincipalId().equals(user.getName()))
-              .findFirst().get(),
-          HttpStatus.OK);
+      final String tenantId = getTenant(modelID).orElseThrow(
+          () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+      return new ResponseEntity<>(getPolicyManager(tenantId).getPolicyEntries(modelID).stream()
+          .filter(p -> p.getPrincipalType() == PrincipalType.User
+              && p.getPrincipalId().equals(user.getName()))
+          .findFirst().get(), HttpStatus.OK);
     } catch (NoSuchElementException ex) {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @PutMapping(value = "/{modelId:.+}/policies")
-  public void addOrUpdatePolicyEntry(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId, final @RequestBody PolicyEntry entry) {
+  public void addOrUpdatePolicyEntry(final @PathVariable String modelId,
+      final @RequestBody PolicyEntry entry) {
     Objects.requireNonNull(modelId, "modelID must not be null");
     Objects.requireNonNull(entry, "entry must not be null");
 
@@ -420,7 +502,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
       throw new IllegalArgumentException("User is not a registered Vorto user");
     }
 
-    getPolicyManager(tenantId).addPolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
+    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+    getPolicyManager(tenantId).addPolicyEntry(modelID, entry);
   }
 
   private boolean attemptChangePolicyOfCurrentUser(PolicyEntry entry) {
@@ -428,15 +515,12 @@ public class ModelRepositoryController extends AbstractRepositoryController {
         .equals(entry.getPrincipalId());
   }
 
-  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or @modelRepositoryFactory.getRepository(#tenantId, authentication)"
-      + ".hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
+  @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or "
+      + "hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId),"
       + "T(org.eclipse.vorto.repository.core.PolicyEntry.Permission).FULL_ACCESS)")
   @DeleteMapping(value = "/{modelId:.+}/policies/{principalId:.+}/{principalType:.+}")
-  public void removePolicyEntry(
-      @ApiParam(value = "The id of the tenant",
-          required = true) final @PathVariable String tenantId,
-      final @PathVariable String modelId, final @PathVariable String principalId,
-      final @PathVariable String principalType) {
+  public void removePolicyEntry(final @PathVariable String modelId,
+      final @PathVariable String principalId, final @PathVariable String principalType) {
     Objects.requireNonNull(modelId, "modelID must not be null");
     Objects.requireNonNull(principalId, "principalID must not be null");
     final PolicyEntry entry =
@@ -445,7 +529,13 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     if (attemptChangePolicyOfCurrentUser(entry)) {
       throw new IllegalArgumentException("Cannot change policy of current user");
     }
-    getPolicyManager(tenantId).removePolicyEntry(ModelId.fromPrettyFormat(modelId), entry);
+
+    final ModelId modelID = ModelId.fromPrettyFormat(modelId);
+
+    final String tenantId = getTenant(modelID).orElseThrow(
+        () -> new ModelNotFoundException("The tenant for '" + modelId + "' could not be found."));
+
+    getPolicyManager(tenantId).removePolicyEntry(modelID, entry);
   }
 
   private IModelPolicyManager getPolicyManager(final String tenantId) {
@@ -460,5 +550,19 @@ public class ModelRepositoryController extends AbstractRepositoryController {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
     return getModelRepositoryFactory().getDiagnosticsService(tenantId, authentication);
+  }
+
+  private IModelRepository getRepo(ModelId modelId) {
+    Optional<String> tenant = getTenant(modelId);
+    if (!tenant.isPresent()) {
+      throw new ModelNotFoundException("The tenant for '" + modelId + "' could not be found.");
+    }
+
+    return getModelRepository(tenant.get(), SecurityContextHolder.getContext().getAuthentication());
+  }
+
+  private Optional<String> getTenant(ModelId modelId) {
+    return tenantService.getTenantFromNamespace(modelId.getNamespace())
+        .map(tenant -> tenant.getTenantId());
   }
 }

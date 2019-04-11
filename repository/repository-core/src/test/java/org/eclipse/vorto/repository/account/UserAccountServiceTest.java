@@ -44,9 +44,6 @@ public class UserAccountServiceTest extends AbstractIntegrationTest {
     importModel("ColorLightIM.infomodel", admin);
     importModel("HueLightStrips.infomodel", admin);
 
-    when(userRepository.findByUsername("alex"))
-        .thenReturn(User.create("alex", new Tenant("playground"), Role.USER));
-
     assertEquals(2, getModelRepository(alex).search("author:" + alex.getUsername()).size());
     accountService.delete("alex");
     assertEquals(0, getModelRepository(alex).search("author:" + alex.getUsername()).size());

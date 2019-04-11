@@ -25,6 +25,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
 import org.eclipse.vorto.repository.core.FatalModelRepositoryException;
+import org.eclipse.vorto.repository.core.IDiagnostics;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
@@ -58,18 +59,25 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ModelRepositoryFactory.class);
 
+  @Autowired
   private IUserRepository userRepository;
 
+  @Autowired
   private ModelSearchUtil modelSearchUtil;
 
+  @Autowired
   private AttachmentValidator attachmentValidator;
 
+  @Autowired
   private ModelParserFactory modelParserFactory;
 
+  @Autowired
   private RepositoryDiagnostics repoDiagnostics;
 
+  @Autowired
   private RepositoryConfiguration repositoryConfiguration;
 
+  @Autowired
   private TenantService tenantService;
 
   private Repository repository;
@@ -81,13 +89,15 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
         .collect(Collectors.toList());
   };
 
-  public ModelRepositoryFactory(@Autowired IUserRepository userRepository,
-      @Autowired ModelSearchUtil modelSearchUtil,
-      @Autowired AttachmentValidator attachmentValidator,
-      @Autowired ModelParserFactory modelParserFactory,
-      @Autowired RepositoryDiagnostics repoDiagnostics,
-      @Autowired RepositoryConfiguration repoConfig, 
-      @Autowired TenantService tenantService) {
+  public ModelRepositoryFactory() {}
+  
+  public ModelRepositoryFactory(IUserRepository userRepository,
+      ModelSearchUtil modelSearchUtil,
+      AttachmentValidator attachmentValidator,
+      ModelParserFactory modelParserFactory,
+      RepositoryDiagnostics repoDiagnostics,
+      RepositoryConfiguration repoConfig, 
+      TenantService tenantService) {
     this.userRepository = userRepository;
     this.modelSearchUtil = modelSearchUtil;
     this.attachmentValidator = attachmentValidator;
@@ -117,21 +127,21 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
   
   @Override
   public IModelRetrievalService getModelRetrievalService(Authentication user) {
-    return new ModelRetrievalService2(tenantsSupplier, (tenant) -> {
+    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
       return _getRepository(tenant, user);
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService(IUserContext userContext) {
-    return new ModelRetrievalService2(tenantsSupplier, (tenant) -> {
+    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
       return _getRepository(tenant, userContext.getAuthentication());
     });
   }
   
   @Override
   public IModelRetrievalService getModelRetrievalService() {
-    return new ModelRetrievalService2(tenantsSupplier, (tenant) -> {
+    return new ModelRetrievalService(tenantsSupplier, (tenant) -> {
       return _getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
   }
@@ -155,6 +165,11 @@ public class ModelRepositoryFactory implements IModelRepositoryFactory {
     return new ModelSearchService(tenantsSupplier, (tenant) -> {
       return _getRepository(tenant, SecurityContextHolder.getContext().getAuthentication());
     });
+  }
+  
+  @Override
+  public IDiagnostics getDiagnosticsService(String tenant, Authentication user) {
+    return _getRepository(tenant, user);
   }
 
   @Override

@@ -31,6 +31,7 @@ import org.eclipse.vorto.repository.core.FileContent;
 import org.eclipse.vorto.repository.core.IModelRepository;
 import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.IModelSearchService;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
@@ -200,6 +201,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
     }
 
     return modelInfos;
+  }
+  
+  protected IModelRepository getModelRepository(IUserContext userContext) {
+    return modelRepositoryFactory.getRepository(userContext);
   }
   
   protected IModelRepository getModelRepository(String tenantId, Authentication auth) {

@@ -44,6 +44,7 @@ import org.eclipse.vorto.repository.importer.impl.VortoModelImporter;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.tenant.TenantService;
 import org.eclipse.vorto.repository.tenant.TenantUserService;
+import org.eclipse.vorto.repository.tenant.repository.ITenantUserRepo;
 import org.eclipse.vorto.repository.workflow.IWorkflowService;
 import org.eclipse.vorto.repository.workflow.WorkflowException;
 import org.eclipse.vorto.repository.workflow.impl.DefaultWorkflowService;
@@ -149,15 +150,15 @@ public abstract class AbstractIntegrationTest {
     };
     repositoryFactory.start();
 
-    modelParserFactory.setModelRetrievalService(
-        repositoryFactory.getModelRetrievalService(createUserContext("admin")));
+    modelParserFactory.setModelRepositoryFactory(repositoryFactory);
     
     ModelRepositorySupervisor supervisor = new ModelRepositorySupervisor(repositoryFactory);
 
     accountService = new DefaultUserAccountService();
     accountService.setNotificationService(notificationService);
     accountService.setUserRepository(userRepository);
-    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));    
+    accountService.setApplicationEventPublisher(new MockAppEventPublisher(supervisor));
+    accountService.setTenantUserRepo(Mockito.mock(ITenantUserRepo.class));
 
     tenantUserService = new TenantUserService(tenantService, accountService);
     

@@ -115,8 +115,6 @@ public class VortoService {
       // do logging
     }
 
-
-
     return generate(generator.getInstance(), model, invocationContext);
   }
 
@@ -201,7 +199,7 @@ public class VortoService {
 
   private String urlForMapping(String targetPlatform, String namespace, String name,
       String version) {
-    return String.format("%s/rest/" + TENANT + "/models/%s/download/mappings/%s",
+    return String.format("%s/rest/models/%s/download/mappings/%s",
         env.getVortoRepoUrl(), new ModelId(name, namespace, version).getPrettyFormat(),
         targetPlatform);
   }
