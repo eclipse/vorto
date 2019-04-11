@@ -179,7 +179,7 @@ public abstract class AbstractIntegrationTest {
     MockMultipartFile file =
         new MockMultipartFile("file", fileName, mediaType.toString(), "{\"test\":123}".getBytes());
     MockMultipartHttpServletRequestBuilder builder =
-        MockMvcRequestBuilders.fileUpload("/api/v1/tenants/playground/attachments/" + modelId);
+        MockMvcRequestBuilders.fileUpload("/api/v1/attachments/" + modelId);
     return repositoryServer.perform(builder.file(file).with(request -> {
       request.setMethod("PUT");
       return request;

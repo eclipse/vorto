@@ -112,7 +112,7 @@ repositoryControllers.controller('DetailsController',
 		};
 
 		$scope.getAttachments = function (model) {
-			$http.get("./api/v1/tenants/" + $scope.tenantId + "/attachments/" + model.id.prettyFormat)
+			$http.get("./api/v1/attachments/" + model.id.prettyFormat)
 				.success(function (attachments) {
 					$scope.attachments = attachments;
 				})

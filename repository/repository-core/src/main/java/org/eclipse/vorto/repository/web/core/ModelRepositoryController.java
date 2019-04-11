@@ -309,7 +309,7 @@ public class ModelRepositoryController extends AbstractRepositoryController {
   }
 
   @ApiOperation(value = "Getting all mapping resources for the given model")
-  @PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), #tenantId + '/model:get')")
+  @PreAuthorize("hasRole('ROLE_USER') or hasPermission(T(org.eclipse.vorto.model.ModelId).fromPrettyFormat(#modelId), 'model:get')")
   @GetMapping(value = "/{modelId:.+}/download/mappings/{targetPlatform}")
   public ResponseEntity<Boolean> downloadMappingsForPlatform(
       @ApiParam(value = "The id of the tenant",

@@ -14,6 +14,7 @@ package org.eclipse.vorto.repository.server.it;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.eclipse.vorto.model.ModelId;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -44,6 +45,7 @@ public class TestModel {
     this.modelName = modelName;
     this.description = description;
     this.version = version;
+    this.prettyName = new ModelId(modelName, namespace, version).getPrettyFormat();
   }
 
   public void createModel(MockMvc mockMvc,
