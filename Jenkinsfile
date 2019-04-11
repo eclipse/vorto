@@ -74,7 +74,7 @@ pipeline {
             }
             post{
               failure{
-                githubNotify context: 'Generators - Compliance Checks', description: 'Compliance Checks Failed,  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+                githubNotify context: 'Generators - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
               }
             }
           }
