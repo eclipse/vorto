@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -21,7 +20,7 @@ import org.eclipse.vorto.core.api.model.model.ModelType;
 import org.eclipse.vorto.editor.functionblock.FunctionblockStandaloneSetup;
 import org.eclipse.vorto.editor.infomodel.InformationModelStandaloneSetup;
 import org.eclipse.vorto.editor.mapping.MappingStandaloneSetup;
-import org.eclipse.vorto.repository.core.IModelRetrievalService;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -38,16 +37,16 @@ public class ModelParserFactory {
 
   @Autowired
   private ErrorMessageProvider errorMessageProvider;
-  
+
   @Autowired
-  private IModelRetrievalService modelRetrievalService;
+  private IModelRepositoryFactory modelRepoFactory;
 
   @PostConstruct
   public void init() {
     if (!isInit) {
       initDSLPackages();
     }
-   ModelParserFactory.instance = this;
+    ModelParserFactory.instance = this;
   }
 
   public void initDSLPackages() {
@@ -65,13 +64,17 @@ public class ModelParserFactory {
 
   public IModelParser getParser(String fileName) {
     if (fileName.endsWith(ModelType.Datatype.getExtension())) {
-      return new DatatypeModelParser(fileName, modelRetrievalService, errorMessageProvider);
+      return new DatatypeModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Functionblock.getExtension())) {
-      return new FunctionblockModelParser(fileName, modelRetrievalService, errorMessageProvider);
+      return new FunctionblockModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.InformationModel.getExtension())) {
-      return new InformationModelParser(fileName, modelRetrievalService, errorMessageProvider);
+      return new InformationModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else if (fileName.endsWith(ModelType.Mapping.getExtension())) {
-      return new MappingModelParser(fileName, modelRetrievalService, errorMessageProvider);
+      return new MappingModelParser(fileName, modelRepoFactory.getModelRetrievalService(),
+          errorMessageProvider);
     } else {
       throw new UnsupportedOperationException("File cannot be parsed, because it is not supported");
     }
@@ -96,7 +99,7 @@ public class ModelParserFactory {
     this.errorMessageProvider = errorMessageProvider;
   }
 
-  public void setModelRetrievalService(IModelRetrievalService modelRetrievalService) {
-    this.modelRetrievalService = modelRetrievalService;
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepoFactory) {
+    this.modelRepoFactory = modelRepoFactory;
   }
 }

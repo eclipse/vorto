@@ -4,6 +4,8 @@ import org.springframework.security.core.Authentication;
 
 public interface IModelRepositoryFactory {
   
+  IDiagnostics getDiagnosticsService(String tenant, Authentication user);
+  
   IModelPolicyManager getPolicyManager(String tenant, Authentication user);
   
   IModelPolicyManager getPolicyManager(IUserContext userContext);

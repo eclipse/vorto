@@ -180,7 +180,7 @@ public class AccountController {
   }
 
   @RequestMapping(method = RequestMethod.POST,
-      value = "/rest/{tenantId}/accounts/{username:.+}/updateTask")
+      value = "/rest/accounts/{username:.+}/updateTask")
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or #username == authentication.name")
   public ResponseEntity<Boolean> upgradeUserAccount(Principal user,
       @ApiParam(value = "Username", required = true) @PathVariable String username) {
@@ -209,7 +209,7 @@ public class AccountController {
     return new ResponseEntity<UserDto>(UserDto.fromUser(account), HttpStatus.OK);
   }
 
-  @RequestMapping(value = "/rest/{tenantId}/accounts/{username:.+}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/rest/accounts/{username:.+}", method = RequestMethod.DELETE)
   @PreAuthorize("hasRole('ROLE_SYS_ADMIN') or hasPermission(#username,'user:delete')")
   public ResponseEntity<Void> deleteUserAccount(@PathVariable("username") final String username) {
     accountService.delete(username);

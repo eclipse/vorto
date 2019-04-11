@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -32,14 +31,20 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
+import org.eclipse.vorto.repository.core.IUserContext;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.generation.GeneratedOutput;
 import org.eclipse.vorto.repository.generation.GeneratorInfo;
 import org.eclipse.vorto.repository.generation.IGeneratorService;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.eclipse.vorto.repository.web.AbstractRepositoryController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,14 +77,10 @@ public class GeneratorController extends AbstractRepositoryController {
   @Autowired
   private IGeneratorService generatorService;
 
-  @ApiOperation(value = "Generate code for a specified platform, and extract specified path",
-		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."
-				    + "<br/>"
-			  		+ "<pre>"
-			  		+ "* modelId : The combined value of 'namespace:name:version' of the model<br/>"
-			  		+ "	Example: com.mycompany:MagneticSensor:1.0.0<br/>"
-			  		+ "* serviceKey : The key value of the specific generator.<br/>"
-			  		+ "</pre>")
+  @Autowired
+  private ITenantService tenantService;
+
+  @ApiOperation(value = "Generate code for a specified platform, and extract specified path")
   @ApiResponses(value = {@ApiResponse(code = 200, message = "Code was successfully generated."),
       @ApiResponse(code = 400, message = "Wrong input"),
       @ApiResponse(code = 404, message = "Model or generator not found")})
@@ -92,7 +93,9 @@ public class GeneratorController extends AbstractRepositoryController {
       final HttpServletRequest request, final HttpServletResponse response) {
 
     try {
-      GeneratedOutput generatedOutput = generatorService.generate(ModelId.fromPrettyFormat(modelId),
+      ModelId modelIdToGen = ModelId.fromPrettyFormat(modelId);
+      
+      GeneratedOutput generatedOutput = generatorService.generate(getUserContext(modelIdToGen), modelIdToGen,
           URLDecoder.decode(serviceKey, "utf-8"), getRequestParams(request));
 
       String extractPath = getExtractPath(request);
@@ -175,13 +178,25 @@ public class GeneratorController extends AbstractRepositoryController {
     Objects.requireNonNull(modelId, "modelID must not be null");
     Objects.requireNonNull(serviceKey, "generator Key must not be null");
 
+    ModelId modelIdToGen = ModelId.fromPrettyFormat(modelId);
+
     try {
-      GeneratedOutput generatedOutput = generatorService.generate(ModelId.fromPrettyFormat(modelId),
-          URLDecoder.decode(serviceKey, "utf-8"), getRequestParams(request));
+      GeneratedOutput generatedOutput = generatorService.generate(getUserContext(modelIdToGen),
+          modelIdToGen, URLDecoder.decode(serviceKey, "utf-8"), getRequestParams(request));
       writeToResponse(response, generatedOutput);
     } catch (IOException e) {
       throw new RuntimeException("Error copying file.", e);
     }
+  }
+
+  private IUserContext getUserContext(ModelId modelId) {
+    Optional<Tenant> tenant = tenantService.getTenantFromNamespace(modelId.getNamespace());
+    if (!tenant.isPresent()) {
+      throw new ModelNotFoundException("The tenant for '" + modelId + "' could not be found.");
+    }
+
+    return UserContext.user(SecurityContextHolder.getContext().getAuthentication(),
+        tenant.get().getTenantId());
   }
 
   private void writeToResponse(final HttpServletResponse response, GeneratedOutput generatedOutput)

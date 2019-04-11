@@ -189,17 +189,7 @@ public class DefaultUserAccountService
     PreConditions.notNull(tenant, "Tenant with given tenantId doesnt exists");
     
     User existingUser = userRepository.findByUsername(username);
-    /*
-    if (isUserAlreadyExistAndRoleNotProvided(existingUser, userRoles)) {
-      throw new IllegalArgumentException("User with ID already exists");
-    } else if (existingUser != null) {
-      updateRole(existingUser, tenantId, userRoles);
-      return userRepository.save(existingUser);
-    } else {
-      User user = createUser(username);
-      user.addRolesIfExistingTenant(tenantId, userRoles);
-      return userRepository.save(user);
-    }*/
+
     if (existingUser != null) {
       addUserToTenant(tenantId, username, userRoles);
       return existingUser;
@@ -210,24 +200,6 @@ public class DefaultUserAccountService
       return userRepository.save(user);
     }
   }
-
-  /*
-  private void updateRole(User existingUser, String tenantId, Role[] userRoles) {
-    Set<UserRole> existingRoles = existingUser.getRoles(tenantId);
-    removeDuplicateRoles(userRoles, existingRoles);
-    existingUser.addRolesIfExistingTenant(tenantId, userRoles);
-  }
-  
-  private void removeDuplicateRoles(Role[] userRoles, Set<UserRole> existingRoles) {
-    Arrays.asList(userRoles).forEach(role -> {
-      existingRoles.removeIf(e -> e.getRole() == role);
-    });
-  }
-
-  private boolean isUserAlreadyExistAndRoleNotProvided(User existingUser, Role[] userRoles) {
-    return existingUser != null && Objects.isNull(userRoles);
-  }
-  */
 
   @Transactional
   public User removeUserRole(String userName, String tenantId, List<Role> roles) {
@@ -252,8 +224,14 @@ public class DefaultUserAccountService
     User userToDelete = userRepository.findByUsername(userId);
 
     if (userToDelete != null) {
-      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
+      if (userToDelete.getTenantUsers() != null) {
+        userToDelete.getTenantUsers().forEach(tu -> {
+          tenantUserRepo.delete(tu);
+        });
+      }
+      
       userRepository.delete(userToDelete);
+      eventPublisher.publishEvent(new AppEvent(this, userId, EventType.USER_DELETED));
       if (userToDelete.hasEmailAddress()) {
         notificationService.sendNotification(new DeleteAccountMessage(userToDelete));
       }
@@ -283,13 +261,15 @@ public class DefaultUserAccountService
     this.userRepository = userRepository;
   }
 
-
   public INotificationService getNotificationService() {
     return notificationService;
   }
-
-
+  
   public void setNotificationService(INotificationService notificationService) {
     this.notificationService = notificationService;
+  }
+
+  public void setTenantUserRepo(ITenantUserRepo tenantUserRepo) {
+    this.tenantUserRepo = tenantUserRepo;
   }
 }

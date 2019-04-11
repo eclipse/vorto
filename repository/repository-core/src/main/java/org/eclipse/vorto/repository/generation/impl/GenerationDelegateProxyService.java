@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -23,7 +22,8 @@ import java.util.Optional;
 import java.util.Set;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.domain.Generator;
@@ -57,7 +57,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
   private IGeneratorLookupRepository registeredGeneratorsRepository;
 
   @Autowired
-  private IModelRepository modelRepositoryService;
+  private IModelRepositoryFactory modelRepositoryFactory;
 
 
   private RestTemplate restTemplate;
@@ -110,17 +110,21 @@ public class GenerationDelegateProxyService implements IGeneratorService {
   }
 
   @Override
-  public GeneratedOutput generate(ModelId modelId, String serviceKey,
+  public GeneratedOutput generate(IUserContext userContext, ModelId modelId, String serviceKey,
       Map<String, String> requestParams) {
-    ModelInfo modelResource = modelRepositoryService.getById(modelId);
+
+    ModelInfo modelResource = modelRepositoryFactory.getRepository(userContext).getById(modelId);
+
     if (modelResource == null) {
       throw new ModelNotFoundException("Model with the given ID does not exist", null);
     }
+
     if (modelResource.getType() == ModelType.Datatype
         || modelResource.getType() == ModelType.Mapping) {
       throw new GenerationException(
           "Provided model is neither an information model nor a function block model!");
     }
+
     restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
     Generator generatorEntity = getGenerator(serviceKey);
     if (generatorEntity == null) {
@@ -140,7 +144,7 @@ public class GenerationDelegateProxyService implements IGeneratorService {
         generatorEntity.getGenerationEndpointUrl() + attachRequestParams(requestParams),
         HttpMethod.GET, entity, byte[].class, modelId.getNamespace(), modelId.getName(),
         modelId.getVersion());
-
+    
     return new GeneratedOutput(response.getBody(), extractFileNameFromHeader(response),
         response.getHeaders().getContentLength());
   }

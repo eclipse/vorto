@@ -36,7 +36,7 @@ import com.google.common.collect.Sets;
 @Entity
 @Table(name = "user")
 public class User {
-  
+
   public static final String USER_ANONYMOUS = "anonymous";
 
   @Id
@@ -56,10 +56,12 @@ public class User {
   @Column(nullable = false)
   private Timestamp lastUpdated;
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true,
+      mappedBy = "user")
   private Set<TenantUser> tenantUsers = new HashSet<TenantUser>();
-  
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "owner")
+
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true,
+      mappedBy = "owner")
   private Set<Tenant> ownedTenants = new HashSet<Tenant>();
 
   private String emailAddress;
@@ -142,12 +144,28 @@ public class User {
   }
 
   private Optional<TenantUser> getTenantUser(String tenantId) {
-    return tenantUsers.stream().filter(user -> user.getTenant().getTenantId().equals(tenantId))
+    if (tenantUsers == null || tenantUsers.isEmpty()) {
+      return Optional.empty();
+    }
+
+    return tenantUsers.stream()
+        .filter(user -> 
+          user.getTenant() != null && 
+          user.getTenant().getTenantId() != null && 
+          user.getTenant().getTenantId().equals(tenantId))
         .findFirst();
   }
 
   public Set<Role> getUserRoles(String tenantId) {
     return UserUtils.extractRolesAsList(getRoles(tenantId));
+  }
+
+  public Set<Tenant> getTenants() {
+    if (tenantUsers == null || tenantUsers.isEmpty()) {
+      return Collections.emptySet();
+    }
+
+    return tenantUsers.stream().map(tu -> tu.getTenant()).collect(Collectors.toSet());
   }
 
   public boolean isSysAdmin(String tenantId) {
@@ -214,7 +232,7 @@ public class User {
   public boolean hasEmailAddress() {
     return this.emailAddress != null && !"".equals(this.emailAddress);
   }
-  
+
   public Set<TenantUser> getTenantUsers() {
     return tenantUsers;
   }
@@ -222,17 +240,17 @@ public class User {
   public void setTenantUsers(Set<TenantUser> tenants) {
     this.tenantUsers = tenants;
   }
-  
+
   public void addTenantUser(TenantUser tenantUser) {
     this.tenantUsers.add(tenantUser);
     tenantUser.setUser(this);
   }
-  
+
   public void removeTenantUser(TenantUser tenantUser) {
     this.tenantUsers.remove(tenantUser);
     tenantUser.setUser(null);
   }
-  
+
   public Set<Tenant> getOwnedTenants() {
     return ownedTenants;
   }
@@ -240,11 +258,11 @@ public class User {
   public void setOwnedTenants(Set<Tenant> ownedTenants) {
     this.ownedTenants = ownedTenants;
   }
-  
+
   public void addOwnedTenant(Tenant tenant) {
     this.ownedTenants.add(tenant);
   }
-  
+
   public void removeOwnedTenant(Tenant tenant) {
     this.ownedTenants.remove(tenant);
   }

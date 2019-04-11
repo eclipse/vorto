@@ -359,35 +359,6 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
           }
         }
       }
-      /*
-      PropertyIterator propIter = folderNode.getReferences();
-      while (propIter.hasNext()) {
-        Property prop = propIter.nextProperty();
-        try {
-          Node referencedFolder = prop.getParent();
-          final ModelId referencedById = ModelIdHelper.fromPath(referencedFolder.getPath());
-          if (hasPermission(referencedById,Permission.READ)) {
-            resource.getReferencedBy().add(referencedById);
-
-            if (referencedFolder.getProperty(VORTO_NODE_TYPE).getString()
-                .equals(ModelType.Mapping.name())) {
-              try {
-                ModelResource emfResource = getEMFResource(referencedById);
-                if (emfResource != null) {
-                  resource.addPlatformMapping(emfResource.getTargetPlatform(), referencedById);
-                }
-              } catch (ValidationException validationEx) {
-                logger.warn("Stored Vorto Model is corrupt: " + referencedById.getPrettyFormat(),
-                    validationEx);
-              } catch (Exception e) {
-                logger.warn("Error while getting a platform mapping", e);
-              }
-            }
-          }
-        } catch (Exception e) {
-          logger.warn("A reference has gone stale. Please remove this reference. : ", e);
-        }
-      }*/
     }
     return resource;
   }
@@ -490,7 +461,12 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     doInSession(session -> {
       try {
         ModelInfo modelResource = this.getById(modelId);
-        if (!modelResource.getReferencedBy().isEmpty()) {
+        if (modelResource == null) {
+          throw new ModelNotFoundException("Cannot find " + modelId.getPrettyFormat());
+        }
+        
+        if (modelResource.getReferencedBy() != null && 
+            !modelResource.getReferencedBy().isEmpty()) {
           throw new ModelReferentialIntegrityException(
               "Cannot remove model because it is referenced by other model(s)",
               modelResource.getReferencedBy());
@@ -1087,11 +1063,11 @@ public class ModelRepository implements IModelRepository, IDiagnostics, IModelPo
     } catch (RepositoryException ex) {
       logger.error(ex);
       throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
-    } catch (ModelReferentialIntegrityException e) {
+    } catch (NotAuthorizedException | ModelReferentialIntegrityException e) {
       throw e;
     } catch (Exception ex) {
       logger.error("Unexpected exception", ex);
-      throw new FatalModelRepositoryException("Unexpected exception while operating on repository.", ex);
+      throw new FatalModelRepositoryException("Cannot create repository session for user", ex);
     } finally {
       if (session != null) {
         session.logout();

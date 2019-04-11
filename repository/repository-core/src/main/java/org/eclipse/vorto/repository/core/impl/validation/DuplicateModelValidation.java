@@ -18,7 +18,8 @@ import org.eclipse.vorto.repository.core.IModelRetrievalService;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.impl.InvocationContext;
-import org.eclipse.vorto.repository.domain.User;
+import org.eclipse.vorto.repository.domain.Role;
+import org.springframework.security.core.Authentication;
 
 /**
  * @author Alexander Edelmann - Robert Bosch (SEA) Pte. Ltd.
@@ -29,7 +30,8 @@ public class DuplicateModelValidation implements IModelValidator {
 
   private IUserAccountService userRepository;
 
-  public DuplicateModelValidation(IModelRepositoryFactory modelRepoFactory, IUserAccountService userRepo) {
+  public DuplicateModelValidation(IModelRepositoryFactory modelRepoFactory,
+      IUserAccountService userRepo) {
     this.modelRepoFactory = modelRepoFactory;
     this.userRepository = userRepo;
   }
@@ -38,7 +40,8 @@ public class DuplicateModelValidation implements IModelValidator {
   public void validate(ModelInfo modelResource, InvocationContext context)
       throws ValidationException {
     IModelPolicyManager policyManager = modelRepoFactory.getPolicyManager(context.getUserContext());
-    IModelRetrievalService modelRetrievalService = modelRepoFactory.getModelRetrievalService(context.getUserContext());
+    IModelRetrievalService modelRetrievalService =
+        modelRepoFactory.getModelRetrievalService(context.getUserContext());
     if (modelRetrievalService.getModel(modelResource.getId()).isPresent() && (!isAdmin(context)
         && !policyManager.hasPermission(modelResource.getId(), Permission.MODIFY))) {
       throw new ValidationException("Model already exists", modelResource);
@@ -51,10 +54,9 @@ public class DuplicateModelValidation implements IModelValidator {
     assert (context.getUserContext().getUsername() != null);
     assert (userRepository != null);
 
-    User user = userRepository.getUser(context.getUserContext().getUsername());
-    if (user == null) {
-      return false;
-    }
-    return user.isSysAdmin(context.getUserContext().getTenant());
+    Authentication authentication = context.getUserContext().getAuthentication();
+
+    return authentication.getAuthorities().stream()
+        .anyMatch(ga -> ga.getAuthority().equals(Role.rolePrefix + Role.SYS_ADMIN));
   }
 }

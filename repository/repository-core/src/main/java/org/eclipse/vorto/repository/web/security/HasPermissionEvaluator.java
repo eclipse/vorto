@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -15,9 +14,10 @@ package org.eclipse.vorto.repository.web.security;
 import java.io.Serializable;
 import java.util.Optional;
 import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.UserContext;
+import org.eclipse.vorto.repository.core.ModelNotFoundException;
+import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.tenant.ITenantService;
@@ -31,47 +31,52 @@ import org.springframework.stereotype.Component;
 @Component
 public class HasPermissionEvaluator implements PermissionEvaluator {
 
-  private IModelRepository repository;
-  
+  private IModelRepositoryFactory repositoryFactory;
+
   private ITenantService tenantService;
 
-  public HasPermissionEvaluator(@Autowired IModelRepository repository, @Autowired ITenantService tenantService) {
-    this.repository = repository;
+  public HasPermissionEvaluator(@Autowired IModelRepositoryFactory repositoryFactory,
+      @Autowired ITenantService tenantService) {
+    this.repositoryFactory = repositoryFactory;
     this.tenantService = tenantService;
   }
 
   @Override
   public boolean hasPermission(Authentication authentication, Object targetDomainObject,
-      Object permission) {
+      Object targetPermission) {
     final String username = authentication.getName();
-    final String hashedUsername = UserContext.getHash(username);
 
     if (targetDomainObject instanceof ModelId) {
-      try {
-      ModelInfo modelInfo = this.repository.getById((ModelId) targetDomainObject);
-      if (modelInfo != null) {
-        if ("model:delete".equalsIgnoreCase((String) permission)) {
-          // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-          // migration has taken place
-          return modelInfo.getAuthor()
-              .equalsIgnoreCase(hashedUsername)
-              || modelInfo.getAuthor().equalsIgnoreCase(username);
-        } else if ("model:get".equalsIgnoreCase((String) permission)) {
-          return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName())
-              || modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName()) ||
-              // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-              // migration has taken place
-              modelInfo.getAuthor().equals(hashedUsername)
-              || modelInfo.getAuthor().equals(username);
-        } else if ("model:owner".equalsIgnoreCase((String) permission)) {
-          // TODO : Checking for hashedUsername is legacy and needs to be removed once full
-          // migration has taken place
-          return modelInfo.getAuthor().equals(hashedUsername)
-              || modelInfo.getAuthor().equals(username);
-        } 
-      }
-      } catch(NotAuthorizedException ex) {
-        return false;
+      if (targetPermission instanceof String) {
+        try {
+          String[] modelContext = ((String) targetPermission).split("/");
+          String tenant = modelContext[0];
+          String permission = modelContext[1];
+          ModelInfo modelInfo = repositoryFactory.getRepository(tenant, authentication)
+              .getById((ModelId) targetDomainObject);
+          if (modelInfo != null) {
+            if ("model:delete".equalsIgnoreCase((String) permission)) {
+              return modelInfo.getAuthor().equalsIgnoreCase(username);
+            } else if ("model:get".equalsIgnoreCase((String) permission)) {
+              return modelInfo.getState().equals(SimpleWorkflowModel.STATE_RELEASED.getName())
+                  || modelInfo.getState().equals(SimpleWorkflowModel.STATE_DEPRECATED.getName())
+                  || modelInfo.getAuthor().equals(username);
+            } else if ("model:owner".equalsIgnoreCase((String) permission)) {
+              return modelInfo.getAuthor().equals(username);
+            }
+          }
+        } catch (NotAuthorizedException ex) {
+          return false;
+        }
+      } else if (targetPermission instanceof Permission) {
+        ModelId modelId = (ModelId) targetDomainObject;
+        Permission permission = (Permission) targetPermission;
+        
+        Tenant tenant = tenantService.getTenantFromNamespace(modelId.getNamespace()).orElseThrow(
+            () -> new ModelNotFoundException("The tenant for '" + modelId.getPrettyFormat() + "' could not be found."));
+        
+        return repositoryFactory.getPolicyManager(tenant.getTenantId(), authentication)
+            .hasPermission(modelId, permission);
       }
     } else if (targetDomainObject instanceof String) {
       return username.equalsIgnoreCase((String) targetDomainObject);
@@ -82,22 +87,21 @@ public class HasPermissionEvaluator implements PermissionEvaluator {
   @Override
   public boolean hasPermission(Authentication authentication, Serializable targetId,
       String targetType, Object permission) {
-    
+
     if (targetType.equals(Tenant.class.getName())) {
       final String username = authentication.getName();
       final String role = (String) permission;
       final String tenantId = (String) targetId;
-      
+
       Optional<Tenant> _tenant = tenantService.getTenant(tenantId);
       if (_tenant.isPresent()) {
         Tenant tenant = _tenant.get();
-        return tenant.getUsers().stream().anyMatch(tenantUser ->
-          tenantUser.getUser().getUsername().equals(username) && 
-            tenantUser.hasRole(Role.valueOf(role.replace("ROLE_", "")))
-        );
+        return tenant.getUsers().stream()
+            .anyMatch(tenantUser -> tenantUser.getUser().getUsername().equals(username)
+                && tenantUser.hasRole(Role.valueOf(role.replace("ROLE_", ""))));
       }
     }
-    
+
     return false;
   }
 

@@ -1,0 +1,5 @@
+namespace com.test
+version 1.0.0
+entity Color {
+	mandatory color as string
+}
