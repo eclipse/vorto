@@ -39,7 +39,7 @@ pipeline {
           }
           stage("CLMScan Vorto-repository"){
             steps{
-              githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+              githubNotify context: 'Repository - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
                 withMaven(
                     maven: 'maven-latest',
                     mavenLocalRepo: '.repository') {
@@ -51,17 +51,17 @@ pipeline {
                     }
                   }
                 }
-              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+              githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
             }
             post{
               failure{
-                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+                githubNotify context: 'Repository - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
               }
             }
           }
           stage("CLMScan Vorto-generators"){
             steps{
-              githubNotify context: 'Generators - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+              githubNotify context: 'Generator - Compliance Checks', description: 'Checks In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
                 withMaven(
                   maven: 'maven-latest',
                   mavenLocalRepo: '.repository') {
@@ -70,22 +70,22 @@ pipeline {
                         //      s3Upload(file:'file.txt', bucket:'pr-vorto-documents', path:'generators/generator-runner/target/**/*.pdf')
                     }
                 }
-              githubNotify context: 'Generators - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+              githubNotify context: 'Generator - Compliance Checks', description: 'Compliance Checks Completed',  status: 'SUCCESS', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
             }
             post{
               failure{
-                githubNotify context: 'Generators - Compliance Checks', description: 'Compliance Checks Failed,  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/clmscans/${CHANGE_ID}/${BUILD_NUMBER}/"
+                githubNotify context: 'Generator - Compliance Checks', description: 'Compliance Checks Failed',  status: 'FAILURE', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
               }
             }
           }
-          stage("Virus Scan Vorto-Repository"){
+          stage("AVScan infomodelrepository"){
             when {
               allOf {
                 expression { env.CHANGE_ID != null }
               }
             }
             steps{
-              githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: ""
+              githubNotify context: 'Repository - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
                 dir('avscan_infomodel') {
                   //copy files over to the new maven folder to run AntiVirus Scans
@@ -111,14 +111,14 @@ pipeline {
               }
             }
           }
-          stage("Virus Scan Vorto-Generators"){
+          stage("AVScan generator-runner"){
             when {
               allOf {
                 expression { env.CHANGE_ID != null }
               }
             }
             steps{
-              githubNotify context: 'Generators - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: ""
+              githubNotify context: 'Generators - Virus Scan', description: 'Scan In Progress',  status: 'PENDING', targetUrl: "https://s3.eu-central-1.amazonaws.com/pr-vorto-documents/avscans"
                 // Get Bosch pom files to run in an extra folder to keep the open source project clean and because the Bosch maven plugins can not be licensed under EPL
                 dir('avscan_generator') {
                   //copy files over to the new maven folder to run AntiVirus Scans
@@ -181,3 +181,4 @@ pipeline {
       // }
     }
 }
+
