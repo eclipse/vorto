@@ -9,7 +9,6 @@ server:
     generatorPassword: 123
 
 spring:
-  profiles.active: local
   jackson.serialization.write-dates-as-timestamps: false
   http.multipart.max-file-size: 20MB
   http.multipart.max-request-size: 15MB
@@ -17,15 +16,8 @@ spring:
 repo:
   config:
     maxModelImageSize: 32000
-    maxModelSize: 2000000
-    maxBackupSize: 20000000
-    predefinedTenants:
-      -
-        tenantId: standardization
-        defaultNamespace: org.eclipse.vorto
-        namespaces:
-        authenticationProvider: GITHUB
-        authorizationProvider: DB
+    maxModelSize: 90000000
+    maxBackupSize: 900000000
   attachment.allowed:
     extension: ext, pdf, doc, zip, jpg, png, svg, html, json
     fileSize: 5
@@ -71,4 +63,4 @@ mail:
   from: vorto-dev@eclipse.org
   login:
     username:
-    password: 
+    password:

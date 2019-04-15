@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>meta-model</artifactId>
-		<version>0.10.0-SNAPSHOT</version>
+		<version>0.11.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>org.eclipse.vorto.core</artifactId>
@@ -31,7 +31,7 @@
 					<includePluginDependencies>true</includePluginDependencies>
 					<mainClass>org.eclipse.emf.mwe2.launch.runtime.Mwe2Launcher</mainClass>
 					<arguments>
-						<argument>file://${project.basedir}/model/GenerateModels.mwe2</argument>
+						<argument>file://${project.basedir}/src/org/eclipse/vorto/core/api/model/GenerateModels.mwe2</argument>
 						<argument>
 							-p
 						</argument>

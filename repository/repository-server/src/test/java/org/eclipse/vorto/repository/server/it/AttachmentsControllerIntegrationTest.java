@@ -106,6 +106,16 @@ public class AttachmentsControllerIntegrationTest extends AbstractIntegrationTes
     
     assertTrue(true);
   }
+  
+//  @Test
+//  public void testAttachmentNoPermissions() throws Exception {
+//	  addAttachment(testModel.prettyName, userAdmin, "test.json", MediaType.APPLICATION_JSON)
+//      .andExpect(status().isOk());
+//    repositoryServer.perform(get("/api/v1/attachments/" + testModel.prettyName).with(userStandard))
+//        .andExpect(status().isForbidden());
+//    
+//    assertTrue(true);
+//  }
 
 
 }

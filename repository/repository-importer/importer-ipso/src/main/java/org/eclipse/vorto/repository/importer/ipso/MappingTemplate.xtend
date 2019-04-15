@@ -18,6 +18,8 @@ class MappingTemplate {
 	
 	def String create(LWM2M.Object source, ModelInfo modelInfo) {
 		'''
+		vortolang 1.0
+		
 		namespace «modelInfo.id.namespace»
 		version «modelInfo.id.version»
 		displayname "«modelInfo.displayName»"

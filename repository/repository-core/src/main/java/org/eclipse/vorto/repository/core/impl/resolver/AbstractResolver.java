@@ -59,8 +59,8 @@ public abstract class AbstractResolver implements IModelIdResolver {
     return foundId.isPresent() ? foundId.get() : null;
   }
 
-  private boolean matchesServiceKey(String tenantId, ModelInfo resource, String targetPlatformKey) {
-    ModelFileContent content = repositoryFactory.getRepository(tenantId).getModelContent(resource.getId());
+  private boolean matchesServiceKey(ModelInfo resource, String targetPlatformKey) {
+    ModelFileContent content = this.repository.getModelContent(resource.getId(),false);
     return ((MappingModel) content.getModel()).getTargetPlatform().equals(targetPlatformKey);
   }
 

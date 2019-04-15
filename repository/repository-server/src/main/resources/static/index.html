@@ -80,7 +80,7 @@
 <body>
 <div class="alert alert-warning alert-sandbox" role="alert">
   <button type="button" class="close" data-dismiss="alert">×</button>
-  <span class="glyphicon glyphicon-warning-sign"></span> This Vorto Repository is operated by the Vorto Team in Singapore. We can only ensure operations and support on best effort basis, <b>from Monday to Friday, 08:00am - 06:00pm Singapore time (SGT)</b>. Thank you for your understanding.  
+  <span class="glyphicon glyphicon-warning-sign"></span> This Vorto Repository is operated by the Vorto Team in Singapore. We can only ensure operations and support on best effort basis, <b>from Monday to Friday, 08:00am - 06:00pm Singapore time (SGT)</b>. Thank you for your understanding.
   	<p>
   	If you need support, please contact <a href="mailto:vorto-dev@eclipse.org">vorto-dev@eclipse.org</a>.
   	</p>
@@ -106,9 +106,9 @@
 					<li><a href="./#/generators">Plugins</a></li>
 					<li><a href="./#/api">HTTP API</a></li>
 					<li><a href="http://www.eclipse.org/vorto">What is Vorto?</a></li>
-					
+
 				</ul>
-				<div id="navbar-right" class="navbar-right">					
+				<div id="navbar-right" class="navbar-right">
 					<ul class="nav navbar-nav">
 						<li ng-show="authenticated && userInfo.isRegistered === 'true'"><a id="userWelcome"
 							href="./#/settings">Welcome, {{displayName}}</a></li>
@@ -120,7 +120,7 @@
 				</div>
 			</div>
 		</div>
-	</nav>	
+	</nav>
 	<hr>
 	<div class="container" ng-view id="all"></div>
 
@@ -128,7 +128,7 @@
 	<footer class="navbar navbar-fixed-bottom">
 		<div class="row">
 			<div class="col-md-3">
-				<span class="copyright">© 2018 Eclipse Vorto Project ($project_version)</span>
+				<span class="copyright">© 2018 Eclipse Vorto Project (${project.version})</span>
 			</div>
 			<div class="col-md-9">
 				<ul class="list-inline quicklinks pull-right">

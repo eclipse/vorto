@@ -24,65 +24,77 @@ This tutorial explains how to generate an Arduino sketch for a given Vorto Infor
 
 ## Proceed as follows
 
-1. Setup your development environment (on your development machine).
+### Step 1: Setup your development environment (on your development machine).
 
-	If not already done setup your development environment for the ESP8266. First, you have to install the Arduino IDE, the board-package for the ESP8266 and the PubSubClient.
+If not already done setup your development environment for the ESP8266. First, you have to install the Arduino IDE, the board-package for the ESP8266 and the PubSubClient.
 
-	- Download and install the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
+- Download and install the [Arduino IDE](https://www.arduino.cc/en/Main/Software).
 
-	- Install the ESP8266 Board Package.
+- Install the ESP8266 Board Package.
 
-		1. Select **File -> Preferences -> Additional Board Manager URLs** and add `http://arduino.esp8266.com/stable/package_esp8266com_index.json`.
+	1. Select **File -> Preferences -> Additional Board Manager URLs** and add `http://arduino.esp8266.com/stable/package_esp8266com_index.json`.
 
-		2. Select **Tools -> Board -> Boards Manager...**, look for the esp8266 package and install the latest version.
+	2. Select **Tools -> Board -> Boards Manager...**, look for the esp8266 package and install the latest version.
 
-		3. Select **Tools -> Board**.
+	3. Select **Tools -> Board**.
 
-			You should now find all the supported ESP8266 boards listed, chose the one you are working with.
+	You should now find all the supported ESP8266 boards listed, chose the one you are working with.
 
-		4. Plug-in the NodeMCU board and check in the Device Manager, whether you have the necessary USB serial driver installed. In case it is missing and Windows Update can't find the driver, get the latest version of the driver from the [NodeMCU github repository](https://github.com/nodemcu/nodemcu-devkit/blob/master/Drivers/).
+	4. Plug-in the NodeMCU board and check in the Device Manager, whether you have the necessary USB serial driver installed. In case it is missing and Windows Update can't find the driver, get the latest version of the driver from the [NodeMCU github repository](https://github.com/nodemcu/nodemcu-devkit/blob/master/Drivers/).
 
-	- Select **Sketch -> Include Library -> Manage Libraries**, look for the PubSubClient and install the latest version.
+- Select **Sketch -> Include Library -> Manage Libraries**, look for the PubSubClient and install the latest version.
 
-		> Note: You can use the search field to search for the PubSubClient.
+	> Note: You can use the search field to search for the PubSubClient.
 
-	The PubSubClient will get installed in the Arduino/libraries directory, i.e. in `{HOME}/Arduino/libraries`. As you might need to adjust the buffer size for the MQTT payload, it is a good thing to verify the location of the library at this point.
+The PubSubClient will get installed in the Arduino/libraries directory, i.e. in `{HOME}/Arduino/libraries`. As you might need to adjust the buffer size for the MQTT payload, it is a good thing to verify the location of the library at this point.
+		
+---
+**Important Note for Mac Users!**
 
-2. Generating an arduino sketch using the Arduino Generator (Arduino project).
+The ESP3266 Development board's ports will not be recognized by the Arduino IDE	since there are several drivers that are missing on a Mac.
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+1. Download the drivers through the [SiLabs website](https://www.silabs.com/Support)
+2. Install the drivers onto the computer
+3. Plug in the ESP3266 through the micro-usb cable to the computer, and the port will appear on the Arduino IDE under Tools->Ports.
 
-	- Navigate to your thing in the Thing Browser and click on it.
+---
+		
 
-	- Click on the **Source Code Templates** tab.
+### Step 2: Generating an arduino sketch using the Arduino Generator (Arduino project).
 
-	- At the **Integrate device with Arduino C** template, click **Download**.
+- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
 
-		<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
+- Navigate to your thing in the Thing Browser and click on it.
 
-	- Store the ZIP file and extract the source code.
+- Click on the **Source Code Templates** tab.
 
-	- Open the INO file in your Arduino IDE.
+- At the **Integrate device with Arduino C** template, click **Download**.
 
-3. Adjust the Arduino Project according to your needs.
+	<img width="800" src="../images/tutorials/connect_esp8266/arduino-generator.png">
 
-	The following important changes have to be made:
+- Store the ZIP file and extract the source code.
 
-	* Change the passwordDevice, the password you had entered while creating the thing
+- Open the INO file in your Arduino IDE.
+
+- Adjust the Arduino Project according to your needs.
+
+The following important changes have to be made:
+
+* Change the _honoPassword_, the password you had entered while creating the thing
 	  
-	* WLAN configuration.
+* WLAN configuration.
 
-		* SSID: change the constant ssid to your WiFi's SSID.
+	* SSID: change the constant ssid to your WiFi's SSID.
 
-		* Password: change the constant password to your WiFi password.
+	* Password: change the constant password to your WiFi password.
 
-	* In order to verify the server, you need to add a fingerprint of the server certificate to the code. This finger print is an SHA-1 hash of the certificate of the MQTT broker.
+* In order to verify the server, you need to add a fingerprint of the server certificate to the code. This finger print is an SHA-1 hash of the certificate of the MQTT broker.
 
-		* The certificate of the Bosch IoT Hub can be downloaded from the Web site [http://docs.bosch-iot-hub.com/cert/iothub.crt](http://docs.bosch-iot-hub.com/cert/iothub.crt).
+* The certificate of the Bosch IoT Hub can be downloaded from the Web site [http://docs.bosch-iot-hub.com/cert/iothub.crt](http://docs.bosch-iot-hub.com/cert/iothub.crt).
 
-		* For other MQTT brokers you might need to use openssl to extract the server certificate by invoking:
+* For other MQTT brokers you might need to use openssl to extract the server certificate by invoking:
 
-				openssl s_client -showcerts -connect www.example.com:443 </dev/null
+		openssl s_client -showcerts -connect www.example.com:443 </dev/null
 
 			The first certificate, starting with
 
@@ -98,25 +110,25 @@ This tutorial explains how to generate an Arduino sketch for a given Vorto Infor
 
 				openssl x509 -noout -fingerprint -sha1 -inform pem -in [certificate-file.crt]
 
-		* Add the fingerprint to the Arduino sketch by setting the constant `mqttServerFingerprint`, replacing the colons with spaces.
+	* Add the fingerprint to the Arduino sketch by setting the constant `mqttServerFingerprint`, replacing the colons with spaces.
 
-			<img width="800" src="../images/tutorials/connect_esp8266/mqtt-cert.png">
+		<img width="800" src="../images/tutorials/connect_esp8266/mqtt-cert.png">
 
-	* Finally you can adapt the code in the loop function to read the sensors of your device and filling in the corresponding values to the Information Model API.
+* Finally you can adapt the code in the loop function to read the sensors of your device and filling in the corresponding values to the Information Model API.
 
-	* Compile the code to verify everything with your code is ok.
+* Compile the code to verify everything with your code is ok.
 
-	* Connect your ESP8266 to your computer and select the virtual COM port to which your device is connected in the Arduino IDE under **Tools -> Port**.
+* Connect your ESP8266 to your computer and select the virtual COM port to which your device is connected in the Arduino IDE under **Tools -> Port**.
 
-	* Upload your code to your device by selecting **Sketch -> Upload**. 
+* Upload your code to your device by selecting **Sketch -> Upload**. 
 
-4. Verify incoming sensor data.
+### Step 3: Verify incoming sensor data.
 
-	- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
+- Log in to the [Vorto Console](https://vorto.eclipse.org/console) with your Bosch ID.
 
-	- Open the thing details
+- Open the thing details
 
-	- Check if the sensor data was sent successfully to the Bosch IoT Suite.
+- Check if the sensor data was sent successfully to the Bosch IoT Suite.
 
 **Congratulations**, you have successfully connected your ESP8266 device to the Bosch IoT Suite.
 

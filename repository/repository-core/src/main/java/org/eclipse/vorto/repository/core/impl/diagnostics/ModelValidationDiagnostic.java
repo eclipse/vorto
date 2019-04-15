@@ -24,6 +24,7 @@ import org.eclipse.vorto.repository.core.impl.RepositoryDiagnostics.NodeDiagnost
 import org.eclipse.vorto.repository.core.impl.parser.ModelParserFactory;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.core.impl.validation.ValidationException;
+import org.eclipse.vorto.repository.web.core.exceptions.NotAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import com.google.common.collect.Lists;
@@ -67,12 +68,13 @@ public class ModelValidationDiagnostic implements NodeDiagnostic {
       } catch (ValidationException e) {
         diagnostics.add(new Diagnostic(NodeDiagnosticUtils.getModelId(node.getPath()).orElse(null),
             e.getMessage()));
-      } catch (Exception e) {
+      } catch (NotAuthorizedException e) {
+          diagnostics.add(new Diagnostic(e.getModelId(),"Not authorized to view model '"+e.getModelId().getPrettyFormat()+"'"));
+      }catch (Exception e) {
         logger.error("Caught error in diagnosing '" + node + "'", e);
         diagnostics.add(new Diagnostic(NodeDiagnosticUtils.getModelId(node.getPath()).orElse(null),
             NodeDiagnosticUtils.compileErrorMessage(e)));
       }
-
     } catch (RepositoryException e) {
       throw new NodeDiagnosticException("Exception while trying to validate node '" + nodeId + "'",
           e);

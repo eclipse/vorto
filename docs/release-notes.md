@@ -1,5 +1,37 @@
 # Release Notes
 
+## 0.10 
+
+### New Features
+
+**Vorto Repository Features**
+
+- Model Permission Management, that allows users to grant 'READ' permissions of their models to other users.
+- Cloud-based Vorto DSL Editors to create Vorto Models directly in the Repository
+- Release & Review Workflows for Vorto Models
+- Model Attachments, that allows users to add/remove attachments for models, like additional documentation
+- Various UX Improvements
+- Many stabilization and performance fixes
+
+[Click here](https://vorto.eclipse.org) to try out the Eclipse Vorto Repository with all its new features.
+
+**Device Integration Features**
+
+- Payload Mapping Engine (Java-based) that executes Vorto Mapping Models in order to map device telemetry data to abstract Vorto Function Blocks.
+- Mapping Engine support for [Eclipse Ditto](https://www.eclipse.org/ditto) protocol, to automatically convert Vorto compliant data to Eclipse Ditto data structures.
+- Payload Mapping Specification Editor UI, that allows device manufacturers to create mapping specifications for mapping arbitrary device payload to abstract, semantic Vorto Models
+- Code Generators supporting Arduino, Python and Java - based devices, generating code to send telemetry data to [Eclipse Hono](https://www.eclipse.org/hono) and [Eclipse Ditto](https://www.eclipse.org/ditto) based platforms via [Eclipse Paho MQTT](https://www.eclipse.org/paho)
+
+**Developer SDK Features**
+
+- Generator Plugin SDK, which allows to build and deploy Vorto Generator-plugins as standalone (micro)services and hook them into the Vorto repository.
+
+### Deprecation
+
+- The Eclipse Vorto IoT Toolset Plugins are no longer supported. Instead you can simply use the Cloud-based Editors in the Vorto Repository.
+- Changes in the Java Repository Client: The client has a new simplified *org.eclipse.vorto.repository.client.IRepositoryClient* in order to read Vorto Models.
+
+
 ## 0.10.0 milestone 11
 
 **Fixes and Enhancements**

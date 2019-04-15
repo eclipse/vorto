@@ -15,6 +15,8 @@ Information Models describe a specific device type by grouping abstract and re-u
 
 #### Example:
 
+    vortolang 1.0
+
 	namespace com.mycompany
 	version 1.0.0
 	description "Information model for FabLab.eu's IoT Octopus"
@@ -45,6 +47,8 @@ The properties that a Function Block may define are classified as follows:
 
 #### Example 1:
 
+    vortolang 1.0
+
 	namespace com.mycompany.common
 	version 1.0.0
 
@@ -71,6 +75,8 @@ The properties that a Function Block may define are classified as follows:
 	}
 
 #### Example 2 (using inheritance):
+
+    vortolang 1.0
 
 	namespace com.mycompany.tisensortag 
 	version 1.1
@@ -100,6 +106,8 @@ The properties that a Function Block may define are classified as follows:
 Data types and Enums are reusable components that describe specific data and are typically referenced by Function Blocks. Data types can reference other data types and Enums.
 
 #### Basic Enum Example:
+
+    vortolang 1.0
 
 	namespace com.mycompany.common.types
 	version 1.0.0
@@ -134,6 +142,8 @@ Mappings are defined in the following pattern:
 #### Basic Example
 
 Example Mapping that maps a function block to a specific LwM2M Object:
+
+    vortolang 1.0
 
 	namespace com.mycompany.mapping.lwm2m
 	version 1.0.0

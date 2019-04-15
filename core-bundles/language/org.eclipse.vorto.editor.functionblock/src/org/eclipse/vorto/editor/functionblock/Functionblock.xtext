@@ -22,6 +22,7 @@ import "http://www.eclipse.org/vorto/metamodel/Model" as model
 
 FunctionblockModel:
 	{FunctionblockModel}
+	'vortolang' lang=VortoLangVersion
 	'namespace' namespace = QualifiedName
     'version' version = VERSION
     'displayname' displayname=STRING      

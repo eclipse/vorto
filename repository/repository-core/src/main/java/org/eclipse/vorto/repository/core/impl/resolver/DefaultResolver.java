@@ -27,8 +27,8 @@ import org.springframework.stereotype.Service;
 public class DefaultResolver extends AbstractResolver {
 
   @Override
-  protected ModelId doResolve(String tenantId, ModelInfo mappingModelResource, ResolveQuery query) {
-    ModelFileContent content = getRepositoryFactory().getRepository(tenantId).getModelContent(mappingModelResource.getId());
+  protected ModelId doResolve(ModelInfo mappingModelResource, ResolveQuery query) {
+    ModelFileContent content = this.repository.getModelContent(mappingModelResource.getId(),false);
     MappingModel mappingModel = (MappingModel) content.getModel();
     Optional<MappingRule> objectRule = mappingModel.getRules().stream()
         .filter(rule -> rule.getTarget() instanceof StereoTypeTarget

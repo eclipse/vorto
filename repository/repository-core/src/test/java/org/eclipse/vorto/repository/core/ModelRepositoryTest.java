@@ -49,8 +49,8 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   @Test
   public void testGetDSLEncoding() throws Exception {
     importModel("Color_encoding.type");
-    ModelFileContent fileContent = repositoryFactory.getRepository(createUserContext("admin"))
-        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Farbe", "1.0.0"));
+    ModelFileContent fileContent = modelRepository
+        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Farbe", "1.0.0"),false);
     String actualContent = new String(fileContent.getContent(), "UTF-8");
     String expectedContent = IOUtils
         .toString(new ClassPathResource("sample_models/Color_encoding.type").getInputStream());
@@ -65,8 +65,8 @@ public class ModelRepositoryTest extends AbstractIntegrationTest {
   @Test
   public void testGetDSLContentForModelId() throws Exception {
     importModel("Color.type");
-    ModelFileContent fileContent = repositoryFactory.getRepository(createUserContext("admin"))
-        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"));
+    ModelFileContent fileContent = modelRepository
+        .getModelContent(ModelId.fromReference("org.eclipse.vorto.examples.type.Color", "1.0.0"),false);
     String actualContent = new String(fileContent.getContent(), "UTF-8");
     String expectedContent =
         IOUtils.toString(new ClassPathResource("sample_models/Color.type").getInputStream());
