@@ -44,6 +44,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -58,6 +59,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@ActiveProfiles( profiles={"local-test"})
 @ContextConfiguration
 @SpringBootTest(classes = VortoRepository.class,
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

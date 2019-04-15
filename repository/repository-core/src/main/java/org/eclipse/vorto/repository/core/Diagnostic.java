@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.core;
 import org.eclipse.vorto.model.ModelId;
 
 public class Diagnostic {
+  private String tenantId;
   private ModelId modelId;
   private String nodeId;
   private String diagnosticMessage;
@@ -53,21 +54,19 @@ public class Diagnostic {
   public void setNodeId(String nodeId) {
     this.nodeId = nodeId;
   }
+  
+  public String getTenantId() {
+    return tenantId;
+  }
 
-  @Override
-  public String toString() {
-    return "Diagnostic [modelId=" + modelId + ", nodeId=" + nodeId + ", diagnosticMessage="
-        + diagnosticMessage + "]";
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((diagnosticMessage == null) ? 0 : diagnosticMessage.hashCode());
-    result = prime * result + ((modelId == null) ? 0 : modelId.hashCode());
-    result = prime * result + ((nodeId == null) ? 0 : nodeId.hashCode());
-    return result;
+  public String toString() {
+    return "Diagnostic [tenantId=" + tenantId + ", modelId=" + modelId + ", nodeId=" + nodeId
+        + ", diagnosticMessage=" + diagnosticMessage + "]";
   }
 
   @Override

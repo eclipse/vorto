@@ -34,6 +34,8 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.model.PrimitiveType;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IUserContext;
 import org.eclipse.vorto.repository.core.ModelAlreadyExistsException;
 import org.eclipse.vorto.repository.core.ModelContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
@@ -75,13 +77,18 @@ public class PayloadMappingControllerTest {
 
   @Test
   public void testCreateMappingSpecificationWithExistingMapping() throws Exception {
+    IModelRepositoryFactory factory = Mockito.mock(IModelRepositoryFactory.class);
     IModelRepository repo = Mockito.mock(IModelRepository.class);
 
     when(repo.getMappingModelsForTargetPlatform(Matchers.any(), Matchers.any()))
         .thenReturn(Arrays.asList(new ModelInfo()));
+    
+    when(factory.getRepository(Matchers.anyString(), Matchers.any())).thenReturn(repo);
+    
+    //when(factory.getRepository(Matchers.anyObject())).thenReturn(repo);
 
     PayloadMappingController controller = new PayloadMappingController();
-    controller.setRepository(repo);
+    controller.setModelRepositoryFactory(factory);
 
     thrown.expect(ModelAlreadyExistsException.class);
     controller.createMappingSpecification("playground", "com.test:Device:1.0.0", "test");
@@ -89,7 +96,9 @@ public class PayloadMappingControllerTest {
 
   @Test
   public void testCreateMappingSpecificationWithNoExistingMapping() throws Exception {
+    IModelRepositoryFactory factory = Mockito.mock(IModelRepositoryFactory.class);
     IModelRepository repo = Mockito.mock(IModelRepository.class);
+    
     ModelController modelController = Mockito.mock(ModelController.class);
     IWorkflowService workflowService = Mockito.mock(IWorkflowService.class);
 
@@ -103,9 +112,15 @@ public class PayloadMappingControllerTest {
         .thenReturn(getModelContent());
 
     when(workflowService.start(Matchers.any(), Matchers.any())).thenReturn(null);
+    
+    when(factory.getRepository(Matchers.any(), Matchers.any())).thenReturn(repo);
+    
+    when(factory.getRepository(Matchers.anyString())).thenReturn(repo);
+    
+    when(factory.getRepository(Matchers.any(IUserContext.class))).thenReturn(repo);
 
     PayloadMappingController controller = new PayloadMappingController();
-    controller.setRepository(repo);
+    controller.setModelRepositoryFactory(factory);
     controller.setModelController(modelController);
     controller.setUserContextFn((tenantId) -> UserContext.user("erle", tenantId));
     controller.setWorkflowService(workflowService);

@@ -13,46 +13,64 @@
 package org.eclipse.vorto.repository.core.impl.resolver;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.eclipse.vorto.core.api.model.mapping.MappingModel;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.model.ModelType;
 import org.eclipse.vorto.repository.core.IModelIdResolver;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.ModelFileContent;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.web.core.dto.ResolveQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public abstract class AbstractResolver implements IModelIdResolver {
 
   @Autowired
-  protected IModelRepository repository;
+  protected IModelRepositoryFactory repositoryFactory;
 
   @Override
   public ModelId resolve(final ResolveQuery query) {
-    List<ModelInfo> mappings = this.repository.search(ModelType.Mapping.name());
+    IModelSearchService searchService = repositoryFactory.getModelSearchService();
+    Map<String, List<ModelInfo>> result = searchService.search(ModelType.Mapping.name());
+    
+    //List<ModelInfo> mappings = this.repository.search(ModelType.Mapping.name());
+    List<Map.Entry<String, ModelInfo>> mappings = result.entrySet().stream()
+        .map(entry -> entry.getValue().stream()
+            .map(modelInfo -> Maps.immutableEntry(entry.getKey(), modelInfo))
+            .collect(Collectors.toList()))
+        .reduce(Lists.newArrayList(), (a, b) -> {
+          a.addAll(b);
+          return a;
+        });
+    
     Optional<ModelId> foundId = mappings.stream()
-        .filter(resource -> matchesServiceKey(resource, query.getTargetPlatformKey()))
-        .map(r -> doResolve(r, query)).filter(modelId -> Objects.nonNull(modelId)).findFirst();
+        .filter(resource -> matchesServiceKey(resource.getKey(), resource.getValue(), query.getTargetPlatformKey()))
+        .map(r -> doResolve(r.getKey(), r.getValue(), query))
+        .filter(modelId -> Objects.nonNull(modelId))
+        .findFirst();
+    
     return foundId.isPresent() ? foundId.get() : null;
   }
 
-  private boolean matchesServiceKey(ModelInfo resource, String targetPlatformKey) {
-    ModelFileContent content = this.repository.getModelContent(resource.getId(),false);
+  private boolean matchesServiceKey(String tenantId, ModelInfo resource, String targetPlatformKey) {
+    ModelFileContent content = repositoryFactory.getRepository(tenantId).getModelContent(resource.getId());
     return ((MappingModel) content.getModel()).getTargetPlatform().equals(targetPlatformKey);
   }
 
-  protected abstract ModelId doResolve(ModelInfo mappingModelResource, ResolveQuery query);
+  protected abstract ModelId doResolve(String tenantId, ModelInfo mappingModelResource, ResolveQuery query);
 
-  public IModelRepository getRepository() {
-    return repository;
+  public IModelRepositoryFactory getRepositoryFactory() {
+    return repositoryFactory;
   }
 
-  public void setRepository(IModelRepository repository) {
-    this.repository = repository;
+  public void setRepositoryFactory(IModelRepositoryFactory repositoryFactory) {
+    this.repositoryFactory = repositoryFactory;
   }
-
-
 }

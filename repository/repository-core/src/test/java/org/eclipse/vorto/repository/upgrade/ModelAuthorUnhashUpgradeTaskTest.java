@@ -14,7 +14,6 @@ package org.eclipse.vorto.repository.upgrade;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
+import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
+import org.eclipse.vorto.repository.core.IModelSearchService;
 import org.eclipse.vorto.repository.core.ModelInfo;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.domain.Tenant;
@@ -37,14 +38,17 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import com.google.common.collect.Maps;
 
 public class ModelAuthorUnhashUpgradeTaskTest {
 
   private IUserRepository userRepository = Mockito.mock(IUserRepository.class);
 
-  private JcrModelRepository modelRepository = Mockito.mock(JcrModelRepository.class);
+  private IModelRepositoryFactory factory = Mockito.mock(IModelRepositoryFactory.class);
 
   private OAuth2Authentication mockUser = Mockito.mock(OAuth2Authentication.class);
+  
+  IModelRepository modelRepository = Mockito.mock(IModelRepository.class);
 
   private UsernamePasswordAuthenticationToken mockedAuthToken =
       Mockito.mock(UsernamePasswordAuthenticationToken.class);
@@ -55,14 +59,25 @@ public class ModelAuthorUnhashUpgradeTaskTest {
 
   @Before
   public void initMocks() {
-    Mockito.when(modelRepository.search("author:" + userContext.getHashedUsername()))
-        .thenReturn(models);
+    
+    IModelSearchService modelSearchService = Mockito.mock(IModelSearchService.class);
+    
+    Map<String, List<ModelInfo>> searchResult = new HashMap<>();
+    searchResult.put("playground", models);
+    
+    Mockito.when(modelSearchService.search("author:" + userContext.getHashedUsername()))
+        .thenReturn(searchResult);
+    
     Mockito
-        .when(modelRepository.search(
+        .when(modelSearchService.search(
             AdditionalMatchers.not(Matchers.eq("author:" + userContext.getHashedUsername()))))
-        .thenReturn(Collections.emptyList());
+        .thenReturn(Maps.newHashMap());
+    
+    Mockito.when(factory.getModelSearchService()).thenReturn(modelSearchService);
+    Mockito.when(factory.getRepository(Matchers.anyString())).thenReturn(modelRepository);
     Mockito.when(mockedAuthToken.getDetails()).thenReturn(getDetails());
     Mockito.when(mockUser.getUserAuthentication()).thenReturn(mockedAuthToken);
+    
   }
 
   private List<ModelInfo> getModelList() {
@@ -84,7 +99,7 @@ public class ModelAuthorUnhashUpgradeTaskTest {
   @Test
   public void testUpgradeTask() {
     ModelAuthorUnhashUpgradeTask upgradeTask = new ModelAuthorUnhashUpgradeTask();
-    upgradeTask.setModelRepository(modelRepository);
+    upgradeTask.setModelRepositoryFactory(factory);
     upgradeTask.setUserRepository(userRepository);
 
     models.forEach((model) -> {

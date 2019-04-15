@@ -38,7 +38,7 @@ public class WorkflowUpgradeTaskTest extends AbstractIntegrationTest {
     modelRepository.restore(
         IOUtils.toByteArray(new ClassPathResource("sample_models/backup1.xml").getInputStream()));
 
-    task = new WorkflowUpgradeTask(modelRepository,
+    task = new WorkflowUpgradeTask(repositoryFactory,
         new DefaultWorkflowService(repositoryFactory, accountService, null));
     task.setUpgradeTaskCondition(new IUpgradeTaskCondition() {
 

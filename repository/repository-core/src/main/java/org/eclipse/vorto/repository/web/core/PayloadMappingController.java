@@ -77,9 +77,6 @@ public class PayloadMappingController extends AbstractRepositoryController {
   private ModelController modelController;
 
   @Autowired
-  private IModelRepository repository;
-
-  @Autowired
   private IWorkflowService workflowService;
 
   private static Logger logger = Logger.getLogger(PayloadMappingController.class);
@@ -94,8 +91,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
       @ApiParam(value = "The id of the tenant",
           required = true) final @PathVariable String tenantId,
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
+    
     org.eclipse.vorto.repository.core.ModelContent infoModelContent =
         modelController.getModelContentForTargetPlatform(tenantId, modelId, targetPlatform);
+    
     Infomodel infomodel = (Infomodel) infoModelContent.getModels().get(infoModelContent.getRoot());
 
     if (infomodel == null) {
@@ -103,6 +102,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
           modelController.getModelContent(tenantId, modelId);
       infomodel = (Infomodel) infomodelContent.getModels().get(infomodelContent.getRoot());
     }
+    
     MappingSpecification specification = new MappingSpecification();
 
     specification.setInfoModel(infomodel);
@@ -132,7 +132,8 @@ public class PayloadMappingController extends AbstractRepositoryController {
   public Map<String, Object> createMappingSpecification(@PathVariable final String tenantId,
       @PathVariable final String modelId, @PathVariable String targetPlatform) throws Exception {
     logger.info("Creating Mapping Specification for " + modelId + " using key " + targetPlatform);
-    if (!this.repository
+    
+    if (!getModelRepository(tenantId)
         .getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId), targetPlatform)
         .isEmpty()) {
       throw new ModelAlreadyExistsException();
@@ -157,9 +158,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   @GetMapping(value = "/{modelId:.+}/{targetPlatform:.+}/info")
   @PreAuthorize("hasRole('ROLE_USER')")
-  public List<ModelInfo> getMappingModels(@PathVariable final String modelId,
+  public List<ModelInfo> getMappingModels(@PathVariable final String tenantId,
+      @PathVariable final String modelId,
       @PathVariable String targetPlatform) {
-    return this.repository.getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
+    return getModelRepository(tenantId).getMappingModelsForTargetPlatform(ModelId.fromPrettyFormat(modelId),
         targetPlatform);
   }
 
@@ -234,9 +236,10 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   public FunctionblockModel getModelContentByModelAndMappingId(final String tenantId, final String modelId,
       final @PathVariable String mappingId) {
-
-    ModelInfo vortoModelInfo = this.repository.getById(ModelId.fromPrettyFormat(modelId));
-    ModelInfo mappingModelInfo = this.repository.getById(ModelId.fromPrettyFormat(mappingId));
+    IModelRepository repository = getModelRepository(tenantId);
+      
+    ModelInfo vortoModelInfo = repository.getById(ModelId.fromPrettyFormat(modelId));
+    ModelInfo mappingModelInfo = repository.getById(ModelId.fromPrettyFormat(mappingId));
 
     if (vortoModelInfo == null) {
       throw new ModelNotFoundException("Could not find vorto model with ID: " + modelId);
@@ -293,7 +296,7 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   public ModelId serializeAndSave(IMappingSerializer m, IUserContext user) {
     final ModelId createdModelId = m.getModelId();
-    repository.save(createdModelId, m.serialize().getBytes(), createdModelId.getName() + ".mapping",
+    getModelRepository(user).save(createdModelId, m.serialize().getBytes(), createdModelId.getName() + ".mapping",
         user);
     try {
       workflowService.start(createdModelId, user);
@@ -309,10 +312,6 @@ public class PayloadMappingController extends AbstractRepositoryController {
 
   public void setModelController(ModelController modelController) {
     this.modelController = modelController;
-  }
-
-  public void setRepository(IModelRepository repository) {
-    this.repository = repository;
   }
 
   public void setWorkflowService(IWorkflowService workflowService) {
