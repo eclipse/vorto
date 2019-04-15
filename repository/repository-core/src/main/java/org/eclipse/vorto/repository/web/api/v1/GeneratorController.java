@@ -25,10 +25,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.core.IUserContext;
@@ -52,7 +50,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -76,6 +73,9 @@ public class GeneratorController extends AbstractRepositoryController {
 
   @Autowired
   private IGeneratorService generatorService;
+  
+  @Autowired
+  private ITenantService tenantService;
 
   @ApiOperation(value = "Generate code for a specified platform, and extract specified path",
 		  notes = "This method generates artifacts for a specified platform using the 'service key' value along with the 'modelId'."

@@ -59,7 +59,9 @@ public class RepositoryInitializer {
   public void initRepo() {
     Stream.of(admins).forEach(this::createAdminUser);
 
-    predefinedTenants.getPredefinedTenants().forEach(this::createTenantIfNotExisting);
+    if (predefinedTenants != null) {
+      predefinedTenants.getPredefinedTenants().forEach(this::createTenantIfNotExisting);
+    }
 
     Stream.of(admins).forEach(this::addSysAdRole);
 
