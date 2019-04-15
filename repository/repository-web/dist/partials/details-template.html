@@ -198,7 +198,7 @@
 																		<i class="fa fa-exchange" aria-hidden="true"></i>
 																	</span>
 																	<div ng-if="!usage.hasAccess">{{usage.modelId}} (<i class='alert-warning glyphicon glyphicon-warning-sign'></i> no access)</div>	
-																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
+																	<a ng-if="usage.hasAccess" ng-href="./#/details/{{tenantId}}/{{usage.modelId}}" class="ng-binding">{{usage.modelId}}</a>
 																	 <span ng-if="usage.state">(State: <span class="state state-{{usage.state}}">{{ usage.state }}</span>)</span>														
 																</li>
 															</ul>
