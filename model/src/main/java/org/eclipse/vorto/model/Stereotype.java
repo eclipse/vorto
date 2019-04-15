@@ -54,6 +54,12 @@ public class Stereotype {
     return new Stereotype(TARGET, attributes);
   }
 
+  public static Stereotype createCondition(String condition) {
+	  Map<String, String> attributes = new HashMap<String, String>(2);
+	    attributes.put("value", condition);
+	    return new Stereotype("condition", attributes);
+  }
+  
   public static Stereotype createWithConditionalXpath(String condition, String xpath) {
     Map<String, String> attributes = new HashMap<String, String>(2);
     attributes.put(CONDITION_ATT, condition);
@@ -125,6 +131,10 @@ public class Stereotype {
       return false;
     return true;
   }
+
+public boolean hasAttribute(String attribute) {
+	return this.attributes.containsKey(attribute) && !"".equals(this.attributes.get(attribute));
+}
 
 
 

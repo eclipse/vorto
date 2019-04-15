@@ -40,7 +40,7 @@ public abstract class AbstractResolver implements IModelIdResolver {
   }
 
   private boolean matchesServiceKey(ModelInfo resource, String targetPlatformKey) {
-    ModelFileContent content = this.repository.getModelContent(resource.getId());
+    ModelFileContent content = this.repository.getModelContent(resource.getId(),false);
     return ((MappingModel) content.getModel()).getTargetPlatform().equals(targetPlatformKey);
   }
 

@@ -9,6 +9,7 @@ The following code represents the Data Type Model DSL syntax.
     qualifiedName: id ('.' id)*;
 
     entity:
+       'vortolang' 1.0
        'namespace' qualifiedName
        'version' version
        ('displayname' displayname)?
@@ -21,6 +22,7 @@ The following code represents the Data Type Model DSL syntax.
     ;
 
     enumeration:
+       'vortolang' 1.0
        'namespace' qualifiedName
        'version' version
        (modelReference)*

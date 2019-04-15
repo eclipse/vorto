@@ -17,13 +17,16 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
 import org.eclipse.vorto.codegen.api.GeneratorServiceInfo;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MvcResult;
+
 import com.google.gson.reflect.TypeToken;
 
 public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegrationTest {
@@ -64,58 +67,6 @@ public class RepositoryGeneratorIntegrationTest extends AbstractGeneratorIntegra
     assertTrue(true);
   }
 
-  /** +++++++++++++ Bosch IoT SUITE TEST CASES ++++++++++++++++++++++++ */
-
-  @Test
-  public void testGenerateBoschIoTSuiteForJava() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-boschiotsuite-java.zip", Optional.of("?language=java"));
-    assertTrue(true);
-  }
-
-  private void invokeAndAssertBoschIoTSuiteGenerator(String modelId, String fileNameToCompare,
-      Optional<String> paramUrl) throws Exception {
-    repositoryServer
-        .perform(get("/api/v1/generators/boschiotsuite/models/" + modelId
-            + (paramUrl.isPresent() ? paramUrl.get() : "")).with(userAdmin))
-        .andExpect(status().isOk())
-        .andExpect(ZipFileCompare.equals(loadResource(fileNameToCompare)));
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForJavaForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
-        "generated-boschiotsuite-java-lampFb.zip", Optional.of("?language=java"));
-    assertTrue(true);
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForPython() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-boschiotsuite-python.zip", Optional.of("?language=python"));
-    assertTrue(true);
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForPythonForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
-        "generated-boschiotsuite-python-lampFb.zip", Optional.of("?language=python"));
-    assertTrue(true);
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForArduino() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:TrackingDevice:1.0.0",
-        "generated-boschiotsuite-arduino.zip", Optional.of("?language=arduino"));
-    assertTrue(true);
-  }
-
-  @Test
-  public void testGenerateBoschIoTSuiteForArduinoForStreetLamp() throws Exception {
-    invokeAndAssertBoschIoTSuiteGenerator("com.test:StreetLamp:1.0.0",
-        "generated-boschiotsuite-arduino-lampFb.zip", Optional.of("?language=arduino"));
-    assertTrue(true);
-  }
 
   /** +++++++++++++ ECLIPSE DITTO TEST CASES ++++++++++++++++++++++++ */
 

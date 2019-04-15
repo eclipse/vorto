@@ -65,12 +65,15 @@ public class ModelController extends AbstractRepositoryController {
 
 	private static Logger logger = Logger.getLogger(ModelRepositoryController.class);
 
-	@ApiOperation(value = "Returns a full model by its model ID")
+	@ApiOperation(value = "Returns a full model by its model ID",
+			  notes = "This method call allows the user to view the specific model information.<br/>"
+			  		+ "If you want to search the non-released models, you need to login.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successful retrieval of model info"), @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
 			@ApiResponse(code = 404, message = "Model not found"),
 			@ApiResponse(code = 403, message = "Not Authorized to view model") })
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{modelId:.+}", method = RequestMethod.GET, produces = "application/json")
 	public ModelInfo getModelInfo(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
 		Objects.requireNonNull(modelId, "modelId must not be null");
@@ -85,11 +88,13 @@ public class ModelController extends AbstractRepositoryController {
 				UserContext.user(SecurityContextHolder.getContext().getAuthentication().getName()));
 	}
 	
-	@ApiOperation(value = "Returns the complete model content")
+	@ApiOperation(value = "Returns the complete model content",
+			notes = "This method call returns the complete model content of the specific 'modelId' provided in the query.<br/>")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET)
+	@RequestMapping(value = "/{modelId:.+}/content", method = RequestMethod.GET, produces = "application/json")
 	public ModelContent getModelContent(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId) {
 
@@ -110,11 +115,16 @@ public class ModelController extends AbstractRepositoryController {
 		return result;
 	}
 
-	@ApiOperation(value = "Returns the complete model content including target platform specific attributes")
+	@ApiOperation(value = "Returns the complete model content including target platform specific attributes",
+			notes = "This method call retrieves the complete content of the model "
+					+ "for the specific platform. If there are no platform specific attributes or mappings, the "
+					+ "method call will return 404.")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful retrieval of model content"), @ApiResponse(code = 400, message = "Wrong input"),
-			@ApiResponse(code = 404, message = "Model not found") })
+			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
+			@ApiResponse(code = 404, message = "Model Mappings not found") })
 	@PreAuthorize("hasRole('ROLE_USER')")
-	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{modelId:.+}/content/{targetplatformKey}", method = RequestMethod.GET,
+			produces = "application/json")
 	public ModelContent getModelContentForTargetPlatform(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
 			@ApiParam(value = "The key of the targetplatform, e.g. lwm2m", required = true) final @PathVariable String targetplatformKey) {
@@ -164,14 +174,18 @@ public class ModelController extends AbstractRepositoryController {
 		}
 	}
 
-	@ApiOperation(value = "Downloads the model file")
+	@ApiOperation(value = "Downloads the model file",
+			notes = "This method call downloads the model file for the 'modelId' provided. "
+					+ "If you need to get the model dependencies, you need to set 'includeDependencies' flag to 'true'")
 	@ApiResponses(value = {@ApiResponse(code = 200, message = "Successful download of model file"), @ApiResponse(code = 400, message = "Wrong input"),
+			@ApiResponse(code = 401, message = "Unauthenticated, you need to login"),
 			@ApiResponse(code = 404, message = "Model not found") })
 	@PreAuthorize("hasRole('ROLE_USER')")
+	//@GetMapping (value = "/{modelId:.+}/file", produces = "application/zip")
 	@RequestMapping(value = "/{modelId:.+}/file", method = RequestMethod.GET)
 	public void downloadModelById(
 			@ApiParam(value = "The modelId of vorto model, e.g. com.mycompany:Car:1.0.0", required = true) final @PathVariable String modelId,
-			@ApiParam(value = "Set true if dependencies shall be included", required = false) final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
+			@ApiParam(value = "Set true if dependencies shall be included", required = false, allowableValues = "FALSE,TRUE", defaultValue = "FALSE") final @RequestParam(value = "includeDependencies", required = false) boolean includeDependencies,
 			final HttpServletResponse response) {
 
 		Objects.requireNonNull(modelId, "modelId must not be null");

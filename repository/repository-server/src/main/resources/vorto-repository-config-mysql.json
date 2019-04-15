@@ -1,0 +1,33 @@
+{
+    "name" : "vorto",
+    "workspaces" : {
+        "default" : "default",
+        "allowCreation" : true
+    },
+    "security" : {
+        "anonymous" : {
+            "roles" : ["readonly","readwrite","admin"],
+            "useOnFailedLogin" : false
+        }
+    },
+    "storage" : {
+      "cacheConfiguration" : "infinispan-configuration.xml",
+      "cacheName" : "contentRepository",
+      "binaryStorage" : {
+          "type"  : "database",
+          "driverClass" : "org.mariadb.jdbc.Driver",
+          "url" : "jdbc:mysql://db:3306/vorto",
+          "username" : "root",
+          "password" : "example"
+      }
+  },
+    "sequencing" : {
+        "removeDerivedContentWithOriginal" : false,
+        "sequencers" : {
+            "XML Sequencer" : {
+                "classname" : "org.eclipse.vorto.repository.core.impl.ModelSequencer",
+                "pathExpressions" : [ "default://(*.type|*.fbmodel|*.infomodel|*.mapping)/jcr:content[@jcr:data]" ]
+            }
+        }
+    }
+}

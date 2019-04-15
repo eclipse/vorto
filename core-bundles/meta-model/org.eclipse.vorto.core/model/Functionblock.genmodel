@@ -37,12 +37,15 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//Operation/returnType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Operation/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Operation/breakable"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//Operation/presence"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Operation/extension"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//ReturnType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//ReturnType/multiplicity"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//ReturnObjectType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference Functionblock.ecore#//ReturnObjectType/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//ReturnObjectType/constraintRule"/>
     </genClasses>
     <genClasses ecoreClass="Functionblock.ecore#//ReturnPrimitiveType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//ReturnPrimitiveType/returnType"/>
@@ -64,8 +67,19 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Functionblock.ecore#//Event/name"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//Event/properties"/>
     </genClasses>
+    <genClasses ecoreClass="Functionblock.ecore#//ReturnDictonaryType">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//ReturnDictonaryType/returnType"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//ReturnDictonaryType/constraintRule"/>
+    </genClasses>
+    <genClasses ecoreClass="Functionblock.ecore#//DictonaryParam">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//DictonaryParam/type"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Functionblock.ecore#//DictonaryParam/constraintRule"/>
+    </genClasses>
   </genPackages>
   <genPackages prefix="Model" basePackage="org.eclipse.vorto.core.api.model" ecorePackage="Model.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Model.ecore#//VortoLangVersion">
+      <genEnumLiterals ecoreEnumLiteral="Model.ecore#//VortoLangVersion/version1"/>
+    </genEnums>
     <genClasses image="false" ecoreClass="Model.ecore#//Model">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>
@@ -74,6 +88,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/displayname"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/category"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/lang"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//ModelReference">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/version"/>

@@ -3,6 +3,7 @@
 The following code represents the Function Block Model DSL syntax. Function block model use all variables that are defined in Data Type DSL.
 
     functionblockmodel:
+        'vortolang' 1.0
         'namespace' qualifiedName
         'version' version
         'displayname' displayname

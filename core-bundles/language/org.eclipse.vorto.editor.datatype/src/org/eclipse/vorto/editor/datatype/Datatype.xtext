@@ -34,7 +34,8 @@ Type:
 	Entity | Enum
 ;
 
-Entity:	
+Entity:
+   'vortolang' lang=VortoLangVersion	
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    ('displayname' displayname=STRING)?      
@@ -47,6 +48,7 @@ Entity:
 ;
 
 Enum:
+   'vortolang' lang=VortoLangVersion
    'namespace' namespace = QualifiedName
    'version' version = VERSION
    ('displayname' displayname=STRING)?      
@@ -89,6 +91,10 @@ enum BooleanPropertyAttributeType:
   readable = 'readable' |
   writable = 'writable' |
   eventable = 'eventable'
+;
+
+enum VortoLangVersion: 
+	version1 = '1.0'
 ;
 
 EnumLiteralPropertyAttribute:

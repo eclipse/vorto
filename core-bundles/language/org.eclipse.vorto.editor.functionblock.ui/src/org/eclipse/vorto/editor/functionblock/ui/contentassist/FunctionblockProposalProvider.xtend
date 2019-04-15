@@ -19,4 +19,5 @@ package org.eclipse.vorto.editor.functionblock.ui.contentassist
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
  */
 class FunctionblockProposalProvider extends AbstractFunctionblockProposalProvider {
+
 }

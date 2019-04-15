@@ -30,6 +30,8 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.editors = [];
 
     $scope.editMode = false;
+    
+    $scope.conditions = [];
 
     $scope.htmlPopover = $sce.trustAsHtml(
     "<p>Use your custom converters in your mapping rules, e.g. custom:myfunc()</p>");
@@ -87,7 +89,18 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
     $scope.functionEditorChanged = function (e) {
         $scope.newFunctionCode = e[1].getSession().getDocument().getValue();
     };
-
+    
+	$scope.applyCondition = function(propertyName) {
+	   var stereotypes = $scope.properties[propertyName].stereotypes;
+	   if (stereotypes.length === 0 || $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "condition"}).length === 0) {
+            var attributes = {};
+            attributes['value'] = $scope.conditions[propertyName];
+            $scope.properties[propertyName].stereotypes.push({name : "condition", attributes : attributes});
+        } else {
+            var conditionStereotype = $scope.properties[propertyName].stereotypes.filter(function(stereotype) {return stereotype.name === "condition"});
+            conditionStereotype[0].attributes['value'] = $scope.conditions[propertyName];
+        }
+	};
 
     $scope.addFunction = function(propertyName,editorClear) {
         $scope.editMode = false;
@@ -180,11 +193,33 @@ repositoryControllers.controller("MappingBuilderController", ["$rootScope","$uib
                     $scope.infomodel = data.infoModel;
                     $scope.properties = data.properties;
                     $scope.loadCustomFunctions();
+                    $scope.loadFbConditions();
                     $scope.isLoading = false;
                 }).error(function(data, status, headers, config) {
                     $scope.validationError = data;
                     $scope.isLoading = false;
                 });		
+    };
+    
+    $scope.loadFbConditions = function() {
+        for (var propertyName in $scope.properties) {
+            if ($scope.properties.hasOwnProperty(propertyName)) {
+                var stereotypes = $scope.properties[propertyName].stereotypes;
+                if (stereotypes != null) {
+                    $scope.loadFbConditionFromStereotype(propertyName, stereotypes);
+                }
+            }
+        }
+        
+    };
+    
+    $scope.loadFbConditionFromStereotype = function(propertyName, stereotypes) {
+    	$scope.conditions[propertyName] = "";
+        for (var i = 0; i < stereotypes.length;i++) {     	
+            if (stereotypes[i].name === "condition") {
+              $scope.conditions[propertyName] = stereotypes[i].attributes['value'];
+            }  
+        }
     };
 
     $scope.loadCustomFunctions = function() {

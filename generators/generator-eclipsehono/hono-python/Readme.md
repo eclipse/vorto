@@ -8,7 +8,7 @@ It is based on the Eclipse Paho MQTT client for Python.
 
 * Python 3.x
 * Eclipse Paho Python
- * Install by running `pip install paho-mqtt`
+ * Install by running `pip install .`
 
 ## Sample Code
 

@@ -29,8 +29,8 @@ import org.eclipse.vorto.model.Stereotype
  */
 class FunctionblockMappingSerializer extends AbstractSerializer {
 	
-	private String propertyName
-	private FunctionblockModel fbm;
+	String propertyName
+	FunctionblockModel fbm;
 	
 	new (IMappingSpecification spec, String targetPlaform, String propertyName) {
 		super(spec,targetPlaform);
@@ -38,8 +38,10 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 		this.fbm = spec.getFunctionBlock(propertyName);
 	}
 	
-	def override String serialize() {
+	override String serialize() {
 		'''
+		vortolang 1.0
+		
 		namespace «specification.infoModel.id.namespace».mapping.fbs
 		version 1.0.0
 		displayname "«propertyName»PayloadMapping"
@@ -53,8 +55,11 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 			«IF specification.getFunctionBlock(propertyName).getStereotype("functions").present && !specification.getFunctionBlock(propertyName).getStereotype("functions").get().attributes.isEmpty»
 				from «fbm.id.name» to functions with {«createFunctions(specification.getFunctionBlock(propertyName).getStereotype("functions").get)»}
 			«ENDIF»
+			«IF specification.getFunctionBlock(propertyName).getStereotype("condition").present && !specification.getFunctionBlock(propertyName).getStereotype("condition").get().attributes.isEmpty»
+				from «fbm.id.name» to condition with {«createCondition(specification.getFunctionBlock(propertyName).getStereotype("condition").get)»}
+			«ENDIF»
 			«FOR stereotype : specification.getFunctionBlock(propertyName).stereotypes»
-				«IF !stereotype.name.equalsIgnoreCase("functions")»
+				«IF !stereotype.name.equalsIgnoreCase("functions") && !stereotype.name.equalsIgnoreCase("condition") »
 				from «fbm.id.name» to «stereotype.name» with {«createContent(stereotype.attributes)»}
 				«ENDIF»
 			«ENDFOR»
@@ -88,6 +93,12 @@ class FunctionblockMappingSerializer extends AbstractSerializer {
 				}
 			}
 		}
+		return content.toString;
+	}
+	
+	private def String createCondition(Stereotype conditionStereotype) {
+		var content = new StringBuilder();
+		content.append("value").append(":").append("\""+escapeQuotes(conditionStereotype.attributes.get("value"))+"\"");
 		return content.toString;
 	}
 	

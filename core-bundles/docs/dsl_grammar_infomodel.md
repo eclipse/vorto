@@ -1,6 +1,7 @@
 ## Information Model DSL Grammar Reference
 
     InformationModel:
+        'vortolang' 1.0
         'namespace' qualifiedName
         'version' version
         (modelReference)*

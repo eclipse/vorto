@@ -15,6 +15,7 @@ package org.eclipse.vorto.repository.upgrade.impl;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
+
 import org.eclipse.vorto.repository.account.User;
 import org.eclipse.vorto.repository.upgrade.IUpgradeTaskCondition;
 import org.eclipse.vorto.repository.upgrade.IUserUpgradeTask;
@@ -42,4 +43,5 @@ abstract class AbstractUserUpgradeTask implements IUserUpgradeTask {
   public Optional<IUpgradeTaskCondition> condition(User user, Supplier<Object> upgradeContext) {
     return Optional.of(() -> upgradeContext.get() instanceof OAuth2Authentication);
   }
+
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.eclipse.vorto</groupId>
 		<artifactId>repository</artifactId>
-		<version>0.10.0-SNAPSHOT</version>
+		<version>0.11.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>repository-core</artifactId>
 	<packaging>jar</packaging>
@@ -108,7 +108,7 @@
 		<dependency>
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-jcr</artifactId>
-		</dependency>
+    </dependency>
 		<dependency>
 			<groupId>org.modeshape</groupId>
 			<artifactId>modeshape-jcr-api</artifactId>
@@ -153,16 +153,28 @@
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<exclusions>
+				<exclusion>
+				 <groupId>org.springframework.security</groupId>
+				 <artifactId>spring-security-web</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>4.2.9.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.security.oauth</groupId>
 			<artifactId>spring-security-oauth2</artifactId>
-			<version>2.0.16.RELEASE</version>
+			<version>2.0.17.RELEASE</version>
 		</dependency>
 		<dependency>
             <groupId>org.springframework.boot</groupId>
@@ -225,7 +237,7 @@
 			<artifactId>modeshape-unit-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-contract-stub-runner</artifactId>

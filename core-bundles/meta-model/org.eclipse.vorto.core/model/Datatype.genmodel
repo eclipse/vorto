@@ -29,6 +29,7 @@
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/mimetype"/>
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/scaling"/>
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/default"/>
+      <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//ConstraintIntervalType/nullable"/>
     </genEnums>
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="Datatype.ecore#//BooleanPropertyAttributeType">
       <genEnumLiterals ecoreEnumLiteral="Datatype.ecore#//BooleanPropertyAttributeType/readable"/>
@@ -50,6 +51,7 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/constraintRule"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/type"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference Datatype.ecore#//Property/propertyAttributes"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//Property/extension"/>
     </genClasses>
     <genClasses ecoreClass="Datatype.ecore#//PrimitivePropertyType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Datatype.ecore#//PrimitivePropertyType/type"/>
@@ -92,6 +94,9 @@
     </genClasses>
   </genPackages>
   <genPackages prefix="Model" basePackage="org.eclipse.vorto.core.api.model" ecorePackage="Model.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="Model.ecore#//VortoLangVersion">
+      <genEnumLiterals ecoreEnumLiteral="Model.ecore#//VortoLangVersion/version1"/>
+    </genEnums>
     <genClasses image="false" ecoreClass="Model.ecore#//Model">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/namespace"/>
@@ -100,6 +105,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/displayname"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/category"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//Model/lang"/>
     </genClasses>
     <genClasses ecoreClass="Model.ecore#//ModelReference">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute Model.ecore#//ModelReference/version"/>
