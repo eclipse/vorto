@@ -74,7 +74,7 @@ repositoryControllers.controller('DetailsController',
 		$scope.uploadImage = function () {
 			var fd = new FormData();
 			fd.append('file', document.getElementById('imageFile').files[0]);
-			$http.post('./rest/tenants' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
+			$http.post('./rest/tenants/' + $scope.tenantId + '/models/' + $scope.model.id.prettyFormat + '/images/', fd, {
 					transformRequest: angular.identity,
 					headers: {
 						'Content-Type': undefined
