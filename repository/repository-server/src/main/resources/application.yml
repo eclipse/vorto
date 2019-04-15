@@ -18,6 +18,13 @@ repo:
     maxModelImageSize: 32000
     maxModelSize: 90000000
     maxBackupSize: 900000000
+    predefinedTenants:
+      -
+        tenantId: standardization
+        defaultNamespace: org.eclipse.vorto
+        namespaces:
+        authenticationProvider: GITHUB
+        authorizationProvider: DB
   attachment.allowed:
     extension: ext, pdf, doc, zip, jpg, png, svg, html, json
     fileSize: 5
