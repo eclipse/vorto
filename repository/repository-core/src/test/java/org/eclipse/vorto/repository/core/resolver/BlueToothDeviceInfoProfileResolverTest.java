@@ -28,7 +28,7 @@ public class BlueToothDeviceInfoProfileResolverTest extends AbstractIntegrationT
     importModel("bluetooth/ColorLight_bluetooth.mapping");
 
     DefaultResolver resolver = new DefaultResolver();
-    resolver.setRepository(repositoryFactory.getRepository(createUserContext("admin")));
+    resolver.setRepositoryFactory(repositoryFactory);
     assertEquals(new ModelId("ColorLightIM", "com.mycompany", "1.0.0"),
         resolver.resolve(new BluetoothQuery("4810")));
 

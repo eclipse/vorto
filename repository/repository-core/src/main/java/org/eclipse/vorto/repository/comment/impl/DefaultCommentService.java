@@ -1,12 +1,11 @@
 /**
  * Copyright (c) 2018 Contributors to the Eclipse Foundation
  *
- * See the NOTICE file(s) distributed with this work for additional
- * information regarding copyright ownership.
+ * See the NOTICE file(s) distributed with this work for additional information regarding copyright
+ * ownership.
  *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * https://www.eclipse.org/legal/epl-2.0
+ * This program and the accompanying materials are made available under the terms of the Eclipse
+ * Public License 2.0 which is available at https://www.eclipse.org/legal/epl-2.0
  *
  * SPDX-License-Identifier: EPL-2.0
  */
@@ -21,11 +20,14 @@ import org.eclipse.vorto.model.ModelId;
 import org.eclipse.vorto.repository.account.IUserAccountService;
 import org.eclipse.vorto.repository.comment.ICommentService;
 import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.ModelNotFoundException;
 import org.eclipse.vorto.repository.domain.Comment;
+import org.eclipse.vorto.repository.domain.Tenant;
 import org.eclipse.vorto.repository.notification.INotificationService;
 import org.eclipse.vorto.repository.notification.message.CommentReplyMessage;
+import org.eclipse.vorto.repository.tenant.ITenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,7 @@ import org.springframework.stereotype.Service;
 public class DefaultCommentService implements ICommentService {
 
   @Autowired
-  private IModelRepository modelRepository;
+  private IModelRepositoryFactory modelRepositoryFactory;
 
   @Autowired
   private INotificationService notificationService;
@@ -47,27 +49,35 @@ public class DefaultCommentService implements ICommentService {
   @Autowired
   private IUserAccountService accountService;
 
+  @Autowired
+  private ITenantService tenantService;
+
   public void createComment(Comment comment) {
 
     final ModelId id = ModelId.fromPrettyFormat(comment.getModelId());
 
-    if (modelRepository.exists(id)) {
+    Tenant tenant = tenantService.getTenantFromNamespace(id.getNamespace())
+        .orElseThrow(() -> new ModelNotFoundException(
+            "The tenant for '" + id.getPrettyFormat() + "' could not be found."));
+
+    IModelRepository modelRepo = modelRepositoryFactory.getRepository(tenant.getTenantId());
+
+    if (modelRepo.exists(id)) {
       comment.setAuthor(comment.getAuthor());
       comment.setModelId(id.getPrettyFormat());
       comment.setDate(new Date());
       commentRepository.save(comment);
 
-      notifyAllCommentAuthors(comment);
+      notifyAllCommentAuthors(comment, modelRepo.getById(id));
 
     } else {
       throw new ModelNotFoundException("Model not found", new PathNotFoundException());
     }
   }
 
-  private void notifyAllCommentAuthors(Comment comment) {
+  private void notifyAllCommentAuthors(Comment comment, ModelInfo model) {
     Set<String> recipients = new HashSet<>();
-    // Always add the model owner as the recipient of a comment reply
-    ModelInfo model = modelRepository.getById(ModelId.fromPrettyFormat(comment.getModelId()));
+
     recipients.add(model.getAuthor());
 
     List<Comment> existingComments = this.commentRepository.findByModelId(comment.getModelId());
@@ -92,12 +102,12 @@ public class DefaultCommentService implements ICommentService {
     this.commentRepository.save(comment);
   }
 
-  public IModelRepository getModelRepository() {
-    return modelRepository;
+  public IModelRepositoryFactory getModelRepositoryFactory() {
+    return modelRepositoryFactory;
   }
 
-  public void setModelRepository(IModelRepository modelRepository) {
-    this.modelRepository = modelRepository;
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepositoryFactory) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
   public CommentRepository getCommentRepository() {
@@ -115,7 +125,4 @@ public class DefaultCommentService implements ICommentService {
   public void setNotificationService(INotificationService notificationService) {
     this.notificationService = notificationService;
   }
-
-
-
 }

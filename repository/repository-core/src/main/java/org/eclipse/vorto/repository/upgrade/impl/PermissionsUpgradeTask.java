@@ -17,17 +17,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import org.eclipse.vorto.repository.core.IModelPolicyManager;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.PolicyEntry;
 import org.eclipse.vorto.repository.core.PolicyEntry.Permission;
 import org.eclipse.vorto.repository.core.PolicyEntry.PrincipalType;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
+import org.eclipse.vorto.repository.core.impl.ModelRepository;
 import org.eclipse.vorto.repository.core.impl.utils.ModelIdHelper;
 import org.eclipse.vorto.repository.domain.Role;
 import org.eclipse.vorto.repository.sso.SpringUserUtils;
@@ -54,7 +55,7 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
   @Value("${server.upgrade.permissions:false}")
   private boolean shouldUpgrade;
 
-  private IModelPolicyManager policyManager;
+  private IModelRepositoryFactory repositoryFactory;
 
   private IUpgradeTaskCondition upgradeTaskCondition = new IUpgradeTaskCondition() {
 
@@ -66,78 +67,82 @@ public class PermissionsUpgradeTask extends AbstractUpgradeTask implements IUpgr
 
   private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";
 
-  public PermissionsUpgradeTask(@Autowired IModelPolicyManager policyManager,
-      @Autowired IModelRepository repository) {
-    super(repository);
-    this.policyManager = policyManager;
+  public PermissionsUpgradeTask(@Autowired IModelRepositoryFactory repositoryFactory) {
+    super(repositoryFactory.getModelSearchService());
+    this.repositoryFactory = repositoryFactory;
   }
 
   @Override
   public void doUpgrade() throws UpgradeProblem {
     Authentication dummyAuthentication = createAuthentication();
-    SecurityContextHolder.getContext().setAuthentication(dummyAuthentication);
-
-    List<ModelInfo> modelInfos = getModelRepository().search("*");
-
-    ((JcrModelRepository) modelRepository).doInSession(jcrSession -> {
-      JcrSession session = (JcrSession) jcrSession;
-      
-      for (ModelInfo modelInfo : modelInfos) { 
-        ModelIdHelper helper = new ModelIdHelper(modelInfo.getId());
-        
-        try {
-          Node folderNode = session.getNode(helper.getFullPath());
-          if (!folderNode.getNodes(FILE_NODES).hasNext()) {
-            logger.warn("folder "+folderNode.getName()+" has no files. Skipping ...");
-            continue;
-          }
-          Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
-          fileNode.addMixin("mode:accessControllable");
-
-          folderNode.addMixin("mix:referenceable");
-          folderNode.addMixin("vorto:meta");
-          folderNode.addMixin("mix:lastModified");
-          folderNode.setProperty("vorto:name", fileNode.hasProperty("vorto:name")?fileNode.getProperty("vorto:name").getString() : "");
-          folderNode.setProperty("vorto:namespace", fileNode.getProperty("vorto:namespace").getString() );
-          folderNode.setProperty("vorto:type", fileNode.getProperty("vorto:type").getString() );
-
-          if (fileNode.hasProperty("vorto:references")) {
-            List<javax.jcr.Value> newReferences = new ArrayList<javax.jcr.Value>();
-            try {
-              javax.jcr.Value[] referenceValues =
-                  fileNode.getProperty("vorto:references").getValues();
-              for (javax.jcr.Value value : referenceValues) {
-                Node referencedNode = session.getNodeByIdentifier(value.getString());
-                
-                Node referencedFolder = referencedNode.getParent();
-                referencedFolder.addMixin("mix:referenceable");
-                referencedFolder.addMixin("vorto:meta");
-                newReferences.add(session.getValueFactory().createValue(referencedFolder));
-              }
-              folderNode.setProperty("vorto:references",
-                  newReferences.toArray(new javax.jcr.Value[newReferences.size()]));
-              fileNode.getProperty("vorto:references").remove();
-              session.save();
-            } catch (Exception ex) {
-              logger.error("problem with model "+modelInfo.getId().getPrettyFormat(),ex);
-            }
-          }
-        } catch (PathNotFoundException e) {
-          logger.error("problem in permission upgrade task",e);
-        } catch (RepositoryException e) {
-          logger.error("problem in permission upgrade task",e);
-        }
-      }
-      
-      return null;
-    });
     
-    for (ModelInfo modelInfo : modelInfos) {
-      setPermissions(modelInfo);
+    SecurityContextHolder.getContext().setAuthentication(dummyAuthentication);
+    
+    Map<String, List<ModelInfo>> searchResult = getModelSearchService().search("*");
+    
+    for(Map.Entry<String, List<ModelInfo>> entry : searchResult.entrySet()) {
+      ModelRepository modelRepository = (ModelRepository) repositoryFactory.getRepository(entry.getKey());
+      
+      modelRepository.doInSession(jcrSession -> {
+        JcrSession session = (JcrSession) jcrSession;
+        
+        for (ModelInfo modelInfo : entry.getValue()) { 
+          ModelIdHelper helper = new ModelIdHelper(modelInfo.getId());
+          
+          try {
+            Node folderNode = session.getNode(helper.getFullPath());
+            if (!folderNode.getNodes(FILE_NODES).hasNext()) {
+              logger.warn("folder "+folderNode.getName()+" has no files. Skipping ...");
+              continue;
+            }
+            Node fileNode = folderNode.getNodes(FILE_NODES).nextNode();
+            fileNode.addMixin("mode:accessControllable");
+
+            folderNode.addMixin("mix:referenceable");
+            folderNode.addMixin("vorto:meta");
+            folderNode.addMixin("mix:lastModified");
+            folderNode.setProperty("vorto:name", fileNode.hasProperty("vorto:name")?fileNode.getProperty("vorto:name").getString() : "");
+            folderNode.setProperty("vorto:namespace", fileNode.getProperty("vorto:namespace").getString() );
+            folderNode.setProperty("vorto:type", fileNode.getProperty("vorto:type").getString() );
+
+            if (fileNode.hasProperty("vorto:references")) {
+              List<javax.jcr.Value> newReferences = new ArrayList<javax.jcr.Value>();
+              try {
+                javax.jcr.Value[] referenceValues =
+                    fileNode.getProperty("vorto:references").getValues();
+                for (javax.jcr.Value value : referenceValues) {
+                  Node referencedNode = session.getNodeByIdentifier(value.getString());
+                  
+                  Node referencedFolder = referencedNode.getParent();
+                  referencedFolder.addMixin("mix:referenceable");
+                  referencedFolder.addMixin("vorto:meta");
+                  newReferences.add(session.getValueFactory().createValue(referencedFolder));
+                }
+                folderNode.setProperty("vorto:references",
+                    newReferences.toArray(new javax.jcr.Value[newReferences.size()]));
+                fileNode.getProperty("vorto:references").remove();
+                session.save();
+              } catch (Exception ex) {
+                logger.error("problem with model "+modelInfo.getId().getPrettyFormat(),ex);
+              }
+            }
+          } catch (PathNotFoundException e) {
+            logger.error("problem in permission upgrade task",e);
+          } catch (RepositoryException e) {
+            logger.error("problem in permission upgrade task",e);
+          }
+        }
+        
+        for (ModelInfo modelInfo : entry.getValue()) {
+          setPermissions(repositoryFactory.getPolicyManager(entry.getKey(), dummyAuthentication), modelInfo);
+        }
+        
+        return null;
+      });
     }
   }
 
-  private void setPermissions(ModelInfo modelInfo) {
+  private void setPermissions(IModelPolicyManager policyManager, ModelInfo modelInfo) {
     if (modelInfo.getState() != null
         && modelInfo.getState().equalsIgnoreCase(SimpleWorkflowModel.STATE_DRAFT.getName())) {
       logger.info("Setting permissions for model " + modelInfo.toString());

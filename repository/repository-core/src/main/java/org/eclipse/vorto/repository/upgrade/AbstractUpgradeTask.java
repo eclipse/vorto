@@ -13,29 +13,25 @@
 package org.eclipse.vorto.repository.upgrade;
 
 import java.util.Optional;
-
-import org.eclipse.vorto.model.ModelId;
-import org.eclipse.vorto.repository.core.IModelRepository;
-import org.eclipse.vorto.repository.core.ModelResource;
-import org.eclipse.vorto.repository.core.impl.JcrModelRepository;
+import org.eclipse.vorto.repository.core.IModelSearchService;
 
 public abstract class AbstractUpgradeTask implements IUpgradeTask {
 
-	protected JcrModelRepository modelRepository;
+	protected IModelSearchService modelSearchService;
 	
-	public AbstractUpgradeTask(IModelRepository repository) {
-		this.modelRepository = (JcrModelRepository)repository;
+	public AbstractUpgradeTask(IModelSearchService modelSearchService) {
+		this.modelSearchService = modelSearchService;
 	}
 	
 	public Optional<IUpgradeTaskCondition> condition() {
 		return Optional.empty();
 	}
 
-	protected IModelRepository getModelRepository() {
-		return modelRepository;
-	}
-	
-	protected ModelResource getModel(ModelId modelId) {
-		return modelRepository.getEMFResource(modelId);
-	}
+  public IModelSearchService getModelSearchService() {
+    return modelSearchService;
+  }
+
+  public void setModelSearchService(IModelSearchService modelSearchService) {
+    this.modelSearchService = modelSearchService;
+  }
 }

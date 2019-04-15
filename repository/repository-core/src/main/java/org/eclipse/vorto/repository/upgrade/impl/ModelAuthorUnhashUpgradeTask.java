@@ -13,10 +13,11 @@ package org.eclipse.vorto.repository.upgrade.impl;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.eclipse.vorto.repository.account.impl.IUserRepository;
-import org.eclipse.vorto.repository.core.IModelRepository;
+import org.eclipse.vorto.repository.core.IModelRepositoryFactory;
 import org.eclipse.vorto.repository.core.ModelInfo;
 import org.eclipse.vorto.repository.core.impl.UserContext;
 import org.eclipse.vorto.repository.domain.User;
@@ -31,7 +32,7 @@ import org.springframework.stereotype.Component;
 public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
 
   @Autowired
-  private IModelRepository modelRepository;
+  private IModelRepositoryFactory modelRepositoryFactory;
 
   @Autowired
   private IUserRepository userRepository;
@@ -60,13 +61,17 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
   }
 
   private void updateModelsFor(String username, String hashedUsername) {
-    List<ModelInfo> models = modelRepository.search("author:" + hashedUsername);
-    logger.info("Found {} models with author {} to update.", models.size(), hashedUsername);
-
-    for (ModelInfo model : models) {
-      logger.info("Setting the author of " + model.getId().toString() + " to " + username);
-      model.setAuthor(username);
-      modelRepository.updateMeta(model);
+    Map<String, List<ModelInfo>> searchResult = modelRepositoryFactory.getModelSearchService().search("author:" + hashedUsername);
+    
+    int size = searchResult.entrySet().stream().map(entry -> entry.getValue().size()).reduce(0, (a, b) -> a + b);
+    logger.info("Found {} models with author {} to update.", size, hashedUsername);
+    
+    for(Map.Entry<String, List<ModelInfo>> entry : searchResult.entrySet()) {
+      for (ModelInfo model : entry.getValue()) {
+        logger.info("Setting the author of " + model.getId().toString() + " to " + username);
+        model.setAuthor(username);
+        modelRepositoryFactory.getRepository(entry.getKey()).updateMeta(model);
+      }
     }
   }
 
@@ -75,8 +80,8 @@ public class ModelAuthorUnhashUpgradeTask extends AbstractUserUpgradeTask {
     return "Updating models whose authors are hashed username into CIAM subject IDs.";
   }
 
-  public void setModelRepository(IModelRepository modelRepository) {
-    this.modelRepository = modelRepository;
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepositoryFactory) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
   }
 
   public void setUserRepository(IUserRepository userRepository) {

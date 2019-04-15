@@ -101,7 +101,7 @@ import com.google.common.collect.Sets;
  * @author Alexander Edelmann
  *
  */
-@Service("modelRepository")
+//@Service("modelRepository")
 public class JcrModelRepository implements IModelRepository, IDiagnostics, IModelPolicyManager {
 
   private static final String FILE_NODES = "*.type | *.fbmodel | *.infomodel | *.mapping ";

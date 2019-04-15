@@ -219,6 +219,10 @@ public abstract class AbstractRepositoryController extends ResponseEntityExcepti
   protected IModelRepositoryFactory getModelRepositoryFactory() {
     return modelRepositoryFactory;
   }
+  
+  public void setModelRepositoryFactory(IModelRepositoryFactory modelRepositoryFactory) {
+    this.modelRepositoryFactory = modelRepositoryFactory;
+  }
 
   public IModelSearchService getModelSearchService() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

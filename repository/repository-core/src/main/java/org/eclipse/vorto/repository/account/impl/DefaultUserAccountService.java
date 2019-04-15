@@ -154,6 +154,7 @@ public class DefaultUserAccountService
     return false;
   }
 
+  @Transactional
   public User create(String username) {
     if (userRepository.findByUsername(username) != null) {
       throw new IllegalArgumentException("User with given username already exists");
